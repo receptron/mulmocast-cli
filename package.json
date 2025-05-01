@@ -40,6 +40,7 @@
   "homepage": "https://github.com/receptron/mulmocast-cli#readme",
   "dependencies": {
     "@graphai/agents": "^1.0.3",
+    "@graphai/browserless_agent": "^0.0.3",
     "@graphai/tts_nijivoice_agent": "^0.0.2",
     "@graphai/tts_openai_agent": "^0.0.2",
     "@graphai/vanilla_node_agents": "^1.0.1",

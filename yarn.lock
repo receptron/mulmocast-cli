@@ -132,6 +132,11 @@
     "@anthropic-ai/sdk" "^0.39.0"
     "@graphai/llm_utils" "^0.2.0"
 
+"@graphai/browserless_agent@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@graphai/browserless_agent/-/browserless_agent-0.0.3.tgz#d304726f7dc2fd88b780f410ee7576be0447ac5e"
+  integrity sha512-MmO4Xh72Sma7pYZ4gZ+EKXbbP00tbohPDa5emgdgzxnm/YJSyH8BwmVQw5YqBIXIeBZlEI90cAyRgjnOfDQ0Lw==
+
 "@graphai/data_agents@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@graphai/data_agents/-/data_agents-1.0.0.tgz#623396201915d1c5694ebd4822a53aabc5e5043f"
