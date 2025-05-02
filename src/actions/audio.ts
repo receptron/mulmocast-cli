@@ -106,7 +106,6 @@ const graph_data: GraphData = {
       },
       inputs: {
         voiceFile: ":combineFiles.fileName",
-        outFileName: "./output/${:studio.filename}_bgm.mp3",
         outputFile: ":outputFile",
         script: ":studio.script",
       },
