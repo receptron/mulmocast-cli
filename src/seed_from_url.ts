@@ -4,94 +4,136 @@ import * as agents from "@graphai/agents";
 import { prompts } from "./agents/prompts_data";
 import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 import { browserlessAgent } from "@graphai/browserless_agent";
-import validateMulmoScriptAgentInfo from "./agents/validate_mulmo_script_agent";
+import validateMulmoScriptAgent from "./agents/validate_mulmo_script_agent";
 import { z } from "zod";
 
 const urlsSchema = z.array(z.string().url({ message: "Invalid URL format" }));
 
 const graphData: GraphData = {
   version: 0.5,
+  concurrency: 1,
   nodes: {
     urls: {
       value: [],
     },
     // The free version of browserless API doesn't support concurrent execution. Using nestedAgent and loop to make sequential requests.
-    contents: {
-      agent: "nestedAgent",
+    fetchResults: {
+      agent: "mapAgent",
       inputs: {
         rows: ":urls"
       },
+      params: {
+        compositeResult: true,
+      },
       graph: {
-        loop: {
-          while: ":continue"
-        },
         nodes: {
-          continue: {
-            agent: ({ fetchedCount, urlsCount }) => {
-              return fetchedCount < urlsCount - 1
-            },
-            inputs: {
-              fetchedCount: ":fetchResult.length()",
-              urlsCount: ":rows.length()"
-            },
-          },
-          source: {
-            agent: ({ urls, fetchedCount }) => {
-              return urls[fetchedCount]
-            },
-            inputs: {
-              urls: ":rows",
-              fetchedCount: ":fetchResult.length()"
-            },
-          },
-          fetchResult: {
-            value: [],
-            update: ":reducer.array",
-            isResult: true,
-          },
           fetcher: {
             agent: "browserlessAgent",
             inputs: {
-              url: ":source",
+              url: ":row",
               text_content: true,
             },
             params: {
               throwError: true,
             },
           },
-          reducer: {
-            agent: "pushAgent",
+          copyAgent: {
+            agent: "copyAgent",
             inputs: {
-              array: ":fetchResult",
-              item: ":fetcher.text",
-            }
+              text: ":fetcher.text",
+            },
+            params: {
+              namedKey: "text",
+            },
+            isResult: true,
           }
-        }
+        },
       }
     },
-    copyAgent: {
-      agent: "copyAgent",
+    sourceText: {
+      agent: "arrayJoinAgent",
       inputs: {
-        text: ":contents.fetchResult",
+        array: ":fetchResults.copyAgent",
       },
-      console: { after: true },
+      params: {
+        separator: "\n\n",
+      },
+    },
+    mulmoScript: {
+      agent: "nestedAgent",
+      inputs: {
+        sourceText: ":sourceText",
+      },
+      graph: {
+        loop: {
+          while: ":continue",
+        },
+        nodes: {
+          // If the script is not valid and the counter is less than 3, continue the loop
+          continue: {
+            agent: ({ isValid, counter }) => {
+              return !isValid && counter < 3;
+            },
+            inputs: {
+              isValid: ":validateMulmoScriptAgent.isValid",
+              counter: ":counter",
+            },
+          },
+          counter: {
+            value: 0,
+            update: ":incrementCounter"
+          },
+          incrementCounter: {
+            agent: ({ value }) => value + 1,
+            inputs: {
+              value: ":counter"
+            },
+          },
+          openAIAgent: {
+            agent: "openAIAgent",
+            inputs: {
+              model: "gpt-4o",
+              system: prompts.prompt_seed_from_materials,
+              prompt: ":sourceText.text",
+            },
+          },
+          validateMulmoScriptAgent: {
+            agent: "validateMulmoScriptAgent",
+            inputs: {
+              text: ":openAIAgent.text.codeBlock()",
+            },
+            isResult: true,
+          }
+        }
+      },
+    },
+    writeJSON: {
+      if: ":mulmoScript.validateMulmoScriptAgent.isValid",
+      agent: "fileWriteAgent",
+      inputs: {
+        file: "./tmp/${:fileName}-${@now}.json",
+        text: ":mulmoScript.validateMulmoScriptAgent.data.toJSON()",
+      },
+      console: { after: true, before: true },
+      isResult: true,
     },
   }
 };
 
 
 const createMulmoScriptFromUrl = async (urls: string[]) => {
-    const parsedUrls = urlsSchema.parse(urls);
+  const parsedUrls = urlsSchema.parse(urls);
 
-    const graph = new GraphAI(graphData, {
-      ...agents,
-      browserlessAgent,
-    });
+  const graph = new GraphAI(graphData, {
+    ...agents,
+    browserlessAgent,
+    validateMulmoScriptAgent,
+    fileWriteAgent,
+  });
 
-    graph.injectValue("urls", parsedUrls);
+  graph.injectValue("urls", parsedUrls);
 
-    const result = await graph.run();
-    console.log(result);
+  await graph.run();
 }
 
 
