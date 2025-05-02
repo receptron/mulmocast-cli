@@ -61,10 +61,10 @@ export const getBaseDirPath = () => {
 };
 
 export const mkdir = (dirPath: string) => {
-  const currentDir = process.cwd();
-  const imagesDir = path.join(currentDir, dirPath);
-  if (!fs.existsSync(imagesDir)) {
-    fs.mkdirSync(imagesDir, { recursive: true });
+  // const currentDir = process.cwd();
+  // const imagesDir = path.join(currentDir, dirPath);
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
   }
 };
 

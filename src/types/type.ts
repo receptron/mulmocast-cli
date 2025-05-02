@@ -26,3 +26,10 @@ export type MulmoDimension = z.infer<typeof mulmoDimensionSchema>;
 export type MulmoStudioBeat = z.infer<typeof mulmoStudioBeatSchema>;
 
 export type MulmoStudio = z.infer<typeof mulmoStudioSchema>;
+
+export type FileDirs = {
+  baseDirPath: string;
+  mulmoFilePath: string;
+  outDirPath: string;
+  imageDirPath: string;
+};

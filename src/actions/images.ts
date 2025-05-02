@@ -4,7 +4,7 @@ import path from "path";
 import { GraphAI, GraphData } from "graphai";
 import type { GraphOptions } from "graphai/lib/type";
 import * as agents from "@graphai/agents";
-import { MulmoStudio, MulmoStudioBeat, Text2imageParams } from "../types";
+import { MulmoStudio, MulmoStudioBeat, Text2imageParams, FileDirs } from "../types";
 import { MulmoScriptMethods } from "../methods";
 import { getOutputStudioFilePath, mkdir } from "../utils/file";
 import { fileCacheAgentFilter } from "../utils/filters";
@@ -24,11 +24,11 @@ const defaultStyles = [
   "li { font-size: 48px }",
 ];
 
-const preprocess_agent = async (namedInputs: { beat: MulmoStudioBeat; index: number; suffix: string; studio: MulmoStudio }) => {
-  const { beat, index, suffix, studio } = namedInputs;
+const preprocess_agent = async (namedInputs: { beat: MulmoStudioBeat; index: number; suffix: string; studio: MulmoStudio; imageDirPath: string }) => {
+  const { beat, index, suffix, studio, imageDirPath } = namedInputs;
   const imageParams = { ...studio.script.imageParams, ...beat.imageParams };
   const prompt = (beat.imagePrompt || beat.text) + "\n" + (imageParams.style || "");
-  const imagePath = path.resolve(`./images/${studio.filename}/${index}${suffix}.png`);
+  const imagePath = path.resolve(`${imageDirPath}/${studio.filename}/${index}${suffix}.png`);
 
   if (beat.media) {
     if (beat.media.type === "textSlide") {
@@ -46,11 +46,12 @@ const graph_data: GraphData = {
   version: 0.5,
   concurrency: 2,
   nodes: {
-    studio: { value: {} },
+    studio: {},
+    imageDirPath: {},
     text2imageAgent: { value: "" },
     map: {
       agent: "mapAgent",
-      inputs: { rows: ":studio.beats", studio: ":studio", text2imageAgent: ":text2imageAgent" },
+      inputs: { rows: ":studio.beats", studio: ":studio", text2imageAgent: ":text2imageAgent", imageDirPath: ":imageDirPath" },
       isResult: true,
       params: {
         rowKey: "beat",
@@ -65,6 +66,7 @@ const graph_data: GraphData = {
               index: ":__mapIndex",
               studio: ":studio",
               suffix: "p",
+              imageDirPath: ":imageDirPath",
             },
           },
           imageGenerator: {
@@ -106,9 +108,9 @@ const googleAuth = async () => {
   return accessToken.token!;
 };
 
-export const images = async (studio: MulmoStudio, files: { outDirPath: string }) => {
-  const { outDirPath } = files;
-  mkdir(`images/${studio.filename}`);
+export const images = async (studio: MulmoStudio, files: FileDirs) => {
+  const { outDirPath, imageDirPath } = files;
+  mkdir(`${imageDirPath}/${studio.filename}`);
 
   const agentFilters = [
     {
@@ -145,6 +147,7 @@ export const images = async (studio: MulmoStudio, files: { outDirPath: string })
   Object.keys(injections).forEach((key: string) => {
     graph.injectValue(key, injections[key]);
   });
+  graph.injectValue("imageDirPath", imageDirPath);
   const results = await graph.run<{ output: MulmoStudioBeat[] }>();
 
   if (results.map?.output) {

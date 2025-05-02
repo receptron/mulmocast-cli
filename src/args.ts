@@ -27,6 +27,12 @@ export const args = yargs(hideBin(process.argv))
     demandOption: false,
     type: "string",
   })
+  .option("i", {
+    alias: "imagedir",
+    description: "image dir",
+    demandOption: false,
+    type: "string",
+  })
   .command("$0 <action> <file>", "Run mulmocast", (yargs) => {
     return yargs
       .positional("action", {
