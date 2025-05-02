@@ -37,8 +37,9 @@ const main = async () => {
   const mulmoFilePath = getFullPath(baseDirPath, (file as string) ?? "");
   const outDirPath = getFullPath(baseDirPath, (outdir as string) ?? outDirName);
 
+  const files = { baseDirPath, mulmoFilePath, outDirPath };
   if (args.v) {
-    console.log({ baseDirPath, mulmoFilePath, outDirPath });
+    console.log(files);
   }
 
   if (!fs.existsSync(mulmoFilePath)) {
@@ -48,19 +49,21 @@ const main = async () => {
 
   // TODO some option process
   const { action } = args;
-  const studio = createOrUpdateStudioData(mulmoFilePath, { outDirPath });
+  const studio = createOrUpdateStudioData(mulmoFilePath, files);
 
   if (action === "translate") {
-    await translate(studio, { outDirPath });
+    await translate(studio, files);
   }
   if (action === "audio") {
     await audio(studio, MulmoScriptMethods.getSpeechProvider(studio.script) === "nijivoice" ? 1 : 8);
   }
   if (action === "images") {
-    await images(studio);
+    await images(studio, files);
   }
   if (action === "movie") {
-    await movie(studio);
+    await audio(studio, MulmoScriptMethods.getSpeechProvider(studio.script) === "nijivoice" ? 1 : 8);
+    await images(studio, files);
+    await movie(studio, files);
   }
 };
 main();

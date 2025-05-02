@@ -6,7 +6,7 @@ import type { GraphOptions } from "graphai/lib/type";
 import * as agents from "@graphai/agents";
 import { MulmoStudio, MulmoStudioBeat, Text2imageParams } from "../types";
 import { MulmoScriptMethods } from "../methods";
-import { getOutputFilePath, mkdir } from "../utils/file";
+import { getOutputStudioFilePath, mkdir } from "../utils/file";
 import { fileCacheAgentFilter } from "../utils/filters";
 import { convertMarkdownToImage } from "../utils/markdown";
 import imageGoogleAgent from "../agents/image_google_agent";
@@ -106,7 +106,8 @@ const googleAuth = async () => {
   return accessToken.token!;
 };
 
-export const images = async (studio: MulmoStudio) => {
+export const images = async (studio: MulmoStudio, files: { outDirPath: string }) => {
+  const { outDirPath } = files;
   mkdir(`images/${studio.filename}`);
 
   const agentFilters = [
@@ -156,6 +157,7 @@ export const images = async (studio: MulmoStudio) => {
       const beat = studio.beats[index];
       studio.beats[index] = { ...beat, ...update };
     });
-    fs.writeFileSync(getOutputFilePath(`${studio.filename}_studio.json`), JSON.stringify(studio, null, 2));
+    const outputStudioFilePath = getOutputStudioFilePath(outDirPath, studio.filename);
+    fs.writeFileSync(outputStudioFilePath, JSON.stringify(studio, null, 2));
   }
 };
