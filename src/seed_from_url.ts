@@ -111,7 +111,7 @@ const graphData: GraphData = {
       if: ":mulmoScript.validateMulmoScriptAgent.isValid",
       agent: "fileWriteAgent",
       inputs: {
-        file: "./tmp/${:fileName}-${@now}.json",
+        file: "./tmp/script-${@now}.json",
         text: ":mulmoScript.validateMulmoScriptAgent.data.toJSON()",
       },
       console: { after: true, before: true },
