@@ -61,7 +61,7 @@ const main = async () => {
     await images(studio, files);
   }
   if (action === "movie") {
-    await audio(studio, MulmoScriptMethods.getSpeechProvider(studio.script) === "nijivoice" ? 1 : 8);
+    await audio(studio, files, MulmoScriptMethods.getSpeechProvider(studio.script) === "nijivoice" ? 1 : 8);
     await images(studio, files);
     await movie(studio, files);
   }
