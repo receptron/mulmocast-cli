@@ -10,6 +10,8 @@ import { pathUtilsAgent, fileWriteAgent } from "@graphai/vanilla_node_agents";
 
 import { MulmoStudio, MulmoBeat, SpeakerDictonary, Text2speechParams } from "../types";
 import { fileCacheAgentFilter } from "../utils/filters";
+import { getOutputBGMFilePath } from "../utils/file";
+
 // const rion_takanashi_voice = "b9277ce3-ba1c-4f6f-9a65-c05ca102ded0"; // たかなし りおん
 // const ben_carter_voice = "bc06c63f-fef6-43b6-92f7-67f919bd5dae"; // ベン・カーター
 
@@ -70,9 +72,8 @@ const graph_data: GraphData = {
   version: 0.5,
   concurrency: 8,
   nodes: {
-    studio: {
-      value: {},
-    },
+    studio: {},
+    outputFile: {},
     map: {
       agent: "mapAgent",
       inputs: { rows: ":studio.beats", script: ":studio.script" },
@@ -106,6 +107,7 @@ const graph_data: GraphData = {
       inputs: {
         voiceFile: ":combineFiles.fileName",
         outFileName: "./output/${:studio.filename}_bgm.mp3",
+        outputFile: ":outputFile",
         script: ":studio.script",
       },
       isResult: true,
@@ -134,7 +136,10 @@ const agentFilters = [
   },
 ];
 
-export const audio = async (studio: MulmoStudio, concurrency: number) => {
+export const audio = async (studio: MulmoStudio, files: { outDirPath: string }, concurrency: number) => {
+  const { outDirPath } = files;
+  const audioPath = getOutputBGMFilePath(outDirPath, studio.filename);
+
   graph_data.concurrency = concurrency;
   const graph = new GraphAI(
     graph_data,
@@ -150,7 +155,9 @@ export const audio = async (studio: MulmoStudio, concurrency: number) => {
     { agentFilters },
   );
   graph.injectValue("studio", studio);
+  graph.injectValue("outputFile", audioPath);
   const results = await graph.run();
+
   const result = results.combineFiles as { fileName: string };
   console.log(`Generated: ${result.fileName}`);
 };

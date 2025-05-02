@@ -4,13 +4,12 @@ import path from "path";
 import { MulmoScript } from "../types";
 import { MulmoScriptMethods } from "../methods";
 
-const addBGMAgent: AgentFunction<{ musicFileName: string }, string, { voiceFile: string; outFileName: string; script: MulmoScript }> = async ({
+const addBGMAgent: AgentFunction<{ musicFileName: string }, string, { voiceFile: string; outputFile: string; script: MulmoScript }> = async ({
   namedInputs,
   params,
 }) => {
-  const { voiceFile, outFileName, script } = namedInputs;
+  const { voiceFile, outputFile, script } = namedInputs;
   const { musicFileName } = params;
-  const outputFile = path.resolve(outFileName);
   const musicFile = path.resolve(musicFileName);
 
   const promise = new Promise((resolve, reject) => {

@@ -55,7 +55,7 @@ const main = async () => {
     await translate(studio, files);
   }
   if (action === "audio") {
-    await audio(studio, MulmoScriptMethods.getSpeechProvider(studio.script) === "nijivoice" ? 1 : 8);
+    await audio(studio, files, MulmoScriptMethods.getSpeechProvider(studio.script) === "nijivoice" ? 1 : 8);
   }
   if (action === "images") {
     await images(studio, files);
