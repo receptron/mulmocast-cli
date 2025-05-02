@@ -8,7 +8,7 @@ import combineAudioFilesAgent from "../agents/combine_audio_files_agent";
 import ttsOpenaiAgent from "../agents/tts_openai_agent";
 import { pathUtilsAgent, fileWriteAgent } from "@graphai/vanilla_node_agents";
 
-import { MulmoStudio, MulmoBeat, SpeakerDictonary, Text2speechParams } from "../types";
+import { MulmoStudio, MulmoBeat, SpeakerDictonary, Text2speechParams, FileDirs } from "../types";
 import { fileCacheAgentFilter } from "../utils/filters";
 import { getOutputBGMFilePath } from "../utils/file";
 
@@ -136,7 +136,7 @@ const agentFilters = [
   },
 ];
 
-export const audio = async (studio: MulmoStudio, files: { outDirPath: string }, concurrency: number) => {
+export const audio = async (studio: MulmoStudio, files: FileDirs, concurrency: number) => {
   const { outDirPath } = files;
   const audioPath = getOutputBGMFilePath(outDirPath, studio.filename);
 

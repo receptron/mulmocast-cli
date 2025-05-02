@@ -190,7 +190,7 @@ const agentFilters = [
 const defaultLang = "en";
 const targetLangs = ["ja", "en"];
 
-export const translate = async (studio: MulmoStudio, files: { outDirPath: string }) => {
+export const translate = async (studio: MulmoStudio, files: FileDirs) => {
   const { outDirPath } = files;
   const graph = new GraphAI(translateGraph, { ...agents, fileWriteAgent }, { agentFilters });
   graph.injectValue("studio", studio);
