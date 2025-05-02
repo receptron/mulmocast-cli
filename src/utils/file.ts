@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { MulmoScript } from "../types";
 
-import { outDirName, scratchpadDirName } from "./const";
+import { scratchpadDirName } from "./const";
 
 export function readMulmoScriptFile<T = MulmoScript>(
   path: string,
