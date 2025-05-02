@@ -1,4 +1,2 @@
-import { MulmoStudio } from "../types";
-export declare const images: (studio: MulmoStudio, files: {
-    outDirPath: string;
-}) => Promise<void>;
+import { MulmoStudio, FileDirs } from "../types";
+export declare const images: (studio: MulmoStudio, files: FileDirs) => Promise<void>;

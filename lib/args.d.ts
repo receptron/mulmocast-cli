@@ -4,6 +4,7 @@ export declare const args: {
     scratchpad: string | undefined;
     v: boolean;
     b: string | undefined;
+    i: string | undefined;
     _: (string | number)[];
     $0: string;
 };
