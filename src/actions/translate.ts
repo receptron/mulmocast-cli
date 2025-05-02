@@ -5,7 +5,7 @@ import * as agents from "@graphai/agents";
 import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 
 import { recursiveSplitJa, replacementsJa, replacePairsJa } from "../utils/string";
-import { LANG, LocalizedText, MulmoStudioBeat, MulmoStudio } from "../types";
+import { LANG, LocalizedText, MulmoStudioBeat, MulmoStudio, FileDirs } from "../types";
 
 const translateGraph: GraphData = {
   version: 0.5,
