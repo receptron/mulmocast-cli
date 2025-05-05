@@ -15,6 +15,9 @@
       }
     }
   },
+  "audioParams": {
+    "bgm": "/Users/satoshi/git/ai/mulmo/music/EchoInTheEtherEx.mp3"
+  },
   "lang": "en",
   "beats": [
     {

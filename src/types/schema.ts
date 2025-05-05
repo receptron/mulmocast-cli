@@ -101,6 +101,10 @@ export const videoParamsSchema = z.object({
   padding: z.number().optional(), // msec
 });
 
+export const audioParamsSchema = z.object({
+  bgm: z.string().optional(), // path to MP3 file
+});
+
 export const mulmoBeatSchema = z.object({
   speaker: speakerIdSchema,
   text: z.string(),
@@ -149,6 +153,8 @@ export const mulmoScriptSchema = z.object({
       provider: z.string().optional(),
     })
     .optional(),
+
+  audioParams: audioParamsSchema.optional(),
 
   // for textSlides
   textSlideParams: textSlideParamsSchema.optional(),
