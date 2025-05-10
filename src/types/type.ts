@@ -62,6 +62,8 @@ export type ScriptingParams = {
   cacheDirPath: string;
   templateName: string;
   filename: string;
+  llm_model: string;
+  llm_agent: string;
 };
 
 export type ImageProcessorParams = {

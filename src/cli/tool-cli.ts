@@ -15,6 +15,7 @@ const main = async () => {
   const { o: outdir, b: basedir, action, v: verbose, i: interactive, s: filename, cache } = args;
   let { t: template } = args;
   let { u: urls } = args;
+  const { llm_model, llm_agent } = args;
 
   const baseDirPath = getBaseDirPath(basedir as string);
   const outDirPath = getFullPath(baseDirPath, (outdir as string) ?? outDirName);
@@ -44,11 +45,12 @@ const main = async () => {
   }
 
   if (action === "scripting") {
+    const context = { outDirPath, templateName: template, urls, filename, cacheDirPath, llm_model, llm_agent };
     if (interactive) {
-      await createMulmoScriptInteractively({ outDirPath, templateName: template, urls, filename, cacheDirPath });
+      await createMulmoScriptInteractively(context);
     } else {
-      urls = await getUrlsIfNeeded(urls);
-      await createMulmoScriptFromUrl({ urls, templateName: template, outDirPath, filename, cacheDirPath });
+      context.urls = await getUrlsIfNeeded(urls);
+      await createMulmoScriptFromUrl(context);
     }
   } else if (action === "prompt") {
     await dumpPromptFromTemplate({ templateName: template });

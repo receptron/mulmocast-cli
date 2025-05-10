@@ -3,6 +3,7 @@ import { hideBin } from "yargs/helpers";
 import { commonOptions } from "./common.js";
 import { GraphAILogger } from "graphai";
 import { getAvailableTemplates } from "../utils/file.js";
+import { llmAgents } from "../utils/utils";
 
 GraphAILogger.setLevelEnabled("error", false);
 
@@ -42,6 +43,17 @@ export const args = commonOptions(yargs(hideBin(process.argv)))
     description: "script filename",
     demandOption: false,
     default: "script",
+    type: "string",
+  })
+  .option("llm_agent", {
+    description: "llm agent",
+    demandOption: false,
+    choices: llmAgents,
+    type: "string",
+  })
+  .option("llm_model", {
+    description: "llm model",
+    demandOption: false,
     type: "string",
   })
   .command("$0 <action>", "Run mulmocast tool", (yargs) => {

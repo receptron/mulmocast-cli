@@ -48,7 +48,10 @@
   "homepage": "https://github.com/receptron/mulmocast-cli#readme",
   "dependencies": {
     "@graphai/agent_filters": "^1.0.1",
+    "@graphai/anthropic_agent": "^1.0.1",
     "@graphai/browserless_agent": "^2.0.0",
+    "@graphai/gemini_agent": "^1.0.1",
+    "@graphai/groq_agent": "^1.0.1",
     "@graphai/input_agents": "^1.0.1",
     "@graphai/openai_agent": "^1.0.5",
     "@graphai/vanilla": "^2.0.1",

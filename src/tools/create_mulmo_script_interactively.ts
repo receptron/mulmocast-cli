@@ -5,6 +5,10 @@ import { textInputAgent } from "@graphai/input_agents";
 import { streamAgentFilterGenerator } from "@graphai/agent_filters";
 
 import { openAIAgent } from "@graphai/openai_agent";
+import { anthropicAgent } from "@graphai/anthropic_agent";
+import { geminiAgent } from "@graphai/gemini_agent";
+import { groqAgent } from "@graphai/groq_agent";
+
 import * as agents from "@graphai/vanilla";
 
 import { fileWriteAgent } from "@graphai/vanilla_node_agents";
@@ -13,6 +17,7 @@ import { browserlessCacheGenerator } from "../utils/filters.js";
 import { ScriptingParams } from "../types/index.js";
 import { browserlessAgent } from "@graphai/browserless_agent";
 import validateMulmoScriptAgent from "../agents/validate_mulmo_script_agent.js";
+import { llmPair } from "../utils/utils.js";
 // import { cliLoadingPlugin } from "../utils/plugins.js";
 
 const { default: __, ...vanillaAgents } = agents;
@@ -218,10 +223,13 @@ const scrapeWebContent = async (urls: string[], cacheDirPath: string) => {
   return `\n\n${prefixPrompt}\n${result?.sourceText.text}`;
 };
 
-export const createMulmoScriptInteractively = async ({ outDirPath, cacheDirPath, filename, templateName, urls }: ScriptingParams) => {
+export const createMulmoScriptInteractively = async ({ outDirPath, cacheDirPath, filename, templateName, urls, llm_agent, llm_model }: ScriptingParams) => {
   mkdir(outDirPath);
   // if urls is not empty, scrape web content and reference it in the prompt
   const webContentPrompt = urls.length > 0 ? await scrapeWebContent(urls, cacheDirPath) : "";
+
+  const { agent, model } = llmPair(llm_agent, llm_model);
+  GraphAILogger.log({ agent, model });
 
   const streamAgentFilter = streamAgentFilterGenerator((context, data) => {
     process.stdout.write(String(data));
@@ -234,7 +242,11 @@ export const createMulmoScriptInteractively = async ({ outDirPath, cacheDirPath,
     },
   ];
 
-  const graph = new GraphAI(graphData, { ...vanillaAgents, openAIAgent, textInputAgent, fileWriteAgent, validateMulmoScriptAgent }, { agentFilters });
+  const graph = new GraphAI(
+    graphData,
+    { ...vanillaAgents, anthropicAgent, geminiAgent, groqAgent, openAIAgent, textInputAgent, fileWriteAgent, validateMulmoScriptAgent },
+    { agentFilters },
+  );
 
   const prompt = readTemplatePrompt(templateName);
   graph.injectValue("messages", [
@@ -245,8 +257,8 @@ export const createMulmoScriptInteractively = async ({ outDirPath, cacheDirPath,
   ]);
   graph.injectValue("outdir", outDirPath);
   graph.injectValue("fileName", filename);
-  graph.injectValue("llmAgent", "openAIAgent");
-  graph.injectValue("llmModel", "gpt-4o-mini");
+  graph.injectValue("llmAgent", agent);
+  graph.injectValue("llmModel", model);
   graph.registerCallback(({ nodeId, state }) => {
     if (nodeId === "chatAgent") {
       if (state === "executing") {
