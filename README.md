@@ -1,4 +1,4 @@
-# mulmocast
+# Mulmocast
 
 A CLI tool for generating podcast and video content from script files (MulmoScript). Automates the process of creating audio, images, and video from structured MulmoScript files.
 
@@ -49,18 +49,22 @@ BROWSERLESS_API_TOKEN=your_browserless_api_token # to access web in mulmo-tool
 4. Create final video with `mulmo movie`
 
 ## Quick Start
+### Step 1: Generate a MulmoScript with interactive mode
+- Step 1-1: Run the script generation command
+  ```bash
+  mulmo-tool scripting -i -t children_book -o ./ -s story
+  ```
+  This will initiate the script creation process.
+  
+- Step 1-2: Interactive conversation with AI
 
-```bash
-# Generate script with interactive mode
-mulmo-tool scripting -i -t children_book -o ./ -s story
-```
-After running this command, you'll create a story script through an interactive conversation with the AI.
+  After running the command, you'll engage in an interactive conversation with the AI to create your story script. The AI will guide you through the process and help shape your content based on your inputs. Once completed, a JSON file (like ⁠`story-1746600802426.json`) will be generated.
 
+### Step 2: Generate both audio and images, then combine into video
 ```bash
-# Generate both audio and images, then combine into video
 mulmo movie {generated_script_file}
 ```
-Replace `{generated_script_file}` with the output file from the previous command, such as `story-1746600802426.json`.
+Replace `{generated_script_file}` with the output file from STEP 1, such as `story-1746600802426.json`.
 
 ## Generate MulmoScript
 
@@ -71,6 +75,8 @@ mulmo-tool scripting -u https://example.com
 # Generate script with interactive mode
 mulmo-tool scripting -i
 ```
+
+When using the `⁠sensei_and_taro` template, a Nijivoice API key is required.
 
 ## Generate content from MulmoScript
 
