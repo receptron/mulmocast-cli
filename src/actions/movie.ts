@@ -1,8 +1,8 @@
-import ffmpeg from "fluent-ffmpeg";
 import { GraphAILogger } from "graphai";
 import { MulmoStudio, MulmoStudioContext, MulmoCanvasDimension, BeatMediaType } from "../types/index.js";
 import { MulmoScriptMethods } from "../methods/index.js";
 import { getAudioArtifactFilePath, getOutputVideoFilePath, writingMessage } from "../utils/file.js";
+import { FfmpegContextAddInput, FfmpegContextInit, FfmpegContextPushFormattedAudio, FfmpegContextGenerateOutput } from "../utils/ffmpeg_utils.js";
 
 const isMac = process.platform === "darwin";
 const videoCodec = isMac ? "h264_videotoolbox" : "libx264";
@@ -60,96 +60,65 @@ const getOutputOption = (audioId: string) => {
   ];
 };
 
-const createVideo = (audioArtifactFilePath: string, outputVideoPath: string, studio: MulmoStudio) => {
-  return new Promise((resolve, reject) => {
-    const start = performance.now();
-    const ffmpegContext = {
-      command: ffmpeg(),
-      inputCount: 0,
-    };
+const createVideo = async (audioArtifactFilePath: string, outputVideoPath: string, studio: MulmoStudio) => {
+  const start = performance.now();
+  const ffmpegContext = FfmpegContextInit();
 
-    function addInput(input: string) {
-      ffmpegContext.command = ffmpegContext.command.input(input);
-      ffmpegContext.inputCount++;
-      return ffmpegContext.inputCount - 1; // returned the index of the input
+  if (studio.beats.some((beat) => !beat.imageFile)) {
+    GraphAILogger.info("beat.imageFile is not set. Please run `yarn run images ${file}` ");
+    return;
+  }
+
+  const canvasInfo = MulmoScriptMethods.getCanvasSize(studio.script);
+  const padding = MulmoScriptMethods.getPadding(studio.script) / 1000;
+
+  // Add each image input
+  const filterComplexVideoIds: string[] = [];
+  const filterComplexAudioIds: string[] = [];
+
+  studio.beats.reduce((timestamp, beat, index) => {
+    if (!beat.imageFile || !beat.duration) {
+      throw new Error(`beat.imageFile is not set: index=${index}`);
     }
+    const inputIndex = FfmpegContextAddInput(ffmpegContext, beat.imageFile);
+    const mediaType = MulmoScriptMethods.getImageType(studio.script, studio.script.beats[index]);
+    const headOrTail = index === 0 || index === studio.beats.length - 1;
+    const duration = beat.duration + (headOrTail ? padding : 0);
+    const { videoId, videoPart } = getVideoPart(inputIndex, mediaType, duration, canvasInfo);
+    filterComplexVideoIds.push(videoId);
+    ffmpegContext.filterComplex.push(videoPart);
 
-    if (studio.beats.some((beat) => !beat.imageFile)) {
-      GraphAILogger.info("beat.imageFile is not set. Please run `yarn run images ${file}` ");
-      return;
+    if (mediaType === "movie") {
+      const { audioId, audioPart } = getAudioPart(inputIndex, duration, timestamp * 1000);
+      filterComplexAudioIds.push(audioId);
+      ffmpegContext.filterComplex.push(audioPart);
     }
+    return timestamp + duration;
+  }, 0);
+  // console.log("*** images", images.audioIds);
 
-    const canvasInfo = MulmoScriptMethods.getCanvasSize(studio.script);
-    const padding = MulmoScriptMethods.getPadding(studio.script) / 1000;
+  // Concatenate the trimmed images
+  ffmpegContext.filterComplex.push(`${filterComplexVideoIds.map((id) => `[${id}]`).join("")}concat=n=${studio.beats.length}:v=1:a=0[v]`);
 
-    // Add each image input
-    const filterComplexParts: string[] = [];
-    const filterComplexVideoIds: string[] = [];
-    const filterComplexAudioIds: string[] = [];
+  const audioIndex = FfmpegContextAddInput(ffmpegContext, audioArtifactFilePath); // Add audio input
+  const artifactAudioId = `${audioIndex}:a`;
 
-    studio.beats.reduce((timestamp, beat, index) => {
-      if (!beat.imageFile || !beat.duration) {
-        throw new Error(`beat.imageFile is not set: index=${index}`);
-      }
-      const inputIndex = addInput(beat.imageFile);
-      const mediaType = MulmoScriptMethods.getImageType(studio.script, studio.script.beats[index]);
-      const headOrTail = index === 0 || index === studio.beats.length - 1;
-      const duration = beat.duration + (headOrTail ? padding : 0);
-      const { videoId, videoPart } = getVideoPart(inputIndex, mediaType, duration, canvasInfo);
-      filterComplexVideoIds.push(videoId);
-      filterComplexParts.push(videoPart);
-
-      if (mediaType === "movie") {
-        const { audioId, audioPart } = getAudioPart(inputIndex, duration, timestamp * 1000);
-        filterComplexAudioIds.push(audioId);
-        filterComplexParts.push(audioPart);
-      }
-      return timestamp + duration;
-    }, 0);
-    // console.log("*** images", images.audioIds);
-
-    // Concatenate the trimmed images
-    filterComplexParts.push(`${filterComplexVideoIds.map((id) => `[${id}]`).join("")}concat=n=${studio.beats.length}:v=1:a=0[v]`);
-
-    const audioIndex = addInput(audioArtifactFilePath); // Add audio input
-    const artifactAudioId = `${audioIndex}:a`;
-
-    const ffmpegContextAudioId = (() => {
-      if (filterComplexAudioIds.length > 0) {
-        const mainAudioId = "mainaudio";
-        const compositeAudioId = "composite";
-        const audioIds = filterComplexAudioIds.map((id) => `[${id}]`).join("");
-        filterComplexParts.push(`[${artifactAudioId}]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo[${mainAudioId}]`);
-        filterComplexParts.push(
-          `[${mainAudioId}]${audioIds}amix=inputs=${filterComplexAudioIds.length + 1}:duration=first:dropout_transition=2[${compositeAudioId}]`,
-        );
-        return `[${compositeAudioId}]`; // notice that we need to use [mainaudio] instead of mainaudio
-      }
-      return artifactAudioId;
-    })();
-
-    // Apply the filter complex for concatenation and map audio input
-    ffmpegContext.command
-      .complexFilter(filterComplexParts)
-      .outputOptions(getOutputOption(ffmpegContextAudioId))
-      .on("start", (__cmdLine) => {
-        GraphAILogger.log("Started FFmpeg ..."); // with command:', cmdLine);
-      })
-      .on("error", (err, stdout, stderr) => {
-        GraphAILogger.error("Error occurred:", err);
-        GraphAILogger.error("FFmpeg stdout:", stdout);
-        GraphAILogger.error("FFmpeg stderr:", stderr);
-        GraphAILogger.info("Video creation failed. An unexpected error occurred.");
-        reject();
-      })
-      .on("end", () => {
-        const end = performance.now();
-        GraphAILogger.info(`Video created successfully! ${Math.round(end - start) / 1000} sec`);
-        resolve(0);
-      })
-      .output(outputVideoPath)
-      .run();
-  });
+  const ffmpegContextAudioId = (() => {
+    if (filterComplexAudioIds.length > 0) {
+      const mainAudioId = "mainaudio";
+      const compositeAudioId = "composite";
+      const audioIds = filterComplexAudioIds.map((id) => `[${id}]`).join("");
+      FfmpegContextPushFormattedAudio(ffmpegContext, `[${artifactAudioId}]`, `[${mainAudioId}]`);
+      ffmpegContext.filterComplex.push(
+        `[${mainAudioId}]${audioIds}amix=inputs=${filterComplexAudioIds.length + 1}:duration=first:dropout_transition=2[${compositeAudioId}]`,
+      );
+      return `[${compositeAudioId}]`; // notice that we need to use [mainaudio] instead of mainaudio
+    }
+    return artifactAudioId;
+  })();
+  await FfmpegContextGenerateOutput(ffmpegContext, outputVideoPath, getOutputOption(ffmpegContextAudioId));
+  const end = performance.now();
+  GraphAILogger.info(`Video created successfully! ${Math.round(end - start) / 1000} sec`);
 };
 
 export const movie = async (context: MulmoStudioContext) => {
