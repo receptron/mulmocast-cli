@@ -51,7 +51,7 @@ const imagePreprocessAgent = async (namedInputs: {
     }
   }
 
-  const prompt = (beat.imagePrompt || beat.text) + "\n" + (imageParams.style || "");
+  const prompt = (beat.imagePrompt || `generate image appropriate for the text. text: ${beat.text}`) + "\n" + (imageParams.style || "");
   return { path: imagePath, prompt, ...returnValue };
 };
 
