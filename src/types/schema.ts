@@ -129,7 +129,9 @@ export const mulmoImageAssetSchema = z.union([
   mulmoPdfMediaSchema,
   mulmoImageMediaSchema,
   mulmoSvgMediaSchema,
-  mulmoMovieMediaSchema,
+  mulmoMovieMediaSchema.extend({
+    mixAudio: z.number().default(1.0),
+  }),
   mulmoTextSlideMediaSchema,
   mulmoChartMediaSchema,
   mulmoMermaidMediaSchema,

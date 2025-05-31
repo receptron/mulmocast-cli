@@ -90,6 +90,30 @@
     },
     {
       "speaker": "Presenter",
+      "text": "This is a local movie with 20% audio.",
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/test/pingpong.mov"
+        },
+        "mixAudio": 0.2
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "This is a local movie with no audio.",
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/test/pingpong.mov"
+        },
+        "mixAudio": 0.0
+      }
+    },
+    {
+      "speaker": "Presenter",
       "text": "This is the beat before the closing slide.",
       "image": {
         "type": "textSlide",

@@ -20,6 +20,6 @@ test("test getVideoParts movie", async () => {
 });
 
 test("test getAudioPart movie", async () => {
-  const { audioPart } = getAudioPart(1, 100, 100);
-  assert.equal(audioPart, "[1:a]atrim=duration=100,adelay=100000|100000,aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo[a1]");
+  const { audioPart } = getAudioPart(1, 100, 100, 0.2);
+  assert.equal(audioPart, "[1:a]atrim=duration=100,adelay=100000|100000,volume=0.2,aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo[a1]");
 });

@@ -40,7 +40,7 @@ export const getVideoPart = (inputIndex: number, mediaType: BeatMediaType, durat
   };
 };
 
-export const getAudioPart = (inputIndex: number, duration: number, delay: number) => {
+export const getAudioPart = (inputIndex: number, duration: number, delay: number, mixAudio: number) => {
   const audioId = `a${inputIndex}`;
 
   return {
@@ -49,6 +49,7 @@ export const getAudioPart = (inputIndex: number, duration: number, delay: number
       `[${inputIndex}:a]` +
       `atrim=duration=${duration},` + // Trim to beat duration
       `adelay=${delay * 1000}|${delay * 1000},` +
+      `volume=${mixAudio},` + // 👈 add this line
       `aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo` +
       `[${audioId}]`,
   };
@@ -90,12 +91,13 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
   const filterComplexVideoIds: string[] = [];
   const filterComplexAudioIds: string[] = [];
 
-  studio.beats.reduce((timestamp, beat, index) => {
-    if (!beat.imageFile || !beat.duration) {
-      throw new Error(`beat.imageFile or beat.duration is not set: index=${index}`);
+  studio.beats.reduce((timestamp, studioBeat, index) => {
+    const beat = studio.script.beats[index];
+    if (!studioBeat.imageFile || !studioBeat.duration) {
+      throw new Error(`studioBeat.imageFile or studioBeat.duration is not set: index=${index}`);
     }
-    const inputIndex = FfmpegContextAddInput(ffmpegContext, beat.imageFile);
-    const mediaType = MulmoScriptMethods.getImageType(studio.script, studio.script.beats[index]);
+    const inputIndex = FfmpegContextAddInput(ffmpegContext, studioBeat.imageFile);
+    const mediaType = MulmoScriptMethods.getImageType(studio.script, beat);
     const extraPadding = (() => {
       // We need to consider only intro and outro padding because the other paddings were already added to the beat.duration
       if (index === 0) {
@@ -105,11 +107,11 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
       }
       return 0;
     })();
-    const duration = beat.duration + extraPadding;
+    const duration = studioBeat.duration + extraPadding;
     const { videoId, videoPart } = getVideoPart(inputIndex, mediaType, duration, canvasInfo);
     ffmpegContext.filterComplex.push(videoPart);
-    if (caption && beat.captionFile) {
-      const captionInputIndex = FfmpegContextAddInput(ffmpegContext, beat.captionFile);
+    if (caption && studioBeat.captionFile) {
+      const captionInputIndex = FfmpegContextAddInput(ffmpegContext, studioBeat.captionFile);
       const compositeVideoId = `c${index}`;
       ffmpegContext.filterComplex.push(`[${videoId}][${captionInputIndex}:v]overlay=format=auto[${compositeVideoId}]`);
       filterComplexVideoIds.push(compositeVideoId);
@@ -117,8 +119,8 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
       filterComplexVideoIds.push(videoId);
     }
 
-    if (mediaType === "movie") {
-      const { audioId, audioPart } = getAudioPart(inputIndex, duration, timestamp);
+    if (beat.image?.type == "movie" && beat.image.mixAudio > 0.0) {
+      const { audioId, audioPart } = getAudioPart(inputIndex, duration, timestamp, beat.image.mixAudio);
       filterComplexAudioIds.push(audioId);
       ffmpegContext.filterComplex.push(audioPart);
     }
