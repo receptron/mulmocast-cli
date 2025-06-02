@@ -129,7 +129,7 @@ MulmoCastは、ビジネス向けプレゼンからポッドキャストまで�
 基本操作ステップ3で以下のコマンドを実行すると、ジブリ風映像用のプロンプトが生成されます：
 
 ```bash
-mulmo prompt -t ghibli_strips
+mulmo tool prompt -t ghibli_strips
 ```
 
 ただし、OpenAIの画像生成ポリシーにより、ジブリ風画像の生成は「コンテンツポリシーに違反する」として拒否される場合があります。これは、特に著作権保護が疑われるキャラクターに類似していると判断された際に発生します。ご了承ください。
@@ -141,5 +141,5 @@ mulmo prompt -t ghibli_strips
 基本操作ステップ3で以下のコマンドを実行すると、ビジネス・プレゼン向けのプロンプトが生成されます：
 
 ```bash
-mulmo prompt -t business
+mulmo tool prompt -t business
 ```
