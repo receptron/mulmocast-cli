@@ -19,9 +19,14 @@ const addBGMAgent: AgentFunction<{ musicFile: string }, string, { voiceFile: str
   const ffmpegContext = FfmpegContextInit();
   const musicInputIndex = FfmpegContextAddInput(ffmpegContext, musicFile);
   const voiceInputIndex = FfmpegContextAddInput(ffmpegContext, voiceFile);
-  ffmpegContext.filterComplex.push(`[${musicInputIndex}:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo, volume=0.2[music]`);
+  
+  // 環境変数から音量設定を取得、デフォルト値を設定
+  const bgmVolume = parseFloat(process.env.BGM_VOLUME ?? "0.2");
+  const voiceVolume = parseFloat(process.env.VOICE_VOLUME ?? "2");
+  
+  ffmpegContext.filterComplex.push(`[${musicInputIndex}:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo, volume=${bgmVolume}[music]`);
   ffmpegContext.filterComplex.push(
-    `[${voiceInputIndex}:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo, volume=2, adelay=${introPadding * 1000}|${introPadding * 1000}[voice]`,
+    `[${voiceInputIndex}:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo, volume=${voiceVolume}, adelay=${introPadding * 1000}|${introPadding * 1000}[voice]`,
   );
   ffmpegContext.filterComplex.push(`[music][voice]amix=inputs=2:duration=longest[mixed]`);
   ffmpegContext.filterComplex.push(`[mixed]atrim=start=0:end=${totalDuration}[trimmed]`);

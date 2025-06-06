@@ -96,6 +96,11 @@ DEFAULT_OPENAI_IMAGE_MODEL=gpt-image-1 # for the advanced image generation model
 GOOGLE_PROJECT_ID=your_google_project_id # for Google's image generation model
 NIJIVOICE_API_KEY=your_nijivoice_api_key # for Nijivoice's TTS model
 BROWSERLESS_API_TOKEN=your_browserless_api_token # to access web in mulmo tool
+
+# Audio Settings
+PATH_BGM=./path/to/your_bgm.mp3 # custom background music file (default: built-in BGM)
+BGM_VOLUME=0.2 # BGM volume level
+VOICE_VOLUME=2 # voice volume level
 ```
 
 ## Workflow
