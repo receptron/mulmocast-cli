@@ -19,4 +19,10 @@ export const builder = (yargs: Argv) =>
       describe: "PDF paper size (default: letter)",
       choices: pdf_sizes,
       default: "letter",
+    })
+    .option("pdf_engine", {
+      describe: "PDF generation engine",
+      choices: ["pdf-lib", "puppeteer"],
+      type: "string",
+      default: "pdf-lib",
     });
