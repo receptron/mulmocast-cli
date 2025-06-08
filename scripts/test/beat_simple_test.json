@@ -1,0 +1,32 @@
+{
+  "$mulmocast": {
+    "version": "1.0"
+  },
+  "title": "Beat Media Type 最小テスト",
+  "lang": "ja",
+  "speechParams": {
+    "provider": "openai",
+    "speakers": {
+      "Presenter": {
+        "voiceId": "shimmer"
+      }
+    }
+  },
+  "imageParams": {
+    "provider": "openai"
+  },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "最初のビートです。",
+      "imagePrompt": "simple test image"
+    },
+    {
+      "speaker": "Presenter",
+      "text": "2番目のビートです。前の画像を再利用します。",
+      "image": {
+        "type": "beat"
+      }
+    }
+  ]
+} 

@@ -3,6 +3,16 @@ import { mulmoScriptSchema } from "../types/schema.js";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
 export const imagePrompt = (beat: MulmoBeat, style?: string) => {
+  // Skip image generation if using beat media type
+  if (beat.image?.type === "beat") {
+    return undefined;
+  }
+  
+  // Special handling for empty string or null to skip generation
+  if (beat.imagePrompt === "" || beat.imagePrompt === null) {
+    return undefined;
+  }
+  
   return (beat.imagePrompt || `generate image appropriate for the text. text: ${beat.text}`) + "\n" + (style || "");
 };
 

@@ -1,0 +1,30 @@
+{
+  "$mulmocast": {
+    "version": "1.0"
+  },
+  "title": "従来方式テスト",
+  "lang": "ja",
+  "speechParams": {
+    "provider": "openai",
+    "speakers": {
+      "Presenter": {
+        "voiceId": "shimmer"
+      }
+    }
+  },
+  "imageParams": {
+    "provider": "openai"
+  },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "最初のビートです。",
+      "imagePrompt": "simple test image"
+    },
+    {
+      "speaker": "Presenter",
+      "text": "2番目のビートです。従来方式で画像をスキップします。",
+      "imagePrompt": ""
+    }
+  ]
+} 

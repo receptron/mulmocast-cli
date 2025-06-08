@@ -1,0 +1,140 @@
+{
+  "$mulmocast": {
+    "version": "1.0"
+  },
+  "title": "Beat Media Type サンプル: ポッドキャスト風対談",
+  "description": "issue406: beat media typeを使った画像再利用のデモ",
+  "lang": "ja",
+  "canvasSize": {
+    "width": 1280,
+    "height": 720
+  },
+  "speechParams": {
+    "provider": "openai",
+    "speakers": {
+      "Host": {
+        "voiceId": "shimmer",
+        "displayName": {
+          "ja": "司会者"
+        }
+      },
+      "Guest": {
+        "voiceId": "nova", 
+        "displayName": {
+          "ja": "ゲスト"
+        }
+      }
+    }
+  },
+  "imageParams": {
+    "provider": "openai",
+    "style": "professional interview setting"
+  },
+  "beats": [
+    {
+      "speaker": "Host",
+      "text": "皆さんこんにちは！今日は特別ゲストをお迎えしてお送りします。",
+      "imagePrompt": "professional podcast studio with two people sitting across from each other, microphones, warm lighting"
+    },
+    {
+      "speaker": "Guest",
+      "text": "お招きいただき、ありがとうございます。",
+      "image": {
+        "type": "beat"
+      }
+    },
+    {
+      "speaker": "Host", 
+      "text": "まず最初に、ゲストの方の自己紹介をお願いできますでしょうか？",
+      "image": {
+        "type": "beat"
+      }
+    },
+    {
+      "speaker": "Guest",
+      "text": "私は技術分野で10年以上の経験を積んでおります。",
+      "image": {
+        "type": "beat",
+        "index": 0
+      }
+    },
+    {
+      "speaker": "Host",
+      "text": "素晴らしいですね。では本題に入らせていただきます。",
+      "imagePrompt": "close-up shot of interview setup with documents and charts on the table"
+    },
+    {
+      "speaker": "Guest",
+      "text": "最近の技術動向について、特に注目すべき点があります。",
+      "image": {
+        "type": "beat",
+        "index": 0
+      }
+    },
+    {
+      "speaker": "Host",
+      "text": "具体的にはどのような点でしょうか？",
+      "image": {
+        "type": "beat",
+        "index": 1
+      }
+    },
+    {
+      "speaker": "Guest",
+      "text": "AI技術の民主化が急速に進んでいることです。",
+      "image": {
+        "type": "beat",
+        "index": 4
+      }
+    },
+    {
+      "speaker": "Host",
+      "text": "ここで少しグラフをご覧いただきましょう。",
+      "image": {
+        "type": "chart",
+        "title": "AI技術の普及率推移",
+        "chartData": {
+          "type": "line",
+          "data": {
+            "labels": ["2020", "2021", "2022", "2023", "2024"],
+            "datasets": [{
+              "label": "AI普及率",
+              "data": [15, 25, 40, 65, 85]
+            }]
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Guest",
+      "text": "このグラフからも分かるように、成長は著しいものがあります。",
+      "image": {
+        "type": "beat",
+        "index": 8
+      }
+    },
+    {
+      "speaker": "Host",
+      "text": "最後に、視聴者の皆様にメッセージをお願いします。",
+      "image": {
+        "type": "beat",
+        "index": 0
+      }
+    },
+    {
+      "speaker": "Guest",
+      "text": "新しい技術を恐れずに、積極的に学び続けることが大切だと思います。",
+      "image": {
+        "type": "beat",
+        "index": 0
+      }
+    },
+    {
+      "speaker": "Host",
+      "text": "本日は貴重なお話をありがとうございました！",
+      "image": {
+        "type": "beat"
+      }
+    }
+  ]
+} 
