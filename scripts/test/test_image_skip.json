@@ -1,0 +1,72 @@
+{
+  "$mulmocast": {
+    "version": "1.0"
+  },
+  "title": "Beat Media Type サンプル: ポッドキャスト風対談",
+  "description": "issue406: beat media typeを使った画像再利用のデモ",
+  "lang": "ja",
+  "canvasSize": {
+    "width": 1280,
+    "height": 720
+  },
+  "speechParams": {
+    "provider": "openai",
+    "speakers": {
+      "Host": {
+        "voiceId": "shimmer",
+        "displayName": {
+          "ja": "司会者"
+        }
+      },
+      "Guest": {
+        "voiceId": "nova", 
+        "displayName": {
+          "ja": "ゲスト"
+        }
+      }
+    }
+  },
+  "imageParams": {
+    "provider": "openai",
+    "style": "professional interview setting"
+  },
+  "beats": [
+    {
+      "speaker": "Host",
+      "text": "最初のシーンです。ここでは新しい画像が生成されます。",
+      "imagePrompt": "美しい朝の風景、山と湖が見える自然の景色"
+    },
+    {
+      "speaker": "Guest",
+      "text": "2番目のシーンです。ここでは前の画像を再利用します。",
+      "imagePrompt": ""
+    },
+    {
+      "speaker": "Host",
+      "text": "3番目のシーンです。ここも前の画像を再利用します。",
+      "image": {
+        "type": "beat"
+      }
+    },
+    {
+      "speaker": "Guest",
+      "text": "4番目のシーンです。ここで新しい画像が生成されます。",
+      "imagePrompt": "モダンな都市の夜景、ビルの明かりが美しい"
+    },
+    {
+      "speaker": "Host",
+      "text": "最後のシーンです。再び前の画像を再利用します。",
+      "image": {
+        "type": "beat"
+      }
+    },
+    {
+        "speaker": "Host",
+        "text": "最後のシーンです。3番目のシーン、つまり最初の画像を再利用します。",
+        "image": {
+          "type": "beat",
+          "index": 2
+        }
+      }
+  ]
+} 
