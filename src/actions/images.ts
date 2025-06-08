@@ -175,6 +175,80 @@ const graph_data: GraphData = {
           studio.beats[index] = { ...beat, ...update };
         });
         // console.log(namedInputs);
+
+        // Resolve beat references
+        studio.beats.forEach((studioBeat, index) => {
+          const beat = studio.script.beats[index];
+          
+          // For beat media type or empty imagePrompt, set the referenced image
+          const needsImageReference = 
+            (beat.image?.type === "beat") ||
+            (beat.imagePrompt === "" || beat.imagePrompt === null);
+            
+          if (needsImageReference && (!studioBeat.imageFile || studioBeat.imageFile === "" || !fs.existsSync(studioBeat.imageFile))) {
+            let referenceIndex: number;
+            
+            if (beat.image?.type === "beat") {
+              referenceIndex = beat.image.index !== undefined 
+                ? beat.image.index 
+                : index - 1; // Default to previous beat
+            } else {
+              // For empty imagePrompt, always reference previous beat
+              referenceIndex = index - 1;
+            }
+            
+            // Find the actual image file by following the reference chain
+            const actualImageFile = findActualImageFile(studio, referenceIndex, index);
+            
+            if (actualImageFile) {
+              studioBeat.imageFile = actualImageFile;
+              GraphAILogger.info(`Beat ${index}: Referenced image file: ${actualImageFile}`);
+            } else {
+              GraphAILogger.warn(`Beat ${index}: No valid image file found in reference chain starting from ${referenceIndex}`);
+            }
+          }
+          
+          // Log final state for debugging
+          GraphAILogger.info(`Beat ${index}: imageFile = ${studioBeat.imageFile || 'undefined'}`);
+        });
+        
+        // Helper function to find actual image file by following reference chain
+        function findActualImageFile(studio: any, startIndex: number, originalIndex: number, visited = new Set<number>()): string | null {
+          // Prevent infinite loops
+          if (visited.has(startIndex) || startIndex < 0 || startIndex >= studio.beats.length || startIndex === originalIndex) {
+            return null;
+          }
+          
+          visited.add(startIndex);
+          
+          const targetStudioBeat = studio.beats[startIndex];
+          const targetBeat = studio.script.beats[startIndex];
+          
+          // If this beat has an actual image file and it exists, return it
+          if (targetStudioBeat.imageFile && targetStudioBeat.imageFile !== "" && fs.existsSync(targetStudioBeat.imageFile)) {
+            return targetStudioBeat.imageFile;
+          }
+          
+          // If this beat is also a beat reference or has empty imagePrompt, follow the chain
+          if (targetBeat.image?.type === "beat" || targetBeat.imagePrompt === "" || targetBeat.imagePrompt === null) {
+            let nextIndex: number;
+            
+            if (targetBeat.image?.type === "beat") {
+              nextIndex = targetBeat.image.index !== undefined 
+                ? targetBeat.image.index 
+                : startIndex - 1;
+            } else {
+              // For empty imagePrompt, go to previous beat
+              nextIndex = startIndex - 1;
+            }
+            
+            return findActualImageFile(studio, nextIndex, originalIndex, visited);
+          }
+          
+          // No valid image found
+          return null;
+        }
+        
         return { studio };
       },
       inputs: {
