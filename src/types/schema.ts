@@ -123,6 +123,13 @@ export const mulmoHtmlTailwindMediaSchema = z
   })
   .strict();
 
+export const mulmoBeatReferenceMediaSchema = z
+  .object({
+    type: z.literal("beat"),
+    index: z.number().optional().describe("Beat index to reference. If not specified, uses previous beat"),
+  })
+  .strict();
+
 export const mulmoImageAssetSchema = z.union([
   mulmoMarkdownMediaSchema,
   mulmoWebMediaSchema,
@@ -136,6 +143,7 @@ export const mulmoImageAssetSchema = z.union([
   mulmoChartMediaSchema,
   mulmoMermaidMediaSchema,
   mulmoHtmlTailwindMediaSchema,
+  mulmoBeatReferenceMediaSchema,
 ]);
 
 const mulmoAudioMediaSchema = z
