@@ -262,7 +262,7 @@ const generatePdf = async (context: MulmoStudioContext, pdfMode: PDFMode, pdfSiz
 
   const pdfDoc = await PDFDocument.create();
   pdfDoc.registerFontkit(fontkit);
-  const fontBytes = fs.readFileSync("assets/font/NotoSansJP-Regular.ttf");
+  const fontBytes = fs.readFileSync(new URL('../../assets/font/NotoSansJP-Regular.ttf', import.meta.url));
   const customFont = await pdfDoc.embedFont(fontBytes);
 
   if (pdfMode === "handout") {
