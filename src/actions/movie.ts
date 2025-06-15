@@ -160,7 +160,7 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
 
   // Add tranditions if needed
   const mixedVideoId = (() => {
-    if (studio.script.movieParams?.transition && transitionVideoIds.length > 1) {
+    if (studio.script.movieParams?.transition && transitionVideoIds.length > 0) {
       const transition = mulmoTransitionSchema.parse(studio.script.movieParams.transition);
 
       return transitionVideoIds.reduce((acc, transitionVideoId, index) => {
