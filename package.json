@@ -38,7 +38,8 @@
     "schema": "npx tsx ./src/cli/bin.ts tool schema",
     "story_to_script": "npx tsx ./src/cli/bin.ts tool story_to_script",
     "latest": "yarn upgrade-interactive  --latest",
-    "format": "prettier --write '{src,scripts,assets/templates,draft,ideason,scripts_mag2,proto,test,graphai,output,docs/scripts}/**/*.{ts,json,yaml}'"
+    "format": "prettier --write '{src,scripts,assets/templates,draft,ideason,scripts_mag2,proto,test,graphai,output,docs/scripts}/**/*.{ts,json,yaml}'",
+    "deep_search": "npx tsx ./src/tools/deep_search.ts"
   },
   "repository": "git+ssh://git@github.com/receptron/mulmocast-cli.git",
   "author": "snakajima",
@@ -58,6 +59,7 @@
     "@graphai/stream_agent_filter": "^2.0.2",
     "@graphai/vanilla": "^2.0.4",
     "@graphai/vanilla_node_agents": "^2.0.1",
+    "@tavily/core": "^0.5.7",
     "canvas": "^3.1.0",
     "clipboardy": "^4.0.0",
     "dotenv": "^16.4.7",
