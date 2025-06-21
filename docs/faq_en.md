@@ -128,12 +128,6 @@ mulmo movie script.json -p ~/.mulmocast/styles/my-style.json
 
 **A: TTS providers can be specified in two ways.**
 
-**Available providers**:
-- `openai` (default)
-- `nijivoice` 
-- `elevenlabs`
-- `google`
-
 #### Method 1: Specify TTS provider globally
 ```json
 {
@@ -171,7 +165,7 @@ mulmo movie script.json -p ~/.mulmocast/styles/my-style.json
 Speaker-specific settings take priority; if not specified, the global setting is used.
 
 **Environment variables setup**:
-When using each provider, set the corresponding API key in your `.env` file. See [Configuration](../README.md#configuration) for details.
+When using each provider, set the corresponding API key in your `.env` file. Available providers and details can be found in [Configuration](../README.md#configuration).
 
 ## Troubleshooting
 

@@ -128,12 +128,6 @@ mulmo movie script.json -p ~/.mulmocast/styles/my-style.json
 
 **A: TTSプロバイダーは2つの方法で指定できます。**
 
-**利用可能なプロバイダー**:
-- `openai` (デフォルト)
-- `nijivoice` 
-- `elevenlabs`
-- `google`
-
 #### 方法1: 全体でTTSプロバイダーを指定
 ```json
 {
@@ -171,7 +165,7 @@ mulmo movie script.json -p ~/.mulmocast/styles/my-style.json
 スピーカー別の設定が優先され、未指定の場合は全体設定が使用されます。
 
 **環境変数の設定**:
-各プロバイダーを使用する場合は、対応するAPIキーを`.env`ファイルに設定してください。詳細は[Configuration](../README.md#configuration)を参照してください。
+各プロバイダーを使用する場合は、対応するAPIキーを`.env`ファイルに設定してください。利用可能なプロバイダーと詳細は[Configuration](../README.md#configuration)を参照してください。
 
 ## トラブルシューティング
 
