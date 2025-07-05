@@ -54,14 +54,8 @@ export const text2hash = (input: string): string => {
 };
 
 export const localizedText = (beat: MulmoBeat, multiLingualData?: MulmoStudioMultiLingualData, lang?: string) => {
-  if (
-    lang &&
-    multiLingualData &&
-    multiLingualData?.multiLingualTexts &&
-    multiLingualData?.multiLingualTexts[lang] &&
-    multiLingualData?.multiLingualTexts[lang].text
-  ) {
-    return multiLingualData?.multiLingualTexts[lang].text;
+  if (lang && multiLingualData?.multiLingualTexts?.[lang]?.text) {
+    return multiLingualData.multiLingualTexts[lang].text;
   }
   return beat.text;
 };
