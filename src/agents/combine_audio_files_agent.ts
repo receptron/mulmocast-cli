@@ -95,7 +95,8 @@ const combineAudioFilesAgent: AgentFunction<null, { studio: MulmoStudio }, { con
         group.push(i);
       }
       if (group.length > 1) {
-        group.reduce((remaining, idx, iGroup) => {
+        let remaining = movieDuration;
+        group.forEach((idx, iGroup) => {
           const subBeatDurations = mediaDurations[idx];
           userAssert(
             subBeatDurations.audioDuration <= remaining,
@@ -104,7 +105,8 @@ const combineAudioFilesAgent: AgentFunction<null, { studio: MulmoStudio }, { con
           if (iGroup === group.length - 1) {
             beatDurations.push(remaining);
             subBeatDurations.silenceDuration = remaining - subBeatDurations.audioDuration;
-            return 0;
+            remaining = 0;
+            return;
           }
           const nextBeat = context.studio.script.beats[idx + 1];
           assert(nextBeat.image?.type === "voice_over", "nextBeat.image.type !== voice_over");
@@ -116,11 +118,12 @@ const combineAudioFilesAgent: AgentFunction<null, { studio: MulmoStudio }, { con
             beatDurations.push(duration);
             subBeatDurations.silenceDuration = duration - subBeatDurations.audioDuration;
             userAssert(subBeatDurations.silenceDuration >= 0, `subBeatDurations.silenceDuration(${subBeatDurations.silenceDuration}) < 0`);
-            return remainingDuration;
+            remaining = remainingDuration;
+            return;
           }
           beatDurations.push(subBeatDurations.audioDuration);
-          return remaining - subBeatDurations.audioDuration;
-        }, movieDuration);
+          remaining = remaining - subBeatDurations.audioDuration;
+        });
         return;
       }
     }
@@ -138,13 +141,15 @@ const combineAudioFilesAgent: AgentFunction<null, { studio: MulmoStudio }, { con
         const beatsTotalDuration = groupBeatsDurations.reduce((a, b) => a + b, 0);
         if (beatsTotalDuration > audioDuration + 0.01) {
           // 0.01 is a tolerance to avoid floating point precision issues
-          group.reduce((remaining, idx, iGroup) => {
+          let remaining = audioDuration;
+          group.forEach((idx, iGroup) => {
             if (remaining >= groupBeatsDurations[iGroup]) {
-              return remaining - groupBeatsDurations[iGroup];
+              remaining -= groupBeatsDurations[iGroup];
+            } else {
+              mediaDurations[idx].silenceDuration = groupBeatsDurations[iGroup] - remaining;
+              remaining = 0;
             }
-            mediaDurations[idx].silenceDuration = groupBeatsDurations[iGroup] - remaining;
-            return 0;
-          }, audioDuration);
+          });
         } else {
           // Last beat gets the rest of the audio.
           if (audioDuration > beatsTotalDuration) {
