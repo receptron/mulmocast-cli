@@ -279,6 +279,7 @@ export const mulmoBeatSchema = z
     audioParams: beatAudioParamsSchema.optional(), // beat specific parameters
     movieParams: z
       .object({
+        model: z.string().optional(),
         fillOption: mulmoFillOptionSchema.optional(),
         speed: z.number().optional().describe("Speed of the video. 1.0 is normal speed. 0.5 is half speed. 2.0 is double speed."),
       })
@@ -332,7 +333,7 @@ export const mulmoGoogleMovieModelSchema = z
 export const mulmoReplicateMovieModelSchema = z
   .object({
     provider: z.literal("replicate"),
-    model: z.enum(["bytedance/seedance-1-lite", "kwaivgi/kling-v2.1", "google/veo-3"]).optional(),
+    model: z.enum(["bytedance/seedance-1-lite", "kwaivgi/kling-v2.1", "google/veo-3", "minimax/video-01"]).optional(),
   })
   .strict();
 

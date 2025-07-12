@@ -6,19 +6,28 @@
   },
   "beats": [
     {
-      "moviePrompt": "a woman walks in the park",
+      "text": "movie with bytedance seedance-1-lite",
+      "moviePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
       "duration": 5
     },
     {
-      "imagePrompt": "a woman walks in the park",
-      "moviePrompt": "a woman walks in the park",
+      "text": "image gpt4-image and movie with bytedance seedance-1-lite",
+      "imagePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
+      "moviePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
       "duration": 5
     },
     {
-      "id": "third_beat",
-      "imagePrompt": "a woman walks in the park",
-      "moviePrompt": "a woman walks in the park",
+      "text": "image gpt4-image and movie with bytedance seedance-1-lite, no movie prompt",
+      "imagePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
+      "moviePrompt": " ",
       "duration": 5
+    },
+    {
+      "text": "movie with minimax/video-01",
+      "moviePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
+      "movieParams": {
+        "model": "minimax/video-01"
+      }
     }
   ]
 }
