@@ -39,7 +39,7 @@ export const ttsNijivoiceAgent: AgentFunction = async ({ params, namedInputs, co
   try {
     const voiceRes = await fetch(url, options);
     const voiceJson: VoiceJson = await voiceRes.json();
-    if (voiceJson && voiceJson.generatedVoice && voiceJson.generatedVoice.audioFileDownloadUrl) {
+    if (voiceJson?.generatedVoice?.audioFileDownloadUrl) {
       const audioRes = await fetch(voiceJson.generatedVoice.audioFileDownloadUrl);
       const buffer = Buffer.from(await audioRes.arrayBuffer());
       return { buffer, generatedVoice: voiceJson.generatedVoice };

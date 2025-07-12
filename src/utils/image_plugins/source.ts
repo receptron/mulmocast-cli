@@ -7,7 +7,7 @@ type ImageType = "image" | "movie";
 export const processSource = (imageType: ImageType) => {
   return (params: ImageProcessorParams) => {
     const { beat, context } = params;
-    if (!beat || !beat.image || beat.image.type !== imageType) return;
+    if (!beat?.image || beat.image.type !== imageType) return;
 
     const path = MulmoMediaSourceMethods.resolve(beat.image.source, context);
     if (path) {
