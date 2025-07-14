@@ -34,7 +34,7 @@ export const speakerDataSchema = z
     displayName: z.record(langSchema, z.string()).optional(),
     voiceId: z.string(),
     speechOptions: speechOptionsSchema.optional(),
-    provider: text2SpeechProviderSchema.optional(),
+    provider: text2SpeechProviderSchema.optional().or(z.undefined()),
   })
   .strict();
 
@@ -114,7 +114,7 @@ export const mulmoChartMediaSchema = z
   .object({
     type: z.literal("chart"),
     title: z.string(),
-    chartData: z.record(z.any()),
+    chartData: z.record(z.string(), z.any()),
   })
   .strict();
 
@@ -262,7 +262,7 @@ export const htmlPromptParamsSchema = z
     systemPrompt: z.string().default("").optional(),
     prompt: z.string().default(""),
     data: z.any().optional(),
-    images: z.record(z.any()).optional(),
+    images: z.record(z.string(), z.any()).optional(),
   })
   .strict();
 
@@ -345,7 +345,7 @@ export const mulmoTransitionSchema = z.object({
 
 export const mulmoMovieParamsSchema = z
   .object({
-    provider: text2MovieProviderSchema.optional(),
+    provider: text2MovieProviderSchema.optional().or(z.undefined()),
     model: z.string().optional(), // default: provider specific
     transition: mulmoTransitionSchema.optional(),
     fillOption: mulmoFillOptionSchema.optional(),
@@ -356,6 +356,7 @@ export const mulmoPresentationStyleSchema = z.object({
   $mulmocast: mulmoCastCreditSchema,
   canvasSize: mulmoCanvasDimensionSchema, // has default value
   speechParams: mulmoSpeechParamsSchema.default({
+    provider: "openai",
     speakers: {
       Presenter: {
         voiceId: "shimmer",
@@ -382,6 +383,7 @@ export const mulmoPresentationStyleSchema = z.object({
     outroPadding: 1.0,
     bgmVolume: 0.2,
     audioVolume: 1.0,
+    suppressSpeech: false,
   }),
 });
 
