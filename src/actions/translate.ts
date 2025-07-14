@@ -192,13 +192,7 @@ const localizedTextCacheAgentFilter: AgentFilterFunction<
   }
 
   // The original text is unchanged and the target language text is present
-  if (
-    multiLingual.multiLingualTexts &&
-    multiLingual.multiLingualTexts[lang] &&
-    multiLingual.multiLingualTexts[lang].text === beat.text &&
-    multiLingual.multiLingualTexts[targetLang] &&
-    multiLingual.multiLingualTexts[targetLang].text
-  ) {
+  if (multiLingual.multiLingualTexts?.[lang] && multiLingual.multiLingualTexts[lang].text === beat.text && multiLingual.multiLingualTexts?.[targetLang]?.text) {
     return { text: multiLingual.multiLingualTexts[targetLang].text };
   }
   // same language

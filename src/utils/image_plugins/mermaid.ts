@@ -8,7 +8,7 @@ export const imageType = "mermaid";
 
 const processMermaid = async (params: ImageProcessorParams) => {
   const { beat, imagePath, canvasSize, context, textSlideStyle } = params;
-  if (!beat || !beat.image || beat.image.type !== imageType) return;
+  if (!beat?.image || beat.image.type !== imageType) return;
 
   const template = getHTMLFile("mermaid");
   const diagram_code = await MulmoMediaSourceMethods.getText(beat.image.code, context);
