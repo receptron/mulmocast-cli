@@ -91,6 +91,9 @@ export const settings2GraphAIConfig = (
     ttsElevenlabsAgent: {
       apiKey: getKey("TTS", "ELEVENLABS_API_KEY"),
     },
+    soundEffectReplicateAgent: {
+      apiKey: getKey("SOUND_EFFECT", "REPLICATE_API_TOKEN"),
+    },
 
     // TODO
     // browserlessAgent

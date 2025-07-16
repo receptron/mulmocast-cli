@@ -1,0 +1,31 @@
+{
+  "$mulmocast": { "version": "1.0" },
+  "movieParams": {
+    "provider": "replicate",
+    "model": "bytedance/seedance-1-lite"
+  },
+  "audioParams": {
+    "bgmVolume": 0.01,
+    "suppressSpeech": true
+  },
+  "captionParams": {
+    "lang": "en"
+  },
+  "lang": "en",
+  "beats": [
+    {
+      "id": "horse_galloping",
+      "text": "A horse galloping",
+      "duration": 5,
+      "imagePrompt": "A horse galloping fast in a large field",
+      "moviePrompt": "A horse galloping fast in a large field",
+      "soundEffectPrompt": "sound of a horse galloping"
+    },
+    {
+      "id": "cat_jumping_into_pool",
+      "text": "cat jumping into a swimming pool",
+      "duration": 5,
+      "moviePrompt": "televised footage of a cat is doing an acrobatic dive into a swimming pool at the olympics, from a 10m high diving board, flips and spins"
+    }
+  ]
+}

@@ -11,7 +11,7 @@ import { anthropicAgent } from "@graphai/anthropic_agent";
 import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 
 import { MulmoStudioContext, MulmoStudioBeat, MulmoImageParams } from "../types/index.js";
-import { imageGoogleAgent, imageOpenaiAgent, movieGoogleAgent, movieReplicateAgent, mediaMockAgent } from "../agents/index.js";
+import { imageGoogleAgent, imageOpenaiAgent, movieGoogleAgent, movieReplicateAgent, mediaMockAgent, soundEffectReplicateAgent } from "../agents/index.js";
 import { MulmoPresentationStyleMethods, MulmoStudioContextMethods } from "../methods/index.js";
 
 import { getOutputStudioFilePath, mkdir } from "../utils/file.js";
@@ -32,10 +32,14 @@ const movieAgents = {
   movieGoogleAgent,
   movieReplicateAgent,
 };
+const soundEffectAgents = {
+  soundEffectReplicateAgent,
+};
 const defaultAgents = {
   ...vanillaAgents,
   ...imageAgents,
   ...movieAgents,
+  ...soundEffectAgents,
   mediaMockAgent,
   fileWriteAgent,
   openAIAgent,
@@ -177,7 +181,10 @@ const beat_graph_data = {
       defaultValue: {},
     },
     audioChecker: {
-      agent: async (namedInputs: { movieFile: string; imageFile: string }) => {
+      agent: async (namedInputs: { movieFile: string; imageFile: string; soundEffectFile: string }) => {
+        if (namedInputs.soundEffectFile) {
+          return { hasMovieAudio: true };
+        }
         const sourceFile = namedInputs.movieFile || namedInputs.imageFile;
         if (!sourceFile) {
           return { hasMovieAudio: false };
@@ -186,22 +193,46 @@ const beat_graph_data = {
         return { hasMovieAudio: hasAudio };
       },
       inputs: {
-        onComplete: [":movieGenerator"], // to wait for movieGenerator to finish
+        onComplete: [":movieGenerator", ":soundEffectGenerator"], // to wait for movieGenerator to finish
         movieFile: ":preprocessor.movieFile",
         imageFile: ":preprocessor.imagePath",
+        soundEffectFile: ":preprocessor.soundEffectFile",
       },
+    },
+    soundEffectGenerator: {
+      if: ":preprocessor.soundEffectPrompt",
+      agent: ":preprocessor.soundEffectAgentInfo.agentName",
+      inputs: {
+        onComplete: [":movieGenerator"], // to wait for movieGenerator to finish
+        prompt: ":preprocessor.soundEffectPrompt",
+        movieFile: ":preprocessor.movieFile",
+        soundEffectFile: ":preprocessor.soundEffectFile",
+        params: {
+          model: ":preprocessor.soundEffectModel",
+        },
+        cache: {
+          force: [":context.force"],
+          file: ":preprocessor.soundEffectFile",
+          index: ":__mapIndex",
+          sessionType: "soundEffect",
+          mulmoContext: ":context",
+        },
+      },
+      defaultValue: {},
     },
     output: {
       agent: "copyAgent",
       inputs: {
-        onComplete: [":imageFromMovie", ":htmlImageGenerator", ":audioChecker"], // to wait for imageFromMovie to finish
+        onComplete: [":imageFromMovie", ":htmlImageGenerator", ":audioChecker", ":soundEffectGenerator"], // to wait for imageFromMovie to finish
         imageFile: ":preprocessor.imagePath",
         movieFile: ":preprocessor.movieFile",
+        soundEffectFile: ":preprocessor.soundEffectFile",
         hasMovieAudio: ":audioChecker.hasMovieAudio",
       },
       output: {
         imageFile: ".imageFile",
         movieFile: ".movieFile",
+        soundEffectFile: ".soundEffectFile",
         hasMovieAudio: ".hasMovieAudio",
       },
       isResult: true,
@@ -234,7 +265,10 @@ const graph_data: GraphData = {
     },
     mergeResult: {
       isResult: true,
-      agent: (namedInputs: { array: { imageFile: string; movieFile: string; hasMovieAudio: boolean }[]; context: MulmoStudioContext }) => {
+      agent: (namedInputs: {
+        array: { imageFile: string; movieFile: string; soundEffectFile: string; hasMovieAudio: boolean }[];
+        context: MulmoStudioContext;
+      }) => {
         const { array, context } = namedInputs;
         const { studio } = context;
         const beatIndexMap: Record<string, number> = {};
@@ -296,7 +330,7 @@ export const graphOption = async (context: MulmoStudioContext, settings?: Record
       {
         name: "fileCacheAgentFilter",
         agent: fileCacheAgentFilter,
-        nodeIds: ["imageGenerator", "movieGenerator", "htmlImageAgent"],
+        nodeIds: ["imageGenerator", "movieGenerator", "htmlImageAgent", "soundEffectGenerator"],
       },
     ],
     taskManager: new TaskManager(MulmoPresentationStyleMethods.getConcurrency(context.presentationStyle)),

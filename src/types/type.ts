@@ -148,7 +148,7 @@ export type BeatMediaType = "movie" | "image";
 export type StoryToScriptGenerateMode = (typeof storyToScriptGenerateMode)[keyof typeof storyToScriptGenerateMode];
 
 export type SessionType = "audio" | "image" | "video" | "multiLingual" | "caption" | "pdf";
-export type BeatSessionType = "audio" | "image" | "multiLingual" | "caption" | "movie" | "html" | "imageReference";
+export type BeatSessionType = "audio" | "image" | "multiLingual" | "caption" | "movie" | "html" | "imageReference" | "soundEffect";
 
 export type SessionProgressEvent =
   | { kind: "session"; sessionType: SessionType; inSession: boolean }

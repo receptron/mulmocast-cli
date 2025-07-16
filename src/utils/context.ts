@@ -66,6 +66,7 @@ const initSessionState = () => {
       caption: {},
       html: {},
       imageReference: {},
+      soundEffect: {},
     },
   };
 };

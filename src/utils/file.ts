@@ -120,14 +120,13 @@ export const getBeatPngImagePath = (context: MulmoStudioContext, index: number) 
   return `${imageProjectDirPath}/${index}${imageSuffix}.png`;
 };
 
-export const getBeatMoviePath = (context: MulmoStudioContext, index: number) => {
+export const getBeatMoviePaths = (context: MulmoStudioContext, index: number) => {
   const imageProjectDirPath = MulmoStudioContextMethods.getImageProjectDirPath(context);
   const beat = context.studio.script.beats[index]; // beat could be undefined only in a test case.
-  if (beat?.id) {
-    return `${imageProjectDirPath}/${beat.id}.mov`;
-  }
-  return `${imageProjectDirPath}/${index}.mov`;
+  const filename = beat?.id ? `${beat.id}` : `${index}`;
+  return { movieFile: `${imageProjectDirPath}/${filename}.mov`, soundEffectFile: `${imageProjectDirPath}/${filename}_sound.mov` };
 };
+
 export const getReferenceImagePath = (context: MulmoStudioContext, key: string, extension: string) => {
   const imageProjectDirPath = MulmoStudioContextMethods.getImageProjectDirPath(context);
   return `${imageProjectDirPath}/${key}.${extension}`;

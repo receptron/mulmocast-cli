@@ -4,6 +4,7 @@ export const defaultProviders = {
   text2movie: "google",
   text2Html: "openai",
   llm: "openai",
+  soundEffect: "replicate",
 };
 
 export const provider2TTSAgent = {
@@ -61,6 +62,14 @@ export const provider2MovieAgent = {
   google: {
     agentName: "movieGoogleAgent",
     models: ["veo-2.0-generate-001"],
+  },
+};
+
+export const provider2SoundEffectAgent = {
+  replicate: {
+    agentName: "soundEffectReplicateAgent",
+    defaultModel: "zsxkib/mmaudio",
+    models: ["zsxkib/mmaudio"],
   },
 };
 

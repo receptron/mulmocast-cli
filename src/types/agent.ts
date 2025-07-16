@@ -38,9 +38,14 @@ export type MovieAgentInputs = AgentPromptInputs & { imagePath?: string };
 export type GoogleMovieAgentParams = ImageAgentParams & { duration?: number };
 export type ReplicateMovieAgentParams = { model: `${string}/${string}` | undefined; canvasSize: { width: number; height: number }; duration?: number };
 
+// sound effect
+export type ReplicateSoundEffectAgentParams = { model: `${string}/${string}` | undefined };
+export type SoundEffectAgentInputs = AgentPromptInputs & { soundEffectFile?: string; movieFile?: string };
+
 //   config
 export type GoogleMovieAgentConfig = GoogleImageAgentConfig;
 export type ReplicateMovieAgentConfig = AgentConfig;
+export type ReplicateSoundEffectAgentConfig = AgentConfig;
 
 // end of image agent
 

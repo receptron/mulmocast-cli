@@ -1,5 +1,12 @@
 import { z } from "zod";
-import { htmlLLMProvider, provider2TTSAgent, provider2ImageAgent, provider2MovieAgent, defaultProviders } from "../utils/provider2agent.js";
+import {
+  htmlLLMProvider,
+  provider2TTSAgent,
+  provider2ImageAgent,
+  provider2MovieAgent,
+  defaultProviders,
+  provider2SoundEffectAgent,
+} from "../utils/provider2agent.js";
 
 export const langSchema = z.string();
 const URLStringSchema = z.string().url();
@@ -267,6 +274,12 @@ export const htmlPromptParamsSchema = z
   .strict();
 
 export const text2MovieProviderSchema = z.enum(Object.keys(provider2MovieAgent) as [string, ...string[]]).default(defaultProviders.text2movie);
+export const text2SoundEffectProviderSchema = z.enum(Object.keys(provider2SoundEffectAgent) as [string, ...string[]]).default(defaultProviders.soundEffect);
+
+export const mulmoSoundEffectParamsSchema = z.object({
+  provider: text2SoundEffectProviderSchema.optional(),
+  model: z.string().optional(), // default: provider specific
+});
 
 const defaultSpeaker = "Presenter";
 export const mulmoBeatSchema = z
@@ -289,6 +302,7 @@ export const mulmoBeatSchema = z
         speed: z.number().optional().describe("Speed of the video. 1.0 is normal speed. 0.5 is half speed. 2.0 is double speed."), // for movie.ts
       })
       .optional(),
+    soundEffectParams: mulmoSoundEffectParamsSchema.optional(),
     htmlImageParams: mulmoHtmlImageParamsSchema.optional(),
     speechOptions: speechOptionsSchema.optional(),
     textSlideParams: textSlideParamsSchema.optional(),
@@ -296,6 +310,7 @@ export const mulmoBeatSchema = z
     imageNames: z.array(imageIdSchema).optional(), // list of image names to use for image generation. The default is all images in the imageParams.images.
     imagePrompt: z.string().optional(),
     moviePrompt: z.string().optional(),
+    soundEffectPrompt: z.string().optional(),
     htmlPrompt: htmlPromptParamsSchema.optional(),
   })
   .strict();
@@ -371,6 +386,7 @@ export const mulmoPresentationStyleSchema = z.object({
   }),
   imageParams: mulmoImageParamsSchema.optional(),
   movieParams: mulmoMovieParamsSchema.optional(),
+  soundEffectParams: mulmoSoundEffectParamsSchema.optional(),
   htmlImageParams: mulmoHtmlImageParamsSchema
     .extend({
       provider: text2HtmlImageProviderSchema,
@@ -424,6 +440,7 @@ export const mulmoStudioBeatSchema = z
     audioFile: z.string().optional(),
     imageFile: z.string().optional(), // path to the image
     movieFile: z.string().optional(), // path to the movie file
+    soundEffectFile: z.string().optional(), // path to the sound effect file
     captionFile: z.string().optional(), // path to the caption image
   })
   .strict();
@@ -451,6 +468,7 @@ export const mulmoSessionStateSchema = z.object({
     caption: z.record(z.number().int(), z.boolean()),
     html: z.record(z.number().int(), z.boolean()),
     imageReference: z.record(z.number().int(), z.boolean()),
+    soundEffect: z.record(z.number().int(), z.boolean()),
   }),
 });
 

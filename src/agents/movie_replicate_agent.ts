@@ -46,7 +46,7 @@ async function generateMovie(
 
     // Download the generated video
     if (output && typeof output === "object" && "url" in output) {
-      const videoUrl = (output.url as () => string)();
+      const videoUrl = (output.url as () => URL)();
       const videoResponse = await fetch(videoUrl);
 
       if (!videoResponse.ok) {

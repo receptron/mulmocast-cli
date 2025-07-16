@@ -210,7 +210,7 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
       beatTimestamps.push(timestamp);
       return timestamp; // Skip voice-over beats.
     }
-    const sourceFile = studioBeat.movieFile ?? studioBeat.imageFile;
+    const sourceFile = studioBeat.soundEffectFile ?? studioBeat.movieFile ?? studioBeat.imageFile;
     assert(!!sourceFile, `studioBeat.imageFile or studioBeat.movieFile is not set: index=${index}`);
     assert(!!studioBeat.duration, `studioBeat.duration is not set: index=${index}`);
     const extraPadding = (() => {
