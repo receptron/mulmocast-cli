@@ -2,10 +2,8 @@ import { GraphAILogger } from "graphai";
 import fs from "fs";
 import { readMulmoScriptFile, fetchMulmoScriptFile } from "./file.js";
 import type { MulmoStudio, MulmoScript, MulmoPresentationStyle, MulmoStudioMultiLingual } from "../types/type.js";
-import { mulmoStudioSchema, mulmoCaptionParamsSchema } from "../types/index.js";
+import { mulmoStudioSchema, mulmoCaptionParamsSchema, mulmoPresentationStyleSchema, mulmoStudioMultiLingualSchema, FileObject } from "../types/index.js";
 import { MulmoPresentationStyleMethods, MulmoScriptMethods } from "../methods/index.js";
-
-import { mulmoPresentationStyleSchema, mulmoStudioMultiLingualSchema, FileObject } from "../types/index.js";
 
 const mulmoCredit = (speaker: string) => {
   return {
