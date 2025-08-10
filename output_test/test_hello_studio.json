@@ -1,0 +1,58 @@
+{
+  "script": {
+    "$mulmocast": {
+      "version": "1.0"
+    },
+    "canvasSize": {
+      "width": 1280,
+      "height": 720
+    },
+    "speechParams": {
+      "provider": "openai",
+      "speakers": {
+        "Presenter": {
+          "displayName": {
+            "en": "Presenter"
+          },
+          "voiceId": "shimmer"
+        }
+      }
+    },
+    "audioParams": {
+      "padding": 0.3,
+      "introPadding": 1,
+      "closingPadding": 0.8,
+      "outroPadding": 1,
+      "bgmVolume": 0.2,
+      "audioVolume": 1,
+      "suppressSpeech": false
+    },
+    "beats": [
+      {
+        "speaker": "Presenter",
+        "text": "Hello World",
+        "image": {
+          "type": "textSlide",
+          "slide": {
+            "title": "Hello World",
+            "bullets": [
+              "Hello",
+              "World"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "filename": "test_hello",
+  "beats": [
+    {
+      "audioFile": "/Users/yudaikobayashi/myprojects/mulmocast-cli/output_test/audio/test_hello/test_hello_48106389a896aeb67d659fabb3e0407025ad643856e0d806c38efb4c9c50befd.mp3",
+      "duration": 1.416,
+      "audioDuration": 1.416,
+      "movieDuration": 0,
+      "silenceDuration": 0,
+      "startAt": 0
+    }
+  ]
+}

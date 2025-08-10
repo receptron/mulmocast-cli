@@ -1,0 +1,34 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "title": "ハッシュテスト",
+  "description": "ハッシュ計算のテスト",
+  "speechParams": {
+    "speakers": {
+      "Narrator": {
+        "provider": "openai",
+        "voiceId": "shimmer",
+        "displayName": {
+          "ja": "ナレーター"
+        }
+      }
+    }
+  },
+  "imageParams": {
+    "style": "決して写実的な画像を生成しない。日本語のテキストを含む。透過画像を生成しない。"
+  },
+  "lang": "ja",
+  "captionParams": {
+    "lang": "ja"
+  },
+  "references": [],
+  "beats": [
+    {
+      "id": "test_b1",
+      "speaker": "Narrator",
+      "text": "本評価は2025年8月9日時点の情勢を捉え、外交メッセージの揺れと戦場の小競り合い、長距離打撃の応酬を同時に示しました。特に米側発信の変化、ロシアの一貫した要求、作戦級の大転回がない点が核でした。",
+      "imagePrompt": "テスト画像"
+    }
+  ]
+}

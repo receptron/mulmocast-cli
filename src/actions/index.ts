@@ -6,3 +6,4 @@ export * from "./movie.js";
 export * from "./pdf.js";
 export * from "./translate.js";
 export * from "./captions.js";
+export * from "./export_caption.js";
