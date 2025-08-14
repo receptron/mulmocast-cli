@@ -35,6 +35,7 @@ const initSessionState = () => {
       multiLingual: false,
       caption: false,
       pdf: false,
+      exportCaption: false,
     },
     inBeatSession: {
       audio: {},
