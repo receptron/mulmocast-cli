@@ -150,7 +150,7 @@ export const provider2MovieAgent = {
   google: {
     agentName: "movieGenAIAgent",
     defaultModel: "veo-2.0-generate-001",
-    models: ["veo-2.0-generate-001"],
+    models: ["veo-2.0-generate-001", "veo-3.0-generate-preview"],
   },
   mock: {
     agentName: "mediaMockAgent",
