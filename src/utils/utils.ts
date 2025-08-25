@@ -1,7 +1,7 @@
 import * as crypto from "crypto";
 import type { ConfigDataDictionary, DefaultConfigData } from "graphai";
 
-import { MulmoBeat, MulmoStudioMultiLingualData } from "../types/index.js";
+import { MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingual, MulmoStudioMultiLingualData } from "../types/index.js";
 import { provider2LLMAgent } from "./provider2agent.js";
 import type { LLM } from "./provider2agent.js"; // TODO remove
 
@@ -142,4 +142,19 @@ export const deepClean = <T extends CleanableValue>(input: T): T | undefined => 
   }
 
   return input;
+};
+
+export const beatId = (id: string | undefined, index: number) => {
+  const key = id ?? `__index__${index}`;
+  return key;
+};
+
+export const multiLingualObjectToArray = (multiLingual: MulmoStudioMultiLingual | undefined, beats: MulmoStudioBeat[]) => {
+  return beats.map((beat: MulmoStudioBeat, index: number) => {
+    const key = beatId(beat?.id, index);
+    if (multiLingual?.[key]) {
+      return multiLingual[key];
+    }
+    return { multiLingualTexts: {} };
+  });
 };

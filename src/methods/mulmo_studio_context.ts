@@ -1,5 +1,6 @@
 import path from "path";
 import { BeatSessionType, MulmoStudioContext, SessionProgressCallback, SessionType } from "../types/index.js";
+import { beatId } from "../utils/utils.js";
 import { GraphAILogger } from "graphai";
 
 const sessionProgressCallbacks = new Set<SessionProgressCallback>();
@@ -57,7 +58,7 @@ export const MulmoStudioContextMethods = {
     notifyStateChange(context, sessionType);
   },
   setBeatSessionState(context: MulmoStudioContext, sessionType: BeatSessionType, index: number, id: string | undefined, value: boolean) {
-    const key = id ?? `__index__${index}`;
+    const key = beatId(id, index);
     if (value) {
       if (!context.sessionState.inBeatSession[sessionType]) {
         context.sessionState.inBeatSession[sessionType] = {};

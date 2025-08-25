@@ -452,6 +452,7 @@ export const mulmoScriptSchema = mulmoPresentationStyleSchema
 
 export const mulmoStudioBeatSchema = z
   .object({
+    id: z.string().optional().describe("Unique identifier for the beat."),
     hash: z.string().optional(),
     duration: z.number().optional(),
     startAt: z.number().optional(),
@@ -474,7 +475,8 @@ export const mulmoStudioMultiLingualDataSchema = z.object({
   cacheKey: z.string().optional(),
 });
 
-export const mulmoStudioMultiLingualSchema = z.array(mulmoStudioMultiLingualDataSchema).min(1);
+export const mulmoStudioMultiLingualArraySchema = z.array(mulmoStudioMultiLingualDataSchema).min(1);
+export const mulmoStudioMultiLingualSchema = z.record(z.string(), mulmoStudioMultiLingualDataSchema);
 export const mulmoStudioMultiLingualFileSchema = z.object({
   version: z.literal(currentMulmoScriptVersion),
   multiLingual: mulmoStudioMultiLingualSchema,

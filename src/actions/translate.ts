@@ -8,7 +8,7 @@ import { openAIAgent } from "@graphai/openai_agent";
 import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 
 import { splitText } from "../utils/string.js";
-import { settings2GraphAIConfig } from "../utils/utils.js";
+import { settings2GraphAIConfig, beatId, multiLingualObjectToArray } from "../utils/utils.js";
 import { getMultiLingual } from "../utils/context.js";
 import { currentMulmoScriptVersion } from "../utils/const.js";
 import type {
@@ -83,10 +83,11 @@ const beatGraph = {
     __mapIndex: {},
     // for cache
     multiLingual: {
-      agent: (namedInputs: { text?: string; multiLinguals?: MulmoStudioMultiLingualData[]; beatIndex: number }) => {
-        const { multiLinguals, beatIndex, text } = namedInputs;
+      agent: (namedInputs: { beat: MulmoBeat; text?: string; multiLinguals?: Record<string, MulmoStudioMultiLingualData>; beatIndex: number }) => {
+        const { multiLinguals, beatIndex, text, beat } = namedInputs;
+        const key = beatId(beat?.id, beatIndex);
         const cacheKey = hashSHA256(text ?? "");
-        const multiLingual = multiLinguals?.[beatIndex];
+        const multiLingual = multiLinguals?.[key];
         if (!multiLingual) {
           return { cacheKey, multiLingualTexts: {} };
         }
@@ -102,6 +103,7 @@ const beatGraph = {
       },
       inputs: {
         text: ":beat.text",
+        beat: ":beat",
         beatIndex: ":__mapIndex",
         multiLinguals: ":context.multiLingual",
       },
@@ -158,10 +160,23 @@ const translateGraph: GraphData = {
     targetLangs: {},
     mergeStudioResult: {
       isResult: true,
-      agent: "copyAgent",
+      agent: (namedInputs) => {
+        const { multiLingual, beats } = namedInputs;
+
+        const multiLingualObject = beats.reduce((tmp: MulmoStudioMultiLingual, beat: MulmoBeat, beatIndex: number) => {
+          const key = beatId(beat?.id, beatIndex);
+          tmp[key] = multiLingual[beatIndex];
+          return tmp;
+        }, {});
+
+        return {
+          version: "1.1",
+          multiLingual: multiLingualObject,
+        };
+      },
       inputs: {
-        version: "1.1",
         multiLingual: ":beatsMap.mergeMultiLingualData",
+        beats: ":context.studio.script.beats",
       },
     },
     beatsMap: {
@@ -259,8 +274,9 @@ export const translateBeat = async (index: number, context: MulmoStudioContext, 
     }
     const results = await graph.run<MulmoStudioMultiLingualData>();
 
-    const multiLingual = getMultiLingual(outputMultilingualFilePath, context.studio.beats.length);
-    multiLingual[index] = results.mergeMultiLingualData!;
+    const multiLingual = getMultiLingual(outputMultilingualFilePath, context.studio.beats);
+    const key = beatId(context.studio.script.beats[index]?.id, index);
+    multiLingual[key] = results.mergeMultiLingualData!;
     const data = {
       version: currentMulmoScriptVersion,
       multiLingual,
@@ -297,7 +313,7 @@ export const translate = async (context: MulmoStudioContext, args?: PublicAPIArg
     const results = await graph.run<{ multiLingual: MulmoStudioMultiLingual }>();
     writingMessage(outputMultilingualFilePath);
     if (results.mergeStudioResult) {
-      context.multiLingual = results.mergeStudioResult.multiLingual;
+      context.multiLingual = multiLingualObjectToArray(results?.mergeStudioResult?.multiLingual, context.studio.script.beats);
     }
   } finally {
     MulmoStudioContextMethods.setSessionState(context, "multiLingual", false);

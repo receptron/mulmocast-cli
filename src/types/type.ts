@@ -9,6 +9,7 @@ import {
   mulmoStoryboardSchema,
   mulmoStoryboardSceneSchema,
   mulmoStudioMultiLingualSchema,
+  mulmoStudioMultiLingualArraySchema,
   mulmoStudioMultiLingualDataSchema,
   mulmoStudioMultiLingualFileSchema,
   speakerDictionarySchema,
@@ -73,6 +74,7 @@ export type MulmoStudio = z.infer<typeof mulmoStudioSchema>;
 export type MulmoPromptTemplate = z.infer<typeof mulmoPromptTemplateSchema>;
 export type MulmoPromptTemplateFile = z.infer<typeof mulmoPromptTemplateFileSchema>;
 export type MulmoStudioMultiLingual = z.infer<typeof mulmoStudioMultiLingualSchema>;
+export type MulmoStudioMultiLingualArray = z.infer<typeof mulmoStudioMultiLingualArraySchema>;
 export type MulmoStudioMultiLingualData = z.infer<typeof mulmoStudioMultiLingualDataSchema>;
 export type MulmoStudioMultiLingualFile = z.infer<typeof mulmoStudioMultiLingualFileSchema>;
 export type MultiLingualTexts = z.infer<typeof multiLingualTextsSchema>;
@@ -109,7 +111,7 @@ export type MulmoStudioContext = {
   force: boolean;
   sessionState: MulmoSessionState;
   presentationStyle: MulmoPresentationStyle;
-  multiLingual: MulmoStudioMultiLingual;
+  multiLingual: MulmoStudioMultiLingualArray;
 };
 
 export type ScriptingParams = {

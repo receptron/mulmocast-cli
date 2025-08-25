@@ -1,7 +1,16 @@
 import { GraphAILogger } from "graphai";
 import fs from "fs";
 import { readMulmoScriptFile, fetchMulmoScriptFile } from "./file.js";
-import type { MulmoStudio, MulmoScript, MulmoPresentationStyle, MulmoStudioMultiLingual, MulmoStudioMultiLingualFile, FileObject } from "../types/type.js";
+import { beatId, multiLingualObjectToArray } from "./utils.js";
+import type {
+  MulmoStudioBeat,
+  MulmoStudio,
+  MulmoScript,
+  MulmoPresentationStyle,
+  MulmoStudioMultiLingual,
+  MulmoStudioMultiLingualFile,
+  FileObject,
+} from "../types/type.js";
 import { mulmoStudioSchema, mulmoCaptionParamsSchema, mulmoPresentationStyleSchema } from "../types/schema.js";
 import { MulmoPresentationStyleMethods, MulmoScriptMethods, MulmoStudioMultiLingualMethod } from "../methods/index.js";
 
@@ -98,14 +107,17 @@ export const fetchScript = async (isHttpPath: boolean, mulmoFilePath: string, fi
   return readMulmoScriptFile<MulmoScript>(mulmoFilePath, "ERROR: File does not exist " + mulmoFilePath)?.mulmoData ?? null;
 };
 
-export const getMultiLingual = (multilingualFilePath: string, studioBeatsLength: number): MulmoStudioMultiLingual => {
+export const getMultiLingual = (multilingualFilePath: string, beats: MulmoStudioBeat[]): MulmoStudioMultiLingual => {
   if (!fs.existsSync(multilingualFilePath)) {
-    return [...Array(studioBeatsLength)].map(() => ({ multiLingualTexts: {} }));
+    return beats.reduce((tmp: MulmoStudioMultiLingual, beat: MulmoStudioBeat, index: number) => {
+      const key = beatId(beat?.id, index);
+      tmp[key] = { multiLingualTexts: {} };
+      return tmp;
+    }, {});
   }
   const jsonData =
     readMulmoScriptFile<MulmoStudioMultiLingualFile>(multilingualFilePath, "ERROR: File does not exist " + multilingualFilePath)?.mulmoData ?? null;
-
-  return MulmoStudioMultiLingualMethod.validate(jsonData, studioBeatsLength);
+  return MulmoStudioMultiLingualMethod.validate(jsonData, beats);
 };
 
 export const getPresentationStyle = (presentationStylePath: string | undefined): MulmoPresentationStyle | null => {
@@ -130,11 +142,10 @@ export const initializeContextFromFiles = async (files: FileObject, raiseError: 
   try {
     const presentationStyle = getPresentationStyle(presentationStylePath);
     const studio = createStudioData(mulmoScript, fileName, captionLang, presentationStyle);
-    const multiLingual = getMultiLingual(outputMultilingualFilePath, studio.beats.length);
-
+    const multiLingual = getMultiLingual(outputMultilingualFilePath, studio.script.beats);
     return {
       studio,
-      multiLingual,
+      multiLingual: multiLingualObjectToArray(multiLingual, studio.script.beats),
       fileDirs: files,
       presentationStyle: presentationStyle ?? studio.script,
       sessionState: initSessionState(),
