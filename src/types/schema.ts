@@ -488,6 +488,7 @@ export const mulmoSessionStateSchema = z.object({
     multiLingual: z.boolean(),
     caption: z.boolean(),
     pdf: z.boolean(),
+    exportCaption: z.boolean(),
   }),
   inBeatSession: z.object({
     audio: z.record(z.string(), z.boolean()),
