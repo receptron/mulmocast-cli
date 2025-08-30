@@ -118,6 +118,10 @@ export const getOutputVideoFilePath = (outDirPath: string, fileName: string, lan
   const suffix2 = caption ? `__${caption}` : "";
   return path.resolve(outDirPath, `${fileName}${suffix}${suffix2}.mp4`);
 };
+export const getOutputSrtFilePath = (outDirPath: string, fileName: string, lang?: string) => {
+  const suffix = lang ? `_${lang}` : "";
+  return path.resolve(outDirPath, `${fileName}${suffix}.srt`);
+};
 // image
 export const imageSuffix = "p";
 
