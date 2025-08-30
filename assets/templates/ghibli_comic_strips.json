@@ -1,0 +1,30 @@
+{
+  "title": "Ghibli-style comic strips with nano banana.",
+  "description": "Ghibli-style comic strips with nano banana.",
+  "systemPrompt": "Another AI will generate comic strips for each beat based on the text description of that beat. Mention the reference in one of beats, if it exists. Use the JSON below as a template.",
+  "presentationStyle": {
+    "$mulmocast": {
+      "version": "1.1",
+      "credit": "closing"
+    },
+    "canvasSize": {
+      "width": 1536,
+      "height": 1024
+    },
+    "imageParams": {
+      "provider": "google",
+      "model": "gemini-2.5-flash-image-preview",
+      "style": "<style>Ghibli style multi-panel comic strips in landscape mode. Use speech bubbles with short, natural dialogue (1–6 words). Keep text minimal, like real comics. Let the art convey the story and emotions. Use the input image as the presenter.</style>",
+      "images": {
+        "presenter": {
+          "type": "image",
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/receptron/mulmocast-media/refs/heads/main/characters/ghibli_presenter.png"
+          }
+        }
+      }
+    }
+  },
+  "scriptName": "text_only_template.json"
+}
