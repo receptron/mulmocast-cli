@@ -5,7 +5,7 @@ import fsPromise from "fs/promises";
 import type { AgentFilterFunction } from "graphai";
 import { GraphAILogger } from "graphai";
 import { writingMessage } from "./file.js";
-import { text2hash } from "./utils.js";
+import { text2hash } from "./utils_node.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 import { replacementsJa, replacePairsJa } from "../utils/string.js";
 
@@ -18,7 +18,7 @@ export const nijovoiceTextAgentFilter: AgentFilterFunction = async (context, nex
 };
 
 export const fileCacheAgentFilter: AgentFilterFunction = async (context, next) => {
-  const { force, file, index, mulmoContext, sessionType } = context.namedInputs.cache;
+  const { force, file, index, mulmoContext, sessionType, id } = context.namedInputs.cache;
 
   const shouldUseCache = async () => {
     if (force && force.some((element: boolean | undefined) => element)) {
@@ -37,7 +37,7 @@ export const fileCacheAgentFilter: AgentFilterFunction = async (context, next) =
     return true;
   }
   try {
-    MulmoStudioContextMethods.setBeatSessionState(mulmoContext, sessionType, index, true);
+    MulmoStudioContextMethods.setBeatSessionState(mulmoContext, sessionType, index, id, true);
     const output = ((await next(context)) as { buffer?: Buffer; text?: string; saved?: boolean }) || undefined;
     const { buffer, text, saved } = output ?? {};
     if (saved) {
@@ -57,7 +57,7 @@ export const fileCacheAgentFilter: AgentFilterFunction = async (context, next) =
     GraphAILogger.log("no cache, no buffer: " + file);
     return false;
   } finally {
-    MulmoStudioContextMethods.setBeatSessionState(mulmoContext, sessionType, index, false);
+    MulmoStudioContextMethods.setBeatSessionState(mulmoContext, sessionType, index, id, false);
   }
 };
 

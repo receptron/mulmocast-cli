@@ -39,8 +39,8 @@ export const provider2ImageAgent = {
   },
   google: {
     agentName: "imageGenAIAgent",
-    defaultModel: "imagen-4.0-generate-preview-06-06",
-    models: ["imagen-3.0-generate-002", "imagen-4.0-generate-preview-06-06", "imagen-4.0-ultra-generate-preview-06-06"],
+    defaultModel: "gemini-2.5-flash-image-preview",
+    models: ["imagen-3.0-generate-002", "imagen-4.0-generate-preview-06-06", "imagen-4.0-ultra-generate-preview-06-06", "gemini-2.5-flash-image-preview"],
   },
   mock: {
     agentName: "mediaMockAgent",
@@ -216,26 +216,45 @@ export const provider2LLMAgent = {
     agentName: "openAIAgent",
     defaultModel: "gpt-5",
     max_tokens: 8192,
+    models: [
+      "gpt-5",
+      "gpt-5-nano",
+      "gpt-5-mini",
+      "gpt-4.1",
+      "gpt-4.1-mini",
+      "gpt-4.1-nano",
+      "o3",
+      "o3-mini",
+      "o3-pro",
+      "o1",
+      "o1-pro",
+      "gpt-4o",
+      "gpt-4o-mini",
+    ],
   },
   anthropic: {
     agentName: "anthropicAgent",
     defaultModel: "claude-3-7-sonnet-20250219",
     max_tokens: 8192,
+    models: ["claude-opus-4-1-20250805", "claude-opus-4-20250514", "claude-sonnet-4-20250514", "claude-3-7-sonnet-20250219", "claude-3-haiku-20240307"],
   },
   gemini: {
     agentName: "geminiAgent",
-    defaultModel: "gemini-1.5-flash",
+    defaultModel: "gemini-2.5-flash",
     max_tokens: 8192,
+    models: ["gemini-2.5-pro", "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"],
   },
   groq: {
     agentName: "groqAgent",
-    defaultModel: "llama3-8b-8192",
+    defaultModel: "llama-3.1-8b-instant",
     max_tokens: 4096,
+    models: ["llama-3.1-8b-instant", "llama-3.3-70b-versatile", "deepseek-r1-distill-llama-70b", "openai/gpt-oss-120b", "openai/gpt-oss-20b"],
   },
   mock: {
     agentName: "mediaMockAgent",
     defaultModel: "mock",
     max_tokens: 4096,
+    models: ["mock"],
   },
 } as const;
 

@@ -19,6 +19,7 @@ test("test getFileObject", async () => {
     imageDirPath: path.resolve(__dirname, "../../output/images"),
     audioDirPath: path.resolve(__dirname, "../../output/audio"),
     outputStudioFilePath: path.resolve(__dirname, "../../output/hello_studio.json"),
+    nodeModuleRootPath: undefined,
     isHttpPath: false,
     fileName: "hello",
     fileOrUrl: "hello.yaml",
@@ -68,6 +69,7 @@ test("test createStudioData", async () => {
       beats: [
         { text: "hello" },
         {
+          id: "mulmo_credit",
           speaker: "Presenter",
           text: "",
           image: {
@@ -126,6 +128,7 @@ test("test createStudioData", async () => {
       beats: [
         { text: "hello" },
         {
+          id: "mulmo_credit",
           speaker: "Test",
           text: "",
           image: {

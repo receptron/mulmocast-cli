@@ -1,0 +1,25 @@
+{
+  "$mulmocast": {
+    "version": "1.1",
+    "credit": "closing"
+  },
+  "title": "[TITLE: Brief, engaging title for the topic]",
+  "lang": "en",
+  "beats": [
+    {
+      "text": "[STORY TEXT FOR THIS BEAT FOR THIS BEAT]",
+      "imagePrompt": "[IMAGE_PROMPT FOR THIS BEAT with both characters]",
+      "imageNames": ["[CHARACTER_ID_1]", "[CHARACTER_ID_2]"]
+    },
+    {
+      "text": "[STORY TEXT FOR THIS BEAT FOR THIS BEAT]",
+      "imagePrompt": "[IMAGE_PROMPT FOR THIS BEAT with a single character]",
+      "imageNames": ["[CHARACTER_ID_1]"]
+    },
+    {
+      "text": "[STORY TEXT FOR THIS BEAT FOR THIS BEAT]",
+      "imagePrompt": "[IMAGE_PROMPT FOR THIS BEAT with another character]",
+      "imageNames": ["[CHARACTER_ID_2]"]
+    }
+  ]
+}

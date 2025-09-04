@@ -1,17 +1,18 @@
 import "dotenv/config";
 
-import { GraphAI, TaskManager } from "graphai";
-import type { GraphData, CallbackFunction } from "graphai";
+import { GraphAI, TaskManager, GraphAILogger } from "graphai";
+import type { GraphData } from "graphai";
 import * as agents from "@graphai/vanilla";
 import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 
 import { ttsNijivoiceAgent, ttsOpenaiAgent, ttsGoogleAgent, ttsElevenlabsAgent, addBGMAgent, combineAudioFilesAgent, mediaMockAgent } from "../agents/index.js";
 
-import { MulmoStudioContext, MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingualData, text2SpeechProviderSchema } from "../types/index.js";
+import { MulmoStudioContext, MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingualData, PublicAPIArgs, text2SpeechProviderSchema } from "../types/index.js";
 
 import { fileCacheAgentFilter, nijovoiceTextAgentFilter } from "../utils/filters.js";
 import { getAudioArtifactFilePath, getAudioFilePath, getOutputStudioFilePath, resolveDirPath, defaultBGMPath, mkdir, writingMessage } from "../utils/file.js";
-import { text2hash, localizedText, settings2GraphAIConfig } from "../utils/utils.js";
+import { localizedText, settings2GraphAIConfig } from "../utils/utils.js";
+import { text2hash } from "../utils/utils_node.js";
 import { provider2TTSAgent } from "../utils/provider2agent.js";
 
 import { MulmoPresentationStyleMethods } from "../methods/index.js";
@@ -34,8 +35,8 @@ const getAudioPath = (context: MulmoStudioContext, beat: MulmoBeat, audioFile: s
   return audioFile;
 };
 
-const getAudioParam = (context: MulmoStudioContext, beat: MulmoBeat) => {
-  const speaker = MulmoPresentationStyleMethods.getSpeaker(context, beat);
+const getAudioParam = (context: MulmoStudioContext, beat: MulmoBeat, lang?: string) => {
+  const speaker = MulmoPresentationStyleMethods.getSpeaker(context, beat, lang);
   const speechOptions = { ...speaker.speechOptions, ...beat.speechOptions };
   const provider = text2SpeechProviderSchema.parse(speaker.provider) as keyof typeof provider2TTSAgent;
   return { voiceId: speaker.voiceId, provider, speechOptions, model: speaker.model };
@@ -43,23 +44,34 @@ const getAudioParam = (context: MulmoStudioContext, beat: MulmoBeat) => {
 
 export const getBeatAudioPath = (text: string, context: MulmoStudioContext, beat: MulmoBeat, lang?: string) => {
   const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
-  const { voiceId, provider, speechOptions, model } = getAudioParam(context, beat);
+  const { voiceId, provider, speechOptions, model } = getAudioParam(context, beat, lang);
   const hash_string = [text, voiceId, speechOptions?.instruction ?? "", speechOptions?.speed ?? 1.0, provider, model ?? ""].join(":");
+  GraphAILogger.log(`getBeatAudioPath [${hash_string}]`);
   const audioFileName = `${context.studio.filename}_${text2hash(hash_string)}`;
   const audioFile = getAudioFilePath(audioDirPath, context.studio.filename, audioFileName, lang);
   return getAudioPath(context, beat, audioFile);
 };
 
-const preprocessor = (namedInputs: {
+export const listLocalizedAudioPaths = (context: MulmoStudioContext) => {
+  const lang = context.lang ?? context.studio.script.lang;
+  return context.studio.script.beats.map((beat, index) => {
+    const multiLingual = context.multiLingual[index];
+    const text = localizedText(beat, multiLingual, lang);
+    return getBeatAudioPath(text, context, beat, lang);
+  });
+};
+
+const preprocessorAgent = (namedInputs: {
   beat: MulmoBeat;
   studioBeat: MulmoStudioBeat;
   multiLingual: MulmoStudioMultiLingualData;
   context: MulmoStudioContext;
+  lang: string;
 }) => {
-  const { beat, studioBeat, multiLingual, context } = namedInputs;
-  const { lang } = context;
+  const { beat, studioBeat, multiLingual, context, lang } = namedInputs;
+  // const { lang } = context;
   const text = localizedText(beat, multiLingual, lang);
-  const { voiceId, provider, speechOptions, model } = getAudioParam(context, beat);
+  const { voiceId, provider, speechOptions, model } = getAudioParam(context, beat, lang);
   const audioPath = getBeatAudioPath(text, context, beat, lang);
   studioBeat.audioFile = audioPath; // TODO: Passing by reference is difficult to maintain, so pass it using graphai inputs
   const needsTTS = !beat.audio && audioPath !== undefined;
@@ -85,13 +97,15 @@ const graph_tts: GraphData = {
     multiLingual: {},
     context: {},
     __mapIndex: {},
+    lang: {},
     preprocessor: {
-      agent: preprocessor,
+      agent: preprocessorAgent,
       inputs: {
         beat: ":beat",
         studioBeat: ":studioBeat",
         multiLingual: ":multiLingual",
         context: ":context",
+        lang: ":lang",
       },
     },
     tts: {
@@ -106,6 +120,7 @@ const graph_tts: GraphData = {
           force: [":context.force"],
           file: ":preprocessor.audioPath",
           index: ":__mapIndex",
+          id: ":beat.id",
           mulmoContext: ":context",
           sessionType: "audio",
         },
@@ -120,7 +135,34 @@ const graph_tts: GraphData = {
   },
 };
 
-const graph_data: GraphData = {
+const graph_tts_map: GraphData = {
+  version: 0.5,
+  concurrency: 8,
+  nodes: {
+    beat: {},
+    studioBeat: {},
+    multiLingual: {},
+    context: {},
+    __mapIndex: {},
+    langs: {},
+    map: {
+      agent: "mapAgent",
+      inputs: {
+        rows: ":langs",
+        beat: ":beat",
+        studioBeat: ":studioBeat",
+        multiLingual: ":multiLingual",
+        context: ":context",
+        __mapIndex: ":__mapIndex",
+      },
+      params: {
+        rowKey: "lang",
+      },
+      graph: graph_tts,
+    },
+  },
+};
+export const audio_graph_data: GraphData = {
   version: 0.5,
   concurrency: 8,
   nodes: {
@@ -136,6 +178,7 @@ const graph_data: GraphData = {
         studioBeat: ":context.studio.beats",
         multiLingual: ":context.multiLingual",
         context: ":context",
+        lang: ":context.lang",
       },
       params: {
         rowKey: "beat",
@@ -208,7 +251,8 @@ const audioAgents = {
   combineAudioFilesAgent,
 };
 
-export const generateBeatAudio = async (index: number, context: MulmoStudioContext, settings?: Record<string, string>, callbacks?: CallbackFunction[]) => {
+export const generateBeatAudio = async (index: number, context: MulmoStudioContext, args?: PublicAPIArgs & { langs: string[] }) => {
+  const { settings, callbacks, langs } = args ?? {};
   try {
     MulmoStudioContextMethods.setSessionState(context, "audio", true);
     const fileName = MulmoStudioContextMethods.getFileName(context);
@@ -221,13 +265,18 @@ export const generateBeatAudio = async (index: number, context: MulmoStudioConte
 
     const config = settings2GraphAIConfig(settings);
     const taskManager = new TaskManager(getConcurrency(context));
-    const graph = new GraphAI(graph_tts, audioAgents, { agentFilters, taskManager, config });
+    const graph = new GraphAI(langs ? graph_tts_map : graph_tts, audioAgents, { agentFilters, taskManager, config });
     graph.injectValue("__mapIndex", index);
     graph.injectValue("beat", context.studio.script.beats[index]);
     graph.injectValue("studioBeat", context.studio.beats[index]);
-    graph.injectValue("multiLingual", context.multiLingual);
+    graph.injectValue("multiLingual", context.multiLingual[index]);
     graph.injectValue("context", context);
 
+    if (langs) {
+      graph.injectValue("langs", langs);
+    } else {
+      graph.injectValue("lang", context.lang);
+    }
     if (callbacks) {
       callbacks.forEach((callback) => {
         graph.registerCallback(callback);
@@ -239,7 +288,8 @@ export const generateBeatAudio = async (index: number, context: MulmoStudioConte
   }
 };
 
-export const audio = async (context: MulmoStudioContext, settings?: Record<string, string>, callbacks?: CallbackFunction[]) => {
+export const audio = async (context: MulmoStudioContext, args?: PublicAPIArgs) => {
+  const { settings, callbacks } = args ?? {};
   try {
     MulmoStudioContextMethods.setSessionState(context, "audio", true);
     const fileName = MulmoStudioContextMethods.getFileName(context);
@@ -255,7 +305,7 @@ export const audio = async (context: MulmoStudioContext, settings?: Record<strin
 
     const config = settings2GraphAIConfig(settings, process.env);
     const taskManager = new TaskManager(getConcurrency(context));
-    const graph = new GraphAI(graph_data, audioAgents, { agentFilters, taskManager, config });
+    const graph = new GraphAI(audio_graph_data, audioAgents, { agentFilters, taskManager, config });
     graph.injectValue("context", context);
     graph.injectValue("audioArtifactFilePath", audioArtifactFilePath);
     graph.injectValue("audioCombinedFilePath", audioCombinedFilePath);

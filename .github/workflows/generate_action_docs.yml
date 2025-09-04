@@ -1,0 +1,63 @@
+name: Generate Action Documentation
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/actions/**'
+      - '!src/actions/*.docs.md'
+    types: [closed]
+  workflow_dispatch:
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    # Only run when PR is merged to main (not just closed)
+    if: |
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'main' &&
+      github.actor != 'github-actions[bot]'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate documentation
+        run: npx tsx automation/generate_actions_docs/generate_action_docs.ts
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "has-changes=true" >> $GITHUB_OUTPUT
+            echo "changed-files=$(git status --porcelain | grep '\.docs\.md$' | wc -l)" >> $GITHUB_OUTPUT
+          else
+            echo "has-changes=false" >> $GITHUB_OUTPUT
+            echo "changed-files=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes
+        if: steps.check-changes.outputs.has-changes == 'true' && steps.check-changes.outputs.changed-files > 0
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add src/actions/*.docs.md
+          git commit -m "docs: auto-generate action documentation [bot]"
+          git push

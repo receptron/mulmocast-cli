@@ -49,8 +49,9 @@ export const getFileObject = (args: {
   audiodir?: string;
   presentationStyle?: string;
   file: string;
+  nodeModuleRootPath?: string;
 }): FileObject => {
-  const { basedir, outdir, imagedir, audiodir, file, presentationStyle } = args;
+  const { basedir, outdir, imagedir, audiodir, file, presentationStyle, nodeModuleRootPath } = args;
   const baseDirPath = getBaseDirPath(basedir);
   const outDirPath = getFullPath(baseDirPath, outdir ?? outDirName);
   const { fileOrUrl, fileName } = (() => {
@@ -90,6 +91,7 @@ export const getFileObject = (args: {
     outputMultilingualFilePath,
     presentationStylePath,
     fileName,
+    nodeModuleRootPath,
   };
 };
 

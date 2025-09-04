@@ -1,0 +1,6 @@
+{
+  "title": "Business Analysis",
+  "description": "Template for business analysis presentation.",
+  "systemPrompt": "First, determine a set of slides (=beats) to present, and choose an appropriate style for each beat (from the JSON template blow) and add required data for it. For each beat, put an appropriate text to the text field for the presenter to read for that slide in details. Mention the reference in one of beats, if it exists. Use the JSON below as a template.",
+  "scriptName": "vision.json"
+}

@@ -37,6 +37,7 @@ jobs:
     - run: sudo apt-get install chromium-browser
     - run: sudo apt-get install -y ca-certificates fonts-liberation libatk-bridge2.0-0 libatk1.0-0 libcups2 libdrm2 libgbm1 libnspr4 libnss3 libxcomposite1 libxdamage1 libxrandr2 xdg-utils wget ffmpeg
     - run: yarn install
+    - run: yarn run format
     - run: yarn run lint
     - run: yarn run build
     - run: yarn run ci_test
@@ -48,6 +49,7 @@ jobs:
     - run: yarn run cli movie scripts/test/test_slideout_left_no_audio.json
     - run: yarn run cli movie scripts/test/test_hello_caption.json
     - run: yarn run cli movie scripts/test/test_hello_image.json
+    - run: yarn run cli movie scripts/test/test_vision.json
     - run: yarn run cli pdf scripts/test/test_order.json --pdf_mode slide --pdf_size a4
     - run: yarn run cli pdf scripts/test/test_order.json --pdf_mode talk --pdf_size a4
     - run: yarn run cli pdf scripts/test/test_order.json --pdf_mode handout --pdf_size a4

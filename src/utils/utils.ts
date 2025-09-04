@@ -1,9 +1,13 @@
-import * as crypto from "crypto";
+/**
+ * Browser-friendly packages only.
+ * (No Node.js built-ins like fs, path, dotenv, etc.)
+ * Works in both Node.js and modern browsers.
+ */
+
 import type { ConfigDataDictionary, DefaultConfigData } from "graphai";
 
-import { MulmoBeat, MulmoStudioMultiLingualData } from "../types/index.js";
-import { provider2LLMAgent } from "./provider2agent.js";
-import type { LLM } from "./provider2agent.js"; // TODO remove
+import { MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingual, MulmoStudioMultiLingualData } from "../types/index.js";
+import { type LLM, provider2LLMAgent } from "./provider2agent.js";
 
 export const llmPair = (_llm?: LLM, _model?: string) => {
   const llmKey = _llm ?? "openai";
@@ -25,10 +29,6 @@ export const isHttp = (fileOrUrl: string) => {
   return /^https?:\/\//.test(fileOrUrl);
 };
 
-export const text2hash = (input: string): string => {
-  return crypto.createHash("sha256").update(input).digest("hex");
-};
-
 export const localizedText = (beat: MulmoBeat, multiLingualData?: MulmoStudioMultiLingualData, targetLang?: string, defaultLang?: string) => {
   if (targetLang === defaultLang) {
     return beat.text;
@@ -38,6 +38,10 @@ export const localizedText = (beat: MulmoBeat, multiLingualData?: MulmoStudioMul
   }
   return beat.text;
 };
+
+export function processLineBreaks(text: string) {
+  return text.replace(/\n/g, "<br>");
+}
 
 export function userAssert(condition: boolean, message: string): asserts condition {
   if (!condition) {
@@ -142,4 +146,19 @@ export const deepClean = <T extends CleanableValue>(input: T): T | undefined => 
   }
 
   return input;
+};
+
+export const beatId = (id: string | undefined, index: number) => {
+  const key = id ?? `__index__${index}`;
+  return key;
+};
+
+export const multiLingualObjectToArray = (multiLingual: MulmoStudioMultiLingual | undefined, beats: MulmoStudioBeat[]) => {
+  return beats.map((beat: MulmoStudioBeat, index: number) => {
+    const key = beatId(beat?.id, index);
+    if (multiLingual?.[key]) {
+      return multiLingual[key];
+    }
+    return { multiLingualTexts: {} };
+  });
 };

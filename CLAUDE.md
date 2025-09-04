@@ -92,3 +92,13 @@ The system uses environment variables for API keys and configuration. Required `
 ## Testing
 
 The project uses Node.js native test runner. Tests are located in `test/` directory and can be run with `yarn ci_test`. The main end-to-end test (`yarn test`) generates actual content files to verify the complete pipeline.
+
+### Running TypeScript Programs and Tests
+
+Use `npx tsx` to run TypeScript files directly without compilation:
+```bash
+npx tsx src/path/to/file.ts      # Run TypeScript source files
+npx tsx test/path/to/test.ts     # Run individual test files
+```
+
+This is preferred over compiling with `yarn build` when testing individual components or running single test files.

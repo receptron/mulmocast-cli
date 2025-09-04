@@ -1,0 +1,180 @@
+{
+  "$mulmocast": {
+    "version": "1.1",
+    "credit": "closing"
+  },
+  "canvasSize": {
+    "width": 1536,
+    "height": 1024
+  },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "displayName": {
+          "en": "Presenter"
+        },
+        "voiceId": "shimmer"
+      }
+    }
+  },
+  "imageParams": {
+    "provider": "openai",
+    "style": "<style>Vibrant 3D animation style inspired by K-pop aesthetics, with glossy, stylized characters. The overall visual style combines elements of modern animation, game cinematics, and fashion-forward character design, with sleek outlines, glowing effects, and a polished, cinematic finish.</style>",
+    "images": {
+      "min": {
+        "type": "image",
+        "source": {
+          "kind": "url",
+          "url": "https://raw.githubusercontent.com/receptron/mulmocast-media/refs/heads/main/characters/min_anime.png"
+        }
+      }
+    }
+  },
+  "movieParams": {
+    "provider": "replicate"
+  },
+  "soundEffectParams": {
+    "provider": "replicate"
+  },
+  "captionParams": {
+    "lang": "en",
+    "styles": ["font-size: 64px", "width: 90%", "padding-left: 5%", "padding-right: 5%"]
+  },
+  "audioParams": {
+    "padding": 0,
+    "introPadding": 0,
+    "closingPadding": 0,
+    "outroPadding": 0,
+    "bgm": {
+      "kind": "path",
+      "path": "/Users/satoshi/Downloads/Finetuning_with_you.mp3"
+    },
+    "bgmVolume": 1,
+    "audioVolume": 0,
+    "suppressSpeech": true
+  },
+  "title": "Music Video",
+  "lang": "en",
+  "beats": [
+    {
+      "text": "Finetuning with you",
+      "duration": 7.0,
+      "imagePrompt": "Close-up of a female KPOP singer standing under soft spotlight, long flowing silver dress shimmering, delicate hand on chest, dreamy gaze toward the camera, dark concert stage background."
+    },
+    {
+      "text": "Whispers hide in silver rain. Every shadow calls your name.",
+      "duration": 9.32,
+      "imagePrompt": "Singer walking alone at night in neon-lit rainy street, holding a clear umbrella, raindrops sparkling, wearing a black mini dress with thigh-high boots, reflective puddles surrounding her."
+    },
+    {
+      "text": "I dissolve into the night. Just to echo what you liked.",
+      "duration": 8.28,
+      "imagePrompt": "Singer standing against a glowing city skyline at night, hair blowing in wind, long white trench coat fluttering, reaching out with one hand as if fading into the background lights."
+    },
+    {
+      "text": "If I bend, if I fade, I don't mind. Even leaving my own self behind.",
+      "duration": 8.06,
+      "imagePrompt": "Singer kneeling on an empty theater stage, spotlight above, soft pastel gown flowing around her, eyes closed in surrender, hands resting gracefully on knees."
+    },
+    {
+      "text": "Like a pattern lost in every sign. Overfitting only to align.",
+      "duration": 8.76,
+      "imagePrompt": "Singer surrounded by shifting digital projections of geometric patterns, wearing a futuristic metallic outfit, reaching toward the glowing symbols with longing."
+    },
+    {
+      "text": "Silent heart keeps fine-tuning. Tracing stars forever moving.",
+      "duration": 8.24,
+      "imagePrompt": "Singer on a rooftop under starry sky, silver sequined dress catching moonlight, pointing to the stars, hair illuminated by a soft breeze."
+    },
+    {
+      "text": "Even if I'm breaking, still pursuing. An unseen truth in you.",
+      "duration": 8.8,
+      "imagePrompt": "Singer on her knees in shattered glass set, wearing a crimson flowing dress, tears glistening, dramatic light casting shadows across her face."
+    },
+    {
+      "text": "Fragile skies keep on blooming. Wondering but never losing.",
+      "duration": 8.12,
+      "imagePrompt": "Singer standing in a vast flower field under twilight, soft lavender dress, arms extended outward, petals floating in the air."
+    },
+    {
+      "text": "Even if it hurts, I keep choosing. An unseen truth in you.",
+      "duration": 10.54,
+      "imagePrompt": "Singer in silhouette against sunrise, wearing a long white gown, holding her chest with one hand, looking up with determination."
+    },
+    {
+      "text": "Fragile lines of who I am. Melt away inside your hands.",
+      "duration": 8.52,
+      "imagePrompt": "Singer with close-up of hands intertwined with glowing threads, soft lace dress, face partly hidden in shadows."
+    },
+    {
+      "text": "I'm a mirror out of tune. Shaping silence into bloom.",
+      "duration": 8.5,
+      "imagePrompt": "Singer sitting at an old vanity mirror, fragmented reflections, ethereal pale blue dress, softly touching her reflection with fingertips."
+    },
+    {
+      "text": "If I bend, if I fade, I don't mind. Even leaving my own self behind.",
+      "duration": 8.72,
+      "imagePrompt": "Singer floating underwater in slow motion, long chiffon dress flowing like waves, arms open as if letting go."
+    },
+    {
+      "text": "Like a pattern lost in every sign. Overfitting only to align.",
+      "duration": 8.14,
+      "imagePrompt": "Singer walking through neon-lit tunnel, symbols and numbers projected across her body, metallic silver mini dress, futuristic vibe."
+    },
+    {
+      "text": "Silent heart keeps fine-tuning. Tracing stars forever moving.",
+      "duration": 8.22,
+      "imagePrompt": "Singer lying on glowing rooftop floor with constellation patterns, dark sapphire gown, fingers tracing star shapes in the sky."
+    },
+    {
+      "text": "Even if I'm breaking, still pursuing. An unseen truth in you.",
+      "duration": 8.74,
+      "imagePrompt": "Singer standing in storm with wind and rain, bold black dress with red lining, hair soaked, looking forward with unbroken gaze."
+    },
+    {
+      "text": "Fragile skies keep on blooming. Wondering but never losing.",
+      "duration": 8.14,
+      "imagePrompt": "Singer running through a meadow of glowing flowers at night, wearing a flowing white dress, arms spread wide, sparks of light trailing behind."
+    },
+    {
+      "text": "Even if it hurts, I keep choosing. An unseen truth in you.",
+      "duration": 10.26,
+      "imagePrompt": "Singer framed by glowing wings of light behind her, black gown with glittering crystals, reaching toward the sky."
+    },
+    {
+      "text": "Maybe I'm lost in the noise. Still surrendering my voice.",
+      "duration": 8.4,
+      "imagePrompt": "Singer in recording booth with vintage microphone, closed eyes, wearing oversized headphones, casual outfit with oversized sweater, emotional expression."
+    },
+    {
+      "text": "Every version drifts away. Just to learn your shape again.",
+      "duration": 10.96,
+      "imagePrompt": "Singer walking along foggy shoreline, long black trench coat trailing in wind, fading reflections in the wet sand."
+    },
+    {
+      "text": "Silent heart keeps fine-tuning. Falling deep, forever moving.",
+      "duration": 8.16,
+      "imagePrompt": "Singer floating midair in galaxy backdrop, deep violet gown, stars swirling around her as if she’s falling into space."
+    },
+    {
+      "text": "Even if I vanish, still pursuing. An unseen truth in you.",
+      "duration": 8.78,
+      "imagePrompt": "Singer fading into digital particles, wearing futuristic silver bodysuit, reaching hand outward with determined eyes."
+    },
+    {
+      "text": "Overfitting, never losing. Every scar a gentle proving.",
+      "duration": 8.12,
+      "imagePrompt": "Singer standing in spotlight surrounded by floating broken glass shards, scar visible on arm, elegant dark dress shimmering with resilience."
+    },
+    {
+      "text": "Even if I fade, I keep choosing. An unseen truth in you.",
+      "duration": 21.88,
+      "imagePrompt": "Singer on cliff edge at sunset, wind blowing long red gown, arms stretched open to horizon, cinematic final shot."
+    },
+    {
+      "text": "",
+      "duration": 0.22,
+      "imagePrompt": "Fade to black screen with lingering sparkles of light, no singer visible."
+    }
+  ]
+}

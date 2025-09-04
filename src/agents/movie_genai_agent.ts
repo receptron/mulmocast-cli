@@ -26,7 +26,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
   const duration = params.duration ?? 8;
   const apiKey = config?.apiKey;
   if (!apiKey) {
-    throw new Error("API key is required for Google GenAI agent");
+    throw new Error("Google GenAI API key is required (GEMINI_API_KEY)");
   }
 
   try {

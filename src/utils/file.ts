@@ -124,10 +124,10 @@ export const imageSuffix = "p";
 export const getBeatPngImagePath = (context: MulmoStudioContext, index: number) => {
   const imageProjectDirPath = MulmoStudioContextMethods.getImageProjectDirPath(context);
   const beat = context.studio.script.beats[index]; // beat could be undefined only in a test case.
-  if (beat?.id) {
-    return `${imageProjectDirPath}/${beat.id}.png`;
-  }
-  return `${imageProjectDirPath}/${index}${imageSuffix}.png`;
+  const filename = beat?.id ? `${beat.id}` : `${index}${imageSuffix}`;
+  const imagePath = `${imageProjectDirPath}/${filename}.png`;
+  const htmlImageFile = `${imageProjectDirPath}/${filename}_html.png`;
+  return { imagePath, htmlImageFile };
 };
 
 export const getBeatMoviePaths = (context: MulmoStudioContext, index: number) => {
@@ -169,11 +169,19 @@ export const mkdir = (dirPath: string) => {
   }
 };
 
+// asset path
+export const resolveAssetPath = (context: MulmoStudioContext, relativePath: string): string => {
+  return path.resolve(context.fileDirs.mulmoFileDirPath, relativePath);
+};
+
 // export const silentPath = path.resolve(npmRoot, "./assets/audio/silent300.mp3");
 // export const silentLastPath = path.resolve(npmRoot, "./assets/audio/silent800.mp3");
 export const silent60secPath = () => path.resolve(npmRoot, "./assets/audio/silent60sec.mp3");
 export const defaultBGMPath = () => "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/story002.mp3";
 export const mulmoCreditPath = () => path.resolve(npmRoot, "./assets/images/mulmocast_credit.png");
+export const blankImagePath = () => path.resolve(npmRoot, "./assets/images/blank.png");
+export const blankVerticalImagePath = () => path.resolve(npmRoot, "./assets/images/blank_v.png");
+export const blankSquareImagePath = () => path.resolve(npmRoot, "./assets/images/blank_sq.png");
 
 export const getHTMLFile = (filename: string) => {
   const htmlPath = path.resolve(npmRoot, `./assets/html/${filename}.html`);

@@ -22,7 +22,7 @@ export type AgentConfig = { apiKey?: string };
 
 // image
 //   inputs
-export type ImageAgentInputs = AgentPromptInputs;
+export type ImageAgentInputs = AgentPromptInputs & { referenceImages: string[] | null | undefined };
 export type OpenAIImageAgentInputs = AgentPromptInputs & { referenceImages: string[] | null | undefined };
 //   params
 export type ImageAgentParams = { model: string; canvasSize: { width: number; height: number } };

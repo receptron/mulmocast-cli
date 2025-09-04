@@ -21,6 +21,7 @@ const getContext = () => {
     description: "Exploring MASAI, a modular approach for AI agents in software engineering that revolutionizes how complex coding issues are tackled.",
     beats: [
       {
+        id: "beat1",
         text: "This is a bulleted list in text slide format.",
         image: {
           type: "textSlide",
@@ -108,6 +109,28 @@ const getContext = () => {
     studio,
     fileDirs,
     force: false,
+    lang: "ja",
+    multiLingual: [
+      {
+        cacheKey: "3f67bccdad61ccc0571e88f4379819a4c01a2b458ecba33a46c35cce2764154e",
+        multiLingualTexts: {
+          de: {
+            text: "Willkommen bei Mulmocast Tech Insights.",
+            lang: "de",
+            texts: ["Willkommen bei Mulmocast Tech Insights."],
+            ttsTexts: ["Willkommen bei Mulmocast Tech Insights."],
+            cacheKey: "3f67bccdad61ccc0571e88f4379819a4c01a2b458ecba33a46c35cce2764154e",
+          },
+          fr: {
+            lang: "fr",
+            text: "Bienvenue chez Mulmocast Tech Insights.",
+            texts: ["Bienvenue chez Mulmocast Tech Insights."],
+            ttsTexts: ["Bienvenue chez Mulmocast Tech Insights."],
+            cacheKey: "3f67bccdad61ccc0571e88f4379819a4c01a2b458ecba33a46c35cce2764154e",
+          },
+        },
+      },
+    ],
     sessionState: {
       inSession: {
         audio: false,
@@ -134,5 +157,11 @@ const getContext = () => {
 test("test beat images", async () => {
   // const fileDirs = getFileObject({ file: "hello.yaml", basedir: __dirname });
   const context = getContext();
-  await generateBeatAudio(1, context);
+  await generateBeatAudio(0, context, {
+    settings: {
+      OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    },
+    langs: ["fr", "de"],
+  });
+  // console.log(listLocalizedAudioPaths(context, "de"));
 });

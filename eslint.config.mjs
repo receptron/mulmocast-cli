@@ -59,6 +59,7 @@ export default [
       "sonarjs/todo-tag": "off",
       "sonarjs/no-commented-code": "off",
       "sonarjs/no-unused-vars": "off",
+      "sonarjs/cognitive-complexity": "warn",
     },
     plugins: {
       prettier: prettierPlugin,

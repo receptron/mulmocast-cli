@@ -1,0 +1,82 @@
+{
+  "$mulmocast": {
+    "version": "1.1",
+    "credit": "closing"
+  },
+  "canvasSize": {
+    "width": 1536,
+    "height": 1024
+  },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "displayName": {
+          "en": "Presenter"
+        },
+        "voiceId": "shimmer"
+      }
+    }
+  },
+  "imageParams": {
+    "provider": "openai",
+    "style": "<style>Vibrant 3D animation style inspired by K-pop aesthetics, with glossy, stylized characters. The overall visual style combines elements of modern animation, game cinematics, and fashion-forward character design, with sleek outlines, glowing effects, and a polished, cinematic finish.</style>",
+    "images": {
+      "min": {
+        "type": "image",
+        "source": {
+          "kind": "url",
+          "url": "https://raw.githubusercontent.com/receptron/mulmocast-media/refs/heads/main/characters/min_anime.png"
+        }
+      }
+    }
+  },
+  "movieParams": {
+    "provider": "replicate"
+  },
+  "soundEffectParams": {
+    "provider": "replicate"
+  },
+  "captionParams": {
+    "lang": "en",
+    "styles": ["font-size: 64px", "width: 90%", "padding-left: 5%", "padding-right: 5%"]
+  },
+  "audioParams": {
+    "padding": 0,
+    "introPadding": 0,
+    "closingPadding": 0,
+    "outroPadding": 0,
+    "bgm": {
+      "kind": "url",
+      "url": "https://raw.githubusercontent.com/receptron/mulmocast-media/refs/heads/main/music/finetuning_with_you.mp3"
+    },
+    "bgmVolume": 1,
+    "audioVolume": 0,
+    "suppressSpeech": true
+  },
+  "title": "Music Video",
+  "lang": "en",
+  "beats": [
+    {
+      "text": "Finetuning with you",
+      "duration": 7.0,
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Finetuning with you"
+        }
+      }
+    },
+    {
+      "text": "Whispers hide in silver rain. Every shadow calls your name.",
+      "duration": 9.32,
+      "imagePrompt": "Singer walking alone at night in neon-lit rainy street, holding a clear umbrella, raindrops sparkling, wearing a black mini dress with thigh-high boots, reflective puddles surrounding her.",
+      "enableLipSync": true
+    },
+    {
+      "text": "I dissolve into the night. Just to echo what you liked.",
+      "duration": 8.28,
+      "imagePrompt": "Singer standing against a glowing city skyline at night, hair blowing in wind, long white trench coat fluttering, reaching out with one hand as if fading into the background lights.",
+      "enableLipSync": true
+    }
+  ]
+}

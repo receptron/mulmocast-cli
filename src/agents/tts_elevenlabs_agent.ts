@@ -13,7 +13,7 @@ export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBu
 
   const apiKey = config?.apiKey;
   if (!apiKey) {
-    throw new Error("ELEVENLABS_API_KEY environment variable is required");
+    throw new Error("ElevenLabs API key is required (ELEVENLABS_API_KEY)");
   }
 
   if (!voice) {

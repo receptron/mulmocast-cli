@@ -108,7 +108,7 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
 
   const apiKey = config?.apiKey;
   if (!apiKey) {
-    throw new Error("REPLICATE_API_TOKEN environment variable is required");
+    throw new Error("Replicate API key is required (REPLICATE_API_TOKEN)");
   }
 
   try {

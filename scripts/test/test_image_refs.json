@@ -45,6 +45,16 @@
       "text": "Hello World with no reference image",
       "imagePrompt": "Saying hello to the world",
       "imageNames": []
+    },
+    {
+      "id": "gemini_2_5_flash_image_preview",
+      "text": "Hello World with a witch and a broom with Gemini",
+      "imagePrompt": "Saying hello to the world",
+      "imageNames": ["witch", "broom"],
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
     }
   ]
 }

@@ -17,7 +17,7 @@ export const soundEffectReplicateAgent: AgentFunction<
   const model = params.model ?? provider2SoundEffectAgent.replicate.defaultModel;
 
   if (!apiKey) {
-    throw new Error("REPLICATE_API_TOKEN environment variable is required");
+    throw new Error("Replicate API key is required (REPLICATE_API_TOKEN)");
   }
   const replicate = new Replicate({
     auth: apiKey,

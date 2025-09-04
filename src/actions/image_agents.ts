@@ -1,9 +1,10 @@
 import { MulmoStudioContext, MulmoBeat, MulmoCanvasDimension, MulmoImageParams } from "../types/index.js";
-import { MulmoPresentationStyleMethods, MulmoStudioContextMethods, MulmoBeatMethods } from "../methods/index.js";
-import { getBeatPngImagePath, getBeatMoviePaths } from "../utils/file.js";
+import { MulmoPresentationStyleMethods, MulmoStudioContextMethods, MulmoBeatMethods, MulmoMediaSourceMethods } from "../methods/index.js";
+import { getBeatPngImagePath, getBeatMoviePaths, getAudioFilePath } from "../utils/file.js";
 import { imagePrompt, htmlImageSystemPrompt } from "../utils/prompt.js";
 import { renderHTMLToImage } from "../utils/markdown.js";
 import { GraphAILogger } from "graphai";
+import { beatId } from "../utils/utils.js";
 
 const htmlStyle = (context: MulmoStudioContext, beat: MulmoBeat) => {
   return {
@@ -16,11 +17,11 @@ export const imagePreprocessAgent = async (namedInputs: { context: MulmoStudioCo
   const { context, beat, index, imageRefs } = namedInputs;
 
   const studioBeat = context.studio.beats[index];
-  const imagePath = getBeatPngImagePath(context, index);
+  const { imagePath, htmlImageFile } = getBeatPngImagePath(context, index);
   if (beat.htmlPrompt) {
     const htmlPrompt = MulmoBeatMethods.getHtmlPrompt(beat);
     const htmlPath = imagePath.replace(/\.[^/.]+$/, ".html");
-    return { imagePath, htmlPrompt, htmlPath, htmlImageSystemPrompt: htmlImageSystemPrompt(context.presentationStyle.canvasSize) };
+    return { imagePath, htmlPrompt, htmlImageFile, htmlPath, htmlImageSystemPrompt: htmlImageSystemPrompt(context.presentationStyle.canvasSize) };
   }
 
   const imageAgentInfo = MulmoPresentationStyleMethods.getImageAgentInfo(context.presentationStyle, beat);
@@ -35,6 +36,10 @@ export const imagePreprocessAgent = async (namedInputs: { context: MulmoStudioCo
     lipSyncFile?: string;
     lipSyncModel?: string;
     lipSyncAgentName?: string;
+    lipSyncTrimAudio?: boolean; // instruction to trim audio from the BGM
+    bgmFile?: string | null;
+    startAt?: number;
+    duration?: number;
     audioFile?: string;
     beatDuration?: number;
   } = {
@@ -59,10 +64,21 @@ export const imagePreprocessAgent = async (namedInputs: { context: MulmoStudioCo
     returnValue.lipSyncAgentName = lipSyncAgentInfo.agentName;
     returnValue.lipSyncModel = beat.lipSyncParams?.model ?? context.presentationStyle.lipSyncParams?.model ?? lipSyncAgentInfo.defaultModel;
     returnValue.lipSyncFile = moviePaths.lipSyncFile;
-    // Audio file will be set from the beat's audio file when available
-    returnValue.audioFile = studioBeat?.audioFile;
+    if (context.studio.script.audioParams?.suppressSpeech) {
+      // studio beat may ot have startAt and duration yet, in case of API call from the app.
+      returnValue.startAt = context.studio.script.beats.filter((_, i) => i < index).reduce((acc, curr) => acc + (curr.duration ?? 0), 0);
+      returnValue.duration = beat.duration ?? 0;
+      returnValue.lipSyncTrimAudio = true;
+      returnValue.bgmFile = MulmoMediaSourceMethods.resolve(context.studio.script.audioParams.bgm, context);
+      const folderName = MulmoStudioContextMethods.getFileName(context);
+      const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
+      const fileName = `${beatId(beat.id, index)}_trimmed.mp3`;
+      returnValue.audioFile = getAudioFilePath(audioDirPath, folderName, fileName);
+    } else {
+      // Audio file will be set from the beat's audio file when available
+      returnValue.audioFile = studioBeat?.audioFile;
+    }
   }
-
   if (beat.image) {
     const plugin = MulmoBeatMethods.getPlugin(beat);
     const pluginPath = plugin.path({ beat, context, imagePath, ...htmlStyle(context, beat) });
@@ -85,16 +101,16 @@ export const imagePreprocessAgent = async (namedInputs: { context: MulmoStudioCo
 
 export const imagePluginAgent = async (namedInputs: { context: MulmoStudioContext; beat: MulmoBeat; index: number }) => {
   const { context, beat, index } = namedInputs;
-  const imagePath = getBeatPngImagePath(context, index);
+  const { imagePath } = getBeatPngImagePath(context, index);
 
   const plugin = MulmoBeatMethods.getPlugin(beat);
   try {
-    MulmoStudioContextMethods.setBeatSessionState(context, "image", index, true);
+    MulmoStudioContextMethods.setBeatSessionState(context, "image", index, beat.id, true);
     const processorParams = { beat, context, imagePath, ...htmlStyle(context, beat) };
     await plugin.process(processorParams);
-    MulmoStudioContextMethods.setBeatSessionState(context, "image", index, false);
+    MulmoStudioContextMethods.setBeatSessionState(context, "image", index, beat.id, false);
   } catch (error) {
-    MulmoStudioContextMethods.setBeatSessionState(context, "image", index, false);
+    MulmoStudioContextMethods.setBeatSessionState(context, "image", index, beat.id, false);
     throw error;
   }
 };

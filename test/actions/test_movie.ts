@@ -123,6 +123,7 @@ test("test images and movie", async () => {
     studio,
     fileDirs,
     force: false,
+    lang: "en",
     sessionState: {
       inSession: {
         audio: false,

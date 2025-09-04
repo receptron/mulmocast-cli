@@ -14,6 +14,9 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
   const { prompt, referenceImages } = namedInputs;
   const { moderation, canvasSize, quality } = params;
   const { apiKey, baseURL } = { ...config };
+  if (!apiKey) {
+    throw new Error("OpenAI API key is required (OPENAI_API_KEY)");
+  }
   const model = params.model ?? provider2ImageAgent["openai"].defaultModel;
   const openai = new OpenAI({ apiKey, baseURL });
   const size = (() => {
@@ -41,10 +44,10 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
     prompt,
     n: 1,
     size,
-    background: "opaque",
   };
   if (model === "gpt-image-1") {
     imageOptions.moderation = moderation || "auto";
+    imageOptions.background = "opaque";
     if (quality) {
       imageOptions.quality = quality;
     }

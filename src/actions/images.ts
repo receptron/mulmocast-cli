@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import fs from "fs";
 import { GraphAI, GraphAILogger, TaskManager } from "graphai";
-import type { GraphOptions, GraphData, CallbackFunction } from "graphai";
+import type { GraphOptions, GraphData } from "graphai";
 
 import * as vanilla from "@graphai/vanilla";
 import { openAIAgent } from "@graphai/openai_agent";
@@ -9,7 +9,7 @@ import { anthropicAgent } from "@graphai/anthropic_agent";
 
 import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 
-import { MulmoStudioContext, MulmoStudioBeat, MulmoImageParams } from "../types/index.js";
+import { MulmoStudioContext, MulmoStudioBeat, MulmoImageParams, PublicAPIArgs } from "../types/index.js";
 import {
   imageGenAIAgent,
   imageOpenaiAgent,
@@ -24,7 +24,7 @@ import { MulmoPresentationStyleMethods, MulmoStudioContextMethods } from "../met
 import { getOutputStudioFilePath, mkdir } from "../utils/file.js";
 import { fileCacheAgentFilter } from "../utils/filters.js";
 import { settings2GraphAIConfig } from "../utils/utils.js";
-import { extractImageFromMovie, ffmpegGetMediaDuration } from "../utils/ffmpeg_utils.js";
+import { extractImageFromMovie, ffmpegGetMediaDuration, trimMusic } from "../utils/ffmpeg_utils.js";
 
 import { getImageRefs } from "./image_references.js";
 import { imagePreprocessAgent, imagePluginAgent, htmlImageGeneratorAgent } from "./image_agents.js";
@@ -60,7 +60,7 @@ const defaultAgents = {
 
 dotenv.config();
 
-const beat_graph_data = {
+export const beat_graph_data = {
   version: 0.5,
   concurrency: 4,
   nodes: {
@@ -71,6 +71,8 @@ const beat_graph_data = {
     __mapIndex: {},
     forceMovie: { value: false },
     forceImage: { value: false },
+    forceLipSync: { value: false },
+    forceSoundEffect: { value: false },
     preprocessor: {
       agent: imagePreprocessAgent,
       inputs: {
@@ -107,6 +109,7 @@ const beat_graph_data = {
           force: [":context.force", ":forceImage"],
           file: ":preprocessor.htmlPath",
           index: ":__mapIndex",
+          id: ":beat.id",
           mulmoContext: ":context",
           sessionType: "html",
         },
@@ -134,7 +137,7 @@ const beat_graph_data = {
       inputs: {
         htmlText: ":htmlReader.htmlText",
         canvasSize: ":context.presentationStyle.canvasSize",
-        file: ":preprocessor.imagePath",
+        file: ":preprocessor.htmlImageFile",
       },
     },
     imageGenerator: {
@@ -149,6 +152,7 @@ const beat_graph_data = {
           force: [":context.force", ":forceImage"],
           file: ":preprocessor.imagePath",
           index: ":__mapIndex",
+          id: ":beat.id",
           mulmoContext: ":context",
           sessionType: "image",
         },
@@ -174,6 +178,7 @@ const beat_graph_data = {
           force: [":context.force", ":forceMovie"],
           file: ":preprocessor.movieFile",
           index: ":__mapIndex",
+          id: ":beat.id",
           sessionType: "movie",
           mulmoContext: ":context",
         },
@@ -205,6 +210,7 @@ const beat_graph_data = {
         }
         const sourceFile = namedInputs.movieFile || namedInputs.imageFile;
         if (!sourceFile) {
+          // no need to check if the file exists (ffmpegGetMediaDuration will check it if it is local file)
           return { hasMovieAudio: false };
         }
         const { hasAudio } = await ffmpegGetMediaDuration(sourceFile);
@@ -230,11 +236,35 @@ const beat_graph_data = {
           duration: ":preprocessor.beatDuration",
         },
         cache: {
-          force: [":context.force"],
+          force: [":context.force", ":forceSoundEffect"],
           file: ":preprocessor.soundEffectFile",
           index: ":__mapIndex",
+          id: ":beat.id",
           sessionType: "soundEffect",
           mulmoContext: ":context",
+        },
+      },
+      defaultValue: {},
+    },
+    AudioTrimmer: {
+      if: ":preprocessor.lipSyncTrimAudio",
+      agent: async (namedInputs: { audioFile: string; bgmFile: string; startAt: number; duration: number }) => {
+        const buffer = await trimMusic(namedInputs.bgmFile, namedInputs.startAt, namedInputs.duration);
+        return { buffer };
+      },
+      inputs: {
+        onComplete: [":imageGenerator", ":imagePlugin"],
+        audioFile: ":preprocessor.audioFile",
+        bgmFile: ":preprocessor.bgmFile",
+        startAt: ":preprocessor.startAt",
+        duration: ":preprocessor.duration",
+        cache: {
+          force: [":context.force"],
+          file: ":preprocessor.audioFile",
+          index: ":__mapIndex",
+          id: ":beat.id",
+          mulmoContext: ":context",
+          // sessionType: undefined, // no need to notify state change
         },
       },
       defaultValue: {},
@@ -243,7 +273,7 @@ const beat_graph_data = {
       if: ":beat.enableLipSync",
       agent: ":preprocessor.lipSyncAgentName",
       inputs: {
-        onComplete: [":soundEffectGenerator"], // to wait for soundEffectGenerator to finish
+        onComplete: [":soundEffectGenerator", ":AudioTrimmer"], // to wait for soundEffectGenerator to finish
         movieFile: ":preprocessor.movieFile",
         imageFile: ":preprocessor.referenceImageForMovie",
         audioFile: ":preprocessor.audioFile",
@@ -253,9 +283,10 @@ const beat_graph_data = {
           duration: ":preprocessor.beatDuration",
         },
         cache: {
-          force: [":context.force"],
+          force: [":context.force", ":forceLipSync"],
           file: ":preprocessor.lipSyncFile",
           index: ":__mapIndex",
+          id: ":beat.id",
           sessionType: "lipSync",
           mulmoContext: ":context",
         },
@@ -271,6 +302,7 @@ const beat_graph_data = {
         soundEffectFile: ":preprocessor.soundEffectFile",
         lipSyncFile: ":preprocessor.lipSyncFile",
         hasMovieAudio: ":audioChecker.hasMovieAudio",
+        htmlImageFile: ":preprocessor.htmlImageFile",
       },
       output: {
         imageFile: ".imageFile",
@@ -278,13 +310,14 @@ const beat_graph_data = {
         soundEffectFile: ".soundEffectFile",
         lipSyncFile: ".lipSyncFile",
         hasMovieAudio: ".hasMovieAudio",
+        htmlImageFile: ".htmlImageFile",
       },
       isResult: true,
     },
   },
 };
 
-const graph_data: GraphData = {
+export const images_graph_data: GraphData = {
   version: 0.5,
   concurrency: 4,
   nodes: {
@@ -360,13 +393,13 @@ export const graphOption = async (context: MulmoStudioContext, settings?: Record
       {
         name: "fileCacheAgentFilter",
         agent: fileCacheAgentFilter,
-        nodeIds: ["imageGenerator", "movieGenerator", "htmlImageAgent", "soundEffectGenerator", "lipSyncGenerator"],
+        nodeIds: ["imageGenerator", "movieGenerator", "htmlImageAgent", "soundEffectGenerator", "lipSyncGenerator", "AudioTrimmer"],
       },
     ],
     taskManager: new TaskManager(MulmoPresentationStyleMethods.getConcurrency(context.presentationStyle)),
+    config: settings2GraphAIConfig(settings, process.env),
   };
 
-  options.config = settings2GraphAIConfig(settings, process.env);
   return options;
 };
 
@@ -394,14 +427,15 @@ const prepareGenerateImages = async (context: MulmoStudioContext) => {
 type ImageOptions = {
   imageAgents: Record<string, unknown>;
 };
-const generateImages = async (context: MulmoStudioContext, settings?: Record<string, string>, callbacks?: CallbackFunction[], options?: ImageOptions) => {
+const generateImages = async (context: MulmoStudioContext, args?: PublicAPIArgs & { options?: ImageOptions }) => {
+  const { settings, callbacks, options } = args ?? {};
   const optionImageAgents = options?.imageAgents ?? {};
   const injections = await prepareGenerateImages(context);
   const graphaiAgent = {
     ...defaultAgents,
     ...optionImageAgents,
   };
-  const graph = new GraphAI(graph_data, graphaiAgent, await graphOption(context, settings));
+  const graph = new GraphAI(images_graph_data, graphaiAgent, await graphOption(context, settings));
   Object.keys(injections).forEach((key: string) => {
     graph.injectValue(key, injections[key]);
   });
@@ -415,18 +449,10 @@ const generateImages = async (context: MulmoStudioContext, settings?: Record<str
 };
 
 // public api
-export const images = async (
-  context: MulmoStudioContext,
-  args?: {
-    settings?: Record<string, string>;
-    callbacks?: CallbackFunction[];
-    options?: ImageOptions;
-  },
-): Promise<MulmoStudioContext> => {
-  const { settings, callbacks, options } = args ?? {};
+export const images = async (context: MulmoStudioContext, args?: PublicAPIArgs & { options?: ImageOptions }): Promise<MulmoStudioContext> => {
   try {
     MulmoStudioContextMethods.setSessionState(context, "image", true);
-    const newContext = await generateImages(context, settings, callbacks, options);
+    const newContext = await generateImages(context, args);
     MulmoStudioContextMethods.setSessionState(context, "image", false);
     return newContext;
   } catch (error) {
@@ -439,12 +465,15 @@ export const images = async (
 export const generateBeatImage = async (inputs: {
   index: number;
   context: MulmoStudioContext;
-  settings?: Record<string, string>;
-  callbacks?: CallbackFunction[];
-  forceMovie?: boolean;
-  forceImage?: boolean;
+  args?: PublicAPIArgs & {
+    forceMovie?: boolean;
+    forceImage?: boolean;
+    forceLipSync?: boolean;
+    forceSoundEffect?: boolean;
+  };
 }) => {
-  const { index, context, settings, callbacks, forceMovie, forceImage } = inputs;
+  const { index, context, args } = inputs;
+  const { settings, callbacks, forceMovie, forceImage, forceLipSync, forceSoundEffect } = args ?? {};
   const options = await graphOption(context, settings);
   const injections = await prepareGenerateImages(context);
   const graph = new GraphAI(beat_graph_data, defaultAgents, options);
@@ -457,6 +486,8 @@ export const generateBeatImage = async (inputs: {
   graph.injectValue("beat", context.studio.script.beats[index]);
   graph.injectValue("forceMovie", forceMovie ?? false);
   graph.injectValue("forceImage", forceImage ?? false);
+  graph.injectValue("forceLipSync", forceLipSync ?? false);
+  graph.injectValue("forceSoundEffect", forceSoundEffect ?? false);
   if (callbacks) {
     callbacks.forEach((callback) => {
       graph.registerCallback(callback);

@@ -1,0 +1,29 @@
+{
+  "title": "Multi-character Story",
+  "description": "Template for Multi-character Story.",
+  "systemPrompt": "Break the story into multiple beats, and put the story text in 'text' field. Generate image prompt for each character in the imageParams.images. Another AI will generate image for each beat based on its imagePrompt and specified characters in 'imageNames'. You don't need to repeat the image style in those image prompts. Use the JSON below as a template.",
+  "presentationStyle": {
+    "$mulmocast": {
+      "version": "1.1",
+      "credit": "closing"
+    },
+    "canvasSize": {
+      "width": 1536,
+      "height": 1024
+    },
+    "imageParams": {
+      "style": "<style>A dreamy, hyper-detailed anime style that blends photorealistic backgrounds with vibrant, saturated colors. The skies are often filled with luminous clouds, dazzling sunsets, or star-filled nights, rendered with a glowing, almost ethereal quality. Urban landscapes and rural scenery are meticulously illustrated, with attention to tiny details like reflections in puddles, neon lights, or the texture of grass swaying in the wind. Characters are drawn with soft, expressive features, standing out against the breathtaking environments, creating a sense of emotional depth and lyrical atmosphere. The overall mood is cinematic, romantic, and filled with a sense of fleeting beauty and longing.</style>",
+      "images": {
+        "[CHARACTER_1_ID]": {
+          "type": "imagePrompt",
+          "prompt": "[IMAGE PROMPT FOR THIS CHARACTER]"
+        },
+        "[CHARACTER_2_ID]": {
+          "type": "imagePrompt",
+          "prompt": "[IMAGE PROMPT FOR THIS CHARACTER]"
+        }
+      }
+    }
+  },
+  "scriptName": "story_with_characters.json"
+}

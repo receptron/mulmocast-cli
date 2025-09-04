@@ -1,10 +1,10 @@
 import fs from "fs";
 import { GraphAI, GraphAILogger } from "graphai";
-import { getReferenceImagePath } from "../utils/file.js";
+import { getReferenceImagePath, resolveAssetPath } from "../utils/file.js";
 import { getExtention } from "../utils/utils.js";
 
 import { graphOption } from "./images.js";
-import { MulmoPresentationStyleMethods, MulmoStudioContextMethods } from "../methods/index.js";
+import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { MulmoStudioContext, MulmoStudioBeat, MulmoImagePromptMedia } from "../types/index.js";
 
 import { imageOpenaiAgent, mediaMockAgent, imageGenAIAgent } from "../agents/index.js";
@@ -84,7 +84,7 @@ export const getImageRefs = async (context: MulmoStudioContext) => {
           imageRefs[key] = await generateReferenceImage({ context, key, index, image, force: false });
         } else if (image.type === "image") {
           if (image.source.kind === "path") {
-            imageRefs[key] = MulmoStudioContextMethods.resolveAssetPath(context, image.source.path);
+            imageRefs[key] = resolveAssetPath(context, image.source.path);
           } else if (image.source.kind === "url") {
             imageRefs[key] = await downLoadImage(context, key, image.source.url);
           }

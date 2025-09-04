@@ -1,7 +1,6 @@
 import fs from "fs";
 import { MulmoMediaSource, MulmoStudioContext } from "../types/index.js";
-import { getFullPath } from "../utils/file.js";
-import { MulmoStudioContextMethods } from "../methods/index.js";
+import { getFullPath, resolveAssetPath } from "../utils/file.js";
 
 export const MulmoMediaSourceMethods = {
   async getText(mediaSource: MulmoMediaSource, context: MulmoStudioContext) {
@@ -24,7 +23,7 @@ export const MulmoMediaSourceMethods = {
   resolve(mediaSource: MulmoMediaSource | undefined, context: MulmoStudioContext) {
     if (!mediaSource) return null;
     if (mediaSource.kind === "path") {
-      return MulmoStudioContextMethods.resolveAssetPath(context, mediaSource.path);
+      return resolveAssetPath(context, mediaSource.path);
     }
     if (mediaSource.kind === "url") {
       return mediaSource.url;

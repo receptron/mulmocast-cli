@@ -333,7 +333,7 @@ export const promptTemplates = [
     title: "Dr. Slump Style",
   },
   {
-    description: "Template for Ghibli-style comic presentation.",
+    description: "Ghibli-style comic.",
     filename: "ghibli_comic",
     presentationStyle: {
       $mulmocast: {
@@ -384,8 +384,66 @@ export const promptTemplates = [
     },
     scriptName: "image_prompts_template.json",
     systemPrompt:
+      "Another AI will generate comic strips for each beat based on the imagePrompt of that beat. Mention the reference in one of beats, if it exists. Use the JSON below as a template.",
+    title: "Ghibli-style comic.",
+  },
+  {
+    description: "Ghibli-style comic strips with nano banana.",
+    filename: "ghibli_comic_strips",
+    presentationStyle: {
+      $mulmocast: {
+        credit: "closing",
+        version: "1.1",
+      },
+      audioParams: {
+        audioVolume: 1,
+        bgmVolume: 0.2,
+        closingPadding: 0.8,
+        introPadding: 1,
+        outroPadding: 1,
+        padding: 0.3,
+        suppressSpeech: false,
+      },
+      canvasSize: {
+        height: 1024,
+        width: 1536,
+      },
+      imageParams: {
+        images: {
+          presenter: {
+            source: {
+              kind: "url",
+              url: "https://raw.githubusercontent.com/receptron/mulmocast-media/refs/heads/main/characters/ghibli_presenter.png",
+            },
+            type: "image",
+          },
+        },
+        model: "gemini-2.5-flash-image-preview",
+        provider: "google",
+        style:
+          "<style>Ghibli style multi-panel comic strips in landscape mode. Use speech bubbles with short, natural dialogue (1–6 words). Keep text minimal, like real comics. Let the art convey the story and emotions. Use the input image as the presenter.</style>",
+      },
+      movieParams: {
+        provider: "replicate",
+      },
+      soundEffectParams: {
+        provider: "replicate",
+      },
+      speechParams: {
+        speakers: {
+          Presenter: {
+            displayName: {
+              en: "Presenter",
+            },
+            voiceId: "shimmer",
+          },
+        },
+      },
+    },
+    scriptName: "text_only_template.json",
+    systemPrompt:
       "Another AI will generate comic strips for each beat based on the text description of that beat. Mention the reference in one of beats, if it exists. Use the JSON below as a template.",
-    title: "Ghibli comic style",
+    title: "Ghibli-style comic strips",
   },
   {
     description: "Template for Ghost in the shell style comic presentation.",
@@ -769,6 +827,63 @@ export const promptTemplates = [
     title: "Short movie template",
   },
   {
+    description: "Template for Multi-character Story.",
+    filename: "sifi_story",
+    presentationStyle: {
+      $mulmocast: {
+        credit: "closing",
+        version: "1.1",
+      },
+      audioParams: {
+        audioVolume: 1,
+        bgmVolume: 0.2,
+        closingPadding: 0.8,
+        introPadding: 1,
+        outroPadding: 1,
+        padding: 0.3,
+        suppressSpeech: false,
+      },
+      canvasSize: {
+        height: 1024,
+        width: 1536,
+      },
+      imageParams: {
+        images: {
+          "[CHARACTER_1_ID]": {
+            prompt: "[IMAGE PROMPT FOR THIS CHARACTER]",
+            type: "imagePrompt",
+          },
+          "[CHARACTER_2_ID]": {
+            prompt: "[IMAGE PROMPT FOR THIS CHARACTER]",
+            type: "imagePrompt",
+          },
+        },
+        style:
+          "<style>A dreamy, hyper-detailed anime style that blends photorealistic backgrounds with vibrant, saturated colors. The skies are often filled with luminous clouds, dazzling sunsets, or star-filled nights, rendered with a glowing, almost ethereal quality. Urban landscapes and rural scenery are meticulously illustrated, with attention to tiny details like reflections in puddles, neon lights, or the texture of grass swaying in the wind. Characters are drawn with soft, expressive features, standing out against the breathtaking environments, creating a sense of emotional depth and lyrical atmosphere. The overall mood is cinematic, romantic, and filled with a sense of fleeting beauty and longing.</style>",
+      },
+      movieParams: {
+        provider: "replicate",
+      },
+      soundEffectParams: {
+        provider: "replicate",
+      },
+      speechParams: {
+        speakers: {
+          Presenter: {
+            displayName: {
+              en: "Presenter",
+            },
+            voiceId: "shimmer",
+          },
+        },
+      },
+    },
+    scriptName: "story_with_characters.json",
+    systemPrompt:
+      "Break the story into multiple beats, and put the story text in 'text' field. Generate image prompt for each character in the imageParams.images. Another AI will generate image for each beat based on its imagePrompt and specified characters in 'imageNames'. You don't need to repeat the image style in those image prompts. Use the JSON below as a template.",
+    title: "Multi-character Story",
+  },
+  {
     description: "Template for A Movie Trailer.",
     filename: "trailer",
     presentationStyle: {
@@ -816,5 +931,13 @@ export const promptTemplates = [
     systemPrompt:
       "This script is for a movie trailer. Another AI will generate images for each beat based on the image prompt of that beat. Movie prompts must be written in English.",
     title: "Movie Trailer template",
+  },
+  {
+    description: "Template for business analysis presentation.",
+    filename: "vision",
+    scriptName: "vision.json",
+    systemPrompt:
+      "First, determine a set of slides (=beats) to present, and choose an appropriate style for each beat (from the JSON template blow) and add required data for it. For each beat, put an appropriate text to the text field for the presenter to read for that slide in details. Mention the reference in one of beats, if it exists. Use the JSON below as a template.",
+    title: "Business Analysis",
   },
 ];

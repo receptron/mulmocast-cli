@@ -4,7 +4,7 @@
   },
   "lang": "en",
   "captionParams": {
-    "lang": "ja",
+    "lang": "en",
     "styles": ["color: yellow"]
   },
   "beats": [
@@ -19,7 +19,7 @@
       }
     },
     {
-      "text": "Hello World. May the force be with you. This is a long caption. This is a really long caption.",
+      "text": "Hello World. May the force be with you.\nThis is a long caption.\nThis is a really long caption.",
       "image": {
         "type": "textSlide",
         "slide": {

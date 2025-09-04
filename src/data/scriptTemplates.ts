@@ -1039,6 +1039,32 @@ export const scriptTemplates = [
     },
     beats: [
       {
+        imageNames: ["[CHARACTER_ID_1]", "[CHARACTER_ID_2]"],
+        imagePrompt: "[IMAGE_PROMPT FOR THIS BEAT with both characters]",
+        text: "[STORY TEXT FOR THIS BEAT FOR THIS BEAT]",
+      },
+      {
+        imageNames: ["[CHARACTER_ID_1]"],
+        imagePrompt: "[IMAGE_PROMPT FOR THIS BEAT with a single character]",
+        text: "[STORY TEXT FOR THIS BEAT FOR THIS BEAT]",
+      },
+      {
+        imageNames: ["[CHARACTER_ID_2]"],
+        imagePrompt: "[IMAGE_PROMPT FOR THIS BEAT with another character]",
+        text: "[STORY TEXT FOR THIS BEAT FOR THIS BEAT]",
+      },
+    ],
+    filename: "story_with_characters",
+    lang: "en",
+    title: "[TITLE: Brief, engaging title for the topic]",
+  },
+  {
+    $mulmocast: {
+      credit: "closing",
+      version: "1.1",
+    },
+    beats: [
+      {
         text: "[OPENING_BEAT: Introduce the topic with a hook. Reference the source material and set up why this topic matters. Usually 2-3 sentences that grab attention and provide context.]",
       },
       {
@@ -1067,6 +1093,1350 @@ export const scriptTemplates = [
       },
     ],
     title: "[TITLE: Brief, engaging title for the topic]",
+  },
+  {
+    $mulmocast: {
+      version: "1.1",
+    },
+    beats: [
+      {
+        image: {
+          data: {
+            heading: "How AI Is Reshaping Referencing",
+            subheading: "From sources to systems: reliability, traceability, and credit in the age of models",
+          },
+          style: "sectionDividerPage",
+          type: "vision",
+        },
+        text: "sectionDividerPage",
+      },
+      {
+        image: {
+          data: {
+            items: [
+              "Executive summary",
+              "Reference reliability and hallucinations",
+              "Attribution and credit in AI workflows",
+              "Standards & compliance (academia, journalism, law)",
+              "Roadmap & recommendations",
+            ],
+            title: "Agenda",
+          },
+          style: "agendaPage",
+          type: "vision",
+        },
+        text: "agendaPage",
+      },
+      {
+        image: {
+          data: {
+            bullets: [
+              "AI accelerates discovery but introduces novel risks in citation accuracy and provenance.",
+              "RAG and structured retrieval reduce hallucinations when sources are governed and auditable.",
+              "Attribution standards are emerging; early adoption lowers legal and reputational exposure.",
+              "Watermarking and signed citations enable verifiable chains of reference.",
+              "Organizations need policy, training, and tooling to ensure traceable, compliant referencing.",
+            ],
+            title: "Executive Summary",
+          },
+          style: "executiveSummaryPage",
+          type: "vision",
+        },
+        text: "executiveSummaryPage",
+      },
+      {
+        image: {
+          data: {
+            headline: "Trustworthy referencing is a prerequisite for AI at scale.",
+            supports: [
+              "Stakeholders require verifiable provenance for critical decisions.",
+              "Standards (e.g., citations, licensing) are uneven across industries.",
+              "Tooling gaps persist between LLM outputs and enterprise compliance systems.",
+            ],
+          },
+          style: "keyMessageWithSupportsPage",
+          type: "vision",
+        },
+        text: "keyMessageWithSupportsPage",
+      },
+      {
+        image: {
+          data: {
+            hypothesis: "Firms that implement verifiable AI referencing will reduce risk and accelerate adoption.",
+            implications: [
+              "Lower legal exposure on copyright and misinformation claims.",
+              "Faster audit cycles through machine-readable provenance.",
+              "Higher user confidence and usage in knowledge-heavy workflows.",
+            ],
+            nextSteps: [
+              "Deploy governed retrieval with source whitelists.",
+              "Adopt signed citations and immutable logs for high-stakes outputs.",
+              "Train users on prompt patterns that preserve attribution.",
+            ],
+          },
+          style: "hypothesisPage",
+          type: "vision",
+        },
+        text: "hypothesisPage",
+      },
+      {
+        image: {
+          data: {
+            branches: [
+              ["Provenance capture", "Source governance", "Traceability"],
+              ["Legal & licensing", "Attribution norms", "Fair use boundaries"],
+              ["User behavior", "Training & prompts", "Review workflows"],
+            ],
+            rootIssue: "How to ensure accurate, compliant AI referencing?",
+          },
+          style: "issueTreePage",
+          type: "vision",
+        },
+        text: "issueTreePage",
+      },
+      {
+        image: {
+          data: {
+            drivers: [
+              ["Governed corpus coverage", "Retriever quality", "Index freshness"],
+              ["Citation rendering logic", "Signed-source support", "Reviewer adherence"],
+              ["User prompt hygiene", "Auto-evidence insertion", "UI nudges"],
+            ],
+            metric: "Reference accuracy rate (%)",
+          },
+          style: "driverTreePage",
+          type: "vision",
+        },
+        text: "driverTreePage",
+      },
+      {
+        image: {
+          data: {
+            groups: [
+              {
+                items: ["Hallucinations", "Retriever gaps", "Version drift"],
+                label: "Technical",
+              },
+              {
+                items: ["Copyright", "Licensing", "Privacy & PII"],
+                label: "Legal",
+              },
+              {
+                items: ["Review latency", "Policy ambiguity", "Training gaps"],
+                label: "Operational",
+              },
+            ],
+            title: "MECE: Reference Risk Areas",
+          },
+          style: "meceListPage",
+          type: "vision",
+        },
+        text: "meceListPage",
+      },
+      {
+        image: {
+          data: {
+            details: [
+              ["Use source whitelists", "Track doc versions", "Sign evidence blobs"],
+              ["Expose citations in UI", "Link to canonical sources", "Store prompts & context"],
+              ["Automate QA sampling", "Monitor reference KPIs", "Escalate anomalies"],
+            ],
+            keyMessage: "Verifiable references unlock safe, scalable AI adoption.",
+            supports: ["Reduces legal and reputational risk", "Improves stakeholder confidence", "Shortens audit cycles"],
+          },
+          style: "pyramidPrinciplePage",
+          type: "vision",
+        },
+        text: "pyramidPrinciplePage",
+      },
+      {
+        image: {
+          data: {
+            answer: "Standardize governed retrieval, signed citations, and review workflows integrated into authoring tools.",
+            complication: "AI can misattribute or fabricate sources, risking credibility and compliance.",
+            question: "How can we ensure references are accurate, traceable, and compliant?",
+            situation: "Teams increasingly rely on AI to synthesize knowledge and draft outputs.",
+          },
+          style: "scqaPage",
+          type: "vision",
+        },
+        text: "scqaPage",
+      },
+      {
+        image: {
+          data: {
+            opportunities: ["New evidence UX", "Standardized attribution", "Automated audits"],
+            strengths: ["Speed of synthesis", "Scalable drafting", "Broad corpus reach"],
+            threats: ["Regulatory fines", "Misinformation", "IP disputes"],
+            weaknesses: ["Hallucinations", "Opaque provenance", "Reviewer overload"],
+          },
+          style: "swotPage",
+          type: "vision",
+        },
+        text: "swotPage",
+      },
+      {
+        image: {
+          data: {
+            company: ["Commit to verifiable AI outputs", "Invest in governed retrieval"],
+            competitor: ["Adopting reference-safe workflows", "Marketing 'trust' as a differentiator"],
+            customer: ["Needs trustworthy citations", "Wants explorable sources"],
+          },
+          style: "threeCPage",
+          type: "vision",
+        },
+        text: "threeCPage",
+      },
+      {
+        image: {
+          data: {
+            place: ["Browser extension", "Docs add-in", "APIs"],
+            price: ["Tiered by audit features", "Enterprise compliance add-ons"],
+            product: ["Reference-safe AI assistant", "Evidence panel", "Citation export"],
+            promotion: ["Risk reduction ROI", "Case studies", "Compliance partnerships"],
+          },
+          style: "fourPPage",
+          type: "vision",
+        },
+        text: "fourPPage",
+      },
+      {
+        image: {
+          data: {
+            sharedValues: "Truth, transparency, accountability",
+            skills: "Prompting, retrieval tuning, compliance literacy",
+            staff: "Knowledge stewards, AI librarians, compliance reviewers",
+            strategy: "Make 'trustworthy references' a core AI value prop",
+            structure: "Central knowledge governance with federated champions",
+            style: "Evidence-first culture",
+            systems: "RAG, signing, audit logs integrated in content tools",
+          },
+          style: "sevenSPage",
+          type: "vision",
+        },
+        text: "sevenSPage",
+      },
+      {
+        image: {
+          data: {
+            primary: ["Ingestion", "Indexing", "Retrieval", "Generation", "Review", "Publication"],
+            support: ["Governance", "Security", "Compliance", "Training", "Monitoring"],
+          },
+          style: "valueChainPage",
+          type: "vision",
+        },
+        text: "valueChainPage",
+      },
+      {
+        image: {
+          data: {
+            buyers: ["Enterprises", "Universities", "Newsrooms"],
+            newEntrants: ["AI-first doc tools", "Verification startups"],
+            rivalry: ["Platform ecosystems", "Vertical specialists"],
+            substitutes: ["Manual research", "Traditional search-only"],
+            suppliers: ["Model providers", "Content licensors"],
+          },
+          style: "porterFiveForcesPage",
+          type: "vision",
+        },
+        text: "porterFiveForcesPage",
+      },
+      {
+        image: {
+          data: {
+            blocks: {
+              "Cost Structure": ["Compute", "Licenses", "Review ops"],
+              "Customer Relationships": ["Embedded in workflows", "SLAs"],
+              "Customer Segments": ["Legal", "Research", "Editorial"],
+              "Key Activities": ["Indexing", "Retrieval", "Signing", "QA"],
+              "Key Partners": ["Model vendors", "Content platforms", "Auditors"],
+              "Key Resources": ["Curated corpora", "Embeddings index", "Audit logs"],
+              "Revenue Streams": ["Seats", "Usage", "Compliance tier"],
+              "Value Propositions": ["Trustworthy AI outputs", "Time saved", "Reduced risk"],
+              Channels: ["Add-ins", "APIs", "Marketplace"],
+            },
+          },
+          style: "businessModelCanvasPage",
+          type: "vision",
+        },
+        text: "businessModelCanvasPage",
+      },
+      {
+        image: {
+          data: {
+            stages: ["Discover", "Draft", "Verify", "Publish", "Audit"],
+            touchpoints: [
+              ["Search UI", "Corpus filters"],
+              ["Editor plugin", "Reference panel"],
+              ["Reviewer queue", "Signed citations"],
+              ["Export formats", "Permalinks"],
+              ["Randomized QA", "Dashboards"],
+            ],
+          },
+          style: "customerJourneyPage",
+          type: "vision",
+        },
+        text: "customerJourneyPage",
+      },
+      {
+        image: {
+          data: {
+            stakeholders: [
+              {
+                influence: 9,
+                interest: 8,
+                notes: "Reduce liability",
+                style: "Legal",
+              },
+              {
+                influence: 7,
+                interest: 9,
+                notes: "Protect credibility",
+                style: "Editorial",
+              },
+              {
+                influence: 8,
+                interest: 7,
+                notes: "Build RAG & signing",
+                style: "Engineering",
+              },
+              {
+                influence: 6,
+                interest: 10,
+                notes: "Need clarity & speed",
+                style: "End users",
+              },
+            ],
+          },
+          style: "stakeholderMapPage",
+          type: "vision",
+        },
+        text: "stakeholderMapPage",
+      },
+      {
+        image: {
+          data: {
+            assignments: [
+              ["A", "R", "C", "I"],
+              ["C", "A/R", "I", "I"],
+              ["I", "C", "A/R", "I"],
+              ["C", "R", "I", "A"],
+            ],
+            roles: ["Legal", "Engineering", "L&D", "Ops"],
+            tasks: ["Define policy", "Implement RAG", "Roll out training", "Monitor KPIs"],
+          },
+          style: "raciPage",
+          type: "vision",
+        },
+        text: "raciPage",
+      },
+      {
+        image: {
+          data: {
+            metrics: [
+              {
+                label: "Reference accuracy",
+                status: "On track",
+                target: "≥95%",
+                value: "97%",
+              },
+              {
+                label: "Signed citation coverage",
+                status: "On track",
+                target: "≥80%",
+                value: "82%",
+              },
+              {
+                label: "Reviewer SLA",
+                status: "On track",
+                target: "≤6h",
+                value: "4h",
+              },
+            ],
+            title: "Reference Quality KPIs",
+          },
+          style: "okrKpiDashboardPage",
+          type: "vision",
+        },
+        text: "okrKpiDashboardPage",
+      },
+      {
+        image: {
+          data: {
+            perspectives: [
+              {
+                items: ["Reduce rework costs", "Avoid penalties"],
+                style: "Financial",
+              },
+              {
+                items: ["Trust score ↑", "NPS ↑"],
+                style: "Customer",
+              },
+              {
+                items: ["QA automation", "Corpus governance"],
+                style: "Internal",
+              },
+              {
+                items: ["Reviewer upskilling", "Prompt playbooks"],
+                style: "Learning & Growth",
+              },
+            ],
+          },
+          style: "balancedScorecardPage",
+          type: "vision",
+        },
+        text: "balancedScorecardPage",
+      },
+      {
+        image: {
+          data: {
+            items: [
+              {
+                label: "Policy & baseline KPIs",
+                quarter: "Q1",
+              },
+              {
+                label: "Signed citations rollout",
+                quarter: "Q2",
+              },
+              {
+                label: "Reviewer workflow automation",
+                quarter: "Q3",
+              },
+              {
+                label: "External audits & certification",
+                quarter: "Q4",
+              },
+            ],
+            quarters: ["Q1", "Q2", "Q3", "Q4"],
+          },
+          style: "quarterlyRoadmapPage",
+          type: "vision",
+        },
+        text: "quarterlyRoadmapPage",
+      },
+      {
+        image: {
+          data: {
+            milestones: [
+              {
+                date: "2025-02-01",
+                label: "Policy approved",
+                notes: "Exec sign-off",
+              },
+              {
+                date: "2025-04-15",
+                label: "RAG MVP live",
+                notes: "Limited corpus",
+              },
+              {
+                date: "2025-06-30",
+                label: "Signed citations",
+                notes: "Tier-1 content",
+              },
+              {
+                date: "2025-09-30",
+                label: "Audit-ready",
+                notes: "Dashboards & sampling",
+              },
+            ],
+            title: "Implementation Timeline",
+          },
+          style: "milestoneTimelinePage",
+          type: "vision",
+        },
+        text: "milestoneTimelinePage",
+      },
+      {
+        image: {
+          data: {
+            tasks: [
+              {
+                end: "2025-02-01",
+                start: "2025-01-05",
+                style: "Policy drafting",
+              },
+              {
+                end: "2025-04-15",
+                start: "2025-02-05",
+                style: "RAG build",
+              },
+              {
+                end: "2025-06-30",
+                start: "2025-04-01",
+                style: "Signing & logs",
+              },
+              {
+                end: "2025-08-01",
+                start: "2025-05-15",
+                style: "Reviewer ops",
+              },
+            ],
+          },
+          style: "ganttSimplePage",
+          type: "vision",
+        },
+        text: "ganttSimplePage",
+      },
+      {
+        image: {
+          data: {
+            steps: [
+              {
+                label: "Baseline (manual search)",
+                value: 0,
+              },
+              {
+                label: "RAG-enabled drafting",
+                value: 120,
+              },
+              {
+                label: "Signed citations",
+                value: 160,
+              },
+              {
+                label: "Automated QA",
+                value: 190,
+              },
+            ],
+            title: "Time Savings from AI Referencing (hrs/month)",
+          },
+          style: "waterfallPage",
+          type: "vision",
+        },
+        text: "waterfallPage",
+      },
+      {
+        image: {
+          data: {
+            stages: [
+              {
+                label: "Drafts created",
+                value: 1000,
+              },
+              {
+                label: "Drafts with citations",
+                value: 850,
+              },
+              {
+                label: "Signed citations",
+                value: 700,
+              },
+              {
+                label: "Approved & published",
+                value: 630,
+              },
+            ],
+          },
+          style: "funnelPage",
+          type: "vision",
+        },
+        text: "funnelPage",
+      },
+      {
+        image: {
+          data: {
+            quadrants: [["Scholarly databases"], ["AI assistants with signing"], ["Raw web search"], ["Legacy manual workflows"]],
+            xAxis: "Evidence depth",
+            yAxis: "Ease of use",
+          },
+          style: "twoByTwoMatrixPage",
+          type: "vision",
+        },
+        text: "twoByTwoMatrixPage",
+      },
+      {
+        image: {
+          data: {
+            cashCows: ["Governed enterprise search"],
+            dogs: ["Unverified copy-paste tools"],
+            questionMarks: ["Generative browsers"],
+            stars: ["Signed-citation AI editors"],
+          },
+          style: "bcgMatrixPage",
+          type: "vision",
+        },
+        text: "bcgMatrixPage",
+      },
+      {
+        image: {
+          data: {
+            competitiveStrength: ["Corpus quality", "Model integration", "Compliance features"],
+            industryAttractiveness: ["Regulatory clarity", "IP-safe corpora", "Audit tooling"],
+            placements: [
+              {
+                col: 2,
+                row: 0,
+                style: "Signed AI editor",
+              },
+              {
+                col: 1,
+                row: 1,
+                style: "Generic chatbot",
+              },
+              {
+                col: 0,
+                row: 2,
+                style: "Manual search",
+              },
+            ],
+          },
+          style: "geMcKinseyMatrixPage",
+          type: "vision",
+        },
+        text: "geMcKinseyMatrixPage",
+      },
+      {
+        image: {
+          data: {
+            categories: ["Academic", "News", "Internal docs", "Web"],
+            title: "Content Types by Share & Effort",
+          },
+          style: "marimekkoPlaceholderPage",
+          type: "vision",
+        },
+        text: "marimekkoPlaceholderPage",
+      },
+      {
+        image: {
+          data: {
+            points: [
+              {
+                label: "Legal memos",
+                r: 20,
+                x: 8,
+                y: 9,
+              },
+              {
+                label: "Blog posts",
+                r: 15,
+                x: 4,
+                y: 5,
+              },
+              {
+                label: "Research briefs",
+                r: 18,
+                x: 7,
+                y: 7,
+              },
+            ],
+            title: "Risk vs Impact vs Adoption",
+          },
+          style: "bubbleChartPlaceholderPage",
+          type: "vision",
+        },
+        text: "bubbleChartPlaceholderPage",
+      },
+      {
+        image: {
+          data: {
+            cols: ["Accuracy", "Provenance", "Speed", "Compliance"],
+            rows: ["Teams"],
+            values: [[8, 7, 9, 6]],
+          },
+          style: "heatmapPlaceholderPage",
+          type: "vision",
+        },
+        text: "heatmapPlaceholderPage",
+      },
+      {
+        image: {
+          data: {
+            kpis: [
+              {
+                delta: "+2pp",
+                label: "Reference Accuracy",
+                value: "97%",
+              },
+              {
+                delta: "+5pp",
+                label: "Signed Coverage",
+                value: "82%",
+              },
+              {
+                delta: "-0.4pp",
+                label: "Audit Exceptions",
+                value: "1.2%",
+              },
+            ],
+            title: "KPI Highlights",
+          },
+          style: "kpiHighlightPage",
+          type: "vision",
+        },
+        text: "kpiHighlightPage",
+      },
+      {
+        image: {
+          data: {
+            after: ["Governed retrieval", "Standardized citations", "Signed evidence"],
+            before: ["Manual searches", "Inconsistent citations", "Slow audits"],
+            title: "Before vs After AI Referencing",
+          },
+          style: "beforeAfterPage",
+          type: "vision",
+        },
+        text: "beforeAfterPage",
+      },
+      {
+        image: {
+          data: {
+            criteria: ["Accuracy", "Latency", "Compliance", "Cost"],
+            options: ["Generic chatbot", "RAG + signing", "Manual review"],
+            scores: [
+              [5, 7, 9, 6],
+              [8, 7, 9, 7],
+              [9, 3, 10, 4],
+            ],
+          },
+          style: "optionEvaluationPage",
+          type: "vision",
+        },
+        text: "optionEvaluationPage",
+      },
+      {
+        image: {
+          data: {
+            risks: [
+              {
+                impact: "High",
+                likelihood: "Medium",
+                mitigation: "Signed citations + review",
+                risk: "Misattribution",
+              },
+              {
+                impact: "High",
+                likelihood: "Low",
+                mitigation: "Licensed corpora + filters",
+                risk: "Copyright claims",
+              },
+              {
+                impact: "High",
+                likelihood: "Low",
+                mitigation: "Redaction + policy",
+                risk: "PII leakage",
+              },
+            ],
+          },
+          style: "riskMitigationPage",
+          type: "vision",
+        },
+        text: "riskMitigationPage",
+      },
+      {
+        image: {
+          data: {
+            players: [
+              {
+                style: "AI Editor (signed)",
+                x: 8,
+                y: 8,
+              },
+              {
+                style: "Generic chatbot",
+                x: 4,
+                y: 7,
+              },
+              {
+                style: "Manual research",
+                x: 9,
+                y: 4,
+              },
+            ],
+            xAxis: "Compliance readiness",
+            yAxis: "User adoption",
+          },
+          style: "positioningMapPage",
+          type: "vision",
+        },
+        text: "positioningMapPage",
+      },
+      {
+        image: {
+          data: {
+            notes: "Knowledge-heavy enterprises, academia, and media markets.",
+            sam: 12000000000,
+            som: 3000000000,
+            tam: 50000000000,
+          },
+          style: "tamSamSomPage",
+          type: "vision",
+        },
+        text: "tamSamSomPage",
+      },
+      {
+        image: {
+          data: {
+            drivers: ["Regulatory push for provenance", "Enterprise AI adoption", "Cost pressure to automate reviews"],
+            title: "Market Growth Drivers",
+          },
+          style: "marketDriversPage",
+          type: "vision",
+        },
+        text: "marketDriversPage",
+      },
+      {
+        image: {
+          data: {
+            pricingNotes: "Discounts for academic & nonprofit segments with strict compliance needs.",
+            streams: ["Seats", "Usage", "Compliance add-on"],
+          },
+          style: "revenueModelPage",
+          type: "vision",
+        },
+        text: "revenueModelPage",
+      },
+      {
+        image: {
+          data: {
+            buckets: ["Compute", "Licenses", "Storage", "Review ops"],
+            fixedVsVariable: ["Fixed: platform & storage", "Variable: compute & review time"],
+          },
+          style: "costStructurePage",
+          type: "vision",
+        },
+        text: "costStructurePage",
+      },
+      {
+        image: {
+          data: {
+            nodes: [
+              {
+                id: "1",
+                label: "Head of Knowledge Governance",
+                parentId: "",
+              },
+              {
+                id: "2",
+                label: "AI Librarian",
+                parentId: "1",
+              },
+              {
+                id: "3",
+                label: "Compliance Reviewer",
+                parentId: "1",
+              },
+            ],
+          },
+          style: "orgChartPage",
+          type: "vision",
+        },
+        text: "orgChartPage",
+      },
+      {
+        image: {
+          data: {
+            capabilities: [
+              {
+                level: 3,
+                style: "Provenance capture",
+              },
+              {
+                level: 2,
+                style: "Signing & verification",
+              },
+              {
+                level: 4,
+                style: "Reviewer workflow",
+              },
+            ],
+          },
+          style: "capabilityMaturityPage",
+          type: "vision",
+        },
+        text: "capabilityMaturityPage",
+      },
+      {
+        image: {
+          data: {
+            items: [
+              {
+                label: "Governed RAG",
+                phase: "MVP",
+              },
+              {
+                label: "Signed citations",
+                phase: "Scale",
+              },
+              {
+                label: "External audits",
+                phase: "Certify",
+              },
+            ],
+            phases: ["MVP", "Scale", "Certify"],
+          },
+          style: "techRoadmapPage",
+          type: "vision",
+        },
+        text: "techRoadmapPage",
+      },
+      {
+        image: {
+          data: {
+            dimensions: ["Data", "Process", "People", "Tech"],
+            levels: [3, 3, 2, 4],
+            notes: "Prioritize training and governance backlog.",
+          },
+          style: "digitalMaturityPage",
+          type: "vision",
+        },
+        text: "digitalMaturityPage",
+      },
+      {
+        image: {
+          data: {
+            categories: ["Models", "Content", "Tooling", "Auditors"],
+            entities: [
+              {
+                category: "Models",
+                style: "General LLMs",
+              },
+              {
+                category: "Content",
+                style: "Licensed databases",
+              },
+              {
+                category: "Tooling",
+                style: "Signing libraries",
+              },
+              {
+                category: "Auditors",
+                style: "External firms",
+              },
+            ],
+          },
+          style: "ecosystemMapPage",
+          type: "vision",
+        },
+        text: "ecosystemMapPage",
+      },
+      {
+        image: {
+          data: {
+            notes: "Evidence-first culture requires incentives and leadership modeling.",
+            stages: ["Awareness", "Understanding", "Adoption", "Advocacy"],
+          },
+          style: "changeCurvePage",
+          type: "vision",
+        },
+        text: "changeCurvePage",
+      },
+      {
+        image: {
+          data: {
+            audiences: ["Executives", "Managers", "Contributors"],
+            cadence: "Bi-weekly updates for first two quarters",
+            channels: ["Town halls", "Docs add-in tips", "Slack nudges"],
+          },
+          style: "communicationPlanPage",
+          type: "vision",
+        },
+        text: "communicationPlanPage",
+      },
+      {
+        image: {
+          data: {
+            milestones: ["MVP live", "Org-wide training", "Audit pilot"],
+            workstreams: ["Tech", "Policy", "Training", "Ops"],
+          },
+          style: "integrationPlanPage",
+          type: "vision",
+        },
+        text: "integrationPlanPage",
+      },
+      {
+        image: {
+          data: {
+            competitors: ["Manual", "Generic chatbot", "Signed AI editor"],
+            metrics: ["Accuracy", "Provenance", "Latency", "Cost"],
+          },
+          style: "benchmarkingTablePage",
+          type: "vision",
+        },
+        text: "benchmarkingTablePage",
+      },
+      {
+        image: {
+          data: {
+            questions: ["Do you trust AI references?", "Is evidence easy to review?"],
+            summaries: ["Trust increased post-signing rollout.", "Review time dropped by 35%."],
+          },
+          style: "surveyResultsPage",
+          type: "vision",
+        },
+        text: "surveyResultsPage",
+      },
+      {
+        image: {
+          data: {
+            personas: [
+              {
+                bio: "Synthesizes reports daily",
+                needs: ["Accurate citations", "Deep sources"],
+                style: "Researcher",
+              },
+              {
+                bio: "Approves publications",
+                needs: ["Fast verification", "Audit trail"],
+                style: "Editor",
+              },
+            ],
+          },
+          style: "personasPage",
+          type: "vision",
+        },
+        text: "personasPage",
+      },
+      {
+        image: {
+          data: {
+            descriptors: ["Risk tolerance", "Compliance needs", "Speed expectations"],
+            segments: ["Academic", "Enterprise", "Media"],
+          },
+          style: "segmentationPage",
+          type: "vision",
+        },
+        text: "segmentationPage",
+      },
+      {
+        image: {
+          data: {
+            steps: [
+              {
+                label: "List price",
+                value: 100,
+              },
+              {
+                label: "Compliance discount",
+                value: -15,
+              },
+              {
+                label: "Volume discount",
+                value: -10,
+              },
+              {
+                label: "Final",
+                value: 75,
+              },
+            ],
+          },
+          style: "pricingWaterfallPage",
+          type: "vision",
+        },
+        text: "pricingWaterfallPage",
+      },
+      {
+        image: {
+          data: {
+            scenarios: ["Best case", "Expected", "Stress"],
+            variables: ["Corpus coverage", "Reviewer time", "Compute cost"],
+          },
+          style: "sensitivityAnalysisPage",
+          type: "vision",
+        },
+        text: "sensitivityAnalysisPage",
+      },
+      {
+        image: {
+          data: {
+            categories: ["Revenue", "COGS", "Opex"],
+            values: [20, 8, 6],
+          },
+          style: "pLBreakdownPage",
+          type: "vision",
+        },
+        text: "pLBreakdownPage",
+      },
+      {
+        image: {
+          data: {
+            inflows: [8, 10, 12, 14],
+            outflows: [6, 7, 8, 9],
+          },
+          style: "cashFlowPage",
+          type: "vision",
+        },
+        text: "cashFlowPage",
+      },
+      {
+        image: {
+          data: {
+            assets: ["Cash", "Intangibles", "Receivables"],
+            equity: ["Paid-in capital", "Retained earnings"],
+            liabilities: ["Deferred revenue", "Accounts payable"],
+          },
+          style: "balanceSheetPage",
+          type: "vision",
+        },
+        text: "balanceSheetPage",
+      },
+      {
+        image: {
+          data: {
+            drivers: ["Adoption", "Retention", "Compliance premium"],
+          },
+          style: "shareholderValueTreePage",
+          type: "vision",
+        },
+        text: "shareholderValueTreePage",
+      },
+      {
+        image: {
+          data: {
+            assumptions: ["3-year horizon", "10% discount rate", "Compliance uplift included"],
+            npv: 12500000,
+          },
+          style: "npvSummaryPage",
+          type: "vision",
+        },
+        text: "npvSummaryPage",
+      },
+      {
+        image: {
+          data: {
+            impacts: ["Higher audit cost", "Balanced investment", "Faster rollout"],
+            scenarios: ["Tight regulation", "Moderate", "Self-regulation"],
+          },
+          style: "scenarioPlanningPage",
+          type: "vision",
+        },
+        text: "scenarioPlanningPage",
+      },
+      {
+        image: {
+          data: {
+            areas: ["Copyright", "Privacy", "Disclosure"],
+            levels: ["Green", "Amber", "Red"],
+          },
+          style: "complianceHeatmapPage",
+          type: "vision",
+        },
+        text: "complianceHeatmapPage",
+      },
+      {
+        image: {
+          data: {
+            environmental: ["Efficient compute", "Green datacenters"],
+            governance: ["Audit logs", "Policy oversight"],
+            social: ["Source credit", "Anti-bias reviews"],
+          },
+          style: "esgFrameworkPage",
+          type: "vision",
+        },
+        text: "esgFrameworkPage",
+      },
+      {
+        image: {
+          data: {
+            initiatives: ["Open citations to public research", "Academic partnerships"],
+          },
+          style: "csrInitiativesPage",
+          type: "vision",
+        },
+        text: "csrInitiativesPage",
+      },
+      {
+        image: {
+          data: {
+            actions: ["Track energy per query", "Optimize inference", "Offset remaining"],
+            phases: ["Measure", "Reduce", "Offset"],
+          },
+          style: "sustainabilityRoadmapPage",
+          type: "vision",
+        },
+        text: "sustainabilityRoadmapPage",
+      },
+      {
+        image: {
+          data: {
+            loops: ["Data ingestion", "Use", "Feedback", "Curation"],
+          },
+          style: "circularEconomyMapPage",
+          type: "vision",
+        },
+        text: "circularEconomyMapPage",
+      },
+      {
+        image: {
+          data: {
+            counts: [120, 24, 8, 3],
+            stages: ["Ideas", "Prototypes", "Pilots", "Scale"],
+          },
+          style: "innovationFunnelPage",
+          type: "vision",
+        },
+        text: "innovationFunnelPage",
+      },
+      {
+        image: {
+          data: {
+            items: [
+              {
+                label: "Evidence panel",
+                release: "R1",
+              },
+              {
+                label: "Signed citations",
+                release: "R2",
+              },
+              {
+                label: "Reviewer automation",
+                release: "R3",
+              },
+            ],
+            releases: ["R1", "R2", "R3"],
+          },
+          style: "productRoadmapPage",
+          type: "vision",
+        },
+        text: "productRoadmapPage",
+      },
+      {
+        image: {
+          data: {
+            milestones: ["Beta cohort", "GA", "Case studies"],
+            risks: ["Overpromise", "Adoption lag", "Change resistance"],
+            workstreams: ["Marketing", "Sales", "Success"],
+          },
+          style: "launchPlanPage",
+          type: "vision",
+        },
+        text: "launchPlanPage",
+      },
+      {
+        image: {
+          data: {
+            stages: ["Leads", "Qualified", "Trials", "Paid"],
+            values: [400, 220, 120, 60],
+          },
+          style: "pipelineFunnelPage",
+          type: "vision",
+        },
+        text: "pipelineFunnelPage",
+      },
+      {
+        image: {
+          data: {
+            metrics: ["Win rate 32%", "Cycle time 48d", "Avg deal $85k"],
+            notes: "Education on value of signed references shortens cycles.",
+          },
+          style: "salesDashboardPage",
+          type: "vision",
+        },
+        text: "salesDashboardPage",
+      },
+      {
+        image: {
+          data: {
+            levers: ["Content marketing", "Compliance webinars", "Partner co-sell", "Analyst briefings"],
+            notes: "Lead with risk reduction and measurable trust.",
+          },
+          style: "marketingMixPage",
+          type: "vision",
+        },
+        text: "marketingMixPage",
+      },
+      {
+        image: {
+          data: {
+            metrics: ["Time-to-value", "Feature usage", "CSAT", "Renewal rate"],
+            stages: ["Onboard", "Adopt", "Expand", "Renew"],
+          },
+          style: "customerSuccessJourneyPage",
+          type: "vision",
+        },
+        text: "customerSuccessJourneyPage",
+      },
+      {
+        image: {
+          data: {
+            roles: ["Agent", "Specialist", "Engineer"],
+            tiers: ["Tier 1", "Tier 2", "Tier 3"],
+          },
+          style: "supportOrgModelPage",
+          type: "vision",
+        },
+        text: "supportOrgModelPage",
+      },
+      {
+        image: {
+          data: {
+            categories: ["Licensing", "Technology", "Audit"],
+            partners: [
+              {
+                category: "Licensing",
+                style: "Content provider A",
+              },
+              {
+                category: "Technology",
+                style: "Signing toolkit B",
+              },
+              {
+                category: "Audit",
+                style: "Audit firm C",
+              },
+            ],
+          },
+          style: "partnershipMapPage",
+          type: "vision",
+        },
+        text: "partnershipMapPage",
+      },
+      {
+        image: {
+          data: {
+            stages: ["Identify", "Evaluate", "Negotiate", "Integrate"],
+            targets: ["Evidence startup X", "Audit SaaS Y"],
+          },
+          style: "mAPipelinePage",
+          type: "vision",
+        },
+        text: "mAPipelinePage",
+      },
+      {
+        image: {
+          data: {
+            sources: ["Cross-sell", "Shared infra", "Joint R&D"],
+            values: [4, 1.5, 2],
+          },
+          style: "synergyCapturePage",
+          type: "vision",
+        },
+        text: "synergyCapturePage",
+      },
+      {
+        image: {
+          data: {
+            behaviors: ["Cite sources", "Log context", "Flag uncertainty"],
+            values: ["Truth", "Transparency", "Accountability"],
+          },
+          style: "cultureValuesPage",
+          type: "vision",
+        },
+        text: "cultureValuesPage",
+      },
+      {
+        image: {
+          data: {
+            email: "references@company.example",
+            message: "Thank you!",
+            qrImageUrl: "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com/ai-references",
+            style: "AI Referencing Taskforce",
+            url: "https://example.com/ai-references",
+          },
+          style: "thankYouContactPage",
+          type: "vision",
+        },
+        text: "thankYouContactPage",
+      },
+    ],
+    canvasSize: {
+      height: 1024,
+      width: 1536,
+    },
+    filename: "vision",
+    lang: "en",
+    title: "Sample Presentation",
   },
   {
     $mulmocast: {

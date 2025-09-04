@@ -164,6 +164,14 @@ export const mulmoVoiceOverMediaSchema = z
   })
   .strict();
 
+export const mulmoVisionMediaSchema = z
+  .object({
+    type: z.literal("vision"),
+    style: z.string(),
+    data: z.record(z.string(), z.any()),
+  })
+  .strict();
+
 export const mulmoImageAssetSchema = z.union([
   mulmoMarkdownMediaSchema,
   mulmoWebMediaSchema,
@@ -177,6 +185,7 @@ export const mulmoImageAssetSchema = z.union([
   mulmoHtmlTailwindMediaSchema,
   mulmoBeatReferenceMediaSchema,
   mulmoVoiceOverMediaSchema,
+  mulmoVisionMediaSchema,
 ]);
 
 const mulmoAudioMediaSchema = z
@@ -452,6 +461,7 @@ export const mulmoScriptSchema = mulmoPresentationStyleSchema
 
 export const mulmoStudioBeatSchema = z
   .object({
+    id: z.string().optional().describe("Unique identifier for the beat."),
     hash: z.string().optional(),
     duration: z.number().optional(),
     startAt: z.number().optional(),
@@ -465,6 +475,7 @@ export const mulmoStudioBeatSchema = z
     soundEffectFile: z.string().optional(), // path to the sound effect file
     lipSyncFile: z.string().optional(), // path to the lip sync file
     captionFile: z.string().optional(), // path to the caption image
+    htmlImageFile: z.string().optional(), // path to the html image
   })
   .strict();
 
@@ -473,7 +484,8 @@ export const mulmoStudioMultiLingualDataSchema = z.object({
   cacheKey: z.string().optional(),
 });
 
-export const mulmoStudioMultiLingualSchema = z.array(mulmoStudioMultiLingualDataSchema).min(1);
+export const mulmoStudioMultiLingualArraySchema = z.array(mulmoStudioMultiLingualDataSchema).min(1);
+export const mulmoStudioMultiLingualSchema = z.record(z.string(), mulmoStudioMultiLingualDataSchema);
 export const mulmoStudioMultiLingualFileSchema = z.object({
   version: z.literal(currentMulmoScriptVersion),
   multiLingual: mulmoStudioMultiLingualSchema,
@@ -489,15 +501,15 @@ export const mulmoSessionStateSchema = z.object({
     pdf: z.boolean(),
   }),
   inBeatSession: z.object({
-    audio: z.record(z.number().int(), z.boolean()),
-    image: z.record(z.number().int(), z.boolean()),
-    movie: z.record(z.number().int(), z.boolean()),
-    multiLingual: z.record(z.number().int(), z.boolean()),
-    caption: z.record(z.number().int(), z.boolean()),
-    html: z.record(z.number().int(), z.boolean()),
-    imageReference: z.record(z.number().int(), z.boolean()),
-    soundEffect: z.record(z.number().int(), z.boolean()),
-    lipSync: z.record(z.number().int(), z.boolean()),
+    audio: z.record(z.string(), z.boolean()),
+    image: z.record(z.string(), z.boolean()),
+    movie: z.record(z.string(), z.boolean()),
+    multiLingual: z.record(z.string(), z.boolean()),
+    caption: z.record(z.string(), z.boolean()),
+    html: z.record(z.string(), z.boolean()),
+    imageReference: z.record(z.string(), z.boolean()),
+    soundEffect: z.record(z.string(), z.boolean()),
+    lipSync: z.record(z.string(), z.boolean()),
   }),
 });
 

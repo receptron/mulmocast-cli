@@ -1,0 +1,22 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "Media Test",
+  "beats": [
+    {
+      "id": "first",
+      "speaker": "Presenter",
+      "text": "",
+      "image": {
+        "type": "vision",
+        "style": "sectionDividerPage",
+        "data": {
+          "heading": "How AI Is Reshaping Referencing",
+          "subheading": "From sources to systems: reliability, traceability, and credit in the age of models"
+        }
+      }
+    }
+  ]
+}

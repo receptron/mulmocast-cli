@@ -13,6 +13,9 @@ export const ttsOpenaiAgent: AgentFunction<OpenAITTSAgentParams, AgentBufferResu
   const { text } = namedInputs;
   const { model, voice, suppressError, instructions } = params;
   const { apiKey, baseURL } = config ?? {};
+  if (!apiKey) {
+    throw new Error("OpenAI API key is required (OPENAI_API_KEY)");
+  }
   const openai = new OpenAI({ apiKey, baseURL });
 
   try {

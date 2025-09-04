@@ -1,0 +1,29 @@
+{
+  "$mulmocast": {
+    "version": "1.1",
+    "credit": "closing"
+  },
+  "canvasSize": {
+    "width": 1024,
+    "height": 1536
+  },
+  "imageParams": {
+    "provider": "google",
+    "style": "<style>Ghibli style multi-panel comic strips in landscape mode. Use speech bubbles with short, natural dialogue (1–6 words). Keep text minimal, like real comics. Let the art convey the story and emotions. Use the first input image as the presenter. Use the last image as the output dimension.</style>",
+    "images": {
+      "presenter": {
+        "type": "image",
+        "source": {
+          "kind": "url",
+          "url": "https://raw.githubusercontent.com/receptron/mulmocast-media/refs/heads/main/characters/ghibli_presenter.png"
+        }
+      }
+    }
+  },
+  "beats": [
+    {
+      "id": "solar",
+      "text": "We stand at an unprecedented moment in history. Solar and wind power have become the cheapest electricity sources globally, with costs plummeting 68% and 55% respectively since 2015. The renewable energy revolution is no longer a distant dream - it's happening right now, transforming how we power our world."
+    }
+  ]
+}

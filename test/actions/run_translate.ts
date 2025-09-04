@@ -3,7 +3,7 @@ import test from "node:test";
 
 import { getFileObject } from "../../src/cli/helpers.js";
 import { createStudioData, getMultiLingual } from "../../src/utils/context.js";
-import { translateBeat } from "../../src/actions/translate.js";
+import { translateBeat, translate } from "../../src/actions/translate.js";
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -105,7 +105,7 @@ const getContext = () => {
   };
   // context.
   const studio = createStudioData(mulmoScript, "hello");
-  const multiLingual = getMultiLingual("", studio.beats.length);
+  const multiLingual = getMultiLingual("", studio.beats);
   const context = {
     multiLingual,
     studio,
@@ -136,12 +136,17 @@ const getContext = () => {
 
 test("test beat translate", async () => {
   const context = getContext();
+  await translate(context, { targetLangs: ["ch"] });
+});
+
+test("test beat translate", async () => {
+  const context = getContext();
   await translateBeat(1, context, ["fr"]);
 });
 
 test("test beat translate - fresh translation", async () => {
   const context = getContext();
-  context.multiLingual[1].multiLingualTexts = {
+  context.multiLingual["__index__1"].multiLingualTexts = {
     fr: {
       lang: "fr",
       text: "## Original Language\nen\n## Language\nfr\n## Target\nCeci est un tableau au format markdown.",

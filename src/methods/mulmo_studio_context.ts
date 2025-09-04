@@ -1,5 +1,11 @@
-import path from "path";
+/**
+ * Browser-friendly packages only.
+ * (No Node.js built-ins like fs, path, dotenv, etc.)
+ * Works in both Node.js and modern browsers.
+ */
+
 import { BeatSessionType, MulmoStudioContext, SessionProgressCallback, SessionType } from "../types/index.js";
+import { beatId } from "../utils/utils.js";
 import { GraphAILogger } from "graphai";
 
 const sessionProgressCallbacks = new Set<SessionProgressCallback>();
@@ -20,19 +26,16 @@ const notifyStateChange = (context: MulmoStudioContext, sessionType: SessionType
   }
 };
 
-const notifyBeatStateChange = (context: MulmoStudioContext, sessionType: BeatSessionType, index: number) => {
-  const inSession = context.sessionState.inBeatSession[sessionType][index] ?? false;
+const notifyBeatStateChange = (context: MulmoStudioContext, sessionType: BeatSessionType, id: string) => {
+  const inSession = context.sessionState.inBeatSession[sessionType][id] ?? false;
   const prefix = inSession ? "{" : " }";
-  GraphAILogger.info(`${prefix} ${sessionType} ${index}`);
+  GraphAILogger.info(`${prefix} ${sessionType} ${id}`);
   for (const callback of sessionProgressCallbacks) {
-    callback({ kind: "beat", sessionType, index, inSession });
+    callback({ kind: "beat", sessionType, id, inSession });
   }
 };
 
 export const MulmoStudioContextMethods = {
-  resolveAssetPath(context: MulmoStudioContext, relativePath: string): string {
-    return path.resolve(context.fileDirs.mulmoFileDirPath, relativePath);
-  },
   getAudioDirPath(context: MulmoStudioContext): string {
     return context.fileDirs.audioDirPath;
   },
@@ -56,17 +59,21 @@ export const MulmoStudioContextMethods = {
     context.sessionState.inSession[sessionType] = value;
     notifyStateChange(context, sessionType);
   },
-  setBeatSessionState(context: MulmoStudioContext, sessionType: BeatSessionType, index: number, value: boolean) {
+  setBeatSessionState(context: MulmoStudioContext, sessionType: BeatSessionType | undefined, index: number, id: string | undefined, value: boolean) {
+    if (!sessionType) {
+      return;
+    }
+    const key = beatId(id, index);
     if (value) {
       if (!context.sessionState.inBeatSession[sessionType]) {
         context.sessionState.inBeatSession[sessionType] = {};
       }
-      context.sessionState.inBeatSession[sessionType][index] = true;
+      context.sessionState.inBeatSession[sessionType][key] = true;
     } else {
       // NOTE: Setting to false causes the parse error in rebuildStudio in preprocess.ts
-      delete context.sessionState.inBeatSession[sessionType][index];
+      delete context.sessionState.inBeatSession[sessionType][key];
     }
-    notifyBeatStateChange(context, sessionType, index);
+    notifyBeatStateChange(context, sessionType, key);
   },
   needTranslate(context: MulmoStudioContext, includeCaption: boolean = false) {
     // context.studio.script.lang = defaultLang, context.lang = targetLanguage.

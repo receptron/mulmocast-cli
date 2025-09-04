@@ -1,4 +1,4 @@
-import { GraphAILogger, assert } from "graphai";
+import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import type { NijivoiceTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult, AgentConfig } from "../types/agent.js";
 
@@ -8,12 +8,14 @@ type VoiceJson = {
   };
 };
 
+/*
 const errorMessage = [
   "TTS NijiVoice: No API key. ",
   "You have the following options:",
   "1. Obtain an API key from Niji Voice (https://platform.nijivoice.com/) and set it as the NIJIVOICE_API_KEY environment variable.",
   '2. Use OpenAI\'s TTS instead of Niji Voice by changing speechParams.provider from "nijivoice" to "openai".',
 ].join("\n");
+*/
 
 export const ttsNijivoiceAgent: AgentFunction<NijivoiceTTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs, AgentConfig> = async ({
   params,
@@ -23,7 +25,9 @@ export const ttsNijivoiceAgent: AgentFunction<NijivoiceTTSAgentParams, AgentBuff
   const { suppressError, voice, speed, speed_global } = params;
   const { apiKey } = config ?? {};
   const { text } = namedInputs;
-  assert(!!apiKey, errorMessage);
+  if (!apiKey) {
+    throw new Error("NijiVoice API key is required (NIJIVOICE_API_KEY)");
+  }
   const url = `https://api.nijivoice.com/api/platform/v1/voice-actors/${voice}/generate-voice`;
   const options = {
     method: "POST",

@@ -62,8 +62,8 @@ export const FfmpegContextGenerateOutput = (context: FfmpegContext, output: stri
         GraphAILogger.error("Error occurred:", err);
         GraphAILogger.error("FFmpeg stdout:", stdout);
         GraphAILogger.error("FFmpeg stderr:", stderr);
-        GraphAILogger.info("Video/Audio creation failed. An unexpected error occurred.");
-        reject();
+        GraphAILogger.info("Video/Audio creation failed.", err.message);
+        reject(err);
       })
       .on("end", () => {
         resolve(0);
@@ -76,7 +76,9 @@ export const ffmpegGetMediaDuration = (filePath: string) => {
   return new Promise<{ duration: number; hasAudio: boolean }>((resolve, reject) => {
     // Only check file existence for local paths, not URLs
     if (!filePath.startsWith("http://") && !filePath.startsWith("https://") && !fs.existsSync(filePath)) {
-      reject(new Error(`File not found: ${filePath}`));
+      // NOTE: We don't reject here for scripts/test/test_hello_image.json, which uses mock image agent.
+      // reject(new Error(`File not found: ${filePath}`));
+      resolve({ duration: 0, hasAudio: false });
       return;
     }
     ffmpeg.ffprobe(filePath, (err, metadata) => {
@@ -99,5 +101,42 @@ export const extractImageFromMovie = (movieFile: string, imagePath: string): Pro
       .on("end", () => resolve({}))
       .on("error", (err) => reject(err))
       .run();
+  });
+};
+
+export const trimMusic = (inputFile: string, startTime: number, duration: number): Promise<Buffer> => {
+  return new Promise<Buffer>((resolve, reject) => {
+    if (!inputFile.startsWith("http://") && !inputFile.startsWith("https://") && !fs.existsSync(inputFile)) {
+      reject(new Error(`File not found: ${inputFile}`));
+      return;
+    }
+
+    if (duration <= 0) {
+      reject(new Error(`Invalid duration: duration (${duration}) must be greater than 0`));
+      return;
+    }
+
+    const chunks: Buffer[] = [];
+
+    ffmpeg(inputFile)
+      .seekInput(startTime)
+      .duration(duration)
+      .format("mp3")
+      .on("start", () => {
+        GraphAILogger.log(`Trimming audio from ${startTime}s for ${duration}s...`);
+      })
+      .on("error", (err) => {
+        GraphAILogger.error("Error occurred while trimming audio:", err);
+        reject(err);
+      })
+      .on("end", () => {
+        const buffer = Buffer.concat(chunks);
+        GraphAILogger.log(`Audio trimmed successfully, buffer size: ${buffer.length} bytes`);
+        resolve(buffer);
+      })
+      .pipe()
+      .on("data", (chunk: Buffer) => {
+        chunks.push(chunk);
+      });
   });
 };

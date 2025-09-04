@@ -18,10 +18,12 @@
   "lang": "en",
   "beats": [
     {
+      "id": "beat1",
       "speaker": "Host",
       "text": "Welcome to Mulmocast Tech Insights."
     },
     {
+      "id": "beat2",
       "speaker": "Host",
       "text": "AI-2028 is a project from the AI Futures Project."
     }

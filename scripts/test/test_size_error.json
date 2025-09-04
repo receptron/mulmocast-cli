@@ -1,0 +1,50 @@
+{
+  "$mulmocast": {
+    "version": "1.1",
+    "credit": "closing"
+  },
+  "canvasSize": {
+    "width": 1024,
+    "height": 1
+  },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "displayName": {
+          "en": "Presenter"
+        },
+        "voiceId": "shimmer"
+      }
+    }
+  },
+  "imageParams": {
+    "provider": "openai",
+    "quality": "low"
+  },
+  "movieParams": {
+    "provider": "replicate"
+  },
+  "soundEffectParams": {
+    "provider": "replicate"
+  },
+  "audioParams": {
+    "padding": 0.3,
+    "introPadding": 1,
+    "closingPadding": 0.8,
+    "outroPadding": 1,
+    "bgmVolume": 0.2,
+    "audioVolume": 1,
+    "suppressSpeech": false
+  },
+  "title": "1024 x 1",
+  "description": "mulmocast",
+  "lang": "en",
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "Hello World",
+      "id": "afbfa590-b787-472b-a250-fc9e9bda4610",
+      "imagePrompt": "A dog and a cat"
+    }
+  ]
+}

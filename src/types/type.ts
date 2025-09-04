@@ -1,3 +1,4 @@
+import { type CallbackFunction } from "graphai";
 import {
   langSchema,
   localizedTextSchema,
@@ -8,6 +9,7 @@ import {
   mulmoStoryboardSchema,
   mulmoStoryboardSceneSchema,
   mulmoStudioMultiLingualSchema,
+  mulmoStudioMultiLingualArraySchema,
   mulmoStudioMultiLingualDataSchema,
   mulmoStudioMultiLingualFileSchema,
   speakerDictionarySchema,
@@ -72,6 +74,7 @@ export type MulmoStudio = z.infer<typeof mulmoStudioSchema>;
 export type MulmoPromptTemplate = z.infer<typeof mulmoPromptTemplateSchema>;
 export type MulmoPromptTemplateFile = z.infer<typeof mulmoPromptTemplateFileSchema>;
 export type MulmoStudioMultiLingual = z.infer<typeof mulmoStudioMultiLingualSchema>;
+export type MulmoStudioMultiLingualArray = z.infer<typeof mulmoStudioMultiLingualArraySchema>;
 export type MulmoStudioMultiLingualData = z.infer<typeof mulmoStudioMultiLingualDataSchema>;
 export type MulmoStudioMultiLingualFile = z.infer<typeof mulmoStudioMultiLingualFileSchema>;
 export type MultiLingualTexts = z.infer<typeof multiLingualTextsSchema>;
@@ -91,24 +94,14 @@ export type MulmoChartMedia = z.infer<typeof mulmoChartMediaSchema>;
 export type MulmoMermaidMedia = z.infer<typeof mulmoMermaidMediaSchema>;
 export type MulmoSessionState = z.infer<typeof mulmoSessionStateSchema>;
 
-export type FileDirs = {
-  mulmoFilePath: string;
-  mulmoFileDirPath: string;
-
-  baseDirPath: string;
-  outDirPath: string;
-  imageDirPath: string;
-  audioDirPath: string;
-};
-
 export type MulmoStudioContext = {
-  fileDirs: FileDirs;
+  fileDirs: FileObject;
   studio: MulmoStudio;
   lang: string;
   force: boolean;
   sessionState: MulmoSessionState;
   presentationStyle: MulmoPresentationStyle;
-  multiLingual: MulmoStudioMultiLingual;
+  multiLingual: MulmoStudioMultiLingualArray;
 };
 
 export type ScriptingParams = {
@@ -154,7 +147,7 @@ export type BeatSessionType = "audio" | "image" | "multiLingual" | "caption" | "
 
 export type SessionProgressEvent =
   | { kind: "session"; sessionType: SessionType; inSession: boolean }
-  | { kind: "beat"; sessionType: BeatSessionType; index: number; inSession: boolean };
+  | { kind: "beat"; sessionType: BeatSessionType; id: string; inSession: boolean };
 
 export type SessionProgressCallback = (change: SessionProgressEvent) => void;
 
@@ -165,6 +158,8 @@ export interface FileObject {
   outDirPath: string;
   imageDirPath: string;
   audioDirPath: string;
+  nodeModuleRootPath?: string;
+
   isHttpPath: boolean;
   fileOrUrl: string;
   outputStudioFilePath: string;
@@ -182,4 +177,9 @@ export type InitOptions = {
   l?: string;
   c?: string;
   p?: string;
+};
+
+export type PublicAPIArgs = {
+  settings?: Record<string, string>;
+  callbacks?: CallbackFunction[];
 };
