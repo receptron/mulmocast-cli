@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+process.env.DOTENV_CONFIG_QUIET = 'true';
 
 import "dotenv/config";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
