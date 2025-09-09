@@ -38,7 +38,7 @@ const addBGMAgent: AgentFunction<{ musicFile: string }, string, { voiceFile: str
   ffmpegContext.filterComplex.push(`[mixed]atrim=start=0:end=${totalDuration}[trimmed]`);
   ffmpegContext.filterComplex.push(`[trimmed]afade=t=out:st=${totalDuration - outroPadding}:d=${outroPadding}[faded]`);
   try {
-    await FfmpegContextGenerateOutput(ffmpegContext, outputFile, ["-map", "[faded]"]);
+    await FfmpegContextGenerateOutput(ffmpegContext, outputFile, ["-map", "[faded]", "-b:a", "128k"]);
 
     return outputFile;
   } catch (e) {
