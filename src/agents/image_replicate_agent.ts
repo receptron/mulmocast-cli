@@ -26,15 +26,9 @@ export const imageReplicateAgent: AgentFunction<ReplicateImageAgentParams, Agent
 
   const input = {
     prompt,
-    width: canvasSize.width,
-    height: canvasSize.height,
-  } as { prompt: string; width?: number; height?: number; size?: string; aspect_ratio?: string };
+    aspect_ratio: getAspectRatio(canvasSize),
+  };
 
-  input.aspect_ratio = getAspectRatio(canvasSize);
-  if (model === "bytedance/seedream-4") {
-    delete input.width;
-    delete input.height;
-  }
 
   // Add image if provided (for image-to-image generation)
   /*
