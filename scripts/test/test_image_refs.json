@@ -55,6 +55,16 @@
         "provider": "google",
         "model": "gemini-2.5-flash-image-preview"
       }
+    },
+    {
+      "id": "seedream-4",
+      "text": "Hello World with a witch and a broom with Seadream-4",
+      "imagePrompt": "Saying hello to the world",
+      "imageNames": ["witch", "broom"],
+      "imageParams": {
+        "provider": "replicate",
+        "model": "bytedance/seedream-4"
+      }
     }
   ]
 }

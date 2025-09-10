@@ -1,3 +1,4 @@
+import { readFileSync } from "fs";
 import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
 import Replicate from "replicate";
 import { getAspectRatio } from "./movie_replicate_agent.js";
@@ -13,7 +14,7 @@ export const imageReplicateAgent: AgentFunction<ReplicateImageAgentParams, Agent
   params,
   config,
 }) => {
-  const { prompt } = namedInputs;
+  const { prompt, referenceImages } = namedInputs;
   const { canvasSize } = params;
   const model = params.model ?? (provider2ImageAgent.replicate.defaultModel as `${string}/${string}`);
   const apiKey = config?.apiKey;
@@ -26,41 +27,15 @@ export const imageReplicateAgent: AgentFunction<ReplicateImageAgentParams, Agent
 
   const input = {
     prompt,
-    width: canvasSize.width,
-    height: canvasSize.height,
-  } as { prompt: string; width: number; height: number; size?: string; aspect_ratio?: string };
+    aspect_ratio: getAspectRatio(canvasSize),
+  } as { prompt: string; aspect_ratio: string; image_input?: string[] };
 
-  if (model === "bytedance/seedream-4") {
-    input.size = "custom";
-    if (input.width < 1024) {
-      const ratio = 1024 / input.width;
-      input.width = 1024;
-      input.height = Math.round(input.height * ratio);
-    }
-    if (input.height < 1024) {
-      const ratio = 1024 / input.height;
-      input.width = Math.round(input.width * ratio);
-      input.height = 1024;
-    }
-  } else if (model === "qwen/qwen-image") {
-    input.aspect_ratio = getAspectRatio(canvasSize);
+  if (referenceImages && referenceImages.length > 0) {
+    input.image_input = referenceImages.map((image) => {
+      const buffer = readFileSync(image);
+      return `data:image/png;base64,${buffer.toString("base64")}`;
+    });
   }
-
-  // Add image if provided (for image-to-image generation)
-  /*
-  if (imagePath) {
-    const buffer = readFileSync(imagePath);
-    const base64Image = `data:image/png;base64,${buffer.toString("base64")}`;
-    const start_image = provider2MovieAgent.replicate.modelParams[model]?.start_image;
-    if (start_image === "first_frame_image" || start_image === "image" || start_image === "start_image") {
-      input[start_image] = base64Image;
-    } else if (start_image === undefined) {
-      throw new Error(`Model ${model} does not support image-to-video generation`);
-    } else {
-      input.image = base64Image;
-    }
-  }
-  */
 
   try {
     const output = await replicate.run(model, { input });
