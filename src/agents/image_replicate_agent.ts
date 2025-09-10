@@ -28,22 +28,12 @@ export const imageReplicateAgent: AgentFunction<ReplicateImageAgentParams, Agent
     prompt,
     width: canvasSize.width,
     height: canvasSize.height,
-  } as { prompt: string; width: number; height: number; size?: string; aspect_ratio?: string };
+  } as { prompt: string; width?: number; height?: number; size?: string; aspect_ratio?: string };
 
+  input.aspect_ratio = getAspectRatio(canvasSize);
   if (model === "bytedance/seedream-4") {
-    input.size = "custom";
-    if (input.width < 1024) {
-      const ratio = 1024 / input.width;
-      input.width = 1024;
-      input.height = Math.round(input.height * ratio);
-    }
-    if (input.height < 1024) {
-      const ratio = 1024 / input.height;
-      input.width = Math.round(input.width * ratio);
-      input.height = 1024;
-    }
-  } else if (model === "qwen/qwen-image") {
-    input.aspect_ratio = getAspectRatio(canvasSize);
+    delete input.width;
+    delete input.height;
   }
 
   // Add image if provided (for image-to-image generation)

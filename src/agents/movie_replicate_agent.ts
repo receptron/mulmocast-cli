@@ -70,13 +70,13 @@ async function generateMovie(
 }
 
 export const getAspectRatio = (canvasSize: { width: number; height: number }): string => {
-  if (canvasSize.width > canvasSize.height) {
-    return "16:9";
-  } else if (canvasSize.width < canvasSize.height) {
-    return "9:16";
-  } else {
-    return "1:1";
-  }
+  const ratio = canvasSize.width / canvasSize.height;
+  const tolerance = 0.1;
+  if (ratio > 4 / 3 + tolerance) return "16:9";
+  if (ratio > 4 / 3 - tolerance) return "4:3";
+  if (ratio > 3 / 4 + tolerance) return "1:1";
+  if (ratio > 3 / 4 - tolerance) return "3:4";
+  return "9:16";
 };
 
 export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, AgentBufferResult, MovieAgentInputs, ReplicateMovieAgentConfig> = async ({
