@@ -20,7 +20,6 @@ const generateMarkdownContent = (context: MulmoStudioContext): string => {
   studio.script.beats.forEach((beat, index) => {
     const text = localizedText(beat, multiLingual?.[index], lang);
     if (text.trim()) {
-      markdown += `## Beat ${index + 1}\n\n`;
       markdown += `${text}\n\n`;
     }
   });
