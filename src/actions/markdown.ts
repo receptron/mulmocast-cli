@@ -5,7 +5,7 @@ import { writingMessage } from "../utils/file.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 import path from "path";
 
-const generateMarkdownContent = (context: MulmoStudioContext): string => {
+const generateMarkdownContent = (context: MulmoStudioContext, imageWidth?: string): string => {
   const { studio, multiLingual, lang = "en" } = context;
 
   const title = studio.script.title || "MulmoCast Content";
@@ -24,7 +24,13 @@ const generateMarkdownContent = (context: MulmoStudioContext): string => {
     if (text.trim() || studioBeat?.imageFile) {
       if (studioBeat?.imageFile) {
         const imagePath = path.relative(context.fileDirs.outDirPath, studioBeat.imageFile);
-        markdown += `![Beat ${index + 1}](${imagePath})\n\n`;
+        if (imageWidth) {
+          // Use HTML img tag for width control
+          markdown += `<img src="${imagePath}" alt="Beat ${index + 1}" width="${imageWidth}" />\n\n`;
+        } else {
+          // Use standard markdown image syntax
+          markdown += `![Beat ${index + 1}](${imagePath})\n\n`;
+        }
       }
 
       if (text.trim()) {
@@ -42,18 +48,18 @@ export const markdownFilePath = (context: MulmoStudioContext) => {
   return path.join(fileDirs.outDirPath, filename);
 };
 
-const generateMarkdown = async (context: MulmoStudioContext): Promise<void> => {
+const generateMarkdown = async (context: MulmoStudioContext, imageWidth?: string): Promise<void> => {
   const outputMarkdownPath = markdownFilePath(context);
-  const markdownContent = generateMarkdownContent(context);
+  const markdownContent = generateMarkdownContent(context, imageWidth);
 
   fs.writeFileSync(outputMarkdownPath, markdownContent, "utf8");
   writingMessage(outputMarkdownPath);
 };
 
-export const markdown = async (context: MulmoStudioContext): Promise<void> => {
+export const markdown = async (context: MulmoStudioContext, imageWidth?: string): Promise<void> => {
   try {
     MulmoStudioContextMethods.setSessionState(context, "markdown", true);
-    await generateMarkdown(context);
+    await generateMarkdown(context, imageWidth);
   } finally {
     MulmoStudioContextMethods.setSessionState(context, "markdown", false);
   }
