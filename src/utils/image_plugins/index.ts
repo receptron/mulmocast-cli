@@ -21,7 +21,12 @@ const imagePlugins = [
   pluginBeat,
   pluginVoiceOver,
   pluginVision,
-] as { imageType: string; process: (params: ImageProcessorParams) => void; path: (params: ImageProcessorParams) => string; markdown?: (params: ImageProcessorParams) => string }[];
+] as {
+  imageType: string;
+  process: (params: ImageProcessorParams) => void;
+  path: (params: ImageProcessorParams) => string;
+  markdown?: (params: ImageProcessorParams) => string;
+}[];
 
 export const findImagePlugin = (imageType?: string) => {
   return imagePlugins.find((plugin) => plugin.imageType === imageType);

@@ -7,9 +7,16 @@
   "description": "This is a test markdown file.",
   "beats": [
     {
+      "text": "Hello World",
       "image": {
         "type": "markdown",
-        "markdown": ["## Hello World", "- Hello", "- World"]
+        "markdown": ["## Chapter 1"]
+      }
+    },
+    {
+      "image": {
+        "type": "markdown",
+        "markdown": ["## Chapter 2", "- Hello", "- World"]
       }
     }
   ]
