@@ -49,6 +49,7 @@
     "scripting": "npx tsx ./src/cli/bin.ts tool scripting",
     "prompt": "npx tsx ./src/cli/bin.ts tool prompt",
     "schema": "npx tsx ./src/cli/bin.ts tool schema",
+    "markdown": "npx tsx ./src/cli/bin.ts markdown",
     "story_to_script": "npx tsx ./src/cli/bin.ts tool story_to_script",
     "whisper": "npx tsx ./src/cli/bin.ts tool whisper",
     "latest": "yarn upgrade-interactive  --latest",

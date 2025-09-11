@@ -142,7 +142,7 @@ export type BeatMediaType = "movie" | "image";
 
 export type StoryToScriptGenerateMode = (typeof storyToScriptGenerateMode)[keyof typeof storyToScriptGenerateMode];
 
-export type SessionType = "audio" | "image" | "video" | "multiLingual" | "caption" | "pdf";
+export type SessionType = "audio" | "image" | "video" | "multiLingual" | "caption" | "pdf" | "markdown";
 export type BeatSessionType = "audio" | "image" | "multiLingual" | "caption" | "movie" | "html" | "imageReference" | "soundEffect" | "lipSync";
 
 export type SessionProgressEvent =

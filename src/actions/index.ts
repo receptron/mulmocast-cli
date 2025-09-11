@@ -6,3 +6,4 @@ export * from "./image_agents.js";
 export * from "./movie.js";
 export * from "./pdf.js";
 export * from "./translate.js";
+export * from "./markdown.js";
