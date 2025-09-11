@@ -24,7 +24,7 @@ const generateMarkdownContent = (context: MulmoStudioContext, imageWidth?: strin
     if (text.trim() || studioBeat?.markdown || studioBeat?.imageFile) {
       if (studioBeat?.markdown) {
         markdown += `${studioBeat.markdown}\n\n`;
-      } else if (studioBeat?.imageFile) {
+      } else if (studioBeat?.imageFile && studioBeat.markdown !== "") {
         const imagePath = path.relative(context.fileDirs.outDirPath, studioBeat.imageFile);
         if (imageWidth) {
           // Use HTML img tag for width control

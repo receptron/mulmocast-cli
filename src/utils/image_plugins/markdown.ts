@@ -8,7 +8,7 @@ const processMarkdown = async (params: ImageProcessorParams) => {
   const { beat, imagePath, textSlideStyle, canvasSize } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
-  const markdown = Array.isArray(beat.image.markdown) ? beat.image.markdown.join("\n") : beat.image.markdown;
+  const markdown = dumpMarkdown(params) ?? "";
   await renderMarkdownToImage(markdown, textSlideStyle, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;
 };
