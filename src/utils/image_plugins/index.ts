@@ -8,6 +8,7 @@ import * as pluginMovie from "./movie.js";
 import * as pluginBeat from "./beat.js";
 import * as pluginVoiceOver from "./voice_over.js";
 import * as pluginVision from "./vision.js";
+import { ImageProcessorParams } from "../../types/index.js";
 
 const imagePlugins = [
   pluginTextSlide,
@@ -20,7 +21,7 @@ const imagePlugins = [
   pluginBeat,
   pluginVoiceOver,
   pluginVision,
-];
+] as { imageType: string; process: (params: ImageProcessorParams) => void; path: (params: ImageProcessorParams) => string; markdown?: (params: ImageProcessorParams) => string }[];
 
 export const findImagePlugin = (imageType?: string) => {
   return imagePlugins.find((plugin) => plugin.imageType === imageType);

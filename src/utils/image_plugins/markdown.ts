@@ -13,5 +13,12 @@ const processMarkdown = async (params: ImageProcessorParams) => {
   return imagePath;
 };
 
+const dumpMarkdown = (params: ImageProcessorParams) => {
+  const { beat } = params;
+  if (!beat.image || beat.image.type !== imageType) return;
+  return Array.isArray(beat.image.markdown) ? beat.image.markdown.join("\n") : beat.image.markdown;
+};
+
 export const process = processMarkdown;
 export const path = parrotingImagePath;
+export const markdown = dumpMarkdown;

@@ -1,0 +1,17 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "Test Markdown",
+  "description": "This is a test markdown file.",
+  "beats": [
+    {
+      "text": "Hello World",
+      "image": {
+        "type": "markdown",
+        "markdown": ["## Hello World", "- Hello", "- World"]
+      }
+    }
+  ]
+}
