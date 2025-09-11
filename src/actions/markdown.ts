@@ -7,32 +7,32 @@ import path from "path";
 
 const generateMarkdownContent = (context: MulmoStudioContext): string => {
   const { studio, multiLingual, lang = "en" } = context;
-  
+
   const title = studio.script.title || "MulmoCast Content";
   const description = studio.script.description || "";
-  
+
   let markdown = `# ${title}\n\n`;
-  
+
   if (description) {
     markdown += `${description}\n\n`;
   }
-  
+
   studio.script.beats.forEach((beat, index) => {
     const text = localizedText(beat, multiLingual?.[index], lang);
     const studioBeat = studio.beats[index];
-    
+
     if (text.trim() || studioBeat?.imageFile) {
       if (studioBeat?.imageFile) {
         const imagePath = path.relative(context.fileDirs.outDirPath, studioBeat.imageFile);
         markdown += `![Beat ${index + 1}](${imagePath})\n\n`;
       }
-      
+
       if (text.trim()) {
         markdown += `${text}\n\n`;
       }
     }
   });
-  
+
   return markdown;
 };
 
@@ -45,7 +45,7 @@ export const markdownFilePath = (context: MulmoStudioContext) => {
 const generateMarkdown = async (context: MulmoStudioContext): Promise<void> => {
   const outputMarkdownPath = markdownFilePath(context);
   const markdownContent = generateMarkdownContent(context);
-  
+
   fs.writeFileSync(outputMarkdownPath, markdownContent, "utf8");
   writingMessage(outputMarkdownPath);
 };
