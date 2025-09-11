@@ -223,6 +223,62 @@
         "provider": "replicate",
         "model": "qwen/qwen-image"
       }
+    },
+    {
+      "id": "tokyo_bombing_openai",
+      "imagePrompt": "The events in Tokyo in March 1945 involving large-scale air attacks."
+    },
+    {
+      "id": "tokyo_bombing_nano_banana",
+      "imagePrompt": "The events in Tokyo in March 1945 involving large-scale air attacks.",
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
+    },
+    {
+      "id": "tokyo_bombing_seedream-4",
+      "imagePrompt": "The events in Tokyo in March 1945 involving large-scale air attacks.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "bytedance/seedream-4"
+      }
+    },
+    {
+      "id": "tokyo_bombing_qwen-image",
+      "imagePrompt": "The events in Tokyo in March 1945 involving large-scale air attacks.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "qwen/qwen-image"
+      }
+    },
+    {
+      "id": "russia_ukraine_conflict_openai",
+      "imagePrompt": "The conflict between Russia and Ukraine beginning in 2022."
+    },
+    {
+      "id": "russia_ukraine_conflict_nano_banana",
+      "imagePrompt": "The conflict between Russia and Ukraine beginning in 2022.",
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
+    },
+    {
+      "id": "russia_ukraine_conflict_seedream-4",
+      "imagePrompt": "The conflict between Russia and Ukraine beginning in 2022.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "bytedance/seedream-4"
+      }
+    },
+    {
+      "id": "russia_ukraine_conflict_qwen-image",
+      "imagePrompt": "The conflict between Russia and Ukraine beginning in 2022.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "qwen/qwen-image"
+      }
     }
   ]
 }
