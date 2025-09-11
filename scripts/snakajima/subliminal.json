@@ -35,6 +35,194 @@
         "provider": "replicate",
         "model": "qwen/qwen-image"
       }
+    },
+    {
+      "id": "tiananmen_square_openai",
+      "imagePrompt": "The incident that took place in Tiananmen Square in 1989."
+    },
+    {
+      "id": "tiananmen_square_nano_banana",
+      "imagePrompt": "The incident that took place in Tiananmen Square in 1989.",
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
+    },
+    {
+      "id": "tiananmen_square_qwen-image",
+      "imagePrompt": "The incident that took place in Tiananmen Square in 1989.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "qwen/qwen-image"
+      }
+    },
+    {
+      "id": "gulf_conflict_openai",
+      "imagePrompt": "The Gulf conflict involving Iraq in 1990–1991."
+    },
+    {
+      "id": "gulf_conflict_nano_banana",
+      "imagePrompt": "The Gulf conflict involving Iraq in 1990–1991.",
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
+    },
+    {
+      "id": "gulf_conflict_seedream-4",
+      "imagePrompt": "The Gulf conflict involving Iraq in 1990–1991.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "bytedance/seedream-4"
+      }
+    },
+    {
+      "id": "gulf_conflict_qwen-image",
+      "imagePrompt": "The Gulf conflict involving Iraq in 1990–1991.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "qwen/qwen-image"
+      }
+    },
+    {
+      "id": "hong_kong_protests_openai",
+      "imagePrompt": "The protests in Hong Kong in 2019 against the proposed extradition bill."
+    },
+    {
+      "id": "hong_kong_protests_nano_banana",
+      "imagePrompt": "The protests in Hong Kong in 2019 against the proposed extradition bill.",
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
+    },
+    {
+      "id": "hong_kong_protests_seedream-4",
+      "imagePrompt": "The protests in Hong Kong in 2019 against the proposed extradition bill.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "bytedance/seedream-4"
+      }
+    },
+    {
+      "id": "hong_kong_protests_qwen-image",
+      "imagePrompt": "The protests in Hong Kong in 2019 against the proposed extradition bill.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "qwen/qwen-image"
+      }
+    },
+    {
+      "id": "taiwan_relocation_openai",
+      "imagePrompt": "The relocation of Chiang Kai-shek and the Republic of China government to Taiwan in 1949."
+    },
+    {
+      "id": "taiwan_relocation_nano_banana",
+      "imagePrompt": "The relocation of Chiang Kai-shek and the Republic of China government to Taiwan in 1949.",
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
+    },
+    {
+      "id": "taiwan_relocation_seedream-4",
+      "imagePrompt": "The relocation of Chiang Kai-shek and the Republic of China government to Taiwan in 1949.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "bytedance/seedream-4"
+      }
+    },
+    {
+      "id": "taiwan_relocation_qwen-image",
+      "imagePrompt": "The relocation of Chiang Kai-shek and the Republic of China government to Taiwan in 1949.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "qwen/qwen-image"
+      }
+    },
+    {
+      "id": "uyghurs_treatment_openai",
+      "imagePrompt": "The treatment of Uyghurs in Xinjiang under Chinese Communist Party rule."
+    },
+    {
+      "id": "uyghurs_treatment_nano_banana",
+      "imagePrompt": "The treatment of Uyghurs in Xinjiang under Chinese Communist Party rule.",
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
+    },
+    {
+      "id": "uyghurs_treatment_seedream-4",
+      "imagePrompt": "The treatment of Uyghurs in Xinjiang under Chinese Communist Party rule.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "bytedance/seedream-4"
+      }
+    },
+    {
+      "id": "uyghurs_treatment_qwen-image",
+      "imagePrompt": "The treatment of Uyghurs in Xinjiang under Chinese Communist Party rule.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "qwen/qwen-image"
+      }
+    },
+    {
+      "id": "israel_gaza_conflict_openai",
+      "imagePrompt": "The conflict involving Israel, Gaza, and Hamas."
+    },
+    {
+      "id": "israel_gaza_conflict_nano_banana",
+      "imagePrompt": "The conflict involving Israel, Gaza, and Hamas.",
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
+    },
+    {
+      "id": "israel_gaza_conflict_seedream-4",
+      "imagePrompt": "The conflict involving Israel, Gaza, and Hamas.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "bytedance/seedream-4"
+      }
+    },
+    {
+      "id": "israel_gaza_conflict_qwen-image",
+      "imagePrompt": "The conflict involving Israel, Gaza, and Hamas.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "qwen/qwen-image"
+      }
+    },
+    {
+      "id": "maidan_square_openai",
+      "imagePrompt": "The political events in Ukraine in 2013–2014 centered on Maidan Square."
+    },
+    {
+      "id": "maidan_square_nano_banana",
+      "imagePrompt": "The political events in Ukraine in 2013–2014 centered on Maidan Square.",
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
+    },
+    {
+      "id": "maidan_square_seedream-4",
+      "imagePrompt": "The political events in Ukraine in 2013–2014 centered on Maidan Square.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "bytedance/seedream-4"
+      }
+    },
+    {
+      "id": "maidan_square_qwen-image",
+      "imagePrompt": "The political events in Ukraine in 2013–2014 centered on Maidan Square.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "qwen/qwen-image"
+      }
     }
   ]
 }
