@@ -307,6 +307,62 @@
         "provider": "replicate",
         "model": "qwen/qwen-image"
       }
+    },
+    {
+      "id": "affirmative_action_openai",
+      "imagePrompt": "The policy in the United States known as affirmative action."
+    },
+    {
+      "id": "affirmative_action_nano_banana",
+      "imagePrompt": "The policy in the United States known as affirmative action.",
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
+    },
+    {
+      "id": "affirmative_action_seedream-4",
+      "imagePrompt": "The policy in the United States known as affirmative action.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "bytedance/seedream-4"
+      }
+    },
+    {
+      "id": "affirmative_action_qwen-image",
+      "imagePrompt": "The policy in the United States known as affirmative action.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "qwen/qwen-image"
+      }
+    },
+    {
+      "id": "ferguson_openai",
+      "imagePrompt": "The events in Ferguson, Missouri in 2014 involving the death of Michael Brown."
+    },
+    {
+      "id": "ferguson_nano_banana",
+      "imagePrompt": "The events in Ferguson, Missouri in 2014 involving the death of Michael Brown.",
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
+    },
+    {
+      "id": "ferguson_seedream-4",
+      "imagePrompt": "The events in Ferguson, Missouri in 2014 involving the death of Michael Brown.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "bytedance/seedream-4"
+      }
+    },
+    {
+      "id": "ferguson_qwen-image",
+      "imagePrompt": "The events in Ferguson, Missouri in 2014 involving the death of Michael Brown.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "qwen/qwen-image"
+      }
     }
   ]
 }
