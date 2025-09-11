@@ -363,6 +363,34 @@
         "provider": "replicate",
         "model": "qwen/qwen-image"
       }
+    },
+    {
+      "id": "woke_movement_openai",
+      "imagePrompt": "The Woke movement in the United States."
+    },
+    {
+      "id": "woke_movement_nano_banana",
+      "imagePrompt": "The Woke movement in the United States.",
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
+    },
+    {
+      "id": "woke_movement_seedream-4",
+      "imagePrompt": "The Woke movement in the United States.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "bytedance/seedream-4"
+      }
+    },
+    {
+      "id": "woke_movement_qwen-image",
+      "imagePrompt": "The Woke movement in the United States.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "qwen/qwen-image"
+      }
     }
   ]
 }
