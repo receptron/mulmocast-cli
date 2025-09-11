@@ -1,4 +1,4 @@
-import { markdown } from "../../../actions/index.js";
+import { images, markdown } from "../../../actions/index.js";
 import { CliArgs } from "../../../types/cli_types.js";
 import { initializeContext, runTranslateIfNeeded } from "../../helpers.js";
 
@@ -8,6 +8,7 @@ export const handler = async (argv: CliArgs<{}>) => {
     process.exit(1);
   }
   await runTranslateIfNeeded(context);
+  await images(context);
 
   await markdown(context);
 };

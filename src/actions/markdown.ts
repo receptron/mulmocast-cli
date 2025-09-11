@@ -19,8 +19,17 @@ const generateMarkdownContent = (context: MulmoStudioContext): string => {
   
   studio.script.beats.forEach((beat, index) => {
     const text = localizedText(beat, multiLingual?.[index], lang);
-    if (text.trim()) {
-      markdown += `${text}\n\n`;
+    const studioBeat = studio.beats[index];
+    
+    if (text.trim() || studioBeat?.imageFile) {
+      if (studioBeat?.imageFile) {
+        const imagePath = path.relative(context.fileDirs.outDirPath, studioBeat.imageFile);
+        markdown += `![Beat ${index + 1}](${imagePath})\n\n`;
+      }
+      
+      if (text.trim()) {
+        markdown += `${text}\n\n`;
+      }
     }
   });
   
