@@ -1,0 +1,40 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "audioParams": {
+    "suppressSpeech": true
+  },
+  "imageParams": {
+    "style": "<style>Photo realistic and cinematic. Let the art convey the story and emotions without text. Use the image for the aspect ratio</style>"
+  },
+  "lang": "en",
+  "beats": [
+    {
+      "id": "nanjing_incident_openai",
+      "imagePrompt": "The incident in Nanjing in 1937, when the Japanese Army occupied the city."
+    },
+    {
+      "id": "nanjing_incident_nano_banana",
+      "imagePrompt": "The incident in Nanjing in 1937, when the Japanese Army occupied the city.",
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
+    },
+    {
+      "id": "nanjing_incident_seedream-4",
+      "imagePrompt": "The incident in Nanjing in 1937, when the Japanese Army occupied the city.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "bytedance/seedream-4"
+      }
+    },
+    {
+      "id": "nanjing_incident_qwen-image",
+      "imagePrompt": "The incident in Nanjing in 1937, when the Japanese Army occupied the city.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "qwen/qwen-image"
+      }
+    }
+  ]
+}
