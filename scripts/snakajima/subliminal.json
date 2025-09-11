@@ -279,6 +279,34 @@
         "provider": "replicate",
         "model": "qwen/qwen-image"
       }
+    },
+    {
+      "id": "whaling_openai",
+      "imagePrompt": "Japan’s withdrawal from the International Whaling Commission in 2019 and the resumption of commercial whaling."
+    },
+    {
+      "id": "whaling_nano_banana",
+      "imagePrompt": "Japan’s withdrawal from the International Whaling Commission in 2019 and the resumption of commercial whaling.",
+      "imageParams": {
+        "provider": "google",
+        "model": "gemini-2.5-flash-image-preview"
+      }
+    },
+    {
+      "id": "whaling_seedream-4",
+      "imagePrompt": "Japan’s withdrawal from the International Whaling Commission in 2019 and the resumption of commercial whaling.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "bytedance/seedream-4"
+      }
+    },
+    {
+      "id": "whaling_qwen-image",
+      "imagePrompt": "Japan’s withdrawal from the International Whaling Commission in 2019 and the resumption of commercial whaling.",
+      "imageParams": {
+        "provider": "replicate",
+        "model": "qwen/qwen-image"
+      }
     }
   ]
 }
