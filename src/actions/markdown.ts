@@ -26,7 +26,8 @@ const generateMarkdownContent = (context: MulmoStudioContext, imageWidth?: strin
         const imagePath = path.relative(context.fileDirs.outDirPath, studioBeat.imageFile);
         if (imageWidth) {
           // Use HTML img tag for width control
-          markdown += `<img src="${imagePath}" alt="Beat ${index + 1}" width="${imageWidth}" />\n\n`;
+          const altText = `Beat ${index + 1}`;
+          markdown += `<img src="${imagePath}" alt="${altText}" width="${imageWidth}" />\n\n`;
         } else {
           // Use standard markdown image syntax
           markdown += `![Beat ${index + 1}](${imagePath})\n\n`;
@@ -44,7 +45,9 @@ const generateMarkdownContent = (context: MulmoStudioContext, imageWidth?: strin
 
 export const markdownFilePath = (context: MulmoStudioContext) => {
   const { studio, fileDirs, lang = "en" } = context;
-  const filename = `${studio.filename}${lang !== "en" ? `_${lang}` : ""}.md`;
+  // Add language suffix only when target language is different from script's original language
+  const langSuffix = studio.script.lang !== lang ? `_${lang}` : "";
+  const filename = `${studio.filename}${langSuffix}.md`;
   return path.join(fileDirs.outDirPath, filename);
 };
 
