@@ -12,7 +12,7 @@ import { ImageProcessorParams } from "../../types/index.js";
 
 const imagePlugins: {
   imageType: string;
-  process: (params: ImageProcessorParams) => void;
+  process: (params: ImageProcessorParams) => Promise<string | undefined> | void;
   path: (params: ImageProcessorParams) => string | undefined;
   markdown?: (params: ImageProcessorParams) => string | undefined;
 }[] = [pluginTextSlide, pluginMarkdown, pluginImage, pluginChart, pluginMermaid, pluginMovie, pluginHtmlTailwind, pluginBeat, pluginVoiceOver, pluginVision];
