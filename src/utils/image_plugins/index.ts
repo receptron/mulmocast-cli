@@ -8,19 +8,14 @@ import * as pluginMovie from "./movie.js";
 import * as pluginBeat from "./beat.js";
 import * as pluginVoiceOver from "./voice_over.js";
 import * as pluginVision from "./vision.js";
+import { ImageProcessorParams } from "../../types/index.js";
 
-const imagePlugins = [
-  pluginTextSlide,
-  pluginMarkdown,
-  pluginImage,
-  pluginChart,
-  pluginMermaid,
-  pluginMovie,
-  pluginHtmlTailwind,
-  pluginBeat,
-  pluginVoiceOver,
-  pluginVision,
-];
+const imagePlugins: {
+  imageType: string;
+  process: (params: ImageProcessorParams) => Promise<string | undefined> | void;
+  path: (params: ImageProcessorParams) => string | undefined;
+  markdown?: (params: ImageProcessorParams) => string | undefined;
+}[] = [pluginTextSlide, pluginMarkdown, pluginImage, pluginChart, pluginMermaid, pluginMovie, pluginHtmlTailwind, pluginBeat, pluginVoiceOver, pluginVision];
 
 export const findImagePlugin = (imageType?: string) => {
   return imagePlugins.find((plugin) => plugin.imageType === imageType);

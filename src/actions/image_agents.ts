@@ -42,6 +42,7 @@ export const imagePreprocessAgent = async (namedInputs: { context: MulmoStudioCo
     audioFile?: string;
     beatDuration?: number;
     movieAgentInfo?: { agent: string; movieParams: MulmoMovieParams };
+    markdown?: string;
   } = {
     imageParams: imageAgentInfo.imageParams,
     movieFile: beat.moviePrompt ? moviePaths.movieFile : undefined,
@@ -85,6 +86,9 @@ export const imagePreprocessAgent = async (namedInputs: { context: MulmoStudioCo
   if (beat.image) {
     const plugin = MulmoBeatMethods.getPlugin(beat);
     const pluginPath = plugin.path({ beat, context, imagePath, ...htmlStyle(context, beat) });
+    if (plugin.markdown) {
+      returnValue.markdown = plugin.markdown({ beat, context, imagePath, ...htmlStyle(context, beat) });
+    }
     // undefined prompt indicates that image generation is not needed
     return { ...returnValue, imagePath: pluginPath, referenceImageForMovie: pluginPath };
   }

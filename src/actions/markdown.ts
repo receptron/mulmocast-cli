@@ -21,8 +21,10 @@ const generateMarkdownContent = (context: MulmoStudioContext, imageWidth?: strin
     const text = localizedText(beat, multiLingual?.[index], lang);
     const studioBeat = studio.beats[index];
 
-    if (text.trim() || studioBeat?.imageFile) {
-      if (studioBeat?.imageFile) {
+    if (text.trim() || studioBeat?.markdown || studioBeat?.imageFile) {
+      if (studioBeat?.markdown) {
+        markdown += `${studioBeat.markdown}\n\n`;
+      } else if (studioBeat?.imageFile && studioBeat.markdown !== "") {
         const imagePath = path.relative(context.fileDirs.outDirPath, studioBeat.imageFile);
         if (imageWidth) {
           // Use HTML img tag for width control

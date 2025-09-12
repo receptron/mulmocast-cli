@@ -474,6 +474,7 @@ export const mulmoStudioBeatSchema = z
     lipSyncFile: z.string().optional(), // path to the lip sync file
     captionFile: z.string().optional(), // path to the caption image
     htmlImageFile: z.string().optional(), // path to the html image
+    markdown: z.string().optional(), // markdown string (alternative to image)
   })
   .strict();
 

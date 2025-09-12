@@ -305,6 +305,7 @@ export const beat_graph_data = {
         lipSyncFile: ":preprocessor.lipSyncFile",
         hasMovieAudio: ":audioChecker.hasMovieAudio",
         htmlImageFile: ":preprocessor.htmlImageFile",
+        markdown: ":preprocessor.markdown",
       },
       output: {
         imageFile: ".imageFile",
@@ -313,6 +314,7 @@ export const beat_graph_data = {
         lipSyncFile: ".lipSyncFile",
         hasMovieAudio: ".hasMovieAudio",
         htmlImageFile: ".htmlImageFile",
+        markdown: ".markdown",
       },
       isResult: true,
     },
