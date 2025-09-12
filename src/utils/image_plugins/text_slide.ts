@@ -9,7 +9,7 @@ const processTextSlide = async (params: ImageProcessorParams) => {
   if (!beat.image || beat.image.type !== imageType) return;
 
   const slide = beat.image.slide;
-  const markdown = `# ${slide.title}\n` + (slide.subtitle ? `## ${slide.subtitle}\n` : "") + (slide.bullets ?? []).map((text) => `- ${text}`).join("\n");
+  const markdown = dumpMarkdown(params) ?? "";
   const topMargin = (() => {
     if (slide.bullets?.length && slide.bullets.length > 0) {
       return "";
@@ -21,5 +21,16 @@ const processTextSlide = async (params: ImageProcessorParams) => {
   return imagePath;
 };
 
+const dumpMarkdown = (params: ImageProcessorParams) => {
+  const { beat } = params;
+  if (!beat.image || beat.image.type !== imageType) return;
+  const slide = beat.image.slide;
+  const titleString = slide.title ? `# ${slide.title}\n` : "";
+  const subtitleString = slide.subtitle ? `## ${slide.subtitle}\n` : "";
+  const bulletsString = (slide.bullets ?? []).map((text) => `- ${text}`).join("\n");
+  return `${titleString}${subtitleString}${bulletsString}`;
+};
+
 export const process = processTextSlide;
 export const path = parrotingImagePath;
+export const markdown = dumpMarkdown;

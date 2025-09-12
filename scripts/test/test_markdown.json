@@ -25,6 +25,36 @@
         "type": "markdown",
         "markdown": ["## Chapter 2", "- Hello", "- World"]
       }
+    },
+    {
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Chapter 3",
+          "subtitle": "Subtitle",
+          "bullets": ["Hello", "World"]
+        }
+      }
+    },
+    {
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "",
+          "subtitle": "Chapter 4",
+          "bullets": ["Hello", "World"]
+        }
+      }
+    },
+    {
+      "image": {
+        "type": "mermaid",
+        "title": "Business Process Flow",
+        "code": {
+          "kind": "text",
+          "text": "graph LR\n    A[Market Research] --> B[Product Planning]\n    B --> C[Development]\n    C --> D[Testing]\n    D --> E[Manufacturing]\n    E --> F[Marketing]\n    F --> G[Sales]\n    G --> H[Customer Support]\n    H --> A"
+        }
+      }
     }
   ]
 }
