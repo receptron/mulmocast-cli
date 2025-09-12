@@ -25,7 +25,10 @@ const dumpMarkdown = (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return;
   const slide = beat.image.slide;
-  return `# ${slide.title}\n` + (slide.subtitle ? `## ${slide.subtitle}\n` : "") + (slide.bullets ?? []).map((text) => `- ${text}`).join("\n");
+  const titleString = slide.title ? `# ${slide.title}\n` : "";
+  const subtitleString = slide.subtitle ? `## ${slide.subtitle}\n` : "";
+  const bulletsString = (slide.bullets ?? []).map((text) => `- ${text}`).join("\n");
+  return `${titleString}${subtitleString}${bulletsString}`;
 };
 
 export const process = processTextSlide;

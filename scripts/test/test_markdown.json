@@ -38,6 +38,16 @@
     },
     {
       "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "",
+          "subtitle": "Chapter 4",
+          "bullets": ["Hello", "World"]
+        }
+      }
+    },
+    {
+      "image": {
         "type": "mermaid",
         "title": "Business Process Flow",
         "code": {
