@@ -2,13 +2,14 @@ import { ImageProcessorParams } from "../../types/index.js";
 import { MulmoMediaSourceMethods } from "../../methods/index.js";
 import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../markdown.js";
-import { parrotingImagePath } from "./utils.js";
+import { parrotingImagePath, isVaidBeat } from "./utils.js";
+import type { MulmoMermaidMedia } from "../../types/index.js";
 
 export const imageType = "mermaid";
 
 const processMermaid = async (params: ImageProcessorParams) => {
   const { beat, imagePath, canvasSize, context, textSlideStyle } = params;
-  if (!beat?.image || beat.image.type !== imageType) return;
+  if (!isVaidBeat<MulmoMermaidMedia>(beat, imageType)) return;
 
   const template = getHTMLFile("mermaid");
   const diagram_code = await MulmoMediaSourceMethods.getText(beat.image.code, context);
@@ -25,7 +26,7 @@ const processMermaid = async (params: ImageProcessorParams) => {
 
 const dumpMarkdown = (params: ImageProcessorParams) => {
   const { beat } = params;
-  if (!beat.image || beat.image.type !== imageType) return;
+  if (!isVaidBeat<MulmoMermaidMedia>(beat, imageType)) return;
   if (beat.image.code.kind !== "text") return; // support only text for now
   return `\`\`\`mermaid\n${beat.image.code.text}\n\`\`\``;
 };
