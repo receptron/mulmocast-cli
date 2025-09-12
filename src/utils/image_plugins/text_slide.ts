@@ -1,13 +1,13 @@
 import { ImageProcessorParams } from "../../types/index.js";
 import { renderMarkdownToImage } from "../markdown.js";
-import { parrotingImagePath, isVaidBeat } from "./utils.js";
+import { parrotingImagePath, isValidBeat } from "./utils.js";
 import type { MulmoTextSlideMedia } from "../../types/index.js";
 
 export const imageType = "textSlide";
 
 const processTextSlide = async (params: ImageProcessorParams) => {
   const { beat, imagePath, textSlideStyle, canvasSize } = params;
-  if (!isVaidBeat<MulmoTextSlideMedia>(beat, imageType)) return;
+  if (!isValidBeat<MulmoTextSlideMedia>(beat, imageType)) return;
 
   const markdown = dumpMarkdown(params) ?? "";
   const topMargin = (() => {
@@ -24,7 +24,7 @@ const processTextSlide = async (params: ImageProcessorParams) => {
 
 const dumpMarkdown = (params: ImageProcessorParams) => {
   const { beat } = params;
-  if (!isVaidBeat<MulmoTextSlideMedia>(beat, imageType)) return;
+  if (!isValidBeat<MulmoTextSlideMedia>(beat, imageType)) return;
   const slide = beat.image.slide;
   const titleString = slide.title ? `# ${slide.title}\n` : "";
   const subtitleString = slide.subtitle ? `## ${slide.subtitle}\n` : "";

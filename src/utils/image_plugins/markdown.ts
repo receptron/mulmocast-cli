@@ -1,13 +1,13 @@
 import { ImageProcessorParams } from "../../types/index.js";
 import { renderMarkdownToImage } from "../markdown.js";
-import { parrotingImagePath, isVaidBeat } from "./utils.js";
+import { parrotingImagePath, isValidBeat } from "./utils.js";
 import type { MulmoMarkdownMedia } from "../../types/index.js";
 
 export const imageType = "markdown";
 
 const processMarkdown = async (params: ImageProcessorParams) => {
   const { beat, imagePath, textSlideStyle, canvasSize } = params;
-  if (!isVaidBeat<MulmoMarkdownMedia>(beat, imageType)) return;
+  if (!isValidBeat<MulmoMarkdownMedia>(beat, imageType)) return;
 
   const markdown = dumpMarkdown(params) ?? "";
   await renderMarkdownToImage(markdown, textSlideStyle, imagePath, canvasSize.width, canvasSize.height);
@@ -16,7 +16,7 @@ const processMarkdown = async (params: ImageProcessorParams) => {
 
 const dumpMarkdown = (params: ImageProcessorParams) => {
   const { beat } = params;
-  if (!isVaidBeat<MulmoMarkdownMedia>(beat, imageType)) return;
+  if (!isValidBeat<MulmoMarkdownMedia>(beat, imageType)) return;
   return Array.isArray(beat.image.markdown) ? beat.image.markdown.join("\n") : beat.image.markdown;
 };
 
