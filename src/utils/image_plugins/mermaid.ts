@@ -23,5 +23,13 @@ const processMermaid = async (params: ImageProcessorParams) => {
   return imagePath;
 };
 
+const dumpMarkdown = (params: ImageProcessorParams) => {
+  const { beat } = params;
+  if (!beat.image || beat.image.type !== imageType) return;
+  if (beat.image.code.kind !== "text") return; // support only text for now
+  return `\`\`\`mermaid\n${beat.image.code.text}\n\`\`\``;
+};
+
 export const process = processMermaid;
 export const path = parrotingImagePath;
+export const markdown = dumpMarkdown;
