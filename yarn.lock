@@ -2626,10 +2626,10 @@ ms@^2.0.0, ms@^2.1.3:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
-mulmocast-vision@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/mulmocast-vision/-/mulmocast-vision-0.1.4.tgz#3e05536385d66078435c4eb5276e92f8fb14acb7"
-  integrity sha512-naCKXY744RTFg8Yh+g/2gf+CEjckpL9EWOXiG+1rL7qwAobF663qe5B4MiwQ60sI2v78inE7M+lSvxLEgLshhA==
+mulmocast-vision@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/mulmocast-vision/-/mulmocast-vision-1.0.2.tgz#0cef90e73462b47fe5cfda7a403e0b555919d17a"
+  integrity sha512-gvFzWoo/fwlDwH79uXpw1RORvKQQQ/ARZoOHRVRVY/XeQZFBOW7YVlSywzyYTo11MMjfaVkPA6Pl6JTtjrtD/w==
   dependencies:
     "@modelcontextprotocol/sdk" "^1.17.5"
     nunjucks "^3.2.4"
