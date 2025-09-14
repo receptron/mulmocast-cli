@@ -12,7 +12,7 @@ const generateHtmlContent = (context: MulmoStudioContext, imageWidth?: string): 
   const title = studio.script.title || "MulmoCast Content";
   const description = studio.script.description || "";
 
-  let html = `# ${title}\n\n`;
+  let html = `<h1>${title}</h1>\n\n`;
 
   if (description) {
     html += `${description}\n\n`;
