@@ -7,3 +7,4 @@ export * from "./movie.js";
 export * from "./pdf.js";
 export * from "./translate.js";
 export * from "./markdown.js";
+export * from "./html.js";

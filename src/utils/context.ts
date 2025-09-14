@@ -46,6 +46,7 @@ const initSessionState = () => {
       caption: false,
       pdf: false,
       markdown: false,
+      html: false,
     },
     inBeatSession: {
       audio: {},

@@ -12,6 +12,7 @@ import * as imagesCmd from "./commands/image/index.js";
 import * as movieCmd from "./commands/movie/index.js";
 import * as pdfCmd from "./commands/pdf/index.js";
 import * as markdownCmd from "./commands/markdown/index.js";
+import * as htmlCmd from "./commands/html/index.js";
 import * as toolCmd from "./commands/tool/index.js";
 import { GraphAILogger } from "graphai";
 
@@ -37,6 +38,7 @@ export const main = async () => {
     .command(movieCmd)
     .command(pdfCmd)
     .command(markdownCmd)
+    .command(htmlCmd)
     .command(toolCmd)
     .demandCommand()
     .strict()
