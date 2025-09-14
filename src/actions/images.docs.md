@@ -1,5 +1,5 @@
 ---
-generated_at: 2025-09-04T12:47:52.515Z
+generated_at: 2025-09-14T23:40:06.914Z
 ---
 
 # images
@@ -143,6 +143,7 @@ flowchart TD
   n_preprocessor -- lipSyncFile --> n_output
   n_audioChecker -- hasMovieAudio --> n_output
   n_preprocessor -- htmlImageFile --> n_output
+  n_preprocessor -- markdown --> n_output
   class n_context,n_htmlImageAgentInfo,n_imageRefs,n_beat,n___mapIndex,n_forceMovie,n_forceImage,n_forceLipSync,n_forceSoundEffect staticNode
   class n_preprocessor,n_imagePlugin,n_htmlImageAgent,n_htmlReader,n_htmlImageGenerator,n_imageGenerator,n_movieGenerator,n_imageFromMovie,n_audioChecker,n_soundEffectGenerator,n_AudioTrimmer,n_lipSyncGenerator,n_output computedNode
 ```
@@ -284,6 +285,7 @@ flowchart TD
     n_map_preprocessor -- lipSyncFile --> n_map_output
     n_map_audioChecker -- hasMovieAudio --> n_map_output
     n_map_preprocessor -- htmlImageFile --> n_map_output
+    n_map_preprocessor -- markdown --> n_map_output
   end
   n_context -- studio.script.beats --> n_map
   n_context --> n_map
