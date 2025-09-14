@@ -90,7 +90,7 @@
     "graphai": "^2.0.14",
     "jsdom": "^27.0.0",
     "marked": "^16.3.0",
-    "mulmocast-vision": "^1.0.2",
+    "mulmocast-vision": "^1.0.3",
     "ora": "^8.2.0",
     "puppeteer": "^24.20.0",
     "replicate": "^1.1.0",

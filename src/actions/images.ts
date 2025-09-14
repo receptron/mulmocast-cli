@@ -306,6 +306,7 @@ export const beat_graph_data = {
         hasMovieAudio: ":audioChecker.hasMovieAudio",
         htmlImageFile: ":preprocessor.htmlImageFile",
         markdown: ":preprocessor.markdown",
+        html: ":preprocessor.html",
       },
       output: {
         imageFile: ".imageFile",
@@ -315,6 +316,7 @@ export const beat_graph_data = {
         hasMovieAudio: ".hasMovieAudio",
         htmlImageFile: ".htmlImageFile",
         markdown: ".markdown",
+        html: ".html",
       },
       isResult: true,
     },

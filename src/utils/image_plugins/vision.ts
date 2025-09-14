@@ -21,5 +21,16 @@ const processVision = async (params: ImageProcessorParams) => {
   return imagePath;
 };
 
+const dumpHtml = (params: ImageProcessorParams) => {
+  const { beat } = params;
+  if (!beat.image || beat.image.type !== imageType) return;
+
+  const handler = new htmlPlugin({});
+
+  return handler.getHtml(templateNameTofunctionName(beat.image.style) as keyof htmlPlugin, beat.image.data);
+};
+
 export const process = processVision;
 export const path = parrotingImagePath;
+
+export const html = dumpHtml;
