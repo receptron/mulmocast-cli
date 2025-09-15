@@ -41,19 +41,177 @@ test("imagePreprocessAgent - movie plugin", async () => {
   assert.deepStrictEqual(result, expected);
 });
 
-test.skip("imagePreprocessAgent - with image plugin (textSlide)", async () => {
-  // Skip this test as it requires complex file system setup and Puppeteer
-  // The plugin functionality is tested in the actual integration tests
+test("imagePreprocessAgent - with image plugin (textSlide)", async () => {
+  const context = createMockContext();
+  const beat = createMockBeat({
+    text: "Test beat text",
+    image: {
+      type: "textSlide",
+      slide: {
+        title: "3.0 second with no Audio",
+      },
+    },
+  });
+
+  const result = await imagePreprocessAgent({
+    context,
+    beat,
+    index: 1,
+    imageRefs: {},
+  });
+
+  const expected = {
+    imageParams: {
+      provider: "openai",
+      model: "dall-e-3",
+      style: "natural",
+      moderation: "auto",
+    },
+    movieFile: undefined,
+    beatDuration: undefined,
+    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
+    markdown: "# 3.0 second with no Audio\n",
+    imagePath: "/test/images/test_studio/1p.png",
+    referenceImageForMovie: "/test/images/test_studio/1p.png",
+  };
+  assert.deepStrictEqual(result, expected);
 });
 
-test.skip("imagePreprocessAgent - with image plugin (markdown)", async () => {
-  // Skip this test as it requires complex file system setup and Puppeteer
+test("imagePreprocessAgent - with image plugin (markdown)", async () => {
+  const context = createMockContext();
+  const beat = createMockBeat({
+    text: "Test beat text",
+    image: {
+      type: "markdown",
+      markdown: ["## Chapter 2", "- Hello", "- World"],
+    },
+  });
+
+  const result = await imagePreprocessAgent({
+    context,
+    beat,
+    index: 1,
+    imageRefs: {},
+  });
+
+  const expected = {
+    imageParams: {
+      provider: "openai",
+      model: "dall-e-3",
+      style: "natural",
+      moderation: "auto",
+    },
+    movieFile: undefined,
+    beatDuration: undefined,
+    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
+    markdown: "## Chapter 2\n- Hello\n- World",
+    imagePath: "/test/images/test_studio/1p.png",
+    referenceImageForMovie: "/test/images/test_studio/1p.png",
+  };
+  assert.deepStrictEqual(result, expected);
 });
 
-test.skip("imagePreprocessAgent - with image plugin (chart)", async () => {
-  // Skip this test as it requires complex file system setup and Chart.js
+test("imagePreprocessAgent - with image plugin (chart)", async () => {
+  const context = createMockContext();
+  const beat = createMockBeat({
+    text: "Test beat text",
+    image: {
+      type: "chart",
+      title: "A sample pie chart",
+      chartData: {
+        type: "pie",
+        data: {
+          labels: ["OpenAIと投資家の取り分", "マイクロソフトの取り分"],
+          datasets: [
+            {
+              data: [90, 10],
+              backgroundColor: ["rgba(75, 192, 192, 0.5)", "rgba(54, 162, 235, 0.5)"],
+              borderColor: ["rgba(75, 192, 192, 1)", "rgba(54, 162, 235, 1)"],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          animation: false,
+          plugins: {
+            legend: {
+              position: "bottom",
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const result = await imagePreprocessAgent({
+    context,
+    beat,
+    index: 1,
+    imageRefs: {},
+  });
+  const expected = {
+    imageParams: {
+      provider: 'openai',
+      model: 'dall-e-3',
+      style: 'natural',
+      moderation: 'auto'
+    },
+    movieFile: undefined,
+    beatDuration: undefined,
+    movieAgentInfo: { agent: 'movieReplicateAgent', movieParams: {} },
+    imagePath: '/test/images/test_studio/1p.png',
+    referenceImageForMovie: '/test/images/test_studio/1p.png'
+  };
+  assert.deepStrictEqual(result, expected);
+  
 });
 
-test.skip("imagePreprocessAgent - with image plugin (mermaid)", async () => {
+test("imagePreprocessAgent - with image plugin (mermaid)", async () => {
   // Skip this test as it requires complex file system setup and Mermaid rendering
+  const context = createMockContext();
+  const beat = createMockBeat({
+    text: "Test beat text",
+    image: {
+      type: "mermaid",
+      title: "Business Process Flow",
+      code: {
+        kind: "text",
+        text: "graph LR\n    A[Market Research] --> B[Product Planning]\n    B --> C[Development]\n    C --> D[Testing]\n    D --> E[Manufacturing]\n    E --> F[Marketing]\n    F --> G[Sales]\n    G --> H[Customer Support]\n    H --> A",
+      },
+    },
+  });
+  const result = await imagePreprocessAgent({
+    context,
+    beat,
+    index: 1,
+    imageRefs: {},
+  });
+
+  const expected = {
+    imageParams: {
+      provider: "openai",
+      model: "dall-e-3",
+      style: "natural",
+      moderation: "auto",
+    },
+    movieFile: undefined,
+    beatDuration: undefined,
+    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
+    markdown:
+      "```mermaid\n" +
+      "graph LR\n" +
+      "    A[Market Research] --> B[Product Planning]\n" +
+      "    B --> C[Development]\n" +
+      "    C --> D[Testing]\n" +
+      "    D --> E[Manufacturing]\n" +
+      "    E --> F[Marketing]\n" +
+      "    F --> G[Sales]\n" +
+      "    G --> H[Customer Support]\n" +
+      "    H --> A\n" +
+      "```",
+    imagePath: "/test/images/test_studio/1p.png",
+    referenceImageForMovie: "/test/images/test_studio/1p.png",
+  };
+  assert.deepStrictEqual(result, expected);
 });
