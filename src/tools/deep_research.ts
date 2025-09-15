@@ -1,4 +1,4 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import { GraphAILogger, GraphAI } from "graphai";
 import { textInputAgent } from "@graphai/input_agents";
 
@@ -11,6 +11,8 @@ import * as agents from "@graphai/vanilla";
 import tavilySearchAgent from "../agents/tavily_agent.js";
 import { cliLoadingPlugin } from "../utils/plugins.js";
 import { searchQueryPrompt, reflectionPrompt, finalAnswerPrompt } from "../utils/prompt.js";
+
+dotenv.config({ quiet: true });
 
 const vanillaAgents = agents.default ?? agents;
 

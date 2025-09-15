@@ -1,4 +1,4 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import fsPromise from "fs/promises";
@@ -8,6 +8,8 @@ import { writingMessage } from "./file.js";
 import { text2hash } from "./utils_node.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 import { replacementsJa, replacePairsJa } from "../utils/string.js";
+
+dotenv.config({ quiet: true });
 
 export const nijovoiceTextAgentFilter: AgentFilterFunction = async (context, next) => {
   const { text, provider, lang } = context.namedInputs;

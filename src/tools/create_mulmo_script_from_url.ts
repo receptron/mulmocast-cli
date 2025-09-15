@@ -1,4 +1,4 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import path from "path";
 import { GraphAI, GraphAILogger, GraphData } from "graphai";
 import { openAIAgent } from "@graphai/openai_agent";
@@ -17,6 +17,8 @@ import { cliLoadingPlugin } from "../utils/plugins.js";
 import { graphDataScriptFromUrlPrompt } from "../utils/prompt.js";
 import { llmPair } from "../utils/utils.js";
 import { readFileSync } from "fs";
+
+dotenv.config({ quiet: true });
 
 const vanillaAgents = agents.default ?? agents;
 
