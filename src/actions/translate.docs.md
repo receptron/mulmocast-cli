@@ -1,5 +1,5 @@
 ---
-generated_at: 2025-09-04T12:47:52.520Z
+generated_at: 2025-09-15T00:15:03.128Z
 ---
 
 # translate
@@ -41,8 +41,8 @@ flowchart TD
       n_beatsMap_preprocessMultiLingual_beatIndex --> n_beatsMap_preprocessMultiLingual_localizedText
       n_beatsMap_preprocessMultiLingual_context --> n_beatsMap_preprocessMultiLingual_localizedText
       n_beatsMap_preprocessMultiLingual_lang --> n_beatsMap_preprocessMultiLingual_localizedText
-      n_beatsMap_preprocessMultiLingual_targetLang --> n_beatsMap_preprocessMultiLingual_localizedText
       n_beatsMap_preprocessMultiLingual_beat -- text --> n_beatsMap_preprocessMultiLingual_localizedText
+      n_beatsMap_preprocessMultiLingual_targetLang --> n_beatsMap_preprocessMultiLingual_localizedText
       n_beatsMap_preprocessMultiLingual_splitText(splitText<br/>splitText)
       n_beatsMap_preprocessMultiLingual_targetLang --> n_beatsMap_preprocessMultiLingual_splitText
       n_beatsMap_preprocessMultiLingual_localizedText --> n_beatsMap_preprocessMultiLingual_splitText
