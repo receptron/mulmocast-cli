@@ -71,6 +71,7 @@ test("imagePreprocessAgent - with image plugin (textSlide)", async () => {
     beatDuration: undefined,
     movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
     markdown: "# 3.0 second with no Audio\n",
+     html: '<h1>3.0 second with no Audio</h1>\n',
     imagePath: "/test/images/test_studio/1p.png",
     referenceImageForMovie: "/test/images/test_studio/1p.png",
   };
@@ -86,7 +87,6 @@ test("imagePreprocessAgent - with image plugin (markdown)", async () => {
       markdown: ["## Chapter 2", "- Hello", "- World"],
     },
   });
-
   const result = await imagePreprocessAgent({
     context,
     beat,
@@ -104,6 +104,7 @@ test("imagePreprocessAgent - with image plugin (markdown)", async () => {
     movieFile: undefined,
     beatDuration: undefined,
     movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
+    html: '<h2>Chapter 2</h2>\n<ul>\n<li>Hello</li>\n<li>World</li>\n</ul>\n',
     markdown: "## Chapter 2\n- Hello\n- World",
     imagePath: "/test/images/test_studio/1p.png",
     referenceImageForMovie: "/test/images/test_studio/1p.png",
