@@ -96,7 +96,12 @@ export const imagePreprocessAgent = async (namedInputs: { context: MulmoStudioCo
 
     const isTypeMovie = beat.image.type === "movie";
     // undefined prompt indicates that image generation is not needed
-    return { ...returnValue, imagePath: isTypeMovie ? undefined : pluginPath, movieFile: isTypeMovie ? pluginPath : undefined, referenceImageForMovie: pluginPath };
+    return {
+      ...returnValue,
+      imagePath: isTypeMovie ? undefined : pluginPath,
+      movieFile: isTypeMovie ? pluginPath : undefined,
+      referenceImageForMovie: pluginPath,
+    };
   }
 
   if (beat.moviePrompt && !beat.imagePrompt) {
