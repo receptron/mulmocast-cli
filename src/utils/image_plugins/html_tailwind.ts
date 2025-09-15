@@ -21,5 +21,14 @@ const processHtmlTailwind = async (params: ImageProcessorParams) => {
   return imagePath;
 };
 
+const dumpHtml = (params: ImageProcessorParams) => {
+  const { beat } = params;
+  if (!beat.image || beat.image.type !== imageType) return;
+
+  return Array.isArray(beat.image.html) ? beat.image.html.join("\n") : beat.image.html;
+};
+
+
 export const process = processHtmlTailwind;
 export const path = parrotingImagePath;
+export const html = dumpHtml;
