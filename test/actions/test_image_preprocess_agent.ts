@@ -1490,13 +1490,13 @@ test("imagePreprocessAgent - movie plugin", async () => {
   const context = createMockContext();
   const beat = createMockBeat({
     text: "Test beat text",
-    "image": {
-      "type": "movie",
-      "source": {
-        "kind": "path",
-        "path": "./upload_image/0/1757884027430.mov"
-      }
-    }
+    image: {
+      type: "movie",
+      source: {
+        kind: "path",
+        path: "./upload_image/0/1757884027430.mov",
+      },
+    },
   });
 
   const result = await imagePreprocessAgent({
@@ -1508,17 +1508,16 @@ test("imagePreprocessAgent - movie plugin", async () => {
 
   const expected = {
     imageParams: {
-      provider: 'openai',
-      model: 'dall-e-3',
-      style: 'natural',
-      moderation: 'auto'
+      provider: "openai",
+      model: "dall-e-3",
+      style: "natural",
+      moderation: "auto",
     },
-    movieFile: '/test/path/upload_image/0/1757884027430.mov',
+    movieFile: "/test/path/upload_image/0/1757884027430.mov",
     beatDuration: undefined,
-    movieAgentInfo: { agent: 'movieReplicateAgent', movieParams: {} },
+    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
     imagePath: undefined,
-    referenceImageForMovie: '/test/path/upload_image/0/1757884027430.mov'
-  }
+    referenceImageForMovie: "/test/path/upload_image/0/1757884027430.mov",
+  };
   assert.deepStrictEqual(result, expected);
 });
-
