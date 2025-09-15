@@ -60,7 +60,7 @@ const defaultAgents = {
   anthropicAgent,
 };
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 export const beat_graph_data = {
   version: 0.5,

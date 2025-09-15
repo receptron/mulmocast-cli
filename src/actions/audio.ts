@@ -1,4 +1,4 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 
 import { GraphAI, TaskManager, GraphAILogger } from "graphai";
 import type { GraphData } from "graphai";
@@ -18,6 +18,8 @@ import { provider2TTSAgent } from "../utils/provider2agent.js";
 import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 import { MulmoMediaSourceMethods } from "../methods/mulmo_media_source.js";
+
+dotenv.config({ quiet: true });
 
 const vanillaAgents = agents.default ?? agents;
 

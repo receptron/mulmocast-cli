@@ -1,4 +1,4 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import { ToolCliArgs } from "../../../../types/cli_types.js";
 import { existsSync, createReadStream, writeFileSync, mkdirSync } from "fs";
 import { resolve, basename, extname, join } from "path";
@@ -6,6 +6,8 @@ import OpenAI from "openai";
 import { mulmoScriptSchema, MulmoScript } from "../../../../types/index.js";
 import { ffmpegGetMediaDuration } from "../../../../utils/ffmpeg_utils.js";
 import { GraphAILogger } from "graphai";
+
+dotenv.config({ quiet: true });
 
 const createMulmoScript = (fullPath: string, beats: { text: string; duration: number }[]): MulmoScript => {
   return mulmoScriptSchema.parse({

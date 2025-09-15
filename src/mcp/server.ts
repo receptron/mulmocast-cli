@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import "dotenv/config";
+import dotenv from "dotenv";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, CallToolRequest, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
@@ -14,6 +14,8 @@ import { outDirName } from "../utils/const.js";
 import { resolveDirPath, mkdir, generateTimestampedFileName } from "../utils/file.js";
 import type { MulmoScript } from "../types/type.js";
 import { MulmoScriptMethods } from "../methods/index.js";
+
+dotenv.config({ quiet: true });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

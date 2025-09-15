@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import "dotenv/config";
+import dotenv from "dotenv";
 import yargs from "yargs/yargs";
 import { hideBin } from "yargs/helpers";
 import { readFileSync } from "fs";
@@ -15,6 +15,8 @@ import * as markdownCmd from "./commands/markdown/index.js";
 import * as htmlCmd from "./commands/html/index.js";
 import * as toolCmd from "./commands/tool/index.js";
 import { GraphAILogger } from "graphai";
+
+dotenv.config({ quiet: true });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

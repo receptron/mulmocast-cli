@@ -1,4 +1,4 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import fs from "fs";
 
 import { GraphAI, assert, isNull, GraphAILogger } from "graphai";
@@ -25,6 +25,8 @@ import { translateSystemPrompt, translatePrompts } from "../utils/prompt.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 
 const vanillaAgents = agents.default ?? agents;
+
+dotenv.config({ quiet: true });
 
 // 1. translateGraph / map each beats.
 // 2. beatGraph / map each target lang.

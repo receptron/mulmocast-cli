@@ -1,4 +1,4 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import { GraphAILogger, GraphAI } from "graphai";
 import { textInputAgent } from "@graphai/input_agents";
 
@@ -20,6 +20,8 @@ import validateSchemaAgent from "../agents/validate_schema_agent.js";
 import { llmPair } from "../utils/utils.js";
 import { interactiveClarificationPrompt, prefixPrompt } from "../utils/prompt.js";
 // import { cliLoadingPlugin } from "../utils/plugins.js";
+
+dotenv.config({ quiet: true });
 
 const vanillaAgents = agents.default ?? agents;
 
