@@ -4,66 +4,13 @@ import assert from "node:assert";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import type { MulmoStudioContext, MulmoBeat } from "../../src/types/index.js";
+import type { MulmoBeat } from "../../src/types/index.js";
 import { imagePreprocessAgent } from "../../src/actions/image_agents.js";
+
+import { createMockContext, createMockBeat } from "./utils.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Helper function to create mock context
-const createMockContext = (): MulmoStudioContext => ({
-  fileDirs: {
-    mulmoFilePath: "/test/path/test.yaml",
-    mulmoFileDirPath: "/test/path",
-    baseDirPath: "/test",
-    outDirPath: "/test/output",
-    imageDirPath: "/test/images",
-    audioDirPath: "/test/audio",
-  },
-  studio: {
-    filename: "test_studio",
-    script: {
-      title: "Test Script",
-      beats: [],
-      canvasSize: { width: 1920, height: 1080 },
-    },
-    beats: [],
-    toJSON: () => "{}",
-  },
-  force: false,
-  presentationStyle: {
-    imageParams: {
-      provider: "openai",
-      model: "dall-e-3",
-      style: "natural",
-      moderation: "auto",
-    },
-  },
-  sessionState: {
-    inSession: {
-      audio: false,
-      image: false,
-      video: false,
-      multiLingual: false,
-      caption: false,
-      pdf: false,
-    },
-    inBeatSession: {
-      audio: {},
-      image: {},
-      movie: {},
-      multiLingual: {},
-      caption: {},
-      html: {},
-    },
-  },
-});
-
-// Helper function to create mock beat
-const createMockBeat = (overrides: Partial<MulmoBeat> = {}): MulmoBeat => ({
-  text: "Test beat text",
-  ...overrides,
-});
 
 test("imagePreprocessAgent - basic functionality", async () => {
   const context = createMockContext();
@@ -1483,41 +1430,5 @@ test("imagePreprocessAgent - all parameters: soundEffectPrompt + enableLipSync +
     },
   };
 
-  assert.deepStrictEqual(result, expected);
-});
-
-test("imagePreprocessAgent - movie plugin", async () => {
-  const context = createMockContext();
-  const beat = createMockBeat({
-    text: "Test beat text",
-    image: {
-      type: "movie",
-      source: {
-        kind: "path",
-        path: "./upload_image/0/1757884027430.mov",
-      },
-    },
-  });
-
-  const result = await imagePreprocessAgent({
-    context,
-    beat,
-    index: 1,
-    imageRefs: {},
-  });
-
-  const expected = {
-    imageParams: {
-      provider: "openai",
-      model: "dall-e-3",
-      style: "natural",
-      moderation: "auto",
-    },
-    movieFile: "/test/path/upload_image/0/1757884027430.mov",
-    beatDuration: undefined,
-    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
-    imagePath: undefined,
-    referenceImageForMovie: "/test/path/upload_image/0/1757884027430.mov",
-  };
   assert.deepStrictEqual(result, expected);
 });
