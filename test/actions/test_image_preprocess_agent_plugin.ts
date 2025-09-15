@@ -152,19 +152,18 @@ test("imagePreprocessAgent - with image plugin (chart)", async () => {
   });
   const expected = {
     imageParams: {
-      provider: 'openai',
-      model: 'dall-e-3',
-      style: 'natural',
-      moderation: 'auto'
+      provider: "openai",
+      model: "dall-e-3",
+      style: "natural",
+      moderation: "auto",
     },
     movieFile: undefined,
     beatDuration: undefined,
-    movieAgentInfo: { agent: 'movieReplicateAgent', movieParams: {} },
-    imagePath: '/test/images/test_studio/1p.png',
-    referenceImageForMovie: '/test/images/test_studio/1p.png'
+    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
+    imagePath: "/test/images/test_studio/1p.png",
+    referenceImageForMovie: "/test/images/test_studio/1p.png",
   };
   assert.deepStrictEqual(result, expected);
-  
 });
 
 test("imagePreprocessAgent - with image plugin (mermaid)", async () => {
