@@ -526,6 +526,118 @@ export const scriptTemplates = [
     },
     beats: [
       {
+        image: {
+          html: [
+            '<main class="flex-grow">',
+            "  <!-- Hero Section -->",
+            '  <section class="bg-blue-600 text-white py-20">',
+            '    <div class="container mx-auto px-6 text-center">',
+            '      <h1 class="text-4xl md:text-5xl font-bold mb-4">Welcome to Mulmocast</h1>',
+            '      <p class="text-lg md:text-xl mb-8">A modern web experience powered by Tailwind CSS</p>',
+            '      <a href="#features" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold shadow hover:bg-gray-100 transition">',
+            "        Learn More",
+            "      </a>",
+            "    </div>",
+            "  </section>",
+            "",
+            "  <!-- Features Section -->",
+            '  <section id="features" class="py-16 bg-gray-100">',
+            '    <div class="container mx-auto px-6">',
+            '      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">',
+            "        <div>",
+            '          <div class="text-blue-600 text-4xl mb-2">⚡</div>',
+            '          <h3 class="text-xl font-semibold mb-2">Fast</h3>',
+            '          <p class="text-gray-600">Built with performance in mind using modern tools.</p>',
+            "        </div>",
+            "        <div>",
+            '          <div class="text-blue-600 text-4xl mb-2">🎨</div>',
+            '          <h3 class="text-xl font-semibold mb-2">Beautiful</h3>',
+            '          <p class="text-gray-600">Styled with Tailwind CSS for clean, responsive design.</p>',
+            "        </div>",
+            "        <div>",
+            '          <div class="text-blue-600 text-4xl mb-2">🚀</div>',
+            '          <h3 class="text-xl font-semibold mb-2">Launch Ready</h3>',
+            '          <p class="text-gray-600">Easy to deploy and extend for your next big idea.</p>',
+            "        </div>",
+            "      </div>",
+            "    </div>",
+            "  </section>",
+            "</main>",
+            "",
+            "<!-- Footer -->",
+            '<footer class="bg-white text-gray-500 text-center py-6 border-t">',
+            "  2025 Mulmocast.",
+            "</footer>",
+          ],
+          type: "html_tailwind",
+        },
+        text: "This is a tailwind html format.",
+      },
+      {
+        image: {
+          markdown: [
+            "# Markdown Table Example",
+            "| Item              | In Stock | Price |",
+            "| :---------------- | :------: | ----: |",
+            "| Python Hat        |   True   | 23.99 |",
+            "| SQL Hat           |   True   | 23.99 |",
+            "| Codecademy Tee    |  False   | 19.99 |",
+            "| Codecademy Hoodie |  False   | 42.99 |",
+          ],
+          type: "markdown",
+        },
+        text: "This is a table of items in the store.",
+      },
+      {
+        image: {
+          slide: {
+            subtitle: "Tom Johnson",
+            title: "This is the title of the presentation",
+          },
+          type: "textSlide",
+        },
+        text: "This is a sample slide, which just displays the title and the presenter's name of this presentation.",
+      },
+      {
+        image: {
+          data: {
+            heading: "How AI Is Reshaping Referencing",
+            subheading: "From sources to systems: reliability, traceability, and credit in the age of models",
+          },
+          style: "sectionDividerSlide",
+          type: "vision",
+        },
+        text: "sectionDividerSlide",
+      },
+      {
+        image: {
+          data: {
+            items: [
+              "Executive summary",
+              "Reference reliability and hallucinations",
+              "Attribution and credit in AI workflows",
+              "Standards & compliance (academia, journalism, law)",
+              "Roadmap & recommendations",
+            ],
+            title: "Agenda",
+          },
+          style: "agendaSlide",
+          type: "vision",
+        },
+        text: "agendaSlide",
+      },
+    ],
+    filename: "html_sample",
+    lang: "en",
+    title: "[TITLE: Brief, engaging title for the topic]",
+  },
+  {
+    $mulmocast: {
+      credit: "closing",
+      version: "1.1",
+    },
+    beats: [
+      {
         imagePrompt: "[IMAGE_PROMPT: A prompt for the image to be generated for this beat.]",
       },
       {
