@@ -21,7 +21,7 @@ const processVision = async (params: ImageProcessorParams) => {
   return imagePath;
 };
 
-const dumpHtml = (params: ImageProcessorParams) => {
+const dumpHtml = async (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 

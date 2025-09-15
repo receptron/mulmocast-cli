@@ -21,9 +21,9 @@ const dumpMarkdown = (params: ImageProcessorParams) => {
   return Array.isArray(beat.image.markdown) ? beat.image.markdown.join("\n") : beat.image.markdown;
 };
 
-const dumpHtml = (params: ImageProcessorParams) => {
+const dumpHtml = async (params: ImageProcessorParams) => {
   const markdown = dumpMarkdown(params);
-  return marked.parse(markdown);
+  return await marked.parse(markdown ?? "");
 };
 
 export const process = processMarkdown;

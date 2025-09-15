@@ -91,7 +91,7 @@ export const imagePreprocessAgent = async (namedInputs: { context: MulmoStudioCo
       returnValue.markdown = plugin.markdown({ beat, context, imagePath, ...htmlStyle(context, beat) });
     }
     if (plugin.html) {
-      returnValue.html = plugin.html({ beat, context, imagePath, ...htmlStyle(context, beat) });
+      returnValue.html = await plugin.html({ beat, context, imagePath, ...htmlStyle(context, beat) });
     }
 
     const isTypeMovie = beat.image.type === "movie";

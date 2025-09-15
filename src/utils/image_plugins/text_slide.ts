@@ -33,9 +33,9 @@ const dumpMarkdown = (params: ImageProcessorParams) => {
   return `${titleString}${subtitleString}${bulletsString}`;
 };
 
-const dumpHtml = (params: ImageProcessorParams) => {
+const dumpHtml = async (params: ImageProcessorParams) => {
   const markdown = dumpMarkdown(params);
-  return marked.parse(markdown);
+  return await marked.parse(markdown ?? "");
 };
 
 export const process = processTextSlide;
