@@ -2,6 +2,8 @@ import { ImageProcessorParams } from "../../types/index.js";
 import { renderMarkdownToImage } from "../markdown.js";
 import { parrotingImagePath } from "./utils.js";
 
+import { marked } from "marked";
+
 export const imageType = "markdown";
 
 const processMarkdown = async (params: ImageProcessorParams) => {
@@ -19,6 +21,12 @@ const dumpMarkdown = (params: ImageProcessorParams) => {
   return Array.isArray(beat.image.markdown) ? beat.image.markdown.join("\n") : beat.image.markdown;
 };
 
+const dumpHtml = (params: ImageProcessorParams) => {
+  const markdown = dumpMarkdown(params);
+  return marked.parse(markdown);
+};
+
 export const process = processMarkdown;
 export const path = parrotingImagePath;
 export const markdown = dumpMarkdown;
+export const html = dumpHtml;

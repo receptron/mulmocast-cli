@@ -28,7 +28,6 @@ const dumpHtml = (params: ImageProcessorParams) => {
   return Array.isArray(beat.image.html) ? beat.image.html.join("\n") : beat.image.html;
 };
 
-
 export const process = processHtmlTailwind;
 export const path = parrotingImagePath;
 export const html = dumpHtml;

@@ -55,6 +55,31 @@
       }
     },
     {
+      "text": "This is a table of items in the store.",
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Markdown Table Example",
+          "| Item              | In Stock | Price |",
+          "| :---------------- | :------: | ----: |",
+          "| Python Hat        |   True   | 23.99 |",
+          "| SQL Hat           |   True   | 23.99 |",
+          "| Codecademy Tee    |  False   | 19.99 |",
+          "| Codecademy Hoodie |  False   | 42.99 |"
+        ]
+      }
+    },
+    {
+      "text": "This is a sample slide, which just displays the title and the presenter's name of this presentation.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "This is the title of the presentation",
+          "subtitle": "Tom Johnson"
+        }
+      }
+    },
+    {
       "text": "sectionDividerSlide",
       "image": {
         "type": "vision",
