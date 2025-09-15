@@ -1485,3 +1485,40 @@ test("imagePreprocessAgent - all parameters: soundEffectPrompt + enableLipSync +
 
   assert.deepStrictEqual(result, expected);
 });
+
+test("imagePreprocessAgent - movie plugin", async () => {
+  const context = createMockContext();
+  const beat = createMockBeat({
+    text: "Test beat text",
+    "image": {
+      "type": "movie",
+      "source": {
+        "kind": "path",
+        "path": "./upload_image/0/1757884027430.mov"
+      }
+    }
+  });
+
+  const result = await imagePreprocessAgent({
+    context,
+    beat,
+    index: 1,
+    imageRefs: {},
+  });
+
+  const expected = {
+    imageParams: {
+      provider: 'openai',
+      model: 'dall-e-3',
+      style: 'natural',
+      moderation: 'auto'
+    },
+    movieFile: '/test/path/upload_image/0/1757884027430.mov',
+    beatDuration: undefined,
+    movieAgentInfo: { agent: 'movieReplicateAgent', movieParams: {} },
+    imagePath: undefined,
+    referenceImageForMovie: '/test/path/upload_image/0/1757884027430.mov'
+  }
+  assert.deepStrictEqual(result, expected);
+});
+
