@@ -43,6 +43,7 @@ export const imagePreprocessAgent = async (namedInputs: { context: MulmoStudioCo
     beatDuration?: number;
     movieAgentInfo?: { agent: string; movieParams: MulmoMovieParams };
     markdown?: string;
+    html?: string;
   } = {
     imageParams: imageAgentInfo.imageParams,
     movieFile: beat.moviePrompt ? moviePaths.movieFile : undefined,
@@ -88,6 +89,9 @@ export const imagePreprocessAgent = async (namedInputs: { context: MulmoStudioCo
     const pluginPath = plugin.path({ beat, context, imagePath, ...htmlStyle(context, beat) });
     if (plugin.markdown) {
       returnValue.markdown = plugin.markdown({ beat, context, imagePath, ...htmlStyle(context, beat) });
+    }
+    if (plugin.html) {
+      returnValue.html = await plugin.html({ beat, context, imagePath, ...htmlStyle(context, beat) });
     }
 
     const isTypeMovie = beat.image.type === "movie";

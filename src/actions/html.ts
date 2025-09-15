@@ -12,7 +12,7 @@ const generateHtmlContent = (context: MulmoStudioContext, imageWidth?: string): 
   const title = studio.script.title || "MulmoCast Content";
   const description = studio.script.description || "";
 
-  let html = `<h1>${title}</h1>\n\n`;
+  let html = "";
 
   if (description) {
     html += `${description}\n\n`;
@@ -43,7 +43,21 @@ const generateHtmlContent = (context: MulmoStudioContext, imageWidth?: string): 
     }
   });
 
-  return html;
+  return `
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${title}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen flex flex-col">
+${html}
+  </body>
+</html>
+`;
 };
 
 export const htmlFilePath = (context: MulmoStudioContext) => {

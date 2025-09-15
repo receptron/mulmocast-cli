@@ -2,6 +2,8 @@ import { ImageProcessorParams } from "../../types/index.js";
 import { renderMarkdownToImage } from "../markdown.js";
 import { parrotingImagePath } from "./utils.js";
 
+import { marked } from "marked";
+
 export const imageType = "textSlide";
 
 const processTextSlide = async (params: ImageProcessorParams) => {
@@ -31,6 +33,12 @@ const dumpMarkdown = (params: ImageProcessorParams) => {
   return `${titleString}${subtitleString}${bulletsString}`;
 };
 
+const dumpHtml = async (params: ImageProcessorParams) => {
+  const markdown = dumpMarkdown(params);
+  return await marked.parse(markdown ?? "");
+};
+
 export const process = processTextSlide;
 export const path = parrotingImagePath;
 export const markdown = dumpMarkdown;
+export const html = dumpHtml;
