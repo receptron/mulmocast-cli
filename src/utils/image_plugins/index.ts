@@ -15,6 +15,7 @@ const imagePlugins: {
   process: (params: ImageProcessorParams) => Promise<string | undefined> | void;
   path: (params: ImageProcessorParams) => string | undefined;
   markdown?: (params: ImageProcessorParams) => string | undefined;
+  html?: (params: ImageProcessorParams) => string | undefined;
 }[] = [pluginTextSlide, pluginMarkdown, pluginImage, pluginChart, pluginMermaid, pluginMovie, pluginHtmlTailwind, pluginBeat, pluginVoiceOver, pluginVision];
 
 export const findImagePlugin = (imageType?: string) => {
