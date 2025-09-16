@@ -12,7 +12,6 @@ const dumpHtml = async (params: ImageProcessorParams) => {
 
   if (!moviePathOrUrl) return;
 
-
   return `
 <div class="movie-container mb-6">
   <div class="relative w-full" style="padding-bottom: 56.25%; /* 16:9 aspect ratio */">

@@ -2,6 +2,7 @@ import { ImageProcessorParams } from "../../types/index.js";
 import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../markdown.js";
 import { parrotingImagePath } from "./utils.js";
+import nodeProcess from "node:process";
 
 export const imageType = "chart";
 
@@ -34,7 +35,7 @@ const dumpHtml = async (params: ImageProcessorParams) => {
   const title = beat.image.title || "Chart";
   // Safe: UI-only jitter; no security or fairness implications.
   // eslint-disable-next-line sonarjs/pseudo-random
-  const chartId = `chart-${Math.random().toString(36).substr(2, 9)}`;
+  const chartId = nodeProcess.env.NODE_ENV === "test" ? "id" : `chart-${Math.random().toString(36).substr(2, 9)}`;
 
   return `
 <div class="chart-container mb-6">
