@@ -13,8 +13,8 @@ test("test imagePlugin markdown - markdown method with array", async () => {
   const beat = {
     image: {
       type: "markdown",
-      markdown: ["# Title", "", "- Item 1", "- Item 2"]
-    }
+      markdown: ["# Title", "", "- Item 1", "- Item 2"],
+    },
   };
 
   const result = plugin.markdown({ beat });
@@ -26,8 +26,8 @@ test("test imagePlugin markdown - markdown method with string", async () => {
   const beat = {
     image: {
       type: "markdown",
-      markdown: "# Single Title\n\nParagraph text"
-    }
+      markdown: "# Single Title\n\nParagraph text",
+    },
   };
 
   const result = plugin.markdown({ beat });
@@ -39,8 +39,8 @@ test("test imagePlugin markdown - html method converts markdown to html", async 
   const beat = {
     image: {
       type: "markdown",
-      markdown: ["# Heading", "", "**Bold text**"]
-    }
+      markdown: ["# Heading", "", "**Bold text**"],
+    },
   };
 
   const result = await plugin.html({ beat });
@@ -53,8 +53,8 @@ test("test imagePlugin markdown - methods with wrong type", async () => {
   const beat = {
     image: {
       type: "html_tailwind",
-      markdown: "# Test"
-    }
+      markdown: "# Test",
+    },
   };
 
   const markdownResult = plugin.markdown({ beat });
@@ -83,9 +83,9 @@ test("test imagePlugin textSlide - markdown method with slide data", async () =>
       slide: {
         title: "Main Title",
         subtitle: "Subtitle Here",
-        bullets: ["First bullet", "Second bullet", "Third bullet"]
-      }
-    }
+        bullets: ["First bullet", "Second bullet", "Third bullet"],
+      },
+    },
   };
 
   const result = plugin.markdown({ beat });
@@ -98,9 +98,9 @@ test("test imagePlugin textSlide - markdown method with only title", async () =>
     image: {
       type: "textSlide",
       slide: {
-        title: "Only Title"
-      }
-    }
+        title: "Only Title",
+      },
+    },
   };
 
   const result = plugin.markdown({ beat });
@@ -113,9 +113,9 @@ test("test imagePlugin textSlide - markdown method with bullets only", async () 
     image: {
       type: "textSlide",
       slide: {
-        bullets: ["Item 1", "Item 2"]
-      }
-    }
+        bullets: ["Item 1", "Item 2"],
+      },
+    },
   };
 
   const result = plugin.markdown({ beat });
@@ -129,9 +129,9 @@ test("test imagePlugin textSlide - html method converts slide to html", async ()
       type: "textSlide",
       slide: {
         title: "Test Title",
-        bullets: ["**Bold item**"]
-      }
-    }
+        bullets: ["**Bold item**"],
+      },
+    },
   };
 
   const result = await plugin.html({ beat });
@@ -146,9 +146,9 @@ test("test imagePlugin mermaid - markdown method with text code", async () => {
       type: "mermaid",
       code: {
         kind: "text",
-        text: "graph TD\n  A --> B"
-      }
-    }
+        text: "graph TD\n  A --> B",
+      },
+    },
   };
 
   const result = plugin.markdown({ beat });
@@ -162,9 +162,9 @@ test("test imagePlugin mermaid - markdown method with non-text code", async () =
       type: "mermaid",
       code: {
         kind: "url",
-        url: "https://example.com"
-      }
-    }
+        url: "https://example.com",
+      },
+    },
   };
 
   const result = plugin.markdown({ beat });
@@ -178,9 +178,9 @@ test("test imagePlugin mermaid - markdown method with wrong type", async () => {
       type: "chart",
       code: {
         kind: "text",
-        text: "graph TD\n  A --> B"
-      }
-    }
+        text: "graph TD\n  A --> B",
+      },
+    },
   };
 
   const result = plugin.markdown({ beat });
