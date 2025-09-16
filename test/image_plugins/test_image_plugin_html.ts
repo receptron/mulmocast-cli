@@ -7,7 +7,6 @@ test("test imagePlugin markdown", async () => {
   const plugin = findImagePlugin("markdown");
   assert.equal(plugin.imageType, "markdown");
 
-  const path = await plugin.html({ beat: { image: {type: "markdown", markdown: ["#123", "", "- aa"]} }});
+  const path = await plugin.html({ beat: { image: { type: "markdown", markdown: ["#123", "", "- aa"] } } });
   assert.equal(path, "<p>#123</p>\n<ul>\n<li>aa</li>\n</ul>\n");
 });
-
