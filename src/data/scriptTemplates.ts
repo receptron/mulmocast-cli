@@ -626,6 +626,64 @@ export const scriptTemplates = [
         },
         text: "agendaSlide",
       },
+      {
+        image: {
+          chartData: {
+            data: {
+              datasets: [
+                {
+                  backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)", "rgba(255, 205, 86, 0.2)", "rgba(75, 192, 192, 0.2)"],
+                  borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)", "rgba(255, 205, 86, 1)", "rgba(75, 192, 192, 1)"],
+                  borderWidth: 1,
+                  data: [120, 190, 300, 500],
+                  label: "Sales ($k)",
+                },
+              ],
+              labels: ["Q1", "Q2", "Q3", "Q4"],
+            },
+            options: {
+              maintainAspectRatio: false,
+              responsive: true,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+            },
+            type: "bar",
+          },
+          title: "Quarterly Sales Performance",
+          type: "chart",
+        },
+        text: "This chart shows sales data over the quarters.",
+      },
+      {
+        image: {
+          code: {
+            kind: "text",
+            text:
+              "graph TD\n" +
+              "    A[Start] --> B{Is it working?}\n" +
+              "    B -->|Yes| C[Great!]\n" +
+              "    B -->|No| D[Debug]\n" +
+              "    D --> B\n" +
+              "    C --> E[End]",
+          },
+          title: "Development Workflow",
+          type: "mermaid",
+        },
+        text: "Here's a mermaid diagram showing the workflow.",
+      },
+      {
+        image: {
+          source: {
+            kind: "url",
+            url: "https://www.w3schools.com/html/mov_bbb.mp4",
+          },
+          type: "movie",
+        },
+        text: "Sample video content demonstration.",
+      },
     ],
     filename: "html_sample",
     lang: "en",
