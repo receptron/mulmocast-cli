@@ -39,6 +39,7 @@ export const setGraphAILogger = (verbose: boolean | undefined, logValues?: Recor
     GraphAILogger.setLevelEnabled("error", false);
     GraphAILogger.setLevelEnabled("log", false);
     GraphAILogger.setLevelEnabled("warn", false);
+    GraphAILogger.setLevelEnabled("debug", false);
   }
 };
 
