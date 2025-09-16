@@ -20,10 +20,6 @@ test("updateDurations audio duration", async () => {
   });
 
   const mock = createMockContext();
-  mock.studio.script["$mulmocast"] = {
-    version: "1.1",
-  };
-
   mock.studio.script.beats.push(beat);
   mock.studio = createStudioData(mock.studio.script, "test");
   const res = updateDurations(mock, mediaDurations);
