@@ -34,13 +34,13 @@ const dumpHtml = async (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
-  const { MulmoMediaSourceMethods } = await import("../../methods/index.js");
   const diagramCode = await MulmoMediaSourceMethods.getText(beat.image.code, params.context);
   if (!diagramCode) return;
 
   const title = beat.image.title || "Diagram";
   const appendix = beat.image.appendix?.join("\n") || "";
   const fullCode = `${diagramCode}\n${appendix}`.trim();
+  // eslint-disable-next-line sonarjs/pseudo-random
   const diagramId = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
 
   return `

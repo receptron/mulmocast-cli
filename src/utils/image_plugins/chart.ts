@@ -32,6 +32,8 @@ const dumpHtml = async (params: ImageProcessorParams) => {
 
   const chartData = JSON.stringify(beat.image.chartData, null, 2);
   const title = beat.image.title || "Chart";
+  // Safe: UI-only jitter; no security or fairness implications.
+  // eslint-disable-next-line sonarjs/pseudo-random
   const chartId = `chart-${Math.random().toString(36).substr(2, 9)}`;
 
   return `
