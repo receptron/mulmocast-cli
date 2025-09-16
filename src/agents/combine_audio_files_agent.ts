@@ -157,7 +157,13 @@ const getSpillOverGroup = (context: MulmoStudioContext, mediaDurations: MediaDur
   return group;
 };
 
-export const spilledOverAudio = (context: MulmoStudioContext, group: number[], audioDuration: number, beatDurations: number[], mediaDurations: MediaDuration[]) => {
+export const spilledOverAudio = (
+  context: MulmoStudioContext,
+  group: number[],
+  audioDuration: number,
+  beatDurations: number[],
+  mediaDurations: MediaDuration[],
+) => {
   const groupBeatsDurations = getGroupBeatDurations(context, group, audioDuration);
   // Yes, the current beat has spilled over audio.
   const beatsTotalDuration = groupBeatsDurations.reduce((a, b) => a + b, 0);

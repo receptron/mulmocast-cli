@@ -325,9 +325,7 @@ test("noSpilledOverAudio with audio only", () => {
   mock.studio.script.beats.push(beat);
   mock.studio = createStudioData(mock.studio.script, "test");
 
-  const mediaDurations: MediaDuration[] = [
-    { movieDuration: 0, audioDuration: 30, hasMedia: true, silenceDuration: 0, hasMovieAudio: false },
-  ];
+  const mediaDurations: MediaDuration[] = [{ movieDuration: 0, audioDuration: 30, hasMedia: true, silenceDuration: 0, hasMovieAudio: false }];
   const beatDurations: number[] = [];
 
   noSpilledOverAudio(mock, beat, 0, 0, 30, beatDurations, mediaDurations);
@@ -371,9 +369,7 @@ test("noSpilledOverAudio with specified beat duration", () => {
   mock.studio.script.beats.push(beat);
   mock.studio = createStudioData(mock.studio.script, "test");
 
-  const mediaDurations: MediaDuration[] = [
-    { movieDuration: 0, audioDuration: 25, hasMedia: true, silenceDuration: 0, hasMovieAudio: false },
-  ];
+  const mediaDurations: MediaDuration[] = [{ movieDuration: 0, audioDuration: 25, hasMedia: true, silenceDuration: 0, hasMovieAudio: false }];
   const beatDurations: number[] = [];
 
   noSpilledOverAudio(mock, beat, 0, 0, 25, beatDurations, mediaDurations);
@@ -398,9 +394,7 @@ test("noSpilledOverAudio with custom beat padding", () => {
   mock.studio.script.beats.push(beat);
   mock.studio = createStudioData(mock.studio.script, "test");
 
-  const mediaDurations: MediaDuration[] = [
-    { movieDuration: 0, audioDuration: 30, hasMedia: true, silenceDuration: 0, hasMovieAudio: false },
-  ];
+  const mediaDurations: MediaDuration[] = [{ movieDuration: 0, audioDuration: 30, hasMedia: true, silenceDuration: 0, hasMovieAudio: false }];
   const beatDurations: number[] = [];
 
   noSpilledOverAudio(mock, beat, 0, 0, 30, beatDurations, mediaDurations);
