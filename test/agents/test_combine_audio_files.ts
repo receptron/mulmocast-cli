@@ -303,7 +303,7 @@ test("updateDurations voice-over group with multiple beats", async () => {
   const mediaDurations = [
     {
       movieDuration: 300, // 5 minutes of movie
-      audioDuration: 60,  // 1 minute of audio
+      audioDuration: 60, // 1 minute of audio
       hasMedia: true,
       silenceDuration: 0,
       hasMovieAudio: true,
@@ -400,8 +400,8 @@ test("updateDurations single voice-over with startAt", async () => {
 
   const res = updateDurations(mock, mediaDurations);
 
-  assert.strictEqual(res[0], 90);  // Until voice-over starts
-  assert.strictEqual(res[1], 90);  // Remaining movie duration
+  assert.strictEqual(res[0], 90); // Until voice-over starts
+  assert.strictEqual(res[1], 90); // Remaining movie duration
 });
 
 test("updateDurations voice-over without startAt", async () => {
@@ -449,7 +449,7 @@ test("updateDurations voice-over without startAt", async () => {
   // Actually from line 139 in agent: it pushes the SECOND beat's audioDuration as FIRST beat's duration
   // and remaining goes to SECOND beat: (200 - 40 = 160 goes to second, 40 to first)
   // But the test shows 50, 150 - this means it's using the FIRST beat's audioDuration (50) for the first beat!
-  assert.strictEqual(res[0], 50);  // First beat audio duration
+  assert.strictEqual(res[0], 50); // First beat audio duration
   assert.strictEqual(res[1], 150); // Remaining movie: 200 - 50 = 150
 });
 
@@ -822,7 +822,8 @@ test("updateDurations complex mixed scenario", async () => {
   const beats = [
     createMockBeat({ duration: 60 }), // Spill-over group
     createMockBeat({}), // Gets remaining 60
-    createMockBeat({ // Movie beat
+    createMockBeat({
+      // Movie beat
       image: {
         type: "movie",
         source: {
@@ -831,7 +832,8 @@ test("updateDurations complex mixed scenario", async () => {
         },
       },
     }),
-    createMockBeat({ // Voice-over
+    createMockBeat({
+      // Voice-over
       image: {
         type: "voice_over",
         startAt: 90,
@@ -854,10 +856,10 @@ test("updateDurations complex mixed scenario", async () => {
   assert.strictEqual(res[0], 60);
   assert.strictEqual(res[1], 60);
   // Voice-over group
-  assert.strictEqual(res[2], 90);  // Until voice-over starts
-  assert.strictEqual(res[3], 90);  // Remaining movie duration
+  assert.strictEqual(res[2], 90); // Until voice-over starts
+  assert.strictEqual(res[3], 90); // Remaining movie duration
   // Regular beat with padding (last beat, so no closing padding)
-  assert.strictEqual(res[4], 40);  // 40 + 0.0 closing padding
+  assert.strictEqual(res[4], 40); // 40 + 0.0 closing padding
 });
 
 test("updateDurations voice-over followed by spill-over", async () => {
@@ -921,8 +923,8 @@ test("updateDurations voice-over followed by spill-over", async () => {
   const res = updateDurations(mock, mediaDurations);
 
   // Voice-over group
-  assert.strictEqual(res[0], 60);  // Until voice-over
-  assert.strictEqual(res[1], 90);  // Remaining movie
+  assert.strictEqual(res[0], 60); // Until voice-over
+  assert.strictEqual(res[1], 90); // Remaining movie
   // Spill-over group
   assert.strictEqual(res[2], 45);
   assert.strictEqual(res[3], 45);
@@ -1002,9 +1004,9 @@ test("updateDurations multiple voice-over groups with different movies", async (
   const res = updateDurations(mock, mediaDurations);
 
   // First voice-over group
-  assert.strictEqual(res[0], 50);   // Until first voice-over
-  assert.strictEqual(res[1], 70);   // Remaining movie1: 120 - 50 = 70
+  assert.strictEqual(res[0], 50); // Until first voice-over
+  assert.strictEqual(res[1], 70); // Remaining movie1: 120 - 50 = 70
   // Second voice-over group
-  assert.strictEqual(res[2], 100);  // Until second voice-over
-  assert.strictEqual(res[3], 100);  // Remaining movie2: 200 - 100 = 100
+  assert.strictEqual(res[2], 100); // Until second voice-over
+  assert.strictEqual(res[3], 100); // Remaining movie2: 200 - 100 = 100
 });
