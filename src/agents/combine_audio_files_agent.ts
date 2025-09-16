@@ -13,7 +13,7 @@ import { MulmoMediaSourceMethods } from "../methods/mulmo_media_source.js";
 import { userAssert } from "../utils/utils.js";
 
 const getMovieDuration = async (context: MulmoStudioContext, beat: MulmoBeat) => {
-  if (beat.image?.type === "movie" && (beat.image.source.kind === "url" || beat.image.source.kind === "path")) {
+  if (beat.image?.type === "movie") {
     const pathOrUrl = MulmoMediaSourceMethods.resolve(beat.image.source, context);
     if (pathOrUrl) {
       const speed = beat.movieParams?.speed ?? 1.0;
