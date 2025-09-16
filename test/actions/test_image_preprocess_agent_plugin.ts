@@ -36,6 +36,22 @@ test("imagePreprocessAgent - movie plugin", async () => {
     beatDuration: undefined,
     movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
     imagePath: undefined,
+    html:
+      "\n" +
+      '<div class="movie-container mb-6">\n' +
+      '  <div class="relative w-full" style="padding-bottom: 56.25%; /* 16:9 aspect ratio */">\n' +
+      "    <video\n" +
+      '      class="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"\n' +
+      "      controls\n" +
+      '      preload="metadata"\n' +
+      "    >\n" +
+      '      <source src="/test/path/upload_image/0/1757884027430.mov" type="video/mp4">\n' +
+      '      <source src="/test/path/upload_image/0/1757884027430.mov" type="video/webm">\n' +
+      '      <source src="/test/path/upload_image/0/1757884027430.mov" type="video/ogg">\n' +
+      "      Your browser does not support the video tag.\n" +
+      "    </video>\n" +
+      "  </div>\n" +
+      "</div>",
     referenceImageForMovie: "/test/path/upload_image/0/1757884027430.mov",
   };
   assert.deepStrictEqual(result, expected);
@@ -163,7 +179,56 @@ test("imagePreprocessAgent - with image plugin (chart)", async () => {
     movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
     imagePath: "/test/images/test_studio/1p.png",
     referenceImageForMovie: "/test/images/test_studio/1p.png",
+    html:
+      "\n" +
+      '<div class="chart-container mb-6">\n' +
+      '  <h3 class="text-xl font-semibold mb-4">A sample pie chart</h3>\n' +
+      '  <div class="w-full" style="position: relative; height: 400px;">\n' +
+      '    <canvas id="id"></canvas>\n' +
+      "  </div>\n" +
+      "  <script>\n" +
+      "    (function() {\n" +
+      "      const ctx = document.getElementById('id').getContext('2d');\n" +
+      "      new Chart(ctx, {\n" +
+      '  "type": "pie",\n' +
+      '  "data": {\n' +
+      '    "labels": [\n' +
+      '      "OpenAIと投資家の取り分",\n' +
+      '      "マイクロソフトの取り分"\n' +
+      "    ],\n" +
+      '    "datasets": [\n' +
+      "      {\n" +
+      '        "data": [\n' +
+      "          90,\n" +
+      "          10\n" +
+      "        ],\n" +
+      '        "backgroundColor": [\n' +
+      '          "rgba(75, 192, 192, 0.5)",\n' +
+      '          "rgba(54, 162, 235, 0.5)"\n' +
+      "        ],\n" +
+      '        "borderColor": [\n' +
+      '          "rgba(75, 192, 192, 1)",\n' +
+      '          "rgba(54, 162, 235, 1)"\n' +
+      "        ],\n" +
+      '        "borderWidth": 1\n' +
+      "      }\n" +
+      "    ]\n" +
+      "  },\n" +
+      '  "options": {\n' +
+      '    "responsive": true,\n' +
+      '    "animation": false,\n' +
+      '    "plugins": {\n' +
+      '      "legend": {\n' +
+      '        "position": "bottom"\n' +
+      "      }\n" +
+      "    }\n" +
+      "  }\n" +
+      "});\n" +
+      "    })();\n" +
+      "  </script>\n" +
+      "</div>",
   };
+
   assert.deepStrictEqual(result, expected);
 });
 
@@ -210,8 +275,27 @@ test("imagePreprocessAgent - with image plugin (mermaid)", async () => {
       "    G --> H[Customer Support]\n" +
       "    H --> A\n" +
       "```",
+    html:
+      "\n" +
+      '<div class="mermaid-container mb-6">\n' +
+      '  <h3 class="text-xl font-semibold mb-4">Business Process Flow</h3>\n' +
+      '  <div class="flex justify-center">\n' +
+      '    <div id="id" class="mermaid">\n' +
+      "      graph LR\n" +
+      "    A[Market Research] --> B[Product Planning]\n" +
+      "    B --> C[Development]\n" +
+      "    C --> D[Testing]\n" +
+      "    D --> E[Manufacturing]\n" +
+      "    E --> F[Marketing]\n" +
+      "    F --> G[Sales]\n" +
+      "    G --> H[Customer Support]\n" +
+      "    H --> A\n" +
+      "    </div>\n" +
+      "  </div>\n" +
+      "</div>",
     imagePath: "/test/images/test_studio/1p.png",
     referenceImageForMovie: "/test/images/test_studio/1p.png",
   };
+
   assert.deepStrictEqual(result, expected);
 });

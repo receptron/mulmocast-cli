@@ -2,6 +2,7 @@ import { ImageProcessorParams } from "../../types/index.js";
 import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../markdown.js";
 import { parrotingImagePath } from "./utils.js";
+import nodeProcess from "node:process";
 
 export const imageType = "chart";
 
@@ -26,5 +27,31 @@ const processChart = async (params: ImageProcessorParams) => {
   return imagePath;
 };
 
+const dumpHtml = async (params: ImageProcessorParams) => {
+  const { beat } = params;
+  if (!beat.image || beat.image.type !== imageType) return;
+
+  const chartData = JSON.stringify(beat.image.chartData, null, 2);
+  const title = beat.image.title || "Chart";
+  // Safe: UI-only jitter; no security or fairness implications.
+  // eslint-disable-next-line sonarjs/pseudo-random
+  const chartId = nodeProcess.env.NODE_ENV === "test" ? "id" : `chart-${Math.random().toString(36).substr(2, 9)}`;
+
+  return `
+<div class="chart-container mb-6">
+  <h3 class="text-xl font-semibold mb-4">${title}</h3>
+  <div class="w-full" style="position: relative; height: 400px;">
+    <canvas id="${chartId}"></canvas>
+  </div>
+  <script>
+    (function() {
+      const ctx = document.getElementById('${chartId}').getContext('2d');
+      new Chart(ctx, ${chartData});
+    })();
+  </script>
+</div>`;
+};
+
 export const process = processChart;
 export const path = parrotingImagePath;
+export const html = dumpHtml;
