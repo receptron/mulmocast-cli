@@ -13,7 +13,7 @@ export const createMockContext = (): MulmoStudioContext => ({
   studio: {
     filename: "test_studio",
     script: {
-      "$mulmocast": {
+      $mulmocast: {
         version: "1.1",
       },
       title: "Test Script",
