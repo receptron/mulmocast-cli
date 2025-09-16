@@ -13,8 +13,8 @@ test("test imagePlugin html_tailwind - html method with string", async () => {
   const beat = {
     image: {
       type: "html_tailwind",
-      html: "<div class='text-blue-500'>Hello World</div>"
-    }
+      html: "<div class='text-blue-500'>Hello World</div>",
+    },
   };
 
   const result = await plugin.html({ beat });
@@ -26,8 +26,8 @@ test("test imagePlugin html_tailwind - html method with array", async () => {
   const beat = {
     image: {
       type: "html_tailwind",
-      html: ["<h1 class='text-xl font-bold'>Title</h1>", "<p>Paragraph</p>"]
-    }
+      html: ["<h1 class='text-xl font-bold'>Title</h1>", "<p>Paragraph</p>"],
+    },
   };
 
   const result = await plugin.html({ beat });
@@ -39,8 +39,8 @@ test("test imagePlugin html_tailwind - html method with wrong type", async () =>
   const beat = {
     image: {
       type: "markdown",
-      html: "<div>Test</div>"
-    }
+      html: "<div>Test</div>",
+    },
   };
 
   const result = await plugin.html({ beat });
