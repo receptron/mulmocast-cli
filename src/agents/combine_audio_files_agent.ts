@@ -235,7 +235,7 @@ export const updateDurations = (context: MulmoStudioContext, mediaDurations: Med
       return;
     }
     // The current beat has no audio, nor no spilled over audio
-    const beatDuration = beat.duration ?? (movieDuration > 0 ? movieDuration : 1.0);
+    const beatDuration = beat.duration ?? 1.0;
     beatDurations.push(beatDuration);
     mediaDurations[index].silenceDuration = beatDuration;
   });
