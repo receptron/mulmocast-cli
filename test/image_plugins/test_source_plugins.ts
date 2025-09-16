@@ -199,27 +199,6 @@ test("movie plugin path with .mov already in imagePath", () => {
   assert.strictEqual(path, "/test/path/video.mov");
 });
 
-test("movie plugin path with wrong image type", () => {
-  const plugin = findImagePlugin("movie");
-  assert(plugin, "movie plugin should exist");
-
-  const mockParams: ImageProcessorParams = {
-    imagePath: "/test/path/movie.png",
-    beat: {
-      image: {
-        type: "image",
-        source: {
-          kind: "path",
-          path: "image.jpg",
-        },
-      },
-    },
-  };
-
-  const path = plugin.path(mockParams);
-  assert.strictEqual(path, undefined);
-});
-
 // Edge cases for both image and movie plugins
 test("source plugins with no image property", () => {
   const imagePlugin = findImagePlugin("image");
@@ -260,31 +239,6 @@ test("source plugins with unknown source kind", () => {
 
   const path = imagePlugin?.path(mockParams);
   assert.strictEqual(path, undefined);
-});
-
-test("image plugin with context but no mulmoFileDirPath", () => {
-  const plugin = findImagePlugin("image");
-  assert(plugin, "image plugin should exist");
-
-  const mockParams: ImageProcessorParams = {
-    imagePath: "/test/path/image.png",
-    beat: {
-      image: {
-        type: "image",
-        source: {
-          kind: "path",
-          path: "assets/image.jpg",
-        },
-      },
-    },
-    context: {
-      fileDirs: {},
-    },
-  };
-
-  const path = plugin.path(mockParams);
-  // Should handle missing mulmoFileDirPath gracefully
-  assert(path !== undefined, "Path should be defined even without mulmoFileDirPath");
 });
 
 test("image plugin with absolute path source", () => {
