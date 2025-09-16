@@ -9,14 +9,17 @@ import {
   FfmpegContextInputFormattedAudio,
   ffmpegGetMediaDuration,
 } from "../utils/ffmpeg_utils.js";
+import { MulmoMediaSourceMethods } from "../methods/mulmo_media_source.js";
 import { userAssert } from "../utils/utils.js";
 
-const getMovieDuration = async (beat: MulmoBeat) => {
+const getMovieDuration = async (context: MulmoStudioContext, beat: MulmoBeat) => {
   if (beat.image?.type === "movie" && (beat.image.source.kind === "url" || beat.image.source.kind === "path")) {
-    const pathOrUrl = beat.image.source.kind === "url" ? beat.image.source.url : beat.image.source.path;
-    const speed = beat.movieParams?.speed ?? 1.0;
-    const { duration, hasAudio } = await ffmpegGetMediaDuration(pathOrUrl);
-    return { duration: duration / speed, hasAudio };
+    const pathOrUrl = MulmoMediaSourceMethods.resolve(beat.image.source, context);
+    if (pathOrUrl) {
+      const speed = beat.movieParams?.speed ?? 1.0;
+      const { duration, hasAudio } = await ffmpegGetMediaDuration(pathOrUrl);
+      return { duration: duration / speed, hasAudio };
+    }
   }
   return { duration: 0, hasAudio: false };
 };
@@ -52,7 +55,7 @@ const getMediaDurationsOfAllBeats = (context: MulmoStudioContext): Promise<Media
   return Promise.all(
     context.studio.beats.map(async (studioBeat: MulmoStudioBeat, index: number) => {
       const beat = context.studio.script.beats[index];
-      const { duration: movieDuration, hasAudio: hasMovieAudio } = await getMovieDuration(beat);
+      const { duration: movieDuration, hasAudio: hasMovieAudio } = await getMovieDuration(context, beat);
       const audioDuration = studioBeat.audioFile ? (await ffmpegGetMediaDuration(studioBeat.audioFile)).duration : 0;
       return {
         movieDuration,
