@@ -13,6 +13,9 @@ export const createMockContext = (): MulmoStudioContext => ({
   studio: {
     filename: "test_studio",
     script: {
+      "$mulmocast": {
+        version: "1.1",
+      },
       title: "Test Script",
       beats: [],
       canvasSize: { width: 1920, height: 1080 },

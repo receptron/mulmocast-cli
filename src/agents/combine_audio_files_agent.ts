@@ -194,15 +194,7 @@ const noSpilledOverAudio = (
   }
 };
 
-const combineAudioFilesAgent: AgentFunction<null, { studio: MulmoStudio }, { context: MulmoStudioContext; combinedFileName: string }> = async ({
-  namedInputs,
-}) => {
-  const { context, combinedFileName } = namedInputs;
-  const ffmpegContext = FfmpegContextInit();
-
-  // First, get the audio durations of all beats, taking advantage of multi-threading capability of ffmpeg.
-  const mediaDurations = await getMediaDurationsOfAllBeats(context);
-
+export const updateDurations = (context: MulmoStudioContext, mediaDurations: MediaDuration[]) => {
   const beatDurations: number[] = [];
 
   context.studio.script.beats.forEach((beat: MulmoBeat, index: number) => {
@@ -247,6 +239,19 @@ const combineAudioFilesAgent: AgentFunction<null, { studio: MulmoStudio }, { con
     beatDurations.push(beatDuration);
     mediaDurations[index].silenceDuration = beatDuration;
   });
+  return beatDurations;
+};
+
+const combineAudioFilesAgent: AgentFunction<null, { studio: MulmoStudio }, { context: MulmoStudioContext; combinedFileName: string }> = async ({
+  namedInputs,
+}) => {
+  const { context, combinedFileName } = namedInputs;
+
+  // First, get the audio durations of all beats, taking advantage of multi-threading capability of ffmpeg.
+  const mediaDurations = await getMediaDurationsOfAllBeats(context);
+  const ffmpegContext = FfmpegContextInit();
+
+  const beatDurations = updateDurations(context, mediaDurations);
   assert(beatDurations.length === context.studio.beats.length, "beatDurations.length !== studio.beats.length");
 
   // We cannot reuse longSilentId. We need to explicitly split it for each beat.
