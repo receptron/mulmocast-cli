@@ -26,5 +26,29 @@ const processChart = async (params: ImageProcessorParams) => {
   return imagePath;
 };
 
+const dumpHtml = async (params: ImageProcessorParams) => {
+  const { beat } = params;
+  if (!beat.image || beat.image.type !== imageType) return;
+
+  const chartData = JSON.stringify(beat.image.chartData, null, 2);
+  const title = beat.image.title || "Chart";
+  const chartId = `chart-${Math.random().toString(36).substr(2, 9)}`;
+
+  return `
+<div class="chart-container mb-6">
+  <h3 class="text-xl font-semibold mb-4">${title}</h3>
+  <div class="w-full" style="position: relative; height: 400px;">
+    <canvas id="${chartId}"></canvas>
+  </div>
+  <script>
+    (function() {
+      const ctx = document.getElementById('${chartId}').getContext('2d');
+      new Chart(ctx, ${chartData});
+    })();
+  </script>
+</div>`;
+};
+
 export const process = processChart;
 export const path = parrotingImagePath;
+export const html = dumpHtml;

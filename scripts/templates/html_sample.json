@@ -106,6 +106,66 @@
           ]
         }
       }
+    },
+    {
+      "text": "This chart shows sales data over the quarters.",
+      "image": {
+        "type": "chart",
+        "title": "Quarterly Sales Performance",
+        "chartData": {
+          "type": "bar",
+          "data": {
+            "labels": ["Q1", "Q2", "Q3", "Q4"],
+            "datasets": [{
+              "label": "Sales ($k)",
+              "data": [120, 190, 300, 500],
+              "backgroundColor": [
+                "rgba(255, 99, 132, 0.2)",
+                "rgba(54, 162, 235, 0.2)",
+                "rgba(255, 205, 86, 0.2)",
+                "rgba(75, 192, 192, 0.2)"
+              ],
+              "borderColor": [
+                "rgba(255, 99, 132, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(255, 205, 86, 1)",
+                "rgba(75, 192, 192, 1)"
+              ],
+              "borderWidth": 1
+            }]
+          },
+          "options": {
+            "responsive": true,
+            "maintainAspectRatio": false,
+            "scales": {
+              "y": {
+                "beginAtZero": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "text": "Here's a mermaid diagram showing the workflow.",
+      "image": {
+        "type": "mermaid",
+        "title": "Development Workflow",
+        "code": {
+          "kind": "text",
+          "text": "graph TD\n    A[Start] --> B{Is it working?}\n    B -->|Yes| C[Great!]\n    B -->|No| D[Debug]\n    D --> B\n    C --> E[End]"
+        }
+      }
+    },
+    {
+      "text": "Sample video content demonstration.",
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://www.w3schools.com/html/mov_bbb.mp4"
+        }
+      }
     }
   ]
 }

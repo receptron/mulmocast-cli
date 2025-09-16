@@ -52,9 +52,17 @@ const generateHtmlContent = (context: MulmoStudioContext, imageWidth?: string): 
     <title>${title}</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Mermaid CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   </head>
   <body class="min-h-screen flex flex-col">
 ${html}
+    <!-- Initialize Mermaid -->
+    <script>
+      mermaid.initialize({ startOnLoad: true });
+    </script>
   </body>
 </html>
 `;
