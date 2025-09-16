@@ -24,7 +24,7 @@ const getMovieDuration = async (context: MulmoStudioContext, beat: MulmoBeat) =>
   return { duration: 0, hasAudio: false };
 };
 
-const getPadding = (context: MulmoStudioContext, beat: MulmoBeat, index: number) => {
+export const getPadding = (context: MulmoStudioContext, beat: MulmoBeat, index: number) => {
   if (beat.audioParams?.padding !== undefined) {
     return beat.audioParams.padding;
   }
@@ -35,7 +35,7 @@ const getPadding = (context: MulmoStudioContext, beat: MulmoBeat, index: number)
   return isClosingGap ? context.presentationStyle.audioParams.closingPadding : context.presentationStyle.audioParams.padding;
 };
 
-const getTotalPadding = (padding: number, movieDuration: number, audioDuration: number, duration?: number) => {
+export const getTotalPadding = (padding: number, movieDuration: number, audioDuration: number, duration?: number) => {
   if (movieDuration > 0) {
     return padding + (movieDuration - audioDuration);
   } else if (duration && duration > audioDuration) {
@@ -44,7 +44,7 @@ const getTotalPadding = (padding: number, movieDuration: number, audioDuration: 
   return padding;
 };
 
-type MediaDuration = {
+export type MediaDuration = {
   movieDuration: number;
   audioDuration: number;
   hasMedia: boolean;
@@ -68,7 +68,7 @@ const getMediaDurationsOfAllBeats = (context: MulmoStudioContext): Promise<Media
   );
 };
 
-const getGroupBeatDurations = (context: MulmoStudioContext, group: number[], audioDuration: number) => {
+export const getGroupBeatDurations = (context: MulmoStudioContext, group: number[], audioDuration: number) => {
   const specifiedSum = group
     .map((idx) => context.studio.script.beats[idx].duration)
     .filter((d) => d !== undefined)
@@ -106,7 +106,7 @@ const getInputIds = (context: MulmoStudioContext, mediaDurations: MediaDuration[
   return inputIds;
 };
 
-const voiceOverProcess = (
+export const voiceOverProcess = (
   context: MulmoStudioContext,
   mediaDurations: MediaDuration[],
   movieDuration: number,
@@ -157,7 +157,7 @@ const getSpillOverGroup = (context: MulmoStudioContext, mediaDurations: MediaDur
   return group;
 };
 
-const spilledOverAudio = (context: MulmoStudioContext, group: number[], audioDuration: number, beatDurations: number[], mediaDurations: MediaDuration[]) => {
+export const spilledOverAudio = (context: MulmoStudioContext, group: number[], audioDuration: number, beatDurations: number[], mediaDurations: MediaDuration[]) => {
   const groupBeatsDurations = getGroupBeatDurations(context, group, audioDuration);
   // Yes, the current beat has spilled over audio.
   const beatsTotalDuration = groupBeatsDurations.reduce((a, b) => a + b, 0);
@@ -177,7 +177,7 @@ const spilledOverAudio = (context: MulmoStudioContext, group: number[], audioDur
   beatDurations.push(...groupBeatsDurations);
 };
 
-const noSpilledOverAudio = (
+export const noSpilledOverAudio = (
   context: MulmoStudioContext,
   beat: MulmoBeat,
   index: number,
