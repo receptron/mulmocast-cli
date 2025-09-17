@@ -226,4 +226,3 @@ test("html_tailwind plugin with empty html array", async () => {
   const html = await plugin.html(mockParams);
   assert.strictEqual(html, "");
 });
-

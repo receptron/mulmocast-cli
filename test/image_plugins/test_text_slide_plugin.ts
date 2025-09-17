@@ -135,7 +135,6 @@ test("text_slide plugin markdown generation with empty slide", () => {
   assert.strictEqual(markdown, "");
 });
 
-
 test("text_slide plugin html generation", async () => {
   const plugin = findImagePlugin("textSlide");
   assert(plugin, "textSlide plugin should exist");
