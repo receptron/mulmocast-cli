@@ -54,7 +54,7 @@ const ttsGoogleAgentInfo: AgentFunctionInfo = {
   author: "Receptron Team",
   repository: "https://github.com/receptron/mulmocast-cli/",
   license: "MIT",
-  environmentVariables: ["GOOGLE_GENAI_API_KEY"],
+  environmentVariables: ["GEMINI_API_KEY"],
 };
 
 export default ttsGoogleAgentInfo;
