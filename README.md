@@ -108,7 +108,7 @@ DEFAULT_OPENAI_IMAGE_MODEL=gpt-image-1 # for the advanced image generation model
 
 #### (Optional) For Google's image and TTS.
 ```bash
-GEMINI_API_KEY=your_google_gemin_api_key
+GEMINI_API_KEY=your_google_gemini_api_key
 ```
 
 #### (Optional) For AI providers
