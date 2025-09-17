@@ -22,11 +22,13 @@ const processVision = async (params: ImageProcessorParams) => {
 };
 
 const dumpHtml = async (params: ImageProcessorParams) => {
-  const { beat } = params;
+  const { beat, context } = params;
+
+  const rootDir = context.fileDirs.nodeModuleRootPath ? resolvePath(context.fileDirs.nodeModuleRootPath, "mulmocast-vision") : undefined;
+
   if (!beat.image || beat.image.type !== imageType) return;
 
-  const handler = new htmlPlugin({});
-
+  const handler = new htmlPlugin({ rootDir });
   return handler.getHtml(templateNameTofunctionName(beat.image.style) as keyof htmlPlugin, beat.image.data);
 };
 
