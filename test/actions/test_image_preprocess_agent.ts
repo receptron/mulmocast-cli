@@ -36,12 +36,14 @@ test("imagePreprocessAgent - basic functionality", async () => {
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -81,6 +83,7 @@ test("imagePreprocessAgent - with movie prompt and text", async () => {
     movieFile: "/test/images/test_studio/1.mov",
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     imagePath: "/test/images/test_studio/1p.png",
@@ -115,6 +118,7 @@ test("imagePreprocessAgent - movie prompt only (no image prompt)", async () => {
     movieFile: "/test/images/test_studio/2.mov",
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     imagePath: "/test/images/test_studio/2p.png",
@@ -173,12 +177,14 @@ test("imagePreprocessAgent - with imageNames", async () => {
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: ["/path/to/image1.png", "/path/to/image2.png"],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -220,12 +226,14 @@ test("imagePreprocessAgent - without imageNames (uses all imageRefs)", async () 
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: ["/path/to/image1.png", "/path/to/image2.png", "/path/to/image3.png"],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -268,12 +276,14 @@ test("imagePreprocessAgent - filters undefined image references", async () => {
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: ["/path/to/image1.png", "/path/to/image2.png"],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -315,12 +325,14 @@ test("imagePreprocessAgent - merges beat and imageAgentInfo imageParams", async 
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -357,12 +369,14 @@ test("imagePreprocessAgent - empty imageRefs", async () => {
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -406,12 +420,14 @@ test("imagePreprocessAgent - with real sample data", async () => {
       movieFile: undefined,
       movieAgentInfo: {
         agent: "movieReplicateAgent",
+        keyName: "REPLICATE_API_TOKEN",
         movieParams: {},
       },
       referenceImages: [],
       beatDuration: undefined,
       imageAgentInfo: {
         agent: "imageOpenaiAgent",
+        keyName: "OPENAI_API_KEY",
         imageParams: {
           model: "dall-e-3",
           moderation: "auto",
@@ -453,12 +469,14 @@ test("imagePreprocessAgent - text only", async () => {
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -499,12 +517,14 @@ test("imagePreprocessAgent - imagePrompt only", async () => {
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -543,6 +563,7 @@ test("imagePreprocessAgent - moviePrompt only", async () => {
     movieFile: "/test/images/test_studio/15.mov",
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     imageFromMovie: true,
@@ -580,6 +601,7 @@ test("imagePreprocessAgent - text + moviePrompt (no imagePrompt)", async () => {
     movieFile: "/test/images/test_studio/16.mov",
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     imageFromMovie: true,
@@ -617,12 +639,14 @@ test("imagePreprocessAgent - imagePrompt + moviePrompt (no text)", async () => {
     movieFile: "/test/images/test_studio/17.mov",
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -663,12 +687,14 @@ test("imagePreprocessAgent - text + imagePrompt + moviePrompt (all three)", asyn
     movieFile: "/test/images/test_studio/18.mov",
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -708,12 +734,14 @@ test("imagePreprocessAgent - no text, no imagePrompt, no moviePrompt", async () 
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -753,12 +781,14 @@ test("imagePreprocessAgent - with both text and imagePrompt", async () => {
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -796,6 +826,7 @@ test("imagePreprocessAgent - with imageParams override", async () => {
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         provider: "openai",
         style: "photorealistic",
@@ -812,6 +843,7 @@ test("imagePreprocessAgent - with imageParams override", async () => {
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: [],
@@ -848,12 +880,15 @@ test("imagePreprocessAgent - with soundEffectPrompt only", async () => {
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
+
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -895,12 +930,14 @@ test("imagePreprocessAgent - soundEffectPrompt + imagePrompt", async () => {
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -939,6 +976,7 @@ test("imagePreprocessAgent - soundEffectPrompt + moviePrompt (no imagePrompt)", 
     movieFile: "/test/images/test_studio/24.mov",
     soundEffectAgentInfo: {
       agentName: "soundEffectReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       defaultModel: "zsxkib/mmaudio",
       models: ["zsxkib/mmaudio"],
       modelParams: {
@@ -952,6 +990,7 @@ test("imagePreprocessAgent - soundEffectPrompt + moviePrompt (no imagePrompt)", 
     soundEffectPrompt: "Birds chirping and leaves rustling",
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     imageFromMovie: true,
@@ -990,6 +1029,7 @@ test("imagePreprocessAgent - soundEffectPrompt + imagePrompt + moviePrompt", asy
     movieFile: "/test/images/test_studio/25.mov",
     soundEffectAgentInfo: {
       agentName: "soundEffectReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       defaultModel: "zsxkib/mmaudio",
       models: ["zsxkib/mmaudio"],
       modelParams: {
@@ -1003,12 +1043,14 @@ test("imagePreprocessAgent - soundEffectPrompt + imagePrompt + moviePrompt", asy
     soundEffectPrompt: "Nature sounds with gentle breeze",
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -1049,6 +1091,7 @@ test("imagePreprocessAgent - with enableLipSync true", async () => {
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     lipSyncAgentName: "lipSyncReplicateAgent",
@@ -1059,6 +1102,7 @@ test("imagePreprocessAgent - with enableLipSync true", async () => {
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -1100,6 +1144,7 @@ test("imagePreprocessAgent - enableLipSync + imagePrompt", async () => {
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     lipSyncAgentName: "lipSyncReplicateAgent",
@@ -1110,6 +1155,7 @@ test("imagePreprocessAgent - enableLipSync + imagePrompt", async () => {
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -1152,6 +1198,7 @@ test("imagePreprocessAgent - enableLipSync + moviePrompt (no imagePrompt)", asyn
     audioFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     imageFromMovie: true,
@@ -1194,12 +1241,14 @@ test("imagePreprocessAgent - enableLipSync + imagePrompt + moviePrompt", async (
     audioFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -1241,6 +1290,7 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync", async () => {
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     lipSyncAgentName: "lipSyncReplicateAgent",
@@ -1251,6 +1301,7 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync", async () => {
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -1293,6 +1344,7 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync + imagePrompt", a
     movieFile: undefined,
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
     lipSyncAgentName: "lipSyncReplicateAgent",
@@ -1303,6 +1355,7 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync + imagePrompt", a
     beatDuration: undefined,
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -1342,6 +1395,7 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync + moviePrompt (no
     movieFile: "/test/images/test_studio/32.mov",
     soundEffectAgentInfo: {
       agentName: "soundEffectReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       defaultModel: "zsxkib/mmaudio",
       models: ["zsxkib/mmaudio"],
       modelParams: {
@@ -1360,6 +1414,7 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync + moviePrompt (no
     movieAgentInfo: {
       agent: "movieReplicateAgent",
       movieParams: {},
+      keyName: "REPLICATE_API_TOKEN",
     },
     imageFromMovie: true,
     beatDuration: undefined,
@@ -1395,6 +1450,7 @@ test("imagePreprocessAgent - all parameters: soundEffectPrompt + enableLipSync +
     movieFile: "/test/images/test_studio/33.mov",
     soundEffectAgentInfo: {
       agentName: "soundEffectReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       defaultModel: "zsxkib/mmaudio",
       models: ["zsxkib/mmaudio"],
       modelParams: {
@@ -1415,6 +1471,7 @@ test("imagePreprocessAgent - all parameters: soundEffectPrompt + enableLipSync +
     referenceImageForMovie: "/test/images/test_studio/33p.png",
     imageAgentInfo: {
       agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
       imageParams: {
         model: "dall-e-3",
         moderation: "auto",
@@ -1426,6 +1483,7 @@ test("imagePreprocessAgent - all parameters: soundEffectPrompt + enableLipSync +
     referenceImages: [],
     movieAgentInfo: {
       agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
       movieParams: {},
     },
   };

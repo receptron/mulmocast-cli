@@ -34,7 +34,7 @@ test("imagePreprocessAgent - movie plugin", async () => {
     },
     movieFile: "/test/path/upload_image/0/1757884027430.mov",
     beatDuration: undefined,
-    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
+    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {}, keyName: "REPLICATE_API_TOKEN" },
     imagePath: undefined,
     html:
       "\n" +
@@ -85,7 +85,7 @@ test("imagePreprocessAgent - with image plugin (textSlide)", async () => {
     },
     movieFile: undefined,
     beatDuration: undefined,
-    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
+    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {}, keyName: "REPLICATE_API_TOKEN" },
     markdown: "# 3.0 second with no Audio\n",
     html: "<h1>3.0 second with no Audio</h1>\n",
     imagePath: "/test/images/test_studio/1p.png",
@@ -119,7 +119,7 @@ test("imagePreprocessAgent - with image plugin (markdown)", async () => {
     },
     movieFile: undefined,
     beatDuration: undefined,
-    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
+    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {}, keyName: "REPLICATE_API_TOKEN" },
     html: "<h2>Chapter 2</h2>\n<ul>\n<li>Hello</li>\n<li>World</li>\n</ul>\n",
     markdown: "## Chapter 2\n- Hello\n- World",
     imagePath: "/test/images/test_studio/1p.png",
@@ -176,7 +176,7 @@ test("imagePreprocessAgent - with image plugin (chart)", async () => {
     },
     movieFile: undefined,
     beatDuration: undefined,
-    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
+    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {}, keyName: "REPLICATE_API_TOKEN" },
     imagePath: "/test/images/test_studio/1p.png",
     referenceImageForMovie: "/test/images/test_studio/1p.png",
     html:
@@ -262,7 +262,7 @@ test("imagePreprocessAgent - with image plugin (mermaid)", async () => {
     },
     movieFile: undefined,
     beatDuration: undefined,
-    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {} },
+    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {}, keyName: "REPLICATE_API_TOKEN" },
     markdown:
       "```mermaid\n" +
       "graph LR\n" +
