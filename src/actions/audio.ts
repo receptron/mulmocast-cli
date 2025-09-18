@@ -15,7 +15,6 @@ import { localizedText, settings2GraphAIConfig } from "../utils/utils.js";
 import { text2hash } from "../utils/utils_node.js";
 import { provider2TTSAgent } from "../utils/provider2agent.js";
 
-import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 import { MulmoMediaSourceMethods } from "../methods/mulmo_media_source.js";
 
@@ -37,16 +36,9 @@ const getAudioPath = (context: MulmoStudioContext, beat: MulmoBeat, audioFile: s
   return audioFile;
 };
 
-const getAudioParam = (context: MulmoStudioContext, beat: MulmoBeat, lang?: string) => {
-  const speaker = MulmoPresentationStyleMethods.getSpeaker(context, beat, lang);
-  const speechOptions = { ...speaker.speechOptions, ...beat.speechOptions };
-  const provider = text2SpeechProviderSchema.parse(speaker.provider) as keyof typeof provider2TTSAgent;
-  return { voiceId: speaker.voiceId, provider, speechOptions, model: speaker.model };
-};
-
 export const getBeatAudioPath = (text: string, context: MulmoStudioContext, beat: MulmoBeat, lang?: string) => {
   const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
-  const { voiceId, provider, speechOptions, model } = getAudioParam(context, beat, lang);
+  const { voiceId, provider, speechOptions, model } = MulmoStudioContextMethods.getAudioParam(context, beat, lang);
   const hash_string = [text, voiceId, speechOptions?.instruction ?? "", speechOptions?.speed ?? 1.0, provider, model ?? ""].join(":");
   GraphAILogger.log(`getBeatAudioPath [${hash_string}]`);
   const audioFileName = `${context.studio.filename}_${text2hash(hash_string)}`;
@@ -73,7 +65,7 @@ const preprocessorAgent = (namedInputs: {
   const { beat, studioBeat, multiLingual, context, lang } = namedInputs;
   // const { lang } = context;
   const text = localizedText(beat, multiLingual, lang);
-  const { voiceId, provider, speechOptions, model } = getAudioParam(context, beat, lang);
+  const { voiceId, provider, speechOptions, model } = MulmoStudioContextMethods.getAudioParam(context, beat, lang);
   const audioPath = getBeatAudioPath(text, context, beat, lang);
   studioBeat.audioFile = audioPath; // TODO: Passing by reference is difficult to maintain, so pass it using graphai inputs
   const needsTTS = !beat.audio && audioPath !== undefined;

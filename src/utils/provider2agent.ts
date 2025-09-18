@@ -4,16 +4,19 @@ export const provider2TTSAgent = {
   nijivoice: {
     agentName: "ttsNijivoiceAgent",
     hasLimitedConcurrency: true,
+    keyName: "NIJIVOICE_API_KEY",
   },
   openai: {
     agentName: "ttsOpenaiAgent",
     hasLimitedConcurrency: false,
     defaultModel: "gpt-4o-mini-tts",
     defaultVoice: "shimmer",
+    keyName: "OPENAI_API_KEY",
   },
   google: {
     agentName: "ttsGoogleAgent",
     hasLimitedConcurrency: false,
+    keyName: "GEMINI_API_KEY",
   },
   elevenlabs: {
     agentName: "ttsElevenlabsAgent",
@@ -22,6 +25,7 @@ export const provider2TTSAgent = {
     // Models | ElevenLabs Documentation
     // https://elevenlabs.io/docs/models
     models: ["eleven_multilingual_v2", "eleven_turbo_v2_5", "eleven_turbo_v2", "eleven_flash_v2_5", "eleven_flash_v2"],
+    keyName: "ELEVENLABS_API_KEY",
   },
   mock: {
     agentName: "mediaMockAgent",
@@ -36,21 +40,25 @@ export const provider2ImageAgent = {
     agentName: "imageOpenaiAgent",
     defaultModel: "gpt-image-1",
     models: ["dall-e-3", "gpt-image-1"],
+    keyName: "OPENAI_API_KEY",
   },
   google: {
     agentName: "imageGenAIAgent",
     defaultModel: "gemini-2.5-flash-image-preview",
     models: ["imagen-3.0-generate-002", "imagen-4.0-generate-preview-06-06", "imagen-4.0-ultra-generate-preview-06-06", "gemini-2.5-flash-image-preview"],
+    keyName: "GEMINI_API_KEY",
   },
   replicate: {
     agentName: "imageReplicateAgent",
     defaultModel: "bytedance/seedream-4",
     models: ["bytedance/seedream-4", "qwen/qwen-image"],
+    keyName: "REPLICATE_API_TOKEN",
   },
   mock: {
     agentName: "mediaMockAgent",
     defaultModel: "mock-model",
     models: ["mock-model"],
+    keyName: "",
   },
 };
 
@@ -60,6 +68,7 @@ export const provider2MovieAgent = {
   replicate: {
     agentName: "movieReplicateAgent",
     defaultModel: "bytedance/seedance-1-lite" as ReplicateModel,
+    keyName: "REPLICATE_API_TOKEN",
     models: [
       "bytedance/seedance-1-lite",
       "bytedance/seedance-1-pro",
@@ -156,6 +165,7 @@ export const provider2MovieAgent = {
     agentName: "movieGenAIAgent",
     defaultModel: "veo-2.0-generate-001",
     models: ["veo-2.0-generate-001", "veo-3.0-generate-preview"],
+    keyName: "GEMINI_API_KEY",
   },
   mock: {
     agentName: "mediaMockAgent",
@@ -168,6 +178,7 @@ export const provider2SoundEffectAgent = {
   replicate: {
     agentName: "soundEffectReplicateAgent",
     defaultModel: "zsxkib/mmaudio" as ReplicateModel,
+    keyName: "REPLICATE_API_TOKEN",
     models: ["zsxkib/mmaudio"] as ReplicateModel[],
     modelParams: {
       "zsxkib/mmaudio": {
@@ -181,6 +192,7 @@ export const provider2LipSyncAgent = {
   replicate: {
     agentName: "lipSyncReplicateAgent",
     defaultModel: "bytedance/omni-human" as ReplicateModel,
+    keyName: "REPLICATE_API_TOKEN",
     models: ["bytedance/latentsync", "tmappdev/lipsync", "bytedance/omni-human"] as ReplicateModel[],
     modelParams: {
       "bytedance/latentsync": {
@@ -220,6 +232,7 @@ export const provider2LLMAgent = {
   openai: {
     agentName: "openAIAgent",
     defaultModel: "gpt-5",
+    keyName: "OPENAI_API_KEY",
     max_tokens: 8192,
     models: [
       "gpt-5",
@@ -242,16 +255,19 @@ export const provider2LLMAgent = {
     defaultModel: "claude-3-7-sonnet-20250219",
     max_tokens: 8192,
     models: ["claude-opus-4-1-20250805", "claude-opus-4-20250514", "claude-sonnet-4-20250514", "claude-3-7-sonnet-20250219", "claude-3-haiku-20240307"],
+    keyName: "ANTHROPIC_API_KEY",
   },
   gemini: {
     agentName: "geminiAgent",
     defaultModel: "gemini-2.5-flash",
     max_tokens: 8192,
     models: ["gemini-2.5-pro", "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"],
+    keyName: "GEMINI_API_KEY",
   },
   groq: {
     agentName: "groqAgent",
     defaultModel: "llama-3.1-8b-instant",
+    keyName: "GROQ_API_KEY",
     max_tokens: 4096,
     models: ["llama-3.1-8b-instant", "llama-3.3-70b-versatile", "deepseek-r1-distill-llama-70b", "openai/gpt-oss-120b", "openai/gpt-oss-20b"],
   },

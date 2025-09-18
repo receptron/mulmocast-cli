@@ -120,6 +120,7 @@ export const MulmoPresentationStyleMethods = {
     return {
       agent: agentInfo.agentName,
       imageParams: { ...defaultImageParams, ...imageParams },
+      keyName: agentInfo.keyName,
     };
   },
   getMovieAgentInfo(presentationStyle: MulmoPresentationStyle, beat?: MulmoBeat) {
