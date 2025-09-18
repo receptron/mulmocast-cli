@@ -4,9 +4,11 @@
  * Works in both Node.js and modern browsers.
  */
 
-import { BeatSessionType, MulmoStudioContext, SessionProgressCallback, SessionType } from "../types/index.js";
+import { BeatSessionType, MulmoStudioContext, SessionProgressCallback, SessionType, MulmoBeat, text2SpeechProviderSchema } from "../types/index.js";
 import { beatId } from "../utils/utils.js";
 import { GraphAILogger } from "graphai";
+import { MulmoPresentationStyleMethods } from "./mulmo_presentation_style.js";
+import { provider2TTSAgent } from "../utils/provider2agent.js";
 
 const sessionProgressCallbacks = new Set<SessionProgressCallback>();
 
@@ -91,5 +93,12 @@ export const MulmoStudioContextMethods = {
       return 0;
     }
     return context.presentationStyle.audioParams.introPadding;
+  },
+
+  getAudioParam(context: MulmoStudioContext, beat: MulmoBeat, lang?: string) {
+    const speaker = MulmoPresentationStyleMethods.getSpeaker(context, beat, lang);
+    const speechOptions = { ...speaker.speechOptions, ...beat.speechOptions };
+    const provider = text2SpeechProviderSchema.parse(speaker.provider) as keyof typeof provider2TTSAgent;
+    return { voiceId: speaker.voiceId, provider, speechOptions, model: speaker.model };
   },
 };

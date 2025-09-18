@@ -129,6 +129,7 @@ export type PDFSize = (typeof pdf_sizes)[number];
 export type Text2ImageAgentInfo = {
   agent: string;
   imageParams: MulmoImageParams;
+  keyName?: string;
 };
 
 export type Text2HtmlAgentInfo = {
