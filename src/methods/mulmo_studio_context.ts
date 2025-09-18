@@ -7,7 +7,7 @@
 import { BeatSessionType, MulmoStudioContext, SessionProgressCallback, SessionType, MulmoBeat, text2SpeechProviderSchema } from "../types/index.js";
 import { beatId } from "../utils/utils.js";
 import { GraphAILogger } from "graphai";
-import { MulmoPresentationStyleMethods } from "./index.js";
+import { MulmoPresentationStyleMethods } from "./mulmo_presentation_style.js";
 import { provider2TTSAgent } from "../utils/provider2agent.js";
 
 const sessionProgressCallbacks = new Set<SessionProgressCallback>();

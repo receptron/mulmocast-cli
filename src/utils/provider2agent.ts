@@ -171,6 +171,7 @@ export const provider2MovieAgent = {
     agentName: "mediaMockAgent",
     defaultModel: "mock-model",
     models: ["mock-model"],
+    keyName: "",
   },
 };
 
