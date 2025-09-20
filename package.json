@@ -18,7 +18,8 @@
     }
   },
   "bin": {
-    "mulmo": "lib/cli/bin.js"
+    "mulmo": "lib/cli/bin.js",
+    "mulmo-mcp": "lib/mcp/server.js"
   },
   "files": [
     "./lib",
