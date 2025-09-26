@@ -82,7 +82,7 @@
     "@graphai/vanilla_node_agents": "^2.0.4",
     "@inquirer/input": "^4.2.4",
     "@inquirer/select": "^4.3.4",
-    "@modelcontextprotocol/sdk": "^1.18.0",
+    "@modelcontextprotocol/sdk": "^1.18.2",
     "@mozilla/readability": "^0.6.0",
     "@tavily/core": "^0.5.11",
     "clipboardy": "^4.0.0",
@@ -105,14 +105,14 @@
     "@types/fluent-ffmpeg": "^2.1.26",
     "@types/jsdom": "^21.1.7",
     "@types/yargs": "^17.0.33",
-    "eslint": "^9.35.0",
+    "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-sonarjs": "^3.0.5",
     "prettier": "^3.6.2",
-    "tsx": "^4.20.5",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.2",
-    "typescript-eslint": "^8.44.0"
+    "typescript-eslint": "^8.44.1"
   },
   "engines": {
     "node": ">=18.0.0"
