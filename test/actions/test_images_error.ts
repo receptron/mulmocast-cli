@@ -1,5 +1,5 @@
 import test from "node:test";
-// import assert from "node:assert";
+import assert from "node:assert";
 import { GraphAILogger } from "graphai";
 
 import { getFileObject } from "../../src/cli/helpers.js";
@@ -100,6 +100,13 @@ test("test images", async () => {
   addSessionProgressCallback((data) => {
     GraphAILogger.info(data);
   });
+  
   const context = getContext();
-  await images(context);
+
+  await assert.rejects(
+    async () => {
+      await images(context);
+    },
+    { name: "Error", message: "audioChecker: ffmpegGetMediaDuration error." },
+  );
 });
