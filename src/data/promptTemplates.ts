@@ -41,6 +41,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -160,6 +161,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -204,6 +206,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -255,6 +258,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -298,6 +302,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -350,6 +355,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -402,6 +408,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -457,6 +464,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -516,6 +524,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -560,6 +569,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -604,6 +614,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -656,6 +667,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -708,6 +720,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -760,6 +773,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -861,6 +875,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -915,6 +930,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },
@@ -961,6 +977,7 @@ export const promptTemplates = [
             displayName: {
               en: "Presenter",
             },
+            provider: "openai",
             voiceId: "shimmer",
           },
         },

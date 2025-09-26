@@ -46,7 +46,7 @@ test("test createStudioData", async () => {
       $mulmocast: { version: "1.1", credit: "closing" },
       lang: "en",
       canvasSize: { width: 1280, height: 720 },
-      speechParams: { speakers: { Presenter: { displayName: { en: "Presenter" }, voiceId: "shimmer", provider: 'openai' } } },
+      speechParams: { speakers: { Presenter: { displayName: { en: "Presenter" }, voiceId: "shimmer", provider: "openai" } } },
       soundEffectParams: {
         provider: "replicate",
       },
