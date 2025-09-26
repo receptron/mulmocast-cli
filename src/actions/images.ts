@@ -215,8 +215,13 @@ export const beat_graph_data = {
           // no need to check if the file exists (ffmpegGetMediaDuration will check it if it is local file)
           return { hasMovieAudio: false };
         }
-        const { hasAudio } = await ffmpegGetMediaDuration(sourceFile);
-        return { hasMovieAudio: hasAudio };
+        try {
+          const { hasAudio } = await ffmpegGetMediaDuration(sourceFile);
+          return { hasMovieAudio: hasAudio };
+        } catch (error) {
+          GraphAILogger.error(error);
+          throw Error("audioChecker: ffmpegGetMediaDuration error.");
+        }
       },
       inputs: {
         onComplete: [":movieGenerator", ":htmlImageGenerator", ":soundEffectGenerator"],
