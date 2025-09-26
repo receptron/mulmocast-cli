@@ -100,7 +100,7 @@ test("test images", async () => {
   addSessionProgressCallback((data) => {
     GraphAILogger.info(data);
   });
-  
+
   const context = getContext();
 
   await assert.rejects(
