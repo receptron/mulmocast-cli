@@ -205,7 +205,7 @@ export const beat_graph_data = {
       defaultValue: {},
     },
     audioChecker: {
-      agent: async (namedInputs: { movieFile: string; imageFile: string; soundEffectFile: string, index: number }) => {
+      agent: async (namedInputs: { movieFile: string; imageFile: string; soundEffectFile: string; index: number }) => {
         // NOTE: We intentinonally don't check lipSyncFile here.
         if (namedInputs.soundEffectFile) {
           return { hasMovieAudio: true };
