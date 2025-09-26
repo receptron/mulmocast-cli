@@ -400,6 +400,7 @@ export const mulmoPresentationStyleSchema = z.object({
     .default({
       speakers: {
         [defaultSpeaker]: {
+          provider: defaultProviders.tts,
           voiceId: "shimmer",
           displayName: {
             en: defaultSpeaker,
