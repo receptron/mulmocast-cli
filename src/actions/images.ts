@@ -464,10 +464,10 @@ export const images = async (context: MulmoStudioContext, args?: PublicAPIArgs &
   try {
     MulmoStudioContextMethods.setSessionState(context, "image", true);
     const newContext = await generateImages(context, args);
-    MulmoStudioContextMethods.setSessionState(context, "image", false);
+    MulmoStudioContextMethods.setSessionState(context, "image", false, true);
     return newContext;
   } catch (error) {
-    MulmoStudioContextMethods.setSessionState(context, "image", false);
+    MulmoStudioContextMethods.setSessionState(context, "image", false, false);
     throw error;
   }
 };

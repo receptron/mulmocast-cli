@@ -277,8 +277,9 @@ export const generateBeatAudio = async (index: number, context: MulmoStudioConte
       });
     }
     await graph.run();
-  } finally {
-    MulmoStudioContextMethods.setSessionState(context, "audio", false);
+    MulmoStudioContextMethods.setSessionState(context, "audio", false, true);
+  } catch (__error) {
+    MulmoStudioContextMethods.setSessionState(context, "audio", false, false);
   }
 };
 
@@ -316,11 +317,11 @@ export const audio = async (context: MulmoStudioContext, args?: PublicAPIArgs) =
     }
     const result = await graph.run();
     writingMessage(audioCombinedFilePath);
-    MulmoStudioContextMethods.setSessionState(context, "audio", false);
+    MulmoStudioContextMethods.setSessionState(context, "audio", false, true);
     writingMessage(audioArtifactFilePath);
     return result.combineFiles as MulmoStudioContext;
   } catch (__error) {
-    MulmoStudioContextMethods.setSessionState(context, "audio", false);
+    MulmoStudioContextMethods.setSessionState(context, "audio", false, false);
     throw __error;
   }
 };

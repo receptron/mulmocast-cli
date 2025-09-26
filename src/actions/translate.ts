@@ -328,8 +328,9 @@ export const translate = async (context: MulmoStudioContext, args?: PublicAPIArg
     if (results.mergeStudioResult) {
       context.multiLingual = multiLingualObjectToArray(results?.mergeStudioResult?.multiLingual, context.studio.script.beats);
     }
-  } finally {
-    MulmoStudioContextMethods.setSessionState(context, "multiLingual", false);
+    MulmoStudioContextMethods.setSessionState(context, "multiLingual", false, true);
+  } catch (error) {
+    MulmoStudioContextMethods.setSessionState(context, "multiLingual", false, false);
   }
   return context;
 };
