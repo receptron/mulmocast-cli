@@ -55,6 +55,7 @@ export default [
       semi: ["error", "always"],
       "prettier/prettier": "error",
       "no-console": "error",
+      "sonarjs/no-ignored-exceptions": "warn",
       "sonarjs/redundant-type-aliases": "off",
       "sonarjs/todo-tag": "off",
       "sonarjs/no-commented-code": "off",

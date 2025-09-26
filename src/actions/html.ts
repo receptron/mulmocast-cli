@@ -88,7 +88,8 @@ export const html = async (context: MulmoStudioContext, imageWidth?: string): Pr
   try {
     MulmoStudioContextMethods.setSessionState(context, "html", true);
     await generateHtml(context, imageWidth);
-  } finally {
-    MulmoStudioContextMethods.setSessionState(context, "html", false);
+    MulmoStudioContextMethods.setSessionState(context, "html", false, true);
+  } catch (__error) {
+    MulmoStudioContextMethods.setSessionState(context, "html", false, false);
   }
 };

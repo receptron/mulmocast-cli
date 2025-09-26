@@ -205,7 +205,7 @@ export const beat_graph_data = {
       defaultValue: {},
     },
     audioChecker: {
-      agent: async (namedInputs: { movieFile: string; imageFile: string; soundEffectFile: string }) => {
+      agent: async (namedInputs: { movieFile: string; imageFile: string; soundEffectFile: string; index: number }) => {
         // NOTE: We intentinonally don't check lipSyncFile here.
         if (namedInputs.soundEffectFile) {
           return { hasMovieAudio: true };
@@ -220,7 +220,14 @@ export const beat_graph_data = {
           return { hasMovieAudio: hasAudio };
         } catch (error) {
           GraphAILogger.error(error);
-          throw Error("audioChecker: ffmpegGetMediaDuration error.");
+          throw new Error("audioChecker: ffmpegGetMediaDuration error.", {
+            cause: {
+              type: "FileNotExist",
+              action: "images",
+              agentName: "audioChecker",
+              beat_index: namedInputs.index,
+            },
+          });
         }
       },
       inputs: {
@@ -228,6 +235,7 @@ export const beat_graph_data = {
         movieFile: ":preprocessor.movieFile",
         imageFile: ":preprocessor.imagePath",
         soundEffectFile: ":preprocessor.soundEffectFile",
+        index: ":__mapIndex",
       },
     },
     soundEffectGenerator: {
@@ -464,10 +472,10 @@ export const images = async (context: MulmoStudioContext, args?: PublicAPIArgs &
   try {
     MulmoStudioContextMethods.setSessionState(context, "image", true);
     const newContext = await generateImages(context, args);
-    MulmoStudioContextMethods.setSessionState(context, "image", false);
+    MulmoStudioContextMethods.setSessionState(context, "image", false, true);
     return newContext;
   } catch (error) {
-    MulmoStudioContextMethods.setSessionState(context, "image", false);
+    MulmoStudioContextMethods.setSessionState(context, "image", false, false);
     throw error;
   }
 };

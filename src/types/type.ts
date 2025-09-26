@@ -147,7 +147,7 @@ export type SessionType = "audio" | "image" | "video" | "multiLingual" | "captio
 export type BeatSessionType = "audio" | "image" | "multiLingual" | "caption" | "movie" | "html" | "imageReference" | "soundEffect" | "lipSync";
 
 export type SessionProgressEvent =
-  | { kind: "session"; sessionType: SessionType; inSession: boolean }
+  | { kind: "session"; sessionType: SessionType; inSession: boolean; result?: boolean }
   | { kind: "beat"; sessionType: BeatSessionType; id: string; inSession: boolean };
 
 export type SessionProgressCallback = (change: SessionProgressEvent) => void;

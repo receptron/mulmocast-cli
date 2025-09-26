@@ -19,12 +19,16 @@ export const removeSessionProgressCallback = (cb: SessionProgressCallback) => {
   sessionProgressCallbacks.delete(cb);
 };
 
-const notifyStateChange = (context: MulmoStudioContext, sessionType: SessionType) => {
+const notifyStateChange = (context: MulmoStudioContext, sessionType: SessionType, result?: boolean) => {
   const inSession = context.sessionState.inSession[sessionType] ?? false;
   const prefix = inSession ? "<" : " >";
   GraphAILogger.info(`${prefix} ${sessionType}`);
   for (const callback of sessionProgressCallbacks) {
-    callback({ kind: "session", sessionType, inSession });
+    if (result !== undefined) {
+      callback({ kind: "session", sessionType, inSession, result });
+    } else {
+      callback({ kind: "session", sessionType, inSession });
+    }
   }
 };
 
@@ -57,9 +61,9 @@ export const MulmoStudioContextMethods = {
   getCaption(context: MulmoStudioContext): string | undefined {
     return context.studio.script.captionParams?.lang;
   },
-  setSessionState(context: MulmoStudioContext, sessionType: SessionType, value: boolean) {
+  setSessionState(context: MulmoStudioContext, sessionType: SessionType, value: boolean, result?: boolean) {
     context.sessionState.inSession[sessionType] = value;
-    notifyStateChange(context, sessionType);
+    notifyStateChange(context, sessionType, result);
   },
   setBeatSessionState(context: MulmoStudioContext, sessionType: BeatSessionType | undefined, index: number, id: string | undefined, value: boolean) {
     if (!sessionType) {
