@@ -75,11 +75,18 @@ export const FfmpegContextGenerateOutput = (context: FfmpegContext, output: stri
 export const ffmpegGetMediaDuration = (filePath: string) => {
   return new Promise<{ duration: number; hasAudio: boolean }>((resolve, reject) => {
     // Only check file existence for local paths, not URLs
-    if (!filePath.startsWith("http://") && !filePath.startsWith("https://") && !fs.existsSync(filePath)) {
-      // NOTE: We don't reject here for scripts/test/test_hello_image.json, which uses mock image agent.
-      // reject(new Error(`File not found: ${filePath}`));
-      resolve({ duration: 0, hasAudio: false });
-      return;
+    if (!filePath.startsWith("http://") && !filePath.startsWith("https://")) {
+      if (!fs.existsSync(filePath)) {
+        // NOTE: We don't reject here for scripts/test/test_hello_image.json, which uses mock image agent.
+        // reject(new Error(`File not found: ${filePath}`));
+        resolve({ duration: 0, hasAudio: false });
+        return;
+      }
+      const stat = fs.statSync(filePath);
+      if (!stat.isFile()) {
+        reject("ffmpegGetMediaDuration: path is not file");
+        return;
+      }
     }
     ffmpeg.ffprobe(filePath, (err, metadata) => {
       if (err) {
