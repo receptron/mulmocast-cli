@@ -1,5 +1,5 @@
 ---
-generated_at: 2025-09-18T11:00:42.899Z
+generated_at: 2025-09-26T19:45:48.654Z
 ---
 
 # images
@@ -91,6 +91,7 @@ flowchart TD
   n_preprocessor -- movieFile --> n_audioChecker
   n_preprocessor -- imagePath --> n_audioChecker
   n_preprocessor -- soundEffectFile --> n_audioChecker
+  n___mapIndex --> n_audioChecker
   n_soundEffectGenerator(soundEffectGenerator<br/>:preprocessor.soundEffectAgentInfo.agentName)
   n_movieGenerator --> n_soundEffectGenerator
   n_preprocessor -- soundEffectPrompt --> n_soundEffectGenerator
@@ -234,6 +235,7 @@ flowchart TD
     n_map_preprocessor -- movieFile --> n_map_audioChecker
     n_map_preprocessor -- imagePath --> n_map_audioChecker
     n_map_preprocessor -- soundEffectFile --> n_map_audioChecker
+    n_map___mapIndex --> n_map_audioChecker
     n_map_soundEffectGenerator(soundEffectGenerator<br/>:preprocessor.soundEffectAgentInfo.agentName)
     n_map_movieGenerator --> n_map_soundEffectGenerator
     n_map_preprocessor -- soundEffectPrompt --> n_map_soundEffectGenerator
