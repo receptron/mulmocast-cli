@@ -20,7 +20,7 @@ test("test zod", async () => {
     ],
   };
   const data = mulmoScriptSchema.safeParse(initMulmoScript);
-  console.log(JSON.stringify(data));
+  // console.log(JSON.stringify(data));
   const expected = {
     success: true,
     data: {
