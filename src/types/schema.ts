@@ -388,7 +388,7 @@ export const mulmoMovieParamsSchema = z
   })
   .strict();
 
-const defaultSpeaker = "Presenter";
+export const defaultSpeaker = "Presenter";
 
 export const mulmoPresentationStyleSchema = z.object({
   $mulmocast: mulmoCastCreditSchema,
