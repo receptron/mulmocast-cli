@@ -72,7 +72,7 @@ export const MulmoPresentationStyleMethods = {
     return [...defaultTextSlideStyles, ...[styles], ...[extraStyles]].flat().join("\n");
   },
   getDefaultSpeaker(presentationStyle: MulmoPresentationStyle) {
-    const speakers = presentationStyle.speechParams.speakers ?? {};
+    const speakers = presentationStyle?.speechParams?.speakers ?? {};
     const keys = Object.keys(speakers).sort();
     userAssert(keys.length !== 0, "presentationStyle.speechParams.speakers is not set!!");
     const defaultSpeaker = keys.find((key) => speakers[key].isDefault);
