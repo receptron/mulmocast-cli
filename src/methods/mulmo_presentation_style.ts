@@ -88,7 +88,7 @@ export const MulmoPresentationStyleMethods = {
     userAssert(!!speaker, `speaker is not set: speaker "${speakerId}"`);
     // Check if the speaker has a language-specific version.
     // Normally, lang is determined by the context, but lang may be specified when using the API.
-    const lang = targetLang ?? context.lang ?? context.studio.script.lang;
+    const lang = targetLang ?? context.lang ?? context?.studio?.script?.lang;
     if (speaker.lang && lang && speaker.lang[lang]) {
       return speaker.lang[lang];
     }
