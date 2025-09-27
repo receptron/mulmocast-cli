@@ -111,7 +111,7 @@ export const MulmoStudioContextMethods = {
     context: MulmoStudioContext,
     beat: MulmoBeat,
     lang?: string,
-  ): { provider: string; voiceId: string; model?: string; speechOptions: SpeechOptions } {
+  ): { provider: keyof typeof provider2TTSAgent; voiceId: string; model?: string; speechOptions: SpeechOptions } {
     const speaker = MulmoPresentationStyleMethods.getSpeaker(context, beat, lang);
     const speechOptions = { ...speaker.speechOptions, ...beat.speechOptions };
     const provider = text2SpeechProviderSchema.parse(speaker.provider) as keyof typeof provider2TTSAgent;
