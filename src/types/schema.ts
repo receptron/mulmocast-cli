@@ -239,13 +239,18 @@ export const mulmoGoogleImageModelSchema = z
   })
   .strict();
 
-export const mulmoImageParamsSchema = z
+export const mulmoBeatImageParamsSchema = z
   .object({
     provider: text2ImageProviderSchema, // has no default value (do not change it)
     model: z.string().optional(), // default: provider specific
     quality: z.string().optional(), // optional image quality (model specific)
     style: z.string().optional(), // optional image style
     moderation: z.string().optional(), // optional image style
+  })
+  .strict();
+
+export const mulmoImageParamsSchema = mulmoBeatImageParamsSchema
+  .extend({
     images: mulmoImageParamsImagesSchema.optional(),
   })
   .strict();
@@ -315,7 +320,7 @@ export const mulmoBeatSchema = z
     audio: mulmoAudioAssetSchema.optional(),
     duration: z.number().optional().describe("Duration of the beat. Used only when the text is empty"),
 
-    imageParams: mulmoImageParamsSchema.optional(), // beat specific parameters
+    imageParams: mulmoBeatImageParamsSchema.optional(), // beat specific parameters
     audioParams: beatAudioParamsSchema.optional(), // beat specific parameters
     movieParams: z
       .object({
