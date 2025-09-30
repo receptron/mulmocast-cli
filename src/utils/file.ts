@@ -251,19 +251,21 @@ const getPromptTemplates = <T>(dirPath: string, schema: ZodType | null): T[] => 
   }
 
   const files = fs.readdirSync(templatesDir);
-  return files.map((file) => {
-    try {
-      const promptTemplate = JSON.parse(fs.readFileSync(path.resolve(templatesDir, file), "utf-8"));
-      return {
-        ...(schema ? schema.parse(promptTemplate) : promptTemplate),
-        filename: file.replace(/\.json$/, ""),
-      };
-    } catch (e) {
-      GraphAILogger.info("file: " + file);
-      GraphAILogger.info(e);
-      return {};
-    }
-  });
+  return files
+    .filter((file) => file.endsWith(".json"))
+    .map((file) => {
+      try {
+        const promptTemplate = JSON.parse(fs.readFileSync(path.resolve(templatesDir, file), "utf-8"));
+        return {
+          ...(schema ? schema.parse(promptTemplate) : promptTemplate),
+          filename: file.replace(/\.json$/, ""),
+        };
+      } catch (e) {
+        GraphAILogger.info("file: " + file);
+        GraphAILogger.info(e);
+        return {};
+      }
+    });
 };
 
 export const getAvailablePromptTemplates = (): MulmoPromptTemplateFile[] => {
