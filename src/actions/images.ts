@@ -220,14 +220,8 @@ export const beat_graph_data = {
           return { hasMovieAudio: hasAudio };
         } catch (error) {
           GraphAILogger.error(error);
-          throw new Error("audioChecker: ffmpegGetMediaDuration error.", {
-            cause: {
-              type: "fileNotExist",
-              action: "images",
-              agentName: "audioChecker",
-              beatIndex: namedInputs.index,
-              fileName: sourceFile,
-            },
+          throw new Error(`audioChecker: ffmpegGetMediaDuration error:  index=${namedInputs.index} file=${sourceFile}`, {
+            cause: audioCheckerError(namedInputs.index, sourceFile),
           });
         }
       },
