@@ -86,9 +86,9 @@
     "@mozilla/readability": "^0.6.0",
     "@tavily/core": "^0.5.11",
     "clipboardy": "^4.0.0",
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.2.3",
     "fluent-ffmpeg": "^2.1.3",
-    "graphai": "^2.0.15",
+    "graphai": "^2.0.16",
     "jsdom": "^27.0.0",
     "marked": "^16.3.0",
     "mulmocast-vision": "^1.0.4",
@@ -105,14 +105,14 @@
     "@types/fluent-ffmpeg": "^2.1.26",
     "@types/jsdom": "^21.1.7",
     "@types/yargs": "^17.0.33",
-    "eslint": "^9.36.0",
+    "eslint": "^9.37.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-sonarjs": "^3.0.5",
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.44.1"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.45.0"
   },
   "engines": {
     "node": ">=20.0.0"
