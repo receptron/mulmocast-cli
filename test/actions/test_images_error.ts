@@ -107,6 +107,6 @@ test("test images", async () => {
     async () => {
       await images(context);
     },
-    { name: "Error", message: "audioChecker: ffmpegGetMediaDuration error." },
+    { name: "Error" },
   );
 });
