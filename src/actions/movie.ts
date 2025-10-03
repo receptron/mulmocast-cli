@@ -318,7 +318,9 @@ export const movie = async (context: MulmoStudioContext) => {
       writingMessage(outputVideoPath);
     }
     MulmoStudioContextMethods.setSessionState(context, "video", false, true);
-  } catch (__error) {
+    return true;
+  } catch (error) {
     MulmoStudioContextMethods.setSessionState(context, "video", false, false);
+    throw error;
   }
 };
