@@ -58,9 +58,9 @@ export const speakerDictionarySchema = z.record(
 
 export const mediaSourceSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("url"), url: URLStringSchema }).strict(), // https://example.com/foo.pdf
-  z.object({ kind: z.literal("base64"), data: z.string() }).strict(), // base64
-  z.object({ kind: z.literal("text"), text: z.string() }).strict(), // plain text
-  z.object({ kind: z.literal("path"), path: z.string() }).strict(), // foo.pdf
+  z.object({ kind: z.literal("base64"), data: z.string().min(1) }).strict(), // base64
+  z.object({ kind: z.literal("text"), text: z.string().min(1) }).strict(), // plain text
+  z.object({ kind: z.literal("path"), path: z.string().min(1) }).strict(), // foo.pdf
 ]);
 
 // String is easier for AI, string array is easier for human

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
-import { mulmoScriptSchema } from "../../src/types/schema.js";
+import { mulmoScriptSchema, mediaSourceSchema } from "../../src/types/schema.js";
 
 test("test zod", async () => {
   const initMulmoScript = {
@@ -37,4 +37,22 @@ test("test zod", async () => {
     },
   };
   assert.deepStrictEqual(expected, data);
+});
+
+test("test zod image path", async () => {
+  const data = mediaSourceSchema.safeParse({kind: "path", path: ""});
+  assert(!data.success);
+  const data2 = mediaSourceSchema.safeParse({kind: "path", path: "1"});
+  assert(data2.success);
+});
+
+test("test zod image url", async () => {
+  const data = mediaSourceSchema.safeParse({kind: "url", url: ""});
+  assert(!data.success);
+
+  const data2 = mediaSourceSchema.safeParse({kind: "url", url: "http://a"});
+  assert(data2.success);
+
+  const data3 = mediaSourceSchema.safeParse({kind: "url", url: "aaa"});
+  assert(!data3.success);
 });
