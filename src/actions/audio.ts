@@ -320,8 +320,8 @@ export const audio = async (context: MulmoStudioContext, args?: PublicAPIArgs) =
     MulmoStudioContextMethods.setSessionState(context, "audio", false, true);
     writingMessage(audioArtifactFilePath);
     return result.combineFiles as MulmoStudioContext;
-  } catch (__error) {
+  } catch (error) {
     MulmoStudioContextMethods.setSessionState(context, "audio", false, false);
-    throw __error;
+    throw error;
   }
 };
