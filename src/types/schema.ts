@@ -342,6 +342,7 @@ export const mulmoBeatSchema = z
     soundEffectPrompt: z.string().optional(),
     htmlPrompt: htmlPromptParamsSchema.optional(),
     enableLipSync: z.boolean().optional().describe("Enable lip sync generation for this beat"),
+    hidden: z.boolean().optional().describe("Hide this beat from the presentation"),
   })
   .strict();
 

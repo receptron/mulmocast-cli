@@ -35,6 +35,19 @@
       }
     },
     {
+      "id": "hidden",
+      "hidden": true,
+      "speaker": "Presenter",
+      "text": "This is a hidden beat.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Hidden Beat",
+          "bullets": ["This is a hidden beat."]
+        }
+      }
+    },
+    {
       "speaker": "Presenter",
       "text": "This is a reference beat.",
       "duration": 0.5,
