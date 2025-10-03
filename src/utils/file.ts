@@ -296,3 +296,11 @@ export const generateTimestampedFileName = (prefix: string) => {
 export const hashSHA256 = (text: string) => {
   return createHash("sha256").update(text, "utf8").digest("hex");
 };
+
+export const isFile = (filePath: string): boolean => {
+  try {
+    return fs.existsSync(filePath) && fs.statSync(filePath).isFile();
+  } catch {
+    return false;
+  }
+};
