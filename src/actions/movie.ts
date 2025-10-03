@@ -212,7 +212,7 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
     }
     const sourceFile = studioBeat.lipSyncFile ?? studioBeat.soundEffectFile ?? studioBeat.movieFile ?? studioBeat.htmlImageFile ?? studioBeat.imageFile;
     assert(!!sourceFile, `studioBeat.imageFile or studioBeat.movieFile is not set: index=${index}`);
-    assert(isFile(sourceFile), `studioBeat.imageFile or studioBeat.movieFile is not exist or not file: index=${index}`); 
+    assert(isFile(sourceFile), `studioBeat.imageFile or studioBeat.movieFile is not exist or not file: index=${index}`);
     assert(!!studioBeat.duration, `studioBeat.duration is not set: index=${index}`);
     const extraPadding = (() => {
       // We need to consider only intro and outro padding because the other paddings were already added to the beat.duration
