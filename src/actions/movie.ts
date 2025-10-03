@@ -2,6 +2,7 @@ import { GraphAILogger, assert } from "graphai";
 import { MulmoStudioContext, MulmoCanvasDimension, BeatMediaType, mulmoTransitionSchema, MulmoFillOption, mulmoFillOptionSchema } from "../types/index.js";
 import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { getAudioArtifactFilePath, getOutputVideoFilePath, writingMessage, isFile } from "../utils/file.js";
+import { createVideoError } from "../utils/error_cause.js";
 import {
   FfmpegContextAddInput,
   FfmpegContextInit,
