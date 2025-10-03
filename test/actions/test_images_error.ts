@@ -60,7 +60,7 @@ const getContext = () => {
           type: "image",
           source: {
             kind: "path",
-            path: "",
+            path: ".",
           },
         },
       },
