@@ -40,19 +40,19 @@ test("test zod", async () => {
 });
 
 test("test zod image path", async () => {
-  const data = mediaSourceSchema.safeParse({kind: "path", path: ""});
+  const data = mediaSourceSchema.safeParse({ kind: "path", path: "" });
   assert(!data.success);
-  const data2 = mediaSourceSchema.safeParse({kind: "path", path: "1"});
+  const data2 = mediaSourceSchema.safeParse({ kind: "path", path: "1" });
   assert(data2.success);
 });
 
 test("test zod image url", async () => {
-  const data = mediaSourceSchema.safeParse({kind: "url", url: ""});
+  const data = mediaSourceSchema.safeParse({ kind: "url", url: "" });
   assert(!data.success);
 
-  const data2 = mediaSourceSchema.safeParse({kind: "url", url: "http://a"});
+  const data2 = mediaSourceSchema.safeParse({ kind: "url", url: "https://a" });
   assert(data2.success);
 
-  const data3 = mediaSourceSchema.safeParse({kind: "url", url: "aaa"});
+  const data3 = mediaSourceSchema.safeParse({ kind: "url", url: "aaa" });
   assert(!data3.success);
 });
