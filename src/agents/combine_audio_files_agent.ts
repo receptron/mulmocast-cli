@@ -1,7 +1,7 @@
 import { assert, GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { MulmoStudio, MulmoStudioContext, MulmoStudioBeat, MulmoBeat } from "../types/index.js";
-import { silent60secPath } from "../utils/file.js";
+import { silent60secPath, isFile } from "../utils/file.js";
 import {
   FfmpegContext,
   FfmpegContextInit,
@@ -94,6 +94,9 @@ const getInputIds = (context: MulmoStudioContext, mediaDurations: MediaDuration[
     const { silenceDuration } = mediaDurations[index];
     const paddingId = `[padding_${index}]`;
     if (studioBeat.audioFile) {
+      if (!/^https?:\/\//.test(studioBeat.audioFile)) {
+        assert(isFile(studioBeat.audioFile), `studioBeat.audioFile is not exist or not file: index=${index} file=${studioBeat.audioFile}`);
+      }
       const audioId = FfmpegContextInputFormattedAudio(ffmpegContext, studioBeat.audioFile);
       inputIds.push(audioId);
     }
