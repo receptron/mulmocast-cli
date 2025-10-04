@@ -22,28 +22,33 @@ dotenv.config({ quiet: true });
 
 const vanillaAgents = agents.default ?? agents;
 
-const getAudioPath = (context: MulmoStudioContext, beat: MulmoBeat, audioFile: string): string | undefined => {
+const getAudioPathOrUrl = (context: MulmoStudioContext, beat: MulmoBeat, maybeAudioFile: string): string | undefined => {
   if (beat.audio?.type === "audio") {
-    const path = MulmoMediaSourceMethods.resolve(beat.audio.source, context);
-    if (path) {
-      return path;
+    const pathOrUrl = MulmoMediaSourceMethods.resolve(beat.audio.source, context);
+    if (pathOrUrl) {
+      return pathOrUrl;
     }
     throw new Error("Invalid audio source");
   }
   if (beat.text === undefined || beat.text === "" || context.studio.script.audioParams.suppressSpeech) {
     return undefined; // It indicates that the audio is not needed.
   }
-  return audioFile;
+  return maybeAudioFile;
 };
 
+// for back forward compatible
 export const getBeatAudioPath = (text: string, context: MulmoStudioContext, beat: MulmoBeat, lang?: string) => {
+  return getBeatAudioPathOrUrl(text, context, beat, lang);
+};
+
+export const getBeatAudioPathOrUrl = (text: string, context: MulmoStudioContext, beat: MulmoBeat, lang?: string) => {
   const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
   const { voiceId, provider, speechOptions, model } = MulmoStudioContextMethods.getAudioParam(context, beat, lang);
   const hash_string = [text, voiceId, speechOptions?.instruction ?? "", speechOptions?.speed ?? 1.0, provider, model ?? ""].join(":");
-  GraphAILogger.log(`getBeatAudioPath [${hash_string}]`);
+  GraphAILogger.log(`getBeatAudioPathOrUrl [${hash_string}]`);
   const audioFileName = `${context.studio.filename}_${text2hash(hash_string)}`;
-  const audioFile = getAudioFilePath(audioDirPath, context.studio.filename, audioFileName, lang);
-  return getAudioPath(context, beat, audioFile);
+  const maybeAudioFile = getAudioFilePath(audioDirPath, context.studio.filename, audioFileName, lang);
+  return getAudioPathOrUrl(context, beat, maybeAudioFile);
 };
 
 export const listLocalizedAudioPaths = (context: MulmoStudioContext) => {
@@ -51,7 +56,7 @@ export const listLocalizedAudioPaths = (context: MulmoStudioContext) => {
   return context.studio.script.beats.map((beat, index) => {
     const multiLingual = context.multiLingual[index];
     const text = localizedText(beat, multiLingual, lang);
-    return getBeatAudioPath(text, context, beat, lang);
+    return getBeatAudioPathOrUrl(text, context, beat, lang);
   });
 };
 
@@ -66,7 +71,7 @@ const preprocessorAgent = (namedInputs: {
   // const { lang } = context;
   const text = localizedText(beat, multiLingual, lang);
   const { voiceId, provider, speechOptions, model } = MulmoStudioContextMethods.getAudioParam(context, beat, lang);
-  const audioPath = getBeatAudioPath(text, context, beat, lang);
+  const audioPath = getBeatAudioPathOrUrl(text, context, beat, lang);
   studioBeat.audioFile = audioPath; // TODO: Passing by reference is difficult to maintain, so pass it using graphai inputs
   const needsTTS = !beat.audio && audioPath !== undefined;
 
