@@ -59,6 +59,12 @@ export const speakerDictionarySchema = z.record(
 export const mediaSourceSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("url"), url: URLStringSchema }).strict(), // https://example.com/foo.pdf
   z.object({ kind: z.literal("base64"), data: z.string().min(1) }).strict(), // base64
+  z.object({ kind: z.literal("path"), path: z.string().min(1) }).strict(), // foo.pdf
+]);
+
+export const mediaSourceMermaidSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("url"), url: URLStringSchema }).strict(), // https://example.com/foo.pdf
+  z.object({ kind: z.literal("base64"), data: z.string().min(1) }).strict(), // base64
   z.object({ kind: z.literal("text"), text: z.string().min(1) }).strict(), // plain text
   z.object({ kind: z.literal("path"), path: z.string().min(1) }).strict(), // foo.pdf
 ]);
@@ -138,7 +144,7 @@ export const mulmoMermaidMediaSchema = z
   .object({
     type: z.literal("mermaid"),
     title: z.string().describe("The title of the diagram"),
-    code: mediaSourceSchema.describe("The code of the mermaid diagram"),
+    code: mediaSourceMermaidSchema.describe("The code of the mermaid diagram"),
     appendix: z.array(z.string()).optional().describe("The appendix of the mermaid diagram; typically, style information."),
   })
   .strict();
