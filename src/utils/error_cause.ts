@@ -4,6 +4,7 @@ const unknownMediaType = "unknownMedia";
 const sourceUndefinedType = "undefinedSourceType";
 const movieAction = "movie";
 const imageAction = "images";
+const aucioAction = "audio";
 const imageReferenceAction = "imageReference";
 
 export const getAudioInputIdsError = (index: number, fileName: string) => {
@@ -34,6 +35,16 @@ export const createVideoSourceError = (index: number) => {
     action: movieAction,
     agentName: "createVideo",
     beatIndex: index,
+  };
+};
+
+export const invalidAudioSourceError = (beatIndex: number) => {
+  return {
+    type: sourceUndefinedType,
+    action: aucioAction,
+    target: "audioSource",
+    agentName: "getAudioPathOrUrl",
+    beatIndex,
   };
 };
 
