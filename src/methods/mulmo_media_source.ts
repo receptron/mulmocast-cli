@@ -49,7 +49,7 @@ export const MulmoMediaSourceMethods = {
     }
     if (mediaSource.kind === "url") {
       const response = await fetch(mediaSource.url);
-      assert(response.ok, `Failed to download mermaid code text: ${mediaSource.url}`, false, getTextError(mediaSource.url));
+      assert(response.ok, `Failed to download mermaid code text: ${mediaSource.url}`, false, getTextError(mediaSource.url)); // TODO: index
       return await response.text();
     }
     if (mediaSource.kind === "path") {
@@ -82,9 +82,7 @@ export const MulmoMediaSourceMethods = {
   async imagePluginSource(mediaSource: MulmoMediaSource, context: MulmoStudioContext, expectImagePath: string, imageType: ImageType) {
     if (mediaSource.kind === "url") {
       const response = await fetch(mediaSource.url);
-      if (!response.ok) {
-        throw new Error(`Failed to download image: ${mediaSource.url}`);
-      }
+      assert(response.ok, `Failed to download image plugin: ${imageType} ${mediaSource.url}`, false, downLoadImagePluginError(mediaSource.url, imageType)); // TODO: key, id, index
       const buffer = Buffer.from(await response.arrayBuffer());
 
       // Detect file extension from Content-Type header or URL
@@ -99,7 +97,7 @@ export const MulmoMediaSourceMethods = {
     // base64??
 
     GraphAILogger.error(`Image Plugin unknown ${imageType} source type:`, mediaSource);
-    throw new Error(`ERROR: unknown ${imageType} source type`); // TODO cause
+    throw new Error(`ERROR: unknown ${imageType} source type`, { cause: imagePluginUnknownMediaError(imageType) }); // TODO index
   },
   imagePluginSourcePath(mediaSource: MulmoMediaSource, context: MulmoStudioContext, expectImagePath: string, imageType: ImageType) {
     if (mediaSource?.kind === "url") {

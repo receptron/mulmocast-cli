@@ -50,6 +50,16 @@ export const downLoadReferenceImageError = (key: string, url: string) => {
   };
 };
 
+export const downLoadImagePluginError = (url: string, imageType: string) => {
+  return {
+    type: urlFileNotFoundType,
+    action: imageAction,
+    target: imageType,
+    agentName: "imagePlugin",
+    url,
+  };
+};
+
 export const getTextError = (url: string) => {
   return {
     type: urlFileNotFoundType,
@@ -64,6 +74,15 @@ export const imageReferenceUnknownMediaError = (key: string) => {
   return {
     type: unknownMediaType,
     action: imageReferenceAction,
+    key,
+  };
+};
+
+export const imagePluginUnknownMediaError = (key: string) => {
+  return {
+    type: unknownMediaType,
+    action: imageAction,
+    target: imageType,
     key,
   };
 };
