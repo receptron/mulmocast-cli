@@ -1,0 +1,21 @@
+beat.image.image
+beat.image.movie
+  -> source. path or url (download)
+imageParams.image
+ -> image_reference path or url (download)
+beat.audio
+ -> audio.ts path or url
+audio.bgm
+ -> audio.ts -> musicFile -> add_bgm_agent -> path or url
+beat.image.mermaid.code
+ -> 
+
+TODO
+pathの場合のエラーの例外処理の追加
+ファイルの場合のisFileの確認を追加
+例外でcauseを追加する
+
+urlにしてtest
+
+
+base64でも確認
