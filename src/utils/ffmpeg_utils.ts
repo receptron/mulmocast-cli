@@ -1,5 +1,6 @@
 import ffmpeg from "fluent-ffmpeg";
 import { GraphAILogger } from "graphai";
+import { isFile } from "./file.js";
 import fs from "fs";
 
 export type FfmpegContext = {
