@@ -30,3 +30,14 @@ export const createVideoError = (index: number, fileName: string) => {
     fileName,
   };
 };
+
+export const downLoadReferenceImageError = (key: string, url: string) => {
+  return {
+    type: "urlFileNotFound",
+    action: "imageReference",
+    target: "imageFile",
+    agentName: "downloadUrl",
+    key,
+    url,
+  };
+};

@@ -1,15 +1,28 @@
 import fs from "fs";
-import { GraphAILogger } from "graphai";
+import { GraphAILogger, assert } from "graphai";
 import type { MulmoMediaSource, MulmoMediaMermaidSource, MulmoStudioContext, ImageType } from "../types/index.js";
 import { getFullPath, getReferenceImagePath, resolveAssetPath } from "../utils/file.js";
-import { getExtention } from "../utils/utils.js";
+import { downLoadReferenceImageError } from "../utils/error_cause.js";
 
 // for image reference
+export const getExtention = (contentType: string | null, url: string) => {
+  if (contentType?.includes("jpeg") || contentType?.includes("jpg")) {
+    return "jpg";
+  } else if (contentType?.includes("png")) {
+    return "png";
+  }
+  // Fall back to URL extension
+  const urlExtension = url.split(".").pop()?.toLowerCase();
+  if (urlExtension && ["jpg", "jpeg", "png"].includes(urlExtension)) {
+    return urlExtension === "jpeg" ? "jpg" : urlExtension;
+  }
+  return "png"; // default
+};
+
 const downLoadReferenceImage = async (context: MulmoStudioContext, key: string, url: string) => {
   const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to download image: ${url}`);
-  }
+
+  assert(response.ok, `Failed to download image: ${url}`, false, downLoadReferenceImageError(key, url));
   const buffer = Buffer.from(await response.arrayBuffer());
 
   // Detect file extension from Content-Type header or URL
@@ -26,6 +39,8 @@ function pluginSourceFixExtention(path: string, imageType: ImageType) {
   }
   return path;
 }
+
+// end of util
 
 export const MulmoMediaSourceMethods = {
   async getText(mediaSource: MulmoMediaMermaidSource, context: MulmoStudioContext) {
