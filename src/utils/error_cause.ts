@@ -1,17 +1,26 @@
-const urlFileNotFoundType = "urlFileNotFound";
-const fileNotExistType = "fileNotExist";
-const unknownMediaType = "unknownMedia";
-const sourceUndefinedType = "undefinedSourceType";
-const movieAction = "movie";
-const imageAction = "images";
-const aucioAction = "audio";
-const imageReferenceAction = "imageReference";
+export const urlFileNotFoundType = "urlFileNotFound";
+export const fileNotExistType = "fileNotExist";
+export const unknownMediaType = "unknownMedia";
+export const sourceUndefinedType = "undefinedSourceType";
+
+export const movieAction = "movie";
+export const imageAction = "images";
+export const audioAction = "audio";
+export const imageReferenceAction = "imageReference";
+
+export const audioFileTarget = "audioFile";
+export const imageFileTarget = "imageFile";
+export const movieFileTarget = "movieFile";
+
+export const videoSourceTarget = "videoSource";
+export const audioSourceTarget = "audioSource";
+export const codeTextTarget = "codeText";
 
 export const getAudioInputIdsError = (index: number, fileName: string) => {
   return {
     type: fileNotExistType,
     action: movieAction,
-    target: "audioFile",
+    target: audioFileTarget,
     agentName: "combineAudioFiles",
     beatIndex: index,
     fileName,
@@ -22,17 +31,30 @@ export const audioCheckerError = (index: number, fileName: string) => {
   return {
     type: fileNotExistType,
     action: imageAction,
-    target: "imageFile",
+    target: imageFileTarget,
     agentName: "audioChecker",
     beatIndex: index,
     fileName,
   };
 };
 
+export const createVideoFileError = (index: number, fileName: string) => {
+  return {
+    type: fileNotExistType,
+    action: movieAction,
+    target: imageFileTarget,
+    agentName: "createVideo",
+    beatIndex: index,
+    fileName,
+  };
+};
+
+// undefinedSource
 export const createVideoSourceError = (index: number) => {
   return {
     type: sourceUndefinedType,
     action: movieAction,
+    target: videoSourceTarget,
     agentName: "createVideo",
     beatIndex: index,
   };
@@ -41,29 +63,19 @@ export const createVideoSourceError = (index: number) => {
 export const invalidAudioSourceError = (beatIndex: number) => {
   return {
     type: sourceUndefinedType,
-    action: aucioAction,
-    target: "audioSource",
+    action: audioAction,
+    target: audioSourceTarget,
     agentName: "getAudioPathOrUrl",
     beatIndex,
   };
 };
 
-export const createVideoFileError = (index: number, fileName: string) => {
-  return {
-    type: fileNotExistType,
-    action: movieAction,
-    target: "imageFile",
-    agentName: "createVideo",
-    beatIndex: index,
-    fileName,
-  };
-};
-
+// 404
 export const downLoadReferenceImageError = (key: string, url: string) => {
   return {
     type: urlFileNotFoundType,
     action: imageReferenceAction,
-    target: "imageFile",
+    target: imageFileTarget,
     agentName: "downloadUrl",
     key,
     url,
@@ -74,7 +86,7 @@ export const downloadImagePluginError = (url: string, imageType: string) => {
   return {
     type: urlFileNotFoundType,
     action: imageAction,
-    target: imageType,
+    target: imageType === "image" ? imageFileTarget : movieFileTarget,
     agentName: "imagePlugin",
     url,
   };
@@ -84,12 +96,13 @@ export const getTextError = (url: string) => {
   return {
     type: urlFileNotFoundType,
     action: imageAction,
-    target: "code",
+    target: codeTextTarget,
     agentName: "mermaid",
     url,
   };
 };
 
+//
 export const imageReferenceUnknownMediaError = (key: string) => {
   return {
     type: unknownMediaType,
