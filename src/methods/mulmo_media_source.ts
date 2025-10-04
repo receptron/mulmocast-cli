@@ -2,7 +2,13 @@ import fs from "fs";
 import { GraphAILogger, assert } from "graphai";
 import type { MulmoMediaSource, MulmoMediaMermaidSource, MulmoStudioContext, ImageType } from "../types/index.js";
 import { getFullPath, getReferenceImagePath, resolveAssetPath } from "../utils/file.js";
-import { downLoadReferenceImageError, getTextError } from "../utils/error_cause.js";
+import {
+  downLoadReferenceImageError,
+  getTextError,
+  imageReferenceUnknownMediaError,
+  downLoadImagePluginError,
+  imagePluginUnknownMediaError,
+} from "../utils/error_cause.js";
 
 // for image reference
 export const getExtention = (contentType: string | null, url: string) => {

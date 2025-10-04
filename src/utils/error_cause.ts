@@ -78,11 +78,10 @@ export const imageReferenceUnknownMediaError = (key: string) => {
   };
 };
 
-export const imagePluginUnknownMediaError = (key: string) => {
+export const imagePluginUnknownMediaError = (imageType: string) => {
   return {
     type: unknownMediaType,
     action: imageAction,
     target: imageType,
-    key,
   };
 };
