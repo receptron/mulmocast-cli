@@ -1,7 +1,7 @@
 const urlFileNotFoundType = "urlFileNotFound";
 const fileNotExistType = "fileNotExist";
 const unknownMediaType = "unknownMedia";
-
+const sourceUndefinedType = "undefinedSourceType";
 const movieAction = "movie";
 const imageAction = "images";
 const imageReferenceAction = "imageReference";

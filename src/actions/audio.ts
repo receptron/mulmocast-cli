@@ -28,7 +28,7 @@ const getAudioPathOrUrl = (context: MulmoStudioContext, beat: MulmoBeat, maybeAu
     if (pathOrUrl) {
       return pathOrUrl;
     }
-    throw new Error("Invalid audio source");
+    throw new Error("Invalid audio source"); // TODO: cause
   }
   if (beat.text === undefined || beat.text === "" || context.studio.script.audioParams.suppressSpeech) {
     return undefined; // It indicates that the audio is not needed.
