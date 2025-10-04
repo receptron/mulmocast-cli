@@ -2,7 +2,7 @@ import fs from "fs";
 import { GraphAILogger, assert } from "graphai";
 import type { MulmoMediaSource, MulmoMediaMermaidSource, MulmoStudioContext, ImageType } from "../types/index.js";
 import { getFullPath, getReferenceImagePath, resolveAssetPath } from "../utils/file.js";
-import { downLoadReferenceImageError } from "../utils/error_cause.js";
+import { downLoadReferenceImageError, getTextError } from "../utils/error_cause.js";
 
 // for image reference
 export const getExtention = (contentType: string | null, url: string) => {
@@ -22,7 +22,7 @@ export const getExtention = (contentType: string | null, url: string) => {
 const downLoadReferenceImage = async (context: MulmoStudioContext, key: string, url: string) => {
   const response = await fetch(url);
 
-  assert(response.ok, `Failed to download image: ${url}`, false, downLoadReferenceImageError(key, url));
+  assert(response.ok, `Failed to download reference image: ${url}`, false, downLoadReferenceImageError(key, url));
   const buffer = Buffer.from(await response.arrayBuffer());
 
   // Detect file extension from Content-Type header or URL
@@ -48,11 +48,9 @@ export const MulmoMediaSourceMethods = {
       return mediaSource.text;
     }
     if (mediaSource.kind === "url") {
-      const res = await fetch(mediaSource.url);
-      if (!res.ok) {
-        throw new Error(`Failed to fetch media source: ${mediaSource.url}`);
-      }
-      return await res.text();
+      const response = await fetch(mediaSource.url);
+      assert(response.ok, `Failed to download mermaid code text: ${mediaSource.url}`, false, getTextError(mediaSource.url));
+      return await response.text();
     }
     if (mediaSource.kind === "path") {
       const path = getFullPath(context.fileDirs.mulmoFileDirPath, mediaSource.path);

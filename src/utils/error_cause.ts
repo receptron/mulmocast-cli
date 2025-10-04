@@ -41,3 +41,13 @@ export const downLoadReferenceImageError = (key: string, url: string) => {
     url,
   };
 };
+
+export const getTextError = (url: string) => {
+  return {
+    type: "urlFileNotFound",
+    action: "images",
+    target: "code",
+    agentName: "mermaid",
+    url,
+  };
+};
