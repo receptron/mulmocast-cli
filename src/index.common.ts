@@ -6,6 +6,7 @@ export * from "./utils/const.js";
 export * from "./utils/string.js";
 export * from "./utils/utils.js";
 export * from "./utils/prompt.js";
+export * from "./utils/error_cause.js";
 
 export * from "./methods/mulmo_presentation_style.js";
 export * from "./methods/mulmo_script.js";
