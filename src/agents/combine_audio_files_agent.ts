@@ -11,6 +11,7 @@ import {
 } from "../utils/ffmpeg_utils.js";
 import { MulmoMediaSourceMethods } from "../methods/mulmo_media_source.js";
 import { userAssert } from "../utils/utils.js";
+import { getAudioInputIdsError } from "../utils/error_cause.js";
 
 const getMovieDuration = async (context: MulmoStudioContext, beat: MulmoBeat) => {
   if (beat.image?.type === "movie") {
@@ -95,7 +96,12 @@ const getInputIds = (context: MulmoStudioContext, mediaDurations: MediaDuration[
     const paddingId = `[padding_${index}]`;
     if (studioBeat.audioFile) {
       if (!/^https?:\/\//.test(studioBeat.audioFile)) {
-        assert(isFile(studioBeat.audioFile), `studioBeat.audioFile is not exist or not file: index=${index} file=${studioBeat.audioFile}`);
+        assert(
+          isFile(studioBeat.audioFile),
+          `studioBeat.audioFile is not exist or not file: index=${index} file=${studioBeat.audioFile}`,
+          false,
+          getAudioInputIdsError(index, studioBeat.audioFile),
+        );
       }
       const audioId = FfmpegContextInputFormattedAudio(ffmpegContext, studioBeat.audioFile);
       inputIds.push(audioId);

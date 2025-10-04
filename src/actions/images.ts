@@ -25,6 +25,7 @@ import { MulmoPresentationStyleMethods, MulmoStudioContextMethods } from "../met
 import { getOutputStudioFilePath, mkdir } from "../utils/file.js";
 import { fileCacheAgentFilter } from "../utils/filters.js";
 import { settings2GraphAIConfig } from "../utils/utils.js";
+import { audioCheckerError } from "../utils/error_cause.js";
 import { extractImageFromMovie, ffmpegGetMediaDuration, trimMusic } from "../utils/ffmpeg_utils.js";
 
 import { getImageRefs } from "./image_references.js";
@@ -220,13 +221,8 @@ export const beat_graph_data = {
           return { hasMovieAudio: hasAudio };
         } catch (error) {
           GraphAILogger.error(error);
-          throw new Error("audioChecker: ffmpegGetMediaDuration error.", {
-            cause: {
-              type: "FileNotExist",
-              action: "images",
-              agentName: "audioChecker",
-              beat_index: namedInputs.index,
-            },
+          throw new Error(`audioChecker: ffmpegGetMediaDuration error:  index=${namedInputs.index} file=${sourceFile}`, {
+            cause: audioCheckerError(namedInputs.index, sourceFile),
           });
         }
       },
