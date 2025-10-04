@@ -37,6 +37,7 @@ import {
   mulmoImageMediaSchema,
   mulmoChartMediaSchema,
   mediaSourceSchema,
+  mediaSourceMermaidSchema,
   mulmoSessionStateSchema,
   mulmoOpenAIImageModelSchema,
   mulmoGoogleImageModelSchema,
@@ -70,6 +71,7 @@ export type MulmoStoryboardScene = z.infer<typeof mulmoStoryboardSceneSchema>;
 export type MulmoStoryboard = z.infer<typeof mulmoStoryboardSchema>;
 export type MulmoStudioBeat = z.infer<typeof mulmoStudioBeatSchema>;
 export type MulmoMediaSource = z.infer<typeof mediaSourceSchema>;
+export type MulmoMediaMermaidSource = z.infer<typeof mediaSourceMermaidSchema>;
 export type MulmoStudio = z.infer<typeof mulmoStudioSchema>;
 export type MulmoPromptTemplate = z.infer<typeof mulmoPromptTemplateSchema>;
 export type MulmoPromptTemplateFile = z.infer<typeof mulmoPromptTemplateFileSchema>;

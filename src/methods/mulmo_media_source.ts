@@ -1,9 +1,9 @@
 import fs from "fs";
-import { MulmoMediaSource, MulmoStudioContext } from "../types/index.js";
+import { MulmoMediaSource, MulmoMediaMermaidSource, MulmoStudioContext } from "../types/index.js";
 import { getFullPath, resolveAssetPath } from "../utils/file.js";
 
 export const MulmoMediaSourceMethods = {
-  async getText(mediaSource: MulmoMediaSource, context: MulmoStudioContext) {
+  async getText(mediaSource: MulmoMediaMermaidSource, context: MulmoStudioContext) {
     if (mediaSource.kind === "text") {
       return mediaSource.text;
     }
