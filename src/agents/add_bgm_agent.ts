@@ -1,9 +1,9 @@
-import fs from "fs";
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { MulmoStudioContext } from "../types/index.js";
 import { FfmpegContextAddInput, FfmpegContextInit, FfmpegContextGenerateOutput, ffmpegGetMediaDuration } from "../utils/ffmpeg_utils.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
+import { isFile } from "../utils/file.js";
 
 const addBGMAgent: AgentFunction<{ musicFile: string }, string, { voiceFile: string; outputFile: string; context: MulmoStudioContext }> = async ({
   namedInputs,
@@ -12,10 +12,10 @@ const addBGMAgent: AgentFunction<{ musicFile: string }, string, { voiceFile: str
   const { voiceFile, outputFile, context } = namedInputs;
   const { musicFile } = params;
 
-  if (!fs.existsSync(voiceFile)) {
+  if (!isFile(voiceFile)) {
     throw new Error(`AddBGMAgent voiceFile not exist: ${voiceFile}`);
   }
-  if (!musicFile.match(/^http/) && !fs.existsSync(musicFile)) {
+  if (!musicFile.match(/^http/) && !isFile(musicFile)) {
     throw new Error(`AddBGMAgent musicFile not exist: ${musicFile}`);
   }
 

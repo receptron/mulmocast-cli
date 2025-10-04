@@ -1,5 +1,6 @@
 import ffmpeg from "fluent-ffmpeg";
 import { GraphAILogger } from "graphai";
+import { isFile } from "./file.js";
 import fs from "fs";
 
 export type FfmpegContext = {
@@ -113,7 +114,7 @@ export const extractImageFromMovie = (movieFile: string, imagePath: string): Pro
 
 export const trimMusic = (inputFile: string, startTime: number, duration: number): Promise<Buffer> => {
   return new Promise<Buffer>((resolve, reject) => {
-    if (!inputFile.startsWith("http://") && !inputFile.startsWith("https://") && !fs.existsSync(inputFile)) {
+    if (!inputFile.startsWith("http://") && !inputFile.startsWith("https://") && !isFile(inputFile)) {
       reject(new Error(`File not found: ${inputFile}`));
       return;
     }
