@@ -1,7 +1,8 @@
 import test from "node:test";
 import assert from "node:assert";
 
-import { getExtention, settings2GraphAIConfig, deepClean } from "../../src/utils/utils.js";
+import { getExtention } from "../../src/methods/mulmo_media_source.js"
+import { settings2GraphAIConfig, deepClean } from "../../src/utils/utils.js";
 
 test("test getExtention", async () => {
   const ext = getExtention("image/jpeg", "http://example.com/a.png");
