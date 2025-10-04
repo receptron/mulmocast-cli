@@ -1,6 +1,5 @@
-import fs from "fs";
 import { GraphAI, GraphAILogger } from "graphai";
-import { getReferenceImagePath, resolveAssetPath } from "../utils/file.js";
+import { getReferenceImagePath } from "../utils/file.js";
 
 import { graphOption } from "./images.js";
 import { MulmoPresentationStyleMethods } from "../methods/index.js";

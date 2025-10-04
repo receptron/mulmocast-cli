@@ -186,3 +186,5 @@ export type PublicAPIArgs = {
   settings?: Record<string, string>;
   callbacks?: CallbackFunction[];
 };
+
+export type ImageType = "image" | "movie";

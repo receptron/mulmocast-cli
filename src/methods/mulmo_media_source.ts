@@ -1,8 +1,10 @@
 import fs from "fs";
-import { MulmoMediaSource, MulmoMediaMermaidSource, MulmoStudioContext } from "../types/index.js";
+import { GraphAILogger } from "graphai";
+import type { MulmoMediaSource, MulmoMediaMermaidSource, MulmoStudioContext, ImageType } from "../types/index.js";
 import { getFullPath, getReferenceImagePath, resolveAssetPath } from "../utils/file.js";
 import { getExtention } from "../utils/utils.js";
 
+// for image reference
 const downLoadReferenceImage = async (context: MulmoStudioContext, key: string, url: string) => {
   const response = await fetch(url);
   if (!response.ok) {
@@ -16,6 +18,14 @@ const downLoadReferenceImage = async (context: MulmoStudioContext, key: string, 
   await fs.promises.writeFile(imagePath, buffer);
   return imagePath;
 };
+
+// for image
+function pluginSourceFixExtention(path: string, imageType: ImageType) {
+  if (imageType === "movie") {
+    return path.replace(/\.png$/, ".mov");
+  }
+  return path;
+}
 
 export const MulmoMediaSourceMethods = {
   async getText(mediaSource: MulmoMediaMermaidSource, context: MulmoStudioContext) {
@@ -45,7 +55,7 @@ export const MulmoMediaSourceMethods = {
     }
     return null;
   },
-  // if url then download image and save it to file. both case return local image path.
+  // if url then download image and save it to file. both case return local image path. For image reference
   async imageReference(mediaSource: MulmoMediaSource, context: MulmoStudioContext, key: string) {
     if (mediaSource.kind === "path") {
       return resolveAssetPath(context, mediaSource.path);
@@ -54,5 +64,38 @@ export const MulmoMediaSourceMethods = {
     }
     // TODO base64
     throw new Error(`imageReference media unknown error`); // TODO cause
+  },
+
+  async imagePluginSource(mediaSource: MulmoMediaSource, context: MulmoStudioContext, expectImagePath: string, imageType: string) {
+    if (mediaSource.kind === "url") {
+      const response = await fetch(mediaSource.url);
+      if (!response.ok) {
+        throw new Error(`Failed to download image: ${mediaSource.url}`);
+      }
+      const buffer = Buffer.from(await response.arrayBuffer());
+
+      // Detect file extension from Content-Type header or URL
+      const imagePath = pluginSourceFixExtention(expectImagePath, imageType);
+      await fs.promises.writeFile(imagePath, buffer);
+      return imagePath;
+    }
+    const path = MulmoMediaSourceMethods.resolve(mediaSource, context);
+    if (path) {
+      return path;
+    }
+    // base64??
+
+    GraphAILogger.error(`Image Plugin unknown ${imageType} source type:`, mediaSource);
+    throw new Error(`ERROR: unknown ${imageType} source type`); // TODO cause
+  },
+  imagePluginSourcePath(mediaSource: MulmoMediaSource, context: MulmoStudioContext, expectImagePath: string, imageType: string) {
+    if (mediaSource?.kind === "url") {
+      return pluginSourceFixExtention(expectImagePath, imageType);
+    }
+    const path = MulmoMediaSourceMethods.resolve(mediaSource, context);
+    if (path) {
+      return path;
+    }
+    return undefined;
   },
 };
