@@ -1,7 +1,6 @@
 import fs from "fs";
 import { GraphAI, GraphAILogger } from "graphai";
 import { getReferenceImagePath, resolveAssetPath } from "../utils/file.js";
-import { getExtention } from "../utils/utils.js";
 
 import { graphOption } from "./images.js";
 import { MulmoPresentationStyleMethods } from "../methods/index.js";
@@ -55,20 +54,6 @@ export const generateReferenceImage = async (inputs: {
   return imagePath;
 };
 
-const downLoadImage = async (context: MulmoStudioContext, key: string, url: string) => {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to download image: ${url}`);
-  }
-  const buffer = Buffer.from(await response.arrayBuffer());
-
-  // Detect file extension from Content-Type header or URL
-  const extension = getExtention(response.headers.get("content-type"), url);
-  const imagePath = getReferenceImagePath(context, key, extension);
-  await fs.promises.writeFile(imagePath, buffer);
-  return imagePath;
-};
-
 export const getImageRefs = async (context: MulmoStudioContext) => {
   const images = context.presentationStyle.imageParams?.images;
   if (!images) {
@@ -83,11 +68,7 @@ export const getImageRefs = async (context: MulmoStudioContext) => {
         if (image.type === "imagePrompt") {
           imageRefs[key] = await generateReferenceImage({ context, key, index, image, force: false });
         } else if (image.type === "image") {
-          if (image.source.kind === "path") {
-            imageRefs[key] = resolveAssetPath(context, image.source.path);
-          } else if (image.source.kind === "url") {
-            imageRefs[key] = await downLoadImage(context, key, image.source.url);
-          }
+          imageRefs[key] = await MulmoMediaSourceMethods.imageReference(image.source, context, key);
         }
       }),
   );
