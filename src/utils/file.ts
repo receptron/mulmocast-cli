@@ -49,7 +49,7 @@ export function readMulmoScriptFile<T = MulmoScript>(
   fileName: string;
 } | null {
   const scriptPath = path.resolve(arg2);
-  if (!fs.existsSync(scriptPath)) {
+  if (!isFile(scriptPath)) {
     if (errorMessage) {
       GraphAILogger.info(errorMessage);
     }

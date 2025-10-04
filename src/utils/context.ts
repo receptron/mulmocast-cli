@@ -1,6 +1,6 @@
 import { GraphAILogger } from "graphai";
 import fs from "fs";
-import { readMulmoScriptFile, fetchMulmoScriptFile } from "./file.js";
+import { readMulmoScriptFile, fetchMulmoScriptFile, isFile } from "./file.js";
 import { beatId, multiLingualObjectToArray } from "./utils.js";
 import type {
   MulmoStudioBeat,
@@ -104,7 +104,7 @@ export const fetchScript = async (isHttpPath: boolean, mulmoFilePath: string, fi
     }
     return res.script;
   }
-  if (!fs.existsSync(mulmoFilePath)) {
+  if (!isFile(mulmoFilePath)) {
     GraphAILogger.info(`ERROR: File not exists ${mulmoFilePath}`);
     return null;
   }
@@ -112,7 +112,7 @@ export const fetchScript = async (isHttpPath: boolean, mulmoFilePath: string, fi
 };
 
 export const getMultiLingual = (multilingualFilePath: string, beats: MulmoStudioBeat[]): MulmoStudioMultiLingual => {
-  if (!fs.existsSync(multilingualFilePath)) {
+  if (!isFile(multilingualFilePath)) {
     return beats.reduce((tmp: MulmoStudioMultiLingual, beat: MulmoStudioBeat, index: number) => {
       const key = beatId(beat?.id, index);
       tmp[key] = { multiLingualTexts: {} };
@@ -128,7 +128,7 @@ export const getPresentationStyle = (presentationStylePath: string | undefined):
   if (!presentationStylePath) {
     return null;
   }
-  if (!fs.existsSync(presentationStylePath)) {
+  if (!isFile(presentationStylePath)) {
     throw new Error(`ERROR: File not exists ${presentationStylePath}`);
   }
   const jsonData = readMulmoScriptFile<MulmoPresentationStyle>(presentationStylePath, "ERROR: File does not exist " + presentationStylePath)?.mulmoData ?? null;

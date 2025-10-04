@@ -4,7 +4,7 @@ import path from "path";
 import fsPromise from "fs/promises";
 import type { AgentFilterFunction } from "graphai";
 import { GraphAILogger } from "graphai";
-import { writingMessage } from "./file.js";
+import { writingMessage, isFile } from "./file.js";
 import { text2hash } from "./utils_node.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 import { replacementsJa, replacePairsJa } from "../utils/string.js";
@@ -67,7 +67,7 @@ export const browserlessCacheGenerator = (cacheDir: string) => {
   const browserlessCache: AgentFilterFunction = async (context, next) => {
     const cacheKey = text2hash(context?.namedInputs?.url);
     const cachePath = path.resolve(cacheDir, cacheKey + ".txt");
-    if (fs.existsSync(cachePath)) {
+    if (isFile(cachePath)) {
       // console.log("cache hit!!");
       const text = fs.readFileSync(cachePath, "utf-8");
       return { text };
