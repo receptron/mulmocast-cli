@@ -1,4 +1,3 @@
-import fs from "fs";
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { MulmoStudioContext } from "../types/index.js";

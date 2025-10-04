@@ -1,5 +1,4 @@
 import { GraphAILogger } from "graphai";
-import fs from "fs";
 import { readMulmoScriptFile, fetchMulmoScriptFile, isFile } from "./file.js";
 import { beatId, multiLingualObjectToArray } from "./utils.js";
 import type {
