@@ -41,6 +41,9 @@ const downLoadReferenceImage = async (context: MulmoStudioContext, key: string, 
 // for image
 function pluginSourceFixExtention(path: string, imageType: ImageType) {
   if (imageType === "movie") {
+    if (!path.endsWith('.png')) {
+      GraphAILogger.warn(`Expected .png extension for movie type, got: ${path}`);
+    }
     return path.replace(/\.png$/, ".mov");
   }
   return path;
