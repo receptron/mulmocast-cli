@@ -70,7 +70,7 @@ export const downLoadReferenceImageError = (key: string, url: string) => {
   };
 };
 
-export const downLoadImagePluginError = (url: string, imageType: string) => {
+export const downloadImagePluginError = (url: string, imageType: string) => {
   return {
     type: urlFileNotFoundType,
     action: imageAction,
