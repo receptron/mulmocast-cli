@@ -5,7 +5,7 @@ export const sourceUndefinedType = "undefinedSourceType";
 
 export const movieAction = "movie";
 export const imageAction = "images";
-export const aucioAction = "audio";
+export const audioAction = "audio";
 export const imageReferenceAction = "imageReference";
 
 export const audioFileTarget = "audioFile";
@@ -63,7 +63,7 @@ export const createVideoSourceError = (index: number) => {
 export const invalidAudioSourceError = (beatIndex: number) => {
   return {
     type: sourceUndefinedType,
-    action: aucioAction,
+    action: audioAction,
     target: audioSourceTarget,
     agentName: "getAudioPathOrUrl",
     beatIndex,
