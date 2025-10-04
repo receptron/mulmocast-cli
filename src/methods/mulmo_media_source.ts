@@ -66,7 +66,7 @@ export const MulmoMediaSourceMethods = {
     throw new Error(`imageReference media unknown error`); // TODO cause
   },
 
-  async imagePluginSource(mediaSource: MulmoMediaSource, context: MulmoStudioContext, expectImagePath: string, imageType: string) {
+  async imagePluginSource(mediaSource: MulmoMediaSource, context: MulmoStudioContext, expectImagePath: string, imageType: ImageType) {
     if (mediaSource.kind === "url") {
       const response = await fetch(mediaSource.url);
       if (!response.ok) {
@@ -88,7 +88,7 @@ export const MulmoMediaSourceMethods = {
     GraphAILogger.error(`Image Plugin unknown ${imageType} source type:`, mediaSource);
     throw new Error(`ERROR: unknown ${imageType} source type`); // TODO cause
   },
-  imagePluginSourcePath(mediaSource: MulmoMediaSource, context: MulmoStudioContext, expectImagePath: string, imageType: string) {
+  imagePluginSourcePath(mediaSource: MulmoMediaSource, context: MulmoStudioContext, expectImagePath: string, imageType: ImageType) {
     if (mediaSource?.kind === "url") {
       return pluginSourceFixExtention(expectImagePath, imageType);
     }

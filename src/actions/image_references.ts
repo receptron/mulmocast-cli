@@ -2,7 +2,7 @@ import { GraphAI, GraphAILogger } from "graphai";
 import { getReferenceImagePath } from "../utils/file.js";
 
 import { graphOption } from "./images.js";
-import { MulmoPresentationStyleMethods } from "../methods/index.js";
+import { MulmoPresentationStyleMethods, MulmoMediaSourceMethods } from "../methods/index.js";
 import { MulmoStudioContext, MulmoStudioBeat, MulmoImagePromptMedia } from "../types/index.js";
 
 import { imageOpenaiAgent, mediaMockAgent, imageGenAIAgent, imageReplicateAgent } from "../agents/index.js";
