@@ -2,7 +2,7 @@ import { GraphAILogger, assert } from "graphai";
 import { MulmoStudioContext, MulmoCanvasDimension, BeatMediaType, mulmoTransitionSchema, MulmoFillOption, mulmoFillOptionSchema } from "../types/index.js";
 import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { getAudioArtifactFilePath, getOutputVideoFilePath, writingMessage, isFile } from "../utils/file.js";
-import { createVideoError } from "../utils/error_cause.js";
+import { createVideoFileError, createVideoSourceError } from "../utils/error_cause.js";
 import {
   FfmpegContextAddInput,
   FfmpegContextInit,
@@ -212,12 +212,12 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
       return timestamp; // Skip voice-over beats.
     }
     const sourceFile = studioBeat.lipSyncFile ?? studioBeat.soundEffectFile ?? studioBeat.movieFile ?? studioBeat.htmlImageFile ?? studioBeat.imageFile;
-    assert(!!sourceFile, `studioBeat.imageFile or studioBeat.movieFile is not set: index=${index}`);
+    assert(!!sourceFile, `studioBeat.imageFile or studioBeat.movieFile is not set: index=${index}`, false, createVideoSourceError(index));
     assert(
       isFile(sourceFile),
       `studioBeat.imageFile or studioBeat.movieFile is not exist or not file: index=${index} file=${sourceFile}`,
       false,
-      createVideoError(index, sourceFile),
+      createVideoFileError(index, sourceFile),
     );
     assert(!!studioBeat.duration, `studioBeat.duration is not set: index=${index}`);
     const extraPadding = (() => {

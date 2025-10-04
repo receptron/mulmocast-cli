@@ -271,7 +271,7 @@ export const translateBeat = async (index: number, context: MulmoStudioContext, 
     const { outputMultilingualFilePath } = getOutputMultilingualFilePathAndMkdir(context);
 
     const config = settings2GraphAIConfig(settings, process.env);
-    assert(!!config?.openAIAgent?.apiKey, "The OPENAI_API_KEY environment variable is missing or empty");
+    assert(!!config?.openAIAgent?.apiKey, "The OPENAI_API_KEY environment variable is missing or empty"); // TODO: cause
 
     const graph = new GraphAI(beatGraph, { ...vanillaAgents, fileWriteAgent, openAIAgent }, { agentFilters, config });
     graph.injectValue("context", context);
@@ -310,7 +310,7 @@ export const translate = async (context: MulmoStudioContext, args?: PublicAPIArg
       : [...new Set([context.lang, context.studio.script.captionParams?.lang].filter((x) => !isNull(x)))];
     const config = settings2GraphAIConfig(settings, process.env);
 
-    assert(!!config?.openAIAgent?.apiKey, "The OPENAI_API_KEY environment variable is missing or empty");
+    assert(!!config?.openAIAgent?.apiKey, "The OPENAI_API_KEY environment variable is missing or empty"); // TODO: cause
 
     const graph = new GraphAI(translate_graph_data, { ...vanillaAgents, fileWriteAgent, openAIAgent }, { agentFilters, config });
 

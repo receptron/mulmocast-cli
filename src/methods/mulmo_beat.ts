@@ -12,7 +12,7 @@ export const MulmoBeatMethods = {
   getPlugin(beat: MulmoBeat) {
     const plugin = findImagePlugin(beat?.image?.type);
     if (!plugin) {
-      throw new Error(`invalid beat image type: ${beat.image}`);
+      throw new Error(`invalid beat image type: ${beat.image}`); // TODO: cause
     }
     return plugin;
   },
