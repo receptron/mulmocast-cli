@@ -1,7 +1,15 @@
+const urlFileNotFoundType = "urlFileNotFound";
+const fileNotExistType = "fileNotExist";
+const unknownMediaType = "unknownMedia";
+
+const movieAction = "movie";
+const imageAction = "images";
+const imageReferenceAction = "imageReference";
+
 export const getAudioInputIdsError = (index: number, fileName: string) => {
   return {
-    type: "fileNotExist",
-    action: "movie",
+    type: fileNotExistType,
+    action: movieAction,
     target: "audioFile",
     agentName: "combineAudioFiles",
     beatIndex: index,
@@ -11,8 +19,8 @@ export const getAudioInputIdsError = (index: number, fileName: string) => {
 
 export const audioCheckerError = (index: number, fileName: string) => {
   return {
-    type: "fileNotExist",
-    action: "images",
+    type: fileNotExistType,
+    action: imageAction,
     target: "imageFile",
     agentName: "audioChecker",
     beatIndex: index,
@@ -22,8 +30,8 @@ export const audioCheckerError = (index: number, fileName: string) => {
 
 export const createVideoError = (index: number, fileName: string) => {
   return {
-    type: "fileNotExist",
-    action: "movie",
+    type: fileNotExistType,
+    action: movieAction,
     target: "imageFile",
     agentName: "createVideo",
     beatIndex: index,
@@ -33,8 +41,8 @@ export const createVideoError = (index: number, fileName: string) => {
 
 export const downLoadReferenceImageError = (key: string, url: string) => {
   return {
-    type: "urlFileNotFound",
-    action: "imageReference",
+    type: urlFileNotFoundType,
+    action: imageReferenceAction,
     target: "imageFile",
     agentName: "downloadUrl",
     key,
@@ -44,10 +52,18 @@ export const downLoadReferenceImageError = (key: string, url: string) => {
 
 export const getTextError = (url: string) => {
   return {
-    type: "urlFileNotFound",
-    action: "images",
+    type: urlFileNotFoundType,
+    action: imageAction,
     target: "code",
     agentName: "mermaid",
     url,
+  };
+};
+
+export const imageReferenceUnknownMediaError = (key: string) => {
+  return {
+    type: unknownMediaType,
+    action: imageReferenceAction,
+    key,
   };
 };

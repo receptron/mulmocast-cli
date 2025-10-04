@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert";
 
-import { getExtention } from "../../src/methods/mulmo_media_source.js"
+import { getExtention } from "../../src/methods/mulmo_media_source.js";
 import { settings2GraphAIConfig, deepClean } from "../../src/utils/utils.js";
 
 test("test getExtention", async () => {

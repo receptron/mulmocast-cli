@@ -76,7 +76,7 @@ export const MulmoMediaSourceMethods = {
       return await downLoadReferenceImage(context, key, mediaSource.url);
     }
     // TODO base64
-    throw new Error(`imageReference media unknown error`); // TODO cause
+    throw new Error(`imageReference media unknown error`, { cause: imageReferenceUnknownMediaError(key) });
   },
 
   async imagePluginSource(mediaSource: MulmoMediaSource, context: MulmoStudioContext, expectImagePath: string, imageType: ImageType) {
