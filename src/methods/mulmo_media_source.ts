@@ -6,7 +6,7 @@ import {
   downLoadReferenceImageError,
   getTextError,
   imageReferenceUnknownMediaError,
-  downLoadImagePluginError,
+  downloadImagePluginError,
   imagePluginUnknownMediaError,
 } from "../utils/error_cause.js";
 
@@ -91,7 +91,7 @@ export const MulmoMediaSourceMethods = {
   async imagePluginSource(mediaSource: MulmoMediaSource, context: MulmoStudioContext, expectImagePath: string, imageType: ImageType) {
     if (mediaSource.kind === "url") {
       const response = await fetch(mediaSource.url);
-      assert(response.ok, `Failed to download image plugin: ${imageType} ${mediaSource.url}`, false, downLoadImagePluginError(mediaSource.url, imageType)); // TODO: key, id, index
+      assert(response.ok, `Failed to download image plugin: ${imageType} ${mediaSource.url}`, false, downloadImagePluginError(mediaSource.url, imageType)); // TODO: key, id, index
       const buffer = Buffer.from(await response.arrayBuffer());
 
       // Detect file extension from Content-Type header or URL
