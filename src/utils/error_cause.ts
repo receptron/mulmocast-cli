@@ -28,7 +28,16 @@ export const audioCheckerError = (index: number, fileName: string) => {
   };
 };
 
-export const createVideoError = (index: number, fileName: string) => {
+export const createVideoSourceError = (index: number) => {
+  return {
+    type: sourceUndefinedType,
+    action: movieAction,
+    agentName: "createVideo",
+    beatIndex: index,
+  };
+};
+
+export const createVideoFileError = (index: number, fileName: string) => {
   return {
     type: fileNotExistType,
     action: movieAction,
