@@ -85,7 +85,12 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
     return { saved: movieFile };
   } catch (error) {
     GraphAILogger.info("Failed to generate movie:", (error as Error).message);
-    throw error;
+    if (error.cause) {
+      throw error;
+    }
+    throw new Error("Failed to generate movie with Google GenAI", {
+      cause: agentGenerationError("movieGenAIAgent", imageAction, movieFileTarget),
+    });
   }
 };
 

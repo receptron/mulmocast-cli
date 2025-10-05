@@ -96,9 +96,7 @@ export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, A
     return undefined;
   } catch (error) {
     GraphAILogger.info("Failed to generate lip sync:", (error as Error).message);
-    throw new Error("Failed to generate lip sync with Replicate", {
-      cause: agentGenerationError("lipSyncReplicateAgent", imageAction, movieFileTarget),
-    });
+    throw error;
   }
 };
 

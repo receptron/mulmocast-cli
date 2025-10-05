@@ -205,4 +205,3 @@ export const translateApiKeyMissingError = () => {
     envVarName: "OPENAI_API_KEY",
   };
 };
-

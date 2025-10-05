@@ -62,7 +62,13 @@ export const imageReplicateAgent: AgentFunction<ReplicateImageAgentParams, Agent
       cause: agentInvalidResponseError("imageReplicateAgent", imageAction, imageFileTarget),
     });
   } catch (error) {
-    throw error;
+    GraphAILogger.info("Replicate generation error:", error);
+    if (error.cause) {
+      throw error;
+    }
+    throw new Error("Failed to generate image with Replicate", {
+      cause: agentGenerationError("imageReplicateAgent", imageAction, imageFileTarget),
+    });
   }
 };
 

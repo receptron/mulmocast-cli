@@ -128,15 +128,12 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
     if (buffer) {
       return { buffer };
     }
-    throw new Error("ERROR: generateMovie returned undefined", {
-      cause: agentInvalidResponseError("movieReplicateAgent", imageAction, movieFileTarget),
-    });
   } catch (error) {
     GraphAILogger.info("Failed to generate movie:", (error as Error).message);
-    throw new Error("Failed to generate movie with Replicate", {
-      cause: agentGenerationError("movieReplicateAgent", imageAction, movieFileTarget),
-    });
   }
+  throw new Error("ERROR: generateMovie returned undefined", {
+    cause: agentInvalidResponseError("movieReplicateAgent", imageAction, movieFileTarget),
+  });
 };
 
 const movieReplicateAgentInfo: AgentFunctionInfo = {

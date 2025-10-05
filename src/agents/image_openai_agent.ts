@@ -73,7 +73,9 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
       }
     } catch (error) {
       GraphAILogger.info("Failed to generate image:", (error as Error).message);
-      throw error;
+      throw new Error("Failed to generate image with OpenAI", {
+        cause: agentGenerationError("imageOpenaiAgent", imageAction, imageFileTarget),
+      });
     }
   })();
 

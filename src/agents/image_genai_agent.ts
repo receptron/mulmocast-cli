@@ -99,7 +99,12 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
     }
   } catch (error) {
     GraphAILogger.info("Failed to generate image:", error);
-    throw error;
+    if (error.cause) {
+      throw error;
+    }
+    throw new Error("Failed to generate image with Google GenAI", {
+      cause: agentGenerationError("imageGenAIAgent", imageAction, imageFileTarget),
+    });
   }
 };
 
