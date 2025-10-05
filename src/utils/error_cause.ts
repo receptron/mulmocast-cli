@@ -46,55 +46,52 @@
  *   (set the 3rd parameter to `false` and pass the `cause` object as the 4th)
  */
 
+// Error Types
 export const urlFileNotFoundType = "urlFileNotFound";
 export const fileNotExistType = "fileNotExist";
 export const unknownMediaType = "unknownMedia";
 export const sourceUndefinedType = "undefinedSourceType";
+export const apiErrorType = "apiError";
+export const apiKeyMissingType = "apiKeyMissing";
+export const invalidResponseType = "invalidResponse";
 
+// Actions
 export const movieAction = "movie";
 export const imageAction = "images";
 export const audioAction = "audio";
 export const imageReferenceAction = "imageReference";
+export const translateAction = "translate";
 
+// Targets
 export const audioFileTarget = "audioFile";
 export const imageFileTarget = "imageFile";
 export const movieFileTarget = "movieFile";
-
 export const videoSourceTarget = "videoSource";
 export const audioSourceTarget = "audioSource";
 export const codeTextTarget = "codeText";
 
-export const getAudioInputIdsError = (index: number, fileName: string) => {
+// Agent File Not Exist Errors
+export const agentFileNotExistError = (agentName: string, action: string, target: string, fileName: string, beatIndex?: number) => {
   return {
     type: fileNotExistType,
-    action: movieAction,
-    target: audioFileTarget,
-    agentName: "combineAudioFiles",
-    beatIndex: index,
+    action,
+    target,
+    agentName,
     fileName,
+    ...(beatIndex !== undefined && { beatIndex }),
   };
+};
+
+export const getAudioInputIdsError = (index: number, fileName: string) => {
+  return agentFileNotExistError("combineAudioFiles", movieAction, audioFileTarget, fileName, index);
 };
 
 export const audioCheckerError = (index: number, fileName: string) => {
-  return {
-    type: fileNotExistType,
-    action: imageAction,
-    target: imageFileTarget,
-    agentName: "audioChecker",
-    beatIndex: index,
-    fileName,
-  };
+  return agentFileNotExistError("audioChecker", imageAction, imageFileTarget, fileName, index);
 };
 
 export const createVideoFileError = (index: number, fileName: string) => {
-  return {
-    type: fileNotExistType,
-    action: movieAction,
-    target: imageFileTarget,
-    agentName: "createVideo",
-    beatIndex: index,
-    fileName,
-  };
+  return agentFileNotExistError("createVideo", movieAction, imageFileTarget, fileName, index);
 };
 
 // undefinedSource
@@ -165,4 +162,50 @@ export const imagePluginUnknownMediaError = (imageType: string) => {
     action: imageAction,
     target: imageType,
   };
+};
+
+// Agent API Key Errors
+export const apiKeyMissingError = (agentName: string, action: string, envVarName: string) => {
+  return {
+    type: apiKeyMissingType,
+    action,
+    agentName,
+    envVarName,
+  };
+};
+
+// Agent API/Generation Errors
+export const agentGenerationError = (agentName: string, action: string, target: string, beatIndex?: number) => {
+  return {
+    type: apiErrorType,
+    action,
+    target,
+    agentName,
+    ...(beatIndex !== undefined && { beatIndex }),
+  };
+};
+
+// Agent Invalid Response Errors
+export const agentInvalidResponseError = (agentName: string, action: string, target: string, beatIndex?: number) => {
+  return {
+    type: invalidResponseType,
+    action,
+    target,
+    agentName,
+    ...(beatIndex !== undefined && { beatIndex }),
+  };
+};
+
+// Translation Errors
+export const translateApiKeyMissingError = () => {
+  return {
+    type: apiKeyMissingType,
+    action: translateAction,
+    agentName: "translate",
+    envVarName: "OPENAI_API_KEY",
+  };
+};
+
+export const hasCause = (err: unknown): err is Error & { cause: unknown } => {
+  return err instanceof Error && "cause" in err;
 };

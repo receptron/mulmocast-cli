@@ -2,6 +2,7 @@ import fs from "fs";
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { provider2ImageAgent } from "../utils/provider2agent.js";
+import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, imageFileTarget, hasCause } from "../utils/error_cause.js";
 import type { AgentBufferResult, ImageAgentInputs, ImageAgentParams, GenAIImageAgentConfig } from "../types/agent.js";
 import { GoogleGenAI, PersonGeneration } from "@google/genai";
 import { blankImagePath, blankSquareImagePath, blankVerticalImagePath } from "../utils/file.js";
@@ -26,7 +27,9 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
   const model = params.model ?? provider2ImageAgent["google"].defaultModel;
   const apiKey = config?.apiKey;
   if (!apiKey) {
-    throw new Error("Google GenAI API key is required (GEMINI_API_KEY)");
+    throw new Error("Google GenAI API key is required (GEMINI_API_KEY)", {
+      cause: apiKeyMissingError("imageGenAIAgent", imageAction, "GEMINI_API_KEY"),
+    });
   }
 
   try {
@@ -49,7 +52,9 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
       });
       const response = await ai.models.generateContent({ model, contents });
       if (!response.candidates?.[0]?.content?.parts) {
-        throw new Error("ERROR: generateContent returned no candidates");
+        throw new Error("ERROR: generateContent returned no candidates", {
+          cause: agentInvalidResponseError("imageGenAIAgent", imageAction, imageFileTarget),
+        });
       }
       for (const part of response.candidates[0].content.parts) {
         if (part.text) {
@@ -57,13 +62,17 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
         } else if (part.inlineData) {
           const imageData = part.inlineData.data;
           if (!imageData) {
-            throw new Error("ERROR: generateContent returned no image data");
+            throw new Error("ERROR: generateContent returned no image data", {
+              cause: agentInvalidResponseError("imageGenAIAgent", imageAction, imageFileTarget),
+            });
           }
           const buffer = Buffer.from(imageData, "base64");
           return { buffer };
         }
       }
-      throw new Error("ERROR: generateContent returned no image data");
+      throw new Error("ERROR: generateContent returned no image data", {
+        cause: agentInvalidResponseError("imageGenAIAgent", imageAction, imageFileTarget),
+      });
     } else {
       const response = await ai.models.generateImages({
         model,
@@ -76,17 +85,26 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
         },
       });
       if (!response.generatedImages || response.generatedImages.length === 0) {
-        throw new Error("ERROR: generateImage returned no generated images");
+        throw new Error("ERROR: generateImage returned no generated images", {
+          cause: agentInvalidResponseError("imageGenAIAgent", imageAction, imageFileTarget),
+        });
       }
       const image = response.generatedImages[0].image;
       if (image && image.imageBytes) {
         return { buffer: Buffer.from(image.imageBytes, "base64") };
       }
-      throw new Error("ERROR: generateImage returned no image bytes");
+      throw new Error("ERROR: generateImage returned no image bytes", {
+        cause: agentInvalidResponseError("imageGenAIAgent", imageAction, imageFileTarget),
+      });
     }
   } catch (error) {
     GraphAILogger.info("Failed to generate image:", error);
-    throw error;
+    if (hasCause(error) && error.cause) {
+      throw error;
+    }
+    throw new Error("Failed to generate image with Google GenAI", {
+      cause: agentGenerationError("imageGenAIAgent", imageAction, imageFileTarget),
+    });
   }
 };
 

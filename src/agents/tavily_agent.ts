@@ -1,5 +1,6 @@
 import { AgentFunction, AgentFunctionInfo, assert, DefaultConfigData } from "graphai";
 import { tavily, type TavilySearchResponse } from "@tavily/core";
+import { apiKeyMissingError, agentGenerationError } from "../utils/error_cause.js";
 
 type TavilySearchInputs = {
   query: string;
@@ -34,7 +35,12 @@ export const tavilySearchAgent: AgentFunction<TavilySearchParams, TavilySearchRe
 
   try {
     const apiKey = getTavilyApiKey(params, config);
-    assert(apiKey, "Tavily API key is required. Please set the TAVILY_API_KEY environment variable or provide it in params/config.");
+    assert(
+      apiKey,
+      "Tavily API key is required. Please set the TAVILY_API_KEY environment variable or provide it in params/config.",
+      false,
+      apiKeyMissingError("tavilySearchAgent", "search", "TAVILY_API_KEY"),
+    );
 
     const tvly = tavily({ apiKey });
 
@@ -49,7 +55,9 @@ export const tavilySearchAgent: AgentFunction<TavilySearchParams, TavilySearchRe
 
     return response;
   } catch (error) {
-    throw new Error(`Tavily search failed: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(`Tavily search failed: ${error instanceof Error ? error.message : String(error)}`, {
+      cause: agentGenerationError("tavilySearchAgent", "search", "searchResults"),
+    });
   }
 };
 

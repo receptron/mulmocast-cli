@@ -2,6 +2,7 @@ import { readFileSync } from "fs";
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import Replicate from "replicate";
+import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, movieFileTarget } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, MovieAgentInputs, ReplicateMovieAgentParams, ReplicateMovieAgentConfig } from "../types/agent.js";
 import { provider2MovieAgent } from "../utils/provider2agent.js";
@@ -40,7 +41,9 @@ async function generateMovie(
     if (start_image === "first_frame_image" || start_image === "image" || start_image === "start_image") {
       input[start_image] = base64Image;
     } else if (start_image === undefined) {
-      throw new Error(`Model ${model} does not support image-to-video generation`);
+      throw new Error(`Model ${model} does not support image-to-video generation`, {
+        cause: agentGenerationError("movieReplicateAgent", imageAction, movieFileTarget),
+      });
     } else {
       input.image = base64Image;
     }
@@ -55,7 +58,9 @@ async function generateMovie(
       const videoResponse = await fetch(videoUrl);
 
       if (!videoResponse.ok) {
-        throw new Error(`Error downloading video: ${videoResponse.status} - ${videoResponse.statusText}`);
+        throw new Error(`Error downloading video: ${videoResponse.status} - ${videoResponse.statusText}`, {
+          cause: agentGenerationError("movieReplicateAgent", imageAction, movieFileTarget),
+        });
       }
 
       const arrayBuffer = await videoResponse.arrayBuffer();
@@ -88,7 +93,9 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
   const aspectRatio = getAspectRatio(params.canvasSize);
   const model = params.model ?? provider2MovieAgent.replicate.defaultModel;
   if (!provider2MovieAgent.replicate.modelParams[model]) {
-    throw new Error(`Model ${model} is not supported`);
+    throw new Error(`Model ${model} is not supported`, {
+      cause: agentGenerationError("movieReplicateAgent", imageAction, movieFileTarget),
+    });
   }
   const duration = (() => {
     const durations = provider2MovieAgent.replicate.modelParams[model].durations;
@@ -103,12 +110,17 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
   if (!provider2MovieAgent.replicate.modelParams[model].durations.includes(duration)) {
     throw new Error(
       `Duration ${duration} is not supported for model ${model}. Supported durations: ${provider2MovieAgent.replicate.modelParams[model].durations.join(", ")}`,
+      {
+        cause: agentGenerationError("movieReplicateAgent", imageAction, movieFileTarget),
+      },
     );
   }
 
   const apiKey = config?.apiKey;
   if (!apiKey) {
-    throw new Error("Replicate API key is required (REPLICATE_API_TOKEN)");
+    throw new Error("Replicate API key is required (REPLICATE_API_TOKEN)", {
+      cause: apiKeyMissingError("movieReplicateAgent", imageAction, "REPLICATE_API_TOKEN"),
+    });
   }
 
   try {
@@ -116,11 +128,12 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
     if (buffer) {
       return { buffer };
     }
-    throw new Error("ERROR: generateMovie returned undefined");
   } catch (error) {
     GraphAILogger.info("Failed to generate movie:", (error as Error).message);
-    throw error;
   }
+  throw new Error("ERROR: generateMovie returned undefined", {
+    cause: agentInvalidResponseError("movieReplicateAgent", imageAction, movieFileTarget),
+  });
 };
 
 const movieReplicateAgentInfo: AgentFunctionInfo = {

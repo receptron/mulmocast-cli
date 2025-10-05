@@ -4,6 +4,7 @@ import { MulmoStudioContext } from "../types/index.js";
 import { FfmpegContextAddInput, FfmpegContextInit, FfmpegContextGenerateOutput, ffmpegGetMediaDuration } from "../utils/ffmpeg_utils.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 import { isFile } from "../utils/file.js";
+import { agentGenerationError, agentFileNotExistError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 
 const addBGMAgent: AgentFunction<{ musicFile: string }, string, { voiceFile: string; outputFile: string; context: MulmoStudioContext }> = async ({
   namedInputs,
@@ -13,10 +14,14 @@ const addBGMAgent: AgentFunction<{ musicFile: string }, string, { voiceFile: str
   const { musicFile } = params;
 
   if (!isFile(voiceFile)) {
-    throw new Error(`AddBGMAgent voiceFile not exist: ${voiceFile}`);
+    throw new Error(`AddBGMAgent voiceFile not exist: ${voiceFile}`, {
+      cause: agentFileNotExistError("addBGMAgent", audioAction, audioFileTarget, voiceFile),
+    });
   }
   if (!musicFile.match(/^http/) && !isFile(musicFile)) {
-    throw new Error(`AddBGMAgent musicFile not exist: ${musicFile}`);
+    throw new Error(`AddBGMAgent musicFile not exist: ${musicFile}`, {
+      cause: agentFileNotExistError("addBGMAgent", audioAction, audioFileTarget, musicFile),
+    });
   }
 
   const { duration: speechDuration } = await ffmpegGetMediaDuration(voiceFile);
@@ -43,7 +48,9 @@ const addBGMAgent: AgentFunction<{ musicFile: string }, string, { voiceFile: str
     return outputFile;
   } catch (e) {
     GraphAILogger.log(e);
-    throw new Error(`AddBGMAgent ffmpeg run Error`);
+    throw new Error(`AddBGMAgent ffmpeg run Error`, {
+      cause: agentGenerationError("addBGMAgent", audioAction, audioFileTarget),
+    });
   }
 };
 const addBGMAgentInfo: AgentFunctionInfo = {

@@ -3,6 +3,15 @@ import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import Replicate from "replicate";
 import { provider2LipSyncAgent } from "../utils/provider2agent.js";
+import {
+  apiKeyMissingError,
+  agentGenerationError,
+  agentFileNotExistError,
+  imageAction,
+  movieFileTarget,
+  audioFileTarget,
+  hasCause,
+} from "../utils/error_cause.js";
 
 import type { AgentBufferResult, LipSyncAgentInputs, ReplicateLipSyncAgentParams, ReplicateLipSyncAgentConfig } from "../types/agent.js";
 
@@ -16,14 +25,18 @@ export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, A
   const model = params.model ?? provider2LipSyncAgent.replicate.defaultModel;
 
   if (!apiKey) {
-    throw new Error("Replicate API key is required (REPLICATE_API_TOKEN)");
+    throw new Error("Replicate API key is required (REPLICATE_API_TOKEN)", {
+      cause: apiKeyMissingError("lipSyncReplicateAgent", imageAction, "REPLICATE_API_TOKEN"),
+    });
   }
   const replicate = new Replicate({
     auth: apiKey,
   });
 
   if (!audioFile || !existsSync(audioFile)) {
-    throw new Error(`lipSyncReplicateAgent audioFile not exist: ${audioFile}`);
+    throw new Error(`lipSyncReplicateAgent audioFile not exist: ${audioFile}`, {
+      cause: agentFileNotExistError("lipSyncReplicateAgent", imageAction, audioFileTarget, audioFile),
+    });
   }
 
   const audioBuffer = readFileSync(audioFile);
@@ -31,7 +44,9 @@ export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, A
   const imageBuffer = imageFile ? readFileSync(imageFile) : undefined;
 
   if (!videoBuffer && !imageBuffer) {
-    throw new Error("lipSyncReplicateAgent Either movieFile or imageFile is required");
+    throw new Error("lipSyncReplicateAgent Either movieFile or imageFile is required", {
+      cause: agentGenerationError("lipSyncReplicateAgent", imageAction, movieFileTarget),
+    });
   }
 
   const audioUri = `data:audio/wav;base64,${audioBuffer.toString("base64")}`;
@@ -50,7 +65,9 @@ export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, A
 
   const modelParams = provider2LipSyncAgent.replicate.modelParams[model];
   if (!modelParams) {
-    throw new Error(`Model ${model} is not supported`);
+    throw new Error(`Model ${model} is not supported`, {
+      cause: agentGenerationError("lipSyncReplicateAgent", imageAction, movieFileTarget),
+    });
   }
   const videoParam = modelParams.video;
   const audioParam = modelParams.audio;
@@ -76,7 +93,9 @@ export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, A
       const videoResponse = await fetch(videoUrl);
 
       if (!videoResponse.ok) {
-        throw new Error(`Error downloading video: ${videoResponse.status} - ${videoResponse.statusText}`);
+        throw new Error(`Error downloading video: ${videoResponse.status} - ${videoResponse.statusText}`, {
+          cause: agentGenerationError("lipSyncReplicateAgent", imageAction, movieFileTarget),
+        });
       }
 
       const arrayBuffer = await videoResponse.arrayBuffer();
@@ -85,7 +104,12 @@ export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, A
     return undefined;
   } catch (error) {
     GraphAILogger.info("Failed to generate lip sync:", (error as Error).message);
-    throw error;
+    if (hasCause(error) && error.cause) {
+      throw error;
+    }
+    throw new Error("Failed to lipSync with Replicate", {
+      cause: agentGenerationError("lipSyncReplicateAgent", imageAction, movieFileTarget),
+    });
   }
 };
 

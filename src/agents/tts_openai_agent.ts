@@ -3,6 +3,7 @@ import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import OpenAI from "openai";
 import type { SpeechCreateParams } from "openai/resources/audio/speech";
 import { provider2TTSAgent } from "../utils/provider2agent.js";
+import { apiKeyMissingError, agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 import type { OpenAITTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult, OpenAIImageAgentConfig } from "../types/agent.js";
 
 export const ttsOpenaiAgent: AgentFunction<OpenAITTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs, OpenAIImageAgentConfig> = async ({
@@ -14,7 +15,9 @@ export const ttsOpenaiAgent: AgentFunction<OpenAITTSAgentParams, AgentBufferResu
   const { model, voice, suppressError, instructions } = params;
   const { apiKey, baseURL } = config ?? {};
   if (!apiKey) {
-    throw new Error("OpenAI API key is required (OPENAI_API_KEY)");
+    throw new Error("OpenAI API key is required (OPENAI_API_KEY)", {
+      cause: apiKeyMissingError("ttsOpenaiAgent", audioAction, "OPENAI_API_KEY"),
+    });
   }
   const openai = new OpenAI({ apiKey, baseURL });
 
@@ -41,11 +44,15 @@ export const ttsOpenaiAgent: AgentFunction<OpenAITTSAgentParams, AgentBufferResu
     if (e && typeof e === "object" && "error" in e) {
       GraphAILogger.info("tts_openai_agent: ");
       GraphAILogger.info(e.error);
-      throw new Error("TTS OpenAI Error: " + JSON.stringify(e.error, null, 2));
+      throw new Error("TTS OpenAI Error: " + JSON.stringify(e.error, null, 2), {
+        cause: agentGenerationError("ttsOpenaiAgent", audioAction, audioFileTarget),
+      });
     } else if (e instanceof Error) {
       GraphAILogger.info("tts_openai_agent: ");
       GraphAILogger.info(e.message);
-      throw new Error("TTS OpenAI Error: " + e.message);
+      throw new Error("TTS OpenAI Error: " + e.message, {
+        cause: agentGenerationError("ttsOpenaiAgent", audioAction, audioFileTarget),
+      });
     }
   }
 };

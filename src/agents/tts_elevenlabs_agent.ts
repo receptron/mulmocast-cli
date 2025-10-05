@@ -1,6 +1,7 @@
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { provider2TTSAgent } from "../utils/provider2agent.js";
+import { apiKeyMissingError, agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 import type { ElevenlabsTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult, AgentConfig } from "../types/agent.js";
 
 export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs, AgentConfig> = async ({
@@ -13,11 +14,15 @@ export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBu
 
   const apiKey = config?.apiKey;
   if (!apiKey) {
-    throw new Error("ElevenLabs API key is required (ELEVENLABS_API_KEY)");
+    throw new Error("ElevenLabs API key is required (ELEVENLABS_API_KEY)", {
+      cause: apiKeyMissingError("ttsElevenlabsAgent", audioAction, "ELEVENLABS_API_KEY"),
+    });
   }
 
   if (!voice) {
-    throw new Error("ELEVENLABS Voice ID is required");
+    throw new Error("ELEVENLABS Voice ID is required", {
+      cause: agentGenerationError("ttsElevenlabsAgent", audioAction, audioFileTarget),
+    });
   }
 
   try {
@@ -43,7 +48,9 @@ export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBu
     });
 
     if (!response.ok) {
-      throw new Error(`Eleven Labs API error: ${response.status} ${response.statusText}`);
+      throw new Error(`Eleven Labs API error: ${response.status} ${response.statusText}`, {
+        cause: agentGenerationError("ttsElevenlabsAgent", audioAction, audioFileTarget),
+      });
     }
 
     const arrayBuffer = await response.arrayBuffer();
@@ -57,7 +64,9 @@ export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBu
       };
     }
     GraphAILogger.info(e);
-    throw new Error("TTS Eleven Labs Error");
+    throw new Error("TTS Eleven Labs Error", {
+      cause: agentGenerationError("ttsElevenlabsAgent", audioAction, audioFileTarget),
+    });
   }
 };
 

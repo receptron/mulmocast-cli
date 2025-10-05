@@ -1,6 +1,7 @@
 import { readFileSync } from "fs";
 import { GraphAILogger, sleep } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
+import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, movieFileTarget, hasCause } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, MovieAgentInputs } from "../types/agent.js";
 import { GoogleGenAI, PersonGeneration } from "@google/genai";
@@ -26,7 +27,9 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
   const duration = params.duration ?? 8;
   const apiKey = config?.apiKey;
   if (!apiKey) {
-    throw new Error("Google GenAI API key is required (GEMINI_API_KEY)");
+    throw new Error("Google GenAI API key is required (GEMINI_API_KEY)", {
+      cause: apiKeyMissingError("movieGenAIAgent", imageAction, "GEMINI_API_KEY"),
+    });
   }
 
   try {
@@ -64,11 +67,15 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
       response.operation = await ai.operations.getVideosOperation(response);
     }
     if (!response.operation.response?.generatedVideos) {
-      throw new Error(`No video: ${JSON.stringify(response.operation, null, 2)}`);
+      throw new Error(`No video: ${JSON.stringify(response.operation, null, 2)}`, {
+        cause: agentInvalidResponseError("movieGenAIAgent", imageAction, movieFileTarget),
+      });
     }
     const video = response.operation.response.generatedVideos[0].video;
     if (!video) {
-      throw new Error(`No video: ${JSON.stringify(response.operation, null, 2)}`);
+      throw new Error(`No video: ${JSON.stringify(response.operation, null, 2)}`, {
+        cause: agentInvalidResponseError("movieGenAIAgent", imageAction, movieFileTarget),
+      });
     }
     await ai.files.download({
       file: video,
@@ -78,7 +85,12 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
     return { saved: movieFile };
   } catch (error) {
     GraphAILogger.info("Failed to generate movie:", (error as Error).message);
-    throw error;
+    if (hasCause(error) && error.cause) {
+      throw error;
+    }
+    throw new Error("Failed to generate movie with Google GenAI", {
+      cause: agentGenerationError("movieGenAIAgent", imageAction, movieFileTarget),
+    });
   }
 };
 
