@@ -70,37 +70,28 @@ export const videoSourceTarget = "videoSource";
 export const audioSourceTarget = "audioSource";
 export const codeTextTarget = "codeText";
 
-export const getAudioInputIdsError = (index: number, fileName: string) => {
+// Agent File Not Exist Errors
+export const agentFileNotExistError = (agentName: string, action: string, target: string, fileName: string, beatIndex?: number) => {
   return {
     type: fileNotExistType,
-    action: movieAction,
-    target: audioFileTarget,
-    agentName: "combineAudioFiles",
-    beatIndex: index,
+    action,
+    target,
+    agentName,
     fileName,
+    ...(beatIndex !== undefined && { beatIndex }),
   };
+};
+
+export const getAudioInputIdsError = (index: number, fileName: string) => {
+  return agentFileNotExistError("combineAudioFiles", movieAction, audioFileTarget, fileName, index);
 };
 
 export const audioCheckerError = (index: number, fileName: string) => {
-  return {
-    type: fileNotExistType,
-    action: imageAction,
-    target: imageFileTarget,
-    agentName: "audioChecker",
-    beatIndex: index,
-    fileName,
-  };
+  return agentFileNotExistError("audioChecker", imageAction, imageFileTarget, fileName, index);
 };
 
 export const createVideoFileError = (index: number, fileName: string) => {
-  return {
-    type: fileNotExistType,
-    action: movieAction,
-    target: imageFileTarget,
-    agentName: "createVideo",
-    beatIndex: index,
-    fileName,
-  };
+  return agentFileNotExistError("createVideo", movieAction, imageFileTarget, fileName, index);
 };
 
 // undefinedSource
@@ -215,14 +206,3 @@ export const translateApiKeyMissingError = () => {
   };
 };
 
-// Agent File Not Exist Errors
-export const agentFileNotExistError = (agentName: string, action: string, target: string, fileName: string, beatIndex?: number) => {
-  return {
-    type: fileNotExistType,
-    action,
-    target,
-    agentName,
-    fileName,
-    ...(beatIndex !== undefined && { beatIndex }),
-  };
-};
