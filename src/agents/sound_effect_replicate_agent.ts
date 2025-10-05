@@ -62,6 +62,9 @@ export const soundEffectReplicateAgent: AgentFunction<
     return undefined;
   } catch (error) {
     GraphAILogger.info("Failed to generate sound effect:", (error as Error).message);
+    if (error.cause) {
+      throw error;
+    }
     throw new Error("Failed to generate sound effect with Replicate", {
       cause: agentGenerationError("soundEffectReplicateAgent", imageAction, movieFileTarget),
     });
