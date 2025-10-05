@@ -1,5 +1,5 @@
 ---
-generated_at: 2025-10-05T03:51:05.534Z
+generated_at: 2025-10-05T06:48:31.495Z
 ---
 
 # translate
