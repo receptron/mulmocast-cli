@@ -35,6 +35,7 @@ export const generateReferenceImage = async (inputs: {
             force: [context.force, force ?? false],
             file: imagePath,
             index,
+            id: key,
             mulmoContext: context,
             sessionType: "imageReference",
           },
