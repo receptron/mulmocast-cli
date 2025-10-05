@@ -70,9 +70,7 @@ async function generateMovie(
     return undefined;
   } catch (error) {
     GraphAILogger.info("Replicate generation error:", error);
-    throw new Error("Failed to generate movie with Replicate", {
-      cause: agentGenerationError("movieReplicateAgent", imageAction, movieFileTarget),
-    });
+    throw error;
   }
 }
 
