@@ -205,3 +205,7 @@ export const translateApiKeyMissingError = () => {
     envVarName: "OPENAI_API_KEY",
   };
 };
+
+export const hasCause = (err: unknown): err is Error & { cause: unknown } => {
+  return err instanceof Error && "cause" in err;
+};

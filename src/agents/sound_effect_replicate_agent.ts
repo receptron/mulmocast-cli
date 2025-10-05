@@ -3,7 +3,7 @@ import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import Replicate from "replicate";
 import { provider2SoundEffectAgent } from "../utils/provider2agent.js";
-import { apiKeyMissingError, agentGenerationError, imageAction, movieFileTarget } from "../utils/error_cause.js";
+import { apiKeyMissingError, agentGenerationError, imageAction, movieFileTarget, hasCause } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, SoundEffectAgentInputs, ReplicateSoundEffectAgentParams, ReplicateSoundEffectAgentConfig } from "../types/agent.js";
 
@@ -62,7 +62,7 @@ export const soundEffectReplicateAgent: AgentFunction<
     return undefined;
   } catch (error) {
     GraphAILogger.info("Failed to generate sound effect:", (error as Error).message);
-    if (error.cause) {
+    if (hasCause(error) && error.cause) {
       throw error;
     }
     throw new Error("Failed to generate sound effect with Replicate", {

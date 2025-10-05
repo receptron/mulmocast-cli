@@ -2,7 +2,7 @@ import fs from "fs";
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { provider2ImageAgent } from "../utils/provider2agent.js";
-import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, imageFileTarget } from "../utils/error_cause.js";
+import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, imageFileTarget, hasCause } from "../utils/error_cause.js";
 import type { AgentBufferResult, ImageAgentInputs, ImageAgentParams, GenAIImageAgentConfig } from "../types/agent.js";
 import { GoogleGenAI, PersonGeneration } from "@google/genai";
 import { blankImagePath, blankSquareImagePath, blankVerticalImagePath } from "../utils/file.js";
@@ -99,7 +99,7 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
     }
   } catch (error) {
     GraphAILogger.info("Failed to generate image:", error);
-    if (error.cause) {
+    if (hasCause(error) && error.cause) {
       throw error;
     }
     throw new Error("Failed to generate image with Google GenAI", {

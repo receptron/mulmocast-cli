@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { GraphAILogger, sleep } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
-import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, movieFileTarget } from "../utils/error_cause.js";
+import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, movieFileTarget, hasCause } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, MovieAgentInputs } from "../types/agent.js";
 import { GoogleGenAI, PersonGeneration } from "@google/genai";
@@ -85,7 +85,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
     return { saved: movieFile };
   } catch (error) {
     GraphAILogger.info("Failed to generate movie:", (error as Error).message);
-    if (error.cause) {
+    if (hasCause(error) && error.cause) {
       throw error;
     }
     throw new Error("Failed to generate movie with Google GenAI", {
