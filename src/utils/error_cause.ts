@@ -46,20 +46,25 @@
  *   (set the 3rd parameter to `false` and pass the `cause` object as the 4th)
  */
 
+// Error Types
 export const urlFileNotFoundType = "urlFileNotFound";
 export const fileNotExistType = "fileNotExist";
 export const unknownMediaType = "unknownMedia";
 export const sourceUndefinedType = "undefinedSourceType";
+export const apiErrorType = "apiError";
+export const apiKeyMissingType = "apiKeyMissing";
+export const invalidResponseType = "invalidResponse";
 
+// Actions
 export const movieAction = "movie";
 export const imageAction = "images";
 export const audioAction = "audio";
 export const imageReferenceAction = "imageReference";
 
+// Targets
 export const audioFileTarget = "audioFile";
 export const imageFileTarget = "imageFile";
 export const movieFileTarget = "movieFile";
-
 export const videoSourceTarget = "videoSource";
 export const audioSourceTarget = "audioSource";
 export const codeTextTarget = "codeText";
@@ -164,5 +169,37 @@ export const imagePluginUnknownMediaError = (imageType: string) => {
     type: unknownMediaType,
     action: imageAction,
     target: imageType,
+  };
+};
+
+// Agent API Key Errors
+export const apiKeyMissingError = (agentName: string, action: string, envVarName: string) => {
+  return {
+    type: apiKeyMissingType,
+    action,
+    agentName,
+    envVarName,
+  };
+};
+
+// Agent API/Generation Errors
+export const agentGenerationError = (agentName: string, action: string, target: string, beatIndex?: number) => {
+  return {
+    type: apiErrorType,
+    action,
+    target,
+    agentName,
+    ...(beatIndex !== undefined && { beatIndex }),
+  };
+};
+
+// Agent Invalid Response Errors
+export const agentInvalidResponseError = (agentName: string, action: string, target: string, beatIndex?: number) => {
+  return {
+    type: invalidResponseType,
+    action,
+    target,
+    agentName,
+    ...(beatIndex !== undefined && { beatIndex }),
   };
 };

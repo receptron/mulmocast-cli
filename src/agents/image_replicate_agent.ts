@@ -3,6 +3,7 @@ import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
 import Replicate from "replicate";
 import { getAspectRatio } from "./movie_replicate_agent.js";
 import type { ReplicateImageAgentParams } from "../types/agent.js";
+import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, imageFileTarget } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, ImageAgentInputs, AgentConfig } from "../types/agent.js";
 import { provider2ImageAgent } from "../utils/provider2agent.js";
@@ -19,7 +20,9 @@ export const imageReplicateAgent: AgentFunction<ReplicateImageAgentParams, Agent
   const model = params.model ?? (provider2ImageAgent.replicate.defaultModel as `${string}/${string}`);
   const apiKey = config?.apiKey;
   if (!apiKey) {
-    throw new Error("Replicate API key is required (REPLICATE_API_TOKEN)");
+    throw new Error("Replicate API key is required (REPLICATE_API_TOKEN)", {
+      cause: apiKeyMissingError("imageReplicateAgent", imageAction, "REPLICATE_API_TOKEN"),
+    });
   }
   const replicate = new Replicate({
     auth: apiKey,
@@ -46,17 +49,23 @@ export const imageReplicateAgent: AgentFunction<ReplicateImageAgentParams, Agent
       const imageResponse = await fetch(imageUrl);
 
       if (!imageResponse.ok) {
-        throw new Error(`Error downloading video: ${imageResponse.status} - ${imageResponse.statusText}`);
+        throw new Error(`Error downloading image: ${imageResponse.status} - ${imageResponse.statusText}`, {
+          cause: agentGenerationError("imageReplicateAgent", imageAction, imageFileTarget),
+        });
       }
 
       const arrayBuffer = await imageResponse.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
       return { buffer };
     }
-    throw new Error("ERROR: generateImage returned undefined");
+    throw new Error("ERROR: generateImage returned undefined", {
+      cause: agentInvalidResponseError("imageReplicateAgent", imageAction, imageFileTarget),
+    });
   } catch (error) {
     GraphAILogger.info("Replicate generation error:", error);
-    throw error;
+    throw new Error("Failed to generate image with Replicate", {
+      cause: agentGenerationError("imageReplicateAgent", imageAction, imageFileTarget),
+    });
   }
 };
 

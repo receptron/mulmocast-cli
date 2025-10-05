@@ -1,6 +1,7 @@
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import * as textToSpeech from "@google-cloud/text-to-speech";
+import { agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 
 import type { GoogleTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult } from "../types/agent.js";
 
@@ -40,7 +41,9 @@ export const ttsGoogleAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
       };
     }
     GraphAILogger.info(e);
-    throw new Error("TTS Google Error");
+    throw new Error("TTS Google Error", {
+      cause: agentGenerationError("ttsGoogleAgent", audioAction, audioFileTarget),
+    });
   }
 };
 

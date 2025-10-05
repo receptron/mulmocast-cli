@@ -3,6 +3,7 @@ import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import Replicate from "replicate";
 import { provider2SoundEffectAgent } from "../utils/provider2agent.js";
+import { apiKeyMissingError, agentGenerationError, movieAction, movieFileTarget } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, SoundEffectAgentInputs, ReplicateSoundEffectAgentParams, ReplicateSoundEffectAgentConfig } from "../types/agent.js";
 
@@ -17,7 +18,9 @@ export const soundEffectReplicateAgent: AgentFunction<
   const model = params.model ?? provider2SoundEffectAgent.replicate.defaultModel;
 
   if (!apiKey) {
-    throw new Error("Replicate API key is required (REPLICATE_API_TOKEN)");
+    throw new Error("Replicate API key is required (REPLICATE_API_TOKEN)", {
+      cause: apiKeyMissingError("soundEffectReplicateAgent", movieAction, "REPLICATE_API_TOKEN"),
+    });
   }
   const replicate = new Replicate({
     auth: apiKey,
@@ -48,7 +51,9 @@ export const soundEffectReplicateAgent: AgentFunction<
       const videoResponse = await fetch(videoUrl);
 
       if (!videoResponse.ok) {
-        throw new Error(`Error downloading video: ${videoResponse.status} - ${videoResponse.statusText}`);
+        throw new Error(`Error downloading video: ${videoResponse.status} - ${videoResponse.statusText}`, {
+          cause: agentGenerationError("soundEffectReplicateAgent", movieAction, movieFileTarget),
+        });
       }
 
       const arrayBuffer = await videoResponse.arrayBuffer();
@@ -57,7 +62,9 @@ export const soundEffectReplicateAgent: AgentFunction<
     return undefined;
   } catch (error) {
     GraphAILogger.info("Failed to generate sound effect:", (error as Error).message);
-    throw error;
+    throw new Error("Failed to generate sound effect with Replicate", {
+      cause: agentGenerationError("soundEffectReplicateAgent", movieAction, movieFileTarget),
+    });
   }
 };
 

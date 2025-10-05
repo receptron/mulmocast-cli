@@ -1,5 +1,6 @@
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
+import { apiKeyMissingError, agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 import type { NijivoiceTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult, AgentConfig } from "../types/agent.js";
 
 type VoiceJson = {
@@ -26,7 +27,9 @@ export const ttsNijivoiceAgent: AgentFunction<NijivoiceTTSAgentParams, AgentBuff
   const { apiKey } = config ?? {};
   const { text } = namedInputs;
   if (!apiKey) {
-    throw new Error("NijiVoice API key is required (NIJIVOICE_API_KEY)");
+    throw new Error("NijiVoice API key is required (NIJIVOICE_API_KEY)", {
+      cause: apiKeyMissingError("ttsNijivoiceAgent", audioAction, "NIJIVOICE_API_KEY"),
+    });
   }
   const url = `https://api.nijivoice.com/api/platform/v1/voice-actors/${voice}/generate-voice`;
   const options = {
@@ -57,7 +60,9 @@ export const ttsNijivoiceAgent: AgentFunction<NijivoiceTTSAgentParams, AgentBuff
       };
     }
     GraphAILogger.info(voiceJson);
-    throw new Error("TTS Nijivoice Error");
+    throw new Error("TTS Nijivoice Error", {
+      cause: agentGenerationError("ttsNijivoiceAgent", audioAction, audioFileTarget),
+    });
   } catch (e) {
     if (suppressError) {
       return {
@@ -65,7 +70,9 @@ export const ttsNijivoiceAgent: AgentFunction<NijivoiceTTSAgentParams, AgentBuff
       };
     }
     GraphAILogger.info(e);
-    throw new Error("TTS Nijivoice Error");
+    throw new Error("TTS Nijivoice Error", {
+      cause: agentGenerationError("ttsNijivoiceAgent", audioAction, audioFileTarget),
+    });
   }
 };
 
