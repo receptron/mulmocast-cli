@@ -1,3 +1,51 @@
+/**
+ * Error Definitions for i18n Notifications
+ * ----------------------------------------
+ * This file provides a set of standardized error action/type/target constants
+ * and factory functions that enrich error objects with structured metadata.
+ *
+ * ## Purpose
+ * - Attach `cause` data to `Error` objects for vue-i18n.
+ * - Generate consistent i18n keys in the form:
+ *     notify.error.{action}.{type}[.{target}]
+ * - Provide contextual data (e.g., beatIndex, fileName, agentName) for use in
+ *   translation strings.
+ *
+ * ## Constants
+ * - `type`: describes the error type (e.g., fileNotExist, urlFileNotFound).
+ * - `action`: the operation being performed (e.g., movie, image, audio).
+ * - `target`: the resource involved (e.g., audioFile, imageFile).
+ *
+ * ## Factory Functions
+ * Each factory function (e.g., getAudioInputIdsError, audioCheckerError) returns
+ * a plain object with:
+ *   - `type`      → error type constant
+ *   - `action`    → action constant
+ *   - `target`    → target constant (optional)
+ *   - `agentName` → name of the agent/tool that produced the error
+ *   - `beatIndex` → index of the beat in the current script
+ *   - `fileName`  → file name or identifier (if relevant)
+ *
+ * ## i18n Integration
+ * - The UI consumes the generated `{ action, type, target, ... }` to build the i18n key.
+ * - Example:
+ *     notify.error.movie.fileNotExist.audioFile
+ * - Interpolation values (beatIndex, fileName, etc.) are passed as `data` for
+ *   translations.
+ *
+ * ## Notes
+ * - If `target` is not required, omit it.
+ * - When adding new actions/types/targets, check for consistency with existing ones.
+ * - Use descriptive but concise names to avoid translation conflicts.
+ *
+ * ## Usage in Error Handling
+ * - When throwing manually:
+ *     `throw new Error("message", { cause });`
+ * - When using assertions:
+ *     `assert(condition, message, false, causeObject);`
+ *   (set the 3rd parameter to `false` and pass the `cause` object as the 4th)
+ */
+
 export const urlFileNotFoundType = "urlFileNotFound";
 export const fileNotExistType = "fileNotExist";
 export const unknownMediaType = "unknownMedia";
