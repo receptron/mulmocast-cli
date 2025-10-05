@@ -3,7 +3,7 @@ import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import Replicate from "replicate";
 import { provider2LipSyncAgent } from "../utils/provider2agent.js";
-import { apiKeyMissingError, agentGenerationError, fileNotExistType, movieAction, movieFileTarget, audioFileTarget } from "../utils/error_cause.js";
+import { apiKeyMissingError, agentGenerationError, agentFileNotExistError, movieAction, movieFileTarget, audioFileTarget } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, LipSyncAgentInputs, ReplicateLipSyncAgentParams, ReplicateLipSyncAgentConfig } from "../types/agent.js";
 
@@ -27,13 +27,7 @@ export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, A
 
   if (!audioFile || !existsSync(audioFile)) {
     throw new Error(`lipSyncReplicateAgent audioFile not exist: ${audioFile}`, {
-      cause: {
-        type: fileNotExistType,
-        action: movieAction,
-        target: audioFileTarget,
-        agentName: "lipSyncReplicateAgent",
-        fileName: audioFile,
-      },
+      cause: agentFileNotExistError("lipSyncReplicateAgent", movieAction, audioFileTarget, audioFile),
     });
   }
 

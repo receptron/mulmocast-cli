@@ -60,6 +60,7 @@ export const movieAction = "movie";
 export const imageAction = "images";
 export const audioAction = "audio";
 export const imageReferenceAction = "imageReference";
+export const translateAction = "translate";
 
 // Targets
 export const audioFileTarget = "audioFile";
@@ -200,6 +201,28 @@ export const agentInvalidResponseError = (agentName: string, action: string, tar
     action,
     target,
     agentName,
+    ...(beatIndex !== undefined && { beatIndex }),
+  };
+};
+
+// Translation Errors
+export const translateApiKeyMissingError = () => {
+  return {
+    type: apiKeyMissingType,
+    action: translateAction,
+    agentName: "translate",
+    envVarName: "OPENAI_API_KEY",
+  };
+};
+
+// Agent File Not Exist Errors
+export const agentFileNotExistError = (agentName: string, action: string, target: string, fileName: string, beatIndex?: number) => {
+  return {
+    type: fileNotExistType,
+    action,
+    target,
+    agentName,
+    fileName,
     ...(beatIndex !== undefined && { beatIndex }),
   };
 };
