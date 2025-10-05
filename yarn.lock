@@ -287,10 +287,10 @@
   dependencies:
     google-gax "^5.0.0"
 
-"@google/genai@^1.20.0":
-  version "1.20.0"
-  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.20.0.tgz#b728bdb383fc58fbb1b92eff26e831ff598688c0"
-  integrity sha512-QdShxO9LX35jFogy3iKprQNqgKKveux4H2QjOnyIvyHRuGi6PHiz3fjNf8Y0VPY8o5V2fHqR2XqiSVoz7yZs0w==
+"@google/genai@^1.22.0":
+  version "1.22.0"
+  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.22.0.tgz#b2c4897ebe5732af1b2293a01243c2a453b21bc8"
+  integrity sha512-siETS3zTm3EGpTT4+BFc1z20xXBYfueD3gCYfxkOjuAKRk8lt8TJevDHi3zepn1oSI6NhG/LZvy0i+Q3qheObg==
   dependencies:
     google-auth-library "^9.14.2"
     ws "^8.18.0"
@@ -3231,10 +3231,10 @@ regexp-ast-analysis@^0.7.0:
     "@eslint-community/regexpp" "^4.8.0"
     refa "^0.12.1"
 
-replicate@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/replicate/-/replicate-1.1.0.tgz#6e3fbb5fcc605a91ab503725043293e43b1de61a"
-  integrity sha512-6D49t/etFvRUz7hOseEmI6mxm3vypFPffpTR37Gai924s6JmeNmnPk+QooFINYsq4Gu5HYlg49ut6zxwhfKxqQ==
+replicate@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/replicate/-/replicate-1.2.0.tgz#d411b1c53658774e6af2d744ab3d6a000f68b8a8"
+  integrity sha512-11A1LEP0jib+H2ISWYvW12Tg43Fs7HHZPvJvA9Naqr7/REwCWlExP6MWJHZBKe5WVs9iiFV/VYhCEcFUEIFgeg==
   optionalDependencies:
     readable-stream ">=4.0.0"
 
