@@ -85,7 +85,7 @@
     "@modelcontextprotocol/sdk": "^1.19.1",
     "@mozilla/readability": "^0.6.0",
     "@tavily/core": "^0.5.11",
-    "clipboardy": "^5.0.0",
+    "clipboardy": "^4.0.0",
     "dotenv": "^17.2.3",
     "fluent-ffmpeg": "^2.1.3",
     "graphai": "^2.0.16",
