@@ -57,7 +57,7 @@ export const generateReferenceImage = async (inputs: {
   } catch (error) {
     GraphAILogger.error(error);
     throw new Error(`generateReferenceImage: generate error: key=${key}`, {
-      cause: agentGenerationError("imageReference", imageReferenceAction, imageFileTarget),
+      cause: agentGenerationError(imageAgentInfo.agent, imageReferenceAction, imageFileTarget),
     });
   }
 };
