@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
-import OpenAI, { toFile } from "openai";
+import OpenAI, { toFile, AuthenticationError, RateLimitError } from "openai";
 import { provider2ImageAgent } from "../utils/provider2agent.js";
 import {
   apiKeyMissingError,
@@ -81,12 +81,12 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
       }
     } catch (error) {
       GraphAILogger.info("Failed to generate image:", (error as Error).message);
-      if (error.status === 401) {
+      if (error instanceof AuthenticationError) {
         throw new Error("Failed to generate image: 401 Incorrect API key provided with OpenAI", {
           cause: agentIncorrectAPIKeyError("imageOpenaiAgent", imageAction, imageFileTarget),
         });
       }
-      if (error.status === 429) {
+      if (error instanceof RateLimitError) {
         throw new Error("You exceeded your current quota", {
           cause: agentAPIRateLimitError("imageOpenaiAgent", imageAction, imageFileTarget),
         });

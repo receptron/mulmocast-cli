@@ -1,6 +1,6 @@
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
-import OpenAI from "openai";
+import OpenAI, { AuthenticationError, RateLimitError } from "openai";
 import type { SpeechCreateParams } from "openai/resources/audio/speech";
 import { provider2TTSAgent } from "../utils/provider2agent.js";
 import {
@@ -49,14 +49,14 @@ export const ttsOpenaiAgent: AgentFunction<OpenAITTSAgentParams, AgentBufferResu
     }
     GraphAILogger.error(error);
 
-    if (error.status === 401) {
+    if (error instanceof AuthenticationError) {
       throw new Error("Failed to generate image: 401 Incorrect API key provided with OpenAI", {
-        cause: agentIncorrectAPIKeyError("imageOpenaiAgent", imageAction, imageFileTarget),
+        cause: agentIncorrectAPIKeyError("imageOpenaiAgent", audioAction, audioFileTarget),
       });
     }
-    if (error.status === 429) {
+    if (error instanceof RateLimitError) {
       throw new Error("You exceeded your current quota", {
-        cause: agentAPIRateLimitError("imageOpenaiAgent", imageAction, imageFileTarget),
+        cause: agentAPIRateLimitError("imageOpenaiAgent", audioAction, audioFileTarget),
       });
     }
 
