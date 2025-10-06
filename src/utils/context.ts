@@ -1,4 +1,4 @@
-import { GraphAILogger } from "graphai";
+import { GraphAILogger, isNull } from "graphai";
 import { readMulmoScriptFile, fetchMulmoScriptFile, isFile } from "./file.js";
 import { beatId, multiLingualObjectToArray } from "./utils.js";
 import type {
@@ -134,12 +134,23 @@ export const getPresentationStyle = (presentationStylePath: string | undefined):
   return mulmoPresentationStyleSchema.parse(jsonData);
 };
 
-export const initializeContextFromFiles = async (files: FileObject, raiseError: boolean, force?: boolean, captionLang?: string, targetLang?: string) => {
+export const initializeContextFromFiles = async (
+  files: FileObject,
+  raiseError: boolean,
+  force?: boolean,
+  captionLang?: string,
+  targetLang?: string,
+  index?: number,
+) => {
   const { fileName, isHttpPath, fileOrUrl, mulmoFilePath, presentationStylePath, outputMultilingualFilePath } = files;
 
   const mulmoScript = await fetchScript(isHttpPath, mulmoFilePath, fileOrUrl);
   if (!mulmoScript) {
     return null;
+  }
+  // The index param is used when you want to process only a specific beat in an app, etc. This is to avoid parser errors.
+  if (!isNull(index) && mulmoScript.beats[index]) {
+    mulmoScript.beats = [mulmoScript.beats[index]];
   }
 
   try {
