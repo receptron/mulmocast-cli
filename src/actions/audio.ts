@@ -254,7 +254,6 @@ const audioAgents = {
 export const generateBeatAudio = async (index: number, context: MulmoStudioContext, args?: PublicAPIArgs & { langs: string[] }) => {
   const { settings, callbacks, langs } = args ?? {};
   try {
-    // MulmoStudioContextMethods.setSessionState(context, "audio", true);
     const fileName = MulmoStudioContextMethods.getFileName(context);
     const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
     const outDirPath = MulmoStudioContextMethods.getOutDirPath(context);
@@ -283,9 +282,9 @@ export const generateBeatAudio = async (index: number, context: MulmoStudioConte
       });
     }
     await graph.run();
-    //  MulmoStudioContextMethods.setSessionState(context, "audio", false, true);
-  } catch (__error) {
-    // MulmoStudioContextMethods.setSessionState(context, "audio", false, false);
+  } catch (error) {
+    GraphAILogger.error(error);
+    throw error;
   }
 };
 

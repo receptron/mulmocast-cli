@@ -297,6 +297,7 @@ export const translateBeat = async (index: number, context: MulmoStudioContext, 
     writingMessage(outputMultilingualFilePath);
   } catch (error) {
     GraphAILogger.log(error);
+    throw error;
   }
 };
 
@@ -330,8 +331,9 @@ export const translate = async (context: MulmoStudioContext, args?: PublicAPIArg
       context.multiLingual = multiLingualObjectToArray(results?.mergeStudioResult?.multiLingual, context.studio.script.beats);
     }
     MulmoStudioContextMethods.setSessionState(context, "multiLingual", false, true);
-  } catch (__error) {
+  } catch (error) {
     MulmoStudioContextMethods.setSessionState(context, "multiLingual", false, false);
+    throw error;
   }
   return context;
 };

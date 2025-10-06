@@ -6,6 +6,7 @@ import { MulmoPresentationStyleMethods, MulmoMediaSourceMethods } from "../metho
 import { MulmoStudioContext, MulmoStudioBeat, MulmoImagePromptMedia } from "../types/index.js";
 
 import { imageOpenaiAgent, mediaMockAgent, imageGenAIAgent, imageReplicateAgent } from "../agents/index.js";
+import { agentGenerationError, imageReferenceAction, imageFileTarget } from "../utils/error_cause.js";
 
 // public api
 // Application may call this function directly to generate reference image.
@@ -48,10 +49,17 @@ export const generateReferenceImage = async (inputs: {
     },
   };
 
-  const options = await graphOption(context);
-  const graph = new GraphAI(image_graph_data, { imageGenAIAgent, imageOpenaiAgent, mediaMockAgent, imageReplicateAgent }, options);
-  await graph.run<{ output: MulmoStudioBeat[] }>();
-  return imagePath;
+  try {
+    const options = await graphOption(context);
+    const graph = new GraphAI(image_graph_data, { imageGenAIAgent, imageOpenaiAgent, mediaMockAgent, imageReplicateAgent }, options);
+    await graph.run<{ output: MulmoStudioBeat[] }>();
+    return imagePath;
+  } catch (error) {
+    GraphAILogger.error(error);
+    throw new Error(`generateReferenceImage: generate error: key=${key}`, {
+      cause: agentGenerationError("imageReference", imageReferenceAction, imageFileTarget),
+    });
+  }
 };
 
 export const getImageRefs = async (context: MulmoStudioContext) => {

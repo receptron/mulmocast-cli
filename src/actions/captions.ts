@@ -91,8 +91,9 @@ export const captions = async (context: MulmoStudioContext, args?: PublicAPIArgs
       }
       await graph.run();
       MulmoStudioContextMethods.setSessionState(context, "caption", false, true);
-    } catch (__error) {
+    } catch (error) {
       MulmoStudioContextMethods.setSessionState(context, "caption", false, false);
+      throw error;
     }
   }
   return context;
