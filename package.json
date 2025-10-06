@@ -1,6 +1,6 @@
 {
   "name": "mulmocast",
-  "version": "1.2.52",
+  "version": "1.2.53",
   "description": "",
   "type": "module",
   "main": "lib/index.node.js",
@@ -112,7 +112,7 @@
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.45.0"
+    "typescript-eslint": "^8.46.0"
   },
   "engines": {
     "node": ">=20.0.0"
