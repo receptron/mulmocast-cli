@@ -203,7 +203,8 @@ export const pdf = async (context: MulmoStudioContext, pdfMode: PDFMode, pdfSize
     MulmoStudioContextMethods.setSessionState(context, "pdf", true);
     await generatePDF(context, pdfMode, pdfSize);
     MulmoStudioContextMethods.setSessionState(context, "pdf", false, true);
-  } catch (__error) {
+  } catch (error) {
     MulmoStudioContextMethods.setSessionState(context, "pdf", false, false);
+    throw error;
   }
 };

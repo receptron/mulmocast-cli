@@ -66,7 +66,8 @@ export const markdown = async (context: MulmoStudioContext, imageWidth?: string)
     MulmoStudioContextMethods.setSessionState(context, "markdown", true);
     await generateMarkdown(context, imageWidth);
     MulmoStudioContextMethods.setSessionState(context, "markdown", false, true);
-  } catch (__error) {
+  } catch (error) {
     MulmoStudioContextMethods.setSessionState(context, "markdown", false, false);
+    throw error;
   }
 };
