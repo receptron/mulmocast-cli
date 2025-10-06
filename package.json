@@ -1,6 +1,6 @@
 {
   "name": "mulmocast",
-  "version": "1.2.51",
+  "version": "1.2.52",
   "description": "",
   "type": "module",
   "main": "lib/index.node.js",
