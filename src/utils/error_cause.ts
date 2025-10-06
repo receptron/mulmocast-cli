@@ -198,7 +198,7 @@ export const agentIncorrectAPIKeyError = (agentName: string, action: string, tar
   };
 };
 
-// Agent API/Incorrect Key Errors
+// Agent API/Rate Limit Errors
 export const agentAPIRateLimitError = (agentName: string, action: string, target: string, beatIndex?: number) => {
   return {
     type: apiRateLimitErrorType,
