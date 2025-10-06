@@ -52,6 +52,8 @@ export const fileNotExistType = "fileNotExist";
 export const unknownMediaType = "unknownMedia";
 export const sourceUndefinedType = "undefinedSourceType";
 export const apiErrorType = "apiError";
+export const apiKeyInvalidType = "apiKeyInvalid";
+export const apiRateLimitErrorType = "apiRateLimit";
 export const apiKeyMissingType = "apiKeyMissing";
 export const invalidResponseType = "invalidResponse";
 
@@ -178,6 +180,28 @@ export const apiKeyMissingError = (agentName: string, action: string, envVarName
 export const agentGenerationError = (agentName: string, action: string, target: string, beatIndex?: number) => {
   return {
     type: apiErrorType,
+    action,
+    target,
+    agentName,
+    ...(beatIndex !== undefined && { beatIndex }),
+  };
+};
+
+// Agent API/Incorrect Key Errors
+export const agentIncorrectAPIKeyError = (agentName: string, action: string, target: string, beatIndex?: number) => {
+  return {
+    type: apiKeyInvalidType,
+    action,
+    target,
+    agentName,
+    ...(beatIndex !== undefined && { beatIndex }),
+  };
+};
+
+// Agent API/Rate Limit Errors
+export const agentAPIRateLimitError = (agentName: string, action: string, target: string, beatIndex?: number) => {
+  return {
+    type: apiRateLimitErrorType,
     action,
     target,
     agentName,

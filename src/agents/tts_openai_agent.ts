@@ -1,9 +1,16 @@
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
-import OpenAI from "openai";
+import OpenAI, { AuthenticationError, RateLimitError } from "openai";
 import type { SpeechCreateParams } from "openai/resources/audio/speech";
 import { provider2TTSAgent } from "../utils/provider2agent.js";
-import { apiKeyMissingError, agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
+import {
+  apiKeyMissingError,
+  agentIncorrectAPIKeyError,
+  agentAPIRateLimitError,
+  agentGenerationError,
+  audioAction,
+  audioFileTarget,
+} from "../utils/error_cause.js";
 import type { OpenAITTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult, OpenAIImageAgentConfig } from "../types/agent.js";
 
 export const ttsOpenaiAgent: AgentFunction<OpenAITTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs, OpenAIImageAgentConfig> = async ({
@@ -34,23 +41,35 @@ export const ttsOpenaiAgent: AgentFunction<OpenAITTSAgentParams, AgentBufferResu
     const response = await openai.audio.speech.create(tts_options);
     const buffer = Buffer.from(await response.arrayBuffer());
     return { buffer };
-  } catch (e) {
+  } catch (error) {
     if (suppressError) {
       return {
-        error: e,
+        error,
       };
     }
-    GraphAILogger.error(e);
-    if (e && typeof e === "object" && "error" in e) {
+    GraphAILogger.error(error);
+
+    if (error instanceof AuthenticationError) {
+      throw new Error("Failed to generate image: 401 Incorrect API key provided with OpenAI", {
+        cause: agentIncorrectAPIKeyError("imageOpenaiAgent", audioAction, audioFileTarget),
+      });
+    }
+    if (error instanceof RateLimitError) {
+      throw new Error("You exceeded your current quota", {
+        cause: agentAPIRateLimitError("imageOpenaiAgent", audioAction, audioFileTarget),
+      });
+    }
+
+    if (error && typeof error === "object" && "error" in error) {
       GraphAILogger.info("tts_openai_agent: ");
-      GraphAILogger.info(e.error);
-      throw new Error("TTS OpenAI Error: " + JSON.stringify(e.error, null, 2), {
+      GraphAILogger.info(error.error);
+      throw new Error("TTS OpenAI Error: " + JSON.stringify(error.error, null, 2), {
         cause: agentGenerationError("ttsOpenaiAgent", audioAction, audioFileTarget),
       });
-    } else if (e instanceof Error) {
+    } else if (error instanceof Error) {
       GraphAILogger.info("tts_openai_agent: ");
-      GraphAILogger.info(e.message);
-      throw new Error("TTS OpenAI Error: " + e.message, {
+      GraphAILogger.info(error.message);
+      throw new Error("TTS OpenAI Error: " + error.message, {
         cause: agentGenerationError("ttsOpenaiAgent", audioAction, audioFileTarget),
       });
     }
