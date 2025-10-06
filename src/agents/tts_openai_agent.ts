@@ -51,12 +51,12 @@ export const ttsOpenaiAgent: AgentFunction<OpenAITTSAgentParams, AgentBufferResu
 
     if (error instanceof AuthenticationError) {
       throw new Error("Failed to generate image: 401 Incorrect API key provided with OpenAI", {
-        cause: agentIncorrectAPIKeyError("imageOpenaiAgent", audioAction, audioFileTarget),
+        cause: agentIncorrectAPIKeyError("ttsOpenaiAgent", audioAction, audioFileTarget),
       });
     }
     if (error instanceof RateLimitError) {
       throw new Error("You exceeded your current quota", {
-        cause: agentAPIRateLimitError("imageOpenaiAgent", audioAction, audioFileTarget),
+        cause: agentAPIRateLimitError("ttsOpenaiAgent", audioAction, audioFileTarget),
       });
     }
 
