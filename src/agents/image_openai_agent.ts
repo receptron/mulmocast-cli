@@ -3,7 +3,7 @@ import path from "path";
 import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
 import OpenAI, { toFile } from "openai";
 import { provider2ImageAgent } from "../utils/provider2agent.js";
-import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, imageFileTarget } from "../utils/error_cause.js";
+import { apiKeyMissingError, agentGenerationError, agentIncorrectAPIKeyError, agentAPIRateLimitError, agentInvalidResponseError, imageAction, imageFileTarget } from "../utils/error_cause.js";
 import type { AgentBufferResult, OpenAIImageOptions, OpenAIImageAgentParams, OpenAIImageAgentInputs, OpenAIImageAgentConfig } from "../types/agent.js";
 
 // https://platform.openai.com/docs/guides/image-generation
@@ -73,6 +73,16 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
       }
     } catch (error) {
       GraphAILogger.info("Failed to generate image:", (error as Error).message);
+      if (error.status === 401) {
+        throw new Error("Failed to generate image: 401 Incorrect API key provided with OpenAI", {
+          cause: agentIncorrectAPIKeyError("imageOpenaiAgent", imageAction, imageFileTarget),
+        });
+      }
+      if (error.status === 429) {
+        throw new Error("You exceeded your current quota", {
+          cause: agentAPIRateLimitError("imageOpenaiAgent", imageAction, imageFileTarget),
+        });
+      }
       throw new Error("Failed to generate image with OpenAI", {
         cause: agentGenerationError("imageOpenaiAgent", imageAction, imageFileTarget),
       });
