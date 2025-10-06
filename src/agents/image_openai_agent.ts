@@ -3,7 +3,15 @@ import path from "path";
 import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
 import OpenAI, { toFile } from "openai";
 import { provider2ImageAgent } from "../utils/provider2agent.js";
-import { apiKeyMissingError, agentGenerationError, agentIncorrectAPIKeyError, agentAPIRateLimitError, agentInvalidResponseError, imageAction, imageFileTarget } from "../utils/error_cause.js";
+import {
+  apiKeyMissingError,
+  agentGenerationError,
+  agentIncorrectAPIKeyError,
+  agentAPIRateLimitError,
+  agentInvalidResponseError,
+  imageAction,
+  imageFileTarget,
+} from "../utils/error_cause.js";
 import type { AgentBufferResult, OpenAIImageOptions, OpenAIImageAgentParams, OpenAIImageAgentInputs, OpenAIImageAgentConfig } from "../types/agent.js";
 
 // https://platform.openai.com/docs/guides/image-generation
