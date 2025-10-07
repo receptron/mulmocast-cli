@@ -68,6 +68,7 @@ export const translateAction = "translate";
 export const audioFileTarget = "audioFile";
 export const imageFileTarget = "imageFile";
 export const movieFileTarget = "movieFile";
+export const multiLingualFileTarget = "multiLingualFile";
 export const videoSourceTarget = "videoSource";
 export const audioSourceTarget = "audioSource";
 export const codeTextTarget = "codeText";
