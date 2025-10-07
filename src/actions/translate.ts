@@ -11,7 +11,7 @@ import { splitText } from "../utils/string.js";
 import { settings2GraphAIConfig, beatId, multiLingualObjectToArray } from "../utils/utils.js";
 import { getMultiLingual } from "../utils/context.js";
 import { currentMulmoScriptVersion } from "../utils/const.js";
-import { translateApiKeyMissingError } from "../utils/error_cause.js";
+import { translateApiKeyMissingError, hasCause, agentGenerationError, translateAction, multiLingualFileTarget } from "../utils/error_cause.js";
 import type {
   LANG,
   MulmoStudioContext,
@@ -297,7 +297,12 @@ export const translateBeat = async (index: number, context: MulmoStudioContext, 
     writingMessage(outputMultilingualFilePath);
   } catch (error) {
     GraphAILogger.log(error);
-    throw error;
+    if (hasCause(error) && error.cause) {
+      throw error;
+    }
+    throw new Error("Failed to translate", {
+      cause: agentGenerationError("translateBeat", translateAction, multiLingualFileTarget),
+    });
   }
 };
 
@@ -333,7 +338,12 @@ export const translate = async (context: MulmoStudioContext, args?: PublicAPIArg
     MulmoStudioContextMethods.setSessionState(context, "multiLingual", false, true);
   } catch (error) {
     MulmoStudioContextMethods.setSessionState(context, "multiLingual", false, false);
-    throw error;
+    if (hasCause(error) && error.cause) {
+      throw error;
+    }
+    throw new Error("Failed to translate", {
+      cause: agentGenerationError("translateBeat", translateAction, multiLingualFileTarget),
+    });
   }
   return context;
 };
