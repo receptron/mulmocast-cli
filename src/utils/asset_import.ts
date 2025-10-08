@@ -5,7 +5,7 @@ import fs from "node:fs";
 
 const require = createRequire(import.meta.url);
 
-export function resolveAsset(relFromPkgRoot: string, npmRoot?: string): string {
+export function resolveAssetFile(relFromPkgRoot: string, npmRoot?: string): string {
   const rel = relFromPkgRoot.replace(/^\.\//, "");
   try {
     return require.resolve(`mulmocast/${rel}`);

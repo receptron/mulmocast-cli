@@ -171,7 +171,7 @@ export const mkdir = (dirPath: string) => {
 };
 
 // asset path
-export const resolveAssetFilePath = (context: MulmoStudioContext, relativePath: string): string => {
+export const resolveAssetPath = (context: MulmoStudioContext, relativePath: string): string => {
   return path.resolve(context.fileDirs.mulmoFileDirPath, relativePath);
 };
 
