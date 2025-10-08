@@ -177,18 +177,15 @@ export const resolveAssetPath = (context: MulmoStudioContext, relativePath: stri
 
 // export const silentPath = path.resolve(npmRoot, "./assets/audio/silent300.mp3");
 // export const silentLastPath = path.resolve(npmRoot, "./assets/audio/silent800.mp3");
-export const silent60secPath = () => {
-  return resolveAsset("./assets/audio/silent60sec.mp3", npmRoot);
-  // path.resolve(npmRoot, );
-};
+export const silent60secPath = () => resolveAsset("./assets/audio/silent60sec.mp3", npmRoot);
 export const defaultBGMPath = () => "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/story002.mp3";
-export const mulmoCreditPath = () => path.resolve(npmRoot, "./assets/images/mulmocast_credit.png");
-export const blankImagePath = () => path.resolve(npmRoot, "./assets/images/blank.png");
-export const blankVerticalImagePath = () => path.resolve(npmRoot, "./assets/images/blank_v.png");
-export const blankSquareImagePath = () => path.resolve(npmRoot, "./assets/images/blank_sq.png");
+export const mulmoCreditPath = () => resolveAsset("./assets/images/mulmocast_credit.png", npmRoot);
+export const blankImagePath = () => resolveAsset("./assets/images/blank.png", npmRoot);
+export const blankVerticalImagePath = () => resolveAsset("./assets/images/blank_v.png", npmRoot);
+export const blankSquareImagePath = () => resolveAsset("./assets/images/blank_sq.png", npmRoot);
 
 export const getHTMLFile = (filename: string) => {
-  const htmlPath = path.resolve(npmRoot, `./assets/html/${filename}.html`);
+  const htmlPath = resolveAsset(`./assets/html/${filename}.html`, npmRoot);
   return fs.readFileSync(htmlPath, "utf-8");
 };
 
