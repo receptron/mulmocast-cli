@@ -176,7 +176,10 @@ export const resolveAssetPath = (context: MulmoStudioContext, relativePath: stri
 
 // export const silentPath = path.resolve(npmRoot, "./assets/audio/silent300.mp3");
 // export const silentLastPath = path.resolve(npmRoot, "./assets/audio/silent800.mp3");
-export const silent60secPath = () => path.resolve(npmRoot, "./assets/audio/silent60sec.mp3");
+export const silent60secPath = () => {
+  return resolveAsset("./assets/audio/silent60sec.mp3", npmRoot);
+  // path.resolve(npmRoot, );
+};
 export const defaultBGMPath = () => "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/story002.mp3";
 export const mulmoCreditPath = () => path.resolve(npmRoot, "./assets/images/mulmocast_credit.png");
 export const blankImagePath = () => path.resolve(npmRoot, "./assets/images/blank.png");

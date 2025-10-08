@@ -283,6 +283,7 @@ export const generateBeatAudio = async (index: number, context: MulmoStudioConte
     }
     await graph.run();
   } catch (error) {
+    // CAUSE
     GraphAILogger.error(error);
     throw error;
   }
