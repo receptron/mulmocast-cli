@@ -15,7 +15,9 @@
     },
     "./data": {
       "default": "./lib/data/index.js"
-    }
+    },
+    "./assets/*": "./assets/*",
+    "./scripts/*": "./scripts/*"
   },
   "bin": {
     "mulmo": "lib/cli/bin.js",

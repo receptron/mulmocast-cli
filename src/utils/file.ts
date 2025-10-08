@@ -10,6 +10,7 @@ import { mulmoPromptTemplateSchema } from "../types/schema.js";
 import { PDFMode } from "../types/index.js";
 import { ZodSchema, ZodType } from "zod";
 import { getMulmoScriptTemplateSystemPrompt } from "./prompt.js";
+import { resolveAssetFile } from "./asset_import.js";
 
 const promptTemplateDirName = "./assets/templates";
 const scriptTemplateDirName = "./scripts/templates";
@@ -159,7 +160,7 @@ export const getOutputPdfFilePath = (outDirPath: string, fileName: string, pdfMo
 };
 
 export const getPromptTemplateFilePath = (promptTemplateName: string) => {
-  return path.resolve(npmRoot, promptTemplateDirName, promptTemplateName + ".json");
+  return resolveAssetFile(path.join(promptTemplateDirName, promptTemplateName + ".json"), npmRoot);
 };
 
 export const mkdir = (dirPath: string) => {
@@ -176,15 +177,15 @@ export const resolveAssetPath = (context: MulmoStudioContext, relativePath: stri
 
 // export const silentPath = path.resolve(npmRoot, "./assets/audio/silent300.mp3");
 // export const silentLastPath = path.resolve(npmRoot, "./assets/audio/silent800.mp3");
-export const silent60secPath = () => path.resolve(npmRoot, "./assets/audio/silent60sec.mp3");
+export const silent60secPath = () => resolveAssetFile("./assets/audio/silent60sec.mp3", npmRoot);
 export const defaultBGMPath = () => "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/story002.mp3";
-export const mulmoCreditPath = () => path.resolve(npmRoot, "./assets/images/mulmocast_credit.png");
-export const blankImagePath = () => path.resolve(npmRoot, "./assets/images/blank.png");
-export const blankVerticalImagePath = () => path.resolve(npmRoot, "./assets/images/blank_v.png");
-export const blankSquareImagePath = () => path.resolve(npmRoot, "./assets/images/blank_sq.png");
+export const mulmoCreditPath = () => resolveAssetFile("./assets/images/mulmocast_credit.png", npmRoot);
+export const blankImagePath = () => resolveAssetFile("./assets/images/blank.png", npmRoot);
+export const blankVerticalImagePath = () => resolveAssetFile("./assets/images/blank_v.png", npmRoot);
+export const blankSquareImagePath = () => resolveAssetFile("./assets/images/blank_sq.png", npmRoot);
 
 export const getHTMLFile = (filename: string) => {
-  const htmlPath = path.resolve(npmRoot, `./assets/html/${filename}.html`);
+  const htmlPath = resolveAssetFile(`./assets/html/${filename}.html`, npmRoot);
   return fs.readFileSync(htmlPath, "utf-8");
 };
 
@@ -211,7 +212,7 @@ export const getFullPath = (baseDirPath: string | undefined, file: string) => {
 
 // script and prompt template
 export const readScriptTemplateFile = (scriptTemplateFileName: string): MulmoScript => {
-  const scriptTemplatePath = path.resolve(npmRoot, scriptTemplateDirName, scriptTemplateFileName);
+  const scriptTemplatePath = resolveAssetFile(path.join(scriptTemplateDirName, scriptTemplateFileName), npmRoot);
   const scriptTemplateData = fs.readFileSync(scriptTemplatePath, "utf-8");
   // NOTE: We don't want to schema parse the script here to eliminate default values.
   return JSON.parse(scriptTemplateData);
