@@ -298,7 +298,7 @@ export const audioParamsSchema = z
 export const htmlPromptParamsSchema = z
   .object({
     systemPrompt: z.string().default("").optional(),
-    prompt: z.string().default(""),
+    prompt: z.string().min(1),
     data: z.any().optional(),
     images: z.record(z.string(), z.any()).optional(),
   })
