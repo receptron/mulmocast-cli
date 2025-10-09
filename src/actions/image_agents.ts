@@ -4,6 +4,7 @@ import { getBeatPngImagePath, getBeatMoviePaths, getAudioFilePath } from "../uti
 import { imagePrompt, htmlImageSystemPrompt } from "../utils/prompt.js";
 import { renderHTMLToImage } from "../utils/markdown.js";
 import { beatId } from "../utils/utils.js";
+import { localizedPath } from "./audio.js";
 
 const htmlStyle = (context: MulmoStudioContext, beat: MulmoBeat) => {
   return {
@@ -78,7 +79,8 @@ export const imagePreprocessAgent = async (namedInputs: { context: MulmoStudioCo
       returnValue.audioFile = getAudioFilePath(audioDirPath, folderName, fileName);
     } else {
       // Audio file will be set from the beat's audio file when available
-      returnValue.audioFile = studioBeat?.audioFile;
+      const lang = context.lang ?? context.studio.script.lang;
+      returnValue.audioFile = studioBeat?.audioFile ?? localizedPath(context, beat, index, lang);
     }
   }
 

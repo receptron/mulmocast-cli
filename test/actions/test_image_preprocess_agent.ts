@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 import type { MulmoBeat } from "../../src/types/index.js";
 import { imagePreprocessAgent } from "../../src/actions/image_agents.js";
 
-import { createMockContext, createMockBeat } from "./utils.js";
+import { createMockContext, createMockBeat } from "./utils2.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1080,6 +1080,7 @@ test("imagePreprocessAgent - with enableLipSync true", async () => {
 
   const expected = {
     imagePath: "/test/images/test_studio/26p.png",
+    audioFile: "/test/audio/test_studio/test_studio_e67d93576c19f819d22bce638386853e9a977fc057940878cd1a3793f3ec5045_en.mp3",
     referenceImageForMovie: "/test/images/test_studio/26p.png",
     prompt: "generate image appropriate for the text. text: Test text\nnatural",
     imageParams: {
@@ -1097,7 +1098,6 @@ test("imagePreprocessAgent - with enableLipSync true", async () => {
     lipSyncAgentName: "lipSyncReplicateAgent",
     lipSyncModel: "bytedance/omni-human",
     lipSyncFile: "/test/images/test_studio/26_lipsync.mov",
-    audioFile: undefined,
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
@@ -1150,7 +1150,8 @@ test("imagePreprocessAgent - enableLipSync + imagePrompt", async () => {
     lipSyncAgentName: "lipSyncReplicateAgent",
     lipSyncModel: "bytedance/omni-human",
     lipSyncFile: "/test/images/test_studio/27_lipsync.mov",
-    audioFile: undefined,
+    audioFile: "/test/audio/test_studio/test_studio_e67d93576c19f819d22bce638386853e9a977fc057940878cd1a3793f3ec5045_en.mp3",
+
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
@@ -1195,7 +1196,7 @@ test("imagePreprocessAgent - enableLipSync + moviePrompt (no imagePrompt)", asyn
     lipSyncAgentName: "lipSyncReplicateAgent",
     lipSyncModel: "bytedance/omni-human",
     lipSyncFile: "/test/images/test_studio/28_lipsync.mov",
-    audioFile: undefined,
+    audioFile: "/test/audio/test_studio/test_studio_e67d93576c19f819d22bce638386853e9a977fc057940878cd1a3793f3ec5045_en.mp3",
     movieAgentInfo: {
       agent: "movieReplicateAgent",
       keyName: "REPLICATE_API_TOKEN",
@@ -1238,7 +1239,7 @@ test("imagePreprocessAgent - enableLipSync + imagePrompt + moviePrompt", async (
     lipSyncAgentName: "lipSyncReplicateAgent",
     lipSyncModel: "bytedance/omni-human",
     lipSyncFile: "/test/images/test_studio/29_lipsync.mov",
-    audioFile: undefined,
+    audioFile: "/test/audio/test_studio/test_studio_e67d93576c19f819d22bce638386853e9a977fc057940878cd1a3793f3ec5045_en.mp3",
     movieAgentInfo: {
       agent: "movieReplicateAgent",
       keyName: "REPLICATE_API_TOKEN",
@@ -1296,7 +1297,7 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync", async () => {
     lipSyncAgentName: "lipSyncReplicateAgent",
     lipSyncModel: "bytedance/omni-human",
     lipSyncFile: "/test/images/test_studio/30_lipsync.mov",
-    audioFile: undefined,
+    audioFile: "/test/audio/test_studio/test_studio_e67d93576c19f819d22bce638386853e9a977fc057940878cd1a3793f3ec5045_en.mp3",
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
@@ -1350,7 +1351,7 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync + imagePrompt", a
     lipSyncAgentName: "lipSyncReplicateAgent",
     lipSyncModel: "bytedance/omni-human",
     lipSyncFile: "/test/images/test_studio/31_lipsync.mov",
-    audioFile: undefined,
+    audioFile: "/test/audio/test_studio/test_studio_e67d93576c19f819d22bce638386853e9a977fc057940878cd1a3793f3ec5045_en.mp3",
     referenceImages: [],
     beatDuration: undefined,
     imageAgentInfo: {
@@ -1410,7 +1411,7 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync + moviePrompt (no
     lipSyncAgentName: "lipSyncReplicateAgent",
     lipSyncModel: "bytedance/omni-human",
     lipSyncFile: "/test/images/test_studio/32_lipsync.mov",
-    audioFile: undefined,
+    audioFile: "/test/audio/test_studio/test_studio_e67d93576c19f819d22bce638386853e9a977fc057940878cd1a3793f3ec5045_en.mp3",
     movieAgentInfo: {
       agent: "movieReplicateAgent",
       movieParams: {},
@@ -1465,7 +1466,7 @@ test("imagePreprocessAgent - all parameters: soundEffectPrompt + enableLipSync +
     lipSyncAgentName: "lipSyncReplicateAgent",
     lipSyncModel: "bytedance/omni-human",
     lipSyncFile: "/test/images/test_studio/33_lipsync.mov",
-    audioFile: undefined,
+    audioFile: "/test/audio/test_studio/test_studio_8a5d89885c9fd7a83b581e69492649778b10463259699e808b72a99868636da8_en.mp3",
     beatDuration: undefined,
     imagePath: "/test/images/test_studio/33p.png",
     referenceImageForMovie: "/test/images/test_studio/33p.png",

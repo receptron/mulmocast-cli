@@ -52,12 +52,18 @@ export const getBeatAudioPathOrUrl = (text: string, context: MulmoStudioContext,
   return getAudioPathOrUrl(context, beat, maybeAudioFile);
 };
 
+// for lipSync
+export const localizedPath = (context: MulmoStudioContext, beat: MulmoBeat, index: number, lang: string) => {
+  const multiLingual = context?.multiLingual?.[index] ?? {};
+  const text = localizedText(beat, multiLingual, lang);
+  return getBeatAudioPathOrUrl(text, context, beat, lang);
+};
+
+// for Electron
 export const listLocalizedAudioPaths = (context: MulmoStudioContext) => {
   const lang = context.lang ?? context.studio.script.lang;
   return context.studio.script.beats.map((beat, index) => {
-    const multiLingual = context.multiLingual[index];
-    const text = localizedText(beat, multiLingual, lang);
-    return getBeatAudioPathOrUrl(text, context, beat, lang);
+    return localizedPath(context, beat, index, lang);
   });
 };
 
