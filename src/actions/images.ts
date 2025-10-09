@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import fs from "fs";
 import { GraphAI, GraphAILogger, TaskManager } from "graphai";
 import type { GraphOptions, GraphData } from "graphai";
+import { AuthenticationError, RateLimitError } from "openai/index.js";
 
 import * as vanilla from "@graphai/vanilla";
 import { openAIAgent } from "@graphai/openai_agent";
@@ -21,6 +22,8 @@ import {
   lipSyncReplicateAgent,
 } from "../agents/index.js";
 import { MulmoPresentationStyleMethods, MulmoStudioContextMethods } from "../methods/index.js";
+
+import { agentIncorrectAPIKeyError, agentAPIRateLimitError, imageAction, imageFileTarget } from "../utils/error_cause.js";
 
 import { getOutputStudioFilePath, mkdir } from "../utils/file.js";
 import { fileCacheAgentFilter } from "../utils/filters.js";
@@ -471,6 +474,16 @@ export const images = async (context: MulmoStudioContext, args?: PublicAPIArgs &
     MulmoStudioContextMethods.setSessionState(context, "image", false, true);
     return newContext;
   } catch (error) {
+    if (error instanceof AuthenticationError) {
+      throw new Error("Failed to generate image: 401 Incorrect API key provided with OpenAI", {
+        cause: agentIncorrectAPIKeyError("openaiAgent", imageAction, imageFileTarget),
+      });
+    }
+    if (error instanceof RateLimitError) {
+      throw new Error("You exceeded your current quota", {
+        cause: agentAPIRateLimitError("openaiAgent", imageAction, imageFileTarget),
+      });
+    }
     MulmoStudioContextMethods.setSessionState(context, "image", false, false);
     throw error;
   }
