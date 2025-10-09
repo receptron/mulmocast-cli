@@ -219,7 +219,8 @@ export const mulmoImagePromptMediaSchema = z
   })
   .strict();
 
-export const mulmoImageParamsImagesSchema = z.record(imageIdSchema, z.union([mulmoImageMediaSchema, mulmoImagePromptMediaSchema]));
+export const mulmoImageParamsImagesValueSchema = z.union([mulmoImageMediaSchema, mulmoImagePromptMediaSchema]);
+export const mulmoImageParamsImagesSchema = z.record(imageIdSchema, mulmoImageParamsImagesValueSchema);
 export const mulmoFillOptionSchema = z
   .object({
     style: z.enum(["aspectFit", "aspectFill"]).default("aspectFit"),
