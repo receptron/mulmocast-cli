@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 import type { MulmoBeat } from "../../src/types/index.js";
 import { imagePreprocessAgent } from "../../src/actions/image_agents.js";
 
-import { createMockContext, createMockBeat } from "./utils.js";
+import { createMockContext, createMockBeat } from "./utils2.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

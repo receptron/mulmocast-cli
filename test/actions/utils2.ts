@@ -1,5 +1,22 @@
 // Helper function to create mock context
+import { z } from "zod";
+import { type MulmoStudioContext, type MulmoBeat, mulmoScriptSchema, mulmoBeatSchema } from "../../src/types/index.js";
 
+const mulmoScriptSchemaNoBeats = mulmoScriptSchema.extend({
+  beats: z.array(mulmoBeatSchema).min(0),
+});
+
+const mulmoScript = {
+  $mulmocast: {
+    version: "1.1",
+  },
+  title: "Test Script",
+  beats: [],
+  lang: "en",
+  canvasSize: { width: 1920, height: 1080 },
+};
+
+const data = mulmoScriptSchemaNoBeats.safeParse(mulmoScript);
 export const createMockContext = (): MulmoStudioContext => ({
   fileDirs: {
     mulmoFilePath: "/test/path/test.yaml",
@@ -11,15 +28,7 @@ export const createMockContext = (): MulmoStudioContext => ({
   },
   studio: {
     filename: "test_studio",
-    script: {
-      $mulmocast: {
-        version: "1.1",
-      },
-      title: "Test Script",
-      beats: [],
-      lang: "en",
-      canvasSize: { width: 1920, height: 1080 },
-    },
+    script: data.data,
     beats: [],
     toJSON: () => "{}",
   },
@@ -31,6 +40,7 @@ export const createMockContext = (): MulmoStudioContext => ({
       style: "natural",
       moderation: "auto",
     },
+    speechParams: data.data.speechParams,
   },
   sessionState: {
     inSession: {
