@@ -54,7 +54,7 @@ export const getBeatAudioPathOrUrl = (text: string, context: MulmoStudioContext,
 
 // for lipSync
 export const localizedPath = (context: MulmoStudioContext, beat: MulmoBeat, index: number, lang: string) => {
-  const multiLingual = context.multiLingual[index];
+  const multiLingual = context?.multiLingual?.[index] ?? {};
   const text = localizedText(beat, multiLingual, lang);
   return getBeatAudioPathOrUrl(text, context, beat, lang);
 };
