@@ -215,7 +215,7 @@ const imageIdSchema = z.string();
 export const mulmoImagePromptMediaSchema = z
   .object({
     type: z.literal("imagePrompt"),
-    prompt: z.string(),
+    prompt: z.string().min(1),
   })
   .strict();
 
