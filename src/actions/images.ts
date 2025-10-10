@@ -474,6 +474,7 @@ export const images = async (context: MulmoStudioContext, args?: PublicAPIArgs &
     MulmoStudioContextMethods.setSessionState(context, "image", false, true);
     return newContext;
   } catch (error) {
+    MulmoStudioContextMethods.setSessionState(context, "image", false, false);
     if (error instanceof AuthenticationError) {
       throw new Error("Failed to generate image: 401 Incorrect API key provided with OpenAI", {
         cause: agentIncorrectAPIKeyError("openaiAgent", imageAction, imageFileTarget),
@@ -484,7 +485,6 @@ export const images = async (context: MulmoStudioContext, args?: PublicAPIArgs &
         cause: agentAPIRateLimitError("openaiAgent", imageAction, imageFileTarget),
       });
     }
-    MulmoStudioContextMethods.setSessionState(context, "image", false, false);
     throw error;
   }
 };
