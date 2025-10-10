@@ -500,26 +500,40 @@ export const generateBeatImage = async (inputs: {
     forceSoundEffect?: boolean;
   };
 }) => {
-  const { index, context, args } = inputs;
-  const { settings, callbacks, forceMovie, forceImage, forceLipSync, forceSoundEffect } = args ?? {};
-  const options = await graphOption(context, settings);
-  const injections = await prepareGenerateImages(context);
-  const graph = new GraphAI(beat_graph_data, defaultAgents, options);
-  Object.keys(injections).forEach((key: string) => {
-    if ("outputStudioFilePath" !== key) {
-      graph.injectValue(key, injections[key]);
-    }
-  });
-  graph.injectValue("__mapIndex", index);
-  graph.injectValue("beat", context.studio.script.beats[index]);
-  graph.injectValue("forceMovie", forceMovie ?? false);
-  graph.injectValue("forceImage", forceImage ?? false);
-  graph.injectValue("forceLipSync", forceLipSync ?? false);
-  graph.injectValue("forceSoundEffect", forceSoundEffect ?? false);
-  if (callbacks) {
-    callbacks.forEach((callback) => {
-      graph.registerCallback(callback);
+  try {
+    const { index, context, args } = inputs;
+    const { settings, callbacks, forceMovie, forceImage, forceLipSync, forceSoundEffect } = args ?? {};
+    const options = await graphOption(context, settings);
+    const injections = await prepareGenerateImages(context);
+    const graph = new GraphAI(beat_graph_data, defaultAgents, options);
+    Object.keys(injections).forEach((key: string) => {
+      if ("outputStudioFilePath" !== key) {
+        graph.injectValue(key, injections[key]);
+      }
     });
+    graph.injectValue("__mapIndex", index);
+    graph.injectValue("beat", context.studio.script.beats[index]);
+    graph.injectValue("forceMovie", forceMovie ?? false);
+    graph.injectValue("forceImage", forceImage ?? false);
+    graph.injectValue("forceLipSync", forceLipSync ?? false);
+    graph.injectValue("forceSoundEffect", forceSoundEffect ?? false);
+    if (callbacks) {
+      callbacks.forEach((callback) => {
+        graph.registerCallback(callback);
+      });
+    }
+    await graph.run<{ output: MulmoStudioBeat[] }>();
+  } catch (error) {
+    if (error instanceof AuthenticationError) {
+      throw new Error("Failed to generate image: 401 Incorrect API key provided with OpenAI", {
+        cause: agentIncorrectAPIKeyError("openaiAgent", imageAction, imageFileTarget),
+      });
+    }
+    if (error instanceof RateLimitError) {
+      throw new Error("You exceeded your current quota", {
+        cause: agentAPIRateLimitError("openaiAgent", imageAction, imageFileTarget),
+      });
+    }
+    throw error;
   }
-  await graph.run<{ output: MulmoStudioBeat[] }>();
 };
