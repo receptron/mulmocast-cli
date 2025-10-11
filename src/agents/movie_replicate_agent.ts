@@ -5,7 +5,7 @@ import Replicate from "replicate";
 import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, movieFileTarget } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, MovieAgentInputs, ReplicateMovieAgentParams, ReplicateMovieAgentConfig } from "../types/agent.js";
-import { provider2MovieAgent } from "../utils/provider2agent.js";
+import { provider2MovieAgent, getModelDuration } from "../utils/provider2agent.js";
 
 async function generateMovie(
   model: `${string}/${string}`,
@@ -97,17 +97,9 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
       cause: agentGenerationError("movieReplicateAgent", imageAction, movieFileTarget),
     });
   }
-  const duration = (() => {
-    const durations = provider2MovieAgent.replicate.modelParams[model].durations;
-    if (params.duration) {
-      const largerDurations = durations.filter((d) => d >= params.duration!);
-      return largerDurations.length > 0 ? largerDurations[0] : durations[durations.length - 1];
-    } else {
-      return durations[0];
-    }
-  })();
+  const duration = getModelDuration("replicate", model, params.duration);
 
-  if (!provider2MovieAgent.replicate.modelParams[model].durations.includes(duration)) {
+  if (duration === undefined || !provider2MovieAgent.replicate.modelParams[model].durations.includes(duration)) {
     throw new Error(
       `Duration ${duration} is not supported for model ${model}. Supported durations: ${provider2MovieAgent.replicate.modelParams[model].durations.join(", ")}`,
       {

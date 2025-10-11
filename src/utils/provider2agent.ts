@@ -166,12 +166,14 @@ export const provider2MovieAgent = {
     defaultModel: "veo-2.0-generate-001",
     models: ["veo-2.0-generate-001", "veo-3.0-generate-preview"],
     keyName: "GEMINI_API_KEY",
+    modelParams: {},
   },
   mock: {
     agentName: "mediaMockAgent",
     defaultModel: "mock-model",
     models: ["mock-model"],
     keyName: "",
+    modelParams: {},
   },
 };
 
@@ -302,3 +304,13 @@ export const llm = Object.keys(provider2LLMAgent) as (keyof typeof provider2LLMA
 export type LLM = keyof typeof provider2LLMAgent;
 
 export const htmlLLMProvider = ["openai", "anthropic", "mock"];
+
+export const getModelDuration = (provider: keyof typeof provider2MovieAgent, model: string, movieDuration?: number) => {
+  const modelParams = provider2MovieAgent[provider]?.modelParams as Record<string, {durations?: number[]}>;
+  const { durations } = modelParams[model];
+  if (durations && movieDuration) {
+    const largerDurations = durations.filter((d: number) => d >= movieDuration);
+    return largerDurations.length > 0 ? largerDurations[0] : durations[durations.length - 1];
+  }
+  return durations?.[0];
+};
