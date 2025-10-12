@@ -34,7 +34,10 @@ export const speechOptionsSchema = z
   })
   .strict();
 
+
 const speakerIdSchema = z.string();
+
+export const defaultSpeaker = "Presenter";
 
 export const text2SpeechProviderSchema = z.enum(Object.keys(provider2TTSAgent) as [string, ...string[]]).default(defaultProviders.tts);
 
@@ -49,12 +52,27 @@ export const speakerDataSchema = z
   })
   .strict();
 
-export const speakerDictionarySchema = z.record(
-  speakerIdSchema,
-  speakerDataSchema.extend({
-    lang: z.record(langSchema, speakerDataSchema).optional(),
-  }),
-);
+export const speakerSchema = speakerDataSchema.extend({
+  lang: z.record(langSchema, speakerDataSchema).optional(),
+});
+
+export const speakerDictionarySchema = z.record(speakerIdSchema, speakerSchema);
+
+export const mulmoSpeechParamsSchema = z
+  .object({
+    speakers: speakerDictionarySchema,
+  })
+  .default({
+    speakers: {
+      [defaultSpeaker]: {
+        provider: defaultProviders.tts,
+        voiceId: "shimmer",
+        displayName: {
+          en: defaultSpeaker,
+        },
+      },
+    },
+  });
 
 export const mediaSourceSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("url"), url: URLStringSchema }).strict(), // https://example.com/foo.pdf
@@ -401,26 +419,10 @@ export const mulmoMovieParamsSchema = z
   })
   .strict();
 
-export const defaultSpeaker = "Presenter";
-
 export const mulmoPresentationStyleSchema = z.object({
   $mulmocast: mulmoCastCreditSchema,
   canvasSize: mulmoCanvasDimensionSchema, // has default value
-  speechParams: z
-    .object({
-      speakers: speakerDictionarySchema,
-    })
-    .default({
-      speakers: {
-        [defaultSpeaker]: {
-          provider: defaultProviders.tts,
-          voiceId: "shimmer",
-          displayName: {
-            en: defaultSpeaker,
-          },
-        },
-      },
-    }),
+  speechParams: mulmoSpeechParamsSchema,
   imageParams: mulmoImageParamsSchema.optional().default({
     provider: defaultProviders.text2image,
     images: {},
