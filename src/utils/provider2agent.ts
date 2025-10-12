@@ -166,7 +166,6 @@ export const provider2MovieAgent = {
     defaultModel: "veo-2.0-generate-001",
     models: ["veo-2.0-generate-001", "veo-3.0-generate-preview"],
     keyName: "GEMINI_API_KEY",
-    modelParams: {},
     modelParams: {
       "veo-3.0-generate-preview": {
         durations: [4, 6, 8],
