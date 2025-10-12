@@ -477,12 +477,12 @@ export const images = async (context: MulmoStudioContext, args?: PublicAPIArgs &
     MulmoStudioContextMethods.setSessionState(context, "image", false, false);
     if (error instanceof AuthenticationError) {
       throw new Error("Failed to generate image: 401 Incorrect API key provided with OpenAI", {
-        cause: agentIncorrectAPIKeyError("openaiAgent", imageAction, imageFileTarget),
+        cause: agentIncorrectAPIKeyError("openAIAgent", imageAction, imageFileTarget),
       });
     }
     if (error instanceof RateLimitError) {
       throw new Error("You exceeded your current quota", {
-        cause: agentAPIRateLimitError("openaiAgent", imageAction, imageFileTarget),
+        cause: agentAPIRateLimitError("openAIAgent", imageAction, imageFileTarget),
       });
     }
     throw error;
@@ -526,12 +526,12 @@ export const generateBeatImage = async (inputs: {
   } catch (error) {
     if (error instanceof AuthenticationError) {
       throw new Error("Failed to generate image: 401 Incorrect API key provided with OpenAI", {
-        cause: agentIncorrectAPIKeyError("openaiAgent", imageAction, imageFileTarget),
+        cause: agentIncorrectAPIKeyError("openAIAgent", imageAction, imageFileTarget),
       });
     }
     if (error instanceof RateLimitError) {
       throw new Error("You exceeded your current quota", {
-        cause: agentAPIRateLimitError("openaiAgent", imageAction, imageFileTarget),
+        cause: agentAPIRateLimitError("openAIAgent", imageAction, imageFileTarget),
       });
     }
     throw error;
