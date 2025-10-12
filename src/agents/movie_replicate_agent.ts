@@ -2,10 +2,18 @@ import { readFileSync } from "fs";
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import Replicate from "replicate";
-import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, movieFileTarget } from "../utils/error_cause.js";
+import {
+  apiKeyMissingError,
+  agentGenerationError,
+  agentInvalidResponseError,
+  imageAction,
+  movieFileTarget,
+  videoDurationTarget,
+  unsupportedModelTarget,
+} from "../utils/error_cause.js";
 
 import type { AgentBufferResult, MovieAgentInputs, ReplicateMovieAgentParams, ReplicateMovieAgentConfig } from "../types/agent.js";
-import { provider2MovieAgent } from "../utils/provider2agent.js";
+import { provider2MovieAgent, getModelDuration } from "../utils/provider2agent.js";
 
 async function generateMovie(
   model: `${string}/${string}`,
@@ -42,7 +50,7 @@ async function generateMovie(
       input[start_image] = base64Image;
     } else if (start_image === undefined) {
       throw new Error(`Model ${model} does not support image-to-video generation`, {
-        cause: agentGenerationError("movieReplicateAgent", imageAction, movieFileTarget),
+        cause: agentGenerationError("movieReplicateAgent", imageAction, unsupportedModelTarget),
       });
     } else {
       input.image = base64Image;
@@ -94,24 +102,16 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
   const model = params.model ?? provider2MovieAgent.replicate.defaultModel;
   if (!provider2MovieAgent.replicate.modelParams[model]) {
     throw new Error(`Model ${model} is not supported`, {
-      cause: agentGenerationError("movieReplicateAgent", imageAction, movieFileTarget),
+      cause: agentGenerationError("movieReplicateAgent", imageAction, unsupportedModelTarget),
     });
   }
-  const duration = (() => {
-    const durations = provider2MovieAgent.replicate.modelParams[model].durations;
-    if (params.duration) {
-      const largerDurations = durations.filter((d) => d >= params.duration!);
-      return largerDurations.length > 0 ? largerDurations[0] : durations[durations.length - 1];
-    } else {
-      return durations[0];
-    }
-  })();
+  const duration = getModelDuration("replicate", model, params.duration);
 
-  if (!provider2MovieAgent.replicate.modelParams[model].durations.includes(duration)) {
+  if (duration === undefined || !provider2MovieAgent.replicate.modelParams[model].durations.includes(duration)) {
     throw new Error(
       `Duration ${duration} is not supported for model ${model}. Supported durations: ${provider2MovieAgent.replicate.modelParams[model].durations.join(", ")}`,
       {
-        cause: agentGenerationError("movieReplicateAgent", imageAction, movieFileTarget),
+        cause: agentGenerationError("movieReplicateAgent", imageAction, videoDurationTarget),
       },
     );
   }

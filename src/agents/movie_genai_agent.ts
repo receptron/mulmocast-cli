@@ -1,10 +1,19 @@
 import { readFileSync } from "fs";
 import { GraphAILogger, sleep } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
-import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, movieFileTarget, hasCause } from "../utils/error_cause.js";
+import {
+  apiKeyMissingError,
+  agentGenerationError,
+  agentInvalidResponseError,
+  imageAction,
+  movieFileTarget,
+  videoDurationTarget,
+  hasCause,
+} from "../utils/error_cause.js";
 
 import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, MovieAgentInputs } from "../types/agent.js";
 import { GoogleGenAI, PersonGeneration } from "@google/genai";
+import { getModelDuration } from "../utils/provider2agent.js";
 
 export const getAspectRatio = (canvasSize: { width: number; height: number }): string => {
   if (canvasSize.width > canvasSize.height) {
@@ -24,7 +33,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
   const { prompt, imagePath, movieFile } = namedInputs;
   const aspectRatio = getAspectRatio(params.canvasSize);
   const model = params.model ?? "veo-2.0-generate-001"; // "veo-3.0-generate-preview";
-  const duration = params.duration ?? 8;
+  // const duration = params.duration ?? 8;
   const apiKey = config?.apiKey;
   if (!apiKey) {
     throw new Error("Google GenAI API key is required (GEMINI_API_KEY)", {
@@ -33,6 +42,14 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
   }
 
   try {
+    const requestedDuration = params.duration ?? 8;
+    const duration = getModelDuration("google", model, requestedDuration);
+    if (duration === undefined) {
+      throw new Error(`Duration ${requestedDuration} is not supported for model ${model}.`, {
+        cause: agentGenerationError("movieGenAIAgent", imageAction, videoDurationTarget),
+      });
+    }
+
     const ai = new GoogleGenAI({ apiKey });
     const payload = {
       model,
