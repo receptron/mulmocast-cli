@@ -34,7 +34,6 @@ export const speechOptionsSchema = z
   })
   .strict();
 
-
 const speakerIdSchema = z.string();
 
 export const defaultSpeaker = "Presenter";
