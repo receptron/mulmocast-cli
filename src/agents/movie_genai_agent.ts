@@ -1,7 +1,15 @@
 import { readFileSync } from "fs";
 import { GraphAILogger, sleep } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
-import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, movieFileTarget, hasCause } from "../utils/error_cause.js";
+import {
+  apiKeyMissingError,
+  agentGenerationError,
+  agentInvalidResponseError,
+  imageAction,
+  movieFileTarget,
+  videoDurationTarget,
+  hasCause,
+} from "../utils/error_cause.js";
 
 import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, MovieAgentInputs } from "../types/agent.js";
 import { GoogleGenAI, PersonGeneration } from "@google/genai";
@@ -37,7 +45,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
     const duration = getModelDuration("google", model, params.duration ?? 8);
     if (duration === undefined) {
       throw new Error(`Duration ${duration} is not supported for model ${model}.`, {
-        cause: agentGenerationError("movieGenAIAgent", imageAction, movieFileTarget),
+        cause: agentGenerationError("movieGenAIAgent", imageAction, videoDurationTarget),
       });
     }
 
