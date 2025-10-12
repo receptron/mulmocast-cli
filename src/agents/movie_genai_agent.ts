@@ -5,6 +5,7 @@ import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, im
 
 import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, MovieAgentInputs } from "../types/agent.js";
 import { GoogleGenAI, PersonGeneration } from "@google/genai";
+import { getModelDuration } from "../utils/provider2agent.js";
 
 export const getAspectRatio = (canvasSize: { width: number; height: number }): string => {
   if (canvasSize.width > canvasSize.height) {
@@ -24,7 +25,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
   const { prompt, imagePath, movieFile } = namedInputs;
   const aspectRatio = getAspectRatio(params.canvasSize);
   const model = params.model ?? "veo-2.0-generate-001"; // "veo-3.0-generate-preview";
-  const duration = params.duration ?? 8;
+  // const duration = params.duration ?? 8;
   const apiKey = config?.apiKey;
   if (!apiKey) {
     throw new Error("Google GenAI API key is required (GEMINI_API_KEY)", {
@@ -33,6 +34,13 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
   }
 
   try {
+    const duration = getModelDuration("google", model, params.duration ?? 8);
+    if (duration === undefined) {
+      throw new Error(`Duration ${duration} is not supported for model ${model}.`, {
+        cause: agentGenerationError("movieGenAIAgent", imageAction, movieFileTarget),
+      });
+    }
+
     const ai = new GoogleGenAI({ apiKey });
     const payload = {
       model,
