@@ -42,9 +42,10 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
   }
 
   try {
-    const duration = getModelDuration("google", model, params.duration ?? 8);
+    const requestedDuration = params.duration ?? 8;
+    const duration = getModelDuration("google", model, requestedDuration);
     if (duration === undefined) {
-      throw new Error(`Duration ${duration} is not supported for model ${model}.`, {
+      throw new Error(`Duration ${requestedDuration} is not supported for model ${model}.`, {
         cause: agentGenerationError("movieGenAIAgent", imageAction, videoDurationTarget),
       });
     }
