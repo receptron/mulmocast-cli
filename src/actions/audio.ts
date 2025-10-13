@@ -37,11 +37,6 @@ const getAudioPathOrUrl = (context: MulmoStudioContext, beat: MulmoBeat, maybeAu
   return maybeAudioFile;
 };
 
-// for back forward compatible
-export const getBeatAudioPath = (text: string, context: MulmoStudioContext, beat: MulmoBeat, lang?: string) => {
-  return getBeatAudioPathOrUrl(text, context, beat, lang);
-};
-
 export const getBeatAudioPathOrUrl = (text: string, context: MulmoStudioContext, beat: MulmoBeat, lang?: string) => {
   const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
   const { voiceId, provider, speechOptions, model } = MulmoStudioContextMethods.getAudioParam(context, beat, lang);
