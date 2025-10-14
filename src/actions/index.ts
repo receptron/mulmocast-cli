@@ -8,3 +8,4 @@ export * from "./pdf.js";
 export * from "./translate.js";
 export * from "./markdown.js";
 export * from "./html.js";
+export * from "./bundle.js";
