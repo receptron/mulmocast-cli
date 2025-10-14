@@ -1,16 +1,16 @@
 import path from "path";
 import fs from "fs";
-import { MulmoPresentationStyleMethods } from "../methods";
-import { type MulmoStudioContext } from "../types";
-import { listLocalizedAudioPaths } from "./audio";
+import { GraphAILogger } from "graphai";
+import { MulmoPresentationStyleMethods } from "../methods/index.js";
+import { type MulmoStudioContext, type MulmoBeat } from "../types/index.js";
+import { listLocalizedAudioPaths } from "./audio.js";
 import { imagePreprocessAgent } from "./image_agents.js";
 import { mkdir } from "../utils/file.js";
 
 const beatImage = (context: MulmoStudioContext) => {
-  return async (beat, index) => {
+  return async (beat: MulmoBeat, index: number) => {
     try {
-      const imageAgentInfo = MulmoPresentationStyleMethods.getImageAgentInfo(context.presentationStyle, beat);
-      const res = await imagePreprocessAgent({ context, beat, index, imageAgentInfo, imageRefs: {} });
+      const res = await imagePreprocessAgent({ context, beat, index, imageRefs: {} });
       const { htmlImageFile, imagePath, movieFile, lipSyncFile } = res;
       return { htmlImageFile, imagePath, movieFile, lipSyncFile };
     } catch (e) {
@@ -25,7 +25,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   const images = await Promise.all(context.studio.script.beats.map(beatImage(context)));
   const dir = path.resolve(context.fileDirs.fileName);
   mkdir(dir);
-  const resultJson = [];
+  const resultJson: unknown[] = [];
   audios.forEach((audio) => {
     if (audio) {
       const fileName = path.basename(audio ?? "");
