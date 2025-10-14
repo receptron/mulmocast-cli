@@ -1,7 +1,6 @@
 import path from "path";
 import fs from "fs";
 import { GraphAILogger } from "graphai";
-import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { type MulmoStudioContext, type MulmoBeat } from "../types/index.js";
 import { listLocalizedAudioPaths } from "./audio.js";
 import { imagePreprocessAgent } from "./image_agents.js";
@@ -20,12 +19,20 @@ const beatImage = (context: MulmoStudioContext) => {
   };
 };
 
+type BundleItem = {
+  audio?: string;
+  htmlImageFile?: string;
+  imagePath?: string;
+  movieFile?: string;
+  lipSyncFile?: string;
+};
+
 export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   const audios = listLocalizedAudioPaths(context);
   const images = await Promise.all(context.studio.script.beats.map(beatImage(context)));
   const dir = path.resolve(context.fileDirs.fileName);
   mkdir(dir);
-  const resultJson: unknown[] = [];
+  const resultJson: BundleItem[] = [];
   audios.forEach((audio) => {
     if (audio) {
       const fileName = path.basename(audio ?? "");
@@ -39,11 +46,13 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   });
   images.forEach((image, index) => {
     const data = resultJson[index];
-    ["htmlImageFile", "imagePath", "movieFile", "lipSyncFile"].forEach((key) => {
-      if (image[key]) {
-        data[key] = path.basename(image[key]);
-        if (fs.existsSync(image[key])) {
-          fs.copyFileSync(image[key], path.resolve(dir, path.basename(image[key])));
+    const keys: Exclude<keyof BundleItem, "audio">[] = ["htmlImageFile", "imagePath", "movieFile", "lipSyncFile"];
+    keys.forEach((key) => {
+      const value = image[key];
+      if (value) {
+        data[key] = path.basename(value);
+        if (fs.existsSync(value)) {
+          fs.copyFileSync(value, path.resolve(dir, path.basename(value)));
         }
       }
     });
