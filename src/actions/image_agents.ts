@@ -1,4 +1,4 @@
-import { MulmoStudioContext, MulmoBeat, MulmoCanvasDimension, MulmoImageParams, MulmoMovieParams } from "../types/index.js";
+import { MulmoStudioContext, MulmoBeat, MulmoCanvasDimension, MulmoImageParams, MulmoMovieParams, Text2ImageAgentInfo } from "../types/index.js";
 import { MulmoPresentationStyleMethods, MulmoStudioContextMethods, MulmoBeatMethods, MulmoMediaSourceMethods } from "../methods/index.js";
 import { getBeatPngImagePath, getBeatMoviePaths, getAudioFilePath } from "../utils/file.js";
 import { imagePrompt, htmlImageSystemPrompt } from "../utils/prompt.js";
@@ -13,7 +13,43 @@ const htmlStyle = (context: MulmoStudioContext, beat: MulmoBeat) => {
   };
 };
 
-export const imagePreprocessAgent = async (namedInputs: { context: MulmoStudioContext; beat: MulmoBeat; index: number; imageRefs: Record<string, string> }) => {
+type ImagePreprocessAgentResponse = {
+  imageParams?: MulmoImageParams;
+  movieFile?: string;
+  soundEffectFile?: string;
+  soundEffectPrompt?: string;
+  soundEffectModel?: string;
+  soundEffectAgentInfo?: { agentName: string; defaultModel: string };
+  lipSyncFile?: string;
+  lipSyncModel?: string;
+  lipSyncAgentName?: string;
+  lipSyncTrimAudio?: boolean; // instruction to trim audio from the BGM
+  bgmFile?: string | null;
+  startAt?: number;
+  duration?: number;
+  audioFile?: string;
+  beatDuration?: number;
+  movieAgentInfo?: { agent: string; movieParams: MulmoMovieParams };
+  markdown?: string;
+  html?: string;
+  htmlImageFile?: string;
+  htmlPrompt?: string;
+  htmlPath?: string;
+  htmlImageSystemPrompt?: string;
+  imagePath?: string;
+  referenceImageForMovie?: string;
+  imageFromMovie?: boolean;
+  imageAgentInfo?: Text2ImageAgentInfo;
+  prompt?: string;
+  referenceImages?: string[];
+};
+
+export const imagePreprocessAgent = async (namedInputs: {
+  context: MulmoStudioContext;
+  beat: MulmoBeat;
+  index: number;
+  imageRefs: Record<string, string>;
+}): Promise<ImagePreprocessAgentResponse> => {
   const { context, beat, index, imageRefs } = namedInputs;
 
   const studioBeat = context.studio.beats[index];
@@ -26,26 +62,7 @@ export const imagePreprocessAgent = async (namedInputs: { context: MulmoStudioCo
 
   const imageAgentInfo = MulmoPresentationStyleMethods.getImageAgentInfo(context.presentationStyle, beat);
   const moviePaths = getBeatMoviePaths(context, index);
-  const returnValue: {
-    imageParams: MulmoImageParams;
-    movieFile: string | undefined;
-    soundEffectFile?: string;
-    soundEffectPrompt?: string;
-    soundEffectModel?: string;
-    soundEffectAgentInfo?: { agentName: string; defaultModel: string };
-    lipSyncFile?: string;
-    lipSyncModel?: string;
-    lipSyncAgentName?: string;
-    lipSyncTrimAudio?: boolean; // instruction to trim audio from the BGM
-    bgmFile?: string | null;
-    startAt?: number;
-    duration?: number;
-    audioFile?: string;
-    beatDuration?: number;
-    movieAgentInfo?: { agent: string; movieParams: MulmoMovieParams };
-    markdown?: string;
-    html?: string;
-  } = {
+  const returnValue: ImagePreprocessAgentResponse = {
     imageParams: imageAgentInfo.imageParams,
     movieFile: beat.moviePrompt ? moviePaths.movieFile : undefined,
     beatDuration: beat.duration ?? studioBeat?.duration,
