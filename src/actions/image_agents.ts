@@ -55,8 +55,8 @@ type ImageOnlyMoviePreprocessAgentResponse = ImagePreprocessAgentResponseBase & 
 };
 
 type ImagePluginPreprocessAgentResponse = ImagePreprocessAgentResponseBase & {
-  markdown?: string;
-  html?: string;
+  markdown: string;
+  html: string;
 };
 
 type ImagePreprocessAgentResponse =
