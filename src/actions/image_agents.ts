@@ -13,9 +13,10 @@ const htmlStyle = (context: MulmoStudioContext, beat: MulmoBeat) => {
   };
 };
 
-type ImagePreprocessAgentResponseBase = {
+type ImagePreprocessAgentReturnValue = {
   imageParams?: MulmoImageParams;
   movieFile?: string;
+  beatDuration?: number;
   soundEffectFile?: string;
   soundEffectPrompt?: string;
   soundEffectModel?: string;
@@ -24,22 +25,22 @@ type ImagePreprocessAgentResponseBase = {
   lipSyncModel?: string;
   lipSyncAgentName?: string;
   lipSyncTrimAudio?: boolean; // instruction to trim audio from the BGM
-  bgmFile?: string | null;
   startAt?: number;
   duration?: number;
+  bgmFile?: string | null;
   audioFile?: string;
-  beatDuration?: number;
   movieAgentInfo?: { agent: string; movieParams: MulmoMovieParams };
-  markdown?: string;
-  html?: string;
+};
+
+type ImagePreprocessAgentResponseBase = ImagePreprocessAgentReturnValue & {
   imagePath?: string;
-  referenceImageForMovie?: string;
-  referenceImages?: string[];
 };
 
 type ImageGenearalPreprocessAgentResponse = ImagePreprocessAgentResponseBase & {
   imageAgentInfo: Text2ImageAgentInfo;
   prompt: string;
+  referenceImages: string[];
+  referenceImageForMovie: string;
 };
 
 type ImageHtmlPreprocessAgentResponse = {
@@ -53,9 +54,16 @@ type ImageOnlyMoviePreprocessAgentResponse = ImagePreprocessAgentResponseBase & 
   imageFromMovie: boolean;
 };
 
+type ImagePluginPreprocessAgentResponse = ImagePreprocessAgentResponseBase & {
+  referenceImageForMovie: string;
+  markdown: string;
+  html: string;
+};
+
 type ImagePreprocessAgentResponse =
   | ImagePreprocessAgentResponseBase
   | ImageHtmlPreprocessAgentResponse
+  | ImagePluginPreprocessAgentResponse
   | ImageOnlyMoviePreprocessAgentResponse
   | ImageGenearalPreprocessAgentResponse;
 
@@ -78,7 +86,7 @@ export const imagePreprocessAgent = async (namedInputs: {
 
   const imageAgentInfo = MulmoPresentationStyleMethods.getImageAgentInfo(context.presentationStyle, beat);
   const moviePaths = getBeatMoviePaths(context, index);
-  const returnValue: ImagePreprocessAgentResponse = {
+  const returnValue: ImagePreprocessAgentReturnValue = {
     imageParams: imageAgentInfo.imageParams,
     movieFile: beat.moviePrompt ? moviePaths.movieFile : undefined,
     beatDuration: beat.duration ?? studioBeat?.duration,
@@ -122,20 +130,20 @@ export const imagePreprocessAgent = async (namedInputs: {
   if (beat.image) {
     const plugin = MulmoBeatMethods.getPlugin(beat);
     const pluginPath = plugin.path({ beat, context, imagePath, ...htmlStyle(context, beat) });
-    if (plugin.markdown) {
-      returnValue.markdown = plugin.markdown({ beat, context, imagePath, ...htmlStyle(context, beat) });
-    }
-    if (plugin.html) {
-      returnValue.html = await plugin.html({ beat, context, imagePath, ...htmlStyle(context, beat) });
-    }
+
+    const markdown = plugin.markdown ? plugin.markdown({ beat, context, imagePath, ...htmlStyle(context, beat) }) : undefined;
+    const html = plugin.html ? await plugin.html({ beat, context, imagePath, ...htmlStyle(context, beat) }) : undefined;
 
     const isTypeMovie = beat.image.type === "movie";
     // undefined prompt indicates that image generation is not needed
+    // ImagePluginPreprocessAgentResponse
     return {
       ...returnValue,
       imagePath: isTypeMovie ? undefined : pluginPath,
       movieFile: isTypeMovie ? pluginPath : undefined,
       referenceImageForMovie: pluginPath,
+      markdown,
+      html,
     };
   }
 
