@@ -190,6 +190,18 @@ export const agentGenerationError = (agentName: string, action: string, target: 
   };
 };
 
+// OpenAI Agent API/Generation Errors
+export const openAIAgentGenerationError = (agentName: string, action: string, errorCode: string, errorType: string, beatIndex?: number) => {
+  return {
+    type: apiErrorType,
+    action,
+    agentName,
+    errorCode,
+    errorType,
+    ...(beatIndex !== undefined && { beatIndex }),
+  };
+};
+
 // Agent API/Incorrect Key Errors
 export const agentIncorrectAPIKeyError = (agentName: string, action: string, target: string, beatIndex?: number) => {
   return {
