@@ -1,3 +1,4 @@
+import { type MulmoStudioContext, type MulmoBeat } from "../../src/types/index.js";
 // Helper function to create mock context
 
 export const createMockContext = (): MulmoStudioContext => ({
