@@ -33,7 +33,7 @@ type BundleItem = {
 
 export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   const isZip = true;
-  
+
   const audios = listLocalizedAudioPaths(context);
   const images = await Promise.all(context.studio.script.beats.map(beatImage(context)));
   const dir = path.resolve(context.fileDirs.fileName);
@@ -69,7 +69,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
     // console.log(index, image);
   });
   const viewJsonFileName = "mulmo_view.json";
-  fs.writeFileSync(path.resolve(dir, ), JSON.stringify(resultJson, null, 2));
+  fs.writeFileSync(path.resolve(dir), JSON.stringify(resultJson, null, 2));
   zipper.addFile(path.resolve(dir, "mulmo_view.json"));
   if (isZip) {
     await zipper.finalize();

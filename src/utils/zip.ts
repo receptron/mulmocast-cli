@@ -36,7 +36,7 @@ export class ZipBuilder {
       if (err.code !== "ENOENT") {
         throw err;
       }
-      console.warn("ZIP warning:", err);
+      // console.warn("ZIP warning:", err);
     });
   }
 
@@ -117,7 +117,7 @@ export class ZipBuilder {
     return new Promise((resolve, reject) => {
       this.output.on("close", () => {
         const bytes = this.archive.pointer();
-        console.log(`ZIP archive created: ${this.outputPath} (${bytes} bytes)`);
+        // console.log(`ZIP archive created: ${this.outputPath} (${bytes} bytes)`);
         resolve(this.outputPath);
       });
 
@@ -136,4 +136,3 @@ export class ZipBuilder {
     return this.outputPath;
   }
 }
-
