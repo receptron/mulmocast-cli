@@ -13,7 +13,7 @@ const htmlStyle = (context: MulmoStudioContext, beat: MulmoBeat) => {
   };
 };
 
-type ImagePreprocessAgentResponse = {
+type ImagePreprocessAgentResponseBase = {
   imageParams?: MulmoImageParams;
   movieFile?: string;
   soundEffectFile?: string;
@@ -33,9 +33,6 @@ type ImagePreprocessAgentResponse = {
   markdown?: string;
   html?: string;
   htmlImageFile?: string;
-  htmlPrompt?: string;
-  htmlPath?: string;
-  htmlImageSystemPrompt?: string;
   imagePath?: string;
   referenceImageForMovie?: string;
   imageFromMovie?: boolean;
@@ -43,6 +40,13 @@ type ImagePreprocessAgentResponse = {
   prompt?: string;
   referenceImages?: string[];
 };
+
+type ImageHtmlPreprocessAgentResponse = ImagePreprocessAgentResponseBase & {
+  htmlPrompt: string;
+  htmlPath: string;
+  htmlImageSystemPrompt: string;
+};
+type ImagePreprocessAgentResponse = ImagePreprocessAgentResponseBase | ImageHtmlPreprocessAgentResponse;
 
 export const imagePreprocessAgent = async (namedInputs: {
   context: MulmoStudioContext;
