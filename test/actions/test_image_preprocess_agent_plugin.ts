@@ -34,6 +34,7 @@ test("imagePreprocessAgent - movie plugin", async () => {
     },
     movieFile: "/test/path/upload_image/0/1757884027430.mov",
     beatDuration: undefined,
+    markdown: undefined,
     movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {}, keyName: "REPLICATE_API_TOKEN" },
     imagePath: undefined,
     html:
@@ -176,6 +177,7 @@ test("imagePreprocessAgent - with image plugin (chart)", async () => {
     },
     movieFile: undefined,
     beatDuration: undefined,
+    markdown: undefined,
     movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {}, keyName: "REPLICATE_API_TOKEN" },
     imagePath: "/test/images/test_studio/1p.png",
     referenceImageForMovie: "/test/images/test_studio/1p.png",
