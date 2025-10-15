@@ -52,10 +52,26 @@
 
 ## Beatの長さの決まり方
 
-- **音声ベース**: TTS や `beat.audio` で音声が生成される場合、基本の長さは音声ファイルの実際の長さになります。`presentationStyle.audioParams.padding` / `closingPadding` や beat ごとの `audioParams.padding` があれば、そのぶんが末尾に加算されます。
-- **duration の明示**: beat に `duration` を指定すると、音声より長い場合は残り時間を無音で埋めてその長さに合わせます。音声が無い場合でも `duration` があればその値がそのまま beat の長さになります。
-- **動画ベース**: `image.type: "movie"` や `moviePrompt` で動画が生成され、その長さが音声より長いときは動画の長さが優先されます。動画のみで音声が無い場合も動画の長さが beat の長さになります。
-- **何も無い場合**: 上記のどれも無ければ 1 秒が既定値です。`suppressSpeech: true` の beat では `duration` を指定して字幕表示やカット割りのタイミングを制御してください。
+- **音声ベース**  
+  - TTS や `beat.audio` の実ファイル長が基準。`combineAudioFilesAgent` が ffmpeg で長さを計測し、その時間が beat のコアになります。  
+  - `presentationStyle.audioParams.padding` / `closingPadding` と、beat ごとの `audioParams.padding` があれば末尾に無音を後付けし、`beat.duration = 音声長 + padding` となります。
+- **duration の明示**  
+  - beat に `duration` を指定すると、指定値が音声より長いときは不足分を無音で埋めて調整。音声のほうが長い場合は音声長が優先されます。  
+  - `duration` の無い beat は最低 1 秒が保障され、他から spill してきた音声があればその長さに合わせて伸ばされます。
+- **動画ベース**  
+  - `image.type: "movie"` や `moviePrompt` で動画が生成されると、動画長が音声長より長い場合は動画長を採用。音声が無い beat でも動画があれば動画長がそのまま beat の長さになります。  
+  - movie に速度指定 (`movieParams.speed`) がある場合はそれを反映した長さで計算します。
+- **voice_over の連続**  
+  - `image.type: "voice_over"` が連続するグループは、先頭 beat の動画長を軸に `image.startAt` を使って区切ります。  
+  - 先頭 beat の音声でタイムラインを埋め、`startAt` で次 beat の開始位置を指定。最後の beat には残り時間が丸ごと割り当てられます。
+- **音声が次の beat に跨るケース (spill over)**  
+  - 音声のみの beat で、次の beat に映像も音声も無い場合は、その音声長を複数 beat に分割して割り当てます。  
+  - `duration` 指定のある beat にはその値を優先し、未指定の beat には残り時間を均等配分（最低 1 秒）します。
+- **何も無い場合**  
+  - 音声・動画・`duration` のいずれも無い beat は既定で 1 秒に設定。  
+  - `suppressSpeech: true` の beat は音声が無いので、`duration` か動画素材で必要な時間を必ず明示してください。
+
+最終的な `studio.beats[index].duration` と `startAt` は `combineAudioFilesAgent` が計算します。動画トランジション、字幕（`captionParams`）の表示タイミング、`soundEffectPrompt` の合成位置などはこの duration/startAt を前提に処理されるため、演出に合わせてどの層（音声／動画／duration）で時間を制御するかを意識してスクリプトを設計することが重要です。
 
 ## 1. image.typeの処理
 
