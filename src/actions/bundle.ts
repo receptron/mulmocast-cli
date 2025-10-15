@@ -5,6 +5,7 @@ import { type MulmoStudioContext, type MulmoBeat } from "../types/index.js";
 import { listLocalizedAudioPaths } from "./audio.js";
 import { imagePreprocessAgent } from "./image_agents.js";
 import { mkdir } from "../utils/file.js";
+import { ZipBuilder } from "../utils/zip.js";
 
 const beatImage = (context: MulmoStudioContext) => {
   return async (beat: MulmoBeat, index: number) => {
@@ -31,10 +32,14 @@ type BundleItem = {
 };
 
 export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
+  const isZip = true;
+  
   const audios = listLocalizedAudioPaths(context);
   const images = await Promise.all(context.studio.script.beats.map(beatImage(context)));
   const dir = path.resolve(context.fileDirs.fileName);
   mkdir(dir);
+  const zipper = new ZipBuilder(path.resolve(dir, "mulmo.zip"));
+
   const resultJson: BundleItem[] = [];
   audios.forEach((audio) => {
     if (audio) {
@@ -42,6 +47,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
       resultJson.push({ audio: fileName });
       if (fs.existsSync(audio)) {
         fs.copyFileSync(audio, path.resolve(dir, fileName));
+        zipper.addFile(audio, fileName);
       }
     } else {
       resultJson.push({});
@@ -56,10 +62,16 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
         data[key] = path.basename(value);
         if (fs.existsSync(value)) {
           fs.copyFileSync(value, path.resolve(dir, path.basename(value)));
+          zipper.addFile(value);
         }
       }
     });
     // console.log(index, image);
   });
-  fs.writeFileSync(path.resolve(dir, "mulmo_view.json"), JSON.stringify(resultJson, null, 2));
+  const viewJsonFileName = "mulmo_view.json";
+  fs.writeFileSync(path.resolve(dir, ), JSON.stringify(resultJson, null, 2));
+  zipper.addFile(path.resolve(dir, "mulmo_view.json"));
+  if (isZip) {
+    await zipper.finalize();
+  }
 };
