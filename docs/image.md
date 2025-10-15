@@ -46,9 +46,9 @@
 
 ### suppressSpeech モード
 
-`audioParams.suppressSpeech: true` を指定すると、全ての beat で TTS を生成しません。結果として `audio` ステップで作られる音声ファイルは無音トラックとなり、最終的な音声は `addBGMAgent` がプレゼンテーションスタイルの BGM とミックスしたものになります。字幕付きのミュージックビデオを想定したフローのため、歌詞やセリフは `captionParams`（または beat ごとの `captionParams`）を使って動画に貼り付けます。
+`audioParams.suppressSpeech: true` を指定すると、全ての beat で TTS を生成しません。`audio` ステップで作られる音声ファイルは無音トラックとなり、`addBGMAgent` がプレゼンテーションスタイルの BGM とミックスします。字幕付きのミュージックビデオを想定したフローのため、歌詞やセリフは `captionParams`（または beat ごとの `captionParams`）を使って動画に貼り付けます。
 
-このモードでは音声長でタイミングが決まらないため、各 beat に `duration` を指定するか、動画素材の長さで beat の表示時間を決める運用を推奨します。
+このモードでは音声長でタイミングが決まらないため、各 beat に `duration` を指定するか、動画素材の長さで beat の表示時間を決めます。
 
 ## Beatの長さの決まり方
 
@@ -69,9 +69,9 @@
   - `duration` 指定のある beat にはその値を優先し、未指定の beat には残り時間を均等配分（最低 1 秒）します。
 - **何も無い場合**
   - 音声・動画・`duration` のいずれも無い beat は既定で 1 秒に設定。
-  - `audioParams.suppressSpeech: true` の場合は全ての beat で音声が無いので、各 beat に `duration` を指定するか、動画素材で必要な時間を必ず明示してください。
+  - `audioParams.suppressSpeech: true` の場合は全ての beat で音声が無いので、各 beat に `duration` を指定するか、動画素材で時間を指定します。
 
-最終的な `studio.beats[index].duration` と `startAt` は `combineAudioFilesAgent` が計算します。動画トランジション、字幕（`captionParams`）の表示タイミング、`soundEffectPrompt` の合成位置などはこの duration/startAt を前提に処理されるため、演出に合わせてどの層（音声／動画／duration）で時間を制御するかを意識してスクリプトを設計することが重要です。
+最終的な `studio.beats[index].duration` と `startAt` は `combineAudioFilesAgent` が計算します。動画トランジション、字幕（`captionParams`）の表示タイミング、`soundEffectPrompt` の合成位置などはこの duration/startAt を前提に処理されます。
 
 ## 1. image.typeの処理
 
