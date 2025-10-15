@@ -202,7 +202,6 @@ export const openAIAgentGenerationError = (agentName: string, action: string, er
   };
 };
 
-
 // Agent API/Incorrect Key Errors
 export const agentIncorrectAPIKeyError = (agentName: string, action: string, target: string, beatIndex?: number) => {
   return {
