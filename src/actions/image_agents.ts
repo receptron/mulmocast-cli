@@ -13,7 +13,7 @@ const htmlStyle = (context: MulmoStudioContext, beat: MulmoBeat) => {
   };
 };
 
-type ImagePreprocessAgentResponse = {
+type ImagePreprocessAgentResponseBase = {
   imageParams?: MulmoImageParams;
   movieFile?: string;
   soundEffectFile?: string;
@@ -32,17 +32,32 @@ type ImagePreprocessAgentResponse = {
   movieAgentInfo?: { agent: string; movieParams: MulmoMovieParams };
   markdown?: string;
   html?: string;
-  htmlImageFile?: string;
-  htmlPrompt?: string;
-  htmlPath?: string;
-  htmlImageSystemPrompt?: string;
   imagePath?: string;
   referenceImageForMovie?: string;
-  imageFromMovie?: boolean;
-  imageAgentInfo?: Text2ImageAgentInfo;
-  prompt?: string;
   referenceImages?: string[];
 };
+
+type ImageGenearalPreprocessAgentResponse = ImagePreprocessAgentResponseBase & {
+  imageAgentInfo: Text2ImageAgentInfo;
+  prompt: string;
+};
+
+type ImageHtmlPreprocessAgentResponse = {
+  imagePath: string;
+  htmlPrompt: string;
+  htmlPath: string;
+  htmlImageSystemPrompt: string;
+  htmlImageFile: string;
+};
+type ImageOnlyMoviePreprocessAgentResponse = ImagePreprocessAgentResponseBase & {
+  imageFromMovie: boolean;
+};
+
+type ImagePreprocessAgentResponse =
+  | ImagePreprocessAgentResponseBase
+  | ImageHtmlPreprocessAgentResponse
+  | ImageOnlyMoviePreprocessAgentResponse
+  | ImageGenearalPreprocessAgentResponse;
 
 export const imagePreprocessAgent = async (namedInputs: {
   context: MulmoStudioContext;
@@ -57,6 +72,7 @@ export const imagePreprocessAgent = async (namedInputs: {
   if (beat.htmlPrompt) {
     const htmlPrompt = MulmoBeatMethods.getHtmlPrompt(beat);
     const htmlPath = imagePath.replace(/\.[^/.]+$/, ".html");
+    // ImageHtmlPreprocessAgentResponse
     return { imagePath, htmlPrompt, htmlImageFile, htmlPath, htmlImageSystemPrompt: htmlImageSystemPrompt(context.presentationStyle.canvasSize) };
   }
 
@@ -124,6 +140,7 @@ export const imagePreprocessAgent = async (namedInputs: {
   }
 
   if (beat.moviePrompt && !beat.imagePrompt) {
+    // ImageOnlyMoviePreprocessAgentResponse
     return { ...returnValue, imagePath, imageFromMovie: true }; // no image prompt, only movie prompt
   }
 
@@ -131,6 +148,7 @@ export const imagePreprocessAgent = async (namedInputs: {
   const referenceImages = MulmoBeatMethods.getImageReferenceForImageGenerator(beat, imageRefs);
 
   const prompt = imagePrompt(beat, imageAgentInfo.imageParams.style);
+  // ImageGenearalPreprocessAgentResponse
   return { ...returnValue, imagePath, referenceImageForMovie: imagePath, imageAgentInfo, prompt, referenceImages };
 };
 

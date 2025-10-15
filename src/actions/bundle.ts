@@ -10,8 +10,11 @@ const beatImage = (context: MulmoStudioContext) => {
   return async (beat: MulmoBeat, index: number) => {
     try {
       const res = await imagePreprocessAgent({ context, beat, index, imageRefs: {} });
-      const { htmlImageFile, imagePath, movieFile, lipSyncFile } = res;
-      return { htmlImageFile, imagePath, movieFile, lipSyncFile };
+      if ("htmlPrompt" in res) {
+        return { htmlImageFile: res.htmlImageFile, imagePath: res.imagePath };
+      }
+      const { imagePath, movieFile, lipSyncFile } = res;
+      return { imagePath, movieFile, lipSyncFile };
     } catch (e) {
       GraphAILogger.log(e);
       return {};
