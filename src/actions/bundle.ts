@@ -31,6 +31,9 @@ type BundleItem = {
   lipSyncFile?: string;
 };
 
+const viewJsonFileName = "mulmo_view.json";
+const zipFileName = "mulmo.zip";
+
 export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   const isZip = true;
 
@@ -38,7 +41,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   const images = await Promise.all(context.studio.script.beats.map(beatImage(context)));
   const dir = path.resolve(context.fileDirs.fileName);
   mkdir(dir);
-  const zipper = new ZipBuilder(path.resolve(dir, "mulmo.zip"));
+  const zipper = new ZipBuilder(path.resolve(dir, zipFileName));
 
   const resultJson: BundleItem[] = [];
   audios.forEach((audio) => {
@@ -66,11 +69,9 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
         }
       }
     });
-    // console.log(index, image);
   });
-  const viewJsonFileName = "mulmo_view.json";
-  fs.writeFileSync(path.resolve(dir), JSON.stringify(resultJson, null, 2));
-  zipper.addFile(path.resolve(dir, "mulmo_view.json"));
+  fs.writeFileSync(path.resolve(dir, viewJsonFileName), JSON.stringify(resultJson, null, 2));
+  zipper.addFile(path.resolve(dir, viewJsonFileName));
   if (isZip) {
     await zipper.finalize();
   }

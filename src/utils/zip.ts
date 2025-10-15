@@ -116,7 +116,7 @@ export class ZipBuilder {
 
     return new Promise((resolve, reject) => {
       this.output.on("close", () => {
-        const bytes = this.archive.pointer();
+        // const bytes = this.archive.pointer();
         // console.log(`ZIP archive created: ${this.outputPath} (${bytes} bytes)`);
         resolve(this.outputPath);
       });
