@@ -31,16 +31,16 @@ type ImagePreprocessAgentReturnValue = {
   audioFile?: string;
   movieAgentInfo?: { agent: string; movieParams: MulmoMovieParams };
 };
+
 type ImagePreprocessAgentResponseBase = ImagePreprocessAgentReturnValue & {
   imagePath?: string;
-  referenceImageForMovie?: string;
-  referenceImages?: string[];
 };
-//
 
 type ImageGenearalPreprocessAgentResponse = ImagePreprocessAgentResponseBase & {
   imageAgentInfo: Text2ImageAgentInfo;
   prompt: string;
+  referenceImages: string[];
+  referenceImageForMovie: string;
 };
 
 type ImageHtmlPreprocessAgentResponse = {
@@ -55,6 +55,7 @@ type ImageOnlyMoviePreprocessAgentResponse = ImagePreprocessAgentResponseBase & 
 };
 
 type ImagePluginPreprocessAgentResponse = ImagePreprocessAgentResponseBase & {
+  referenceImageForMovie: string;
   markdown: string;
   html: string;
 };
