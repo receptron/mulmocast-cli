@@ -8,7 +8,7 @@
 6. 1か3の条件で画像が生成・取得された場合で、moviePromptが存在する場合、その画像とmoviePromptで映像を生成する
 7. 1のtype=movie, 4, 6で動画が生成され、beatに`soundEffectPrompt`があれば、動画に対してsoundEffectPromptで指定されている音声を作成・合成する
 8. 動画が生成され、beatに`enableLipSync`の指定があれば、動画と音声ファイルを使って動画のリップシンク処理を行う
-9. beatに`suppressSpeech: true`が指定されている場合、そのbeatではテキストからの音声読み上げ（TTS）を行わず、音声トラックはBGMのみになる
+9. `audioParams.suppressSpeech: true`が指定されている場合、全てのbeatでテキストからの音声読み上げ（TTS）を行わず、音声トラックはBGMのみになる
 
 ## Beat画像・動画生成ルール一覧表
 
@@ -28,7 +28,7 @@
 - *2 image.type = movie の場合
 - *3 「動画あり」かつ「`soundEffectPrompt`」の時にサウンド効果を付与した動画を生成する
 - *4 「動画あり」かつ「音声データあり」の時にリップシンク処理を行った動画を生成する
-- *5  `suppressSpeech: true` に設定すると TTS は行わず、`audio` ステップではBGMだけが合成される
+- *5  `audioParams.suppressSpeech: true` に設定すると TTS は行わず、`audio` ステップではBGMだけが合成される
 
 ### 表の見方
 - **✓**: 設定されている
@@ -46,9 +46,9 @@
 
 ### suppressSpeech モード
 
-`suppressSpeech: true` を指定すると、その beat では TTS を生成しません。結果として `audio` ステップで作られる音声ファイルは無音トラックとなり、最終的な音声は `addBGMAgent` がプレゼンテーションスタイルの BGM とミックスしたものになります。字幕付きのミュージックビデオを想定したフローのため、歌詞やセリフは `captionParams`（または beat ごとの `captionParams`）を使って動画に貼り付けます。
+`audioParams.suppressSpeech: true` を指定すると、全ての beat で TTS を生成しません。結果として `audio` ステップで作られる音声ファイルは無音トラックとなり、最終的な音声は `addBGMAgent` がプレゼンテーションスタイルの BGM とミックスしたものになります。字幕付きのミュージックビデオを想定したフローのため、歌詞やセリフは `captionParams`（または beat ごとの `captionParams`）を使って動画に貼り付けます。
 
-このモードでは音声長でタイミングが決まらないため、`duration` を指定するか、動画素材の長さで beat の表示時間を決める運用を推奨します。
+このモードでは音声長でタイミングが決まらないため、各 beat に `duration` を指定するか、動画素材の長さで beat の表示時間を決める運用を推奨します。
 
 ## Beatの長さの決まり方
 
@@ -67,9 +67,9 @@
 - **音声が次の beat に跨るケース (spill over)**  
   - 音声のみの beat で、次の beat に映像も音声も無い場合は、その音声長を複数 beat に分割して割り当てます。  
   - `duration` 指定のある beat にはその値を優先し、未指定の beat には残り時間を均等配分（最低 1 秒）します。
-- **何も無い場合**  
-  - 音声・動画・`duration` のいずれも無い beat は既定で 1 秒に設定。  
-  - `suppressSpeech: true` の beat は音声が無いので、`duration` か動画素材で必要な時間を必ず明示してください。
+- **何も無い場合**
+  - 音声・動画・`duration` のいずれも無い beat は既定で 1 秒に設定。
+  - `audioParams.suppressSpeech: true` の場合は全ての beat で音声が無いので、各 beat に `duration` を指定するか、動画素材で必要な時間を必ず明示してください。
 
 最終的な `studio.beats[index].duration` と `startAt` は `combineAudioFilesAgent` が計算します。動画トランジション、字幕（`captionParams`）の表示タイミング、`soundEffectPrompt` の合成位置などはこの duration/startAt を前提に処理されるため、演出に合わせてどの層（音声／動画／duration）で時間を制御するかを意識してスクリプトを設計することが重要です。
 
