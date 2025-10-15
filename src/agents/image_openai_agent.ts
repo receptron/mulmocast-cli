@@ -92,8 +92,18 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
           cause: agentAPIRateLimitError("imageOpenaiAgent", imageAction, imageFileTarget),
         });
       }
+      if (error.code && error.type) {
+        throw new Error("Failed to generate image with OpenAI", {
+          cause: openAIAgentGenerationError("imageOpenaiAgent", imageAction, error.code, error.type),
+        });
+      }
+      if (error.type === 'invalid_request_error' && error?.error?.message?.includes("Your organization must be verified")) {
+        throw new Error("Failed to generate image with OpenAI", {
+          cause: openAIAgentGenerationError("imageOpenaiAgent", imageAction, "need_verified_organization", error.type),
+        });
+      }
       throw new Error("Failed to generate image with OpenAI", {
-        cause: openAIAgentGenerationError("imageOpenaiAgent", imageAction, error.code, error.type),
+        cause: agentGenerationError("imageOpenaiAgent", imageAction, imageFileTarget),
       });
     }
   })();
