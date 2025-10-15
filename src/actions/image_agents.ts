@@ -35,7 +35,6 @@ type ImagePreprocessAgentResponseBase = {
   htmlImageFile?: string;
   imagePath?: string;
   referenceImageForMovie?: string;
-  imageFromMovie?: boolean;
   imageAgentInfo?: Text2ImageAgentInfo;
   prompt?: string;
   referenceImages?: string[];
@@ -46,7 +45,10 @@ type ImageHtmlPreprocessAgentResponse = ImagePreprocessAgentResponseBase & {
   htmlPath: string;
   htmlImageSystemPrompt: string;
 };
-type ImagePreprocessAgentResponse = ImagePreprocessAgentResponseBase | ImageHtmlPreprocessAgentResponse;
+type ImageOnlyMoviePreprocessAgentResponse = ImagePreprocessAgentResponseBase & {
+  imageFromMovie: boolean;
+};
+type ImagePreprocessAgentResponse = ImagePreprocessAgentResponseBase | ImageHtmlPreprocessAgentResponse | ImageOnlyMoviePreprocessAgentResponse;
 
 export const imagePreprocessAgent = async (namedInputs: {
   context: MulmoStudioContext;
