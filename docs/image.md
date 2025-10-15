@@ -8,7 +8,7 @@
 6. 1か3の条件で画像が生成・取得された場合で、moviePromptが存在する場合、その画像とmoviePromptで映像を生成する
 7. 1のtype=movie, 4, 6で動画が生成され、beatに`soundEffectPrompt`があれば、動画に対してsoundEffectPromptで指定されている音声を作成・合成する
 8. 動画が生成され、beatに`enableLipSync`の指定があれば、動画と音声ファイルを使って動画のリップシンク処理を行う
-9. beatに`suppressSpeech: true`が指定されている場合、そのbeatではテキストからの音声読み上げ（TTS）を行わない
+9. beatに`suppressSpeech: true`が指定されている場合、そのbeatではテキストからの音声読み上げ（TTS）を行わず、音声トラックはBGMのみになる
 
 ## Beat画像・動画生成ルール一覧表
 
@@ -28,7 +28,7 @@
 - *2 image.type = movie の場合
 - *3 「動画あり」かつ「`soundEffectPrompt`」の時にサウンド効果を付与した動画を生成する
 - *4 「動画あり」かつ「音声データあり」の時にリップシンク処理を行った動画を生成する
-- *5  `suppressSpeech: true` に設定すると TTS は行わない
+- *5  `suppressSpeech: true` に設定すると TTS は行わず、`audio` ステップではBGMだけが合成される
 
 ### 表の見方
 - **✓**: 設定されている
@@ -43,6 +43,19 @@
 4. `moviePrompt`のみの場合は動画のみ生成
 5. 何もない場合は`text`から自動生成
 6. 画像生成後に`moviePrompt`があれば動画も生成
+
+### suppressSpeech モード
+
+`suppressSpeech: true` を指定すると、その beat では TTS を生成しません。結果として `audio` ステップで作られる音声ファイルは無音トラックとなり、最終的な音声は `addBGMAgent` がプレゼンテーションスタイルの BGM とミックスしたものになります。字幕付きのミュージックビデオを想定したフローのため、歌詞やセリフは `captionParams`（または beat ごとの `captionParams`）を使って動画に貼り付けます。
+
+このモードでは音声長でタイミングが決まらないため、`duration` を指定するか、動画素材の長さで beat の表示時間を決める運用を推奨します。
+
+## Beatの長さの決まり方
+
+- **音声ベース**: TTS や `beat.audio` で音声が生成される場合、基本の長さは音声ファイルの実際の長さになります。`presentationStyle.audioParams.padding` / `closingPadding` や beat ごとの `audioParams.padding` があれば、そのぶんが末尾に加算されます。
+- **duration の明示**: beat に `duration` を指定すると、音声より長い場合は残り時間を無音で埋めてその長さに合わせます。音声が無い場合でも `duration` があればその値がそのまま beat の長さになります。
+- **動画ベース**: `image.type: "movie"` や `moviePrompt` で動画が生成され、その長さが音声より長いときは動画の長さが優先されます。動画のみで音声が無い場合も動画の長さが beat の長さになります。
+- **何も無い場合**: 上記のどれも無ければ 1 秒が既定値です。`suppressSpeech: true` の beat では `duration` を指定して字幕表示やカット割りのタイミングを制御してください。
 
 ## 1. image.typeの処理
 
