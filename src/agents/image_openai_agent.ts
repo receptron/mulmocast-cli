@@ -6,6 +6,7 @@ import { provider2ImageAgent } from "../utils/provider2agent.js";
 import {
   apiKeyMissingError,
   agentGenerationError,
+  openAIAgentGenerationError,
   agentIncorrectAPIKeyError,
   agentAPIRateLimitError,
   agentInvalidResponseError,
@@ -92,7 +93,7 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
         });
       }
       throw new Error("Failed to generate image with OpenAI", {
-        cause: agentGenerationError("imageOpenaiAgent", imageAction, imageFileTarget),
+        cause: openAIAgentGenerationError("imageOpenaiAgent", imageAction, error.code, error.type),
       });
     }
   })();
