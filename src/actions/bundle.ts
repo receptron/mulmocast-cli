@@ -8,8 +8,15 @@ import { mkdir } from "../utils/file.js";
 import { ZipBuilder } from "../utils/zip.js";
 import { bundleTargetLang } from "../utils/const.js";
 
+type BeatImageResult = {
+  htmlImageSource?: string;
+  imageSource?: string;
+  videoSource?: string;
+  videoWithAudioSource?: string;
+};
+
 const beatImage = (context: MulmoStudioContext) => {
-  return async (beat: MulmoBeat, index: number) => {
+  return async (beat: MulmoBeat, index: number): Promise<BeatImageResult> => {
     try {
       const res = await imagePreprocessAgent({ context, beat, index, imageRefs: {} });
       if ("htmlPrompt" in res) {
@@ -70,7 +77,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   images.forEach((image, index) => {
     const data = resultJson[index];
 
-    const keys: Exclude<keyof BundleItem, "audioSources">[] = ["htmlImageSource", "imageSource", "videoSource", "videoWithAudioSource"];
+    const keys: (keyof BeatImageResult)[] = ["htmlImageSource", "imageSource", "videoSource", "videoWithAudioSource"];
     keys.forEach((key) => {
       const value = image[key];
       if (value) {
