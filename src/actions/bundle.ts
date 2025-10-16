@@ -98,7 +98,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
       }
     });
   });
-  
+
   fs.writeFileSync(path.resolve(dir, viewJsonFileName), JSON.stringify({ beats: resultJson, bgmSource: context.studio?.script.audioParams?.bgm }, null, 2));
   zipper.addFile(path.resolve(dir, viewJsonFileName));
   if (isZip) {
