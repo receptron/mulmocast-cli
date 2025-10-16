@@ -33,6 +33,7 @@ const beatImage = (context: MulmoStudioContext) => {
 
 type BundleItem = {
   text?: string;
+  duration?: number;
   multiLinguals?: Record<string, string>;
   audioSources?: Record<string, string>;
   imageSource?: string;
@@ -54,7 +55,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
 
   const resultJson: BundleItem[] = [];
   context.studio.script.beats.forEach((beat) => {
-    resultJson.push({ text: beat.text, audioSources: {}, multiLinguals: {} });
+    resultJson.push({ text: beat.text, duration: beat.duration, audioSources: {}, multiLinguals: {} });
   });
 
   for (const lang of bundleTargetLang) {
