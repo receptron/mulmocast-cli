@@ -56,6 +56,8 @@ jobs:
     - run: yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode slide --pdf_size a4
     - run: yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode talk --pdf_size a4
     - run: yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode handout --pdf_size a4
+    - run: yarn run cli pdf scripts/test/test_no_audio.json
+    - run: yarn run cli bundle scripts/test/test_no_audio.json
     - run: yarn run cli markdown scripts/test/test_no_audio.json
     - run: yarn run cli html scripts/test/test_no_audio.json
     - name: Upload generated media
