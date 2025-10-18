@@ -8,7 +8,7 @@
 6. 1か3の条件で画像が生成・取得された場合で、moviePromptが存在する場合、その画像とmoviePromptで映像を生成する
 7. 1のtype=movie, 4, 6で動画が生成され、beatに`soundEffectPrompt`があれば、動画に対してsoundEffectPromptで指定されている音声を作成・合成する
 8. 動画が生成され、beatに`enableLipSync`の指定があれば、動画と音声ファイルを使って動画のリップシンク処理を行う
-9. beatに`suppressSpeech: true`が指定されている場合、そのbeatではテキストからの音声読み上げ（TTS）を行わない
+9. `audioParams.suppressSpeech: true`が指定されている場合、全てのbeatでテキストからの音声読み上げ（TTS）を行わず、音声トラックはBGMのみになる
 
 ## Beat画像・動画生成ルール一覧表
 
@@ -28,7 +28,7 @@
 - *2 image.type = movie の場合
 - *3 「動画あり」かつ「`soundEffectPrompt`」の時にサウンド効果を付与した動画を生成する
 - *4 「動画あり」かつ「音声データあり」の時にリップシンク処理を行った動画を生成する
-- *5  `suppressSpeech: true` に設定すると TTS は行わない
+- *5  `audioParams.suppressSpeech: true` に設定すると TTS は行わず、`audio` ステップではBGMだけが合成される
 
 ### 表の見方
 - **✓**: 設定されている
@@ -43,6 +43,35 @@
 4. `moviePrompt`のみの場合は動画のみ生成
 5. 何もない場合は`text`から自動生成
 6. 画像生成後に`moviePrompt`があれば動画も生成
+
+### suppressSpeech モード
+
+`audioParams.suppressSpeech: true` を指定すると、全ての beat で TTS を生成しません。`audio` ステップで作られる音声ファイルは無音トラックとなり、`addBGMAgent` がプレゼンテーションスタイルの BGM とミックスします。字幕付きのミュージックビデオを想定したフローのため、歌詞やセリフは `captionParams`（または beat ごとの `captionParams`）を使って動画に貼り付けます。
+
+このモードでは音声長でタイミングが決まらないため、各 beat に `duration` を指定するか、動画素材の長さで beat の表示時間を決めます。
+
+## Beatの長さの決まり方
+
+- **音声ベース**  
+  - TTS や `beat.audio` の実ファイル長が基準。`combineAudioFilesAgent` が ffmpeg で長さを計測し、その時間が beat のコアになります。  
+  - `presentationStyle.audioParams.padding` / `closingPadding` と、beat ごとの `audioParams.padding` があれば末尾に無音を後付けし、`beat.duration = 音声長 + padding` となります。
+- **duration の明示**  
+  - beat に `duration` を指定すると、指定値が音声より長いときは不足分を無音で埋めて調整。音声のほうが長い場合は音声長が優先されます。  
+  - `duration` の無い beat は最低 1 秒が保障され、他から spill してきた音声があればその長さに合わせて伸ばされます。
+- **動画ベース**  
+  - `image.type: "movie"` や `moviePrompt` で動画が生成されると、動画長が音声長より長い場合は動画長を採用。音声が無い beat でも動画があれば動画長がそのまま beat の長さになります。  
+  - movie に速度指定 (`movieParams.speed`) がある場合はそれを反映した長さで計算します。
+- **voice_over の連続**  
+  - `image.type: "voice_over"` が連続するグループは、先頭 beat の動画長を軸に `image.startAt` を使って区切ります。  
+  - 先頭 beat の音声でタイムラインを埋め、`startAt` で次 beat の開始位置を指定。最後の beat には残り時間が丸ごと割り当てられます。
+- **音声が次の beat に跨るケース (spill over)**  
+  - 音声のみの beat で、次の beat に映像も音声も無い場合は、その音声長を複数 beat に分割して割り当てます。  
+  - `duration` 指定のある beat にはその値を優先し、未指定の beat には残り時間を均等配分（最低 1 秒）します。
+- **何も無い場合**
+  - 音声・動画・`duration` のいずれも無い beat は既定で 1 秒に設定。
+  - `audioParams.suppressSpeech: true` の場合は全ての beat で音声が無いので、各 beat に `duration` を指定するか、動画素材で時間を指定します。
+
+最終的な `studio.beats[index].duration` と `startAt` は `combineAudioFilesAgent` が計算します。動画トランジション、字幕（`captionParams`）の表示タイミング、`soundEffectPrompt` の合成位置などはこの duration/startAt を前提に処理されます。
 
 ## 1. image.typeの処理
 
