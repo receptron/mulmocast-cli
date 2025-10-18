@@ -26,6 +26,7 @@ test("imagePreprocessAgent - movie plugin", async () => {
   });
 
   const expected = {
+    imageFromMovie: true,
     imageParams: {
       provider: "openai",
       model: "dall-e-3",
@@ -36,7 +37,7 @@ test("imagePreprocessAgent - movie plugin", async () => {
     beatDuration: undefined,
     markdown: undefined,
     movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {}, keyName: "REPLICATE_API_TOKEN" },
-    imagePath: undefined,
+    imagePath: '/test/images/test_studio/1p.png',
     html:
       "\n" +
       '<div class="movie-container mb-6">\n' +
@@ -78,6 +79,7 @@ test("imagePreprocessAgent - with image plugin (textSlide)", async () => {
   });
 
   const expected = {
+    imageFromMovie: false,
     imageParams: {
       provider: "openai",
       model: "dall-e-3",
@@ -112,6 +114,7 @@ test("imagePreprocessAgent - with image plugin (markdown)", async () => {
   });
 
   const expected = {
+    imageFromMovie: false,
     imageParams: {
       provider: "openai",
       model: "dall-e-3",
@@ -169,6 +172,7 @@ test("imagePreprocessAgent - with image plugin (chart)", async () => {
     imageRefs: {},
   });
   const expected = {
+    imageFromMovie: false,
     imageParams: {
       provider: "openai",
       model: "dall-e-3",
@@ -256,6 +260,7 @@ test("imagePreprocessAgent - with image plugin (mermaid)", async () => {
   });
 
   const expected = {
+    imageFromMovie: false,
     imageParams: {
       provider: "openai",
       model: "dall-e-3",
