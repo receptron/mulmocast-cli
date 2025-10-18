@@ -26,14 +26,14 @@ const getPdfSize = (pdfSize: PDFSize) => {
   return pdfSize === "a4" ? "A4" : "Letter";
 };
 
-const loadImage = async (imagePath: string): Promise<string> => {
+const loadImage = async (imagePath: string, index: number): Promise<string> => {
   try {
     const imageData = isHttp(imagePath) ? Buffer.from(await (await fetch(imagePath)).arrayBuffer()) : fs.readFileSync(imagePath);
     const ext = path.extname(imagePath).toLowerCase().replace(".", "");
     const mimeType = ext === "jpg" ? "jpeg" : ext;
     return `data:image/${mimeType};base64,${imageData.toString("base64")}`;
   } catch (error) {
-    GraphAILogger.info("loadImage failed: " + imagePath, error);
+    GraphAILogger.info(`loadImage failed: file: ${imagePath} index: ${index}`, error);
     const placeholderData = fs.readFileSync(mulmoCreditPath());
     return `data:image/png;base64,${placeholderData.toString("base64")}`;
   }
