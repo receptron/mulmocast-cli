@@ -1,3 +1,4 @@
+import { GraphAILogger } from "graphai";
 import { MulmoStudioContext, MulmoBeat, MulmoCanvasDimension, MulmoImageParams, MulmoMovieParams, Text2ImageAgentInfo } from "../types/index.js";
 import { MulmoPresentationStyleMethods, MulmoStudioContextMethods, MulmoBeatMethods, MulmoMediaSourceMethods } from "../methods/index.js";
 import { getBeatPngImagePath, getBeatMoviePaths, getAudioFilePath } from "../utils/file.js";
@@ -93,13 +94,15 @@ export const imagePreprocessAgent = async (namedInputs: {
   };
 
   const isMovie = Boolean(beat.moviePrompt || beat?.image?.type === "movie");
-  if (isMovie) {
-    if (beat.soundEffectPrompt) {
+  if (beat.soundEffectPrompt) {
+    if (isMovie) {
       returnValue.soundEffectAgentInfo = MulmoPresentationStyleMethods.getSoundEffectAgentInfo(context.presentationStyle, beat);
       returnValue.soundEffectModel =
         beat.soundEffectParams?.model ?? context.presentationStyle.soundEffectParams?.model ?? returnValue.soundEffectAgentInfo.defaultModel;
       returnValue.soundEffectFile = moviePaths.soundEffectFile;
       returnValue.soundEffectPrompt = beat.soundEffectPrompt;
+    } else {
+      GraphAILogger.warn(`soundEffectPrompt is set, but there is no video. beat: ${index}`)
     }
   }
 
