@@ -368,7 +368,11 @@ export const mulmoBeatSchema = z
     enableLipSync: z.boolean().optional().describe("Enable lip sync generation for this beat"),
     hidden: z.boolean().optional().describe("Hide this beat from the presentation"),
   })
-  .strict();
+  .strict()
+  .refine((data) => !(data.enableLipSync && data.soundEffectPrompt && data.soundEffectPrompt.trim() !== ""), {
+    message: "enableLipSync and soundEffectPrompt cannot be active at the same time.",
+    path: ["enableLipSync"],
+  });
 
 export const mulmoCanvasDimensionSchema = z
   .object({
