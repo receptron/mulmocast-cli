@@ -37,7 +37,7 @@ test("imagePreprocessAgent - movie plugin", async () => {
     beatDuration: undefined,
     markdown: undefined,
     movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {}, keyName: "REPLICATE_API_TOKEN" },
-    imagePath: '/test/images/test_studio/1p.png',
+    imagePath: "/test/images/test_studio/1p.png",
     html:
       "\n" +
       '<div class="movie-container mb-6">\n' +
