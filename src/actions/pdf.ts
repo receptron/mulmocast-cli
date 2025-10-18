@@ -5,7 +5,7 @@ import { GraphAILogger, sleep } from "graphai";
 import { MulmoStudioContext, PDFMode, PDFSize } from "../types/index.js";
 import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { localizedText, isHttp } from "../utils/utils.js";
-import { getOutputPdfFilePath, writingMessage, getHTMLFile } from "../utils/file.js";
+import { getOutputPdfFilePath, writingMessage, getHTMLFile, mulmoCreditPath } from "../utils/file.js";
 import { interpolate } from "../utils/markdown.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 
@@ -33,8 +33,8 @@ const loadImage = async (imagePath: string): Promise<string> => {
     const mimeType = ext === "jpg" ? "jpeg" : ext;
     return `data:image/${mimeType};base64,${imageData.toString("base64")}`;
   } catch (error) {
-    GraphAILogger.info("loadImage failed", error);
-    const placeholderData = fs.readFileSync("assets/images/mulmocast_credit.png");
+    GraphAILogger.info("loadImage failed: " + imagePath, error);
+    const placeholderData = fs.readFileSync(mulmoCreditPath());
     return `data:image/png;base64,${placeholderData.toString("base64")}`;
   }
 };
