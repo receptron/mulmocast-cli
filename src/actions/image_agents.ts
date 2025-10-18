@@ -102,7 +102,7 @@ export const imagePreprocessAgent = async (namedInputs: {
       returnValue.soundEffectFile = moviePaths.soundEffectFile;
       returnValue.soundEffectPrompt = beat.soundEffectPrompt;
     } else {
-      GraphAILogger.warn(`soundEffectPrompt is set, but there is no video. beat: ${index}`)
+      GraphAILogger.warn(`soundEffectPrompt is set, but there is no video. beat: ${index}`);
     }
   }
 
