@@ -133,10 +133,10 @@ const generatePDFHTML = async (context: MulmoStudioContext, pdfMode: PDFMode, pd
   const { width: imageWidth, height: imageHeight } = MulmoPresentationStyleMethods.getCanvasSize(context.presentationStyle);
   const isLandscapeImage = imageWidth > imageHeight;
 
-  const imagePaths = studio.beats.map((beat) => beat.imageFile!);
+  const imageFiles = studio.beats.map((beat) => beat.htmlImageFile! ?? beat.imageFile!);
   const texts = studio.script.beats.map((beat, index) => localizedText(beat, multiLingual?.[index], lang));
 
-  const imageDataUrls = await Promise.all(imagePaths.map(loadImage));
+  const imageDataUrls = await Promise.all(imageFiles.map(loadImage));
   const defaultPageSize = `${getPdfSize(pdfSize)} ${isLandscapeImage ? "landscape" : "portrait"}`;
   const pageSize = pdfMode === "handout" ? `${getPdfSize(pdfSize)} portrait` : defaultPageSize;
   const pagesHTML = generatePagesHTML(pdfMode, imageDataUrls, texts);
