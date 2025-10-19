@@ -49,7 +49,7 @@
     },
     {
       "speaker": "Presenter",
-      "text": "This is a reference beat.",
+      "text": "This is a image reference beat.",
       "duration": 0.5,
       "image": {
         "type": "beat",
@@ -81,6 +81,7 @@
       }
     },
     {
+      "id": "textSlide",
       "speaker": "Presenter",
       "text": "",
       "duration": 2,
@@ -94,6 +95,7 @@
     },
     {
       "speaker": "Presenter",
+      "id": "pingpongmov",
       "text": "This is a local movie with audio.",
       "image": {
         "type": "movie",
@@ -252,6 +254,24 @@
           "  2025 Mulmocast.",
           "</footer>"
         ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "This is a text slide reference beat.",
+      "duration": 0.5,
+      "image": {
+        "type": "beat",
+        "id": "textSlide"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "This is a movie reference beat.",
+      "duration": 0.5,
+      "image": {
+        "type": "beat",
+        "id": "pingpongmov"
       }
     }
   ]
