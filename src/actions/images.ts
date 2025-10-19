@@ -399,9 +399,9 @@ export const images_graph_data: GraphData = {
               studioBeat.soundEffectFile = referenceBeat.soundEffectFile;
               studioBeat.lipSyncFile = referenceBeat.lipSyncFile;
               studioBeat.hasMovieAudio = referenceBeat.hasMovieAudio;
-              studioBeat.htmlImageFile = referenceBeat.htmlImageFile
-              studioBeat.markdown = referenceBeat.markdown
-              studioBeat.html = referenceBeat.html
+              studioBeat.htmlImageFile = referenceBeat.htmlImageFile;
+              studioBeat.markdown = referenceBeat.markdown;
+              studioBeat.html = referenceBeat.html;
             }
           }
         });
