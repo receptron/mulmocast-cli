@@ -384,7 +384,7 @@ export const images_graph_data: GraphData = {
                 if (beatIndexMap[beat.image.id] !== undefined) {
                   return studio.beats[beatIndexMap[beat.image.id]];
                 } else {
-                  GraphAILogger.info(`reference beat not exist: id=${id}`);
+                  GraphAILogger.info(`reference beat not exist: id=${beat.image.id}`);
                 }
               } else if (index > 0) {
                 return studio.beats[index - 1];
@@ -393,15 +393,16 @@ export const images_graph_data: GraphData = {
             if (referenceBeat === undefined) {
               // error?
               GraphAILogger.info(`reference beat not exist: index=${index}`);
+            } else {
+              studioBeat.imageFile = referenceBeat.imageFile;
+              studioBeat.movieFile = referenceBeat.movieFile;
+              studioBeat.soundEffectFile = referenceBeat.soundEffectFile;
+              studioBeat.lipSyncFile = referenceBeat.lipSyncFile;
+              studioBeat.hasMovieAudio = referenceBeat.hasMovieAudio;
+              studioBeat.htmlImageFile = referenceBeat.htmlImageFile
+              studioBeat.markdown = referenceBeat.markdown
+              studioBeat.html = referenceBeat.html
             }
-            studioBeat.imageFile = referenceBeat.imageFile;
-            studioBeat.movieFile = referenceBeat.movieFile;
-            studioBeat.soundEffectFile = referenceBeat.soundEffectFile;
-            studioBeat.lipSyncFile = referenceBeat.lipSyncFile;
-            studioBeat.hasMovieAudio = referenceBeat.hasMovieAudio;
-            studioBeat.htmlImageFile = referenceBeat.htmlImageFile
-            studioBeat.markdown = referenceBeat.markdown
-            studioBeat.html = referenceBeat.html
           }
         });
         return {
