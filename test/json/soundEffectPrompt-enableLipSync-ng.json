@@ -1,0 +1,48 @@
+{
+  "$mulmocast": {
+    "version": "1.1",
+    "credit": "closing"
+  },
+  "canvasSize": {
+    "width": 1536,
+    "height": 1024
+  },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "displayName": {
+          "en": "Presenter"
+        },
+        "voiceId": "shimmer"
+      }
+    }
+  },
+  "movieParams": {
+    "provider": "replicate"
+  },
+  "soundEffectParams": {
+    "provider": "replicate"
+  },
+  "audioParams": {
+    "padding": 0,
+    "introPadding": 0,
+    "closingPadding": 0,
+    "outroPadding": 0,
+    "bgm": {
+      "kind": "url",
+      "url": "https://raw.githubusercontent.com/receptron/mulmocast-media/refs/heads/main/music/finetuning_with_you.mp3"
+    },
+    "bgmVolume": 1,
+    "audioVolume": 0
+  },
+  "title": "Music Video",
+  "lang": "en",
+  "beats": [
+    {
+      "text": "Whispers hide in silver rain. Every shadow calls your name.",
+      "imagePrompt": "Singer walking alone at night in neon-lit rainy street, holding a clear umbrella, raindrops sparkling, wearing a black mini dress with thigh-high boots, reflective puddles surrounding her.",
+      "soundEffectPrompt": "galloping",
+      "enableLipSync": true
+    }
+  ]
+}
