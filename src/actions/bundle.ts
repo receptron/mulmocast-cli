@@ -104,6 +104,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
         const file = `silent_${index}.mp3`;
         const audioFile = path.resolve(dir, file);
         await createSilentAudio(audioFile, data.duration);
+        zipper.addFile(audioFile);
         data.audioSources.ja = file;
         data.audioSources.en = file;
       }
