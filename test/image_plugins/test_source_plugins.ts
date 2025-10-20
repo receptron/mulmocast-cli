@@ -225,6 +225,7 @@ test("source plugins with unknown source kind", () => {
       image: {
         type: "image",
         source: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           kind: "unknown" as any,
           data: "some data",
         },

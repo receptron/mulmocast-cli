@@ -1,36 +1,11 @@
 import path from "path";
 import fs from "fs";
-import { GraphAILogger } from "graphai";
-import { type MulmoStudioContext, type MulmoBeat } from "../types/index.js";
+import { type MulmoStudioContext, type MulmoStudioBeat } from "../types/index.js";
 import { listLocalizedAudioPaths } from "./audio.js";
-import { imagePreprocessAgent } from "./image_agents.js";
 import { mkdir } from "../utils/file.js";
 import { ZipBuilder } from "../utils/zip.js";
 import { bundleTargetLang } from "../utils/const.js";
 import { createSilentAudio } from "../utils/ffmpeg_utils.js";
-
-type BeatImageResult = {
-  htmlImageSource?: string;
-  imageSource?: string;
-  videoSource?: string;
-  videoWithAudioSource?: string;
-};
-
-const beatImage = (context: MulmoStudioContext) => {
-  return async (beat: MulmoBeat, index: number): Promise<BeatImageResult> => {
-    try {
-      const res = await imagePreprocessAgent({ context, beat, index, imageRefs: {} });
-      if ("htmlPrompt" in res) {
-        return { htmlImageSource: res.htmlImageFile, imageSource: res.imagePath };
-      }
-      const { imagePath, movieFile, lipSyncFile } = res;
-      return { imageSource: imagePath, videoSource: movieFile, videoWithAudioSource: lipSyncFile };
-    } catch (e) {
-      GraphAILogger.log(e);
-      return {};
-    }
-  };
-};
 
 type BundleItem = {
   text?: string;
@@ -41,10 +16,20 @@ type BundleItem = {
   videoSource?: string;
   videoWithAudioSource?: string;
   htmlImageSource?: string;
+  soundEffectSource?: string;
 };
 
 const viewJsonFileName = "mulmo_view.json";
 const zipFileName = "mulmo.zip";
+
+type ImageSourceMapping = readonly [keyof MulmoStudioBeat, keyof BundleItem][];
+const imageSourceMappings: ImageSourceMapping = [
+  ["imageFile", "imageSource"],
+  ["movieFile", "videoSource"],
+  ["soundEffectFile", "soundEffectSource"],
+  ["lipSyncFile", "videoWithAudioSource"],
+  ["htmlImageFile", "htmlImageSource"],
+];
 
 export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   const isZip = true;
@@ -53,11 +38,13 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   mkdir(dir);
   const zipper = new ZipBuilder(path.resolve(dir, zipFileName));
 
+  // text
   const resultJson: BundleItem[] = [];
   context.studio.script.beats.forEach((beat) => {
     resultJson.push({ text: beat.text, duration: beat.duration, audioSources: {}, multiLinguals: {} });
   });
 
+  // audio
   for (const lang of bundleTargetLang) {
     const audios = listLocalizedAudioPaths({ ...context, lang });
     audios.forEach((audio, index) => {
@@ -74,15 +61,13 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
     });
   }
 
-  const images = await Promise.all(context.studio.script.beats.map(beatImage(context)));
-  images.forEach((image, index) => {
+  // image, movie
+  context.studio.beats.forEach((image, index) => {
     const data = resultJson[index];
-
-    const keys: (keyof BeatImageResult)[] = ["htmlImageSource", "imageSource", "videoSource", "videoWithAudioSource"];
-    keys.forEach((key) => {
+    imageSourceMappings.forEach(([key, source]) => {
       const value = image[key];
-      if (value) {
-        data[key] = path.basename(value);
+      if (typeof value === "string") {
+        (data[source] as string) = path.basename(value);
         if (fs.existsSync(value)) {
           fs.copyFileSync(value, path.resolve(dir, path.basename(value)));
           zipper.addFile(value);
@@ -91,6 +76,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
     });
   });
 
+  // silent
   await Promise.all(
     context.studio.script.beats.map(async (__, index) => {
       const data = resultJson[index];
@@ -111,6 +97,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
     }),
   );
 
+  // multiLinguals
   context.multiLingual.forEach((beat, index) => {
     bundleTargetLang.forEach((lang) => {
       if (resultJson[index] && resultJson[index].multiLinguals) {
