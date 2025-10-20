@@ -4,7 +4,7 @@ import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { provider2ImageAgent } from "../utils/provider2agent.js";
 import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, imageFileTarget, hasCause } from "../utils/error_cause.js";
 import type { AgentBufferResult, ImageAgentInputs, ImageAgentParams, GenAIImageAgentConfig } from "../types/agent.js";
-import { GoogleGenAI, PersonGeneration } from "@google/genai";
+import { GoogleGenAI, PersonGeneration, GenerateContentResponse } from "@google/genai";
 import { blankImagePath, blankSquareImagePath, blankVerticalImagePath } from "../utils/file.js";
 
 const getAspectRatio = (canvasSize: { width: number; height: number }): string => {
@@ -24,6 +24,43 @@ export const ratio2BlankPath = (aspectRatio: string) => {
   return blankImagePath();
 };
 
+const getGeminiContents = (prompt: string, aspectRatio: string, referenceImages?: string[] | null) => {
+  const contents: { text?: string; inlineData?: { mimeType: string; data: string } }[] = [{ text: prompt }];
+  const images = [...(referenceImages ?? [])];
+  // NOTE: There is no way to explicitly specify the aspect ratio for Gemini. This is just a hint.
+  images.push(ratio2BlankPath(aspectRatio));
+  images.forEach((imagePath) => {
+    const imageData = fs.readFileSync(imagePath);
+    const base64Image = imageData.toString("base64");
+    contents.push({ inlineData: { mimeType: "image/png", data: base64Image } });
+  });
+  return contents;
+};
+
+const geminiFlashResult = (response: GenerateContentResponse) => {
+  if (!response.candidates?.[0]?.content?.parts) {
+    throw new Error("ERROR: generateContent returned no candidates", {
+      cause: agentInvalidResponseError("imageGenAIAgent", imageAction, imageFileTarget),
+    });
+  }
+  for (const part of response.candidates[0].content.parts) {
+    if (part.text) {
+      GraphAILogger.info("Gemini image generation response:", part.text);
+    } else if (part.inlineData) {
+      const imageData = part.inlineData.data;
+      if (!imageData) {
+        throw new Error("ERROR: generateContent returned no image data", {
+          cause: agentInvalidResponseError("imageGenAIAgent", imageAction, imageFileTarget),
+        });
+      }
+      const buffer = Buffer.from(imageData, "base64");
+      return { buffer };
+    }
+  }
+  throw new Error("ERROR: generateContent returned no image data", {
+    cause: agentInvalidResponseError("imageGenAIAgent", imageAction, imageFileTarget),
+  });
+};
 export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult, ImageAgentInputs, GenAIImageAgentConfig> = async ({
   namedInputs,
   params,
@@ -42,38 +79,9 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
   try {
     const ai = new GoogleGenAI({ apiKey });
     if (model === "gemini-2.5-flash-image-preview") {
-      const contents: { text?: string; inlineData?: { mimeType: string; data: string } }[] = [{ text: prompt }];
-      const images = [...(referenceImages ?? [])];
-      // NOTE: There is no way to explicitly specify the aspect ratio for Gemini. This is just a hint.
-      images.push(ratio2BlankPath(aspectRatio));
-      images.forEach((imagePath) => {
-        const imageData = fs.readFileSync(imagePath);
-        const base64Image = imageData.toString("base64");
-        contents.push({ inlineData: { mimeType: "image/png", data: base64Image } });
-      });
+      const contents = getGeminiContents(prompt, aspectRatio, referenceImages);
       const response = await ai.models.generateContent({ model, contents });
-      if (!response.candidates?.[0]?.content?.parts) {
-        throw new Error("ERROR: generateContent returned no candidates", {
-          cause: agentInvalidResponseError("imageGenAIAgent", imageAction, imageFileTarget),
-        });
-      }
-      for (const part of response.candidates[0].content.parts) {
-        if (part.text) {
-          GraphAILogger.info("Gemini image generation response:", part.text);
-        } else if (part.inlineData) {
-          const imageData = part.inlineData.data;
-          if (!imageData) {
-            throw new Error("ERROR: generateContent returned no image data", {
-              cause: agentInvalidResponseError("imageGenAIAgent", imageAction, imageFileTarget),
-            });
-          }
-          const buffer = Buffer.from(imageData, "base64");
-          return { buffer };
-        }
-      }
-      throw new Error("ERROR: generateContent returned no image data", {
-        cause: agentInvalidResponseError("imageGenAIAgent", imageAction, imageFileTarget),
-      });
+      return geminiFlashResult(response);
     } else {
       const response = await ai.models.generateImages({
         model,
