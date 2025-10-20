@@ -1,9 +1,7 @@
 import path from "path";
 import fs from "fs";
-import { GraphAILogger } from "graphai";
-import { type MulmoStudioContext, type MulmoBeat } from "../types/index.js";
+import { type MulmoStudioContext } from "../types/index.js";
 import { listLocalizedAudioPaths } from "./audio.js";
-import { imagePreprocessAgent } from "./image_agents.js";
 import { mkdir } from "../utils/file.js";
 import { ZipBuilder } from "../utils/zip.js";
 import { bundleTargetLang } from "../utils/const.js";
