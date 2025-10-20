@@ -12,9 +12,16 @@ const getAspectRatio = (canvasSize: { width: number; height: number }): string =
     return "16:9";
   } else if (canvasSize.width < canvasSize.height) {
     return "9:16";
-  } else {
-    return "1:1";
   }
+  return "1:1";
+};
+export const ratio2BlankPath = (aspectRatio: string) => {
+  if (aspectRatio === "9:16") {
+    return blankVerticalImagePath();
+  } else if (aspectRatio === "1:1") {
+    return blankSquareImagePath();
+  }
+  return blankImagePath();
 };
 
 export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult, ImageAgentInputs, GenAIImageAgentConfig> = async ({
@@ -38,13 +45,7 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
       const contents: { text?: string; inlineData?: { mimeType: string; data: string } }[] = [{ text: prompt }];
       const images = [...(referenceImages ?? [])];
       // NOTE: There is no way to explicitly specify the aspect ratio for Gemini. This is just a hint.
-      if (aspectRatio === "9:16") {
-        images.push(blankVerticalImagePath());
-      } else if (aspectRatio === "1:1") {
-        images.push(blankSquareImagePath());
-      } else {
-        images.push(blankImagePath());
-      }
+      images.push(ratio2BlankPath(aspectRatio));
       images.forEach((imagePath) => {
         const imageData = fs.readFileSync(imagePath);
         const base64Image = imageData.toString("base64");
