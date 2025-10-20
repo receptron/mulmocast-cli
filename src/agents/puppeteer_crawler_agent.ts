@@ -24,6 +24,7 @@ const waitStable = async (page: puppeteer.Page, ms = 1200, step = 200) => {
   let last = -1;
   let stable = 0;
   while (stable < ms) {
+    // eslint-disable-next-line no-undef
     const len = await page.evaluate(() => document.body?.innerText?.length || 0);
     stable = len === last ? stable + step : 0;
     last = len;
@@ -59,6 +60,7 @@ const fetchArticle = async (url: string): Promise<Article> => {
     let finalText = text;
     if (finalText.length < 100) {
       const raw = await page.evaluate(() => {
+        // eslint-disable-next-line no-undef
         const el = document.querySelector("article, main, [role=main], .article, .post") || document.body;
         return el?.textContent || "";
       });

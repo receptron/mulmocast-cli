@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { type MulmoStudioContext } from "../types/index.js";
+import { type MulmoStudioContext, type MulmoStudioBeat } from "../types/index.js";
 import { listLocalizedAudioPaths } from "./audio.js";
 import { mkdir } from "../utils/file.js";
 import { ZipBuilder } from "../utils/zip.js";
@@ -16,10 +16,20 @@ type BundleItem = {
   videoSource?: string;
   videoWithAudioSource?: string;
   htmlImageSource?: string;
+  soundEffectSource?: string;
 };
 
 const viewJsonFileName = "mulmo_view.json";
 const zipFileName = "mulmo.zip";
+
+type ImageSourceMapping = readonly [keyof MulmoStudioBeat, keyof BundleItem][];
+const imageSourceMappings: ImageSourceMapping = [
+  ["imageFile", "imageSource"],
+  ["movieFile", "videoSource"],
+  ["soundEffectFile", "soundEffectSource"],
+  ["lipSyncFile", "videoWithAudioSource"],
+  ["htmlImageFile", "htmlImageSource"],
+];
 
 export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   const isZip = true;
@@ -54,16 +64,10 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   // image, movie
   context.studio.beats.forEach((image, index) => {
     const data = resultJson[index];
-    [
-      ["imageFile", "imageSource"],
-      ["movieFile", "videoSource"],
-      ["soundEffectFile", "soundEffectSource"],
-      ["lipSyncFile", "videoWithAudioSource"],
-      ["htmlImageFile", "htmlImageSource"],
-    ].forEach(([key, source]) => {
+    imageSourceMappings.forEach(([key, source]) => {
       const value = image[key];
-      if (value) {
-        data[source] = path.basename(value);
+      if (typeof value === "string") {
+        (data[source] as string) = path.basename(value);
         if (fs.existsSync(value)) {
           fs.copyFileSync(value, path.resolve(dir, path.basename(value)));
           zipper.addFile(value);
