@@ -148,3 +148,17 @@ export const trimMusic = (inputFile: string, startTime: number, duration: number
       });
   });
 };
+
+export const createSilentAudio = (filePath: string, durationSec: number): Promise<void> => {
+  const filter = `anullsrc=r=44100:cl=stereo,atrim=duration=${durationSec},aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo[a]`;
+
+  return new Promise((resolve, reject) => {
+    ffmpeg()
+      .complexFilter([filter])
+      .outputOptions(["-map", "[a]"])
+      .output(filePath)
+      .on("end", () => resolve())
+      .on("error", (err) => reject(err))
+      .run();
+  });
+};
