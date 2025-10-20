@@ -24,7 +24,7 @@ export const ratio2BlankPath = (aspectRatio: string) => {
   return blankImagePath();
 };
 
-const getGeminiContents = (prompt: string, aspectRatio: string, referenceImages?: string[]) => {
+const getGeminiContents = (prompt: string, aspectRatio: string, referenceImages?: string[] | null) => {
   const contents: { text?: string; inlineData?: { mimeType: string; data: string } }[] = [{ text: prompt }];
   const images = [...(referenceImages ?? [])];
   // NOTE: There is no way to explicitly specify the aspect ratio for Gemini. This is just a hint.
