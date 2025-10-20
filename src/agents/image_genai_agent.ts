@@ -24,6 +24,19 @@ export const ratio2BlankPath = (aspectRatio: string) => {
   return blankImagePath();
 };
 
+const getGeminiContents = (prompt: string, aspectRatio: string, referenceImages?: string[]) => {
+  const contents: { text?: string; inlineData?: { mimeType: string; data: string } }[] = [{ text: prompt }];
+  const images = [...(referenceImages ?? [])];
+  // NOTE: There is no way to explicitly specify the aspect ratio for Gemini. This is just a hint.
+  images.push(ratio2BlankPath(aspectRatio));
+  images.forEach((imagePath) => {
+    const imageData = fs.readFileSync(imagePath);
+    const base64Image = imageData.toString("base64");
+    contents.push({ inlineData: { mimeType: "image/png", data: base64Image } });
+  });
+  return contents;
+};
+
 export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult, ImageAgentInputs, GenAIImageAgentConfig> = async ({
   namedInputs,
   params,
@@ -42,15 +55,7 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
   try {
     const ai = new GoogleGenAI({ apiKey });
     if (model === "gemini-2.5-flash-image-preview") {
-      const contents: { text?: string; inlineData?: { mimeType: string; data: string } }[] = [{ text: prompt }];
-      const images = [...(referenceImages ?? [])];
-      // NOTE: There is no way to explicitly specify the aspect ratio for Gemini. This is just a hint.
-      images.push(ratio2BlankPath(aspectRatio));
-      images.forEach((imagePath) => {
-        const imageData = fs.readFileSync(imagePath);
-        const base64Image = imageData.toString("base64");
-        contents.push({ inlineData: { mimeType: "image/png", data: base64Image } });
-      });
+      const contents = getGeminiContents(prompt, aspectRatio, referenceImages);
       const response = await ai.models.generateContent({ model, contents });
       if (!response.candidates?.[0]?.content?.parts) {
         throw new Error("ERROR: generateContent returned no candidates", {
