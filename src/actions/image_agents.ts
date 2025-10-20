@@ -59,6 +59,7 @@ type ImagePluginPreprocessAgentResponse = ImagePreprocessAgentResponseBase & {
   referenceImageForMovie: string;
   markdown: string;
   html: string;
+  referenceBeatId?: string;
 };
 
 type ImagePreprocessAgentResponse =
@@ -149,6 +150,7 @@ export const imagePreprocessAgent = async (namedInputs: {
       referenceImageForMovie: pluginPath,
       markdown,
       html,
+      referenceBeatId: beat.image.type === "beat" ? beat.image.id : undefined,
     };
   }
 

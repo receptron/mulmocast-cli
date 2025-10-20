@@ -14,6 +14,8 @@ type BeatImageResult = {
   imageSource?: string;
   videoSource?: string;
   videoWithAudioSource?: string;
+  id?: string;
+  referenceBeatId?: string;
 };
 
 const beatImage = (context: MulmoStudioContext) => {
@@ -21,10 +23,12 @@ const beatImage = (context: MulmoStudioContext) => {
     try {
       const res = await imagePreprocessAgent({ context, beat, index, imageRefs: {} });
       if ("htmlPrompt" in res) {
-        return { htmlImageSource: res.htmlImageFile, imageSource: res.imagePath };
+        return { htmlImageSource: res.htmlImageFile, imageSource: res.imagePath, id: beat.id };
       }
+
       const { imagePath, movieFile, lipSyncFile } = res;
-      return { imageSource: imagePath, videoSource: movieFile, videoWithAudioSource: lipSyncFile };
+      const referenceBeatId = ("referenceBeatId" in res) ? res.referenceBeatId : undefined;
+      return { imageSource: imagePath, videoSource: movieFile, videoWithAudioSource: lipSyncFile, id: beat.id, referenceBeatId };
     } catch (e) {
       GraphAILogger.log(e);
       return {};
@@ -41,6 +45,8 @@ type BundleItem = {
   videoSource?: string;
   videoWithAudioSource?: string;
   htmlImageSource?: string;
+  id?: string;
+  referenceBeatId?: string;
 };
 
 const viewJsonFileName = "mulmo_view.json";
@@ -75,12 +81,21 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   }
 
   const images = await Promise.all(context.studio.script.beats.map(beatImage(context)));
+  const imageObj = images.reduce((tmp: Record<string, BeatImageResult>, image: BeatImageResult) => {
+    if (image.id) {
+      tmp[image.id] = image;
+    }
+    return tmp;
+  }, {});
+
   images.forEach((image, index) => {
     const data = resultJson[index];
+    const targetImage = image.referenceBeatId && imageObj[image.referenceBeatId] ? imageObj[image.referenceBeatId] : image;
 
     const keys: (keyof BeatImageResult)[] = ["htmlImageSource", "imageSource", "videoSource", "videoWithAudioSource"];
+
     keys.forEach((key) => {
-      const value = image[key];
+      const value = targetImage[key];
       if (value) {
         data[key] = path.basename(value);
         if (fs.existsSync(value)) {
