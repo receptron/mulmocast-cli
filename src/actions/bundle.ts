@@ -7,6 +7,7 @@ import { imagePreprocessAgent } from "./image_agents.js";
 import { mkdir } from "../utils/file.js";
 import { ZipBuilder } from "../utils/zip.js";
 import { bundleTargetLang } from "../utils/const.js";
+import { createSilentAudio } from "../utils/ffmpeg_utils.js";
 
 type BeatImageResult = {
   htmlImageSource?: string;
@@ -42,7 +43,6 @@ type BundleItem = {
   htmlImageSource?: string;
 };
 
-// TODO reference
 const viewJsonFileName = "mulmo_view.json";
 const zipFileName = "mulmo.zip";
 
@@ -90,6 +90,19 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
       }
     });
   });
+
+  // audioSources, videoSource, videoWithAudioSource
+  await Promise.all(
+    context.studio.script.beats.map(async (__, index) => {
+      const data = resultJson[index];
+      if (Object.keys(data.audioSources).length === 0 && data.videoSource === undefined && data.videoWithAudioSource === undefined && data.duration) {
+        const audioFile = path.resolve(dir, `silent_${index}.mp3`);
+        await createSilentAudio(audioFile, data.duration);
+        data.audioSources.ja = audioFile;
+        data.audioSources.en = audioFile;
+      }
+    }),
+  );
 
   context.multiLingual.forEach((beat, index) => {
     bundleTargetLang.forEach((lang) => {
