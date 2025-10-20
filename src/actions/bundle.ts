@@ -94,8 +94,14 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   await Promise.all(
     context.studio.script.beats.map(async (__, index) => {
       const data = resultJson[index];
-      if (Object.keys(data.audioSources).length === 0 && data.videoSource === undefined && data.videoWithAudioSource === undefined && data.duration) {
-        const file = `silent_${index}.mp3`
+      if (
+        data.audioSources &&
+        Object.keys(data.audioSources).length === 0 &&
+        data.videoSource === undefined &&
+        data.videoWithAudioSource === undefined &&
+        data.duration
+      ) {
+        const file = `silent_${index}.mp3`;
         const audioFile = path.resolve(dir, file);
         await createSilentAudio(audioFile, data.duration);
         data.audioSources.ja = file;
