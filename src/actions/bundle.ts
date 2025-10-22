@@ -1,11 +1,51 @@
 import path from "path";
 import fs from "fs";
-import { type MulmoStudioContext, type MulmoStudioBeat, type MulmoViewerBeat, type MulmoViewerData } from "../types/index.js";
+import { GraphAILogger } from "graphai";
+import { type MulmoStudioContext, type MulmoStudioBeat, type MulmoViewerBeat, type MulmoViewerData, type MulmoMediaSource } from "../types/index.js";
 import { listLocalizedAudioPaths } from "./audio.js";
 import { mkdir } from "../utils/file.js";
 import { ZipBuilder } from "../utils/zip.js";
 import { bundleTargetLang } from "../utils/const.js";
 import { createSilentAudio } from "../utils/ffmpeg_utils.js";
+
+const downloadFile = async (url: string, destPath: string): Promise<void> => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to download file from ${url}: ${response.statusText}`);
+  }
+  const buffer = await response.arrayBuffer();
+  fs.writeFileSync(destPath, Buffer.from(buffer));
+};
+
+const processBgm = async (bgm: MulmoMediaSource | undefined, dir: string, zipper: ZipBuilder): Promise<string | undefined> => {
+  if (!bgm) {
+    return undefined;
+  }
+
+  if (bgm.kind === "path") {
+    // Local file path
+    const sourcePath = path.resolve(bgm.path);
+    if (!fs.existsSync(sourcePath)) {
+      GraphAILogger.log(`BGM file not found: ${sourcePath}`);
+      return undefined;
+    }
+    const fileName = path.basename(bgm.path);
+    const destPath = path.resolve(dir, fileName);
+    fs.copyFileSync(sourcePath, destPath);
+    zipper.addFile(sourcePath, fileName);
+    return fileName;
+  } else if (bgm.kind === "url") {
+    // URL download
+    const fileName = path.basename(new URL(bgm.url).pathname) || "bgm.mp3";
+    const destPath = path.resolve(dir, fileName);
+    await downloadFile(bgm.url, destPath);
+    zipper.addFile(destPath);
+    return fileName;
+  }
+
+  // base64 or other formats are not supported
+  return undefined;
+};
 
 const viewJsonFileName = "mulmo_view.json";
 const zipFileName = "mulmo.zip";
@@ -94,7 +134,10 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
     });
   });
 
-  const bundleData: MulmoViewerData = { beats: resultJson, bgmSource: context.studio?.script.audioParams?.bgm };
+  // BGM
+  const bgmFileName = await processBgm(context.studio?.script.audioParams?.bgm, dir, zipper);
+
+  const bundleData: MulmoViewerData = { beats: resultJson, bgmSource: bgmFileName };
   fs.writeFileSync(path.resolve(dir, viewJsonFileName), JSON.stringify(bundleData, null, 2));
   zipper.addFile(path.resolve(dir, viewJsonFileName));
   if (isZip) {
