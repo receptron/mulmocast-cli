@@ -194,7 +194,7 @@ export type PublicAPIArgs = {
 
 export type ImageType = "image" | "movie";
 
-export type BundleItem = {
+export type MulmoViewerBeat = {
   text?: string;
   duration?: number;
   multiLinguals?: Record<string, string>;
@@ -206,7 +206,7 @@ export type BundleItem = {
   soundEffectSource?: string;
 };
 
-export type BundleData = {
-  beats: BundleItem[];
+export type MulmoViewerData = {
+  beats: MulmoViewerBeat[];
   bgmSource?: string;
 };

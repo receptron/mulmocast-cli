@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { type MulmoStudioContext, type MulmoStudioBeat, type BundleItem, type BundleData } from "../types/index.js";
+import { type MulmoStudioContext, type MulmoStudioBeat, type MulmoViewerBeat, type MulmoViewerData } from "../types/index.js";
 import { listLocalizedAudioPaths } from "./audio.js";
 import { mkdir } from "../utils/file.js";
 import { ZipBuilder } from "../utils/zip.js";
@@ -10,7 +10,7 @@ import { createSilentAudio } from "../utils/ffmpeg_utils.js";
 const viewJsonFileName = "mulmo_view.json";
 const zipFileName = "mulmo.zip";
 
-type ImageSourceMapping = readonly [keyof MulmoStudioBeat, keyof BundleItem][];
+type ImageSourceMapping = readonly [keyof MulmoStudioBeat, keyof MulmoViewerBeat][];
 const imageSourceMappings: ImageSourceMapping = [
   ["imageFile", "imageSource"],
   ["movieFile", "videoSource"],
@@ -27,7 +27,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   const zipper = new ZipBuilder(path.resolve(dir, zipFileName));
 
   // text
-  const resultJson: BundleItem[] = [];
+  const resultJson: MulmoViewerBeat[] = [];
   context.studio.script.beats.forEach((beat) => {
     resultJson.push({ text: beat.text, duration: beat.duration, audioSources: {}, multiLinguals: {} });
   });
@@ -94,7 +94,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
     });
   });
 
-  const bundleData: BundleData = { beats: resultJson, bgmSource: context.studio?.script.audioParams?.bgm };
+  const bundleData: MulmoViewerData = { beats: resultJson, bgmSource: context.studio?.script.audioParams?.bgm };
   fs.writeFileSync(path.resolve(dir, viewJsonFileName), JSON.stringify(bundleData, null, 2));
   zipper.addFile(path.resolve(dir, viewJsonFileName));
   if (isZip) {
