@@ -1,23 +1,11 @@
 import path from "path";
 import fs from "fs";
-import { type MulmoStudioContext, type MulmoStudioBeat } from "../types/index.js";
+import { type MulmoStudioContext, type MulmoStudioBeat, type BundleItem, type BundleData } from "../types/index.js";
 import { listLocalizedAudioPaths } from "./audio.js";
 import { mkdir } from "../utils/file.js";
 import { ZipBuilder } from "../utils/zip.js";
 import { bundleTargetLang } from "../utils/const.js";
 import { createSilentAudio } from "../utils/ffmpeg_utils.js";
-
-type BundleItem = {
-  text?: string;
-  duration?: number;
-  multiLinguals?: Record<string, string>;
-  audioSources?: Record<string, string>;
-  imageSource?: string;
-  videoSource?: string;
-  videoWithAudioSource?: string;
-  htmlImageSource?: string;
-  soundEffectSource?: string;
-};
 
 const viewJsonFileName = "mulmo_view.json";
 const zipFileName = "mulmo.zip";
@@ -106,7 +94,8 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
     });
   });
 
-  fs.writeFileSync(path.resolve(dir, viewJsonFileName), JSON.stringify({ beats: resultJson, bgmSource: context.studio?.script.audioParams?.bgm }, null, 2));
+  const bundleData: BundleData = { beats: resultJson, bgmSource: context.studio?.script.audioParams?.bgm };
+  fs.writeFileSync(path.resolve(dir, viewJsonFileName), JSON.stringify(bundleData, null, 2));
   zipper.addFile(path.resolve(dir, viewJsonFileName));
   if (isZip) {
     await zipper.finalize();
