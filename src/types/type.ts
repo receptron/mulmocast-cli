@@ -193,3 +193,20 @@ export type PublicAPIArgs = {
 };
 
 export type ImageType = "image" | "movie";
+
+export type MulmoViewerBeat = {
+  text?: string;
+  duration?: number;
+  multiLinguals?: Record<string, string>;
+  audioSources?: Record<string, string>;
+  imageSource?: string;
+  videoSource?: string;
+  videoWithAudioSource?: string;
+  htmlImageSource?: string;
+  soundEffectSource?: string;
+};
+
+export type MulmoViewerData = {
+  beats: MulmoViewerBeat[];
+  bgmSource?: string;
+};
