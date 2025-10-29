@@ -172,7 +172,7 @@ export const beat_graph_data = {
       defaultValue: {},
     },
     movieGenerator: {
-      if: ":preprocessor.movieFile",
+      if: ":beat.moviePrompt",
       agent: ":preprocessor.movieAgentInfo.agent",
       inputs: {
         media: "movie",
