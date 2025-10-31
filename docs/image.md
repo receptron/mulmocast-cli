@@ -7,7 +7,7 @@
 5. image プロパティもimagePromptもmoviePromptも設定されていない場合、textからイメージプロンプトを生成し、それを使って画像を生成する
 6. 1か3の条件で画像が生成・取得された場合で、moviePromptが存在する場合、その画像とmoviePromptで映像を生成する
 7. 1のtype=movie, 4, 6で動画が生成され、beatに`soundEffectPrompt`があれば、動画に対してsoundEffectPromptで指定されている音声を作成・合成する
-8. 動画が生成され、beatに`enableLipSync`の指定があれば、動画と音声ファイルを使って動画のリップシンク処理を行う
+8. 画像が生成され、beatに`enableLipSync`の指定があれば、画像と音声ファイルを使ってリップシンクの処理を行う。生成物は動画になる。
 9. `audioParams.suppressSpeech: true`が指定されている場合、全てのbeatでテキストからの音声読み上げ（TTS）を行わず、音声トラックはBGMのみになる
 
 ## Beat画像・動画生成ルール一覧表
@@ -15,19 +15,19 @@
 | 条件 | image property | text | htmlPrompt | imagePrompt | moviePrompt | 音声処理 | 画像処理 | 動画処理 | soundEffectPrompt | lipSync | 参照セクション |
 |------|:-----:|:----:|:----------:|:-----------:|:-----------:|----------|----------|----------|:----------:|:-------:|----------------|
 | **1** | ✓*1 | (✓) |  |  |  | textを利用してTTS  *5| image.typeプラグイン | なし |  |  | [1. image.typeの処理](#1-imagetypeの処理) |
-| **1** | *2 | (✓) |  |  |  | textを利用してTTS  *5| なし | image.typeプラグイン | (✓) *3 | (✓) *4 |
-| **1+6** | ✓ | (✓) |  |  | ✓ | textを利用してTTS  *5| image.typeプラグイン | 画像+moviePromptで動画生成 | (✓) *3 | (✓) *4 | [6. moviePrompt and (image or imagePrompt)](#6-movieprompt-and-image-or-imageprompt) |
+| **1** | *2 | (✓) |  |  |  | textを利用してTTS  *5| なし | image.typeプラグイン | (✓) *3 |  |
+| **1+6** | ✓ | (✓) |  |  | ✓ | textを利用してTTS  *5| image.typeプラグイン | 画像+moviePromptで動画生成 | (✓) *3 |  | [6. moviePrompt and (image or imagePrompt)](#6-movieprompt-and-image-or-imageprompt) |
 | **2** |  | (✓) | ✓ |  |  | textを利用してTTS  *5| htmlPromptでHTML生成→画像化 | なし |  |  | [2. htmlPrompt](#2-htmlprompt) |
-| **3** |  | (✓) |  | ✓ |  | textを利用してTTS  *5| imagePromptで画像生成 | なし |  |  | [3. imagePrompt](#3-imageprompt) |
-| **3+6** |  | (✓) |  | ✓ | ✓ | textを利用してTTS  *5| imagePromptで画像生成 | 生成画像+moviePromptで動画生成 | (✓) *3 | (✓) *4 | [6. moviePrompt and (image or imagePrompt)](#6-movieprompt-and-image-or-imageprompt) |
-| **4** |  | (✓) |  |  | ✓ | textを利用してTTS *5| なし | moviePromptで動画生成 | (✓) *3 | (✓) *4 | [4. moviePrompt](#4-movieprompt) |
-| **5** |  | ✓ |  |  |  | textを利用してTTS  *5| text を imagePrompt として画像生成 | なし |  | | [5. no imagePrompt and moviePrompt](#5-no-imageprompt-and-movieprompt) |
+| **3** |  | (✓) |  | ✓ |  | textを利用してTTS  *5| imagePromptで画像生成 | なし |  | (✓) *4 | [3. imagePrompt](#3-imageprompt) |
+| **3+6** |  | (✓) |  | ✓ | ✓ | textを利用してTTS  *5| imagePromptで画像生成 | 生成画像+moviePromptで動画生成 | (✓) *3 |  | [6. moviePrompt and (image or imagePrompt)](#6-movieprompt-and-image-or-imageprompt) |
+| **4** |  | (✓) |  |  | ✓ | textを利用してTTS *5| なし | moviePromptで動画生成 | (✓) *3 || [4. moviePrompt](#4-movieprompt) |
+| **5** |  | ✓ |  |  |  | textを利用してTTS  *5| text を imagePrompt として画像生成 | なし |  | (✓) *4 | [5. no imagePrompt and moviePrompt](#5-no-imageprompt-and-movieprompt) |
 
 ### 注釈
 - *1 image.type = movie 以外の場合
 - *2 image.type = movie の場合
 - *3 「動画あり」かつ「`soundEffectPrompt`」の時にサウンド効果を付与した動画を生成する
-- *4 「動画あり」かつ「音声データあり」の時にリップシンク処理を行った動画を生成する
+- *4 「画像あり」かつ「音声データあり」の時にリップシンク処理を行った動画を生成する
 - *5  `audioParams.suppressSpeech: true` に設定すると TTS は行わず、`audio` ステップではBGMだけが合成される
 
 ### 表の見方
