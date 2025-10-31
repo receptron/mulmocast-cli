@@ -17,14 +17,14 @@
 
 | 条件 | image property | text | htmlPrompt | imagePrompt | moviePrompt | 音声処理 | 画像処理 | 動画処理 | 参照セクション |
 |------|:-----:|:----:|:----------:|:-----------:|:-----------:|----------|----------|----------|----------------|
-| **1** | ✓*1 | (✓) |  |  |  | textを利用してTTS  *5| image.typeプラグイン | なし | [1. image.typeの処理](#1-imagetypeの処理) |
-| **1** | *2 | (✓) |  |  |  | textを利用してTTS  *5| なし | image.typeプラグイン |
-| **1+6** | ✓ | (✓) |  |  | ✓ | textを利用してTTS  *5| image.typeプラグイン | 画像+moviePromptで動画生成 | [6. moviePrompt and (image or imagePrompt)](#6-movieprompt-and-image-or-imageprompt) |
-| **2** |  | (✓) | ✓ |  |  | textを利用してTTS  *5| htmlPromptでHTML生成→画像化 | なし | [2. htmlPrompt](#2-htmlprompt) |
-| **3** |  | (✓) |  | ✓ |  | textを利用してTTS  *5| imagePromptで画像生成 | なし | [3. imagePrompt](#3-imageprompt) |
-| **3+6** |  | (✓) |  | ✓ | ✓ | textを利用してTTS  *5| imagePromptで画像生成 | 生成画像+moviePromptで動画生成 | [6. moviePrompt and (image or imagePrompt)](#6-movieprompt-and-image-or-imageprompt) |
-| **4** |  | (✓) |  |  | ✓ | textを利用してTTS *5| なし | moviePromptで動画生成 | [4. moviePrompt](#4-movieprompt) |
-| **5** |  | ✓ |  |  |  | textを利用してTTS  *5| text を imagePrompt として画像生成 | なし | [5. no imagePrompt and moviePrompt](#5-no-imageprompt-and-movieprompt) |
+| **1** | ✓*1 | (✓) |  |  |  | textを利用してTTS  | image.typeプラグイン | なし | [1. image.typeの処理](#1-imagetypeの処理) |
+| **1** | *2 | (✓) |  |  |  | textを利用してTTS  | なし | image.typeプラグイン |
+| **1+6** | ✓ | (✓) |  |  | ✓ | textを利用してTTS  | image.typeプラグイン | 画像+moviePromptで動画生成 | [6. moviePrompt and (image or imagePrompt)](#6-movieprompt-and-image-or-imageprompt) |
+| **2** |  | (✓) | ✓ |  |  | textを利用してTTS  | htmlPromptでHTML生成→画像化 | なし | [2. htmlPrompt](#2-htmlprompt) |
+| **3** |  | (✓) |  | ✓ |  | textを利用してTTS  | imagePromptで画像生成 | なし | [3. imagePrompt](#3-imageprompt) |
+| **3+6** |  | (✓) |  | ✓ | ✓ | textを利用してTTS  | imagePromptで画像生成 | 生成画像+moviePromptで動画生成 | [6. moviePrompt and (image or imagePrompt)](#6-movieprompt-and-image-or-imageprompt) |
+| **4** |  | (✓) |  |  | ✓ | textを利用してTTS | なし | moviePromptで動画生成 | [4. moviePrompt](#4-movieprompt) |
+| **5** |  | ✓ |  |  |  | textを利用してTTS  | text を imagePrompt として画像生成 | なし | [5. no imagePrompt and moviePrompt](#5-no-imageprompt-and-movieprompt) |
 
 ### 特殊処理
 - 「動画あり」かつ「`soundEffectPrompt`」の時にサウンド効果を付与した動画を生成する
