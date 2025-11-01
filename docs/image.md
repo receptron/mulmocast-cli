@@ -11,7 +11,8 @@
 ### 特殊処理 soundEffectPrompt/enableLipSync/suppressSpeech
 7. 1のtype=movie, 4, 6で動画が生成され、beatに`soundEffectPrompt`があれば、動画に対してsoundEffectPromptで指定されている音声を作成・合成する
 8. 画像が生成され、beatに`enableLipSync`の指定があれば、画像と音声ファイルを使ってリップシンクの処理を行う。生成物は動画になる。
-9. `audioParams.suppressSpeech: true`が指定されている場合、全てのbeatでテキストからの音声読み上げ（TTS）を行わず、音声トラックはBGMのみになる
+   - 注: Replicate 上に動画に対してリップシンク処理が可能なモデルはある、しかし、現時点で MulmoCast 側では動作未確認。なお、将来的にモデル追加する場合は、この生成ロジックの変更は不要。 
+9.  `audioParams.suppressSpeech: true`が指定されている場合、全てのbeatでテキストからの音声読み上げ（TTS）を行わず、音声トラックはBGMのみになる
 
 ## Beat画像・動画生成ルール一覧表
 
