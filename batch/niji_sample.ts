@@ -8,15 +8,15 @@ const nijivoice = [
   { key: "hanamura_honoka", id: "231e0170-0ece-4155-be44-231423062f41", name: "花村ほのか" },
   //  { key: "shitsuya_ren", id: "04c7f4e0-41d8-4d02-9cbe-bf79e635f5ab" },
   { key: "fuyutsuki_hatsune", id: "d158278c-c4fa-461a-b271-468146ad51c9", name: "冬月 初音" },
-  ,
   // { key: "kokemura_marimo", id: "2f982b65-dbc3-4ed6-b355-b0f7c0abaa70", name: "苔村 まりも" },
   /*
-  {
+    {
     key: "haruto_aiden_greenwood",
     id: "29cdf589-e581-4ab0-8467-0cd0c7ba640f",
     name: "陽斗・エイデン・グリーンウッド",
     }
-*/ { key: "nomoto_aiichiro", id: "6eafd860-d757-4469-80d5-3fee8375792d", name: "野本 藍一郎" },
+  */
+  { key: "nomoto_aiichiro", id: "6eafd860-d757-4469-80d5-3fee8375792d", name: "野本 藍一郎" },
   { key: "pono", id: "16e979a8-cd0f-49d4-a4c4-7a25aa42e184", name: "ぽの" },
   { key: "lapis", id: "47abf5ad-5336-4ace-9254-c145590a9576", name: "ラピス" },
   // { key: "asanagi_shizuku", id: "8bd8bcd2-9154-4ada-9c00-69e73e73b799", name: "朝凪 しずく" },
