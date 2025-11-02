@@ -1,0 +1,142 @@
+{
+  "$mulmocast": {
+    "version": "1.0",
+    "credit": "closing"
+  },
+  "speechParams": {
+    "speakers": {
+      "shimmer": {
+        "provider": "openai",
+        "voiceId": "shimmer"
+      },
+      "alloy": {
+        "provider": "openai",
+        "voiceId": "alloy"
+      },
+      "ash": {
+        "provider": "openai",
+        "voiceId": "ash"
+      },
+      "ballad": {
+        "provider": "openai",
+        "voiceId": "ballad"
+      },
+      "coral": {
+        "provider": "openai",
+        "voiceId": "coral"
+      },
+      "echo": {
+        "provider": "openai",
+        "voiceId": "echo"
+      },
+      "fable": {
+        "provider": "openai",
+        "voiceId": "fable"
+      },
+      "nova": {
+        "provider": "openai",
+        "voiceId": "nova"
+      },
+      "onyx": {
+        "provider": "openai",
+        "voiceId": "onyx"
+      },
+      "sage": {
+        "provider": "openai",
+        "voiceId": "sage"
+      }
+    }
+  },
+  "beats": [
+    {
+      "id": "shimmer",
+      "speaker": "shimmer",
+      "text": "こんにちは, これは音声テストです。音声は shimmer です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is shimmer"]
+      }
+    },
+    {
+      "id": "alloy",
+      "speaker": "alloy",
+      "text": "こんにちは, これは音声テストです。音声は alloy です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is alloy"]
+      }
+    },
+    {
+      "id": "ash",
+      "speaker": "ash",
+      "text": "こんにちは, これは音声テストです。音声は ash です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is ash"]
+      }
+    },
+    {
+      "id": "ballad",
+      "speaker": "ballad",
+      "text": "こんにちは, これは音声テストです。音声は ballad です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is ballad"]
+      }
+    },
+    {
+      "id": "coral",
+      "speaker": "coral",
+      "text": "こんにちは, これは音声テストです。音声は coral です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is coral"]
+      }
+    },
+    {
+      "id": "echo",
+      "speaker": "echo",
+      "text": "こんにちは, これは音声テストです。音声は echo です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is echo"]
+      }
+    },
+    {
+      "id": "fable",
+      "speaker": "fable",
+      "text": "こんにちは, これは音声テストです。音声は fable です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is fable"]
+      }
+    },
+    {
+      "id": "nova",
+      "speaker": "nova",
+      "text": "こんにちは, これは音声テストです。音声は nova です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is nova"]
+      }
+    },
+    {
+      "id": "onyx",
+      "speaker": "onyx",
+      "text": "こんにちは, これは音声テストです。音声は onyx です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is onyx"]
+      }
+    },
+    {
+      "id": "sage",
+      "speaker": "sage",
+      "text": "こんにちは, これは音声テストです。音声は sage です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is sage"]
+      }
+    }
+  ]
+}
