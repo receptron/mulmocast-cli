@@ -61,6 +61,7 @@
     "deep_research": "npx tsx ./src/tools/deep_research.ts",
     "template": "npx tsx batch/template2tsobject.ts && yarn run format",
     "mcp_server": "npx tsx ./src/mcp/server.ts",
+    "voice": "npx tsx batch/openai_sample.ts && yarn run movie  scripts/samples/openai_voice.json",
     "generate_action_docs": "npx tsx ./automation/generate_actions_docs/generate_action_docs.ts"
   },
   "repository": "git+ssh://git@github.com/receptron/mulmocast-cli.git",
