@@ -79,6 +79,7 @@ export const beat_graph_data = {
     forceImage: { value: false },
     forceLipSync: { value: false },
     forceSoundEffect: { value: false },
+    withBackup: { value: false },
     preprocessor: {
       agent: imagePreprocessAgent,
       inputs: {
@@ -113,6 +114,7 @@ export const beat_graph_data = {
         },
         cache: {
           force: [":context.force", ":forceImage"],
+          withBackup: [":context.backup", ":withBackup"],
           file: ":preprocessor.htmlPath",
           index: ":__mapIndex",
           id: ":beat.id",
@@ -156,6 +158,7 @@ export const beat_graph_data = {
         referenceImages: ":preprocessor.referenceImages",
         cache: {
           force: [":context.force", ":forceImage"],
+          withBackup: [":context.backup", ":withBackup"],
           file: ":preprocessor.imagePath",
           index: ":__mapIndex",
           id: ":beat.id",
@@ -182,6 +185,7 @@ export const beat_graph_data = {
         movieFile: ":preprocessor.movieFile", // for google genai agent
         cache: {
           force: [":context.force", ":forceMovie"],
+          withBackup: [":context.backup", ":withBackup"],
           file: ":preprocessor.movieFile",
           index: ":__mapIndex",
           id: ":beat.id",
@@ -251,6 +255,7 @@ export const beat_graph_data = {
         },
         cache: {
           force: [":context.force", ":forceSoundEffect"],
+          withBackup: [":context.backup", ":withBackup"],
           file: ":preprocessor.soundEffectFile",
           index: ":__mapIndex",
           id: ":beat.id",
@@ -298,6 +303,7 @@ export const beat_graph_data = {
         },
         cache: {
           force: [":context.force", ":forceLipSync"],
+          withBackup: [":context.backup", ":withBackup"],
           file: ":preprocessor.lipSyncFile",
           index: ":__mapIndex",
           id: ":beat.id",
@@ -518,11 +524,12 @@ export const generateBeatImage = async (inputs: {
     forceImage?: boolean;
     forceLipSync?: boolean;
     forceSoundEffect?: boolean;
+    withBackup?: boolean;
   };
 }) => {
   try {
     const { index, context, args } = inputs;
-    const { settings, callbacks, forceMovie, forceImage, forceLipSync, forceSoundEffect } = args ?? {};
+    const { settings, callbacks, forceMovie, forceImage, forceLipSync, forceSoundEffect, withBackup } = args ?? {};
     const options = await graphOption(context, settings);
     const injections = await prepareGenerateImages(context);
     const graph = new GraphAI(beat_graph_data, defaultAgents, options);
@@ -537,6 +544,7 @@ export const generateBeatImage = async (inputs: {
     graph.injectValue("forceImage", forceImage ?? false);
     graph.injectValue("forceLipSync", forceLipSync ?? false);
     graph.injectValue("forceSoundEffect", forceSoundEffect ?? false);
+    graph.injectValue("withBackup", withBackup ?? false);
     if (callbacks) {
       callbacks.forEach((callback) => {
         graph.registerCallback(callback);
