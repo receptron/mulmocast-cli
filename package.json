@@ -86,7 +86,7 @@
     "@graphai/vanilla_node_agents": "^2.0.4",
     "@inquirer/input": "^4.2.5",
     "@inquirer/select": "^4.4.0",
-    "@modelcontextprotocol/sdk": "^1.21.0",
+    "@modelcontextprotocol/sdk": "^1.21.1",
     "@mozilla/readability": "^0.6.0",
     "@tavily/core": "^0.5.11",
     "archiver": "^7.0.1",
