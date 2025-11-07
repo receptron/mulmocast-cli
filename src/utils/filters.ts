@@ -38,6 +38,8 @@ export const fileCacheAgentFilter: AgentFilterFunction = async (context, next) =
     GraphAILogger.debug(`cache: ${path.basename(file)}`);
     return true;
   }
+  const backup = withBackup && withBackup.some((element: boolean | undefined) => element);
+
   try {
     MulmoStudioContextMethods.setBeatSessionState(mulmoContext, sessionType, index, id, true);
     const output = ((await next(context)) as { buffer?: Buffer; text?: string; saved?: boolean }) || undefined;
@@ -48,12 +50,16 @@ export const fileCacheAgentFilter: AgentFilterFunction = async (context, next) =
     if (buffer) {
       writingMessage(file);
       await fsPromise.writeFile(file, buffer);
-      await fsPromise.writeFile(getBackupFilePath(file), buffer);
+      if (backup) {
+        await fsPromise.writeFile(getBackupFilePath(file), buffer);
+      }
       return true;
     } else if (text) {
       writingMessage(file);
       await fsPromise.writeFile(file, text, "utf-8");
-      await fsPromise.writeFile(getBackupFilePath(file), text, "utf-8");
+      if (backup) {
+        await fsPromise.writeFile(getBackupFilePath(file), text, "utf-8");
+      }
       return true;
     } else if (saved) {
       return true;
