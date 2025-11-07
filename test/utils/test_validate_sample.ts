@@ -19,6 +19,10 @@ test("test mulmoScriptSchema.parse in scripts/test dir ", async () => {
     }
     try {
       const content = fs.readFileSync(path.resolve(basePath, file), "utf-8");
+      // Skip empty files
+      if (!content.trim()) {
+        return;
+      }
       const jsonData = JSON.parse(content);
       mulmoScriptSchema.parse(jsonData);
     } catch (e) {

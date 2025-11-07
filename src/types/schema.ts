@@ -145,7 +145,7 @@ export const mulmoTextSlideMediaSchema = z
 export const mulmoCaptionParamsSchema = z
   .object({
     lang: langSchema.optional(),
-    styles: z.array(z.string()).default([]), // css styles
+    styles: z.array(z.string()).optional().default([]), // css styles
   })
   .strict();
 
@@ -240,7 +240,7 @@ export const mulmoImageParamsImagesValueSchema = z.union([mulmoImageMediaSchema,
 export const mulmoImageParamsImagesSchema = z.record(imageIdSchema, mulmoImageParamsImagesValueSchema);
 export const mulmoFillOptionSchema = z
   .object({
-    style: z.enum(["aspectFit", "aspectFill"]).default("aspectFit"),
+    style: z.enum(["aspectFit", "aspectFill"]).optional().default("aspectFit"),
   })
   .describe("How to handle aspect ratio differences between image and canvas");
 
@@ -288,7 +288,7 @@ export const textSlideParamsSchema = z
 export const beatAudioParamsSchema = z
   .object({
     padding: z.number().optional().describe("Padding between beats"), // seconds
-    movieVolume: z.number().default(1.0).describe("Audio volume of the imported or generated movie"),
+    movieVolume: z.number().optional().default(1.0).describe("Audio volume of the imported or generated movie"),
   })
   .strict();
 
@@ -301,20 +301,20 @@ export const mulmoHtmlImageParamsSchema = z
 // Note: we can't extend beatAudioParamsSchema because it has padding as optional
 export const audioParamsSchema = z
   .object({
-    padding: z.number().default(0.3).describe("Padding between beats"), // seconds
-    introPadding: z.number().default(1.0).describe("Padding at the beginning of the audio"), // seconds
-    closingPadding: z.number().default(0.8).describe("Padding before the last beat"), // seconds
-    outroPadding: z.number().default(1.0).describe("Padding at the end of the audio"), // seconds
+    padding: z.number().optional().default(0.3).describe("Padding between beats"), // seconds
+    introPadding: z.number().optional().default(1.0).describe("Padding at the beginning of the audio"), // seconds
+    closingPadding: z.number().optional().default(0.8).describe("Padding before the last beat"), // seconds
+    outroPadding: z.number().optional().default(1.0).describe("Padding at the end of the audio"), // seconds
     bgm: mediaSourceSchema.optional(),
-    bgmVolume: z.number().default(0.2).describe("Volume of the background music"),
-    audioVolume: z.number().default(1.0).describe("Volume of the audio"),
-    suppressSpeech: z.boolean().default(false).describe("Suppress speech generation"),
+    bgmVolume: z.number().optional().default(0.2).describe("Volume of the background music"),
+    audioVolume: z.number().optional().default(1.0).describe("Volume of the audio"),
+    suppressSpeech: z.boolean().optional().default(false).describe("Suppress speech generation"),
   })
   .strict();
 
 export const htmlPromptParamsSchema = z
   .object({
-    systemPrompt: z.string().default("").optional(),
+    systemPrompt: z.string().optional().default(""),
     prompt: z.string().min(1),
     data: z.any().optional(),
     images: z.record(z.string(), z.any()).optional(),
@@ -337,7 +337,7 @@ export const mulmoLipSyncParamsSchema = z.object({
 export const mulmoBeatSchema = z
   .object({
     speaker: speakerIdSchema.optional(),
-    text: z.string().default("").describe("Text to be spoken. If empty, the audio is not generated."),
+    text: z.string().optional().default("").describe("Text to be spoken. If empty, the audio is not generated."),
     id: z.string().optional().describe("Unique identifier for the beat."),
     description: z.string().optional(),
     image: mulmoImageAssetSchema.optional(),
@@ -406,7 +406,7 @@ export const mulmoReplicateMovieModelSchema = z
 
 export const mulmoTransitionSchema = z.object({
   type: z.enum(["fade", "slideout_left"]),
-  duration: z.number().min(0).max(2).default(0.3), // transition duration in seconds
+  duration: z.number().min(0).max(2).optional().default(0.3), // transition duration in seconds
 });
 
 export const mulmoMovieParamsSchema = z
@@ -446,6 +446,7 @@ export const mulmoPresentationStyleSchema = z.object({
     outroPadding: 1.0,
     bgmVolume: 0.2,
     audioVolume: 1.0,
+    suppressSpeech: false,
   }),
 });
 
@@ -453,7 +454,7 @@ export const mulmoReferenceSchema = z.object({
   url: URLStringSchema,
   title: z.string().optional(),
   description: z.string().optional(),
-  type: z.union([z.enum(["article", "paper", "image", "video", "audio"]), z.string()]).default("article"),
+  type: z.union([z.enum(["article", "paper", "image", "video", "audio"]), z.string()]).optional().default("article"),
 });
 
 export const mulmoScriptSchema = mulmoPresentationStyleSchema
@@ -461,7 +462,7 @@ export const mulmoScriptSchema = mulmoPresentationStyleSchema
     title: z.string().optional(),
     description: z.string().optional(),
     references: z.array(mulmoReferenceSchema).optional(),
-    lang: langSchema, // required (default WAS "en")
+    lang: langSchema.optional().default("en"), // optional with default value "en"
     beats: z.array(mulmoBeatSchema).min(1),
 
     // TODO: Delete it later

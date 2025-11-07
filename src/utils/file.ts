@@ -8,7 +8,7 @@ import type { MulmoScript, MulmoPromptTemplateFile, MulmoPromptTemplate, MulmoSt
 import { MulmoStudioContextMethods } from "../methods/index.js";
 import { mulmoPromptTemplateSchema } from "../types/schema.js";
 import { PDFMode } from "../types/index.js";
-import { ZodSchema, ZodType } from "zod";
+import { z, ZodSchema, ZodType } from "zod";
 import { getMulmoScriptTemplateSystemPrompt } from "./prompt.js";
 import { resolveAssetFile } from "./asset_import.js";
 
@@ -282,7 +282,7 @@ export const writingMessage = (filePath: string): void => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const readAndParseJson = <S extends ZodSchema<any>>(filePath: string, schema: S): ReturnType<S["parse"]> => {
+export const readAndParseJson = <S extends ZodSchema<any>>(filePath: string, schema: S): z.output<S> => {
   const fileContent = fs.readFileSync(filePath, "utf-8");
   const json = JSON.parse(fileContent);
   return schema.parse(json);

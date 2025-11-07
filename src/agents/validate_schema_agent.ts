@@ -26,7 +26,7 @@ export const validateSchemaAgent: AgentFunction<object, ValidateMulmoScriptRespo
     assert(!!text, "text is required");
 
     const jsonData = JSON.parse(text);
-    const parsed = schema.parse(jsonData);
+    const parsed = schema.parse(jsonData) as MulmoScript;
     return {
       isValid: true,
       data: parsed,

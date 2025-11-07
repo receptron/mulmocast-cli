@@ -91,7 +91,7 @@ test("test createStudioData", async () => {
         credit: "closing",
       },
       lang: "en",
-      speechParams: { speakers: { Test: { displayName: { en: "Test" }, voiceId: "shimmer" } } },
+      speechParams: { speakers: { Test: { displayName: { en: "Test" }, voiceId: "shimmer", provider: "openai" } } },
       beats: [{ text: "hello" }],
     },
     "",
@@ -102,7 +102,7 @@ test("test createStudioData", async () => {
       $mulmocast: { version: "1.1", credit: "closing" },
       lang: "en",
       canvasSize: { width: 1280, height: 720 },
-      speechParams: { speakers: { Test: { displayName: { en: "Test" }, voiceId: "shimmer" } } },
+      speechParams: { speakers: { Test: { displayName: { en: "Test" }, voiceId: "shimmer", provider: "openai" } } },
       soundEffectParams: {
         provider: "replicate",
       },

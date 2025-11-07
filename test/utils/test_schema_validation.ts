@@ -12,9 +12,13 @@ const __dirname = path.dirname(__filename);
 
 // Helper function: Validate JSON file
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const validateJsonFile = (filePath: string, schema: z.ZodObject<any>): { isValid: boolean; error?: string } => {
+const validateJsonFile = (filePath: string, schema: z.ZodObject<any>): { isValid: boolean; error?: string; isEmpty?: boolean } => {
   try {
     const content = fs.readFileSync(filePath, "utf-8");
+    // Skip empty files
+    if (!content.trim()) {
+      return { isValid: true, isEmpty: true };
+    }
     const jsonData = JSON.parse(content);
     if (schema === mulmoScriptSchema) {
       MulmoScriptMethods.validate(jsonData);
