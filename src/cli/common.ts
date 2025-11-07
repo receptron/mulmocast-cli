@@ -28,6 +28,11 @@ export const commonOptions = (yargs: Argv) => {
       type: "boolean",
       default: false,
     })
+    .option("backup", {
+      describe: "crete backup media file",
+      type: "boolean",
+      default: false,
+    })
     .option("p", {
       alias: "presentationStyle",
       describe: "Presentation Style",

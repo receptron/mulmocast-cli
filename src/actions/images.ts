@@ -114,7 +114,7 @@ export const beat_graph_data = {
         },
         cache: {
           force: [":context.force", ":forceImage"],
-          withBackup: [":withBackup"],
+          withBackup: [":context.backup", ":withBackup"],
           file: ":preprocessor.htmlPath",
           index: ":__mapIndex",
           id: ":beat.id",
@@ -158,7 +158,7 @@ export const beat_graph_data = {
         referenceImages: ":preprocessor.referenceImages",
         cache: {
           force: [":context.force", ":forceImage"],
-          withBackup: [":withBackup"],
+          withBackup: [":context.backup", ":withBackup"],
           file: ":preprocessor.imagePath",
           index: ":__mapIndex",
           id: ":beat.id",
@@ -185,7 +185,7 @@ export const beat_graph_data = {
         movieFile: ":preprocessor.movieFile", // for google genai agent
         cache: {
           force: [":context.force", ":forceMovie"],
-          withBackup: [":withBackup"],
+          withBackup: [":context.backup", ":withBackup"],
           file: ":preprocessor.movieFile",
           index: ":__mapIndex",
           id: ":beat.id",
@@ -255,7 +255,7 @@ export const beat_graph_data = {
         },
         cache: {
           force: [":context.force", ":forceSoundEffect"],
-          withBackup: [":withBackup"],
+          withBackup: [":context.backup", ":withBackup"],
           file: ":preprocessor.soundEffectFile",
           index: ":__mapIndex",
           id: ":beat.id",
@@ -303,7 +303,7 @@ export const beat_graph_data = {
         },
         cache: {
           force: [":context.force", ":forceLipSync"],
-          withBackup: [":withBackup"],
+          withBackup: [":context.backup", ":withBackup"],
           file: ":preprocessor.lipSyncFile",
           index: ":__mapIndex",
           id: ":beat.id",

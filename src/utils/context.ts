@@ -138,6 +138,7 @@ export const initializeContextFromFiles = async (
   files: FileObject,
   raiseError: boolean,
   force?: boolean,
+  withBackup?: boolean,
   captionLang?: string,
   targetLang?: string,
   index?: number,
@@ -164,6 +165,7 @@ export const initializeContextFromFiles = async (
       presentationStyle: presentationStyle ?? studio.script,
       sessionState: initSessionState(),
       force: Boolean(force),
+      backup: Boolean(withBackup),
       lang: targetLang ?? studio.script.lang, // This lang is target Language. studio.lang is default Language
     };
   } catch (error) {

@@ -107,5 +107,5 @@ export const initializeContext = async (argv: CliArgs<InitOptions>, raiseError: 
   });
   setGraphAILogger(Boolean(argv.v), { files });
 
-  return await initializeContextFromFiles(files, raiseError, Boolean(argv.f), argv.c, argv.l);
+  return await initializeContextFromFiles(files, raiseError, Boolean(argv.f), Boolean(argv.backup), argv.c, argv.l);
 };
