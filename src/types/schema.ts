@@ -10,7 +10,7 @@ import {
 import { currentMulmoScriptVersion } from "../utils/const.js";
 
 export const langSchema = z.string();
-const URLStringSchema = z.string().url();
+const URLStringSchema = z.url();
 
 export const localizedTextSchema = z
   .object({
@@ -573,4 +573,4 @@ export const mulmoStoryboardSchema = z
   .describe("A storyboard for a presentation, a story, a video, etc.")
   .strict();
 
-export const urlsSchema = z.array(z.string().url({ message: "Invalid URL format" }));
+export const urlsSchema = z.array(z.url({ message: "Invalid URL format" }));
