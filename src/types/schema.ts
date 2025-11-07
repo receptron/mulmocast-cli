@@ -454,7 +454,10 @@ export const mulmoReferenceSchema = z.object({
   url: URLStringSchema,
   title: z.string().optional(),
   description: z.string().optional(),
-  type: z.union([z.enum(["article", "paper", "image", "video", "audio"]), z.string()]).optional().default("article"),
+  type: z
+    .union([z.enum(["article", "paper", "image", "video", "audio"]), z.string()])
+    .optional()
+    .default("article"),
 });
 
 export const mulmoScriptSchema = mulmoPresentationStyleSchema
