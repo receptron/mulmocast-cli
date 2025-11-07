@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import fsPromise from "fs/promises";
 import type { AgentFilterFunction } from "graphai";
 import { GraphAILogger } from "graphai";
@@ -20,7 +20,7 @@ export const nijovoiceTextAgentFilter: AgentFilterFunction = async (context, nex
 };
 
 export const fileCacheAgentFilter: AgentFilterFunction = async (context, next) => {
-  const { force, file, index, mulmoContext, sessionType, id } = context.namedInputs.cache;
+  const { force, file, index, mulmoContext, sessionType, id, withBackup } = context.namedInputs.cache;
 
   const shouldUseCache = async () => {
     if (force && force.some((element: boolean | undefined) => element)) {
@@ -48,10 +48,12 @@ export const fileCacheAgentFilter: AgentFilterFunction = async (context, next) =
     if (buffer) {
       writingMessage(file);
       await fsPromise.writeFile(file, buffer);
+      await fsPromise.writeFile(getBackupFilePath(file), buffer);
       return true;
     } else if (text) {
       writingMessage(file);
       await fsPromise.writeFile(file, text, "utf-8");
+      await fsPromise.writeFile(getBackupFilePath(file), text, "utf-8");
       return true;
     } else if (saved) {
       return true;
@@ -78,4 +80,20 @@ export const browserlessCacheGenerator = (cacheDir: string) => {
     return result;
   };
   return browserlessCache;
+};
+
+export const getBackupFilePath = (originalPath: string): string => {
+  const { dir, name, ext } = path.parse(originalPath);
+
+  const now = new Date();
+  const ts = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, "0"),
+    String(now.getDate()).padStart(2, "0"),
+    String(now.getHours()).padStart(2, "0"),
+    String(now.getMinutes()).padStart(2, "0"),
+    String(now.getSeconds()).padStart(2, "0"),
+  ].join("");
+
+  return path.join(dir, `${name}-${ts}${ext}`);
 };
