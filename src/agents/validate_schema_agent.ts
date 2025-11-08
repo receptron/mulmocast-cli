@@ -1,10 +1,9 @@
 import { assert, type AgentFunction, type AgentFunctionInfo, type DefaultConfigData } from "graphai";
-import { MulmoScript } from "../types/index.js";
-import { ZodSchema } from "zod";
+import { type MulmoScript, mulmoScriptSchema } from "../types/index.js";
 
 interface ValidateMulmoScriptInputs {
   text: string;
-  schema: ZodSchema;
+  schema: typeof mulmoScriptSchema;
 }
 
 interface ValidateMulmoScriptResponse {

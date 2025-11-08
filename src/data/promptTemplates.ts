@@ -106,6 +106,7 @@ export const promptTemplates = [
                 voiceId: "9d9ed276-49ee-443a-bc19-26e6136d05f0",
               },
             },
+            provider: "openai",
             speechOptions: {
               instruction: "Speak in a slightly high-pitched, curt tone with sudden flustered shifts—like a tsundere anime girl.",
             },

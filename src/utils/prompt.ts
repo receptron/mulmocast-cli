@@ -1,6 +1,6 @@
 import { MulmoBeat, MulmoScript, MulmoPromptTemplate, MulmoStoryboard, MulmoCanvasDimension } from "../types/index.js";
 import { mulmoScriptSchema } from "../types/schema.js";
-import { zodToJsonSchema } from "zod-to-json-schema";
+import { z } from "zod";
 
 export const imagePrompt = (beat: MulmoBeat, style?: string) => {
   return (beat.imagePrompt || `generate image appropriate for the text. text: ${beat.text}`) + "\n" + (style || "");
@@ -22,9 +22,7 @@ export const getMulmoScriptTemplateSystemPrompt = (template: MulmoPromptTemplate
   }
 
   // script is not provided, use the default schema
-  const defaultSchema = zodToJsonSchema(mulmoScriptSchema, {
-    strictUnions: true,
-  });
+  const defaultSchema = z.toJSONSchema(mulmoScriptSchema);
 
   const specificOutputPrompt = `The output should follow the JSON schema specified below. Please provide your response as valid JSON within \`\`\`json code blocks for clarity.`;
   return `${template.systemPrompt}\n\n${specificOutputPrompt}\n\n\`\`\`JSON\n${JSON.stringify(defaultSchema)}\n\`\`\``;

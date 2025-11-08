@@ -29,7 +29,7 @@ test("test zod", async () => {
       speechParams: { speakers: { Presenter: { displayName: { en: "Presenter" }, voiceId: "shimmer", provider: "openai" } } },
       imageParams: { provider: "openai", images: {} },
       soundEffectParams: { provider: "replicate" },
-      audioParams: { padding: 0.3, introPadding: 1, closingPadding: 0.8, outroPadding: 1, bgmVolume: 0.2, audioVolume: 1, suppressSpeech: false },
+      audioParams: { introPadding: 1, padding: 0.3, closingPadding: 0.8, outroPadding: 1, bgmVolume: 0.2, audioVolume: 1, suppressSpeech: false },
       title: "title",
       description: "INITIAL_DESCRIPTION",
       lang: "en",
