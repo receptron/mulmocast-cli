@@ -1,10 +1,9 @@
 import { assert, type AgentFunction, type AgentFunctionInfo, type DefaultConfigData } from "graphai";
-import { MulmoScript } from "../types/index.js";
-import { ZodSchema } from "zod";
+import { type MulmoScript, mulmoScriptSchema } from "../types/index.js";
 
 interface ValidateMulmoScriptInputs {
   text: string;
-  schema: ZodSchema;
+  schema: typeof mulmoScriptSchema;
 }
 
 interface ValidateMulmoScriptResponse {
@@ -26,7 +25,7 @@ export const validateSchemaAgent: AgentFunction<object, ValidateMulmoScriptRespo
     assert(!!text, "text is required");
 
     const jsonData = JSON.parse(text);
-    const parsed = schema.parse(jsonData) as MulmoScript;
+    const parsed = schema.parse(jsonData);
     return {
       isValid: true,
       data: parsed,
