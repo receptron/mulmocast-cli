@@ -363,6 +363,7 @@ export const mulmoBeatSchema = z
     imageNames: z.array(imageIdSchema).optional(), // list of image names to use for image generation. The default is all images in the imageParams.images.
     imagePrompt: z.string().optional(),
     moviePrompt: z.string().optional(),
+    playGenMovieToEnd: z.boolean().optional(),
     soundEffectPrompt: z.string().optional(),
     htmlPrompt: htmlPromptParamsSchema.optional(),
     enableLipSync: z.boolean().optional().describe("Enable lip sync generation for this beat"),

@@ -9,19 +9,31 @@ import {
   FfmpegContextInputFormattedAudio,
   ffmpegGetMediaDuration,
 } from "../utils/ffmpeg_utils.js";
+import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { MulmoMediaSourceMethods } from "../methods/mulmo_media_source.js";
 import { userAssert } from "../utils/utils.js";
 import { getAudioInputIdsError } from "../utils/error_cause.js";
+import { provider2MovieAgent, getModelDuration } from "../utils/provider2agent.js";
 
-const getMovieDuration = async (context: MulmoStudioContext, beat: MulmoBeat) => {
+const getMovieDuration = async (context: MulmoStudioContext, beat: MulmoBeat, audioDuration: number) => {
+  const speed = beat.movieParams?.speed ?? 1.0;
   if (beat.image?.type === "movie") {
     const pathOrUrl = MulmoMediaSourceMethods.resolve(beat.image.source, context);
     if (pathOrUrl) {
-      const speed = beat.movieParams?.speed ?? 1.0;
       const { duration, hasAudio } = await ffmpegGetMediaDuration(pathOrUrl);
       return { duration: duration / speed, hasAudio };
     }
   }
+  if (beat.moviePrompt && beat.playGenMovieToEnd) {
+    const movieAgentInfo = MulmoPresentationStyleMethods.getMovieAgentInfo(context.presentationStyle, beat);
+    const { provider } = movieAgentInfo.movieParams;
+    const model = movieAgentInfo.movieParams.model ?? provider2MovieAgent[provider].defaultModel;
+
+    const requestedDuration = audioDuration ?? 8;
+    const duration = getModelDuration(provider, model, requestedDuration);
+    return { duration: duration / speed, hasAudio: false };
+  }
+
   return { duration: 0, hasAudio: false };
 };
 
@@ -56,8 +68,9 @@ const getMediaDurationsOfAllBeats = (context: MulmoStudioContext): Promise<Media
   return Promise.all(
     context.studio.beats.map(async (studioBeat: MulmoStudioBeat, index: number) => {
       const beat = context.studio.script.beats[index];
-      const { duration: movieDuration, hasAudio: hasMovieAudio } = await getMovieDuration(context, beat);
       const audioDuration = studioBeat.audioFile ? (await ffmpegGetMediaDuration(studioBeat.audioFile)).duration : 0;
+      const expectDuration = Math.max(audioDuration, beat.duration);
+      const { duration: movieDuration, hasAudio: hasMovieAudio } = await getMovieDuration(context, beat, expectDuration);
       return {
         movieDuration,
         audioDuration,

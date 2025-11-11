@@ -1,0 +1,32 @@
+{
+  "$mulmocast": {
+    "version": "1.1",
+    "credit": "closing"
+  },
+  "canvasSize": {
+    "width": 1536,
+    "height": 1024
+  },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "displayName": {
+          "en": "Presenter"
+        },
+        "voiceId": "shimmer"
+      }
+    }
+  },
+  "movieParams": {
+    "provider": "replicate"
+  },
+  "title": "Music Video",
+  "lang": "ja",
+  "beats": [
+    {
+      "text": "こんにちは",
+      "moviePrompt": "The singer preparing to sing a song.",
+      "playGenMovieToEnd": true
+    }
+  ]
+}
