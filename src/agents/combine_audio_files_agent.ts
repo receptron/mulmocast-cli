@@ -26,7 +26,7 @@ const getMovieDuration = async (context: MulmoStudioContext, beat: MulmoBeat, au
   }
   if (beat.moviePrompt && beat.playGenMovieToEnd) {
     const movieAgentInfo = MulmoPresentationStyleMethods.getMovieAgentInfo(context.presentationStyle, beat);
-    const provider = movieAgentInfo.movieParams.provider!;
+    const provider = movieAgentInfo.movieParams.provider! as keyof typeof provider2MovieAgent;
     const model = movieAgentInfo.movieParams.model ?? provider2MovieAgent[provider].defaultModel;
 
     const requestedDuration = audioDuration ?? 8;
