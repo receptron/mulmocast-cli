@@ -20,7 +20,7 @@
   "movieParams": {
     "provider": "replicate"
   },
-  "title": "Music Video",
+  "title": "playGenMovieToEnd",
   "lang": "ja",
   "beats": [
     {
