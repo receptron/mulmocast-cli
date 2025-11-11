@@ -26,12 +26,14 @@ const getMovieDuration = async (context: MulmoStudioContext, beat: MulmoBeat, au
   }
   if (beat.moviePrompt && beat.playGenMovieToEnd) {
     const movieAgentInfo = MulmoPresentationStyleMethods.getMovieAgentInfo(context.presentationStyle, beat);
-    const { provider } = movieAgentInfo.movieParams;
+    const provider = movieAgentInfo.movieParams.provider!;
     const model = movieAgentInfo.movieParams.model ?? provider2MovieAgent[provider].defaultModel;
 
     const requestedDuration = audioDuration ?? 8;
     const duration = getModelDuration(provider, model, requestedDuration);
-    return { duration: duration / speed, hasAudio: false };
+    if (duration) {
+      return { duration: duration / speed, hasAudio: false };
+    }
   }
 
   return { duration: 0, hasAudio: false };
@@ -69,7 +71,7 @@ const getMediaDurationsOfAllBeats = (context: MulmoStudioContext): Promise<Media
     context.studio.beats.map(async (studioBeat: MulmoStudioBeat, index: number) => {
       const beat = context.studio.script.beats[index];
       const audioDuration = studioBeat.audioFile ? (await ffmpegGetMediaDuration(studioBeat.audioFile)).duration : 0;
-      const expectDuration = Math.max(audioDuration, beat.duration);
+      const expectDuration = Math.max(audioDuration, beat.duration ?? 0);
       const { duration: movieDuration, hasAudio: hasMovieAudio } = await getMovieDuration(context, beat, expectDuration);
       return {
         movieDuration,
