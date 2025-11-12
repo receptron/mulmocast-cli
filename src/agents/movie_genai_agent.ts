@@ -32,8 +32,8 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
 }) => {
   const { prompt, imagePath, movieFile } = namedInputs;
   const aspectRatio = getAspectRatio(params.canvasSize);
-  const model = params.model ?? provider2MovieAgent.google.defaultModel; // "veo-3.0-generate-preview";
-  // const duration = params.duration ?? 8;
+  const model = params.model ?? provider2MovieAgent.google.defaultModel;
+
   const apiKey = config?.apiKey;
   if (!apiKey) {
     throw new Error("Google GenAI API key is required (GEMINI_API_KEY)", {
@@ -120,7 +120,6 @@ const movieGenAIAgentInfo: AgentFunctionInfo = {
   category: ["movie"],
   author: "Receptron Team",
   repository: "https://github.com/receptron/mulmocast-cli/",
-  // source: "https://github.com/receptron/mulmocast-cli/blob/main/src/agents/image_google_agent.ts",
   license: "MIT",
   environmentVariables: [],
 };
