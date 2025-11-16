@@ -1,0 +1,27 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "movieParams": {
+    "provider": "google"
+  },
+  "canvasSize": {
+    "width": 1280,
+    "height": 720
+  },
+  "beats": [
+    {
+      "text": "Hello, I'm macoro",
+      "image": {
+        "type": "image",
+        "source": {
+          "kind": "url",
+          "url": "https://raw.githubusercontent.com/receptron/mulmocast-media/refs/heads/main/characters/macoro.png"
+        }
+      },
+      "moviePrompt": "Jump and bounce",
+      "duration": 5
+    }
+  ]
+}

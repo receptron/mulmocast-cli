@@ -144,7 +144,7 @@ export const imagePreprocessAgent = async (namedInputs: {
       ...returnValue,
       // imagePath: isTypeMovie ? undefined : pluginPath,
       imagePath: isTypeMovie ? imagePath : pluginPath,
-      movieFile: isTypeMovie ? pluginPath : undefined,
+      movieFile: isTypeMovie ? pluginPath : returnValue.movieFile,
       imageFromMovie: isTypeMovie,
       referenceImageForMovie: pluginPath,
       markdown,
