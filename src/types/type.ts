@@ -20,6 +20,8 @@ import {
   mulmoImageParamsImagesSchema,
   mulmoFillOptionSchema,
   mulmoMovieParamsSchema,
+  mulmoSoundEffectParamsSchema,
+  mulmoLipSyncParamsSchema,
   textSlideParamsSchema,
   speechOptionsSchema,
   speakerDataSchema,
@@ -86,6 +88,8 @@ export type MulmoStudioMultiLingualData = z.infer<typeof mulmoStudioMultiLingual
 export type MulmoStudioMultiLingualFile = z.infer<typeof mulmoStudioMultiLingualFileSchema>;
 export type MultiLingualTexts = z.infer<typeof multiLingualTextsSchema>;
 export type MulmoMovieParams = z.infer<typeof mulmoMovieParamsSchema>;
+export type MulmoSoundEffectParams = z.infer<typeof mulmoSoundEffectParamsSchema>;
+export type MulmoLipSyncParams = z.infer<typeof mulmoLipSyncParamsSchema>;
 export type MulmoOpenAIImageModel = z.infer<typeof mulmoOpenAIImageModelSchema>;
 export type MulmoGoogleImageModel = z.infer<typeof mulmoGoogleImageModelSchema>;
 export type MulmoGoogleMovieModel = z.infer<typeof mulmoGoogleMovieModelSchema>;
