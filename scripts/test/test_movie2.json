@@ -6,6 +6,10 @@
   "movieParams": {
     "provider": "google"
   },
+  "lipSyncParams": {
+    "provider": "replicate",
+    "model": "bytedance/latentsync"
+  },
   "canvasSize": {
     "width": 1280,
     "height": 720
@@ -21,6 +25,31 @@
         }
       },
       "moviePrompt": "Jump and bounce",
+      "duration": 5
+    },
+    {
+      "text": "こんにちは、マコロです",
+      "image": {
+        "type": "image",
+        "source": {
+          "kind": "url",
+          "url": "https://raw.githubusercontent.com/receptron/mulmocast-media/refs/heads/main/characters/macoro.png"
+        }
+      },
+      "enableLipSync": true,
+      "duration": 5
+    },
+    {
+      "text": "こんにちは、マコロです",
+      "image": {
+        "type": "image",
+        "source": {
+          "kind": "url",
+          "url": "https://raw.githubusercontent.com/receptron/mulmocast-media/refs/heads/main/characters/explaining_concepts.png"
+        }
+      },
+      "moviePrompt": "Jump and bounce",
+      "enableLipSync": true,
       "duration": 5
     }
   ]
