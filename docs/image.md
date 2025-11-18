@@ -10,8 +10,8 @@
 
 ### 特殊処理 soundEffectPrompt/enableLipSync/suppressSpeech
 7. 1のtype=movie, 4, 6で動画が生成され、beatに`soundEffectPrompt`があれば、動画に対してsoundEffectPromptで指定されている音声を作成・合成する
-8. 画像が生成され、beatに`enableLipSync`の指定があれば、画像と音声ファイルを使ってリップシンクの処理を行う。生成物は動画になる。
-   - 注: Replicate 上に動画に対してリップシンク処理が可能なモデルはある、しかし、現時点で MulmoCast 側では動作未確認。なお、将来的にモデル追加する場合は、この生成ロジックの変更は不要。 
+8. beatに`enableLipSync`の指定があれば、「画像と音声ファイル」または「動画と音声ファイル」を使ってリップシンクの処理を行う。生成物は動画になる。
+   - 注: モデルによって映像入力が静止画か動画かが異なる。下記「[リップシンク対応モデル](#リップシンク対応モデル)」の一覧を参照して入力パラメータを合わせること。
 9.  `audioParams.suppressSpeech: true`が指定されている場合、全てのbeatでテキストからの音声読み上げ（TTS）を行わず、音声トラックはBGMのみになる
 
 ## Beat画像・動画生成ルール一覧表
@@ -80,6 +80,16 @@
   - `audioParams.suppressSpeech: true` の場合は全ての beat で音声が無いので、各 beat に `duration` を指定するか、動画素材で時間を指定します。
 
 最終的な `studio.beats[index].duration` と `startAt` は `combineAudioFilesAgent` が計算します。動画トランジション、字幕（`captionParams`）の表示タイミング、`soundEffectPrompt` の合成位置などはこの duration/startAt を前提に処理されます。
+
+## リップシンク対応モデル
+
+`enableLipSync: true` を使う場合は、選択するモデルによって入力形式が異なります。画像/動画の入力方法は `image.type: "image"` / `image.type: "movie"`、`imagePrompt`からの出力、`moviePrompt` からの出力が使えます。
+
+| モデル名 |  画像/動画入力 | 音声入力 |
+|----------|----------|----------|
+| `bytedance/latentsync` | `video`(動画ファイル) | `audio` |
+| `tmappdev/lipsync` | `video_input`(動画ファイル) | `audio_input` |
+| `bytedance/omni-human` | `image`(静止画) | `audio` |
 
 ## 1. image.typeの処理
 
