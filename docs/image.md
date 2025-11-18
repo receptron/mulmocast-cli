@@ -11,7 +11,8 @@
 ### 特殊処理 soundEffectPrompt/enableLipSync/suppressSpeech
 7. 1のtype=movie, 4, 6で動画が生成され、beatに`soundEffectPrompt`があれば、動画に対してsoundEffectPromptで指定されている音声を作成・合成する
 8. 画像が生成され、beatに`enableLipSync`の指定があれば、画像と音声ファイルを使ってリップシンクの処理を行う。生成物は動画になる。
-   - 注: Replicate 上に動画に対してリップシンク処理が可能なモデルはある、しかし、現時点で MulmoCast 側では動作未確認。なお、将来的にモデル追加する場合は、この生成ロジックの変更は不要。 
+   - 注: Replicate 上に動画に対してリップシンク処理が可能なモデルはある、しかし、現時点で MulmoCast 側では動作未確認。なお、将来的にモデル追加する場合は、この生成ロジックの変更は不要。
+   - モデルによって映像入力が静止画か動画かが異なるため、下記「[リップシンク対応モデル](#リップシンク対応モデル)」の一覧を参照して入力パラメータを合わせること。
 9.  `audioParams.suppressSpeech: true`が指定されている場合、全てのbeatでテキストからの音声読み上げ（TTS）を行わず、音声トラックはBGMのみになる
 
 ## Beat画像・動画生成ルール一覧表
@@ -77,9 +78,21 @@
   - `duration` 指定のある beat にはその値を優先し、未指定の beat には残り時間を均等配分（最低 1 秒）します。
 - **何も無い場合**
   - 音声・動画・`duration` のいずれも無い beat は既定で 1 秒に設定。
-  - `audioParams.suppressSpeech: true` の場合は全ての beat で音声が無いので、各 beat に `duration` を指定するか、動画素材で時間を指定します。
+ - `audioParams.suppressSpeech: true` の場合は全ての beat で音声が無いので、各 beat に `duration` を指定するか、動画素材で時間を指定します。
 
 最終的な `studio.beats[index].duration` と `startAt` は `combineAudioFilesAgent` が計算します。動画トランジション、字幕（`captionParams`）の表示タイミング、`soundEffectPrompt` の合成位置などはこの duration/startAt を前提に処理されます。
+
+## リップシンク対応モデル
+
+`enableLipSync: true` を使う場合は、選択するモデルによって入力形式が異なります。静止画から動画を生成するモデルと、事前に動画素材を用意して同期させるモデルがあるため、`image` / `movie` プロパティ、あるいは動画ファイルの準備方法を事前に決めておきます。
+
+| モデル名 | identifier | 映像入力 | 音声入力 | 備考 |
+|----------|------------|----------|----------|------|
+| `bytedance/latentsync` | `bytedance/latentsync:637ce1919f807ca20da3a448ddc2743535d2853649574cd52a933120e9b9e293` | `video`（動画ファイル） | `audio` | 既存の動画素材に対してリップシンクを適用するモデル。|
+| `tmappdev/lipsync` | `tmappdev/lipsync:c54ce2fe673ea59b857b91250b3d71a2cd304a78f2370687632805c8405fbf4c` | `video_input`（動画ファイル） | `audio_input` | 動画素材をアップロードしてリップシンクを付与するパターン。|
+| `bytedance/omni-human` | `bytedance/omni-human` | `image`（静止画） | `audio` | 静止画と音声から直接動画を生成する。`price_per_sec` は `0.14`。|
+
+動画入力が必要なモデルを利用する場合は、`image.type: "movie"` や `moviePrompt` などで動画素材を用意してから `enableLipSync` を指定してください。静止画入力のみ対応のモデルでは、通常どおり画像生成フローで得られた静止画をそのまま渡せばリップシンク付き動画が生成されます。
 
 ## 1. image.typeの処理
 
