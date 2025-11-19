@@ -441,6 +441,28 @@ Options:
 ```
 
 ```
+mulmo bundle <file>
+
+Generate bundle files
+
+Positionals:
+  file  Mulmo Script File                                    [string] [required]
+
+Options:
+      --version            Show version number                         [boolean]
+  -v, --verbose            verbose log     [boolean] [required] [default: false]
+  -h, --help               Show help                                   [boolean]
+  -o, --outdir             output dir                                   [string]
+  -b, --basedir            base dir                                     [string]
+  -l, --lang               target language
+  [string] [choices: "en", "ja", "fr", "es", "de", "zh-CN", "zh-TW", "ko", "it",
+                                                               "pt", "ar", "hi"]
+  -f, --force              Force regenerate           [boolean] [default: false]
+      --backup             create backup media file   [boolean] [default: false]
+  -p, --presentationStyle  Presentation Style                           [string]
+```
+
+```
 mulmo tool <command>
 
 Generate Mulmo script and other tools
