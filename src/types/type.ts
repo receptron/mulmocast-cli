@@ -201,6 +201,8 @@ export type ImageType = "image" | "movie";
 export type MulmoViewerBeat = {
   text?: string;
   duration?: number;
+  startTime?: number;
+  endTime?: number;
   multiLinguals?: Record<string, string>;
   audioSources?: Record<string, string>;
   imageSource?: string;
