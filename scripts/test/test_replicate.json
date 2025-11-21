@@ -143,22 +143,22 @@
       }
     },
     {
-      "id": "wan-2.2-i2v-480p-fast",
-      "text": "wan-video/wan-2.2-i2v-480p-fast",
+      "id": "wan-2.2-i2v-fast",
+      "text": "wan-video/wan-2.2-i2v-fast",
       "duration": 5,
       "imagePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
       "moviePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
       "movieParams": {
-        "model": "wan-video/wan-2.2-i2v-480p-fast"
+        "model": "wan-video/wan-2.2-i2v-fast"
       }
     },
     {
-      "id": "wan-2.2-t2v-480p-fast",
-      "text": "wan-video/wan-2.2-t2v-480p-fast",
+      "id": "wan-2.2-t2v-fast",
+      "text": "wan-video/wan-2.2-t2v-fast",
       "duration": 5,
       "moviePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
       "movieParams": {
-        "model": "wan-video/wan-2.2-t2v-480p-fast"
+        "model": "wan-video/wan-2.2-t2v-fast"
       }
     },
     {
