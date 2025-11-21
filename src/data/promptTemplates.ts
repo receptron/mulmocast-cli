@@ -451,7 +451,7 @@ export const promptTemplates = [
             type: "image",
           },
         },
-        model: "gemini-2.5-flash-image-preview",
+        model: "gemini-2.5-flash-image",
         provider: "google",
         style:
           "<style>Ghibli style multi-panel comic strips in landscape mode. Use speech bubbles with short, natural dialogue (1–6 words). Keep text minimal, like real comics. Let the art convey the story and emotions. Use the input image as the presenter.</style>",
