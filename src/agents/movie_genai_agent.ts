@@ -61,7 +61,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
       },
       image: undefined as { imageBytes: string; mimeType: string } | undefined,
     };
-    if (model === "veo-3.0-generate-preview") {
+    if (model === "veo-3.0-generate-001" || model === "veo-3.1-generate-preview") {
       payload.config.durationSeconds = undefined;
     }
     if (imagePath) {

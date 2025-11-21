@@ -63,6 +63,7 @@ test("test createStudioData", async () => {
         images: {},
         provider: "openai",
       },
+      movieParams: { provider: "replicate" },
       beats: [
         { text: "hello" },
         {
@@ -106,6 +107,7 @@ test("test createStudioData", async () => {
       soundEffectParams: {
         provider: "replicate",
       },
+      movieParams: { provider: "replicate" },
       audioParams: {
         closingPadding: 0.8,
         introPadding: 1,

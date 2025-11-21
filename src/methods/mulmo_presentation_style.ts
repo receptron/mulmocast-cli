@@ -125,7 +125,7 @@ export const MulmoPresentationStyleMethods = {
   },
   getMovieAgentInfo(presentationStyle: MulmoPresentationStyle, beat?: MulmoBeat) {
     const movieParams = { ...presentationStyle.movieParams, ...beat?.movieParams };
-    const movieProvider = text2MovieProviderSchema.parse(movieParams?.provider) as keyof typeof provider2MovieAgent;
+    const movieProvider = text2MovieProviderSchema.parse(movieParams?.provider ?? defaultProviders.text2movie) as keyof typeof provider2MovieAgent;
     const agentInfo = provider2MovieAgent[movieProvider];
 
     return {

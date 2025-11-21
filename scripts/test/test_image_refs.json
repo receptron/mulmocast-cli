@@ -53,7 +53,7 @@
       "imageNames": ["witch", "broom"],
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {

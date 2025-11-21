@@ -44,8 +44,8 @@ export const provider2ImageAgent = {
   },
   google: {
     agentName: "imageGenAIAgent",
-    defaultModel: "gemini-2.5-flash-image-preview",
-    models: ["imagen-3.0-generate-002", "imagen-4.0-generate-preview-06-06", "imagen-4.0-ultra-generate-preview-06-06", "gemini-2.5-flash-image-preview"],
+    defaultModel: "gemini-2.5-flash-image",
+    models: ["imagen-4.0-generate-preview-06-06", "imagen-4.0-ultra-generate-preview-06-06", "gemini-2.5-flash-image", "gemini-3-pro-image-preview"],
     keyName: "GEMINI_API_KEY",
   },
   replicate: {
@@ -164,10 +164,13 @@ export const provider2MovieAgent = {
   google: {
     agentName: "movieGenAIAgent",
     defaultModel: "veo-2.0-generate-001",
-    models: ["veo-2.0-generate-001", "veo-3.0-generate-preview"],
+    models: ["veo-2.0-generate-001", "veo-3.0-generate-001", "veo-3.1-generate-preview"],
     keyName: "GEMINI_API_KEY",
     modelParams: {
-      "veo-3.0-generate-preview": {
+      "veo-3.1-generate-preview": {
+        durations: [4, 6, 8],
+      },
+      "veo-3.0-generate-001": {
         durations: [4, 6, 8],
       },
       "veo-2.0-generate-001": {

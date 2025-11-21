@@ -55,6 +55,7 @@ const script_11 = {
     padding: 0.3,
     suppressSpeech: false,
   },
+  movieParams: { provider: "replicate" },
   soundEffectParams: {
     provider: "replicate",
   },

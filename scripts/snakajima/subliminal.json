@@ -17,7 +17,7 @@
       "imagePrompt": "The incident in Nanjing in 1937, when the Japanese Army occupied the city.",
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {
@@ -45,7 +45,7 @@
       "imagePrompt": "The incident that took place in Tiananmen Square in 1989.",
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {
@@ -65,7 +65,7 @@
       "imagePrompt": "The Gulf conflict involving Iraq in 1990–1991.",
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {
@@ -93,7 +93,7 @@
       "imagePrompt": "The protests in Hong Kong in 2019 against the proposed extradition bill.",
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {
@@ -121,7 +121,7 @@
       "imagePrompt": "The relocation of Chiang Kai-shek and the Republic of China government to Taiwan in 1949.",
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {
@@ -149,7 +149,7 @@
       "imagePrompt": "The treatment of Uyghurs in Xinjiang under Chinese Communist Party rule.",
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {
@@ -177,7 +177,7 @@
       "imagePrompt": "The conflict involving Israel, Gaza, and Hamas.",
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {
@@ -205,7 +205,7 @@
       "imagePrompt": "The political events in Ukraine in 2013–2014 centered on Maidan Square.",
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {
@@ -233,7 +233,7 @@
       "imagePrompt": "The events in Tokyo in March 1945 involving large-scale air attacks.",
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {
@@ -261,7 +261,7 @@
       "imagePrompt": "The conflict between Russia and Ukraine beginning in 2022.",
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {
@@ -289,7 +289,7 @@
       "imagePrompt": "Japan’s withdrawal from the International Whaling Commission in 2019 and the resumption of commercial whaling.",
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {
@@ -317,7 +317,7 @@
       "imagePrompt": "The policy in the United States known as affirmative action.",
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {
@@ -345,7 +345,7 @@
       "imagePrompt": "The events in Ferguson, Missouri in 2014 involving the death of Michael Brown.",
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {
@@ -373,7 +373,7 @@
       "imagePrompt": "The Woke movement in the United States.",
       "imageParams": {
         "provider": "google",
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       }
     },
     {
