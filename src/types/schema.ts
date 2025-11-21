@@ -426,7 +426,9 @@ export const mulmoPresentationStyleSchema = z.object({
     provider: defaultProviders.text2image,
     images: {},
   }),
-  movieParams: mulmoMovieParamsSchema.optional(),
+  movieParams: mulmoMovieParamsSchema.optional().default({
+    provider: defaultProviders.text2movie,
+  }),
   soundEffectParams: mulmoSoundEffectParamsSchema.optional().default({
     provider: defaultProviders.soundEffect,
   }),
