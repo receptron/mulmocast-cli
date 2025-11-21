@@ -24,8 +24,14 @@
     {
       "speaker": "Host",
       "text": "How are you?",
+      "imagePrompt": "A witch in Harajuku"
+    },
+    {
+      "speaker": "Host",
+      "text": "How are you?",
       "imagePrompt": "A witch in Harajuku",
       "imageParams": {
+        "model": "gpt-image-1-mini",
         "style": "Ukiyoe-style"
       }
     }
