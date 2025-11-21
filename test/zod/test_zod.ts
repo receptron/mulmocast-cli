@@ -28,6 +28,7 @@ test("test zod", async () => {
       canvasSize: { width: 1280, height: 720 },
       speechParams: { speakers: { Presenter: { displayName: { en: "Presenter" }, voiceId: "shimmer", provider: "openai" } } },
       imageParams: { provider: "openai", images: {} },
+      movieParams: { provider: "replicate" },
       soundEffectParams: { provider: "replicate" },
       audioParams: { introPadding: 1, padding: 0.3, closingPadding: 0.8, outroPadding: 1, bgmVolume: 0.2, audioVolume: 1, suppressSpeech: false },
       title: "title",
