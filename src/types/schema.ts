@@ -321,7 +321,7 @@ export const htmlPromptParamsSchema = z
   })
   .strict();
 
-export const text2MovieProviderSchema = z.enum(Object.keys(provider2MovieAgent) as [string, ...string[]]).default(defaultProviders.text2movie);
+export const text2MovieProviderSchema = z.enum(Object.keys(provider2MovieAgent) as [string, ...string[]]);
 export const text2SoundEffectProviderSchema = z.enum(Object.keys(provider2SoundEffectAgent) as [string, ...string[]]).default(defaultProviders.soundEffect);
 
 export const mulmoSoundEffectParamsSchema = z.object({
