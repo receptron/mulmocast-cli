@@ -82,8 +82,8 @@ export const provider2MovieAgent = {
       "minimax/hailuo-02",
       "minimax/hailuo-02-fast",
       "pixverse/pixverse-v4.5",
-      "wan-video/wan-2.2-i2v-480p-fast",
-      "wan-video/wan-2.2-t2v-480p-fast",
+      "wan-video/wan-2.2-i2v-fast",
+      "wan-video/wan-2.2-t2v-fast",
     ],
     modelParams: {
       "bytedance/seedance-1-lite": {
@@ -149,12 +149,12 @@ export const provider2MovieAgent = {
         last_image: "last_frame_image",
         price_per_sec: 0.12,
       },
-      "wan-video/wan-2.2-i2v-480p-fast": {
+      "wan-video/wan-2.2-i2v-fast": {
         durations: [5],
         start_image: "image",
         price_per_sec: 0.012,
       },
-      "wan-video/wan-2.2-t2v-480p-fast": {
+      "wan-video/wan-2.2-t2v-fast": {
         durations: [5],
         start_image: undefined,
         price_per_sec: 0.012,
