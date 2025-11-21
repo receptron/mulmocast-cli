@@ -32,6 +32,9 @@ export const promptTemplates = [
         },
         style: "<style>AKIRA aesthetic.</style>",
       },
+      movieParams: {
+        provider: "replicate",
+      },
       soundEffectParams: {
         provider: "replicate",
       },
@@ -153,6 +156,9 @@ export const promptTemplates = [
         images: {},
         provider: "openai",
       },
+      movieParams: {
+        provider: "replicate",
+      },
       soundEffectParams: {
         provider: "replicate",
       },
@@ -197,6 +203,9 @@ export const promptTemplates = [
       imageParams: {
         style:
           "A hand-drawn style illustration with a warm, nostalgic atmosphere. The background is rich with natural scenery—lush forests, cloudy skies, and traditional Japanese architecture. Characters have expressive eyes, soft facial features, and are portrayed with gentle lighting and subtle shading. The color palette is muted yet vivid, using earthy tones and watercolor-like textures. The overall scene feels magical and peaceful, with a sense of quiet wonder and emotional depth, reminiscent of classic 1980s and 1990s Japanese animation.",
+      },
+      movieParams: {
+        provider: "replicate",
       },
       soundEffectParams: {
         provider: "replicate",
@@ -250,6 +259,9 @@ export const promptTemplates = [
         style:
           "<style>A multi panel comic strips. 1990s American workplace humor. Clean, minimalist line art with muted colors. One character is a nerdy office worker with glasses</style>",
       },
+      movieParams: {
+        provider: "replicate",
+      },
       soundEffectParams: {
         provider: "replicate",
       },
@@ -293,6 +305,9 @@ export const promptTemplates = [
       },
       imageParams: {
         style: "<style>Photo realistic and cinematic. Let the art convey the story and emotions without text. Use the image for the aspect ratio</style>",
+      },
+      movieParams: {
+        provider: "replicate",
       },
       soundEffectParams: {
         provider: "replicate",
@@ -347,6 +362,9 @@ export const promptTemplates = [
         },
         style: "<style>Dragon Ball/Dr. Slump aesthetic.</style>",
       },
+      movieParams: {
+        provider: "replicate",
+      },
       soundEffectParams: {
         provider: "replicate",
       },
@@ -399,6 +417,9 @@ export const promptTemplates = [
           },
         },
         style: "<style>Ghibli style</style>",
+      },
+      movieParams: {
+        provider: "replicate",
       },
       soundEffectParams: {
         provider: "replicate",
@@ -455,6 +476,9 @@ export const promptTemplates = [
         provider: "google",
         style:
           "<style>Ghibli style multi-panel comic strips in landscape mode. Use speech bubbles with short, natural dialogue (1–6 words). Keep text minimal, like real comics. Let the art convey the story and emotions. Use the input image as the presenter.</style>",
+      },
+      movieParams: {
+        provider: "replicate",
       },
       soundEffectParams: {
         provider: "replicate",
@@ -516,6 +540,9 @@ export const promptTemplates = [
         },
         style: "<style>Ghost in the shell aesthetic.</style>",
       },
+      movieParams: {
+        provider: "replicate",
+      },
       soundEffectParams: {
         provider: "replicate",
       },
@@ -561,6 +588,9 @@ export const promptTemplates = [
         images: {},
         provider: "openai",
       },
+      movieParams: {
+        provider: "replicate",
+      },
       soundEffectParams: {
         provider: "replicate",
       },
@@ -605,6 +635,9 @@ export const promptTemplates = [
       imageParams: {
         images: {},
         provider: "openai",
+      },
+      movieParams: {
+        provider: "replicate",
       },
       soundEffectParams: {
         provider: "replicate",
@@ -659,6 +692,9 @@ export const promptTemplates = [
         },
         style: "<style>One Piece aesthetic.</style>",
       },
+      movieParams: {
+        provider: "replicate",
+      },
       soundEffectParams: {
         provider: "replicate",
       },
@@ -711,6 +747,9 @@ export const promptTemplates = [
           },
         },
         style: "<style>Photo realistic, cinematic.</style>",
+      },
+      movieParams: {
+        provider: "replicate",
       },
       soundEffectParams: {
         provider: "replicate",
@@ -765,6 +804,9 @@ export const promptTemplates = [
         },
         style: "<style>Photo realistic, cinematic.</style>",
       },
+      movieParams: {
+        provider: "replicate",
+      },
       soundEffectParams: {
         provider: "replicate",
       },
@@ -809,6 +851,9 @@ export const promptTemplates = [
       imageParams: {
         style:
           "<style>Ghibli style. Student (Taro) is a young teenager with a dark short hair with glasses. Teacher is a middle-aged man with grey hair and moustache.</style>",
+      },
+      movieParams: {
+        provider: "replicate",
       },
       soundEffectParams: {
         provider: "replicate",
@@ -867,6 +912,9 @@ export const promptTemplates = [
       imageParams: {
         style: "<style>Photo realistic, cinematic.</style>",
       },
+      movieParams: {
+        provider: "replicate",
+      },
       soundEffectParams: {
         provider: "replicate",
       },
@@ -922,6 +970,9 @@ export const promptTemplates = [
         style:
           "<style>A dreamy, hyper-detailed anime style that blends photorealistic backgrounds with vibrant, saturated colors. The skies are often filled with luminous clouds, dazzling sunsets, or star-filled nights, rendered with a glowing, almost ethereal quality. Urban landscapes and rural scenery are meticulously illustrated, with attention to tiny details like reflections in puddles, neon lights, or the texture of grass swaying in the wind. Characters are drawn with soft, expressive features, standing out against the breathtaking environments, creating a sense of emotional depth and lyrical atmosphere. The overall mood is cinematic, romantic, and filled with a sense of fleeting beauty and longing.</style>",
       },
+      movieParams: {
+        provider: "replicate",
+      },
       soundEffectParams: {
         provider: "replicate",
       },
@@ -968,6 +1019,9 @@ export const promptTemplates = [
       },
       imageParams: {
         style: "<style>Photo realistic, cinematic.</style>",
+      },
+      movieParams: {
+        provider: "replicate",
       },
       soundEffectParams: {
         provider: "replicate",
