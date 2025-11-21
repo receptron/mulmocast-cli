@@ -73,7 +73,7 @@
       "duration": 5,
       "imagePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
       "imageParams": {
-        "model": "gemini-2.5-flash-image-preview"
+        "model": "gemini-2.5-flash-image"
       },
       "moviePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
       "movieParams": {
