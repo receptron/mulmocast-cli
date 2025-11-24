@@ -1,15 +1,25 @@
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import * as textToSpeech from "@google-cloud/text-to-speech";
-import { agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
+import { apiKeyMissingError, agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 
-import type { GoogleTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult } from "../types/agent.js";
+import type { GoogleTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult, AgentConfig } from "../types/agent.js";
 
-const client = new textToSpeech.TextToSpeechClient();
-
-export const ttsGoogleAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs> = async ({ namedInputs, params }) => {
+export const ttsGoogleAgent: AgentFunction<
+  GoogleTTSAgentParams,
+  AgentBufferResult | AgentErrorResult,
+  AgentTextInputs,
+  AgentConfig
+> = async ({ namedInputs, params, config }) => {
   const { text } = namedInputs;
   const { voice, suppressError, speed } = params;
+  const { apiKey } = config ?? {};
+
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY or TTS_GEMINI_API_KEY is required", {
+      cause: apiKeyMissingError("ttsGoogleAgent", audioAction, "GEMINI_API_KEY"),
+    });
+  }
 
   // Construct the voice request
   const voiceParams: textToSpeech.protos.google.cloud.texttospeech.v1.IVoiceSelectionParams = {
@@ -31,6 +41,10 @@ export const ttsGoogleAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
     },
   };
   try {
+    const client = new textToSpeech.TextToSpeechClient({
+      fallback: true,
+      apiKey,
+    });
     // Call the Text-to-Speech API
     const [response] = await client.synthesizeSpeech(request);
     return { buffer: response.audioContent as Buffer };
@@ -57,7 +71,7 @@ const ttsGoogleAgentInfo: AgentFunctionInfo = {
   author: "Receptron Team",
   repository: "https://github.com/receptron/mulmocast-cli/",
   license: "MIT",
-  environmentVariables: ["GEMINI_API_KEY"],
+  environmentVariables: ["GEMINI_API_KEY", "TTS_GEMINI_API_KEY"],
 };
 
 export default ttsGoogleAgentInfo;
