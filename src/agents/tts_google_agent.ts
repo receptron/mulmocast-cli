@@ -16,7 +16,7 @@ export const ttsGoogleAgent: AgentFunction<
   const { apiKey } = config ?? {};
 
   if (!apiKey) {
-    throw new Error("GEMINI_API_KEY or TTS_GEMINI_API_KEY is required", {
+    throw new Error("GEMINI_API_KEY is required", {
       cause: apiKeyMissingError("ttsGoogleAgent", audioAction, "GEMINI_API_KEY"),
     });
   }
@@ -71,7 +71,7 @@ const ttsGoogleAgentInfo: AgentFunctionInfo = {
   author: "Receptron Team",
   repository: "https://github.com/receptron/mulmocast-cli/",
   license: "MIT",
-  environmentVariables: ["GEMINI_API_KEY", "TTS_GEMINI_API_KEY"],
+  environmentVariables: ["GEMINI_API_KEY"],
 };
 
 export default ttsGoogleAgentInfo;
