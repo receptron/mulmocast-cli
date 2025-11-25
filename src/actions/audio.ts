@@ -5,7 +5,16 @@ import type { GraphData } from "graphai";
 import * as agents from "@graphai/vanilla";
 import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 
-import { ttsNijivoiceAgent, ttsOpenaiAgent, ttsGoogleAgent, ttsElevenlabsAgent, addBGMAgent, combineAudioFilesAgent, mediaMockAgent } from "../agents/index.js";
+import {
+  ttsNijivoiceAgent,
+  ttsOpenaiAgent,
+  ttsGoogleAgent,
+  ttsGeminiAgent,
+  ttsElevenlabsAgent,
+  addBGMAgent,
+  combineAudioFilesAgent,
+  mediaMockAgent,
+} from "../agents/index.js";
 
 import { MulmoStudioContext, MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingualData, PublicAPIArgs, text2SpeechProviderSchema } from "../types/index.js";
 
@@ -246,6 +255,7 @@ const audioAgents = {
   ttsOpenaiAgent,
   ttsNijivoiceAgent,
   ttsGoogleAgent,
+  ttsGeminiAgent,
   ttsElevenlabsAgent,
   mediaMockAgent,
   addBGMAgent,

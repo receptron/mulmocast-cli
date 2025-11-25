@@ -18,6 +18,11 @@ export const provider2TTSAgent = {
     hasLimitedConcurrency: false,
     keyName: "GEMINI_API_KEY",
   },
+  gemini: {
+    agentName: "ttsGeminiAgent",
+    hasLimitedConcurrency: false,
+    keyName: "GEMINI_API_KEY",
+  },
   elevenlabs: {
     agentName: "ttsElevenlabsAgent",
     hasLimitedConcurrency: true,
