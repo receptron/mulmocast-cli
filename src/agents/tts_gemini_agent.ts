@@ -19,7 +19,7 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
   const apiKey = config?.apiKey;
   if (!apiKey) {
     throw new Error("Google GenAI API key is required (GEMINI_API_KEY)", {
-      cause: apiKeyMissingError("imageGenAIAgent", audioAction, "GEMINI_API_KEY"),
+      cause: apiKeyMissingError("ttsGeminiAgent", audioAction, "GEMINI_API_KEY"),
     });
   }
 
