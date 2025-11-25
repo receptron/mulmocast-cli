@@ -28,9 +28,7 @@ const getGeminiContents = (prompt: string, referenceImages?: string[] | null, as
   const contents: { text?: string; inlineData?: { mimeType: string; data: string } }[] = [{ text: prompt }];
   const images = [...(referenceImages ?? [])];
   // NOTE: There is no way to explicitly specify the aspect ratio for Gemini. This is just a hint.
-  if (aspectRatio) {
-    images.push(ratio2BlankPath(aspectRatio));
-  }
+  images.push(ratio2BlankPath(aspectRatio));
   images.forEach((imagePath) => {
     const imageData = fs.readFileSync(imagePath);
     const base64Image = imageData.toString("base64");
