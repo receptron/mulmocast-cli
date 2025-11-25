@@ -2,6 +2,7 @@ import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { GoogleGenAI } from "@google/genai";
 
+import { provider2TTSAgent } from "../utils/provider2agent.js";
 import { agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 import { pcmToMp3 } from "../utils/ffmpeg_utils.js";
 
@@ -21,7 +22,7 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
         responseModalities: ["AUDIO"],
         speechConfig: {
           voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: voice || "Kore" },
+            prebuiltVoiceConfig: { voiceName: voice ?? provider2TTSAgent.gemini.defaultVoice },
           },
         },
       },

@@ -21,6 +21,7 @@ export const provider2TTSAgent = {
   gemini: {
     agentName: "ttsGeminiAgent",
     hasLimitedConcurrency: false,
+    defaultVoice: "Kore",
     keyName: "GEMINI_API_KEY",
   },
   elevenlabs: {
