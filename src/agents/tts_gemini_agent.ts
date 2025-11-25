@@ -12,8 +12,15 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
   const { text } = namedInputs;
   const { voice, suppressError } = params;
 
+  const apiKey = config?.apiKey;
+  if (!apiKey) {
+    throw new Error("Google GenAI API key is required (GEMINI_API_KEY)", {
+      cause: apiKeyMissingError("imageGenAIAgent", imageAction, "GEMINI_API_KEY"),
+    });
+  }
+
   try {
-    const ai = new GoogleGenAI({});
+    const ai = new GoogleGenAI({ apiKey });
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-preview-tts",
