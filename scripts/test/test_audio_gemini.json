@@ -1,0 +1,67 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "Audio Instructions Test",
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "provider": "gemini",
+        "voiceId": "Kore"
+      },
+      "Presenter2": {
+        "provider": "gemini",
+        "voiceId": "Puck"
+      }
+    }
+  },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "Hello, I'm a presenter. I have no instructions.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Presenter"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter2",
+      "text": "Hello, I'm a presenter 2. My instructions are 'Speak in a cheerful and positive tone'.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Presenter 2"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Hello, I'm a presenter. I have a British English instruction.",
+      "speechOptions": {
+        "instruction": "Speak in British English."
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Presenter with British English instruction"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Hello, I'm a presenter. I have a whisper instruction.",
+      "speechOptions": {
+        "instruction": "Whisper softly, like a pillow talk."
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Presenter with whisper instruction"
+        }
+      }
+    }
+  ]
+}

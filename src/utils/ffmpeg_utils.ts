@@ -2,6 +2,7 @@ import ffmpeg from "fluent-ffmpeg";
 import { GraphAILogger } from "graphai";
 import { isFile } from "./file.js";
 import fs from "fs";
+import { Readable, PassThrough } from "node:stream";
 
 export type FfmpegContext = {
   command: ffmpeg.FfmpegCommand;
@@ -160,5 +161,31 @@ export const createSilentAudio = (filePath: string, durationSec: number): Promis
       .on("end", () => resolve())
       .on("error", (err) => reject(err))
       .run();
+  });
+};
+
+export const pcmToMp3 = (rawPcm: Buffer, sampleRate: number = 24000): Promise<Buffer> => {
+  return new Promise((resolve, reject) => {
+    const inputStream = new Readable({
+      read() {
+        this.push(rawPcm);
+        this.push(null);
+      },
+    });
+
+    const outputChunks: Buffer[] = [];
+    const outputStream = new PassThrough();
+
+    outputStream.on("data", (chunk: Buffer) => outputChunks.push(chunk));
+    outputStream.on("end", () => resolve(Buffer.concat(outputChunks)));
+    outputStream.on("error", reject);
+
+    ffmpeg(inputStream)
+      .inputFormat("s16le")
+      .inputOptions([`-ar ${sampleRate}`, "-ac 1"])
+      .audioCodec("libmp3lame")
+      .format("mp3")
+      .on("error", reject)
+      .pipe(outputStream);
   });
 };

@@ -88,6 +88,9 @@ export const settings2GraphAIConfig = (
     ttsNijivoiceAgent: {
       apiKey: getKey("TTS", "NIJIVOICE_API_KEY"),
     },
+    ttsGeminiAgent: {
+      apiKey: getKey("TTS", "GEMINI_API_KEY"),
+    },
     ttsElevenlabsAgent: {
       apiKey: getKey("TTS", "ELEVENLABS_API_KEY"),
     },
