@@ -27,13 +27,19 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
       },
     });
 
-    const pcmBase64 = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data as any;
+    const inlineData = response.candidates?.[0]?.content?.parts?.[0]?.inlineData;
+    const pcmBase64 = inlineData?.data as any;
+    const mimeType = inlineData?.mimeType;
 
     if (!pcmBase64) throw new Error("No audio data returned");
 
+    // Extract sample rate from mimeType (e.g., "audio/L16;codec=pcm;rate=24000")
+    const rateMatch = mimeType?.match(/rate=(\d+)/);
+    const sampleRate = rateMatch ? parseInt(rateMatch[1]) : 24000;
+
     const rawPcm = Buffer.from(pcmBase64, "base64");
 
-    return { buffer: await pcmToMp3(rawPcm) };
+    return { buffer: await pcmToMp3(rawPcm, sampleRate) };
   } catch (e) {
     if (suppressError) {
       return {

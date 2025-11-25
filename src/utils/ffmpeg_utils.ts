@@ -164,7 +164,7 @@ export const createSilentAudio = (filePath: string, durationSec: number): Promis
   });
 };
 
-export const pcmToMp3 = (rawPcm: Buffer): Promise<Buffer> => {
+export const pcmToMp3 = (rawPcm: Buffer, sampleRate: number = 24000): Promise<Buffer> => {
   return new Promise((resolve, reject) => {
     const inputStream = new Readable({
       read() {
@@ -182,8 +182,7 @@ export const pcmToMp3 = (rawPcm: Buffer): Promise<Buffer> => {
 
     ffmpeg(inputStream)
       .inputFormat("s16le")
-      .audioFrequency(24000)
-      .audioChannels(1)
+      .inputOptions([`-ar ${sampleRate}`, "-ac 1"])
       .audioCodec("libmp3lame")
       .format("mp3")
       .on("error", reject)
