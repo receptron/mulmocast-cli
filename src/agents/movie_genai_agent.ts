@@ -81,6 +81,22 @@ const downloadVideo = async (ai: GoogleGenAI, video: GenAIVideo, movieFile: stri
   return { saved: movieFile };
 };
 
+const createVeo31Payload = (
+  model: string,
+  prompt: string,
+  aspectRatio: string,
+  source?: { image?: { imageBytes: string; mimeType: string }; video?: { uri: string } },
+): VideoPayload => ({
+  model,
+  prompt,
+  config: {
+    aspectRatio,
+    resolution: "720p",
+    numberOfVideos: 1,
+  },
+  ...source,
+});
+
 const generateExtendedVideo = async (
   ai: GoogleGenAI,
   model: string,
@@ -91,57 +107,57 @@ const generateExtendedVideo = async (
   movieFile: string,
 ): Promise<AgentBufferResult> => {
   const initialDuration = 8;
-  const extensionDuration = 7;
-  const extensionsNeeded = Math.ceil((requestedDuration - initialDuration) / extensionDuration);
+  const maxExtensionDuration = 8;
+  const extensionsNeeded = Math.ceil((requestedDuration - initialDuration) / maxExtensionDuration);
 
-  GraphAILogger.info(`Veo 3.1 video extension: ${extensionsNeeded} extensions needed for ${requestedDuration}s target (7s per extension)`);
+  GraphAILogger.info(`Veo 3.1 video extension: ${extensionsNeeded} extensions needed for ${requestedDuration}s target`);
 
-  const generateVideoIteration = async (iteration: number, previousVideo?: GenAIVideo): Promise<GenAIVideo> => {
+  const generateIteration = async (
+    iteration: number,
+    accumulatedDuration: number,
+    previousVideo?: GenAIVideo,
+  ): Promise<{ video: GenAIVideo; duration: number }> => {
     const isInitial = iteration === 0;
-    const payload: VideoPayload = {
-      model,
-      prompt,
-      config: {
-        aspectRatio,
-        resolution: "720p",
-        numberOfVideos: 1,
-      },
-    };
+    const remainingDuration = requestedDuration - accumulatedDuration;
+    const extensionDuration = isInitial ? initialDuration : (getModelDuration("google", model, remainingDuration) ?? maxExtensionDuration);
 
-    if (isInitial) {
-      if (imagePath) {
-        payload.image = loadImageAsBase64(imagePath);
-      }
-      GraphAILogger.info("Generating initial 8s video...");
-    } else {
-      if (previousVideo?.uri) {
-        payload.video = { uri: previousVideo.uri };
-      }
-      GraphAILogger.info(`Extending video: iteration ${iteration}/${extensionsNeeded}...`);
-    }
+    const getSource = () => {
+      if (isInitial) return imagePath ? { image: loadImageAsBase64(imagePath) } : undefined;
+      return previousVideo?.uri ? { video: { uri: previousVideo.uri } } : undefined;
+    };
+    const source = getSource();
+
+    const payload = createVeo31Payload(model, prompt, aspectRatio, source);
+
+    GraphAILogger.info(
+      isInitial ? "Generating initial 8s video..." : `Extending video: iteration ${iteration}/${extensionsNeeded} (+${extensionDuration}s)...`,
+    );
 
     const operation = await ai.models.generateVideos(payload);
     const response = await pollUntilDone(ai, operation);
     const video = getVideoFromResponse(response, iteration);
 
-    const currentDuration = initialDuration + iteration * extensionDuration;
-    GraphAILogger.info(`Video ${isInitial ? "generated" : "extended"}: ~${currentDuration}s total`);
+    const totalDuration = accumulatedDuration + extensionDuration;
+    GraphAILogger.info(`Video ${isInitial ? "generated" : "extended"}: ~${totalDuration}s total`);
 
-    return video;
+    return { video, duration: totalDuration };
   };
 
-  const finalVideo = await Array.from({ length: extensionsNeeded + 1 }).reduce<Promise<GenAIVideo | undefined>>(async (previousPromise, _, index) => {
-    const previous = await previousPromise;
-    return generateVideoIteration(index, previous);
-  }, Promise.resolve(undefined));
+  const result = await Array.from({ length: extensionsNeeded + 1 }).reduce<Promise<{ video?: GenAIVideo; duration: number }>>(
+    async (prev, _, index) => {
+      const { video, duration } = await prev;
+      return generateIteration(index, duration, video);
+    },
+    Promise.resolve({ video: undefined, duration: 0 }),
+  );
 
-  if (!finalVideo) {
+  if (!result.video) {
     throw new Error("Failed to generate extended video", {
       cause: agentInvalidResponseError("movieGenAIAgent", imageAction, movieFileTarget),
     });
   }
 
-  return downloadVideo(ai, finalVideo, movieFile);
+  return downloadVideo(ai, result.video, movieFile);
 };
 
 const generateStandardVideo = async (
@@ -162,11 +178,8 @@ const generateStandardVideo = async (
       aspectRatio,
       personGeneration: imagePath ? undefined : PersonGeneration.ALLOW_ALL,
     },
+    image: imagePath ? loadImageAsBase64(imagePath) : undefined,
   };
-
-  if (imagePath) {
-    payload.image = loadImageAsBase64(imagePath);
-  }
 
   const operation = await ai.models.generateVideos(payload);
   const response = await pollUntilDone(ai, operation);
