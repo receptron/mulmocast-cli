@@ -106,20 +106,11 @@ const generateExtendedVideo = async (
   requestedDuration: number,
   movieFile: string,
 ): Promise<AgentBufferResult> => {
-  const MAX_VEO31_DURATION = 148; // Veo 3.1 maximum output duration
-  const INITIAL_DURATION = 8; // First video is 8s
-  const EXTENSION_OVERLAP = 1; // Each 8s extension adds 7s (1s overlap)
-  const ACTUAL_EXTENSION = 7; // Net extension per iteration
+  const initialDuration = 8;
+  const maxExtensionDuration = 8;
+  const extensionsNeeded = Math.ceil((requestedDuration - initialDuration) / maxExtensionDuration);
 
-  if (requestedDuration > MAX_VEO31_DURATION) {
-    throw new Error(`Requested duration ${requestedDuration}s exceeds Veo 3.1 maximum of ${MAX_VEO31_DURATION}s`, {
-      cause: agentGenerationError("movieGenAIAgent", imageAction, videoDurationTarget),
-    });
-  }
-
-  const extensionsNeeded = Math.ceil((requestedDuration - INITIAL_DURATION) / ACTUAL_EXTENSION);
-
-  GraphAILogger.info(`Veo 3.1 video extension: ${extensionsNeeded} extensions needed for ${requestedDuration}s target (7s net per extension)`);
+  GraphAILogger.info(`Veo 3.1 video extension: ${extensionsNeeded} extensions needed for ${requestedDuration}s target`);
 
   const generateIteration = async (
     iteration: number,
@@ -128,10 +119,7 @@ const generateExtendedVideo = async (
   ): Promise<{ video: GenAIVideo; duration: number }> => {
     const isInitial = iteration === 0;
     const remainingDuration = requestedDuration - accumulatedDuration;
-
-    // For extensions: always generate 8s video, but only 7s is added (1s overlap)
-    const generationDuration = isInitial ? INITIAL_DURATION : (getModelDuration("google", model, remainingDuration + EXTENSION_OVERLAP) ?? 8);
-    const actualExtension = isInitial ? INITIAL_DURATION : Math.min(remainingDuration, ACTUAL_EXTENSION);
+    const extensionDuration = isInitial ? initialDuration : (getModelDuration("google", model, remainingDuration) ?? maxExtensionDuration);
 
     const getSource = () => {
       if (isInitial) return imagePath ? { image: loadImageAsBase64(imagePath) } : undefined;
@@ -141,16 +129,14 @@ const generateExtendedVideo = async (
     const payload = createVeo31Payload(model, prompt, aspectRatio, getSource());
 
     GraphAILogger.info(
-      isInitial
-        ? "Generating initial 8s video..."
-        : `Extending video: iteration ${iteration}/${extensionsNeeded} (generating ${generationDuration}s, adding ${actualExtension}s)...`,
+      isInitial ? "Generating initial 8s video..." : `Extending video: iteration ${iteration}/${extensionsNeeded} (+${extensionDuration}s)...`,
     );
 
     const operation = await ai.models.generateVideos(payload);
     const response = await pollUntilDone(ai, operation);
     const video = getVideoFromResponse(response, iteration);
 
-    const totalDuration = accumulatedDuration + actualExtension;
+    const totalDuration = accumulatedDuration + extensionDuration;
     GraphAILogger.info(`Video ${isInitial ? "generated" : "extended"}: ~${totalDuration}s total`);
 
     return { video, duration: totalDuration };
