@@ -1,0 +1,26 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "imageParams": {
+    "provider": "google",
+    "style": "<style>Photo realistic.</style>"
+  },
+  "canvasSize": {
+    "width": 720,
+    "height": 1280
+  },
+  "lang": "en",
+  "movieParams": {
+    "provider": "google",
+    "model": "veo-3.1-generate-preview"
+  },
+  "beats": [
+    {
+      "moviePrompt": "A butterfly flying in slow motion",
+      "duration": 20
+    },
+    {
+      "moviePrompt": "Running Tiger",
+      "duration": 25
+    }
+  ]
+}
