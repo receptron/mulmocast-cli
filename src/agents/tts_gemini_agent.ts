@@ -3,7 +3,14 @@ import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { GoogleGenAI } from "@google/genai";
 
 import { provider2TTSAgent } from "../utils/provider2agent.js";
-import { agentIncorrectAPIKeyError, apiKeyMissingError, agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
+import {
+  agentIncorrectAPIKeyError,
+  apiKeyMissingError,
+  agentGenerationError,
+  audioAction,
+  audioFileTarget,
+  getGenAIErrorReason,
+} from "../utils/error_cause.js";
 import { pcmToMp3 } from "../utils/ffmpeg_utils.js";
 
 import type { GoogleTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult } from "../types/agent.js";
@@ -60,13 +67,11 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
     }
     GraphAILogger.info(e);
 
-    if (e instanceof Error && e.message && e.message[0] === "{") {
-      const reasonDetail = JSON.parse(e.message).error.details.find((detail: { reason?: string }) => detail.reason);
-      if (reasonDetail && reasonDetail.reason && reasonDetail.reason === "API_KEY_INVALID") {
-        throw new Error("Failed to generate tts: 400 Incorrect API key provided with gemini", {
-          cause: agentIncorrectAPIKeyError("ttsGeminiAgent", audioAction, audioFileTarget),
-        });
-      }
+    const reasonDetail = getGenAIErrorReason(e);
+    if (reasonDetail && reasonDetail.reason && reasonDetail.reason === "API_KEY_INVALID") {
+      throw new Error("Failed to generate tts: 400 Incorrect API key provided with gemini", {
+        cause: agentIncorrectAPIKeyError("ttsGeminiAgent", audioAction, audioFileTarget),
+      });
     }
     throw new Error("TTS Gemini Error", {
       cause: agentGenerationError("ttsGeminiAgent", audioAction, audioFileTarget),
