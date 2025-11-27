@@ -248,3 +248,28 @@ export const translateApiKeyMissingError = () => {
 export const hasCause = (err: unknown): err is Error & { cause: unknown } => {
   return err instanceof Error && "cause" in err;
 };
+
+// for agent error
+
+type Result<T> = { ok: true; value: T } | { ok: false; error: Error };
+
+export async function resultify<T>(fn: () => Promise<T>): Promise<Result<T>> {
+  try {
+    return { ok: true, value: await fn() };
+  } catch (error) {
+    return { ok: false, error: error as Error };
+  }
+}
+export const getGenAIErrorReason = (error: Error) => {
+  try {
+    if (error instanceof Error && error.message && error.message[0] === "{") {
+      const reasonDetail = JSON.parse(error.message).error.details.find((detail: { reason?: string }) => detail.reason);
+      if (reasonDetail) {
+        return reasonDetail;
+      }
+    }
+  } catch (__error) {
+    // nothing.
+  }
+  return undefined;
+};
