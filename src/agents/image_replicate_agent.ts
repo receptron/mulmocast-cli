@@ -3,7 +3,15 @@ import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
 import Replicate from "replicate";
 import { getAspectRatio } from "./movie_replicate_agent.js";
 import type { ReplicateImageAgentParams } from "../types/agent.js";
-import { apiKeyMissingError, agentGenerationError, agentInvalidResponseError, imageAction, imageFileTarget, hasCause } from "../utils/error_cause.js";
+import {
+  apiKeyMissingError,
+  agentIncorrectAPIKeyError,
+  agentGenerationError,
+  agentInvalidResponseError,
+  imageAction,
+  imageFileTarget,
+  hasCause,
+} from "../utils/error_cause.js";
 
 import type { AgentBufferResult, ImageAgentInputs, AgentConfig } from "../types/agent.js";
 import { provider2ImageAgent } from "../utils/provider2agent.js";
@@ -65,6 +73,14 @@ export const imageReplicateAgent: AgentFunction<ReplicateImageAgentParams, Agent
     GraphAILogger.info("Replicate generation error:", error);
     if (hasCause(error) && error.cause) {
       throw error;
+    }
+    if (typeof error === "object" && error !== null && "response" in error) {
+      const errorWithResponse = error as { response?: { status?: number } };
+      if (errorWithResponse.response?.status === 401) {
+        throw new Error("Failed to generate image: 401 Incorrect API key provided with replicate", {
+          cause: agentIncorrectAPIKeyError("imageGenAIAgent", imageAction, imageFileTarget),
+        });
+      }
     }
     throw new Error("Failed to generate image with Replicate", {
       cause: agentGenerationError("imageReplicateAgent", imageAction, imageFileTarget),
