@@ -1,0 +1,83 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "ja",
+  "title": "All TTS Providers Test",
+  "speechParams": {
+    "speakers": {
+      "OpenAI": {
+        "provider": "openai",
+        "voiceId": "shimmer"
+      },
+      "Gemini": {
+        "provider": "gemini",
+        "voiceId": "Kore"
+      },
+      "Google": {
+        "provider": "google",
+        "voiceId": "ja-JP-Standard-A"
+      },
+      "ElevenLabs": {
+        "provider": "elevenlabs",
+        "voiceId": "3JDquces8E8bkmvbh6Bc"
+      },
+      "Nijivoice": {
+        "provider": "nijivoice",
+        "voiceId": "231e0170-0ece-4155-be44-231423062f41"
+      }
+    }
+  },
+  "beats": [
+    {
+      "speaker": "OpenAI",
+      "text": "こんにちは、テストです。オープンエーアイ",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "OpenAI TTS"
+        }
+      }
+    },
+    {
+      "speaker": "Gemini",
+      "text": "こんにちは、テストです。ジェミニ",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Gemini TTS"
+        }
+      }
+    },
+    {
+      "speaker": "Google",
+      "text": "こんにちは、テストです。グーグー",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Google TTS"
+        }
+      }
+    },
+    {
+      "speaker": "ElevenLabs",
+      "text": "こんにちは、テストです。イレブンラボ",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "ElevenLabs TTS"
+        }
+      }
+    },
+    {
+      "speaker": "Nijivoice",
+      "text": "こんにちは、テストです。ニジヴォイス",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Nijivoice TTS"
+        }
+      }
+    }
+  ]
+}
