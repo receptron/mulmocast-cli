@@ -81,7 +81,7 @@ const errorProcess = (error) => {
   }
   const reasonDetail = getGenAIErrorReason(error);
   if (reasonDetail && reasonDetail.reason && reasonDetail.reason === "API_KEY_INVALID") {
-    throw new Error("Failed to generate tts: 400 Incorrect API key provided with gemini", {
+    throw new Error("Failed to generate image: 400 Incorrect API key provided with gemini", {
       cause: agentIncorrectAPIKeyError("imageGenAIAgent", imageAction, imageFileTarget),
     });
   }
