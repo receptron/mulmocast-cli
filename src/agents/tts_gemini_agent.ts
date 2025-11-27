@@ -67,7 +67,7 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
     }
     GraphAILogger.info(e);
 
-    const reasonDetail = getGenAIErrorReason(e);
+    const reasonDetail = getGenAIErrorReason(e as Error);
     if (reasonDetail && reasonDetail.reason && reasonDetail.reason === "API_KEY_INVALID") {
       throw new Error("Failed to generate tts: 400 Incorrect API key provided with gemini", {
         cause: agentIncorrectAPIKeyError("ttsGeminiAgent", audioAction, audioFileTarget),

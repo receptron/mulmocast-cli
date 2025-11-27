@@ -251,13 +251,13 @@ export const hasCause = (err: unknown): err is Error & { cause: unknown } => {
 
 // for agent error
 
-type Result<T> = { ok: true; value: T } | { ok: false; error: unknown };
+type Result<T> = { ok: true; value: T } | { ok: false; error: Error };
 
 export async function resultify<T>(fn: () => Promise<T>): Promise<Result<T>> {
   try {
     return { ok: true, value: await fn() };
   } catch (error) {
-    return { ok: false, error };
+    return { ok: false, error: error as Error };
   }
 }
 export const getGenAIErrorReason = (error: Error) => {

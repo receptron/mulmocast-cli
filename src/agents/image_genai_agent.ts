@@ -74,7 +74,7 @@ const geminiFlashResult = (response: GenerateContentResponse) => {
   });
 };
 
-const errorProcess = (error) => {
+const errorProcess = (error: Error) => {
   GraphAILogger.info("Failed to generate image:", error);
   if (hasCause(error) && error.cause) {
     throw error;
