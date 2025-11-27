@@ -3,7 +3,7 @@ import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { GoogleGenAI } from "@google/genai";
 
 import { provider2TTSAgent } from "../utils/provider2agent.js";
-import { apiKeyMissingError, agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
+import { agentIncorrectAPIKeyError, apiKeyMissingError, agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 import { pcmToMp3 } from "../utils/ffmpeg_utils.js";
 
 import type { GoogleTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult } from "../types/agent.js";
@@ -40,10 +40,10 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
     });
 
     const inlineData = response.candidates?.[0]?.content?.parts?.[0]?.inlineData;
-    const pcmBase64 = inlineData?.data as any;
+    const pcmBase64 = inlineData?.data;
     const mimeType = inlineData?.mimeType;
 
-    if (!pcmBase64) throw new Error("No audio data returned");
+    if (!pcmBase64 || typeof pcmBase64 !== "string") throw new Error("No audio data returned");
 
     // Extract sample rate from mimeType (e.g., "audio/L16;codec=pcm;rate=24000")
     const rateMatch = mimeType?.match(/rate=(\d+)/);
@@ -59,6 +59,15 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
       };
     }
     GraphAILogger.info(e);
+
+    if (e instanceof Error && e.message && e.message[0] === "{") {
+      const reasonDetail = JSON.parse(e.message).error.details.find((detail: { reason?: string }) => detail.reason);
+      if (reasonDetail && reasonDetail.reason && reasonDetail.reason === "API_KEY_INVALID") {
+        throw new Error("Failed to generate tts: 400 Incorrect API key provided with gemini", {
+          cause: agentIncorrectAPIKeyError("ttsGeminiAgent", audioAction, audioFileTarget),
+        });
+      }
+    }
     throw new Error("TTS Gemini Error", {
       cause: agentGenerationError("ttsGeminiAgent", audioAction, audioFileTarget),
     });
