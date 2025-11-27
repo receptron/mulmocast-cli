@@ -33,9 +33,9 @@ export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBu
       similarity_boost: similarityBoost ?? 0.75,
     },
   };
-  
+
   GraphAILogger.log("ElevenLabs TTS options", requestBody);
-  
+
   const response = await (async () => {
     try {
       return await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice}`, {
@@ -59,19 +59,21 @@ export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBu
       });
     }
   })();
-    
+  if ("error" in response) {
+    return response;
+  }
   if (!response.ok) {
     if (response.status === 401) {
       throw new Error("Failed to generate audio: 401 Incorrect API key provided with ElevenLabs", {
         cause: agentIncorrectAPIKeyError("ttsElevenlabsAgent", audioAction, audioFileTarget),
       });
     }
-    
+
     throw new Error(`Eleven Labs API error: ${response.status} ${response.statusText}`, {
       cause: agentGenerationError("ttsElevenlabsAgent", audioAction, audioFileTarget),
     });
   }
-  
+
   const arrayBuffer = await response.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
