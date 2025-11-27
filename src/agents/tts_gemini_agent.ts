@@ -58,7 +58,6 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
         error: e,
       };
     }
-    console.log("----");
     GraphAILogger.info(e);
 
     if (e.message && e.message[0] === "{") {
