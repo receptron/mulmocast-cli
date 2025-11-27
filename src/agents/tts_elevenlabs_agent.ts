@@ -1,7 +1,7 @@
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { provider2TTSAgent } from "../utils/provider2agent.js";
-import { apiKeyMissingError, agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
+import { apiKeyMissingError, agentIncorrectAPIKeyError, agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 import type { ElevenlabsTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult, AgentConfig } from "../types/agent.js";
 
 export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs, AgentConfig> = async ({
@@ -25,49 +25,59 @@ export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBu
     });
   }
 
-  try {
-    const requestBody = {
-      text,
-      model_id: model ?? provider2TTSAgent.elevenlabs.defaultModel,
-      voice_settings: {
-        stability: stability ?? 0.5,
-        similarity_boost: similarityBoost ?? 0.75,
-      },
-    };
+  const requestBody = {
+    text,
+    model_id: model ?? provider2TTSAgent.elevenlabs.defaultModel,
+    voice_settings: {
+      stability: stability ?? 0.5,
+      similarity_boost: similarityBoost ?? 0.75,
+    },
+  };
 
-    GraphAILogger.log("ElevenLabs TTS options", requestBody);
+  GraphAILogger.log("ElevenLabs TTS options", requestBody);
 
-    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice}`, {
-      method: "POST",
-      headers: {
-        Accept: "audio/mpeg",
-        "Content-Type": "application/json",
-        "xi-api-key": apiKey,
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Eleven Labs API error: ${response.status} ${response.statusText}`, {
+  const response = await (async () => {
+    try {
+      return await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice}`, {
+        method: "POST",
+        headers: {
+          Accept: "audio/mpeg",
+          "Content-Type": "application/json",
+          "xi-api-key": apiKey,
+        },
+        body: JSON.stringify(requestBody),
+      });
+    } catch (e) {
+      if (suppressError) {
+        return {
+          error: e,
+        };
+      }
+      GraphAILogger.info(e);
+      throw new Error("TTS Eleven Labs Error", {
         cause: agentGenerationError("ttsElevenlabsAgent", audioAction, audioFileTarget),
       });
     }
-
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    return { buffer };
-  } catch (e) {
-    if (suppressError) {
-      return {
-        error: e,
-      };
+  })();
+  if ("error" in response) {
+    return response;
+  }
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("Failed to generate audio: 401 Incorrect API key provided with ElevenLabs", {
+        cause: agentIncorrectAPIKeyError("ttsElevenlabsAgent", audioAction, audioFileTarget),
+      });
     }
-    GraphAILogger.info(e);
-    throw new Error("TTS Eleven Labs Error", {
+
+    throw new Error(`Eleven Labs API error: ${response.status} ${response.statusText}`, {
       cause: agentGenerationError("ttsElevenlabsAgent", audioAction, audioFileTarget),
     });
   }
+
+  const arrayBuffer = await response.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  return { buffer };
 };
 
 const ttsElevenlabsAgentInfo: AgentFunctionInfo = {
