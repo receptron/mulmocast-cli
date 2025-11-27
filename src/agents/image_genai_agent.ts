@@ -13,18 +13,11 @@ import {
   getGenAIErrorReason,
   resultify,
 } from "../utils/error_cause.js";
+import { getAspectRatio } from "../utils/utils.js";
 import type { AgentBufferResult, ImageAgentInputs, ImageAgentParams, GenAIImageAgentConfig } from "../types/agent.js";
 import { GoogleGenAI, PersonGeneration, GenerateContentResponse } from "@google/genai";
 import { blankImagePath, blankSquareImagePath, blankVerticalImagePath } from "../utils/file.js";
 
-const getAspectRatio = (canvasSize: { width: number; height: number }): string => {
-  if (canvasSize.width > canvasSize.height) {
-    return "16:9";
-  } else if (canvasSize.width < canvasSize.height) {
-    return "9:16";
-  }
-  return "1:1";
-};
 export const ratio2BlankPath = (aspectRatio: string) => {
   if (aspectRatio === "9:16") {
     return blankVerticalImagePath();
@@ -96,7 +89,8 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
   config,
 }) => {
   const { prompt, referenceImages } = namedInputs;
-  const aspectRatio = getAspectRatio(params.canvasSize);
+  const ASPECT_RATIOS = ["1:1", "9:16", "16:9"];
+  const aspectRatio = getAspectRatio(params.canvasSize, ASPECT_RATIOS);
   const model = params.model ?? provider2ImageAgent["google"].defaultModel;
   const apiKey = config?.apiKey;
   if (!apiKey) {
@@ -115,13 +109,13 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
       }
       // gemini-3-pro-image-preview
       const contents = getGeminiContents(prompt, referenceImages);
+      const PRO_ASPECT_RATIOS = ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"];
       return {
         model,
         contents,
         config: {
           imageConfig: {
-            // '1:1', '2:3', '3:2', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9', or '21:9'.
-            aspectRatio,
+            aspectRatio: getAspectRatio(params.canvasSize, PRO_ASPECT_RATIOS),
           },
         },
       };

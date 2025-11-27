@@ -154,3 +154,16 @@ export const multiLingualObjectToArray = (multiLingual: MulmoStudioMultiLingual 
     return { multiLingualTexts: {} };
   });
 };
+
+export const getAspectRatio = (canvasSize: { width: number; height: number }, ASPECT_RATIOS: string[]): string => {
+  const target = canvasSize.width / canvasSize.height;
+  return ASPECT_RATIOS.reduce(
+    (best, ratio) => {
+      const [w, h] = ratio.split(":").map(Number);
+      const r = w / h;
+      const diff = Math.abs(target - r);
+      return diff < best.diff ? { ratio, diff } : best;
+    },
+    { ratio: ASPECT_RATIOS[0], diff: Infinity },
+  ).ratio;
+};
