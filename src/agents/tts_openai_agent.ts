@@ -50,7 +50,7 @@ export const ttsOpenaiAgent: AgentFunction<OpenAITTSAgentParams, AgentBufferResu
     GraphAILogger.error(error);
 
     if (error instanceof AuthenticationError) {
-      throw new Error("Failed to generate image: 401 Incorrect API key provided with OpenAI", {
+      throw new Error("Failed to generate audio: 401 Incorrect API key provided with OpenAI", {
         cause: agentIncorrectAPIKeyError("ttsOpenaiAgent", audioAction, audioFileTarget),
       });
     }
