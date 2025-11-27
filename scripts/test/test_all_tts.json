@@ -31,7 +31,7 @@
   "beats": [
     {
       "speaker": "OpenAI",
-      "text": "こんにちは、テストです。",
+      "text": "こんにちは、テストです。オープンエーアイ",
       "image": {
         "type": "textSlide",
         "slide": {
@@ -41,7 +41,7 @@
     },
     {
       "speaker": "Gemini",
-      "text": "こんにちは、テストです。",
+      "text": "こんにちは、テストです。ジェミニ",
       "image": {
         "type": "textSlide",
         "slide": {
@@ -51,7 +51,7 @@
     },
     {
       "speaker": "Google",
-      "text": "こんにちは、テストです。",
+      "text": "こんにちは、テストです。グーグー",
       "image": {
         "type": "textSlide",
         "slide": {
@@ -61,7 +61,7 @@
     },
     {
       "speaker": "ElevenLabs",
-      "text": "こんにちは、テストです。",
+      "text": "こんにちは、テストです。イレブンラボ",
       "image": {
         "type": "textSlide",
         "slide": {
@@ -71,7 +71,7 @@
     },
     {
       "speaker": "Nijivoice",
-      "text": "こんにちは、テストです。",
+      "text": "こんにちは、テストです。ニジヴォイス",
       "image": {
         "type": "textSlide",
         "slide": {
