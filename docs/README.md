@@ -1,167 +1,49 @@
-# mulmocastの新しいデータの仕組み
+# MulmoCast Documentation Index
 
-1. 元ネタは以下にいれる。ここは変更しない
-```
-{
- originalScript:[{speaker: "", text: ""}]
-}
-```
-2. scriptを変換していく。データは上書き更新。scriptの長さは変えない。分割するデータはarrayにする text -> text[]や、{text: ""}[]とする。
-Stepを戻る場合は、それ以降のデータは削除する。つまり、そのstepで完成するデータを毎回生成させる。(ttsText前の処理の場合は、結果にttsTextを含めない)
-metaデータで直近に実行したコマンドの情報は入れておく（履歴ありでも良い？？）
-```
-{
- originalScript: [...]
- scripts: [{ text: ["aa", "bb"], ttsText: ["ああ", "ばば"], imagePrompt: "" }]
- status: "imageGenearte",
- history: ["..", "aaa"]
-}
-```
+このディレクトリには、MulmoCastの開発者向けドキュメントが含まれています。
 
-## ai-podcasterのしくみ
+This directory contains developer documentation for MulmoCast.
 
-前準備
-1. セリフを作る(script)
-2. scriptごとに、背景イメージ用のprompt作成
-3. テキストを分割（字幕用に長い文章をさけるため)
-4. 読み上げ時に、誤読しないように一部かなに変換(ttsText)
+## 📚 主要ドキュメント / Main Documentation
 
-変換
+### Getting Started
 
-5. ttsTextを使って読み上げる
-6. imagePromptで画像生成
-7. 1つのファイルにまとめる
+- [**Workflow**](./Workflow.md) - MulmoCastの処理フロー（Mermaid図） / MulmoCast processing flow (Mermaid diagram)
+- [**Beta Release Notes (EN)**](./beta1_en.md) - Beta版リリースノート（英語） / Beta release notes (English)
+- [**Beta Release Notes (JA)**](./beta1_ja.md) - Beta版リリースノート（日本語） / Beta release notes (Japanese)
 
+### FAQ
 
-# Step1.
+- [**FAQ (EN)**](./faq_en.md) - よくある質問（英語） / Frequently Asked Questions (English)
+- [**FAQ (JA)**](./faq_ja.md) - よくある質問（日本語） / Frequently Asked Questions (Japanese)
 
-[プロンプト](../prompts/prompt.md)を使って、以下のデータを作る
+## 🔧 開発ガイド / Development Guide
 
-```json
-{
-  "title": "(title of this episode)",
-  "description": "(short description of this episode)",
-  "reference": "(url to the article)",
-  "script":[
-    {
-      "speaker": "Host",
-      "text": "Hello and welcome to another episode of 'life is artificial', where we explore the cutting edge of technology, innovation, and what the future could look like.",
-    },
-    {
-      "speaker": "Host",
-      "text": "Today, ...",
-    }
-  ]
-}
-```
+### 機能拡張 / Feature Extensions
 
-# Step2
+- [**TTS Provider 追加手順**](./tts.md) - 新しいTTSプロバイダーを追加する方法 / How to add a new TTS provider
 
-各セリフにimagePromptを追加（src/imagep.tsを使用）
+### セットアップ / Setup
 
-```json
-{
- "script": [{
-  "speaker": "Announcer",
-    "text": "米国で活躍するエンジニアが新しい技術やビジネスを分かりやすく解説する、中島聡のLife is beautiful。今日は、アメリカの関税引き上げについての解説です。",
-    "imagePrompt": "some prompt"
- }]
-}
-```
+- [**Google Prerequisites**](./pre-requisites-google.md) - Google画像生成モデルの事前設定 / Prerequisites for Google image generation models
+- [**NPM Development**](./npm_dev.md) - NPMバージョンアップのテスト手順 / NPM version upgrade testing procedure
 
-# Step3
+## 📖 機能仕様 / Feature Specifications
 
-セリフの分割（src/split.tsを使用、オプション）
+### 画像・動画・音声 / Image, Video, and Audio
 
-### Step 3.1. scriptのimagePromptを削除しつつ、PodCastScriptのrootにimages(array)を追加
+- [**Image Generation Rules**](./image.md) - 画像・動画・音声の生成ルール / Rules for generating images, videos, and audio
+- [**Image Plugin**](./image_plugin.md) - Image Pluginの仕様 / Image Plugin specifications
+- [**Sound and Voice**](./sound_and_voice.md) - 複数のBeatで一つの音声をシェアする方法（音声スピルオーバー） / Sharing audio across multiple beats (audio spillover)
 
-```json
-{
- "script": [{
-  "speaker": "Announcer",
-    "text": "米国で活躍するエンジニアが新しい技術やビジネスを分かりやすく解説する、中島聡のLife is beautiful。今日は、アメリカの関税引き上げについての解説です。",
- }],
- "images": [{
-   "imagePrompt": "some prompt"
-   "index": 0,
-   "image": undefined
- }]
-}
-```
+### 日本語ドキュメント / Japanese Documentation
 
-### Step 3.2. scriptを句読点などで分割。
-```json
-{
- "script": [{
-  "speaker": "Announcer",
-    "text": "米国で活躍するエンジニアが新しい技術やビジネスを分かりやすく解説する、",
- },{
-  "speaker": "Announcer",
-    "text": "中島聡のLife is beautiful。",
- },{
-  "speaker": "Announcer",
-    "text": "今日は、アメリカの関税引き上げについての解説です。",
- }]
-}
-```
-# Step 4
+- [**Image Preprocess Agent (JA)**](./ja/imagePreprocessAgent.md) - imagePreprocessAgentの仕様書（日本語） / imagePreprocessAgent specifications (Japanese)
 
-セリフの修正（src/fixtext.tsを使用、オプション）
-ttsTextに修正後のテキストを追加。(読み上げはttsText,字幕はtext)
+---
 
-```json
-{
- "script": [{
-  "speaker": "Announcer",
-    "text": "米国で活躍するエンジニアが新しい技術やビジネスを分かりやすく解説する、",
-    "ttstext": "米国で活躍するエンジニアが新しい技術やビジネスを分かりやすく解説する、",
- },{
-  "speaker": "Announcer",
-    "text": "中島聡のLife is beautiful。",
-    "ttStext": "中島聡のLife is beautiful。",
- },{
-  "speaker": "Announcer",
-    "text": "今日は、アメリカの関税引き上げについての解説です。",
-    "ttStext": "今日は、アメリカの関税引き上げについての解説です。",
- }]
-}
-```
+## 📌 ナビゲーション / Navigation
 
-# Step5
-
-(src/main.ts)(音声ファイルを作る)
-ttsTextを読み上げる
-
-PosdcastScriptを更新し、ouputに保存
-
-tsで以下を追加
-```
-{
-  filename: string
-  script[x].filename = filename + index
-  voices: string[]
-  ttsAgent: string
-  voicemap: Map
-}
-```
-graphaiで以下を追加
-```
-{
-  script[x].duration = duration
-}
-```
-fileWriteAgentでoutputを保存する
-
-# Step6(画像を作る)
-
-(src/images.ts)(imagePromptを使う)
-
-outputファイルに以下を追加
-```
-    outputJsonData.images = results.map?.output;
-```
-
-# Step7(まとめて動画にする)
-(src/movie.ts)
-
-更新なし
+- [メインREADME](../README.md) に戻る / Back to main README
+- [サンプルスクリプト](../scripts/) を見る / View sample scripts
+- [ソースコード](../src/) を見る / View source code
