@@ -62,6 +62,9 @@ export const settings2GraphAIConfig = (
       apiKey: getKey("LLM", "OPENAI_API_KEY"),
       baseURL: getKey("LLM", "OPENAI_BASE_URL"),
     },
+    anthropicAgent: {
+      apiKey: getKey("LLM", "ANTHROPIC_API_TOKEN"),
+    },
     imageOpenaiAgent: {
       apiKey: getKey("IMAGE", "OPENAI_API_KEY"),
       baseURL: getKey("IMAGE", "OPENAI_BASE_URL"),
@@ -71,9 +74,6 @@ export const settings2GraphAIConfig = (
     },
     imageGenAIAgent: {
       apiKey: getKey("IMAGE", "GEMINI_API_KEY"),
-    },
-    anthropicAgent: {
-      apiKey: getKey("LLM", "ANTHROPIC_API_TOKEN"),
     },
     movieReplicateAgent: {
       apiKey: getKey("MOVIE", "REPLICATE_API_TOKEN"),
