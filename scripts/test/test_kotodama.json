@@ -9,7 +9,13 @@
       "Presenter": {
         "provider": "kotodama",
         "voiceId": "Poporo"
-        
+      },
+      "Shion": {
+        "provider": "kotodama",
+        "speechOptions": {
+          "decoration": "laughing"
+        },
+        "voiceId": "Shion"
       }
     }
   },
@@ -17,6 +23,29 @@
     {
       "speaker": "Presenter",
       "text": "こんにちは",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Hello, kotodama"
+        }
+      }
+    },
+    {
+      "speaker": "Shion",
+      "text": "こんにちは",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Hello, kotodama"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "ハッピーだね",
+      "speechOptions": {
+        "decoration": "happy"
+      },
       "image": {
         "type": "textSlide",
         "slide": {
