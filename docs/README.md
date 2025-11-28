@@ -30,6 +30,10 @@ This directory contains developer documentation for MulmoCast.
 
 ## 📖 機能仕様 / Feature Specifications
 
+### コア機能 / Core Features
+
+- [**Features**](./feature.md) - MulmoCastの全機能一覧（特殊機能を中心に） / Complete feature list (focusing on advanced features)
+
 ### 画像・動画・音声 / Image, Video, and Audio
 
 - [**Image Generation Rules**](./image.md) - 画像・動画・音声の生成ルール / Rules for generating images, videos, and audio
