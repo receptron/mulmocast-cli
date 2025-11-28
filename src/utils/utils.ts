@@ -97,6 +97,9 @@ export const settings2GraphAIConfig = (
     ttsElevenlabsAgent: {
       apiKey: getKey("TTS", "ELEVENLABS_API_KEY"),
     },
+    ttsKotodamaAgent: {
+      apiKey: getKey("TTS", "KOTODAMA_API_KEY"),
+    },
     soundEffectReplicateAgent: {
       apiKey: getKey("SOUND_EFFECT", "REPLICATE_API_TOKEN"),
     },

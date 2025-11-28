@@ -33,6 +33,13 @@ export const provider2TTSAgent = {
     models: ["eleven_multilingual_v2", "eleven_turbo_v2_5", "eleven_turbo_v2", "eleven_flash_v2_5", "eleven_flash_v2"],
     keyName: "ELEVENLABS_API_KEY",
   },
+  kotodama: {
+    agentName: "ttsKotodamaAgent",
+    hasLimitedConcurrency: true,
+    defaultVoice: "Atla",
+    defaultDecoration: "neutral",
+    keyName: "KOTODAMA_API_KEY",
+  },
   mock: {
     agentName: "mediaMockAgent",
     hasLimitedConcurrency: true,
