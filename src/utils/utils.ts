@@ -62,9 +62,8 @@ export const settings2GraphAIConfig = (
       apiKey: getKey("LLM", "OPENAI_API_KEY"),
       baseURL: getKey("LLM", "OPENAI_BASE_URL"),
     },
-    ttsOpenaiAgent: {
-      apiKey: getKey("TTS", "OPENAI_API_KEY"),
-      baseURL: getKey("TTS", "OPENAI_BASE_URL"),
+    anthropicAgent: {
+      apiKey: getKey("LLM", "ANTHROPIC_API_TOKEN"),
     },
     imageOpenaiAgent: {
       apiKey: getKey("IMAGE", "OPENAI_API_KEY"),
@@ -76,17 +75,21 @@ export const settings2GraphAIConfig = (
     imageGenAIAgent: {
       apiKey: getKey("IMAGE", "GEMINI_API_KEY"),
     },
-    anthropicAgent: {
-      apiKey: getKey("LLM", "ANTHROPIC_API_TOKEN"),
-    },
     movieReplicateAgent: {
       apiKey: getKey("MOVIE", "REPLICATE_API_TOKEN"),
     },
     movieGenAIAgent: {
       apiKey: getKey("MOVIE", "GEMINI_API_KEY"),
     },
+    ttsOpenaiAgent: {
+      apiKey: getKey("TTS", "OPENAI_API_KEY"),
+      baseURL: getKey("TTS", "OPENAI_BASE_URL"),
+    },
     ttsNijivoiceAgent: {
       apiKey: getKey("TTS", "NIJIVOICE_API_KEY"),
+    },
+    ttsGoogleAgent: {
+      apiKey: getKey("TTS", "GEMINI_API_KEY"),
     },
     ttsGeminiAgent: {
       apiKey: getKey("TTS", "GEMINI_API_KEY"),
