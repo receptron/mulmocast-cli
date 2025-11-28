@@ -80,6 +80,10 @@ export type NijivoiceTTSAgentParams = TTSAgentParams & {
   speed_global: number;
 };
 
+export type KotodamaTTSAgentParams = TTSAgentParams & {
+  decoration: string;
+};
+
 export type GoogleTTSAgentParams = TTSAgentParams & {
   speed: number;
 };

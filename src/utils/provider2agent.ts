@@ -36,6 +36,8 @@ export const provider2TTSAgent = {
   kotodama: {
     agentName: "ttsKotodamaAgent",
     hasLimitedConcurrency: true,
+    defaultVoice: "Atla",
+    defaultDecoration: "neutral",
     keyName: "KOTODAMA_API_KEY",
   },
   mock: {
