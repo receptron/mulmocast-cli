@@ -12,6 +12,7 @@ export const provider2TTSAgent = {
     defaultModel: "gpt-4o-mini-tts",
     defaultVoice: "shimmer",
     keyName: "OPENAI_API_KEY",
+    baseURLKeyName: "OPENAI_BASE_URL",
   },
   google: {
     agentName: "ttsGoogleAgent",
@@ -54,6 +55,7 @@ export const provider2ImageAgent = {
     defaultModel: "gpt-image-1",
     models: ["dall-e-3", "gpt-image-1"],
     keyName: "OPENAI_API_KEY",
+    baseURLKeyName: "OPENAI_BASE_URL",
   },
   google: {
     agentName: "imageGenAIAgent",
@@ -259,6 +261,7 @@ export const provider2LLMAgent = {
     agentName: "openAIAgent",
     defaultModel: "gpt-5",
     keyName: "OPENAI_API_KEY",
+    baseURLKeyName: "OPENAI_BASE_URL",
     max_tokens: 8192,
     models: [
       "gpt-5",
@@ -282,6 +285,8 @@ export const provider2LLMAgent = {
     max_tokens: 8192,
     models: ["claude-opus-4-1-20250805", "claude-opus-4-20250514", "claude-sonnet-4-20250514", "claude-3-7-sonnet-20250219", "claude-3-haiku-20240307"],
     keyName: "ANTHROPIC_API_KEY",
+    apiKeyNameOverride: "ANTHROPIC_API_TOKEN",
+    // GraphAI is currently using ANTHROPIC_API_KEY, but the official name is ANTHROPIC_API_TOKEN.
   },
   gemini: {
     agentName: "geminiAgent",
