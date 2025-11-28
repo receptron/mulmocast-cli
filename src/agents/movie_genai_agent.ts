@@ -12,18 +12,10 @@ import {
   videoDurationTarget,
   hasCause,
 } from "../utils/error_cause.js";
+import { getAspectRatio } from "../utils/utils.js";
+import { ASPECT_RATIOS } from "../utils/const.js";
 import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, MovieAgentInputs } from "../types/agent.js";
 import { getModelDuration, provider2MovieAgent } from "../utils/provider2agent.js";
-
-export const getAspectRatio = (canvasSize: { width: number; height: number }): string => {
-  if (canvasSize.width > canvasSize.height) {
-    return "16:9";
-  } else if (canvasSize.width < canvasSize.height) {
-    return "9:16";
-  } else {
-    return "1:1";
-  }
-};
 
 type VideoPayload = {
   model: string;
@@ -193,7 +185,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
   config,
 }) => {
   const { prompt, imagePath, movieFile } = namedInputs;
-  const aspectRatio = getAspectRatio(params.canvasSize);
+  const aspectRatio = getAspectRatio(params.canvasSize, ASPECT_RATIOS);
   const model = params.model ?? provider2MovieAgent.google.defaultModel;
 
   const apiKey = config?.apiKey;
