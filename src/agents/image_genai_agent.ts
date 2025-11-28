@@ -14,6 +14,7 @@ import {
   resultify,
 } from "../utils/error_cause.js";
 import { getAspectRatio } from "../utils/utils.js";
+import { ASPECT_RATIOS } from "../utils/const.js";
 import type { AgentBufferResult, ImageAgentInputs, ImageAgentParams, GenAIImageAgentConfig } from "../types/agent.js";
 import { GoogleGenAI, PersonGeneration, GenerateContentResponse } from "@google/genai";
 import { blankImagePath, blankSquareImagePath, blankVerticalImagePath } from "../utils/file.js";
@@ -89,7 +90,6 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
   config,
 }) => {
   const { prompt, referenceImages } = namedInputs;
-  const ASPECT_RATIOS = ["1:1", "9:16", "16:9"];
   const aspectRatio = getAspectRatio(params.canvasSize, ASPECT_RATIOS);
   const model = params.model ?? provider2ImageAgent["google"].defaultModel;
   const apiKey = config?.apiKey;
