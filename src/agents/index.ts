@@ -12,6 +12,7 @@ import ttsNijivoiceAgent from "./tts_nijivoice_agent.js";
 import ttsOpenaiAgent from "./tts_openai_agent.js";
 import ttsGoogleAgent from "./tts_google_agent.js";
 import ttsGeminiAgent from "./tts_gemini_agent.js";
+import ttsKotodamaAgent from "./tts_kotodama_agent.js";
 import validateSchemaAgent from "./validate_schema_agent.js";
 import soundEffectReplicateAgent from "./sound_effect_replicate_agent.js";
 import lipSyncReplicateAgent from "./lipsync_replicate_agent.js";
@@ -43,6 +44,7 @@ export {
   ttsOpenaiAgent,
   ttsGoogleAgent,
   ttsGeminiAgent,
+  ttsKotodamaAgent,
   validateSchemaAgent,
   soundEffectReplicateAgent,
   lipSyncReplicateAgent,
