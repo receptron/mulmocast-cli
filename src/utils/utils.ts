@@ -7,7 +7,15 @@
 import type { ConfigDataDictionary, DefaultConfigData } from "graphai";
 
 import { MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingual, MulmoStudioMultiLingualData } from "../types/index.js";
-import { type LLM, provider2LLMAgent } from "./provider2agent.js";
+import {
+  type LLM,
+  provider2LLMAgent,
+  provider2TTSAgent,
+  provider2ImageAgent,
+  provider2MovieAgent,
+  provider2SoundEffectAgent,
+  provider2LipSyncAgent,
+} from "./provider2agent.js";
 
 export const llmPair = (_llm?: LLM, _model?: string) => {
   const llmKey = _llm ?? "openai";
@@ -57,62 +65,39 @@ export const settings2GraphAIConfig = (
     return settings?.[`${prefix}_${key}`] ?? settings?.[key] ?? env?.[`${prefix}_${key}`] ?? env?.[key];
   };
 
-  const config: ConfigDataDictionary<DefaultConfigData> = {
-    openAIAgent: {
-      apiKey: getKey("LLM", "OPENAI_API_KEY"),
-      baseURL: getKey("LLM", "OPENAI_BASE_URL"),
-    },
-    anthropicAgent: {
-      apiKey: getKey("LLM", "ANTHROPIC_API_TOKEN"),
-    },
-    imageOpenaiAgent: {
-      apiKey: getKey("IMAGE", "OPENAI_API_KEY"),
-      baseURL: getKey("IMAGE", "OPENAI_BASE_URL"),
-    },
-    imageReplicateAgent: {
-      apiKey: getKey("IMAGE", "REPLICATE_API_TOKEN"),
-    },
-    imageGenAIAgent: {
-      apiKey: getKey("IMAGE", "GEMINI_API_KEY"),
-    },
-    movieReplicateAgent: {
-      apiKey: getKey("MOVIE", "REPLICATE_API_TOKEN"),
-    },
-    movieGenAIAgent: {
-      apiKey: getKey("MOVIE", "GEMINI_API_KEY"),
-    },
-    ttsOpenaiAgent: {
-      apiKey: getKey("TTS", "OPENAI_API_KEY"),
-      baseURL: getKey("TTS", "OPENAI_BASE_URL"),
-    },
-    ttsNijivoiceAgent: {
-      apiKey: getKey("TTS", "NIJIVOICE_API_KEY"),
-    },
-    ttsGoogleAgent: {
-      apiKey: getKey("TTS", "GEMINI_API_KEY"),
-    },
-    ttsGeminiAgent: {
-      apiKey: getKey("TTS", "GEMINI_API_KEY"),
-    },
-    ttsElevenlabsAgent: {
-      apiKey: getKey("TTS", "ELEVENLABS_API_KEY"),
-    },
-    ttsKotodamaAgent: {
-      apiKey: getKey("TTS", "KOTODAMA_API_KEY"),
-    },
-    soundEffectReplicateAgent: {
-      apiKey: getKey("SOUND_EFFECT", "REPLICATE_API_TOKEN"),
-    },
-    lipSyncReplicateAgent: {
-      apiKey: getKey("LIPSYNC", "REPLICATE_API_TOKEN"),
-    },
+  const addProviderConfigs = <T extends Record<string, { agentName: string; keyName?: string; baseURLKeyName?: string; apiKeyNameOverride?: string }>>(
+    config: ConfigDataDictionary<DefaultConfigData>,
+    providers: T,
+    prefix: string,
+  ) => {
+    Object.entries(providers).forEach(([__provider, info]) => {
+      if (info.agentName === "mediaMockAgent" || !info.keyName) return;
 
-    // TODO
-    // browserlessAgent
-    // ttsGoogleAgent
-    // geminiAgent, groqAgent for tool
-    // TAVILY_API_KEY ( for deep research)
+      const apiKeyName = info.apiKeyNameOverride || info.keyName;
+      config[info.agentName] = {
+        apiKey: getKey(prefix, apiKeyName),
+      };
+
+      if (info.baseURLKeyName) {
+        config[info.agentName].baseURL = getKey(prefix, info.baseURLKeyName);
+      }
+    });
   };
+
+  const config: ConfigDataDictionary<DefaultConfigData> = {};
+
+  addProviderConfigs(config, provider2LLMAgent, "LLM");
+  addProviderConfigs(config, provider2TTSAgent, "TTS");
+  addProviderConfigs(config, provider2ImageAgent, "IMAGE");
+  addProviderConfigs(config, provider2MovieAgent, "MOVIE");
+  addProviderConfigs(config, provider2SoundEffectAgent, "SOUND_EFFECT");
+  addProviderConfigs(config, provider2LipSyncAgent, "LIPSYNC");
+
+  // TODO
+  // browserlessAgent
+  // geminiAgent, groqAgent for tool
+  // TAVILY_API_KEY ( for deep research)
+
   return deepClean(config) ?? {};
 };
 

@@ -90,30 +90,22 @@ export const provider2TTSAgent = {
   xxx: {
     agentName: "ttsXxxAgent",
     hasLimitedConcurrency: true, // API制限がある場合はtrue
-    defaultVoice: "default-voice-id",
-    defaultModel: "default-model", // モデル指定がある場合
+    defaultVoice: "default-voice-id", // デフォルトの音声ID（オプション）
+    defaultModel: "default-model", // デフォルトモデル（オプション）
     models: ["model-1", "model-2"], // 利用可能なモデルリスト（オプション）
-    keyName: "XXX_API_KEY",
+    keyName: "XXX_API_KEY", // 環境変数名
+    baseURLKeyName: "XXX_BASE_URL", // baseURLの環境変数名（オプション、OpenAI互換APIの場合）
+    apiKeyNameOverride: "XXX_API_TOKEN", // 標準と異なるAPI key名を使う場合（オプション）
   },
 };
 ```
 
-### 3. API Key設定の追加
+**重要:** `provider2TTSAgent`に情報を追加するだけで、`utils.ts`の`settings2GraphAIConfig`が自動的に設定を生成します。以下の処理が自動で行われます：
+- `TTS_XXX_API_KEY`または`XXX_API_KEY`環境変数からAPI keyを取得
+- `baseURLKeyName`が指定されている場合、`TTS_XXX_BASE_URL`または`XXX_BASE_URL`からbaseURLを取得
+- `apiKeyNameOverride`が指定されている場合、そのキー名を優先的に使用
 
-**ファイル:** `src/utils/utils.ts`
-
-`settings2GraphAIConfig` 関数に新しいAPI keyマッピングを追加します。
-
-```typescript
-export const settings2GraphAIConfig = (settings: UserSettings) => {
-  return {
-    // ... existing mappings
-    ttsXxxAgent: { apiKey: settings.XXX_API_KEY },
-  };
-};
-```
-
-### 4. GraphAI Agentとして登録
+### 3. GraphAI Agentとして登録
 
 **ファイル:** `src/actions/audio.ts`
 
@@ -130,7 +122,7 @@ const agents = {
 
 ## オプションステップ
 
-### 5. 型定義の追加（カスタムパラメータがある場合）
+### 4. 型定義の追加（カスタムパラメータがある場合）
 
 **ファイル:** `src/types/agent.ts`
 
@@ -147,7 +139,7 @@ export type XxxTTSAgentParams = TTSAgentParams & {
 - `suppressError: boolean`
 - `voice: string`
 
-### 6. MulmoScript スキーマの拡張（オプション）
+### 5. MulmoScript スキーマの拡張（オプション）
 
 **ファイル:** `src/types/schema.ts`
 
@@ -167,8 +159,7 @@ const speechOptionsSchema = z.object({
 
 - [ ] `src/agents/tts_xxx_agent.ts` を作成
 - [ ] `src/agents/index.ts` にエクスポートを追加
-- [ ] `src/utils/provider2agent.ts` の `provider2TTSAgent` に追加
-- [ ] `src/utils/utils.ts` の `settings2GraphAIConfig` に追加
+- [ ] `src/utils/provider2agent.ts` の `provider2TTSAgent` に追加（API key設定は自動生成されます）
 - [ ] `src/actions/audio.ts` の `agents` に追加
 - [ ] 必要に応じて `src/types/agent.ts` に型定義を追加
 - [ ] 必要に応じて `src/types/schema.ts` のスキーマを拡張
@@ -180,7 +171,39 @@ const speechOptionsSchema = z.object({
 
 既存のTTS Agentを参考にしてください：
 
-- **OpenAI**: `src/agents/tts_openai_agent.ts` - 標準的な実装例
+- **OpenAI**: `src/agents/tts_openai_agent.ts` - 標準的な実装例、`baseURLKeyName`を使った例
 - **Gemini**: `src/agents/tts_gemini_agent.ts` - PCM to MP3変換を含む例
 - **ElevenLabs**: `src/agents/tts_elevenlabs_agent.ts` - fetch APIを使用した例
 - **Kotodama**: `src/agents/tts_kotodama_agent.ts` - カスタムパラメータ（decoration）を含む例
+
+## 実装例: provider2agent.tsの設定
+
+### OpenAI互換APIの場合（baseURLをサポート）
+
+```typescript
+openai: {
+  agentName: "ttsOpenaiAgent",
+  hasLimitedConcurrency: false,
+  defaultModel: "gpt-4o-mini-tts",
+  defaultVoice: "shimmer",
+  keyName: "OPENAI_API_KEY",
+  baseURLKeyName: "OPENAI_BASE_URL", // baseURLを使う場合
+},
+```
+
+この設定により、以下の環境変数が自動的に読み込まれます：
+- `TTS_OPENAI_API_KEY` または `OPENAI_API_KEY`
+- `TTS_OPENAI_BASE_URL` または `OPENAI_BASE_URL`
+
+### 標準と異なるAPIキー名を使う場合
+
+```typescript
+anthropic: {
+  agentName: "anthropicAgent",
+  defaultModel: "claude-3-7-sonnet-20250219",
+  keyName: "ANTHROPIC_API_KEY",
+  apiKeyNameOverride: "ANTHROPIC_API_TOKEN", // 実際には ANTHROPIC_API_TOKEN を使う
+},
+```
+
+この設定により、`LLM_ANTHROPIC_API_TOKEN` または `ANTHROPIC_API_TOKEN` が優先的に使用されます。
