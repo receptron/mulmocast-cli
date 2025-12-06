@@ -34,6 +34,22 @@
     },
     {
       "speaker": "Presenter",
+      "duration": 3.0,
+      "movieParams": {
+        "transition": {
+          "type": "slideout_left",
+          "duration": 1.0
+        }
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "3.0 second with no Audio"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
       "image": {
         "type": "movie",
         "source": {
