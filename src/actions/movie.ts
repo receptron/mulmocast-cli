@@ -127,34 +127,48 @@ const addCaptions = (ffmpegContext: FfmpegContext, concatVideoId: string, contex
   return concatVideoId;
 };
 
+const getTransition = (presentationStyleMovieParams: { transition?: unknown } | undefined, beatMovieParams: { transition?: unknown } | undefined) => {
+  const transitionData = beatMovieParams?.transition ?? presentationStyleMovieParams?.transition;
+  if (!transitionData) return null;
+
+  const transition = mulmoTransitionSchema.parse(transitionData);
+  return { type: transition.type, schema: transition };
+};
+
 const addTransitionEffects = (
   ffmpegContext: FfmpegContext,
   captionedVideoId: string,
   context: MulmoStudioContext,
-  transitionVideoIds: string[],
+  transitionVideoIds: { videoId: string; beatIndex: number }[],
   beatTimestamps: number[],
 ) => {
-  if (context.presentationStyle.movieParams?.transition && transitionVideoIds.length > 0) {
-    const transition = mulmoTransitionSchema.parse(context.presentationStyle.movieParams.transition);
+  if (transitionVideoIds.length > 0) {
+    return transitionVideoIds.reduce((acc, { videoId: transitionVideoId, beatIndex }, index) => {
+      const beat = context.studio.script.beats[beatIndex];
+      const transitionInfo = getTransition(context.presentationStyle.movieParams, beat.movieParams);
 
-    return transitionVideoIds.reduce((acc, transitionVideoId, index) => {
+      if (!transitionInfo) {
+        return acc; // Skip if no transition is defined
+      }
+
+      const { type, schema: transition } = transitionInfo;
       const transitionStartTime = beatTimestamps[index + 1] - 0.05; // 0.05 is to avoid flickering
       const processedVideoId = `${transitionVideoId}_f`;
       let transitionFilter;
-      if (transition.type === "fade") {
+      if (type === "fade") {
         transitionFilter = `[${transitionVideoId}]format=yuva420p,fade=t=out:d=${transition.duration}:alpha=1,setpts=PTS-STARTPTS+${transitionStartTime}/TB[${processedVideoId}]`;
-      } else if (transition.type === "slideout_left") {
+      } else if (type === "slideout_left") {
         transitionFilter = `[${transitionVideoId}]format=yuva420p,setpts=PTS-STARTPTS+${transitionStartTime}/TB[${processedVideoId}]`;
       } else {
-        throw new Error(`Unknown transition type: ${transition.type}`);
+        throw new Error(`Unknown transition type: ${type}`);
       }
       ffmpegContext.filterComplex.push(transitionFilter);
       const outputId = `${transitionVideoId}_o`;
-      if (transition.type === "fade") {
+      if (type === "fade") {
         ffmpegContext.filterComplex.push(
           `[${acc}][${processedVideoId}]overlay=enable='between(t,${transitionStartTime},${transitionStartTime + transition.duration})'[${outputId}]`,
         );
-      } else if (transition.type === "slideout_left") {
+      } else if (type === "slideout_left") {
         ffmpegContext.filterComplex.push(
           `[${acc}][${processedVideoId}]overlay=x='-(t-${transitionStartTime})*W/${transition.duration}':y=0:enable='between(t,${transitionStartTime},${transitionStartTime + transition.duration})'[${outputId}]`,
         );
@@ -201,7 +215,7 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
   // Add each image input
   const videoIdsForBeats: (string | undefined)[] = [];
   const audioIdsFromMovieBeats: string[] = [];
-  const transitionVideoIds: string[] = [];
+  const transitionVideoIds: { videoId: string; beatIndex: number }[] = [];
   const beatTimestamps: number[] = [];
 
   context.studio.beats.reduce((timestamp, studioBeat, index) => {
@@ -245,7 +259,8 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
     const { videoId, videoPart } = getVideoPart(inputIndex, mediaType, duration, canvasInfo, fillOption, speed);
     ffmpegContext.filterComplex.push(videoPart);
 
-    if (context.presentationStyle.movieParams?.transition && index < context.studio.beats.length - 1) {
+    const hasTransition = getTransition(context.presentationStyle.movieParams, beat.movieParams) !== null;
+    if (hasTransition && index < context.studio.beats.length - 1) {
       // NOTE: We split the video into two parts for transition.
       ffmpegContext.filterComplex.push(`[${videoId}]split=2[${videoId}_0][${videoId}_1]`);
       videoIdsForBeats.push(`${videoId}_0`);
@@ -254,9 +269,9 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
         ffmpegContext.filterComplex.push(
           `[${videoId}_1]reverse,select='eq(n,0)',reverse,tpad=stop_mode=clone:stop_duration=${duration},fps=30,setpts=PTS-STARTPTS[${videoId}_2]`,
         );
-        transitionVideoIds.push(`${videoId}_2`);
+        transitionVideoIds.push({ videoId: `${videoId}_2`, beatIndex: index });
       } else {
-        transitionVideoIds.push(`${videoId}_1`);
+        transitionVideoIds.push({ videoId: `${videoId}_1`, beatIndex: index });
       }
     } else {
       videoIdsForBeats.push(videoId);

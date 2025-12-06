@@ -340,7 +340,7 @@ export const mulmoTransitionSchema = z.object({
   duration: z.number().min(0).max(2).optional().default(0.3), // transition duration in seconds
 });
 
-const movieParamsSchema = z.object({
+export const mulmoMovieParamsSchema = z.object({
   provider: text2MovieProviderSchema.optional(),
   model: z.string().optional(),
   fillOption: mulmoFillOptionSchema.optional(), // for movie.ts
@@ -359,7 +359,7 @@ export const mulmoBeatSchema = z
 
     imageParams: mulmoBeatImageParamsSchema.optional(), // beat specific parameters
     audioParams: beatAudioParamsSchema.optional(), // beat specific parameters
-    movieParams: movieParamsSchema
+    movieParams: mulmoMovieParamsSchema
       .extend({
         speed: z.number().optional().describe("Speed of the video. 1.0 is normal speed. 0.5 is half speed. 2.0 is double speed."), // for movie.ts
       })
@@ -422,7 +422,7 @@ export const mulmoPresentationStyleSchema = z.object({
     provider: defaultProviders.text2image,
     images: {},
   }),
-  movieParams: movieParamsSchema.optional().default({
+  movieParams: mulmoMovieParamsSchema.optional().default({
     provider: defaultProviders.text2movie,
   }),
   soundEffectParams: mulmoSoundEffectParamsSchema.optional().default({
