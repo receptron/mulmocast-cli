@@ -143,7 +143,7 @@ const addTransitionEffects = (
   beatTimestamps: number[],
 ) => {
   if (transitionVideoIds.length > 0) {
-    return transitionVideoIds.reduce((acc, { videoId: transitionVideoId, beatIndex }, index) => {
+    return transitionVideoIds.reduce((acc, { videoId: transitionVideoId, beatIndex }) => {
       const beat = context.studio.script.beats[beatIndex];
       const transitionInfo = getTransition(context.presentationStyle.movieParams, beat.movieParams);
 
@@ -152,7 +152,7 @@ const addTransitionEffects = (
       }
 
       const { type, schema: transition } = transitionInfo;
-      const transitionStartTime = beatTimestamps[index + 1] - 0.05; // 0.05 is to avoid flickering
+      const transitionStartTime = beatTimestamps[beatIndex + 1] - 0.05; // 0.05 is to avoid flickering
       const processedVideoId = `${transitionVideoId}_f`;
       let transitionFilter;
       if (type === "fade") {
