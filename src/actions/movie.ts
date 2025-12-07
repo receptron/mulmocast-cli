@@ -262,6 +262,7 @@ const getExtraPadding = (context: MulmoStudioContext, index: number) => {
 };
 
 const getFillOption = (context: MulmoStudioContext, beat: MulmoBeat) => {
+  // Get fillOption from merged imageParams (global + beat-specific)
   const globalFillOption = context.presentationStyle.movieParams?.fillOption;
   const beatFillOption = beat.movieParams?.fillOption;
   const defaultFillOption = mulmoFillOptionSchema.parse({}); // let the schema infer the default value
@@ -338,18 +339,13 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
       createVideoFileError(index, sourceFile),
     );
     assert(!!studioBeat.duration, `studioBeat.duration is not set: index=${index}`);
-    const extraPadding = getExtraPadding(context, index);
 
     // The movie duration is bigger in case of voice-over.
-    const duration = Math.max(studioBeat.duration + extraPadding, studioBeat.movieDuration ?? 0);
-
-    // Get fillOption from merged imageParams (global + beat-specific)
-    const fillOption = getFillOption(context, beat);
-
+    const duration = Math.max(studioBeat.duration + getExtraPadding(context, index), studioBeat.movieDuration ?? 0);
     const inputIndex = FfmpegContextAddInput(ffmpegContext, sourceFile);
     const mediaType = studioBeat.lipSyncFile || studioBeat.movieFile ? "movie" : MulmoPresentationStyleMethods.getImageType(context.presentationStyle, beat);
     const speed = beat.movieParams?.speed ?? 1.0;
-    const { videoId, videoPart } = getVideoPart(inputIndex, mediaType, duration, canvasInfo, fillOption, speed);
+    const { videoId, videoPart } = getVideoPart(inputIndex, mediaType, duration, canvasInfo, getFillOption(context, beat), speed);
     ffmpegContext.filterComplex.push(videoPart);
 
     // for transition
@@ -358,8 +354,7 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
 
     videoIdsForBeats.push(needFirst || needLast ? `${videoId}_concat` : videoId);
     if (needFirst || needLast) {
-      // Split video into multiple outputs with semantic names
-      const outputs: string[] = [`[${videoId}_concat]`]; // for concat
+      const outputs: string[] = [`[${videoId}_concat]`];
       if (needFirst) outputs.push(`[${videoId}_first_src]`);
       if (needLast) outputs.push(`[${videoId}_last_src]`);
 
