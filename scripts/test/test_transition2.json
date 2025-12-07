@@ -71,6 +71,206 @@
           "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/test/pingpong.mov"
         }
       }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "slideout_left",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-yellow-300 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-blue-900 text-6xl font-extrabold tracking-wide\">",
+          "slideout_left",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "slideout_right",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-red-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "slideout_right",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "slideout_up",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-green-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "slideout_up",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "slideout_down",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-blue-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "slideout_down",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "slidein_left",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-purple-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "slidein_left",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "slidein_right",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-orange-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "slidein_right",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "slidein_up",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-pink-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "slidein_up",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "slidein_down",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-cyan-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "slidein_down",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "fade",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-gray-800 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-yellow-300 text-6xl font-extrabold tracking-wide\">",
+          "fade",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "fade",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-gray-200 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-yellow-300 text-6xl font-extrabold tracking-wide\">",
+          "fade",
+          "</div>",
+          "</main>"
+        ]
+      }
     }
   ]
 }
