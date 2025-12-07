@@ -1,5 +1,5 @@
 import { GraphAILogger, assert } from "graphai";
-import { MulmoStudioContext, MulmoCanvasDimension, BeatMediaType, mulmoTransitionSchema, MulmoFillOption, mulmoFillOptionSchema } from "../types/index.js";
+import { MulmoStudioContext, MulmoCanvasDimension, BeatMediaType, MulmoFillOption, mulmoFillOptionSchema } from "../types/index.js";
 import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { getAudioArtifactFilePath, getOutputVideoFilePath, writingMessage, isFile } from "../utils/file.js";
 import { createVideoFileError, createVideoSourceError } from "../utils/error_cause.js";
@@ -127,14 +127,6 @@ const addCaptions = (ffmpegContext: FfmpegContext, concatVideoId: string, contex
   return concatVideoId;
 };
 
-const getTransition = (presentationStyleMovieParams: { transition?: unknown } | undefined, beatMovieParams: { transition?: unknown } | undefined) => {
-  const transitionData = beatMovieParams?.transition ?? presentationStyleMovieParams?.transition;
-  if (!transitionData) return null;
-
-  const transition = mulmoTransitionSchema.parse(transitionData);
-  return { type: transition.type, schema: transition };
-};
-
 const addTransitionEffects = (
   ffmpegContext: FfmpegContext,
   captionedVideoId: string,
@@ -145,30 +137,28 @@ const addTransitionEffects = (
   if (transitionVideoIds.length > 0) {
     return transitionVideoIds.reduce((acc, { videoId: transitionVideoId, beatIndex }) => {
       const beat = context.studio.script.beats[beatIndex];
-      const transitionInfo = getTransition(context.presentationStyle.movieParams, beat.movieParams);
+      const transition = MulmoPresentationStyleMethods.getMovieTransition(context, beat);
 
-      if (!transitionInfo) {
+      if (!transition) {
         return acc; // Skip if no transition is defined
       }
-
-      const { type, schema: transition } = transitionInfo;
       const transitionStartTime = beatTimestamps[beatIndex + 1] - 0.05; // 0.05 is to avoid flickering
       const processedVideoId = `${transitionVideoId}_f`;
       let transitionFilter;
-      if (type === "fade") {
+      if (transition.type === "fade") {
         transitionFilter = `[${transitionVideoId}]format=yuva420p,fade=t=out:d=${transition.duration}:alpha=1,setpts=PTS-STARTPTS+${transitionStartTime}/TB[${processedVideoId}]`;
-      } else if (type === "slideout_left") {
+      } else if (transition.type === "slideout_left") {
         transitionFilter = `[${transitionVideoId}]format=yuva420p,setpts=PTS-STARTPTS+${transitionStartTime}/TB[${processedVideoId}]`;
       } else {
-        throw new Error(`Unknown transition type: ${type}`);
+        throw new Error(`Unknown transition type: ${transition.type}`);
       }
       ffmpegContext.filterComplex.push(transitionFilter);
       const outputId = `${transitionVideoId}_o`;
-      if (type === "fade") {
+      if (transition.type === "fade") {
         ffmpegContext.filterComplex.push(
           `[${acc}][${processedVideoId}]overlay=enable='between(t,${transitionStartTime},${transitionStartTime + transition.duration})'[${outputId}]`,
         );
-      } else if (type === "slideout_left") {
+      } else if (transition.type === "slideout_left") {
         ffmpegContext.filterComplex.push(
           `[${acc}][${processedVideoId}]overlay=x='-(t-${transitionStartTime})*W/${transition.duration}':y=0:enable='between(t,${transitionStartTime},${transitionStartTime + transition.duration})'[${outputId}]`,
         );
@@ -259,7 +249,7 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
     const { videoId, videoPart } = getVideoPart(inputIndex, mediaType, duration, canvasInfo, fillOption, speed);
     ffmpegContext.filterComplex.push(videoPart);
 
-    const hasTransition = getTransition(context.presentationStyle.movieParams, beat.movieParams) !== null;
+    const hasTransition = MulmoPresentationStyleMethods.getMovieTransition(context, beat) !== null;
     if (hasTransition && index < context.studio.beats.length - 1) {
       // NOTE: We split the video into two parts for transition.
       ffmpegContext.filterComplex.push(`[${videoId}]split=2[${videoId}_0][${videoId}_1]`);
