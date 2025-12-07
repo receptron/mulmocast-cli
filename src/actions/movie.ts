@@ -1,5 +1,5 @@
 import { GraphAILogger, assert } from "graphai";
-import { MulmoStudioContext, MulmoBeat, MulmoTransition, MulmoCanvasDimension, BeatMediaType, MulmoFillOption, mulmoFillOptionSchema } from "../types/index.js";
+import { MulmoStudioContext, MulmoBeat, MulmoTransition, MulmoCanvasDimension, MulmoFillOption, mulmoFillOptionSchema } from "../types/index.js";
 import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { getAudioArtifactFilePath, getOutputVideoFilePath, writingMessage, isFile } from "../utils/file.js";
 import { createVideoFileError, createVideoSourceError } from "../utils/error_cause.js";
@@ -41,10 +41,10 @@ export const getVideoPart = (
   videoFilters.push(`trim=duration=${originalDuration}`, "fps=30");
 
   // Apply speed if specified
-  if (speed !== 1.0) {
-    videoFilters.push(`setpts=${1 / speed}*PTS`);
-  } else {
+  if (speed === 1.0) {
     videoFilters.push("setpts=PTS-STARTPTS");
+  } else {
+    videoFilters.push(`setpts=${1 / speed}*PTS`);
   }
 
   // Apply scaling based on fill option
@@ -67,7 +67,7 @@ export const getVideoPart = (
 
   return {
     videoId,
-    videoPart: `[${inputIndex}:v]` + videoFilters.filter((a) => a).join(",") + `[${videoId}]`,
+    videoPart: `[${inputIndex}:v]` + videoFilters.join(",") + `[${videoId}]`,
   };
 };
 
