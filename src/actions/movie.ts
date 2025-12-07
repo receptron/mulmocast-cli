@@ -127,6 +127,32 @@ const addCaptions = (ffmpegContext: FfmpegContext, concatVideoId: string, contex
   return concatVideoId;
 };
 
+const getOutOverlayCoords = (transitionType: string, d: number, t: number): string => {
+  if (transitionType === "slideout_left") {
+    return `x='-(t-${t})*W/${d}':y=0`;
+  } else if (transitionType === "slideout_right") {
+    return `x='(t-${t})*W/${d}':y=0`;
+  } else if (transitionType === "slideout_up") {
+    return `x=0:y='-(t-${t})*H/${d}'`;
+  } else if (transitionType === "slideout_down") {
+    return `x=0:y='(t-${t})*H/${d}'`;
+  }
+  throw new Error(`Unknown transition type: ${transitionType}`);
+};
+
+const getInOverlayCoords = (transitionType: string, d: number, t: number): string => {
+  if (transitionType === "slidein_left") {
+    return `x='-W+(t-${t})*W/${d}':y=0`;
+  } else if (transitionType === "slidein_right") {
+    return `x='W-(t-${t})*W/${d}':y=0`;
+  } else if (transitionType === "slidein_up") {
+    return `x=0:y='H-(t-${t})*H/${d}'`;
+  } else if (transitionType === "slidein_down") {
+    return `x=0:y='-H+(t-${t})*H/${d}'`;
+  }
+  throw new Error(`Unknown transition type: ${transitionType}`);
+};
+
 const addTransitionEffects = (
   ffmpegContext: FfmpegContext,
   captionedVideoId: string,
@@ -159,21 +185,7 @@ const addTransitionEffects = (
     } else if (transition.type.startsWith("slideout_")) {
       // Slideout: previous beat's last frame slides out
       ffmpegContext.filterComplex.push(`[${transitionVideoId}]format=yuva420p,setpts=PTS-STARTPTS+${t}/TB[${processedVideoId}]`);
-
-      const overlayCoords = (() => {
-        if (transition.type === "slideout_left") {
-          return `x='-(t-${t})*W/${d}':y=0`;
-        } else if (transition.type === "slideout_right") {
-          return `x='(t-${t})*W/${d}':y=0`;
-        } else if (transition.type === "slideout_up") {
-          return `x=0:y='-(t-${t})*H/${d}'`;
-        } else if (transition.type === "slideout_down") {
-          return `x=0:y='(t-${t})*H/${d}'`;
-        }
-        throw new Error(`Unknown transition type: ${transition.type}`);
-      })();
-
-      ffmpegContext.filterComplex.push(`[${prevVideoId}][${processedVideoId}]overlay=${overlayCoords}:enable='between(t,${t},${t + d})'[${outputVideoId}]`);
+      ffmpegContext.filterComplex.push(`[${prevVideoId}][${processedVideoId}]overlay=${getOutOverlayCoords(transition.type, d, t)}:enable='between(t,${t},${t + d})'[${outputVideoId}]`);
     } else if (transition.type.startsWith("slidein_")) {
       // Slidein: this beat's first frame slides in over the previous beat's last frame
       if (!nextVideoId) {
@@ -191,30 +203,14 @@ const addTransitionEffects = (
       // Prepare background (last frame of previous beat)
       const backgroundVideoId = `${prevLastFrame}_bg`;
       ffmpegContext.filterComplex.push(`[${prevLastFrame}]format=yuva420p,setpts=PTS-STARTPTS+${t}/TB[${backgroundVideoId}]`);
-
       // Prepare sliding frame (first frame of this beat)
       const slideinFrameId = `${nextVideoId}_f`;
       ffmpegContext.filterComplex.push(`[${nextVideoId}]format=yuva420p,setpts=PTS-STARTPTS+${t}/TB[${slideinFrameId}]`);
-
-      const overlayCoords = (() => {
-        if (transition.type === "slidein_left") {
-          return `x='-W+(t-${t})*W/${d}':y=0`;
-        } else if (transition.type === "slidein_right") {
-          return `x='W-(t-${t})*W/${d}':y=0`;
-        } else if (transition.type === "slidein_up") {
-          return `x=0:y='H-(t-${t})*H/${d}'`;
-        } else if (transition.type === "slidein_down") {
-          return `x=0:y='-H+(t-${t})*H/${d}'`;
-        }
-        throw new Error(`Unknown transition type: ${transition.type}`);
-      })();
-
       // First overlay: put background on top of concat video
       const bgOutputId = `${prevLastFrame}_bg_o`;
       ffmpegContext.filterComplex.push(`[${prevVideoId}][${backgroundVideoId}]overlay=enable='between(t,${t},${t + d})'[${bgOutputId}]`);
-
       // Second overlay: slide in the new frame on top of background
-      ffmpegContext.filterComplex.push(`[${bgOutputId}][${slideinFrameId}]overlay=${overlayCoords}:enable='between(t,${t},${t + d})'[${outputVideoId}]`);
+      ffmpegContext.filterComplex.push(`[${bgOutputId}][${slideinFrameId}]overlay=${getInOverlayCoords(transition.type, d, t)}:enable='between(t,${t},${t + d})'[${outputVideoId}]`);
     } else {
       throw new Error(`Unknown transition type: ${transition.type}`);
     }
@@ -386,8 +382,6 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
 
   assert(videoIdsForBeats.length === context.studio.beats.length, "videoIds.length !== studio.beats.length");
   assert(beatTimestamps.length === context.studio.beats.length, "beatTimestamps.length !== studio.beats.length");
-
-  // console.log("*** images", images.audioIds);
 
   // Concatenate the trimmed images
   const concatVideoId = "concat_video";
