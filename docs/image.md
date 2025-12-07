@@ -81,6 +81,146 @@
 
 最終的な `studio.beats[index].duration` と `startAt` は `combineAudioFilesAgent` が計算します。動画トランジション、字幕（`captionParams`）の表示タイミング、`soundEffectPrompt` の合成位置などはこの duration/startAt を前提に処理されます。
 
+## トランジション（画面切り替え効果）
+
+### 基本概念
+
+トランジションは各beatの**開始時**に発生する画面切り替え効果です。前のbeatから現在のbeatへの切り替え時に視覚効果を適用します。
+
+**重要な制約**:
+- beat[0]（最初のbeat）にはトランジションを指定できません
+- トランジションは`movieParams.transition`で設定します
+- グローバル設定（presentationStyle）とbeat単位の設定が可能で、beat単位の設定が優先されます
+
+### トランジションタイプ（9種類）
+
+#### 1. fade
+前のbeatの最後のフレームがフェードアウトして、次のbeatに切り替わります。
+
+```json
+{
+  "movieParams": {
+    "transition": {
+      "type": "fade",
+      "duration": 1.0
+    }
+  }
+}
+```
+
+#### 2. slideout系（4方向）
+前のbeatの最後のフレームが指定方向にスライドアウトします。
+
+- **slideout_left**: 左方向にスライドアウト
+- **slideout_right**: 右方向にスライドアウト
+- **slideout_up**: 上方向にスライドアウト
+- **slideout_down**: 下方向にスライドアウト
+
+```json
+{
+  "movieParams": {
+    "transition": {
+      "type": "slideout_left",
+      "duration": 1.0
+    }
+  }
+}
+```
+
+#### 3. slidein系（4方向）
+現在のbeatの最初のフレームが指定方向からスライドインします。**slidein時は前のbeatの最後のフレームが背景として残り、その上に新しいbeatがスライドインします。**
+
+- **slidein_left**: 左からスライドイン
+- **slidein_right**: 右からスライドイン
+- **slidein_up**: 上からスライドイン
+- **slidein_down**: 下からスライドイン
+
+```json
+{
+  "movieParams": {
+    "transition": {
+      "type": "slidein_right",
+      "duration": 1.0
+    }
+  }
+}
+```
+
+### 設定方法
+
+#### グローバル設定（全beatに適用）
+```json
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "title": "Transition Demo",
+  "movieParams": {
+    "transition": {
+      "type": "fade",
+      "duration": 0.5
+    }
+  },
+  "beats": [ ... ]
+}
+```
+
+#### Beat単位の設定（特定のbeatのみ）
+```json
+{
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "duration": 2,
+      "image": { "type": "textSlide", "slide": { "title": "First Slide" } }
+    },
+    {
+      "speaker": "Presenter",
+      "duration": 2,
+      "movieParams": {
+        "transition": {
+          "type": "slidein_left",
+          "duration": 1.0
+        }
+      },
+      "image": { "type": "textSlide", "slide": { "title": "Second Slide" } }
+    }
+  ]
+}
+```
+
+### パラメータ
+
+- **type**: トランジションの種類（必須）
+  - `"fade"`, `"slideout_left"`, `"slideout_right"`, `"slideout_up"`, `"slideout_down"`, `"slidein_left"`, `"slidein_right"`, `"slidein_up"`, `"slidein_down"`
+- **duration**: トランジション効果の長さ（秒）
+  - 省略時のデフォルト: `0.3`
+  - 最小値: `0`, 最大値: `2`
+
+### トランジションのタイミング
+
+- トランジションは`beatTimestamps[beatIndex]`の時刻（そのbeatの開始時刻）に開始されます
+- `transition.duration`秒間実行されます
+- トランジション中は、前のbeatのコンテンツと現在のbeatのコンテンツが重なって表示されます
+
+### 内部実装の詳細
+
+#### slideout/fadeの処理
+前のbeatの最後のフレームを抽出し、それに対してエフェクトを適用します：
+- **fade**: アルファチャンネルでフェードアウト
+- **slideout**: FFmpegのoverlayフィルタで位置を時間経過とともに変化
+
+#### slideinの処理（2段階オーバーレイ）
+slideinは特殊な処理を行います：
+1. **第1段階**: 前のbeatの最後のフレームを背景として固定表示
+2. **第2段階**: 現在のbeatの最初のフレームを指定方向からスライドイン
+
+これにより、前の画面が背景に残りつつ、新しい画面がスライドインする効果が実現されます。
+
+### サンプル
+
+全てのトランジションタイプを確認できるサンプルファイル:
+- [scripts/test/test_transition2.json](../scripts/test/test_transition2.json)
+
 ## リップシンク対応モデル
 
 `enableLipSync: true` を使う場合は、選択するモデルによって入力形式が異なります。画像/動画の入力方法は `image.type: "image"` / `image.type: "movie"`、`imagePrompt`からの出力、`moviePrompt` からの出力が使えます。
