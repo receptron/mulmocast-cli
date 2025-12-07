@@ -198,9 +198,8 @@ const addTransitionEffects = (
 
       // Get previous beat's last frame for background
       const prevVideoSourceId = videoIdsForBeats[beatIndex - 1];
-      const prevVideoId2 = prevVideoSourceId?.endsWith("_concat") ? prevVideoSourceId.slice(0, -7) : prevVideoSourceId;
       // Both movie and image beats now have _last
-      const prevLastFrame = `${prevVideoId2}_last`;
+      const prevLastFrame = `${prevVideoSourceId}_last`;
 
       // Prepare background (last frame of previous beat)
       const backgroundVideoId = `${prevLastFrame}_bg`;
@@ -272,18 +271,14 @@ const getFillOption = (context: MulmoStudioContext, beat: MulmoBeat) => {
 
 const getTransitionVideoId = (transition: MulmoTransition, videoIdsForBeats: (string | undefined)[], index: number) => {
   if (transition.type === "fade" || transition.type.startsWith("slideout_")) {
-    // Use previous beat's last frame
+    // Use previous beat's last frame. TODO: support voice-over
     const prevVideoSourceId = videoIdsForBeats[index - 1];
-    const prevVideoId = prevVideoSourceId?.endsWith("_concat") ? prevVideoSourceId.slice(0, -7) : prevVideoSourceId;
     // Both movie and image beats now have _last
-    const frameId = `${prevVideoId}_last`;
+    const frameId = `${prevVideoSourceId}_last`;
     return { videoId: frameId, nextVideoId: undefined, beatIndex: index };
   }
-  // } else if (transition.type.startsWith("slidein_")) {
-  // Use this beat's first frame
-  const currentVideoSourceId = videoIdsForBeats[index];
-  const currentVideoId = currentVideoSourceId?.endsWith("_concat") ? currentVideoSourceId.slice(0, -7) : currentVideoSourceId;
-  return { videoId: "", nextVideoId: `${currentVideoId}_first`, beatIndex: index };
+  // Use this beat's first frame. slidein_ case
+  return { videoId: "", nextVideoId: `${videoIdsForBeats[index]}_first`, beatIndex: index };
 };
 
 const getConcatVideoFilter = (concatVideoId: string, videoIdsForBeats: (string | undefined)[]) => {
@@ -314,7 +309,7 @@ const addSplitAndExtractFrames = (
   needFirst: boolean,
   needLast: boolean,
 ): void => {
-  const outputs: string[] = [`[${videoId}_concat]`];
+  const outputs: string[] = [`[${videoId}]`];
   if (needFirst) outputs.push(`[${videoId}_first_src]`);
   if (needLast) outputs.push(`[${videoId}_last_src]`);
 
@@ -380,8 +375,7 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
     // The movie duration is bigger in case of voice-over.
     const duration = Math.max(studioBeat.duration! + getExtraPadding(context, index), studioBeat.movieDuration ?? 0);
     const inputIndex = FfmpegContextAddInput(ffmpegContext, sourceFile);
-    const mediaType = studioBeat.lipSyncFile || studioBeat.movieFile ? "movie" : MulmoPresentationStyleMethods.getImageType(context.presentationStyle, beat);
-    const isMovie = mediaType === "movie";
+    const isMovie = !!(studioBeat.lipSyncFile || studioBeat.movieFile || MulmoPresentationStyleMethods.getImageType(context.presentationStyle, beat) === "movie");
     const speed = beat.movieParams?.speed ?? 1.0;
     const { videoId, videoPart } = getVideoPart(inputIndex, isMovie, duration, canvasInfo, getFillOption(context, beat), speed);
     ffmpegContext.filterComplex.push(videoPart);
@@ -390,7 +384,7 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
     const needFirst = needsFirstFrame[index]; // This beat has slidein
     const needLast = needsLastFrame[index]; // Next beat has transition
 
-    videoIdsForBeats.push(needFirst || needLast ? `${videoId}_concat` : videoId);
+    videoIdsForBeats.push(videoId);
     if (needFirst || needLast) {
       addSplitAndExtractFrames(ffmpegContext, videoId, duration, isMovie, needFirst, needLast);
     }
