@@ -4,12 +4,6 @@
   },
   "lang": "en",
   "title": "Transition Test",
-  "movieParams": {
-    "transition": {
-      "type": "fade",
-      "duration": 1.0
-    }
-  },
   "beats": [
     {
       "speaker": "Presenter",
@@ -24,17 +18,15 @@
     },
     {
       "speaker": "Presenter",
-      "duration": 3.0,
       "image": {
         "type": "textSlide",
         "slide": {
-          "title": "3.0 second with no Audio"
+          "title": "1"
         }
       }
     },
     {
       "speaker": "Presenter",
-      "duration": 3.0,
       "movieParams": {
         "transition": {
           "type": "slideout_left",
@@ -44,7 +36,23 @@
       "image": {
         "type": "textSlide",
         "slide": {
-          "title": "3.0 second with no Audio"
+          "title": "2"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "slideout_left",
+          "duration": 1.0
+        }
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/tv.mov"
         }
       }
     },

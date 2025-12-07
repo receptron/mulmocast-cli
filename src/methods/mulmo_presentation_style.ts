@@ -18,6 +18,7 @@ import {
   SpeakerData,
   Text2ImageProvider,
   MulmoStudioContext,
+  MulmoTransition,
 } from "../types/index.js";
 import {
   text2ImageProviderSchema,
@@ -25,6 +26,7 @@ import {
   text2MovieProviderSchema,
   text2SpeechProviderSchema,
   mulmoCanvasDimensionSchema,
+  mulmoTransitionSchema,
 } from "../types/schema.js";
 import {
   provider2ImageAgent,
@@ -93,6 +95,12 @@ export const MulmoPresentationStyleMethods = {
       return speaker.lang[lang];
     }
     return speaker;
+  },
+  getMovieTransition(context: MulmoStudioContext, beat: MulmoBeat): MulmoTransition | null {
+    const transitionData = beat.movieParams?.transition ?? context.presentationStyle.movieParams?.transition;
+    if (!transitionData) return null;
+
+    return mulmoTransitionSchema.parse(transitionData);
   },
   /* NOTE: This method is not used.
   getTTSModel(context: MulmoStudioContext, beat: MulmoBeat): string | undefined {

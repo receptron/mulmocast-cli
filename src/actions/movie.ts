@@ -1,5 +1,5 @@
 import { GraphAILogger, assert } from "graphai";
-import { MulmoStudioContext, MulmoCanvasDimension, BeatMediaType, mulmoTransitionSchema, MulmoFillOption, mulmoFillOptionSchema } from "../types/index.js";
+import { MulmoStudioContext, MulmoCanvasDimension, BeatMediaType, MulmoFillOption, mulmoFillOptionSchema } from "../types/index.js";
 import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { getAudioArtifactFilePath, getOutputVideoFilePath, writingMessage, isFile } from "../utils/file.js";
 import { createVideoFileError, createVideoSourceError } from "../utils/error_cause.js";
@@ -111,17 +111,17 @@ const addCaptions = (ffmpegContext: FfmpegContext, concatVideoId: string, contex
   const beatsWithCaptions = context.studio.beats.filter(({ captionFile }) => captionFile);
   if (caption && beatsWithCaptions.length > 0) {
     const introPadding = MulmoStudioContextMethods.getIntroPadding(context);
-    return beatsWithCaptions.reduce((acc, beat, index) => {
+    return beatsWithCaptions.reduce((prevVideoId, beat, index) => {
       const { startAt, duration, captionFile } = beat;
       if (startAt !== undefined && duration !== undefined && captionFile !== undefined) {
         const captionInputIndex = FfmpegContextAddInput(ffmpegContext, captionFile);
         const compositeVideoId = `oc${index}`;
         ffmpegContext.filterComplex.push(
-          `[${acc}][${captionInputIndex}:v]overlay=format=auto:enable='between(t,${startAt + introPadding},${startAt + duration + introPadding})'[${compositeVideoId}]`,
+          `[${prevVideoId}][${captionInputIndex}:v]overlay=format=auto:enable='between(t,${startAt + introPadding},${startAt + duration + introPadding})'[${compositeVideoId}]`,
         );
         return compositeVideoId;
       }
-      return acc;
+      return prevVideoId;
     }, concatVideoId);
   }
   return concatVideoId;
@@ -131,38 +131,39 @@ const addTransitionEffects = (
   ffmpegContext: FfmpegContext,
   captionedVideoId: string,
   context: MulmoStudioContext,
-  transitionVideoIds: string[],
+  transitionVideoIds: { videoId: string; beatIndex: number }[],
   beatTimestamps: number[],
 ) => {
-  if (context.presentationStyle.movieParams?.transition && transitionVideoIds.length > 0) {
-    const transition = mulmoTransitionSchema.parse(context.presentationStyle.movieParams.transition);
-
-    return transitionVideoIds.reduce((acc, transitionVideoId, index) => {
-      const transitionStartTime = beatTimestamps[index + 1] - 0.05; // 0.05 is to avoid flickering
-      const processedVideoId = `${transitionVideoId}_f`;
-      let transitionFilter;
-      if (transition.type === "fade") {
-        transitionFilter = `[${transitionVideoId}]format=yuva420p,fade=t=out:d=${transition.duration}:alpha=1,setpts=PTS-STARTPTS+${transitionStartTime}/TB[${processedVideoId}]`;
-      } else if (transition.type === "slideout_left") {
-        transitionFilter = `[${transitionVideoId}]format=yuva420p,setpts=PTS-STARTPTS+${transitionStartTime}/TB[${processedVideoId}]`;
-      } else {
-        throw new Error(`Unknown transition type: ${transition.type}`);
-      }
-      ffmpegContext.filterComplex.push(transitionFilter);
-      const outputId = `${transitionVideoId}_o`;
-      if (transition.type === "fade") {
-        ffmpegContext.filterComplex.push(
-          `[${acc}][${processedVideoId}]overlay=enable='between(t,${transitionStartTime},${transitionStartTime + transition.duration})'[${outputId}]`,
-        );
-      } else if (transition.type === "slideout_left") {
-        ffmpegContext.filterComplex.push(
-          `[${acc}][${processedVideoId}]overlay=x='-(t-${transitionStartTime})*W/${transition.duration}':y=0:enable='between(t,${transitionStartTime},${transitionStartTime + transition.duration})'[${outputId}]`,
-        );
-      }
-      return outputId;
-    }, captionedVideoId);
+  if (transitionVideoIds.length === 0) {
+    return captionedVideoId;
   }
-  return captionedVideoId;
+  return transitionVideoIds.reduce((prevVideoId, { videoId: transitionVideoId, beatIndex }) => {
+    const beat = context.studio.script.beats[beatIndex];
+    const transition = MulmoPresentationStyleMethods.getMovieTransition(context, beat);
+
+    if (!transition) {
+      return prevVideoId; // Skip if no transition is defined
+    }
+    const transitionStartTime = beatTimestamps[beatIndex + 1] - 0.05; // 0.05 is to avoid flickering
+    const processedVideoId = `${transitionVideoId}_f`;
+    const outputVideoId = `${transitionVideoId}_o`;
+    if (transition.type === "fade") {
+      ffmpegContext.filterComplex.push(
+        `[${transitionVideoId}]format=yuva420p,fade=t=out:d=${transition.duration}:alpha=1,setpts=PTS-STARTPTS+${transitionStartTime}/TB[${processedVideoId}]`,
+      );
+      ffmpegContext.filterComplex.push(
+        `[${prevVideoId}][${processedVideoId}]overlay=enable='between(t,${transitionStartTime},${transitionStartTime + transition.duration})'[${outputVideoId}]`,
+      );
+    } else if (transition.type === "slideout_left") {
+      ffmpegContext.filterComplex.push(`[${transitionVideoId}]format=yuva420p,setpts=PTS-STARTPTS+${transitionStartTime}/TB[${processedVideoId}]`);
+      ffmpegContext.filterComplex.push(
+        `[${prevVideoId}][${processedVideoId}]overlay=x='-(t-${transitionStartTime})*W/${transition.duration}':y=0:enable='between(t,${transitionStartTime},${transitionStartTime + transition.duration})'[${outputVideoId}]`,
+      );
+    } else {
+      throw new Error(`Unknown transition type: ${transition.type}`);
+    }
+    return outputVideoId;
+  }, captionedVideoId);
 };
 
 const mixAudiosFromMovieBeats = (ffmpegContext: FfmpegContext, artifactAudioId: string, audioIdsFromMovieBeats: string[]) => {
@@ -201,7 +202,7 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
   // Add each image input
   const videoIdsForBeats: (string | undefined)[] = [];
   const audioIdsFromMovieBeats: string[] = [];
-  const transitionVideoIds: string[] = [];
+  const transitionVideoIds: { videoId: string; beatIndex: number }[] = [];
   const beatTimestamps: number[] = [];
 
   context.studio.beats.reduce((timestamp, studioBeat, index) => {
@@ -245,7 +246,8 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
     const { videoId, videoPart } = getVideoPart(inputIndex, mediaType, duration, canvasInfo, fillOption, speed);
     ffmpegContext.filterComplex.push(videoPart);
 
-    if (context.presentationStyle.movieParams?.transition && index < context.studio.beats.length - 1) {
+    const hasTransition = MulmoPresentationStyleMethods.getMovieTransition(context, beat) !== null;
+    if (hasTransition && index < context.studio.beats.length - 1) {
       // NOTE: We split the video into two parts for transition.
       ffmpegContext.filterComplex.push(`[${videoId}]split=2[${videoId}_0][${videoId}_1]`);
       videoIdsForBeats.push(`${videoId}_0`);
@@ -254,9 +256,9 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
         ffmpegContext.filterComplex.push(
           `[${videoId}_1]reverse,select='eq(n,0)',reverse,tpad=stop_mode=clone:stop_duration=${duration},fps=30,setpts=PTS-STARTPTS[${videoId}_2]`,
         );
-        transitionVideoIds.push(`${videoId}_2`);
+        transitionVideoIds.push({ videoId: `${videoId}_2`, beatIndex: index });
       } else {
-        transitionVideoIds.push(`${videoId}_1`);
+        transitionVideoIds.push({ videoId: `${videoId}_1`, beatIndex: index });
       }
     } else {
       videoIdsForBeats.push(videoId);
