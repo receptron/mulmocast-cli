@@ -134,39 +134,36 @@ const addTransitionEffects = (
   transitionVideoIds: { videoId: string; beatIndex: number }[],
   beatTimestamps: number[],
 ) => {
-  if (transitionVideoIds.length > 0) {
-    return transitionVideoIds.reduce((acc, { videoId: transitionVideoId, beatIndex }) => {
-      const beat = context.studio.script.beats[beatIndex];
-      const transition = MulmoPresentationStyleMethods.getMovieTransition(context, beat);
-
-      if (!transition) {
-        return acc; // Skip if no transition is defined
-      }
-      const transitionStartTime = beatTimestamps[beatIndex + 1] - 0.05; // 0.05 is to avoid flickering
-      const processedVideoId = `${transitionVideoId}_f`;
-      let transitionFilter;
-      if (transition.type === "fade") {
-        transitionFilter = `[${transitionVideoId}]format=yuva420p,fade=t=out:d=${transition.duration}:alpha=1,setpts=PTS-STARTPTS+${transitionStartTime}/TB[${processedVideoId}]`;
-      } else if (transition.type === "slideout_left") {
-        transitionFilter = `[${transitionVideoId}]format=yuva420p,setpts=PTS-STARTPTS+${transitionStartTime}/TB[${processedVideoId}]`;
-      } else {
-        throw new Error(`Unknown transition type: ${transition.type}`);
-      }
-      ffmpegContext.filterComplex.push(transitionFilter);
-      const outputId = `${transitionVideoId}_o`;
-      if (transition.type === "fade") {
-        ffmpegContext.filterComplex.push(
-          `[${acc}][${processedVideoId}]overlay=enable='between(t,${transitionStartTime},${transitionStartTime + transition.duration})'[${outputId}]`,
-        );
-      } else if (transition.type === "slideout_left") {
-        ffmpegContext.filterComplex.push(
-          `[${acc}][${processedVideoId}]overlay=x='-(t-${transitionStartTime})*W/${transition.duration}':y=0:enable='between(t,${transitionStartTime},${transitionStartTime + transition.duration})'[${outputId}]`,
-        );
-      }
-      return outputId;
-    }, captionedVideoId);
+  if (transitionVideoIds.length === 0) {
+    return captionedVideoId;
   }
-  return captionedVideoId;
+  return transitionVideoIds.reduce((acc, { videoId: transitionVideoId, beatIndex }) => {
+    const beat = context.studio.script.beats[beatIndex];
+    const transition = MulmoPresentationStyleMethods.getMovieTransition(context, beat);
+
+    if (!transition) {
+      return acc; // Skip if no transition is defined
+    }
+    const transitionStartTime = beatTimestamps[beatIndex + 1] - 0.05; // 0.05 is to avoid flickering
+    const processedVideoId = `${transitionVideoId}_f`;
+    const outputId = `${transitionVideoId}_o`;
+    if (transition.type === "fade") {
+      ffmpegContext.filterComplex.push(
+        `[${transitionVideoId}]format=yuva420p,fade=t=out:d=${transition.duration}:alpha=1,setpts=PTS-STARTPTS+${transitionStartTime}/TB[${processedVideoId}]`,
+      );
+      ffmpegContext.filterComplex.push(
+        `[${acc}][${processedVideoId}]overlay=enable='between(t,${transitionStartTime},${transitionStartTime + transition.duration})'[${outputId}]`,
+      );
+    } else if (transition.type === "slideout_left") {
+      ffmpegContext.filterComplex.push(`[${transitionVideoId}]format=yuva420p,setpts=PTS-STARTPTS+${transitionStartTime}/TB[${processedVideoId}]`);
+      ffmpegContext.filterComplex.push(
+        `[${acc}][${processedVideoId}]overlay=x='-(t-${transitionStartTime})*W/${transition.duration}':y=0:enable='between(t,${transitionStartTime},${transitionStartTime + transition.duration})'[${outputId}]`,
+      );
+    } else {
+      throw new Error(`Unknown transition type: ${transition.type}`);
+    }
+    return outputId;
+  }, captionedVideoId);
 };
 
 const mixAudiosFromMovieBeats = (ffmpegContext: FfmpegContext, artifactAudioId: string, audioIdsFromMovieBeats: string[]) => {

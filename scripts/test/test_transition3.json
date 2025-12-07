@@ -42,7 +42,7 @@
     },
     {
       "speaker": "Presenter",
-       "movieParams": {
+      "movieParams": {
         "transition": {
           "type": "slideout_left",
           "duration": 1.0
