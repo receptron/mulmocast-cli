@@ -127,7 +127,7 @@ const addCaptions = (ffmpegContext: FfmpegContext, concatVideoId: string, contex
   return concatVideoId;
 };
 
-const getOutOverlayCoords = (transitionType: string, d: number, t: number): string => {
+export const getOutOverlayCoords = (transitionType: string, d: number, t: number): string => {
   if (transitionType === "slideout_left") {
     return `x='-(t-${t})*W/${d}':y=0`;
   } else if (transitionType === "slideout_right") {
@@ -140,7 +140,7 @@ const getOutOverlayCoords = (transitionType: string, d: number, t: number): stri
   throw new Error(`Unknown transition type: ${transitionType}`);
 };
 
-const getInOverlayCoords = (transitionType: string, d: number, t: number): string => {
+export const getInOverlayCoords = (transitionType: string, d: number, t: number): string => {
   if (transitionType === "slidein_left") {
     return `x='-W+(t-${t})*W/${d}':y=0`;
   } else if (transitionType === "slidein_right") {
@@ -221,7 +221,7 @@ const addTransitionEffects = (
   }, captionedVideoId);
 };
 
-const getNeedFirstFrame = (context: MulmoStudioContext) => {
+export const getNeedFirstFrame = (context: MulmoStudioContext) => {
   return context.studio.script.beats.map((beat, index) => {
     if (index === 0) return false; // First beat cannot have transition
     const transition = MulmoPresentationStyleMethods.getMovieTransition(context, beat);
@@ -229,7 +229,7 @@ const getNeedFirstFrame = (context: MulmoStudioContext) => {
   });
 };
 
-const getNeedLastFrame = (context: MulmoStudioContext) => {
+export const getNeedLastFrame = (context: MulmoStudioContext) => {
   return context.studio.script.beats.map((beat, index) => {
     if (index === context.studio.script.beats.length - 1) return false; // Last beat doesn't need _last
     const nextTransition = MulmoPresentationStyleMethods.getMovieTransition(context, context.studio.script.beats[index + 1]);
@@ -251,7 +251,7 @@ const mixAudiosFromMovieBeats = (ffmpegContext: FfmpegContext, artifactAudioId: 
   return artifactAudioId;
 };
 
-const getExtraPadding = (context: MulmoStudioContext, index: number) => {
+export const getExtraPadding = (context: MulmoStudioContext, index: number) => {
   // We need to consider only intro and outro padding because the other paddings were already added to the beat.duration
   if (index === 0) {
     return MulmoStudioContextMethods.getIntroPadding(context);
@@ -261,7 +261,7 @@ const getExtraPadding = (context: MulmoStudioContext, index: number) => {
   return 0;
 };
 
-const getFillOption = (context: MulmoStudioContext, beat: MulmoBeat) => {
+export const getFillOption = (context: MulmoStudioContext, beat: MulmoBeat) => {
   // Get fillOption from merged imageParams (global + beat-specific)
   const globalFillOption = context.presentationStyle.movieParams?.fillOption;
   const beatFillOption = beat.movieParams?.fillOption;
@@ -269,7 +269,7 @@ const getFillOption = (context: MulmoStudioContext, beat: MulmoBeat) => {
   return { ...defaultFillOption, ...globalFillOption, ...beatFillOption };
 };
 
-const getTransitionVideoId = (transition: MulmoTransition, videoIdsForBeats: (string | undefined)[], index: number) => {
+export const getTransitionVideoId = (transition: MulmoTransition, videoIdsForBeats: (string | undefined)[], index: number) => {
   if (transition.type === "fade" || transition.type.startsWith("slideout_")) {
     // Use previous beat's last frame. TODO: support voice-over
     const prevVideoSourceId = videoIdsForBeats[index - 1];
@@ -281,14 +281,14 @@ const getTransitionVideoId = (transition: MulmoTransition, videoIdsForBeats: (st
   return { videoId: "", nextVideoId: `${videoIdsForBeats[index]}_first`, beatIndex: index };
 };
 
-const getConcatVideoFilter = (concatVideoId: string, videoIdsForBeats: (string | undefined)[]) => {
+export const getConcatVideoFilter = (concatVideoId: string, videoIdsForBeats: (string | undefined)[]) => {
   const videoIds = videoIdsForBeats.filter((id) => id !== undefined); // filter out voice-over beats
 
   const inputs = videoIds.map((id) => `[${id}]`).join("");
   return `${inputs}concat=n=${videoIds.length}:v=1:a=0[${concatVideoId}]`;
 };
 
-const validateBeatSource = (studioBeat: MulmoStudioContext["studio"]["beats"][number], index: number): string => {
+export const validateBeatSource = (studioBeat: MulmoStudioContext["studio"]["beats"][number], index: number): string => {
   const sourceFile = studioBeat.lipSyncFile ?? studioBeat.soundEffectFile ?? studioBeat.movieFile ?? studioBeat.htmlImageFile ?? studioBeat.imageFile;
   assert(!!sourceFile, `studioBeat.imageFile or studioBeat.movieFile is not set: index=${index}`, false, createVideoSourceError(index));
   assert(
@@ -301,7 +301,7 @@ const validateBeatSource = (studioBeat: MulmoStudioContext["studio"]["beats"][nu
   return sourceFile;
 };
 
-const addSplitAndExtractFrames = (
+export const addSplitAndExtractFrames = (
   ffmpegContext: FfmpegContext,
   videoId: string,
   duration: number,
