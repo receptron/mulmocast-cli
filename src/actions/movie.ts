@@ -17,7 +17,7 @@ const videoCodec = "libx264"; // "h264_videotoolbox" (macOS only) is too noisy
 
 export const getVideoPart = (
   inputIndex: number,
-  mediaType: BeatMediaType,
+  isMovie: boolean,
   duration: number,
   canvasInfo: MulmoCanvasDimension,
   fillOption: MulmoFillOption,
@@ -29,12 +29,12 @@ export const getVideoPart = (
 
   // Handle different media types
   const originalDuration = duration * speed;
-  if (mediaType === "image") {
-    videoFilters.push("loop=loop=-1:size=1:start=0");
-  } else if (mediaType === "movie") {
+  if (isMovie) {
     // For videos, extend with last frame if shorter than required duration
     // tpad will extend the video by cloning the last frame, then trim will ensure exact duration
     videoFilters.push(`tpad=stop_mode=clone:stop_duration=${originalDuration * 2}`); // Use 2x duration to ensure coverage
+  } else {
+    videoFilters.push("loop=loop=-1:size=1:start=0");
   }
 
   // Common filters for all media types
@@ -172,21 +172,22 @@ const addTransitionEffects = (
       return prevVideoId; // Skip if no transition is defined
     }
     // Transition happens at the start of this beat
-    const transitionStartTime = beatTimestamps[beatIndex] - 0.05; // 0.05 is to avoid flickering
-    const t = transitionStartTime;
-    const d = transition.duration;
+    const startAt = beatTimestamps[beatIndex] - 0.05; // 0.05 is to avoid flickering
+    const duration = transition.duration;
     const outputVideoId = `trans_${beatIndex}_o`;
     const processedVideoId = `${transitionVideoId}_f`;
 
     if (transition.type === "fade") {
       // Fade out the previous beat's last frame
-      ffmpegContext.filterComplex.push(`[${transitionVideoId}]format=yuva420p,fade=t=out:d=${d}:alpha=1,setpts=PTS-STARTPTS+${t}/TB[${processedVideoId}]`);
-      ffmpegContext.filterComplex.push(`[${prevVideoId}][${processedVideoId}]overlay=enable='between(t,${t},${t + d})'[${outputVideoId}]`);
+      ffmpegContext.filterComplex.push(
+        `[${transitionVideoId}]format=yuva420p,fade=t=out:d=${duration}:alpha=1,setpts=PTS-STARTPTS+${startAt}/TB[${processedVideoId}]`,
+      );
+      ffmpegContext.filterComplex.push(`[${prevVideoId}][${processedVideoId}]overlay=enable='between(t,${startAt},${startAt + duration})'[${outputVideoId}]`);
     } else if (transition.type.startsWith("slideout_")) {
       // Slideout: previous beat's last frame slides out
-      ffmpegContext.filterComplex.push(`[${transitionVideoId}]format=yuva420p,setpts=PTS-STARTPTS+${t}/TB[${processedVideoId}]`);
+      ffmpegContext.filterComplex.push(`[${transitionVideoId}]format=yuva420p,setpts=PTS-STARTPTS+${startAt}/TB[${processedVideoId}]`);
       ffmpegContext.filterComplex.push(
-        `[${prevVideoId}][${processedVideoId}]overlay=${getOutOverlayCoords(transition.type, d, t)}:enable='between(t,${t},${t + d})'[${outputVideoId}]`,
+        `[${prevVideoId}][${processedVideoId}]overlay=${getOutOverlayCoords(transition.type, duration, startAt)}:enable='between(t,${startAt},${startAt + duration})'[${outputVideoId}]`,
       );
     } else if (transition.type.startsWith("slidein_")) {
       // Slidein: this beat's first frame slides in over the previous beat's last frame
@@ -203,16 +204,16 @@ const addTransitionEffects = (
 
       // Prepare background (last frame of previous beat)
       const backgroundVideoId = `${prevLastFrame}_bg`;
-      ffmpegContext.filterComplex.push(`[${prevLastFrame}]format=yuva420p,setpts=PTS-STARTPTS+${t}/TB[${backgroundVideoId}]`);
+      ffmpegContext.filterComplex.push(`[${prevLastFrame}]format=yuva420p,setpts=PTS-STARTPTS+${startAt}/TB[${backgroundVideoId}]`);
       // Prepare sliding frame (first frame of this beat)
       const slideinFrameId = `${nextVideoId}_f`;
-      ffmpegContext.filterComplex.push(`[${nextVideoId}]format=yuva420p,setpts=PTS-STARTPTS+${t}/TB[${slideinFrameId}]`);
+      ffmpegContext.filterComplex.push(`[${nextVideoId}]format=yuva420p,setpts=PTS-STARTPTS+${startAt}/TB[${slideinFrameId}]`);
       // First overlay: put background on top of concat video
       const bgOutputId = `${prevLastFrame}_bg_o`;
-      ffmpegContext.filterComplex.push(`[${prevVideoId}][${backgroundVideoId}]overlay=enable='between(t,${t},${t + d})'[${bgOutputId}]`);
+      ffmpegContext.filterComplex.push(`[${prevVideoId}][${backgroundVideoId}]overlay=enable='between(t,${startAt},${startAt + duration})'[${bgOutputId}]`);
       // Second overlay: slide in the new frame on top of background
       ffmpegContext.filterComplex.push(
-        `[${bgOutputId}][${slideinFrameId}]overlay=${getInOverlayCoords(transition.type, d, t)}:enable='between(t,${t},${t + d})'[${outputVideoId}]`,
+        `[${bgOutputId}][${slideinFrameId}]overlay=${getInOverlayCoords(transition.type, duration, startAt)}:enable='between(t,${startAt},${startAt + duration})'[${outputVideoId}]`,
       );
     } else {
       throw new Error(`Unknown transition type: ${transition.type}`);
@@ -292,6 +293,49 @@ const getConcatVideoFilter = (concatVideoId: string, videoIdsForBeats: (string |
   return `${inputs}concat=n=${videoIds.length}:v=1:a=0[${concatVideoId}]`;
 };
 
+const validateBeatSource = (studioBeat: MulmoStudioContext["studio"]["beats"][number], index: number): string => {
+  const sourceFile = studioBeat.lipSyncFile ?? studioBeat.soundEffectFile ?? studioBeat.movieFile ?? studioBeat.htmlImageFile ?? studioBeat.imageFile;
+  assert(!!sourceFile, `studioBeat.imageFile or studioBeat.movieFile is not set: index=${index}`, false, createVideoSourceError(index));
+  assert(
+    isFile(sourceFile),
+    `studioBeat.imageFile or studioBeat.movieFile is not exist or not file: index=${index} file=${sourceFile}`,
+    false,
+    createVideoFileError(index, sourceFile),
+  );
+  assert(!!studioBeat.duration, `studioBeat.duration is not set: index=${index}`);
+  return sourceFile;
+};
+
+const addSplitAndExtractFrames = (
+  ffmpegContext: FfmpegContext,
+  videoId: string,
+  duration: number,
+  isMovie: boolean,
+  needFirst: boolean,
+  needLast: boolean,
+): void => {
+  const outputs: string[] = [`[${videoId}_concat]`];
+  if (needFirst) outputs.push(`[${videoId}_first_src]`);
+  if (needLast) outputs.push(`[${videoId}_last_src]`);
+
+  ffmpegContext.filterComplex.push(`[${videoId}]split=${outputs.length}${outputs.join("")}`);
+
+  if (needFirst) {
+    ffmpegContext.filterComplex.push(
+      `[${videoId}_first_src]select='eq(n,0)',tpad=stop_mode=clone:stop_duration=${duration},fps=30,setpts=PTS-STARTPTS[${videoId}_first]`,
+    );
+  }
+  if (needLast) {
+    ffmpegContext.filterComplex.push(
+      isMovie
+        ? // Movie beats: extract actual last frame
+          `[${videoId}_last_src]reverse,select='eq(n,0)',reverse,tpad=stop_mode=clone:stop_duration=${duration},fps=30,setpts=PTS-STARTPTS[${videoId}_last]`
+        : // Image beats: all frames are identical, so just select one
+          `[${videoId}_last_src]select='eq(n,0)',tpad=stop_mode=clone:stop_duration=${duration},fps=30,setpts=PTS-STARTPTS[${videoId}_last]`,
+    );
+  }
+};
+
 const createVideo = async (audioArtifactFilePath: string, outputVideoPath: string, context: MulmoStudioContext) => {
   const caption = MulmoStudioContextMethods.getCaption(context);
   const start = performance.now();
@@ -330,22 +374,16 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
       beatTimestamps.push(timestamp);
       return timestamp; // Skip voice-over beats.
     }
-    const sourceFile = studioBeat.lipSyncFile ?? studioBeat.soundEffectFile ?? studioBeat.movieFile ?? studioBeat.htmlImageFile ?? studioBeat.imageFile;
-    assert(!!sourceFile, `studioBeat.imageFile or studioBeat.movieFile is not set: index=${index}`, false, createVideoSourceError(index));
-    assert(
-      isFile(sourceFile),
-      `studioBeat.imageFile or studioBeat.movieFile is not exist or not file: index=${index} file=${sourceFile}`,
-      false,
-      createVideoFileError(index, sourceFile),
-    );
-    assert(!!studioBeat.duration, `studioBeat.duration is not set: index=${index}`);
+
+    const sourceFile = validateBeatSource(studioBeat, index);
 
     // The movie duration is bigger in case of voice-over.
-    const duration = Math.max(studioBeat.duration + getExtraPadding(context, index), studioBeat.movieDuration ?? 0);
+    const duration = Math.max(studioBeat.duration! + getExtraPadding(context, index), studioBeat.movieDuration ?? 0);
     const inputIndex = FfmpegContextAddInput(ffmpegContext, sourceFile);
     const mediaType = studioBeat.lipSyncFile || studioBeat.movieFile ? "movie" : MulmoPresentationStyleMethods.getImageType(context.presentationStyle, beat);
+    const isMovie = mediaType === "movie";
     const speed = beat.movieParams?.speed ?? 1.0;
-    const { videoId, videoPart } = getVideoPart(inputIndex, mediaType, duration, canvasInfo, getFillOption(context, beat), speed);
+    const { videoId, videoPart } = getVideoPart(inputIndex, isMovie, duration, canvasInfo, getFillOption(context, beat), speed);
     ffmpegContext.filterComplex.push(videoPart);
 
     // for transition
@@ -354,26 +392,7 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
 
     videoIdsForBeats.push(needFirst || needLast ? `${videoId}_concat` : videoId);
     if (needFirst || needLast) {
-      const outputs: string[] = [`[${videoId}_concat]`];
-      if (needFirst) outputs.push(`[${videoId}_first_src]`);
-      if (needLast) outputs.push(`[${videoId}_last_src]`);
-
-      ffmpegContext.filterComplex.push(`[${videoId}]split=${outputs.length}${outputs.join("")}`);
-
-      if (needFirst) {
-        ffmpegContext.filterComplex.push(
-          `[${videoId}_first_src]select='eq(n,0)',tpad=stop_mode=clone:stop_duration=${duration},fps=30,setpts=PTS-STARTPTS[${videoId}_first]`,
-        );
-      }
-      if (needLast) {
-        ffmpegContext.filterComplex.push(
-          mediaType === "movie"
-            ? // Movie beats: extract actual last frame
-              `[${videoId}_last_src]reverse,select='eq(n,0)',reverse,tpad=stop_mode=clone:stop_duration=${duration},fps=30,setpts=PTS-STARTPTS[${videoId}_last]`
-            : // Image beats: all frames are identical, so just select one
-              `[${videoId}_last_src]select='eq(n,0)',tpad=stop_mode=clone:stop_duration=${duration},fps=30,setpts=PTS-STARTPTS[${videoId}_last]`,
-        );
-      }
+      addSplitAndExtractFrames(ffmpegContext, videoId, duration, isMovie, needFirst, needLast);
     }
 
     // Record transition info if this beat has a transition
