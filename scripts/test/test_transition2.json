@@ -1,0 +1,76 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "Transition Test",
+  "movieParams": {
+    "transition": {
+      "type": "fade",
+      "duration": 1.0
+    }
+  },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "",
+      "image": {
+        "type": "image",
+        "source": {
+          "kind": "path",
+          "path": "../../assets/images/mulmocast_credit.png"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "1"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "slideout_left",
+          "duration": 1.0
+        }
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "2"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/tv.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+       "movieParams": {
+        "transition": {
+          "type": "slideout_left",
+          "duration": 1.0
+        }
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/test/pingpong.mov"
+        }
+      }
+    }
+  ]
+}
