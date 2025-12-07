@@ -336,7 +336,7 @@ export const mulmoLipSyncParamsSchema = z.object({
 });
 
 export const mulmoTransitionSchema = z.object({
-  type: z.enum(["fade", "slideout_left"]),
+  type: z.enum(["fade", "slideout_left", "slideout_right", "slideout_up", "slideout_down", "slidein_left", "slidein_right", "slidein_up", "slidein_down"]),
   duration: z.number().min(0).max(2).optional().default(0.3), // transition duration in seconds
 });
 
