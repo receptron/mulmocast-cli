@@ -331,7 +331,7 @@ export const addSplitAndExtractFrames = (
   }
 };
 
-const createVideo = async (audioArtifactFilePath: string, outputVideoPath: string, context: MulmoStudioContext) => {
+export const createVideo = async (audioArtifactFilePath: string, outputVideoPath: string, context: MulmoStudioContext, isTest: boolean = false) => {
   const caption = MulmoStudioContextMethods.getCaption(context);
   const start = performance.now();
   const ffmpegContext = FfmpegContextInit();
@@ -370,7 +370,7 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
       return timestamp; // Skip voice-over beats.
     }
 
-    const sourceFile = validateBeatSource(studioBeat, index);
+    const sourceFile = isTest ? "/tmp/dummy.mp4" : validateBeatSource(studioBeat, index);
 
     // The movie duration is bigger in case of voice-over.
     const duration = Math.max(studioBeat.duration! + getExtraPadding(context, index), studioBeat.movieDuration ?? 0);
@@ -421,6 +421,10 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
 
   const captionedVideoId = addCaptions(ffmpegContext, concatVideoId, context, caption);
   const mixedVideoId = addTransitionEffects(ffmpegContext, captionedVideoId, context, transitionVideoIds, beatTimestamps, videoIdsForBeats);
+
+  if (isTest) {
+    return ffmpegContext.filterComplex;
+  }
 
   GraphAILogger.log("filterComplex:", ffmpegContext.filterComplex.join("\n"));
 
