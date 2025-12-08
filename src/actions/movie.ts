@@ -1,5 +1,13 @@
 import { GraphAILogger, assert } from "graphai";
-import { MulmoStudioContext, MulmoBeat, MulmoTransition, MulmoCanvasDimension, MulmoFillOption, mulmoFillOptionSchema } from "../types/index.js";
+import {
+  MulmoStudioContext,
+  MulmoBeat,
+  MulmoTransition,
+  MulmoCanvasDimension,
+  MulmoFillOption,
+  MulmoVideoFilter,
+  mulmoFillOptionSchema,
+} from "../types/index.js";
 import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { getAudioArtifactFilePath, getOutputVideoFilePath, writingMessage, isFile } from "../utils/file.js";
 import { createVideoFileError, createVideoSourceError } from "../utils/error_cause.js";
@@ -16,6 +24,31 @@ import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 const videoCodec = "libx264"; // "h264_videotoolbox" (macOS only) is too noisy
 type VideoId = string | undefined;
 
+// Convert video filter objects to FFmpeg filter strings
+const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
+  switch (filter.type) {
+    case "mono":
+      return "hue=s=0";
+    case "sepia":
+      return "colorchannelmixer=.393:.769:.189:0:.349:.686:.168:0:.272:.534:.131";
+    case "brightness_contrast":
+      return `eq=brightness=${filter.brightness}:contrast=${filter.contrast}`;
+    case "blur":
+      return `boxblur=${filter.radius}:${filter.power}`;
+    case "gblur":
+      return `gblur=sigma=${filter.sigma}`;
+    case "glitch":
+      if (filter.style === "blend") {
+        return `tblend=all_mode=difference,noise=alls=${filter.intensity}`;
+      }
+      return `noise=alls=${filter.intensity}:allf=t+u`;
+    case "grain":
+      return `noise=alls=${filter.intensity}:allf=t`;
+    case "custom":
+      return filter.filter;
+  }
+};
+
 export const getVideoPart = (
   inputIndex: number,
   isMovie: boolean,
@@ -23,6 +56,7 @@ export const getVideoPart = (
   canvasInfo: MulmoCanvasDimension,
   fillOption: MulmoFillOption,
   speed: number,
+  filters?: MulmoVideoFilter[],
 ) => {
   const videoId = `v${inputIndex}`;
 
@@ -65,6 +99,13 @@ export const getVideoPart = (
   }
 
   videoFilters.push("setsar=1", "format=yuv420p");
+
+  // Apply custom video filters if specified
+  if (filters && filters.length > 0) {
+    filters.forEach((filter) => {
+      videoFilters.push(convertVideoFilterToFFmpeg(filter));
+    });
+  }
 
   return {
     videoId,
@@ -428,7 +469,8 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
       MulmoPresentationStyleMethods.getImageType(context.presentationStyle, beat) === "movie"
     );
     const speed = beat.movieParams?.speed ?? 1.0;
-    const { videoId, videoPart } = getVideoPart(inputIndex, isMovie, duration, canvasInfo, getFillOption(context, beat), speed);
+    const filters = beat.movieParams?.filters;
+    const { videoId, videoPart } = getVideoPart(inputIndex, isMovie, duration, canvasInfo, getFillOption(context, beat), speed, filters);
     ffmpegContext.filterComplex.push(videoPart);
 
     // for transition

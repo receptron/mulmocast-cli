@@ -358,11 +358,65 @@ export const mulmoTransitionSchema = z.object({
   duration: z.number().min(0).max(2).optional().default(0.3), // transition duration in seconds
 });
 
+// Video filter schemas
+export const mulmoVideoFilterMonoSchema = z.object({
+  type: z.literal("mono"),
+});
+
+export const mulmoVideoFilterSepiaSchema = z.object({
+  type: z.literal("sepia"),
+});
+
+export const mulmoVideoFilterBrightnessContrastSchema = z.object({
+  type: z.literal("brightness_contrast"),
+  brightness: z.number().min(-1).max(1).optional().default(0),
+  contrast: z.number().min(0).max(3).optional().default(1),
+});
+
+export const mulmoVideoFilterBlurSchema = z.object({
+  type: z.literal("blur"),
+  radius: z.number().min(1).max(50).optional().default(10),
+  power: z.number().min(1).max(10).optional().default(1),
+});
+
+export const mulmoVideoFilterGBlurSchema = z.object({
+  type: z.literal("gblur"),
+  sigma: z.number().min(0).max(100).optional().default(30),
+});
+
+export const mulmoVideoFilterGlitchSchema = z.object({
+  type: z.literal("glitch"),
+  intensity: z.number().min(1).max(100).optional().default(20),
+  style: z.enum(["noise", "blend"]).optional().default("noise"),
+});
+
+export const mulmoVideoFilterGrainSchema = z.object({
+  type: z.literal("grain"),
+  intensity: z.number().min(1).max(100).optional().default(10),
+});
+
+export const mulmoVideoFilterCustomSchema = z.object({
+  type: z.literal("custom"),
+  filter: z.string(),
+});
+
+export const mulmoVideoFilterSchema = z.union([
+  mulmoVideoFilterMonoSchema,
+  mulmoVideoFilterSepiaSchema,
+  mulmoVideoFilterBrightnessContrastSchema,
+  mulmoVideoFilterBlurSchema,
+  mulmoVideoFilterGBlurSchema,
+  mulmoVideoFilterGlitchSchema,
+  mulmoVideoFilterGrainSchema,
+  mulmoVideoFilterCustomSchema,
+]);
+
 export const mulmoMovieParamsSchema = z.object({
   provider: text2MovieProviderSchema.optional(),
   model: z.string().optional(),
   fillOption: mulmoFillOptionSchema.optional(), // for movie.ts
   transition: mulmoTransitionSchema.optional(), // for movie.ts
+  filters: z.array(mulmoVideoFilterSchema).optional(), // for movie.ts
 });
 
 export const mulmoBeatSchema = z

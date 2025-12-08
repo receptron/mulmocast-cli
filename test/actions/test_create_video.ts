@@ -1037,3 +1037,23 @@ test("test createVideo with test_voices.json", async () => {
     "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]",
   ]);
 });
+
+test("test createVideo with test_video_filters.json", async () => {
+  const script = getMulmoScript("test/test_video_filters.json");
+  const context = createContextFromScript(script);
+  const result = await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true);
+  assert.deepStrictEqual(result, [
+    "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
+    "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p,hue=s=0[v1]",
+    "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p,colorchannelmixer=.393:.769:.189:0:.349:.686:.168:0:.272:.534:.131[v2]",
+    "[3:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p,eq=brightness=0.05:contrast=1.3[v3]",
+    "[4:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p,boxblur=10:1[v4]",
+    "[5:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p,gblur=sigma=30[v5]",
+    "[6:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p,noise=alls=20:allf=t+u[v6]",
+    "[7:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p,tblend=all_mode=difference,noise=alls=40[v7]",
+    "[8:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p,noise=alls=10:allf=t[v8]",
+    "[9:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p,eq=brightness=0:contrast=1.2,noise=alls=6:allf=t[v9]",
+    "[10:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p,hflip[v10]",
+    "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10]concat=n=11:v=1:a=0[concat_video]",
+  ]);
+});

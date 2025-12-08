@@ -20,6 +20,7 @@ import {
   mulmoImageParamsImagesSchema,
   mulmoFillOptionSchema,
   mulmoTransitionSchema,
+  mulmoVideoFilterSchema,
   mulmoMovieParamsSchema,
   mulmoSoundEffectParamsSchema,
   mulmoLipSyncParamsSchema,
@@ -67,6 +68,7 @@ export type MulmoImageParamsImagesValue = z.infer<typeof mulmoImageParamsImagesV
 export type MulmoImageParamsImages = z.infer<typeof mulmoImageParamsImagesSchema>;
 export type MulmoFillOption = z.infer<typeof mulmoFillOptionSchema>;
 export type MulmoTransition = z.infer<typeof mulmoTransitionSchema>;
+export type MulmoVideoFilter = z.infer<typeof mulmoVideoFilterSchema>;
 export type TextSlideParams = z.infer<typeof textSlideParamsSchema>;
 export type Text2ImageProvider = z.infer<typeof text2ImageProviderSchema>;
 export type Text2HtmlImageProvider = z.infer<typeof text2HtmlImageProviderSchema>;
