@@ -271,6 +271,166 @@
           "</main>"
         ]
       }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wipeleft",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-indigo-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "wipeleft",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wiperight",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-teal-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "wiperight",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wipeup",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-lime-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "wipeup",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wipedown",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-amber-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "wipedown",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wipetl",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-rose-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "wipetl",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wipetr",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-violet-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "wipetr",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wipebl",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-fuchsia-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "wipebl",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wipebr",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"bg-sky-600 min-h-screen flex items-center justify-center\">",
+          "<div class=\"text-white text-6xl font-extrabold tracking-wide\">",
+          "wipebr",
+          "</div>",
+          "</main>"
+        ]
+      }
     }
   ]
 }

@@ -215,6 +215,37 @@ const addTransitionEffects = (
       ffmpegContext.filterComplex.push(
         `[${bgOutputId}][${slideinFrameId}]overlay=${getInOverlayCoords(transition.type, duration, startAt)}:enable='between(t,${startAt},${startAt + duration})'[${outputVideoId}]`,
       );
+    } else if (transition.type.startsWith("wipe")) {
+      // Wipe transition: use xfade filter between previous beat's last frame and this beat's first frame
+      if (!nextVideoId) {
+        // Cannot apply wipe without first frame
+        return prevVideoId;
+      }
+
+      // Use xfade offset instead of trimming to avoid framerate issues
+      // The static frames are created with proper duration, use offset to start transition at the right time
+      const beat = context.studio.script.beats[beatIndex];
+      const prevBeatDuration = context.studio.beats[beatIndex - 1].duration ?? 0;
+      const xfadeOffset = prevBeatDuration - duration;
+
+      // Apply xfade with explicit pixel format
+      const xfadeOutputId = `${transitionVideoId}_xfade`;
+      ffmpegContext.filterComplex.push(
+        `[${transitionVideoId}]format=yuv420p[${transitionVideoId}_fmt]`,
+      );
+      ffmpegContext.filterComplex.push(
+        `[${nextVideoId}]format=yuv420p[${nextVideoId}_fmt]`,
+      );
+      ffmpegContext.filterComplex.push(
+        `[${transitionVideoId}_fmt][${nextVideoId}_fmt]xfade=transition=${transition.type}:duration=${duration}:offset=${xfadeOffset}[${xfadeOutputId}]`,
+      );
+
+      // Set PTS for overlay timing
+      const xfadeTimedId = `${xfadeOutputId}_t`;
+      ffmpegContext.filterComplex.push(`[${xfadeOutputId}]setpts=PTS-STARTPTS+${startAt}/TB[${xfadeTimedId}]`);
+
+      // Overlay the xfade result on the concat video
+      ffmpegContext.filterComplex.push(`[${prevVideoId}][${xfadeTimedId}]overlay=enable='between(t,${startAt},${startAt + duration})'[${outputVideoId}]`);
     } else {
       throw new Error(`Unknown transition type: ${transition.type}`);
     }
@@ -226,7 +257,7 @@ export const getNeedFirstFrame = (context: MulmoStudioContext) => {
   return context.studio.script.beats.map((beat, index) => {
     if (index === 0) return false; // First beat cannot have transition
     const transition = MulmoPresentationStyleMethods.getMovieTransition(context, beat);
-    return transition?.type.startsWith("slidein_") ?? false;
+    return (transition?.type.startsWith("slidein_") || transition?.type.startsWith("wipe")) ?? false;
   });
 };
 
@@ -278,6 +309,13 @@ export const getTransitionVideoId = (transition: MulmoTransition, videoIdsForBea
     const frameId = `${prevVideoSourceId}_last`;
     return { videoId: frameId, nextVideoId: undefined, beatIndex: index };
   }
+  if (transition.type.startsWith("wipe")) {
+    // Wipe needs both previous beat's last frame and this beat's first frame
+    const prevVideoSourceId = videoIdsForBeats[index - 1];
+    const prevLastFrame = `${prevVideoSourceId}_last`;
+    const nextFirstFrame = `${videoIdsForBeats[index]}_first`;
+    return { videoId: prevLastFrame, nextVideoId: nextFirstFrame, beatIndex: index };
+  }
   // Use this beat's first frame. slidein_ case
   return { videoId: "", nextVideoId: `${videoIdsForBeats[index]}_first`, beatIndex: index };
 };
@@ -317,18 +355,44 @@ export const addSplitAndExtractFrames = (
   ffmpegContext.filterComplex.push(`[${videoId}]split=${outputs.length}${outputs.join("")}`);
 
   if (needFirst) {
+    // Create static frame using nullsrc as base for proper framerate/timebase
+    // Note: setpts must NOT be used here as it loses framerate metadata needed by xfade
+    const frameCount = Math.ceil(duration * 30);
     ffmpegContext.filterComplex.push(
-      `[${videoId}_first_src]select='eq(n,0)',tpad=stop_mode=clone:stop_duration=${duration},fps=30,setpts=PTS-STARTPTS[${videoId}_first]`,
+      `nullsrc=size=1280x720:duration=${duration}:rate=30[${videoId}_first_null]`,
+    );
+    ffmpegContext.filterComplex.push(
+      `[${videoId}_first_src]select='eq(n,0)',scale=1280:720[${videoId}_first_frame]`,
+    );
+    ffmpegContext.filterComplex.push(
+      `[${videoId}_first_null][${videoId}_first_frame]overlay=format=auto,fps=30[${videoId}_first]`,
     );
   }
   if (needLast) {
-    ffmpegContext.filterComplex.push(
-      isMovie
-        ? // Movie beats: extract actual last frame
-          `[${videoId}_last_src]reverse,select='eq(n,0)',reverse,tpad=stop_mode=clone:stop_duration=${duration},fps=30,setpts=PTS-STARTPTS[${videoId}_last]`
-        : // Image beats: all frames are identical, so just select one
-          `[${videoId}_last_src]select='eq(n,0)',tpad=stop_mode=clone:stop_duration=${duration},fps=30,setpts=PTS-STARTPTS[${videoId}_last]`,
-    );
+    const frameCount = Math.ceil(duration * 30);
+    if (isMovie) {
+      // Movie beats: extract actual last frame
+      ffmpegContext.filterComplex.push(
+        `nullsrc=size=1280x720:duration=${duration}:rate=30[${videoId}_last_null]`,
+      );
+      ffmpegContext.filterComplex.push(
+        `[${videoId}_last_src]reverse,select='eq(n,0)',reverse,scale=1280:720[${videoId}_last_frame]`,
+      );
+      ffmpegContext.filterComplex.push(
+        `[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=30[${videoId}_last]`,
+      );
+    } else {
+      // Image beats: all frames are identical, so just select one
+      ffmpegContext.filterComplex.push(
+        `nullsrc=size=1280x720:duration=${duration}:rate=30[${videoId}_last_null]`,
+      );
+      ffmpegContext.filterComplex.push(
+        `[${videoId}_last_src]select='eq(n,0)',scale=1280:720[${videoId}_last_frame]`,
+      );
+      ffmpegContext.filterComplex.push(
+        `[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=30[${videoId}_last]`,
+      );
+    }
   }
 };
 
@@ -347,7 +411,7 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
   const start = performance.now();
   const ffmpegContext = FfmpegContextInit();
 
-  const missingIndex = findMissingIndex(context)
+  const missingIndex = findMissingIndex(context);
   if (missingIndex !== -1) {
     GraphAILogger.info(`ERROR: beat.imageFile or beat.movieFile is not set on beat ${missingIndex}.`);
     return false;
