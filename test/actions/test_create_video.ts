@@ -726,7 +726,7 @@ test("test createVideo with test_transition2.json", async () => {
   const script = getMulmoScript("test/test_transition2.json");
   const context = createContextFromScript(script);
   const result = await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true);
-  
+
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
@@ -868,7 +868,7 @@ test("test createVideo with test_transition2.json", async () => {
     "[v21_last]loop=loop=-1:size=1:start=0,trim=duration=1,setpts=PTS-STARTPTS[v21_last_loop]",
     "[v22_first]loop=loop=-1:size=1:start=0,trim=duration=1,setpts=PTS-STARTPTS[v22_first_loop]",
     "[v21_last_loop][v22_first_loop]xfade=transition=wipebr:duration=1:offset=0,setpts=PTS-STARTPTS+109.95/TB[v21_last_xfade]",
-    "[trans_21_o][v21_last_xfade]overlay=enable='between(t,109.95,110.95)'[trans_22_o]"
+    "[trans_21_o][v21_last_xfade]overlay=enable='between(t,109.95,110.95)'[trans_22_o]",
   ]);
 });
 
