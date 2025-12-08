@@ -375,7 +375,11 @@ const createVideo = async (audioArtifactFilePath: string, outputVideoPath: strin
     // The movie duration is bigger in case of voice-over.
     const duration = Math.max(studioBeat.duration! + getExtraPadding(context, index), studioBeat.movieDuration ?? 0);
     const inputIndex = FfmpegContextAddInput(ffmpegContext, sourceFile);
-    const isMovie = !!(studioBeat.lipSyncFile || studioBeat.movieFile || MulmoPresentationStyleMethods.getImageType(context.presentationStyle, beat) === "movie");
+    const isMovie = !!(
+      studioBeat.lipSyncFile ||
+      studioBeat.movieFile ||
+      MulmoPresentationStyleMethods.getImageType(context.presentationStyle, beat) === "movie"
+    );
     const speed = beat.movieParams?.speed ?? 1.0;
     const { videoId, videoPart } = getVideoPart(inputIndex, isMovie, duration, canvasInfo, getFillOption(context, beat), speed);
     ffmpegContext.filterComplex.push(videoPart);
