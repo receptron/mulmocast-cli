@@ -34,8 +34,10 @@ const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
       return "colorchannelmixer=.393:.769:.189:0:.349:.686:.168:0:.272:.534:.131";
     case "brightness_contrast":
       return `eq=brightness=${filter.brightness}:contrast=${filter.contrast}`;
-    case "hue":
-      return `hue=h=${filter.hue}:s=${filter.saturation}:b=${filter.brightness}`;
+    case "hue": {
+      const parts = [`h=${filter.hue ?? 0}`, `s=${filter.saturation ?? 1}`, `b=${filter.brightness ?? 0}`];
+      return `hue=${parts.join(":")}`;
+    }
     case "colorbalance":
       return `colorbalance=rs=${filter.rs}:gs=${filter.gs}:bs=${filter.bs}:rm=${filter.rm}:gm=${filter.gm}:bm=${filter.bm}:rh=${filter.rh}:gh=${filter.gh}:bh=${filter.bh}`;
     case "vibrance":
@@ -56,14 +58,27 @@ const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
       return `avgblur=sizeX=${filter.sizeX}:sizeY=${filter.sizeY}`;
 
     // Sharpen filters
-    case "unsharp":
-      return `unsharp=luma_msize_x=${filter.luma_msize_x}:luma_msize_y=${filter.luma_msize_y}:luma_amount=${filter.luma_amount}:chroma_msize_x=${filter.chroma_msize_x}:chroma_msize_y=${filter.chroma_msize_y}:chroma_amount=${filter.chroma_amount}`;
+    case "unsharp": {
+      const parts = [
+        `luma_msize_x=${filter.luma_msize_x ?? 5}`,
+        `luma_msize_y=${filter.luma_msize_y ?? 5}`,
+        `luma_amount=${filter.luma_amount ?? 1}`,
+        `chroma_msize_x=${filter.chroma_msize_x ?? 5}`,
+        `chroma_msize_y=${filter.chroma_msize_y ?? 5}`,
+        `chroma_amount=${filter.chroma_amount ?? 0}`,
+      ];
+      return `unsharp=${parts.join(":")}`;
+    }
 
     // Edge detection and effects
-    case "edgedetect":
-      return `edgedetect=low=${filter.low}:high=${filter.high}:mode=${filter.mode}`;
-    case "sobel":
-      return `sobel=planes=${filter.planes}:scale=${filter.scale}:delta=${filter.delta}`;
+    case "edgedetect": {
+      const parts = [`low=${filter.low ?? 0.2}`, `high=${filter.high ?? 0.4}`, `mode=${filter.mode ?? "wires"}`];
+      return `edgedetect=${parts.join(":")}`;
+    }
+    case "sobel": {
+      const parts = [`planes=${filter.planes ?? 15}`, `scale=${filter.scale ?? 1}`, `delta=${filter.delta ?? 0}`];
+      return `sobel=${parts.join(":")}`;
+    }
     case "emboss":
       return "convolution='0 -1 0 -1 5 -1 0 -1 0:0 -1 0 -1 5 -1 0 -1 0:0 -1 0 -1 5 -1 0 -1 0:0 -1 0 -1 5 -1 0 -1 0'";
 
@@ -90,10 +105,10 @@ const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
 
     // Effects
     case "vignette": {
-      const parts = [`angle=${filter.angle}`];
+      const parts = [`angle=${filter.angle ?? Math.PI / 5}`];
       if (filter.x0 !== undefined) parts.push(`x0=${filter.x0}`);
       if (filter.y0 !== undefined) parts.push(`y0=${filter.y0}`);
-      parts.push(`mode=${filter.mode}`);
+      parts.push(`mode=${filter.mode ?? "forward"}`);
       return `vignette=${parts.join(":")}`;
     }
     case "fade":
@@ -110,8 +125,10 @@ const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
       const weights = filter.weights ? `:weights=${filter.weights}` : "";
       return `tmix=frames=${filter.frames}${weights}`;
     }
-    case "lagfun":
-      return `lagfun=decay=${filter.decay}:planes=${filter.planes}`;
+    case "lagfun": {
+      const parts = [`decay=${filter.decay ?? 0.95}`, `planes=${filter.planes ?? 15}`];
+      return `lagfun=${parts.join(":")}`;
+    }
 
     // Threshold and elbg (posterize)
     case "threshold":
@@ -124,8 +141,16 @@ const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
       return `lenscorrection=k1=${filter.k1}:k2=${filter.k2}`;
 
     // Chromatic effects
-    case "chromashift":
-      return `chromashift=cbh=${filter.cbh}:cbv=${filter.cbv}:crh=${filter.crh}:crv=${filter.crv}:edge=${filter.edge}`;
+    case "chromashift": {
+      const parts = [
+        `cbh=${filter.cbh ?? 0}`,
+        `cbv=${filter.cbv ?? 0}`,
+        `crh=${filter.crh ?? 0}`,
+        `crv=${filter.crv ?? 0}`,
+        `edge=${filter.edge ?? "smear"}`,
+      ];
+      return `chromashift=${parts.join(":")}`;
+    }
 
     // Deflicker and denoise
     case "deflicker":
