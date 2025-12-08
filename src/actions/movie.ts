@@ -347,7 +347,7 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
   const start = performance.now();
   const ffmpegContext = FfmpegContextInit();
 
-  const missingIndex = findMissingIndex(context)
+  const missingIndex = findMissingIndex(context);
   if (missingIndex !== -1) {
     GraphAILogger.info(`ERROR: beat.imageFile or beat.movieFile is not set on beat ${missingIndex}.`);
     return false;
