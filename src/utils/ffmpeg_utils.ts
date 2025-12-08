@@ -57,8 +57,8 @@ export const FfmpegContextGenerateOutput = (context: FfmpegContext, output: stri
       .complexFilter(context.filterComplex)
       .outputOptions(options)
       .output(output)
-      .on("start", (__cmdLine) => {
-        GraphAILogger.log("Started FFmpeg ..."); // with command:', cmdLine);
+      .on("start", (cmdLine) => {
+        GraphAILogger.log("Started FFmpeg with command:", cmdLine);
       })
       .on("error", (err, stdout, stderr) => {
         GraphAILogger.error("Error occurred:", err);

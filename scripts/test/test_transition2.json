@@ -271,6 +271,190 @@
           "</main>"
         ]
       }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wipeleft",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"min-h-screen flex items-center justify-center relative overflow-hidden\" style=\"background: repeating-linear-gradient(90deg, #4f46e5 0px, #4f46e5 80px, #6366f1 80px, #6366f1 160px);\">",
+          "<div class=\"text-center\">",
+          "<div class=\"text-yellow-300 text-[200px] font-black leading-none mb-4\">←</div>",
+          "<div class=\"text-white text-7xl font-extrabold tracking-wider bg-black bg-opacity-60 px-8 py-4 rounded-lg\">",
+          "WIPE LEFT",
+          "</div>",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wiperight",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"min-h-screen flex items-center justify-center relative overflow-hidden\" style=\"background: repeating-linear-gradient(90deg, #0d9488 0px, #0d9488 80px, #14b8a6 80px, #14b8a6 160px);\">",
+          "<div class=\"text-center\">",
+          "<div class=\"text-yellow-300 text-[200px] font-black leading-none mb-4\">→</div>",
+          "<div class=\"text-white text-7xl font-extrabold tracking-wider bg-black bg-opacity-60 px-8 py-4 rounded-lg\">",
+          "WIPE RIGHT",
+          "</div>",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wipeup",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"min-h-screen flex items-center justify-center relative overflow-hidden\" style=\"background: repeating-linear-gradient(0deg, #65a30d 0px, #65a30d 60px, #84cc16 60px, #84cc16 120px);\">",
+          "<div class=\"text-center\">",
+          "<div class=\"text-yellow-300 text-[200px] font-black leading-none mb-4\">↑</div>",
+          "<div class=\"text-white text-7xl font-extrabold tracking-wider bg-black bg-opacity-60 px-8 py-4 rounded-lg\">",
+          "WIPE UP",
+          "</div>",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wipedown",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"min-h-screen flex items-center justify-center relative overflow-hidden\" style=\"background: repeating-linear-gradient(0deg, #d97706 0px, #d97706 60px, #f59e0b 60px, #f59e0b 120px);\">",
+          "<div class=\"text-center\">",
+          "<div class=\"text-yellow-300 text-[200px] font-black leading-none mb-4\">↓</div>",
+          "<div class=\"text-white text-7xl font-extrabold tracking-wider bg-black bg-opacity-60 px-8 py-4 rounded-lg\">",
+          "WIPE DOWN",
+          "</div>",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wipetl",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"min-h-screen flex items-center justify-center relative overflow-hidden\" style=\"background: repeating-linear-gradient(45deg, #e11d48 0px, #e11d48 80px, #f43f5e 80px, #f43f5e 160px);\">",
+          "<div class=\"text-center\">",
+          "<div class=\"text-yellow-300 text-[200px] font-black leading-none mb-4\">↖</div>",
+          "<div class=\"text-white text-7xl font-extrabold tracking-wider bg-black bg-opacity-60 px-8 py-4 rounded-lg\">",
+          "WIPE TL",
+          "</div>",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wipetr",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"min-h-screen flex items-center justify-center relative overflow-hidden\" style=\"background: repeating-linear-gradient(-45deg, #7c3aed 0px, #7c3aed 80px, #8b5cf6 80px, #8b5cf6 160px);\">",
+          "<div class=\"text-center\">",
+          "<div class=\"text-yellow-300 text-[200px] font-black leading-none mb-4\">↗</div>",
+          "<div class=\"text-white text-7xl font-extrabold tracking-wider bg-black bg-opacity-60 px-8 py-4 rounded-lg\">",
+          "WIPE TR",
+          "</div>",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wipebl",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"min-h-screen flex items-center justify-center relative overflow-hidden\" style=\"background: repeating-linear-gradient(-45deg, #c026d3 0px, #c026d3 80px, #d946ef 80px, #d946ef 160px);\">",
+          "<div class=\"text-center\">",
+          "<div class=\"text-yellow-300 text-[200px] font-black leading-none mb-4\">↙</div>",
+          "<div class=\"text-white text-7xl font-extrabold tracking-wider bg-black bg-opacity-60 px-8 py-4 rounded-lg\">",
+          "WIPE BL",
+          "</div>",
+          "</div>",
+          "</main>"
+        ]
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "movieParams": {
+        "transition": {
+          "type": "wipebr",
+          "duration": 1.0
+        }
+      },
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<main class=\"min-h-screen flex items-center justify-center relative overflow-hidden\" style=\"background: repeating-linear-gradient(45deg, #0284c7 0px, #0284c7 80px, #0ea5e9 80px, #0ea5e9 160px);\">",
+          "<div class=\"text-center\">",
+          "<div class=\"text-yellow-300 text-[200px] font-black leading-none mb-4\">↘</div>",
+          "<div class=\"text-white text-7xl font-extrabold tracking-wider bg-black bg-opacity-60 px-8 py-4 rounded-lg\">",
+          "WIPE BR",
+          "</div>",
+          "</div>",
+          "</main>"
+        ]
+      }
     }
   ]
 }
