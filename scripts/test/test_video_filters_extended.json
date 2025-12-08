@@ -1,0 +1,302 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "Extended Video Filter Test",
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "voiceId": "shimmer",
+        "displayName": {
+          "en": "Presenter"
+        }
+      }
+    }
+  },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "Hue shift: green tone.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "hue",
+            "hue": 120,
+            "saturation": 1.8
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Vibrance: boosted saturation.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "vibrance",
+            "intensity": 1.8
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Negate: inverted colors.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "negate"
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Unsharp mask: enhanced sharpness.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "unsharp",
+            "luma_amount": 3
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Edge detection: wires mode.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "edgedetect",
+            "mode": "wires"
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Sobel: edge detection filter.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "sobel"
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Emboss: three D effect.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "emboss"
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Vertical flip: upside down.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "vflip"
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Vignette: darkened corners.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "vignette"
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Pixelize: mosaic effect.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "pixelize",
+            "width": 20,
+            "height": 20
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Pseudo color: magma heat map.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "pseudocolor",
+            "preset": "magma"
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Pseudo color: viridis gradient.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "pseudocolor",
+            "preset": "viridis"
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Posterize: reduced color levels.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "elbg",
+            "codebook_length": 16
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Chroma shift: color separation.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "chromashift",
+            "cbh": 5,
+            "crh": -5
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Lag fun: motion trail effect.",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "lagfun",
+            "decay": 0.85
+          }
+        ]
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/movies/horse_galloping.mov"
+        }
+      }
+    }
+  ]
+}

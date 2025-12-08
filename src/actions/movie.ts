@@ -27,16 +27,47 @@ type VideoId = string | undefined;
 // Convert video filter objects to FFmpeg filter strings
 const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
   switch (filter.type) {
+    // Color adjustment filters
     case "mono":
       return "hue=s=0";
     case "sepia":
       return "colorchannelmixer=.393:.769:.189:0:.349:.686:.168:0:.272:.534:.131";
     case "brightness_contrast":
       return `eq=brightness=${filter.brightness}:contrast=${filter.contrast}`;
+    case "hue":
+      return `hue=h=${filter.hue}:s=${filter.saturation}:b=${filter.brightness}`;
+    case "colorbalance":
+      return `colorbalance=rs=${filter.rs}:gs=${filter.gs}:bs=${filter.bs}:rm=${filter.rm}:gm=${filter.gm}:bm=${filter.bm}:rh=${filter.rh}:gh=${filter.gh}:bh=${filter.bh}`;
+    case "vibrance":
+      return `vibrance=intensity=${filter.intensity}`;
+    case "negate":
+      return `negate${filter.negate_alpha ? "=negate_alpha=1" : ""}`;
+    case "colorhold":
+      return `colorhold=color=${filter.color}:similarity=${filter.similarity}:blend=${filter.blend}`;
+    case "colorkey":
+      return `colorkey=color=${filter.color}:similarity=${filter.similarity}:blend=${filter.blend}`;
+
+    // Blur filters
     case "blur":
       return `boxblur=${filter.radius}:${filter.power}`;
     case "gblur":
       return `gblur=sigma=${filter.sigma}`;
+    case "avgblur":
+      return `avgblur=sizeX=${filter.sizeX}:sizeY=${filter.sizeY}`;
+
+    // Sharpen filters
+    case "unsharp":
+      return `unsharp=luma_msize_x=${filter.luma_msize_x}:luma_msize_y=${filter.luma_msize_y}:luma_amount=${filter.luma_amount}:chroma_msize_x=${filter.chroma_msize_x}:chroma_msize_y=${filter.chroma_msize_y}:chroma_amount=${filter.chroma_amount}`;
+
+    // Edge detection and effects
+    case "edgedetect":
+      return `edgedetect=low=${filter.low}:high=${filter.high}:mode=${filter.mode}`;
+    case "sobel":
+      return `sobel=planes=${filter.planes}:scale=${filter.scale}:delta=${filter.delta}`;
+    case "emboss":
+      return "convolution='0 -1 0 -1 5 -1 0 -1 0:0 -1 0 -1 5 -1 0 -1 0:0 -1 0 -1 5 -1 0 -1 0:0 -1 0 -1 5 -1 0 -1 0'";
+
+    // Noise and grain
     case "glitch":
       if (filter.style === "blend") {
         return `tblend=all_mode=difference,noise=alls=${filter.intensity}`;
@@ -44,6 +75,65 @@ const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
       return `noise=alls=${filter.intensity}:allf=t+u`;
     case "grain":
       return `noise=alls=${filter.intensity}:allf=t`;
+
+    // Transform filters
+    case "hflip":
+      return "hflip";
+    case "vflip":
+      return "vflip";
+    case "rotate":
+      return `rotate=angle=${filter.angle}:fillcolor=${filter.fillcolor}`;
+    case "transpose": {
+      const dirMap = { cclock: "0", clock: "1", cclock_flip: "2", clock_flip: "3" };
+      return `transpose=dir=${dirMap[filter.dir]}`;
+    }
+
+    // Effects
+    case "vignette": {
+      const parts = [`angle=${filter.angle}`];
+      if (filter.x0 !== undefined) parts.push(`x0=${filter.x0}`);
+      if (filter.y0 !== undefined) parts.push(`y0=${filter.y0}`);
+      parts.push(`mode=${filter.mode}`);
+      return `vignette=${parts.join(":")}`;
+    }
+    case "fade":
+      return `fade=type=${filter.mode}:start_frame=${filter.start_frame}:nb_frames=${filter.nb_frames}${filter.alpha ? ":alpha=1" : ""}:color=${filter.color}`;
+    case "pixelize": {
+      const modeMap = { avg: "avg", min: "min", max: "max" };
+      return `scale=iw/${filter.width}:ih/${filter.height},scale=${filter.width}*iw:${filter.height}*ih:flags=neighbor`;
+    }
+    case "pseudocolor":
+      return `pseudocolor=preset=${filter.preset}`;
+
+    // Temporal effects
+    case "tmix": {
+      const weights = filter.weights ? `:weights=${filter.weights}` : "";
+      return `tmix=frames=${filter.frames}${weights}`;
+    }
+    case "lagfun":
+      return `lagfun=decay=${filter.decay}:planes=${filter.planes}`;
+
+    // Threshold and elbg (posterize)
+    case "threshold":
+      return `threshold=planes=${filter.planes}`;
+    case "elbg":
+      return `elbg=l=${filter.codebook_length}`;
+
+    // Distortion
+    case "lensdistortion":
+      return `lenscorrection=k1=${filter.k1}:k2=${filter.k2}`;
+
+    // Chromatic effects
+    case "chromashift":
+      return `chromashift=cbh=${filter.cbh}:cbv=${filter.cbv}:crh=${filter.crh}:crv=${filter.crv}:edge=${filter.edge}`;
+
+    // Deflicker and denoise
+    case "deflicker":
+      return `deflicker=size=${filter.size}:mode=${filter.mode}`;
+    case "dctdnoiz":
+      return `dctdnoiz=sigma=${filter.sigma}`;
+
+    // Custom filter
     case "custom":
       return filter.filter;
   }
