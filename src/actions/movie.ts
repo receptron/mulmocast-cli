@@ -342,6 +342,7 @@ export const addSplitAndExtractFrames = (
   isMovie: boolean,
   needFirst: boolean,
   needLast: boolean,
+  canvasInfo: { width: number; height: number },
 ): void => {
   const outputs: string[] = [`[${videoId}]`];
   if (needFirst) outputs.push(`[${videoId}_first_src]`);
@@ -352,20 +353,22 @@ export const addSplitAndExtractFrames = (
   if (needFirst) {
     // Create static frame using nullsrc as base for proper framerate/timebase
     // Note: setpts must NOT be used here as it loses framerate metadata needed by xfade
-    ffmpegContext.filterComplex.push(`nullsrc=size=1280x720:duration=${duration}:rate=30[${videoId}_first_null]`);
-    ffmpegContext.filterComplex.push(`[${videoId}_first_src]select='eq(n,0)',scale=1280:720[${videoId}_first_frame]`);
+    ffmpegContext.filterComplex.push(`nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${duration}:rate=30[${videoId}_first_null]`);
+    ffmpegContext.filterComplex.push(`[${videoId}_first_src]select='eq(n,0)',scale=${canvasInfo.width}:${canvasInfo.height}[${videoId}_first_frame]`);
     ffmpegContext.filterComplex.push(`[${videoId}_first_null][${videoId}_first_frame]overlay=format=auto,fps=30[${videoId}_first]`);
   }
   if (needLast) {
     if (isMovie) {
       // Movie beats: extract actual last frame
-      ffmpegContext.filterComplex.push(`nullsrc=size=1280x720:duration=${duration}:rate=30[${videoId}_last_null]`);
-      ffmpegContext.filterComplex.push(`[${videoId}_last_src]reverse,select='eq(n,0)',reverse,scale=1280:720[${videoId}_last_frame]`);
+      ffmpegContext.filterComplex.push(`nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${duration}:rate=30[${videoId}_last_null]`);
+      ffmpegContext.filterComplex.push(
+        `[${videoId}_last_src]reverse,select='eq(n,0)',reverse,scale=${canvasInfo.width}:${canvasInfo.height}[${videoId}_last_frame]`,
+      );
       ffmpegContext.filterComplex.push(`[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=30[${videoId}_last]`);
     } else {
       // Image beats: all frames are identical, so just select one
-      ffmpegContext.filterComplex.push(`nullsrc=size=1280x720:duration=${duration}:rate=30[${videoId}_last_null]`);
-      ffmpegContext.filterComplex.push(`[${videoId}_last_src]select='eq(n,0)',scale=1280:720[${videoId}_last_frame]`);
+      ffmpegContext.filterComplex.push(`nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${duration}:rate=30[${videoId}_last_null]`);
+      ffmpegContext.filterComplex.push(`[${videoId}_last_src]select='eq(n,0)',scale=${canvasInfo.width}:${canvasInfo.height}[${videoId}_last_frame]`);
       ffmpegContext.filterComplex.push(`[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=30[${videoId}_last]`);
     }
   }
@@ -434,7 +437,7 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
 
     videoIdsForBeats.push(videoId);
     if (needFirst || needLast) {
-      addSplitAndExtractFrames(ffmpegContext, videoId, duration, isMovie, needFirst, needLast);
+      addSplitAndExtractFrames(ffmpegContext, videoId, duration, isMovie, needFirst, needLast, canvasInfo);
     }
 
     // Record transition info if this beat has a transition
