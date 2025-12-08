@@ -46,8 +46,8 @@
     "closingPadding": 0,
     "outroPadding": 0,
     "bgm": {
-      "kind": "path",
-      "path": "/Users/satoshi/Downloads/Finetuning_with_you.mp3"
+      "kind": "url",
+      "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/music/finetuning_with_you.mp3"
     },
     "bgmVolume": 1,
     "audioVolume": 0,
