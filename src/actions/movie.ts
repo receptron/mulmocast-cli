@@ -224,18 +224,13 @@ const addTransitionEffects = (
 
       // Use xfade offset instead of trimming to avoid framerate issues
       // The static frames are created with proper duration, use offset to start transition at the right time
-      const beat = context.studio.script.beats[beatIndex];
       const prevBeatDuration = context.studio.beats[beatIndex - 1].duration ?? 0;
       const xfadeOffset = prevBeatDuration - duration;
 
       // Apply xfade with explicit pixel format
       const xfadeOutputId = `${transitionVideoId}_xfade`;
-      ffmpegContext.filterComplex.push(
-        `[${transitionVideoId}]format=yuv420p[${transitionVideoId}_fmt]`,
-      );
-      ffmpegContext.filterComplex.push(
-        `[${nextVideoId}]format=yuv420p[${nextVideoId}_fmt]`,
-      );
+      ffmpegContext.filterComplex.push(`[${transitionVideoId}]format=yuv420p[${transitionVideoId}_fmt]`);
+      ffmpegContext.filterComplex.push(`[${nextVideoId}]format=yuv420p[${nextVideoId}_fmt]`);
       ffmpegContext.filterComplex.push(
         `[${transitionVideoId}_fmt][${nextVideoId}_fmt]xfade=transition=${transition.type}:duration=${duration}:offset=${xfadeOffset}[${xfadeOutputId}]`,
       );
@@ -357,41 +352,21 @@ export const addSplitAndExtractFrames = (
   if (needFirst) {
     // Create static frame using nullsrc as base for proper framerate/timebase
     // Note: setpts must NOT be used here as it loses framerate metadata needed by xfade
-    const frameCount = Math.ceil(duration * 30);
-    ffmpegContext.filterComplex.push(
-      `nullsrc=size=1280x720:duration=${duration}:rate=30[${videoId}_first_null]`,
-    );
-    ffmpegContext.filterComplex.push(
-      `[${videoId}_first_src]select='eq(n,0)',scale=1280:720[${videoId}_first_frame]`,
-    );
-    ffmpegContext.filterComplex.push(
-      `[${videoId}_first_null][${videoId}_first_frame]overlay=format=auto,fps=30[${videoId}_first]`,
-    );
+    ffmpegContext.filterComplex.push(`nullsrc=size=1280x720:duration=${duration}:rate=30[${videoId}_first_null]`);
+    ffmpegContext.filterComplex.push(`[${videoId}_first_src]select='eq(n,0)',scale=1280:720[${videoId}_first_frame]`);
+    ffmpegContext.filterComplex.push(`[${videoId}_first_null][${videoId}_first_frame]overlay=format=auto,fps=30[${videoId}_first]`);
   }
   if (needLast) {
-    const frameCount = Math.ceil(duration * 30);
     if (isMovie) {
       // Movie beats: extract actual last frame
-      ffmpegContext.filterComplex.push(
-        `nullsrc=size=1280x720:duration=${duration}:rate=30[${videoId}_last_null]`,
-      );
-      ffmpegContext.filterComplex.push(
-        `[${videoId}_last_src]reverse,select='eq(n,0)',reverse,scale=1280:720[${videoId}_last_frame]`,
-      );
-      ffmpegContext.filterComplex.push(
-        `[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=30[${videoId}_last]`,
-      );
+      ffmpegContext.filterComplex.push(`nullsrc=size=1280x720:duration=${duration}:rate=30[${videoId}_last_null]`);
+      ffmpegContext.filterComplex.push(`[${videoId}_last_src]reverse,select='eq(n,0)',reverse,scale=1280:720[${videoId}_last_frame]`);
+      ffmpegContext.filterComplex.push(`[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=30[${videoId}_last]`);
     } else {
       // Image beats: all frames are identical, so just select one
-      ffmpegContext.filterComplex.push(
-        `nullsrc=size=1280x720:duration=${duration}:rate=30[${videoId}_last_null]`,
-      );
-      ffmpegContext.filterComplex.push(
-        `[${videoId}_last_src]select='eq(n,0)',scale=1280:720[${videoId}_last_frame]`,
-      );
-      ffmpegContext.filterComplex.push(
-        `[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=30[${videoId}_last]`,
-      );
+      ffmpegContext.filterComplex.push(`nullsrc=size=1280x720:duration=${duration}:rate=30[${videoId}_last_null]`);
+      ffmpegContext.filterComplex.push(`[${videoId}_last_src]select='eq(n,0)',scale=1280:720[${videoId}_last_frame]`);
+      ffmpegContext.filterComplex.push(`[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=30[${videoId}_last]`);
     }
   }
 };
