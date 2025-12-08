@@ -1,5 +1,13 @@
 import { GraphAILogger, assert } from "graphai";
-import { MulmoStudioContext, MulmoBeat, MulmoTransition, MulmoCanvasDimension, MulmoFillOption, mulmoFillOptionSchema } from "../types/index.js";
+import {
+  MulmoStudioContext,
+  MulmoBeat,
+  MulmoTransition,
+  MulmoCanvasDimension,
+  MulmoFillOption,
+  MulmoVideoFilter,
+  mulmoFillOptionSchema,
+} from "../types/index.js";
 import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { getAudioArtifactFilePath, getOutputVideoFilePath, writingMessage, isFile } from "../utils/file.js";
 import { createVideoFileError, createVideoSourceError } from "../utils/error_cause.js";
@@ -11,6 +19,7 @@ import {
   FfmpegContext,
 } from "../utils/ffmpeg_utils.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
+import { convertVideoFilterToFFmpeg } from "../utils/video_filter.js";
 
 // const isMac = process.platform === "darwin";
 const videoCodec = "libx264"; // "h264_videotoolbox" (macOS only) is too noisy
@@ -23,6 +32,7 @@ export const getVideoPart = (
   canvasInfo: MulmoCanvasDimension,
   fillOption: MulmoFillOption,
   speed: number,
+  filters?: MulmoVideoFilter[],
 ) => {
   const videoId = `v${inputIndex}`;
 
@@ -65,6 +75,13 @@ export const getVideoPart = (
   }
 
   videoFilters.push("setsar=1", "format=yuv420p");
+
+  // Apply custom video filters if specified
+  if (filters && filters.length > 0) {
+    filters.forEach((filter) => {
+      videoFilters.push(convertVideoFilterToFFmpeg(filter));
+    });
+  }
 
   return {
     videoId,
@@ -428,7 +445,8 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
       MulmoPresentationStyleMethods.getImageType(context.presentationStyle, beat) === "movie"
     );
     const speed = beat.movieParams?.speed ?? 1.0;
-    const { videoId, videoPart } = getVideoPart(inputIndex, isMovie, duration, canvasInfo, getFillOption(context, beat), speed);
+    const filters = beat.movieParams?.filters;
+    const { videoId, videoPart } = getVideoPart(inputIndex, isMovie, duration, canvasInfo, getFillOption(context, beat), speed, filters);
     ffmpegContext.filterComplex.push(videoPart);
 
     // for transition
