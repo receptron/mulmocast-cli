@@ -14,6 +14,7 @@ import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 
 // const isMac = process.platform === "darwin";
 const videoCodec = "libx264"; // "h264_videotoolbox" (macOS only) is too noisy
+type VideoId = string | undefined;
 
 export const getVideoPart = (
   inputIndex: number,
@@ -157,9 +158,9 @@ const addTransitionEffects = (
   ffmpegContext: FfmpegContext,
   captionedVideoId: string,
   context: MulmoStudioContext,
-  transitionVideoIds: { videoId: string; nextVideoId: string | undefined; beatIndex: number }[],
+  transitionVideoIds: { videoId: string; nextVideoId: VideoId; beatIndex: number }[],
   beatTimestamps: number[],
-  videoIdsForBeats: (string | undefined)[],
+  videoIdsForBeats: VideoId[],
 ) => {
   if (transitionVideoIds.length === 0) {
     return captionedVideoId;
@@ -269,7 +270,7 @@ export const getFillOption = (context: MulmoStudioContext, beat: MulmoBeat) => {
   return { ...defaultFillOption, ...globalFillOption, ...beatFillOption };
 };
 
-export const getTransitionVideoId = (transition: MulmoTransition, videoIdsForBeats: (string | undefined)[], index: number) => {
+export const getTransitionVideoId = (transition: MulmoTransition, videoIdsForBeats: VideoId[], index: number) => {
   if (transition.type === "fade" || transition.type.startsWith("slideout_")) {
     // Use previous beat's last frame. TODO: support voice-over
     const prevVideoSourceId = videoIdsForBeats[index - 1];
@@ -281,7 +282,7 @@ export const getTransitionVideoId = (transition: MulmoTransition, videoIdsForBea
   return { videoId: "", nextVideoId: `${videoIdsForBeats[index]}_first`, beatIndex: index };
 };
 
-export const getConcatVideoFilter = (concatVideoId: string, videoIdsForBeats: (string | undefined)[]) => {
+export const getConcatVideoFilter = (concatVideoId: string, videoIdsForBeats: VideoId[]) => {
   const videoIds = videoIdsForBeats.filter((id) => id !== undefined); // filter out voice-over beats
 
   const inputs = videoIds.map((id) => `[${id}]`).join("");
@@ -331,19 +332,22 @@ export const addSplitAndExtractFrames = (
   }
 };
 
-export const createVideo = async (audioArtifactFilePath: string, outputVideoPath: string, context: MulmoStudioContext, isTest: boolean = false) => {
-  const caption = MulmoStudioContextMethods.getCaption(context);
-  const start = performance.now();
-  const ffmpegContext = FfmpegContextInit();
-
-  const missingIndex = context.studio.beats.findIndex((studioBeat, index) => {
+const findMissingIndex = (context: MulmoStudioContext) => {
+  return context.studio.beats.findIndex((studioBeat, index) => {
     const beat = context.studio.script.beats[index];
     if (beat.image?.type === "voice_over") {
       return false; // Voice-over does not have either imageFile or movieFile.
     }
     return !studioBeat.imageFile && !studioBeat.movieFile;
   });
-  if (missingIndex !== -1) {
+};
+
+export const createVideo = async (audioArtifactFilePath: string, outputVideoPath: string, context: MulmoStudioContext, isTest: boolean = false) => {
+  const caption = MulmoStudioContextMethods.getCaption(context);
+  const start = performance.now();
+  const ffmpegContext = FfmpegContextInit();
+
+  if (findMissingIndex(context) !== -1) {
     GraphAILogger.info(`ERROR: beat.imageFile or beat.movieFile is not set on beat ${missingIndex}.`);
     return false;
   }
@@ -351,9 +355,9 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
   const canvasInfo = MulmoPresentationStyleMethods.getCanvasSize(context.presentationStyle);
 
   // Add each image input
-  const videoIdsForBeats: (string | undefined)[] = [];
+  const videoIdsForBeats: VideoId[] = [];
   const audioIdsFromMovieBeats: string[] = [];
-  const transitionVideoIds: { videoId: string; nextVideoId: string | undefined; beatIndex: number }[] = [];
+  const transitionVideoIds: { videoId: string; nextVideoId: VideoId; beatIndex: number }[] = [];
   const beatTimestamps: number[] = [];
 
   // Check which beats need _first (for slidein transition on this beat)
