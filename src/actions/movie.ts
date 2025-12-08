@@ -24,10 +24,9 @@ import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 const videoCodec = "libx264"; // "h264_videotoolbox" (macOS only) is too noisy
 type VideoId = string | undefined;
 
-// Convert video filter objects to FFmpeg filter strings
-const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
+// Helper functions for different filter categories
+const convertColorFilter = (filter: MulmoVideoFilter): string | null => {
   switch (filter.type) {
-    // Color adjustment filters
     case "mono":
       return "hue=s=0";
     case "sepia":
@@ -48,16 +47,19 @@ const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
       return `colorhold=color=${filter.color}:similarity=${filter.similarity}:blend=${filter.blend}`;
     case "colorkey":
       return `colorkey=color=${filter.color}:similarity=${filter.similarity}:blend=${filter.blend}`;
+    default:
+      return null;
+  }
+};
 
-    // Blur filters
+const convertBlurSharpenFilter = (filter: MulmoVideoFilter): string | null => {
+  switch (filter.type) {
     case "blur":
       return `boxblur=${filter.radius}:${filter.power}`;
     case "gblur":
       return `gblur=sigma=${filter.sigma}`;
     case "avgblur":
       return `avgblur=sizeX=${filter.sizeX}:sizeY=${filter.sizeY}`;
-
-    // Sharpen filters
     case "unsharp": {
       const parts = [
         `luma_msize_x=${filter.luma_msize_x ?? 5}`,
@@ -69,8 +71,13 @@ const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
       ];
       return `unsharp=${parts.join(":")}`;
     }
+    default:
+      return null;
+  }
+};
 
-    // Edge detection and effects
+const convertEdgeNoiseFilter = (filter: MulmoVideoFilter): string | null => {
+  switch (filter.type) {
     case "edgedetect": {
       const parts = [`low=${filter.low ?? 0.2}`, `high=${filter.high ?? 0.4}`, `mode=${filter.mode ?? "wires"}`];
       return `edgedetect=${parts.join(":")}`;
@@ -81,8 +88,6 @@ const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
     }
     case "emboss":
       return "convolution='0 -1 0 -1 5 -1 0 -1 0:0 -1 0 -1 5 -1 0 -1 0:0 -1 0 -1 5 -1 0 -1 0:0 -1 0 -1 5 -1 0 -1 0'";
-
-    // Noise and grain
     case "glitch":
       if (filter.style === "blend") {
         return `tblend=all_mode=difference,noise=alls=${filter.intensity}`;
@@ -90,8 +95,13 @@ const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
       return `noise=alls=${filter.intensity}:allf=t+u`;
     case "grain":
       return `noise=alls=${filter.intensity}:allf=t`;
+    default:
+      return null;
+  }
+};
 
-    // Transform filters
+const convertTransformEffectFilter = (filter: MulmoVideoFilter): string | null => {
+  switch (filter.type) {
     case "hflip":
       return "hflip";
     case "vflip":
@@ -102,8 +112,6 @@ const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
       const dirMap = { cclock: "0", clock: "1", cclock_flip: "2", clock_flip: "3" };
       return `transpose=dir=${dirMap[filter.dir]}`;
     }
-
-    // Effects
     case "vignette": {
       const parts = [`angle=${filter.angle ?? Math.PI / 5}`];
       if (filter.x0 !== undefined) parts.push(`x0=${filter.x0}`);
@@ -113,14 +121,17 @@ const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
     }
     case "fade":
       return `fade=type=${filter.mode}:start_frame=${filter.start_frame}:nb_frames=${filter.nb_frames}${filter.alpha ? ":alpha=1" : ""}:color=${filter.color}`;
-    case "pixelize": {
-      const modeMap = { avg: "avg", min: "min", max: "max" };
+    case "pixelize":
       return `scale=iw/${filter.width}:ih/${filter.height},scale=${filter.width}*iw:${filter.height}*ih:flags=neighbor`;
-    }
     case "pseudocolor":
       return `pseudocolor=preset=${filter.preset}`;
+    default:
+      return null;
+  }
+};
 
-    // Temporal effects
+const convertTemporalDistortionFilter = (filter: MulmoVideoFilter): string | null => {
+  switch (filter.type) {
     case "tmix": {
       const weights = filter.weights ? `:weights=${filter.weights}` : "";
       return `tmix=frames=${filter.frames}${weights}`;
@@ -129,39 +140,40 @@ const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
       const parts = [`decay=${filter.decay ?? 0.95}`, `planes=${filter.planes ?? 15}`];
       return `lagfun=${parts.join(":")}`;
     }
-
-    // Threshold and elbg (posterize)
     case "threshold":
       return `threshold=planes=${filter.planes}`;
     case "elbg":
       return `elbg=l=${filter.codebook_length}`;
-
-    // Distortion
     case "lensdistortion":
       return `lenscorrection=k1=${filter.k1}:k2=${filter.k2}`;
-
-    // Chromatic effects
     case "chromashift": {
-      const parts = [
-        `cbh=${filter.cbh ?? 0}`,
-        `cbv=${filter.cbv ?? 0}`,
-        `crh=${filter.crh ?? 0}`,
-        `crv=${filter.crv ?? 0}`,
-        `edge=${filter.edge ?? "smear"}`,
-      ];
+      const parts = [`cbh=${filter.cbh ?? 0}`, `cbv=${filter.cbv ?? 0}`, `crh=${filter.crh ?? 0}`, `crv=${filter.crv ?? 0}`, `edge=${filter.edge ?? "smear"}`];
       return `chromashift=${parts.join(":")}`;
     }
-
-    // Deflicker and denoise
     case "deflicker":
       return `deflicker=size=${filter.size}:mode=${filter.mode}`;
     case "dctdnoiz":
       return `dctdnoiz=sigma=${filter.sigma}`;
-
-    // Custom filter
-    case "custom":
-      return filter.filter;
+    default:
+      return null;
   }
+};
+
+// Convert video filter objects to FFmpeg filter strings
+const convertVideoFilterToFFmpeg = (filter: MulmoVideoFilter): string => {
+  if (filter.type === "custom") {
+    return filter.filter;
+  }
+
+  // Try each category converter
+  return (
+    convertColorFilter(filter) ||
+    convertBlurSharpenFilter(filter) ||
+    convertEdgeNoiseFilter(filter) ||
+    convertTransformEffectFilter(filter) ||
+    convertTemporalDistortionFilter(filter) ||
+    ""
+  );
 };
 
 export const getVideoPart = (
