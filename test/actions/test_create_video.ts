@@ -10,7 +10,7 @@ import type { MulmoStudioContext, MulmoScript } from "../../src/types/index.js";
 // Helper function to create a minimal context from a script
 const createContextFromScript = (script: MulmoScript): MulmoStudioContext => {
   // Create studio beats from script beats
-  const studioBeats = script.beats.map((beat) => ({
+  const studioBeats = script.beats.map((__beat) => ({
     imageFile: "/dummy/image.png", // Dummy file path for testing
     duration: 5.0, // Default duration
   }));
@@ -101,7 +101,7 @@ test("test createVideo with gpt.json", async () => {
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
-    "[v0][v1]concat=n=2:v=1:a=0[concat_video]"
+    "[v0][v1]concat=n=2:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -113,7 +113,7 @@ test("test createVideo with nano_banana.json", async () => {
   const result = await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true);
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1024:h=1536:force_original_aspect_ratio=decrease,pad=1024:1536:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
-    "[v0]concat=n=1:v=1:a=0[concat_video]"
+    "[v0]concat=n=1:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -124,7 +124,7 @@ test("test createVideo with test.json", async () => {
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
-    "[v0][v1]concat=n=2:v=1:a=0[concat_video]"
+    "[v0][v1]concat=n=2:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -135,7 +135,7 @@ test("test createVideo with test1.json", async () => {
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
-    "[v0][v1]concat=n=2:v=1:a=0[concat_video]"
+    "[v0][v1]concat=n=2:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -147,7 +147,7 @@ test("test createVideo with test2.json", async () => {
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
-    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]"
+    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -161,7 +161,7 @@ test("test createVideo with test_all_tts.json", async () => {
     "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
     "[3:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v3]",
     "[4:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v4]",
-    "[v0][v1][v2][v3][v4]concat=n=5:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4]concat=n=5:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -182,7 +182,7 @@ test("test createVideo with test_audio.json", async () => {
     "[9:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v9]",
     "[10:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v10]",
     "[11:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v11]",
-    "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10][v11]concat=n=12:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10][v11]concat=n=12:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -195,7 +195,7 @@ test("test createVideo with test_audio_gemini.json", async () => {
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
     "[3:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v3]",
-    "[v0][v1][v2][v3]concat=n=4:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3]concat=n=4:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -208,7 +208,7 @@ test("test createVideo with test_audio_instructions.json", async () => {
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
     "[3:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v3]",
-    "[v0][v1][v2][v3]concat=n=4:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3]concat=n=4:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -223,7 +223,7 @@ test("test createVideo with test_beats.json", async () => {
     "[3:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v3]",
     "[4:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v4]",
     "[5:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v5]",
-    "[v0][v1][v2][v3][v4][v5]concat=n=6:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5]concat=n=6:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -235,7 +235,7 @@ test("test createVideo with test_captions.json", async () => {
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
-    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]"
+    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -253,7 +253,7 @@ test("test createVideo with test_elevenlabs_models.json", async () => {
     "[6:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v6]",
     "[7:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v7]",
     "[8:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v8]",
-    "[v0][v1][v2][v3][v4][v5][v6][v7][v8]concat=n=9:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5][v6][v7][v8]concat=n=9:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -264,7 +264,7 @@ test("test createVideo with test_en.json", async () => {
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
-    "[v0][v1]concat=n=2:v=1:a=0[concat_video]"
+    "[v0][v1]concat=n=2:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -282,7 +282,7 @@ test("test createVideo with test_genai.json", async () => {
     "[6:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v6]",
     "[7:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v7]",
     "[8:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v8]",
-    "[v0][v1][v2][v3][v4][v5][v6][v7][v8]concat=n=9:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5][v6][v7][v8]concat=n=9:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -293,7 +293,7 @@ test("test createVideo with test_genai_movie.json", async () => {
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=720:h=1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=720:h=1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
-    "[v0][v1]concat=n=2:v=1:a=0[concat_video]"
+    "[v0][v1]concat=n=2:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -303,7 +303,7 @@ test("test createVideo with test_hello.json", async () => {
   const result = await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true);
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
-    "[v0]concat=n=1:v=1:a=0[concat_video]"
+    "[v0]concat=n=1:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -313,7 +313,7 @@ test("test createVideo with test_hello_caption.json", async () => {
   const result = await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true);
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
-    "[v0]concat=n=1:v=1:a=0[concat_video]"
+    "[v0]concat=n=1:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -323,7 +323,7 @@ test("test createVideo with test_hello_google.json", async () => {
   const result = await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true);
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
-    "[v0]concat=n=1:v=1:a=0[concat_video]"
+    "[v0]concat=n=1:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -335,7 +335,7 @@ test("test createVideo with test_hello_image.json", async () => {
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
-    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]"
+    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -345,7 +345,7 @@ test("test createVideo with test_hello_nobgm.json", async () => {
   const result = await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true);
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
-    "[v0]concat=n=1:v=1:a=0[concat_video]"
+    "[v0]concat=n=1:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -356,7 +356,7 @@ test("test createVideo with test_html.json", async () => {
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
-    "[v0][v1]concat=n=2:v=1:a=0[concat_video]"
+    "[v0][v1]concat=n=2:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -372,7 +372,7 @@ test("test createVideo with test_image_refs.json", async () => {
     "[4:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v4]",
     "[5:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v5]",
     "[6:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v6]",
-    "[v0][v1][v2][v3][v4][v5][v6]concat=n=7:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5][v6]concat=n=7:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -386,7 +386,7 @@ test("test createVideo with test_images.json", async () => {
     "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
     "[3:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v3]",
     "[4:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v4]",
-    "[v0][v1][v2][v3][v4]concat=n=5:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4]concat=n=5:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -398,7 +398,7 @@ test("test createVideo with test_kotodama.json", async () => {
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
-    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]"
+    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -414,7 +414,7 @@ test("test createVideo with test_lang.json", async () => {
     "[4:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v4]",
     "[5:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v5]",
     "[6:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v6]",
-    "[v0][v1][v2][v3][v4][v5][v6]concat=n=7:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5][v6]concat=n=7:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -431,7 +431,7 @@ test("test createVideo with test_layout.json", async () => {
     "[5:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v5]",
     "[6:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v6]",
     "[7:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v7]",
-    "[v0][v1][v2][v3][v4][v5][v6][v7]concat=n=8:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5][v6][v7]concat=n=8:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -446,7 +446,7 @@ test("test createVideo with test_lipsync.json", async () => {
     "[3:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v3]",
     "[4:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v4]",
     "[5:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v5]",
-    "[v0][v1][v2][v3][v4][v5]concat=n=6:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5]concat=n=6:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -457,7 +457,7 @@ test("test createVideo with test_loop.json", async () => {
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
-    "[v0][v1]concat=n=2:v=1:a=0[concat_video]"
+    "[v0][v1]concat=n=2:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -472,7 +472,7 @@ test("test createVideo with test_markdown.json", async () => {
     "[3:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v3]",
     "[4:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v4]",
     "[5:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v5]",
-    "[v0][v1][v2][v3][v4][v5]concat=n=6:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5]concat=n=6:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -496,7 +496,7 @@ test("test createVideo with test_media.json", async () => {
     "[12:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v12]",
     "[13:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v13]",
     "[14:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v14]",
-    "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10][v11][v12][v13][v14]concat=n=15:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10][v11][v12][v13][v14]concat=n=15:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -509,7 +509,7 @@ test("test createVideo with test_mixed_providers.json", async () => {
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
     "[3:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v3]",
-    "[v0][v1][v2][v3]concat=n=4:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3]concat=n=4:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -520,7 +520,7 @@ test("test createVideo with test_movie.json", async () => {
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=720:h=1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=720:h=1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
-    "[v0][v1]concat=n=2:v=1:a=0[concat_video]"
+    "[v0][v1]concat=n=2:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -532,7 +532,7 @@ test("test createVideo with test_movie2.json", async () => {
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
-    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]"
+    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -544,7 +544,7 @@ test("test createVideo with test_mv.json", async () => {
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1536:h=1024:force_original_aspect_ratio=decrease,pad=1536:1024:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1536:h=1024:force_original_aspect_ratio=decrease,pad=1536:1024:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1536:h=1024:force_original_aspect_ratio=decrease,pad=1536:1024:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
-    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]"
+    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -565,7 +565,7 @@ test("test createVideo with test_no_audio.json", async () => {
     "[9:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v9]",
     "[10:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v10]",
     "[11:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v11]",
-    "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10][v11]concat=n=12:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10][v11]concat=n=12:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -586,7 +586,7 @@ test("test createVideo with test_no_audio_with_credit.json", async () => {
     "[9:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v9]",
     "[10:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v10]",
     "[11:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v11]",
-    "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10][v11]concat=n=12:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10][v11]concat=n=12:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -604,7 +604,7 @@ test("test createVideo with test_order.json", async () => {
     "[6:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v6]",
     "[7:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v7]",
     "[8:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v8]",
-    "[v0][v1][v2][v3][v4][v5][v6][v7][v8]concat=n=9:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5][v6][v7][v8]concat=n=9:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -622,7 +622,7 @@ test("test createVideo with test_order_portrait.json", async () => {
     "[6:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=720:h=1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v6]",
     "[7:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=720:h=1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v7]",
     "[8:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=720:h=1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v8]",
-    "[v0][v1][v2][v3][v4][v5][v6][v7][v8]concat=n=9:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5][v6][v7][v8]concat=n=9:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -650,7 +650,7 @@ test("test createVideo with test_replicate.json", async () => {
     "[16:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v16]",
     "[17:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v17]",
     "[18:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v18]",
-    "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10][v11][v12][v13][v14][v15][v16][v17][v18]concat=n=19:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10][v11][v12][v13][v14][v15][v16][v17][v18]concat=n=19:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -660,7 +660,7 @@ test("test createVideo with test_size_error.json", async () => {
   const result = await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true);
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1024:h=1:force_original_aspect_ratio=decrease,pad=1024:1:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
-    "[v0]concat=n=1:v=1:a=0[concat_video]"
+    "[v0]concat=n=1:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -672,7 +672,7 @@ test("test createVideo with test_slideout_left_no_audio.json", async () => {
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]tpad=stop_mode=clone:stop_duration=10,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
-    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]"
+    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -684,7 +684,7 @@ test("test createVideo with test_sound_effect.json", async () => {
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
-    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]"
+    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -705,7 +705,7 @@ test("test createVideo with test_spillover.json", async () => {
     "[9:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v9]",
     "[10:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v10]",
     "[11:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v11]",
-    "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10][v11]concat=n=12:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10][v11]concat=n=12:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -718,7 +718,7 @@ test("test createVideo with test_transition.json", async () => {
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]tpad=stop_mode=clone:stop_duration=10,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
     "[3:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v3]",
-    "[v0][v1][v2][v3]concat=n=4:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3]concat=n=4:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -802,7 +802,7 @@ test("test createVideo with test_transition2.json", async () => {
     "[v12_last]format=yuva420p,fade=t=out:d=1:alpha=1,setpts=PTS-STARTPTS+64.95/TB[v12_last_f]",
     "[trans_12_o][v12_last_f]overlay=enable='between(t,64.95,65.95)'[trans_13_o]",
     "[v13_last]format=yuva420p,fade=t=out:d=1:alpha=1,setpts=PTS-STARTPTS+69.95/TB[v13_last_f]",
-    "[trans_13_o][v13_last_f]overlay=enable='between(t,69.95,70.95)'[trans_14_o]"
+    "[trans_13_o][v13_last_f]overlay=enable='between(t,69.95,70.95)'[trans_14_o]",
   ]);
 });
 
@@ -824,7 +824,7 @@ test("test createVideo with test_transition3.json", async () => {
     "[v1_last]format=yuva420p,setpts=PTS-STARTPTS+9.95/TB[v1_last_f]",
     "[concat_video][v1_last_f]overlay=x='-(t-9.95)*W/1':y=0:enable='between(t,9.95,10.95)'[trans_2_o]",
     "[v2_last]format=yuva420p,setpts=PTS-STARTPTS+14.95/TB[v2_last_f]",
-    "[trans_2_o][v2_last_f]overlay=x='-(t-14.95)*W/1':y=0:enable='between(t,14.95,15.95)'[trans_3_o]"
+    "[trans_2_o][v2_last_f]overlay=x='-(t-14.95)*W/1':y=0:enable='between(t,14.95,15.95)'[trans_3_o]",
   ]);
 });
 
@@ -841,7 +841,7 @@ test("test createVideo with test_transition_no_audio.json", async () => {
     "[3:v]tpad=stop_mode=clone:stop_duration=10,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v3]",
     "[v0][v1][v2][v3]concat=n=4:v=1:a=0[concat_video]",
     "[v1_last]format=yuva420p,setpts=PTS-STARTPTS+9.95/TB[v1_last_f]",
-    "[concat_video][v1_last_f]overlay=x='-(t-9.95)*W/1':y=0:enable='between(t,9.95,10.95)'[trans_2_o]"
+    "[concat_video][v1_last_f]overlay=x='-(t-9.95)*W/1':y=0:enable='between(t,9.95,10.95)'[trans_2_o]",
   ]);
 });
 
@@ -856,7 +856,7 @@ test("test createVideo with test_video_speed.json", async () => {
     "[3:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v3]",
     "[4:v]tpad=stop_mode=clone:stop_duration=5,trim=duration=2.5,fps=30,setpts=2*PTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v4]",
     "[5:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v5]",
-    "[v0][v1][v2][v3][v4][v5]concat=n=6:v=1:a=0[concat_video]"
+    "[v0][v1][v2][v3][v4][v5]concat=n=6:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -866,7 +866,7 @@ test("test createVideo with test_vision.json", async () => {
   const result = await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true);
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
-    "[v0]concat=n=1:v=1:a=0[concat_video]"
+    "[v0]concat=n=1:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -878,7 +878,7 @@ test("test createVideo with test_voice_over.json", async () => {
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]tpad=stop_mode=clone:stop_duration=10,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
-    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]"
+    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]",
   ]);
 });
 
@@ -890,6 +890,6 @@ test("test createVideo with test_voices.json", async () => {
     "[0:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
-    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]"
+    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]",
   ]);
 });

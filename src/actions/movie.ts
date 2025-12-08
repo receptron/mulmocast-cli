@@ -370,7 +370,7 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
       return timestamp; // Skip voice-over beats.
     }
 
-    const sourceFile = isTest ? "/tmp/dummy.mp4" : validateBeatSource(studioBeat, index);
+    const sourceFile = isTest ? "/test/dummy.mp4" : validateBeatSource(studioBeat, index);
 
     // The movie duration is bigger in case of voice-over.
     const duration = Math.max(studioBeat.duration! + getExtraPadding(context, index), studioBeat.movieDuration ?? 0);
