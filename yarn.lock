@@ -303,10 +303,10 @@
   dependencies:
     google-gax "^5.0.0"
 
-"@google/genai@^1.30.0":
-  version "1.30.0"
-  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.30.0.tgz#11fc12ab64e7e7c559b41835a5c237b3dfcd1348"
-  integrity sha512-3MRcgczBFbUat1wIlZoLJ0vCCfXgm7Qxjh59cZi2X08RgWLtm9hKOspzp7TOg1TV2e26/MLxR2GR5yD5GmBV2w==
+"@google/genai@^1.32.0":
+  version "1.32.0"
+  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.32.0.tgz#63f7d3c68894af7c53797487fd794f2c11758712"
+  integrity sha512-46vaEaHAThIBlqWFTti1fo3xYU6DwCOwnIIotLhYUbNha90wk5cZL79zdf+NoAfKVsx4DPmjCtXvbQNNVPl5ZQ==
   dependencies:
     google-auth-library "^10.3.0"
     ws "^8.18.0"
