@@ -239,10 +239,14 @@ const addTransitionEffects = (
         return prevVideoId;
       }
 
-      // Use xfade offset instead of trimming to avoid framerate issues
-      // The static frames are created with proper duration, use offset to start transition at the right time
-      const prevBeatDuration = context.studio.beats[beatIndex - 1].duration ?? 0;
-      const xfadeOffset = prevBeatDuration - duration;
+      // Calculate the actual duration of the static frames
+      // The _last frame was generated with the previous beat's actual duration
+      const prevStudioBeat = context.studio.beats[beatIndex - 1];
+      const prevBeatActualDuration = Math.max(prevStudioBeat.duration! + getExtraPadding(context, beatIndex - 1), prevStudioBeat.movieDuration ?? 0);
+
+      // xfade offset must be non-negative and within the first video's duration
+      // Start the transition at the end of the first video minus the transition duration
+      const xfadeOffset = Math.max(0, prevBeatActualDuration - duration);
 
       // Apply xfade with explicit pixel format
       const xfadeOutputId = `${transitionVideoId}_xfade`;
