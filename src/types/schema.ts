@@ -8,6 +8,10 @@ import {
   provider2SoundEffectAgent,
 } from "../utils/provider2agent.js";
 import { currentMulmoScriptVersion } from "../utils/const.js";
+import { mulmoVideoFilterSchema } from "./schema_video_filter.js";
+
+// Re-export video filter schema
+export { mulmoVideoFilterSchema } from "./schema_video_filter.js";
 
 export const langSchema = z.string();
 const URLStringSchema = z.url();
@@ -336,7 +340,25 @@ export const mulmoLipSyncParamsSchema = z.object({
 });
 
 export const mulmoTransitionSchema = z.object({
-  type: z.enum(["fade", "slideout_left", "slideout_right", "slideout_up", "slideout_down", "slidein_left", "slidein_right", "slidein_up", "slidein_down"]),
+  type: z.enum([
+    "fade",
+    "slideout_left",
+    "slideout_right",
+    "slideout_up",
+    "slideout_down",
+    "slidein_left",
+    "slidein_right",
+    "slidein_up",
+    "slidein_down",
+    "wipeleft",
+    "wiperight",
+    "wipeup",
+    "wipedown",
+    "wipetl",
+    "wipetr",
+    "wipebl",
+    "wipebr",
+  ]),
   duration: z.number().min(0).max(2).optional().default(0.3), // transition duration in seconds
 });
 
@@ -345,6 +367,7 @@ export const mulmoMovieParamsSchema = z.object({
   model: z.string().optional(),
   fillOption: mulmoFillOptionSchema.optional(), // for movie.ts
   transition: mulmoTransitionSchema.optional(), // for movie.ts
+  filters: z.array(mulmoVideoFilterSchema).optional(), // for movie.ts
 });
 
 export const mulmoBeatSchema = z

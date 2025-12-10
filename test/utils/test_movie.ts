@@ -366,53 +366,61 @@ test("test getConcatVideoFilter filtering undefined", async () => {
 // addSplitAndExtractFrames tests
 test("test addSplitAndExtractFrames with needFirst only", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v1", 100, false, true, false);
+  addSplitAndExtractFrames(ffmpegContext, "v1", 100, false, true, false, { width: 1280, height: 720 });
 
-  assert.equal(ffmpegContext.filterComplex.length, 2);
+  assert.equal(ffmpegContext.filterComplex.length, 4);
   assert.equal(ffmpegContext.filterComplex[0], "[v1]split=2[v1][v1_first_src]");
-  assert.equal(ffmpegContext.filterComplex[1], "[v1_first_src]select='eq(n,0)',tpad=stop_mode=clone:stop_duration=100,fps=30,setpts=PTS-STARTPTS[v1_first]");
+  assert.equal(ffmpegContext.filterComplex[1], "nullsrc=size=1280x720:duration=100:rate=30[v1_first_null]");
+  assert.equal(ffmpegContext.filterComplex[2], "[v1_first_src]select='eq(n,0)',scale=1280:720[v1_first_frame]");
+  assert.equal(ffmpegContext.filterComplex[3], "[v1_first_null][v1_first_frame]overlay=format=auto,fps=30[v1_first]");
 });
 
 test("test addSplitAndExtractFrames with needLast only for image", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v2", 150, false, false, true);
+  addSplitAndExtractFrames(ffmpegContext, "v2", 150, false, false, true, { width: 1280, height: 720 });
 
-  assert.equal(ffmpegContext.filterComplex.length, 2);
+  assert.equal(ffmpegContext.filterComplex.length, 4);
   assert.equal(ffmpegContext.filterComplex[0], "[v2]split=2[v2][v2_last_src]");
-  assert.equal(ffmpegContext.filterComplex[1], "[v2_last_src]select='eq(n,0)',tpad=stop_mode=clone:stop_duration=150,fps=30,setpts=PTS-STARTPTS[v2_last]");
+  assert.equal(ffmpegContext.filterComplex[1], "nullsrc=size=1280x720:duration=150:rate=30[v2_last_null]");
+  assert.equal(ffmpegContext.filterComplex[2], "[v2_last_src]select='eq(n,0)',scale=1280:720[v2_last_frame]");
+  assert.equal(ffmpegContext.filterComplex[3], "[v2_last_null][v2_last_frame]overlay=format=auto,fps=30[v2_last]");
 });
 
 test("test addSplitAndExtractFrames with needLast only for movie", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v3", 200, true, false, true);
+  addSplitAndExtractFrames(ffmpegContext, "v3", 200, true, false, true, { width: 1280, height: 720 });
 
-  assert.equal(ffmpegContext.filterComplex.length, 2);
+  assert.equal(ffmpegContext.filterComplex.length, 4);
   assert.equal(ffmpegContext.filterComplex[0], "[v3]split=2[v3][v3_last_src]");
-  assert.equal(
-    ffmpegContext.filterComplex[1],
-    "[v3_last_src]reverse,select='eq(n,0)',reverse,tpad=stop_mode=clone:stop_duration=200,fps=30,setpts=PTS-STARTPTS[v3_last]",
-  );
+  assert.equal(ffmpegContext.filterComplex[1], "nullsrc=size=1280x720:duration=200:rate=30[v3_last_null]");
+  assert.equal(ffmpegContext.filterComplex[2], "[v3_last_src]reverse,select='eq(n,0)',reverse,scale=1280:720[v3_last_frame]");
+  assert.equal(ffmpegContext.filterComplex[3], "[v3_last_null][v3_last_frame]overlay=format=auto,fps=30[v3_last]");
 });
 
 test("test addSplitAndExtractFrames with both needFirst and needLast", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v4", 120, false, true, true);
+  addSplitAndExtractFrames(ffmpegContext, "v4", 120, false, true, true, { width: 1280, height: 720 });
 
-  assert.equal(ffmpegContext.filterComplex.length, 3);
+  assert.equal(ffmpegContext.filterComplex.length, 7);
   assert.equal(ffmpegContext.filterComplex[0], "[v4]split=3[v4][v4_first_src][v4_last_src]");
-  assert.equal(ffmpegContext.filterComplex[1], "[v4_first_src]select='eq(n,0)',tpad=stop_mode=clone:stop_duration=120,fps=30,setpts=PTS-STARTPTS[v4_first]");
-  assert.equal(ffmpegContext.filterComplex[2], "[v4_last_src]select='eq(n,0)',tpad=stop_mode=clone:stop_duration=120,fps=30,setpts=PTS-STARTPTS[v4_last]");
+  assert.equal(ffmpegContext.filterComplex[1], "nullsrc=size=1280x720:duration=120:rate=30[v4_first_null]");
+  assert.equal(ffmpegContext.filterComplex[2], "[v4_first_src]select='eq(n,0)',scale=1280:720[v4_first_frame]");
+  assert.equal(ffmpegContext.filterComplex[3], "[v4_first_null][v4_first_frame]overlay=format=auto,fps=30[v4_first]");
+  assert.equal(ffmpegContext.filterComplex[4], "nullsrc=size=1280x720:duration=120:rate=30[v4_last_null]");
+  assert.equal(ffmpegContext.filterComplex[5], "[v4_last_src]select='eq(n,0)',scale=1280:720[v4_last_frame]");
+  assert.equal(ffmpegContext.filterComplex[6], "[v4_last_null][v4_last_frame]overlay=format=auto,fps=30[v4_last]");
 });
 
 test("test addSplitAndExtractFrames with both for movie", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v5", 180, true, true, true);
+  addSplitAndExtractFrames(ffmpegContext, "v5", 180, true, true, true, { width: 1280, height: 720 });
 
-  assert.equal(ffmpegContext.filterComplex.length, 3);
+  assert.equal(ffmpegContext.filterComplex.length, 7);
   assert.equal(ffmpegContext.filterComplex[0], "[v5]split=3[v5][v5_first_src][v5_last_src]");
-  assert.equal(ffmpegContext.filterComplex[1], "[v5_first_src]select='eq(n,0)',tpad=stop_mode=clone:stop_duration=180,fps=30,setpts=PTS-STARTPTS[v5_first]");
-  assert.equal(
-    ffmpegContext.filterComplex[2],
-    "[v5_last_src]reverse,select='eq(n,0)',reverse,tpad=stop_mode=clone:stop_duration=180,fps=30,setpts=PTS-STARTPTS[v5_last]",
-  );
+  assert.equal(ffmpegContext.filterComplex[1], "nullsrc=size=1280x720:duration=180:rate=30[v5_first_null]");
+  assert.equal(ffmpegContext.filterComplex[2], "[v5_first_src]select='eq(n,0)',scale=1280:720[v5_first_frame]");
+  assert.equal(ffmpegContext.filterComplex[3], "[v5_first_null][v5_first_frame]overlay=format=auto,fps=30[v5_first]");
+  assert.equal(ffmpegContext.filterComplex[4], "nullsrc=size=1280x720:duration=180:rate=30[v5_last_null]");
+  assert.equal(ffmpegContext.filterComplex[5], "[v5_last_src]reverse,select='eq(n,0)',reverse,scale=1280:720[v5_last_frame]");
+  assert.equal(ffmpegContext.filterComplex[6], "[v5_last_null][v5_last_frame]overlay=format=auto,fps=30[v5_last]");
 });

@@ -55,13 +55,22 @@ Share a single audio track across multiple beats, useful for music videos or spl
 
 ### 2. トランジション効果 (Transition Effects)
 
-Beat間の映像切り替えにトランジション効果を追加。
+Beat間の映像切り替えにトランジション効果を追加。17種類のトランジションタイプをサポート。
 
-Add transition effects between beats for smooth visual transitions.
+Add transition effects between beats for smooth visual transitions. Supports 17 transition types.
 
 **対応トランジション / Available Transitions:**
+
+**Slide系（8種類）/ Slide Transitions (8 types):**
+- `slideout_left`, `slideout_right`, `slideout_up`, `slideout_down` - スライドアウト / Slide out
+- `slidein_left`, `slidein_right`, `slidein_up`, `slidein_down` - スライドイン / Slide in
+
+**Wipe系（8種類）/ Wipe Transitions (8 types):**
+- `wipeleft`, `wiperight`, `wipeup`, `wipedown` - 方向別ワイプ / Directional wipes
+- `wipetl`, `wipetr`, `wipebl`, `wipebr` - 角からのワイプ / Corner wipes
+
+**Fade（1種類）/ Fade (1 type):**
 - `fade` - フェード効果 / Fade effect
-- `slideout_left` - 左スライドアウト効果 / Slide-out left effect
 
 **設定項目 / Configuration:**
 
@@ -69,19 +78,24 @@ Add transition effects between beats for smooth visual transitions.
 {
   "movieParams": {
     "transition": {
-      "type": "fade",
-      "duration": 0.5
+      "type": "wipeleft",
+      "duration": 0.8
     }
   }
 }
 ```
 
-- `type`: トランジションタイプ / Transition type
-- `duration`: トランジション時間（0〜2秒）/ Transition duration (0-2 seconds)
+- `type`: トランジションタイプ（17種類から選択）/ Transition type (choose from 17 types)
+- `duration`: トランジション時間（0〜2秒、デフォルト: 0.3）/ Transition duration (0-2 seconds, default: 0.3)
+
+**特徴 / Features:**
+- Beat単位で異なるトランジションを設定可能 / Different transitions per beat
+- グローバル設定とbeat単位の設定の両方に対応 / Both global and per-beat configuration
+- FFmpegのoverlayとxfadeフィルタで実装 / Implemented with FFmpeg overlay and xfade filters
 
 **サンプル / Samples:**
-- [scripts/test/test_transition.json](../scripts/test/test_transition.json)
-- [scripts/test/test_slideout_left_no_audio.json](../scripts/test/test_slideout_left_no_audio.json)
+- [scripts/test/test_transition2.json](../scripts/test/test_transition2.json) - 全17種類のデモ / All 17 types demo
+- [scripts/test/test_transition3.json](../scripts/test/test_transition3.json) - 追加テスト / Additional tests
 
 ---
 
@@ -522,6 +536,114 @@ Use different voice settings for the same speaker across languages, optimizing v
 
 **詳細ドキュメント / Documentation:** [sound_and_voice.md](./sound_and_voice.md)
 **サンプル / Sample:** [scripts/test/test_lang.json](../scripts/test/test_lang.json)
+
+---
+
+### 14. ビデオフィルター（映像エフェクト）(Video Filters / Visual Effects)
+
+各beatの映像に視覚効果を適用。FFmpegの強力なフィルター機能を36種類のフィルターで簡単に利用可能。
+
+Apply visual effects to video/images for each beat. Easy access to powerful FFmpeg filters with 36 filter types.
+
+**フィルターカテゴリー / Filter Categories:**
+
+**色調整（9種類）/ Color Adjustment (9 types):**
+- `mono`, `sepia`, `brightness_contrast`, `hue`, `colorbalance`, `vibrance`, `negate`, `colorhold`, `colorkey`
+
+**ブラー・シャープ（4種類）/ Blur & Sharpen (4 types):**
+- `blur`, `gblur`, `avgblur`, `unsharp`
+
+**エッジ検出（3種類）/ Edge Detection (3 types):**
+- `edgedetect`, `sobel`, `emboss`
+
+**変形（4種類）/ Transform (4 types):**
+- `hflip`, `vflip`, `rotate`, `transpose`
+
+**視覚効果（4種類）/ Visual Effects (4 types):**
+- `vignette`, `fade`, `pixelize`, `pseudocolor`
+
+**時間効果（2種類）/ Temporal (2 types):**
+- `tmix`, `lagfun`
+
+**閾値・ポスタライズ（2種類）/ Threshold (2 types):**
+- `threshold`, `elbg`
+
+**その他（8種類）/ Others (8 types):**
+- `lensdistortion`, `chromashift`, `deflicker`, `dctdnoiz`, `glitch`, `grain`, `custom`（カスタムFFmpegフィルター文字列）
+
+**設定方法 / Configuration:**
+
+```json
+{
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "Vintage look",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "sepia"
+          },
+          {
+            "type": "grain",
+            "intensity": 25
+          },
+          {
+            "type": "vignette"
+          }
+        ]
+      },
+      "image": { ... }
+    }
+  ]
+}
+```
+
+**特徴 / Features:**
+- 複数フィルターの連結（チェーン）が可能 / Multiple filters can be chained
+- Beat単位で異なるフィルターを設定可能 / Different filters per beat
+- グローバル設定とbeat単位の設定の両方に対応 / Both global and per-beat configuration
+- 全フィルターがZodスキーマで型安全にバリデーション / Type-safe validation with Zod schemas
+- パラメータの範囲チェック機能付き / Parameter range validation included
+
+**設定例 / Examples:**
+
+グローバル設定（全beatに適用）/ Global configuration:
+```json
+{
+  "movieParams": {
+    "filters": [
+      {
+        "type": "brightness_contrast",
+        "brightness": 0.1,
+        "contrast": 1.2
+      }
+    ]
+  }
+}
+```
+
+複数フィルターの連結 / Filter chaining:
+```json
+{
+  "movieParams": {
+    "filters": [
+      {
+        "type": "hue",
+        "hue": 120,
+        "saturation": 1.5
+      },
+      {
+        "type": "vignette"
+      }
+    ]
+  }
+}
+```
+
+**サンプル / Sample:** [scripts/test/test_video_filters.json](../scripts/test/test_video_filters.json) - 全36種類のデモ / All 36 types demo
+
+**詳細ドキュメント / Documentation:** [image.md - ビデオフィルター](./image.md#ビデオフィルター映像エフェクト)
 
 ---
 

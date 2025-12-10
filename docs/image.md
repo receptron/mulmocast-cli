@@ -92,7 +92,7 @@
 - トランジションは`movieParams.transition`で設定します
 - グローバル設定（presentationStyle）とbeat単位の設定が可能で、beat単位の設定が優先されます
 
-### トランジションタイプ（9種類）
+### トランジションタイプ（17種類）
 
 #### 1. fade
 前のbeatの最後のフレームがフェードアウトして、次のbeatに切り替わります。
@@ -146,6 +146,29 @@
 }
 ```
 
+#### 4. wipe系（8方向）
+FFmpegのxfadeフィルタを使用した高品質なワイプトランジション。前のbeatから現在のbeatへスムーズにワイプします。
+
+- **wipeleft**: 左方向へワイプ
+- **wiperight**: 右方向へワイプ
+- **wipeup**: 上方向へワイプ
+- **wipedown**: 下方向へワイプ
+- **wipetl**: 左上から右下へワイプ
+- **wipetr**: 右上から左下へワイプ
+- **wipebl**: 左下から右上へワイプ
+- **wipebr**: 右下から左上へワイプ
+
+```json
+{
+  "movieParams": {
+    "transition": {
+      "type": "wipeleft",
+      "duration": 1.0
+    }
+  }
+}
+```
+
 ### 設定方法
 
 #### グローバル設定（全beatに適用）
@@ -191,7 +214,10 @@
 ### パラメータ
 
 - **type**: トランジションの種類（必須）
-  - `"fade"`, `"slideout_left"`, `"slideout_right"`, `"slideout_up"`, `"slideout_down"`, `"slidein_left"`, `"slidein_right"`, `"slidein_up"`, `"slidein_down"`
+  - fade: `"fade"`
+  - slideout: `"slideout_left"`, `"slideout_right"`, `"slideout_up"`, `"slideout_down"`
+  - slidein: `"slidein_left"`, `"slidein_right"`, `"slidein_up"`, `"slidein_down"`
+  - wipe: `"wipeleft"`, `"wiperight"`, `"wipeup"`, `"wipedown"`, `"wipetl"`, `"wipetr"`, `"wipebl"`, `"wipebr"`
 - **duration**: トランジション効果の長さ（秒）
   - 省略時のデフォルト: `0.3`
   - 最小値: `0`, 最大値: `2`
@@ -220,6 +246,272 @@ slideinは特殊な処理を行います：
 
 全てのトランジションタイプを確認できるサンプルファイル:
 - [scripts/test/test_transition2.json](../scripts/test/test_transition2.json)
+
+## ビデオフィルター（映像エフェクト）
+
+### 基本概念
+
+ビデオフィルターは各beatの映像に視覚効果を適用する機能です。FFmpegの強力なフィルター機能をJSON設定で簡単に利用できます。
+
+**重要な特徴**:
+- beat単位で異なるフィルターを適用可能
+- 複数のフィルターをチェーン（連結）して使用可能
+- グローバル設定（presentationStyle）とbeat単位の設定が可能
+- すべてのフィルターはZodスキーマで型安全にバリデーション
+
+### フィルターカテゴリー（36種類）
+
+#### 色調整フィルター（9種類）
+
+- **mono**: モノクロ（グレースケール）効果
+- **sepia**: セピア調効果
+- **brightness_contrast**: 明度(-1〜1)とコントラスト(0〜3)の調整
+- **hue**: 色相(-180°〜180°)、彩度、明度の調整
+- **colorbalance**: RGB各チャンネルの微調整（シャドウ、ミッドトーン、ハイライト別）
+- **vibrance**: 彩度の強調(-2〜2)
+- **negate**: 色反転（ネガポジ反転）
+- **colorhold**: 特定の色だけを残し他を脱色
+- **colorkey**: 特定の色を透明化（クロマキー）
+
+```json
+{
+  "movieParams": {
+    "filters": [
+      {
+        "type": "hue",
+        "hue": 120,
+        "saturation": 1.5
+      }
+    ]
+  }
+}
+```
+
+#### ブラー・シャープフィルター（4種類）
+
+- **blur**: ボックスブラー（radius: 1-50, power: 1-10）
+- **gblur**: ガウシアンブラー（sigma: 0-100）
+- **avgblur**: 平均ブラー（X/Y個別サイズ指定）
+- **unsharp**: アンシャープマスク（輝度・色差個別制御）
+
+```json
+{
+  "movieParams": {
+    "filters": [
+      {
+        "type": "gblur",
+        "sigma": 30
+      }
+    ]
+  }
+}
+```
+
+#### エッジ検出フィルター（3種類）
+
+- **edgedetect**: エッジ検出（wires/colormix/cannyモード）
+- **sobel**: Sobelエッジ検出アルゴリズム
+- **emboss**: エンボス（3D浮き彫り）効果
+
+```json
+{
+  "movieParams": {
+    "filters": [
+      {
+        "type": "edgedetect",
+        "mode": "wires"
+      }
+    ]
+  }
+}
+```
+
+#### 変形フィルター（4種類）
+
+- **hflip**: 左右反転
+- **vflip**: 上下反転
+- **rotate**: 回転（角度はラジアン、塗りつぶし色指定可）
+- **transpose**: 90度回転（反転オプション付き）
+
+```json
+{
+  "movieParams": {
+    "filters": [
+      {
+        "type": "vflip"
+      }
+    ]
+  }
+}
+```
+
+#### 視覚効果フィルター（4種類）
+
+- **vignette**: 周辺減光（角度・中心位置・モード指定可）
+- **fade**: フェードイン/アウト（フレーム単位で制御）
+- **pixelize**: ピクセル化（モザイク効果）
+- **pseudocolor**: 疑似カラー（magma、inferno、plasma、viridis等のカラーマップ）
+
+```json
+{
+  "movieParams": {
+    "filters": [
+      {
+        "type": "pixelize",
+        "width": 20,
+        "height": 20
+      }
+    ]
+  }
+}
+```
+
+#### 時間効果フィルター（2種類）
+
+- **tmix**: 時間軸ミックス（モーションブラー効果）
+- **lagfun**: ラグエフェクト（モーショントレイル）
+
+```json
+{
+  "movieParams": {
+    "filters": [
+      {
+        "type": "lagfun",
+        "decay": 0.85
+      }
+    ]
+  }
+}
+```
+
+#### 閾値・ポスタライズフィルター（2種類）
+
+- **threshold**: 二値化（閾値処理）
+- **elbg**: 色数削減（ポスタライズ効果、ELBGアルゴリズム）
+
+```json
+{
+  "movieParams": {
+    "filters": [
+      {
+        "type": "elbg",
+        "codebook_length": 16
+      }
+    ]
+  }
+}
+```
+
+#### その他の特殊効果（6種類）
+
+- **lensdistortion**: レンズ歪み効果
+- **chromashift**: 色ずれ（色収差）効果
+- **deflicker**: フリッカー除去
+- **dctdnoiz**: DCTベースのノイズ除去
+- **glitch**: デジタルグリッチ効果（noise/blendスタイル）
+- **grain**: フィルムグレイン効果
+
+```json
+{
+  "movieParams": {
+    "filters": [
+      {
+        "type": "glitch",
+        "intensity": 40,
+        "style": "noise"
+      }
+    ]
+  }
+}
+```
+
+#### カスタムフィルター
+
+- **custom**: 生のFFmpegフィルター文字列を直接指定
+
+```json
+{
+  "movieParams": {
+    "filters": [
+      {
+        "type": "custom",
+        "filter": "hflip,negate"
+      }
+    ]
+  }
+}
+```
+
+### 複数フィルターの連結
+
+複数のフィルターを配列で指定することで、効果を重ねることができます。
+
+```json
+{
+  "movieParams": {
+    "filters": [
+      {
+        "type": "sepia"
+      },
+      {
+        "type": "grain",
+        "intensity": 25
+      },
+      {
+        "type": "vignette"
+      }
+    ]
+  }
+}
+```
+
+この例では、セピア調→グレイン追加→周辺減光の順に効果が適用されます。
+
+### グローバル設定とbeat単位の設定
+
+#### グローバル設定（全beatに適用）
+```json
+{
+  "$mulmocast": { "version": "1.1" },
+  "movieParams": {
+    "filters": [
+      {
+        "type": "brightness_contrast",
+        "brightness": 0.1,
+        "contrast": 1.2
+      }
+    ]
+  },
+  "beats": [ ... ]
+}
+```
+
+#### Beat単位の設定（特定のbeatのみ）
+```json
+{
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "Dramatic scene",
+      "movieParams": {
+        "filters": [
+          {
+            "type": "hue",
+            "hue": 180,
+            "saturation": 2.0
+          }
+        ]
+      },
+      "image": { ... }
+    }
+  ]
+}
+```
+
+### サンプル
+
+全てのフィルタータイプを確認できるサンプルファイル:
+- [scripts/test/test_video_filters.json](../scripts/test/test_video_filters.json)
 
 ## リップシンク対応モデル
 
