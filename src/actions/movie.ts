@@ -191,7 +191,13 @@ const addTransitionEffects = (
     }
     // Transition happens at the start of this beat
     const startAt = beatTimestamps[beatIndex] - 0.05; // 0.05 is to avoid flickering
-    const duration = transition.duration;
+
+    // Limit transition duration to be no longer than either beat's duration
+    const prevBeatDuration = context.studio.beats[beatIndex - 1].duration ?? 1;
+    const currentBeatDuration = context.studio.beats[beatIndex].duration ?? 1;
+    const maxDuration = Math.min(prevBeatDuration, currentBeatDuration) * 0.9; // Use 90% to leave some margin
+    const duration = Math.min(transition.duration, maxDuration);
+
     const outputVideoId = `trans_${beatIndex}_o`;
     const processedVideoId = `${transitionVideoId}_f`;
 
@@ -239,16 +245,12 @@ const addTransitionEffects = (
         return prevVideoId;
       }
 
-      // Calculate the actual duration of the static frames
-      // The _last frame was generated with the previous beat's actual duration
-      const prevStudioBeat = context.studio.beats[beatIndex - 1];
-      const prevBeatActualDuration = Math.max(prevStudioBeat.duration! + getExtraPadding(context, beatIndex - 1), prevStudioBeat.movieDuration ?? 0);
+      // For wipe transitions, use offset=0 so transition starts immediately and completes within duration
+      // This ensures 0-100% wipe happens exactly during the transition duration
+      const xfadeOffset = 0;
 
-      // xfade offset must be non-negative and within the first video's duration
-      // Start the transition at the end of the first video minus the transition duration
-      const xfadeOffset = Math.max(0, prevBeatActualDuration - duration);
-
-      // Apply xfade with explicit pixel format
+      // Apply xfade with offset=0 for complete 0-100% transition
+      // Both input videos should be at least duration seconds long (ensured by static frame generation)
       const xfadeOutputId = `${transitionVideoId}_xfade`;
       ffmpegContext.filterComplex.push(`[${transitionVideoId}]format=yuv420p[${transitionVideoId}_fmt]`);
       ffmpegContext.filterComplex.push(`[${nextVideoId}]format=yuv420p[${nextVideoId}_fmt]`);
