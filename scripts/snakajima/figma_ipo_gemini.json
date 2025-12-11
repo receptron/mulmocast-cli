@@ -1,0 +1,82 @@
+{
+  "$mulmocast": { "version": "1.1", "credit": "closing" },
+  "title": "Figma上場、株価250%急騰の衝撃",
+  "lang": "ja",
+  "references": [
+    {
+      "url": "https://finance.yahoo.com/news/figma-stock-soars-250-in-first-day-of-trading-valuing-company-north-of-45-billion-132215621.html",
+      "title": "Figma stock soars 250% in first day of trading, valuing company north of $45 billion",
+      "type": "article"
+    }
+  ],
+  "beats": [
+    {
+      "text": "ねえ、聞いた？ FigmaのIPO、初日に株価が250%も跳ね上がったんだって。もう、あんたも驚いたフリしなさいよ。これ、ただのニュースじゃなくて、2025年最大級の話題なんだから。",
+      "imagePrompt": "驚いた表情でスマホのニュースを見ている若い女性のイラスト",
+      "enableLipSync": true
+    },
+    {
+      "text": "Figmaはデザインコラボレーションツールを提供するSaaS企業。Adobeに買収されるはずが破談になったの、覚えてる？でもその後も順調に成長して、今回の上場でついに世界に実力を見せつけたわけ。",
+      "imagePrompt": "Figmaのロゴと、デザインチームがオンラインで作業しているイメージ",
+      "enableLipSync": true
+    },
+    {
+      "text": "IPO価格は1株33ドルだったのに、初日の終値は115ドル50セント。ざっと250%アップ。もう『急騰』って言葉じゃ足りないくらいね。",
+      "imagePrompt": "株価チャートが急上昇しているグラフを指差す女性のイラスト",
+      "enableLipSync": true
+    },
+    {
+      "text": "しかも時価総額はあっという間に450億ドルを突破、終値では670億ドル超えよ。投資家の期待の高さ、見せつけてきたって感じね。",
+      "imagePrompt": "巨大な数字Figmaのロゴが空中に浮かび、それを見上げる群衆のシーン。それを指差している女性のイラスト",
+      "enableLipSync": true
+    },
+    {
+      "text": "ねぇ、Adobeが2022年に200億ドルで買おうとしたの覚えてる？今回の時価総額を見たら、そのとき買収出来なかったのが悔しすぎて眠れない人もいそうね。",
+      "imagePrompt": "Adobeのロゴが描かれた書類を見て頭を抱える男性のイラスト",
+      "moviePrompt": "A man is looking at a document with Adobe's logo sadly, and rips it apart."
+    },
+    {
+      "text": "そして調達額は約12億ドル。これだけの資金を手に入れたら、AI機能の強化も新サービス展開も、好き放題できちゃうじゃない。",
+      "imagePrompt": "ドル紙幣の山と、それを背景に笑顔を見せるFigmaのキャラクター風イラスト",
+      "enableLipSync": true
+    },
+    {
+      "text": "この記事（Yahoo Finance）にも書かれてたけど、2025年で最も華々しいIPOだって。投資家たちも、ようやく“IPO冬の時代”が終わるかもって期待してるわ。",
+      "imagePrompt": "ニュース記事を指差して、観客に説明する女性のイラスト",
+      "enableLipSync": true
+    },
+    {
+      "text": "とにかく、FigmaのIPOはデザイン業界だけじゃなく、テック界全体を揺さぶった出来事。これを知らないなんて、時代遅れだって思われても知らないんだからね。",
+      "imagePrompt": "プレゼンテーションで締めの言葉を話す女性、背景にFigmaのロゴ",
+      "enableLipSync": true
+    }
+  ],
+  "movieParams": { "provider": "replicate", "model": "bytedance/seedance-1-lite" },
+  "audioParams": {
+    "bgm": { "kind": "url", "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/morning001.mp3" }
+  },
+  "canvasSize": { "width": 1024, "height": 1536 },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "provider": "gemini",
+        "voiceId": "leda",
+        "model": "gemini-2.5-pro-preview-tts",
+        "speechOptions": {
+          "instruction": "Role: You are a classic Tsundere character. Tone: Sharp, impatient, and defensive, but with underlying hesitation that suggests you actually care deeply. Voice Quality: Higher pitch, energetic, and slightly haughty."
+        }
+      }
+    }
+  },
+  "imageParams": {
+    "style": "<style>A highly polished 2D digital illustration in anime and manga style, featuring clean linework, soft shading, vivid colors, and expressive facial detailing. The composition emphasizes clarity and visual impact with a minimalistic background and a strong character focus. The lighting is even and bright, giving the image a crisp and energetic feel, reminiscent of high-quality character art used in Japanese visual novels or mobile games.</style>",
+    "provider": "google",
+    "model": "gemini-3-pro-image-preview",
+    "images": {
+      "ani": {
+        "type": "image",
+        "source": { "kind": "url", "url": "https://raw.githubusercontent.com/receptron/mulmocast-media/refs/heads/main/characters/ani.png" }
+      }
+    }
+  }
+}
