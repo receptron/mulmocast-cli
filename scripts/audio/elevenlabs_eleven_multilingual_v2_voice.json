@@ -1,0 +1,110 @@
+{
+  "$mulmocast": {
+    "version": "1.0",
+    "credit": "closing"
+  },
+  "speechParams": {
+    "speakers": {
+      "otan": {
+        "provider": "elevenlabs",
+        "voiceId": "3JDquces8E8bkmvbh6Bc",
+        "model": "eleven_multilingual_v2"
+      },
+      "janathan": {
+        "provider": "elevenlabs",
+        "voiceId": "c6SfcYrb2t09NHXiT80T",
+        "model": "eleven_multilingual_v2"
+      },
+      "ishibashi": {
+        "provider": "elevenlabs",
+        "voiceId": "Mv8AjrYZCBkdsmDHNwcB",
+        "model": "eleven_multilingual_v2"
+      },
+      "morioki": {
+        "provider": "elevenlabs",
+        "voiceId": "8EkOjt4xTPGMclNlh1pk",
+        "model": "eleven_multilingual_v2"
+      },
+      "hinata": {
+        "provider": "elevenlabs",
+        "voiceId": "j210dv0vWm7fCknyQpbA",
+        "model": "eleven_multilingual_v2"
+      },
+      "steven_casteel": {
+        "provider": "elevenlabs",
+        "voiceId": "QEj0heL4nQHjaGrihlr0",
+        "model": "eleven_multilingual_v2"
+      },
+      "sayuri": {
+        "provider": "elevenlabs",
+        "voiceId": "l39JidvAMB3s85XyNSRd",
+        "model": "eleven_multilingual_v2"
+      }
+    }
+  },
+  "beats": [
+    {
+      "id": "otan",
+      "speaker": "otan",
+      "text": "こんにちは, これは音声テストです。音声は otan です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is otan"]
+      }
+    },
+    {
+      "id": "janathan",
+      "speaker": "janathan",
+      "text": "こんにちは, これは音声テストです。音声は janathan です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is janathan"]
+      }
+    },
+    {
+      "id": "ishibashi",
+      "speaker": "ishibashi",
+      "text": "こんにちは, これは音声テストです。音声は ishibashi です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is ishibashi"]
+      }
+    },
+    {
+      "id": "morioki",
+      "speaker": "morioki",
+      "text": "こんにちは, これは音声テストです。音声は morioki です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is morioki"]
+      }
+    },
+    {
+      "id": "hinata",
+      "speaker": "hinata",
+      "text": "こんにちは, これは音声テストです。音声は hinata です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is hinata"]
+      }
+    },
+    {
+      "id": "steven_casteel",
+      "speaker": "steven_casteel",
+      "text": "こんにちは, これは音声テストです。音声は steven_casteel です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is steven_casteel"]
+      }
+    },
+    {
+      "id": "sayuri",
+      "speaker": "sayuri",
+      "text": "こんにちは, これは音声テストです。音声は sayuri です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is sayuri"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,432 @@
+{
+  "$mulmocast": {
+    "version": "1.0",
+    "credit": "closing"
+  },
+  "speechParams": {
+    "speakers": {
+      "Zephyr": {
+        "provider": "gemini",
+        "voiceId": "Zephyr",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Puck": {
+        "provider": "gemini",
+        "voiceId": "Puck",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Charon": {
+        "provider": "gemini",
+        "voiceId": "Charon",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Kore": {
+        "provider": "gemini",
+        "voiceId": "Kore",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Fenrir": {
+        "provider": "gemini",
+        "voiceId": "Fenrir",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Leda": {
+        "provider": "gemini",
+        "voiceId": "Leda",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Orus": {
+        "provider": "gemini",
+        "voiceId": "Orus",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Aoede": {
+        "provider": "gemini",
+        "voiceId": "Aoede",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Callirrhoe": {
+        "provider": "gemini",
+        "voiceId": "Callirrhoe",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Autonoe": {
+        "provider": "gemini",
+        "voiceId": "Autonoe",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Enceladus": {
+        "provider": "gemini",
+        "voiceId": "Enceladus",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Iapetus": {
+        "provider": "gemini",
+        "voiceId": "Iapetus",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Umbriel": {
+        "provider": "gemini",
+        "voiceId": "Umbriel",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Algieba": {
+        "provider": "gemini",
+        "voiceId": "Algieba",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Despina": {
+        "provider": "gemini",
+        "voiceId": "Despina",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Erinome": {
+        "provider": "gemini",
+        "voiceId": "Erinome",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Algenib": {
+        "provider": "gemini",
+        "voiceId": "Algenib",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Rasalgethi": {
+        "provider": "gemini",
+        "voiceId": "Rasalgethi",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Laomedeia": {
+        "provider": "gemini",
+        "voiceId": "Laomedeia",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Achernar": {
+        "provider": "gemini",
+        "voiceId": "Achernar",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Alnilam": {
+        "provider": "gemini",
+        "voiceId": "Alnilam",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Schedar": {
+        "provider": "gemini",
+        "voiceId": "Schedar",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Gacrux": {
+        "provider": "gemini",
+        "voiceId": "Gacrux",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Pulcherrima": {
+        "provider": "gemini",
+        "voiceId": "Pulcherrima",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Achird": {
+        "provider": "gemini",
+        "voiceId": "Achird",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Zubenelgenubi": {
+        "provider": "gemini",
+        "voiceId": "Zubenelgenubi",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Vindemiatrix": {
+        "provider": "gemini",
+        "voiceId": "Vindemiatrix",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Sadachbia": {
+        "provider": "gemini",
+        "voiceId": "Sadachbia",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Sadaltager": {
+        "provider": "gemini",
+        "voiceId": "Sadaltager",
+        "model": "gemini-2.5-pro-preview-tts"
+      },
+      "Sulafat": {
+        "provider": "gemini",
+        "voiceId": "Sulafat",
+        "model": "gemini-2.5-pro-preview-tts"
+      }
+    }
+  },
+  "beats": [
+    {
+      "id": "Zephyr",
+      "speaker": "Zephyr",
+      "text": "こんにちは, これは音声テストです。音声は Zephyr です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Zephyr"]
+      }
+    },
+    {
+      "id": "Puck",
+      "speaker": "Puck",
+      "text": "こんにちは, これは音声テストです。音声は Puck です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Puck"]
+      }
+    },
+    {
+      "id": "Charon",
+      "speaker": "Charon",
+      "text": "こんにちは, これは音声テストです。音声は Charon です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Charon"]
+      }
+    },
+    {
+      "id": "Kore",
+      "speaker": "Kore",
+      "text": "こんにちは, これは音声テストです。音声は Kore です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Kore"]
+      }
+    },
+    {
+      "id": "Fenrir",
+      "speaker": "Fenrir",
+      "text": "こんにちは, これは音声テストです。音声は Fenrir です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Fenrir"]
+      }
+    },
+    {
+      "id": "Leda",
+      "speaker": "Leda",
+      "text": "こんにちは, これは音声テストです。音声は Leda です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Leda"]
+      }
+    },
+    {
+      "id": "Orus",
+      "speaker": "Orus",
+      "text": "こんにちは, これは音声テストです。音声は Orus です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Orus"]
+      }
+    },
+    {
+      "id": "Aoede",
+      "speaker": "Aoede",
+      "text": "こんにちは, これは音声テストです。音声は Aoede です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Aoede"]
+      }
+    },
+    {
+      "id": "Callirrhoe",
+      "speaker": "Callirrhoe",
+      "text": "こんにちは, これは音声テストです。音声は Callirrhoe です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Callirrhoe"]
+      }
+    },
+    {
+      "id": "Autonoe",
+      "speaker": "Autonoe",
+      "text": "こんにちは, これは音声テストです。音声は Autonoe です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Autonoe"]
+      }
+    },
+    {
+      "id": "Enceladus",
+      "speaker": "Enceladus",
+      "text": "こんにちは, これは音声テストです。音声は Enceladus です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Enceladus"]
+      }
+    },
+    {
+      "id": "Iapetus",
+      "speaker": "Iapetus",
+      "text": "こんにちは, これは音声テストです。音声は Iapetus です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Iapetus"]
+      }
+    },
+    {
+      "id": "Umbriel",
+      "speaker": "Umbriel",
+      "text": "こんにちは, これは音声テストです。音声は Umbriel です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Umbriel"]
+      }
+    },
+    {
+      "id": "Algieba",
+      "speaker": "Algieba",
+      "text": "こんにちは, これは音声テストです。音声は Algieba です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Algieba"]
+      }
+    },
+    {
+      "id": "Despina",
+      "speaker": "Despina",
+      "text": "こんにちは, これは音声テストです。音声は Despina です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Despina"]
+      }
+    },
+    {
+      "id": "Erinome",
+      "speaker": "Erinome",
+      "text": "こんにちは, これは音声テストです。音声は Erinome です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Erinome"]
+      }
+    },
+    {
+      "id": "Algenib",
+      "speaker": "Algenib",
+      "text": "こんにちは, これは音声テストです。音声は Algenib です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Algenib"]
+      }
+    },
+    {
+      "id": "Rasalgethi",
+      "speaker": "Rasalgethi",
+      "text": "こんにちは, これは音声テストです。音声は Rasalgethi です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Rasalgethi"]
+      }
+    },
+    {
+      "id": "Laomedeia",
+      "speaker": "Laomedeia",
+      "text": "こんにちは, これは音声テストです。音声は Laomedeia です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Laomedeia"]
+      }
+    },
+    {
+      "id": "Achernar",
+      "speaker": "Achernar",
+      "text": "こんにちは, これは音声テストです。音声は Achernar です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Achernar"]
+      }
+    },
+    {
+      "id": "Alnilam",
+      "speaker": "Alnilam",
+      "text": "こんにちは, これは音声テストです。音声は Alnilam です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Alnilam"]
+      }
+    },
+    {
+      "id": "Schedar",
+      "speaker": "Schedar",
+      "text": "こんにちは, これは音声テストです。音声は Schedar です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Schedar"]
+      }
+    },
+    {
+      "id": "Gacrux",
+      "speaker": "Gacrux",
+      "text": "こんにちは, これは音声テストです。音声は Gacrux です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Gacrux"]
+      }
+    },
+    {
+      "id": "Pulcherrima",
+      "speaker": "Pulcherrima",
+      "text": "こんにちは, これは音声テストです。音声は Pulcherrima です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Pulcherrima"]
+      }
+    },
+    {
+      "id": "Achird",
+      "speaker": "Achird",
+      "text": "こんにちは, これは音声テストです。音声は Achird です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Achird"]
+      }
+    },
+    {
+      "id": "Zubenelgenubi",
+      "speaker": "Zubenelgenubi",
+      "text": "こんにちは, これは音声テストです。音声は Zubenelgenubi です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Zubenelgenubi"]
+      }
+    },
+    {
+      "id": "Vindemiatrix",
+      "speaker": "Vindemiatrix",
+      "text": "こんにちは, これは音声テストです。音声は Vindemiatrix です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Vindemiatrix"]
+      }
+    },
+    {
+      "id": "Sadachbia",
+      "speaker": "Sadachbia",
+      "text": "こんにちは, これは音声テストです。音声は Sadachbia です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Sadachbia"]
+      }
+    },
+    {
+      "id": "Sadaltager",
+      "speaker": "Sadaltager",
+      "text": "こんにちは, これは音声テストです。音声は Sadaltager です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Sadaltager"]
+      }
+    },
+    {
+      "id": "Sulafat",
+      "speaker": "Sulafat",
+      "text": "こんにちは, これは音声テストです。音声は Sulafat です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is Sulafat"]
+      }
+    }
+  ]
+}

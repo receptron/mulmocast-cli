@@ -1,0 +1,129 @@
+{
+  "$mulmocast": {
+    "version": "1.0",
+    "credit": "closing"
+  },
+  "speechParams": {
+    "speakers": {
+      "ja-JP-Standard-A": {
+        "provider": "google",
+        "voiceId": "ja-JP-Standard-A"
+      },
+      "ja-JP-Standard-B": {
+        "provider": "google",
+        "voiceId": "ja-JP-Standard-B"
+      },
+      "ja-JP-Standard-C": {
+        "provider": "google",
+        "voiceId": "ja-JP-Standard-C"
+      },
+      "ja-JP-Standard-D": {
+        "provider": "google",
+        "voiceId": "ja-JP-Standard-D"
+      },
+      "en-US-Standard-A": {
+        "provider": "google",
+        "voiceId": "en-US-Standard-A"
+      },
+      "en-US-Standard-B": {
+        "provider": "google",
+        "voiceId": "en-US-Standard-B"
+      },
+      "en-US-Standard-C": {
+        "provider": "google",
+        "voiceId": "en-US-Standard-C"
+      },
+      "en-US-Standard-D": {
+        "provider": "google",
+        "voiceId": "en-US-Standard-D"
+      },
+      "en-US-Standard-E": {
+        "provider": "google",
+        "voiceId": "en-US-Standard-E"
+      }
+    }
+  },
+  "beats": [
+    {
+      "id": "ja-JP-Standard-A",
+      "speaker": "ja-JP-Standard-A",
+      "text": "こんにちは, これは音声テストです。音声は ja-JP-Standard-A です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is ja-JP-Standard-A"]
+      }
+    },
+    {
+      "id": "ja-JP-Standard-B",
+      "speaker": "ja-JP-Standard-B",
+      "text": "こんにちは, これは音声テストです。音声は ja-JP-Standard-B です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is ja-JP-Standard-B"]
+      }
+    },
+    {
+      "id": "ja-JP-Standard-C",
+      "speaker": "ja-JP-Standard-C",
+      "text": "こんにちは, これは音声テストです。音声は ja-JP-Standard-C です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is ja-JP-Standard-C"]
+      }
+    },
+    {
+      "id": "ja-JP-Standard-D",
+      "speaker": "ja-JP-Standard-D",
+      "text": "こんにちは, これは音声テストです。音声は ja-JP-Standard-D です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is ja-JP-Standard-D"]
+      }
+    },
+    {
+      "id": "en-US-Standard-A",
+      "speaker": "en-US-Standard-A",
+      "text": "こんにちは, これは音声テストです。音声は en-US-Standard-A です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is en-US-Standard-A"]
+      }
+    },
+    {
+      "id": "en-US-Standard-B",
+      "speaker": "en-US-Standard-B",
+      "text": "こんにちは, これは音声テストです。音声は en-US-Standard-B です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is en-US-Standard-B"]
+      }
+    },
+    {
+      "id": "en-US-Standard-C",
+      "speaker": "en-US-Standard-C",
+      "text": "こんにちは, これは音声テストです。音声は en-US-Standard-C です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is en-US-Standard-C"]
+      }
+    },
+    {
+      "id": "en-US-Standard-D",
+      "speaker": "en-US-Standard-D",
+      "text": "こんにちは, これは音声テストです。音声は en-US-Standard-D です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is en-US-Standard-D"]
+      }
+    },
+    {
+      "id": "en-US-Standard-E",
+      "speaker": "en-US-Standard-E",
+      "text": "こんにちは, これは音声テストです。音声は en-US-Standard-E です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is en-US-Standard-E"]
+      }
+    }
+  ]
+}
