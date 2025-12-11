@@ -22,7 +22,9 @@ export const provider2TTSAgent = {
   gemini: {
     agentName: "ttsGeminiAgent",
     hasLimitedConcurrency: false,
+    defaultModel: "gemini-2.5-flash-preview-tts",
     defaultVoice: "Kore",
+    models: ["gemini-2.5-flash-preview-tts", "gemini-2.5-pro-preview-tts"],
     keyName: "GEMINI_API_KEY",
   },
   elevenlabs: {
