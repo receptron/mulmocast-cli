@@ -22,10 +22,12 @@ export const nijovoiceTextAgentFilter: AgentFilterFunction = async (context, nex
 export const fileCacheAgentFilter: AgentFilterFunction = async (context, next) => {
   const { force, file, index, mulmoContext, sessionType, id, withBackup } = context.namedInputs.cache;
 
+  /*
   const fileName = path.resolve(path.dirname(file), id + ".mp3");
   if (fs.existsSync(file)) {
     fs.copyFileSync(file, fileName);
   }
+  */
 
   const shouldUseCache = async () => {
     if (force && force.some((element: boolean | undefined) => element)) {
