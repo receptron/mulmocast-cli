@@ -86,6 +86,7 @@ export type KotodamaTTSAgentParams = TTSAgentParams & {
 
 export type GoogleTTSAgentParams = TTSAgentParams & {
   speed: number;
+  model: string;
 };
 
 export type ElevenlabsTTSAgentParams = TTSAgentParams & {

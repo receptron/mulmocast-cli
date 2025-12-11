@@ -21,7 +21,7 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
   config,
 }) => {
   const { text } = namedInputs;
-  const { voice, suppressError } = params;
+  const { model, voice, suppressError } = params;
 
   const apiKey = config?.apiKey;
   if (!apiKey) {
@@ -34,7 +34,7 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
     const ai = new GoogleGenAI({ apiKey });
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-preview-tts",
+      model: model ?? provider2TTSAgent.gemini.defaultModel,
       contents: [{ parts: [{ text }] }],
       config: {
         responseModalities: ["AUDIO"],
