@@ -56,6 +56,7 @@ export const apiKeyInvalidType = "apiKeyInvalid";
 export const apiRateLimitErrorType = "apiRateLimit";
 export const apiKeyMissingType = "apiKeyMissing";
 export const invalidResponseType = "invalidResponse";
+export const voiceLimitReachedType = "voice_limit_reached";
 
 // Actions
 export const movieAction = "movie";
@@ -210,6 +211,15 @@ export const agentIncorrectAPIKeyError = (agentName: string, action: string, tar
     target,
     agentName,
     ...(beatIndex !== undefined && { beatIndex }),
+  };
+};
+
+export const agentVoiceLimitReachedError = (agentName: string, action: string, target: string) => {
+  return {
+    type: voiceLimitReachedType,
+    action,
+    target,
+    agentName,
   };
 };
 
