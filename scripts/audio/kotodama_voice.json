@@ -7,6 +7,9 @@
     "speakers": {
       "atla": {
         "provider": "kotodama",
+        "speechOptions": {
+          "decoration": "laughing"
+        },
         "voiceId": "Atla"
       },
       "poporo": {
