@@ -7,9 +7,6 @@
     "speakers": {
       "atla": {
         "provider": "kotodama",
-        "speechOptions": {
-          "decoration": "laughing"
-        },
         "voiceId": "Atla"
       },
       "poporo": {
@@ -72,138 +69,6303 @@
   },
   "beats": [
     {
-      "id": "atla",
+      "id": "atla_angry",
       "speaker": "atla",
-      "text": "こんにちは, これは音声テストです。音声は atla です",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is atla"]
+        "markdown": [
+          "# Voice is atla, decoration is angry"
+        ]
       }
     },
     {
-      "id": "poporo",
+      "id": "atla_angry_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "atla_confused",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "atla_confused_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "atla_crying",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "atla_crying_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "atla_disgusted",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "atla_disgusted_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "atla_friendly",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "atla_friendly_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "atla_happy",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "atla_happy_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "atla_interested",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "atla_interested_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "atla_laughing",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "atla_laughing_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "atla_neutral",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "atla_neutral_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "atla_sad",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "atla_sad_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "atla_scared",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "atla_scared_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "atla_surprised",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "atla_surprised_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "atla_laughing_speech",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "atla_laughing_speech_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "atla_crying_speech",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "atla_crying_speech_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "atla_very_happy",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "atla_very_happy_en",
+      "speaker": "atla",
+      "text": "こんにちは, これは音声テストです。音声は atla、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is atla, decoration is very_happy_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_angry",
       "speaker": "poporo",
-      "text": "こんにちは, これは音声テストです。音声は poporo です",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is poporo"]
+        "markdown": [
+          "# Voice is poporo, decoration is angry"
+        ]
       }
     },
     {
-      "id": "jikkyo_baby",
+      "id": "poporo_angry_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_confused",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "poporo_confused_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_crying",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "poporo_crying_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_disgusted",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "poporo_disgusted_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_friendly",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "poporo_friendly_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_happy",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "poporo_happy_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_interested",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "poporo_interested_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_laughing",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "poporo_laughing_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_neutral",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "poporo_neutral_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_sad",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "poporo_sad_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_scared",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "poporo_scared_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_surprised",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "poporo_surprised_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_laughing_speech",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "poporo_laughing_speech_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_crying_speech",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "poporo_crying_speech_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "poporo_very_happy",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "poporo_very_happy_en",
+      "speaker": "poporo",
+      "text": "こんにちは, これは音声テストです。音声は poporo、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is poporo, decoration is very_happy_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_angry",
       "speaker": "jikkyo_baby",
-      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby です",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is jikkyo_baby"]
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is angry"
+        ]
       }
     },
     {
-      "id": "chunta",
+      "id": "jikkyo_baby_angry_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_confused",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_confused_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_crying",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_crying_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_disgusted",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_disgusted_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_friendly",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_friendly_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_happy",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_happy_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_interested",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_interested_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_laughing",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_laughing_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_neutral",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_neutral_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_sad",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_sad_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_scared",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_scared_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_surprised",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_surprised_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_laughing_speech",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_laughing_speech_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_crying_speech",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_crying_speech_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_very_happy",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "jikkyo_baby_very_happy_en",
+      "speaker": "jikkyo_baby",
+      "text": "こんにちは, これは音声テストです。音声は jikkyo_baby、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is jikkyo_baby, decoration is very_happy_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_angry",
       "speaker": "chunta",
-      "text": "こんにちは, これは音声テストです。音声は chunta です",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is chunta"]
+        "markdown": [
+          "# Voice is chunta, decoration is angry"
+        ]
       }
     },
     {
-      "id": "mikko",
+      "id": "chunta_angry_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_confused",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "chunta_confused_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_crying",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "chunta_crying_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_disgusted",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "chunta_disgusted_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_friendly",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "chunta_friendly_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_happy",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "chunta_happy_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_interested",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "chunta_interested_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_laughing",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "chunta_laughing_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_neutral",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "chunta_neutral_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_sad",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "chunta_sad_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_scared",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "chunta_scared_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_surprised",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "chunta_surprised_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_laughing_speech",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "chunta_laughing_speech_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_crying_speech",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "chunta_crying_speech_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "chunta_very_happy",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "chunta_very_happy_en",
+      "speaker": "chunta",
+      "text": "こんにちは, これは音声テストです。音声は chunta、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is chunta, decoration is very_happy_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_angry",
       "speaker": "mikko",
-      "text": "こんにちは, これは音声テストです。音声は mikko です",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is mikko"]
+        "markdown": [
+          "# Voice is mikko, decoration is angry"
+        ]
       }
     },
     {
-      "id": "shion",
+      "id": "mikko_angry_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_confused",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "mikko_confused_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_crying",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "mikko_crying_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_disgusted",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "mikko_disgusted_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_friendly",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "mikko_friendly_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_happy",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "mikko_happy_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_interested",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "mikko_interested_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_laughing",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "mikko_laughing_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_neutral",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "mikko_neutral_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_sad",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "mikko_sad_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_scared",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "mikko_scared_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_surprised",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "mikko_surprised_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_laughing_speech",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "mikko_laughing_speech_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_crying_speech",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "mikko_crying_speech_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "mikko_very_happy",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "mikko_very_happy_en",
+      "speaker": "mikko",
+      "text": "こんにちは, これは音声テストです。音声は mikko、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is mikko, decoration is very_happy_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_angry",
       "speaker": "shion",
-      "text": "こんにちは, これは音声テストです。音声は shion です",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is shion"]
+        "markdown": [
+          "# Voice is shion, decoration is angry"
+        ]
       }
     },
     {
-      "id": "president",
+      "id": "shion_angry_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_confused",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "shion_confused_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_crying",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "shion_crying_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_disgusted",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "shion_disgusted_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_friendly",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "shion_friendly_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_happy",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "shion_happy_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_interested",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "shion_interested_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_laughing",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "shion_laughing_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_neutral",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "shion_neutral_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_sad",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "shion_sad_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_scared",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "shion_scared_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_surprised",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "shion_surprised_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_laughing_speech",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "shion_laughing_speech_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_crying_speech",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "shion_crying_speech_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "shion_very_happy",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "shion_very_happy_en",
+      "speaker": "shion",
+      "text": "こんにちは, これは音声テストです。音声は shion、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is shion, decoration is very_happy_en"
+        ]
+      }
+    },
+    {
+      "id": "president_angry",
       "speaker": "president",
-      "text": "こんにちは, これは音声テストです。音声は president です",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is president"]
+        "markdown": [
+          "# Voice is president, decoration is angry"
+        ]
       }
     },
     {
-      "id": "kodama",
+      "id": "president_angry_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "president_confused",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "president_confused_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "president_crying",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "president_crying_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "president_disgusted",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "president_disgusted_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "president_friendly",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "president_friendly_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "president_happy",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "president_happy_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "president_interested",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "president_interested_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "president_laughing",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "president_laughing_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "president_neutral",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "president_neutral_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "president_sad",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "president_sad_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "president_scared",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "president_scared_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "president_surprised",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "president_surprised_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "president_laughing_speech",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "president_laughing_speech_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "president_crying_speech",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "president_crying_speech_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "president_very_happy",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "president_very_happy_en",
+      "speaker": "president",
+      "text": "こんにちは, これは音声テストです。音声は president、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is president, decoration is very_happy_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_angry",
       "speaker": "kodama",
-      "text": "こんにちは, これは音声テストです。音声は kodama です",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is kodama"]
+        "markdown": [
+          "# Voice is kodama, decoration is angry"
+        ]
       }
     },
     {
-      "id": "kyusuke",
+      "id": "kodama_angry_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_confused",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "kodama_confused_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_crying",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "kodama_crying_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_disgusted",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "kodama_disgusted_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_friendly",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "kodama_friendly_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_happy",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "kodama_happy_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_interested",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "kodama_interested_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_laughing",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "kodama_laughing_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_neutral",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "kodama_neutral_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_sad",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "kodama_sad_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_scared",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "kodama_scared_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_surprised",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "kodama_surprised_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_laughing_speech",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "kodama_laughing_speech_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_crying_speech",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "kodama_crying_speech_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "kodama_very_happy",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "kodama_very_happy_en",
+      "speaker": "kodama",
+      "text": "こんにちは, これは音声テストです。音声は kodama、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kodama, decoration is very_happy_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_angry",
       "speaker": "kyusuke",
-      "text": "こんにちは, これは音声テストです。音声は kyusuke です",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is kyusuke"]
+        "markdown": [
+          "# Voice is kyusuke, decoration is angry"
+        ]
       }
     },
     {
-      "id": "kamiyama",
+      "id": "kyusuke_angry_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_confused",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_confused_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_crying",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_crying_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_disgusted",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_disgusted_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_friendly",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_friendly_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_happy",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_happy_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_interested",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_interested_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_laughing",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_laughing_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_neutral",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_neutral_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_sad",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_sad_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_scared",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_scared_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_surprised",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_surprised_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_laughing_speech",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_laughing_speech_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_crying_speech",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_crying_speech_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_very_happy",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "kyusuke_very_happy_en",
+      "speaker": "kyusuke",
+      "text": "こんにちは, これは音声テストです。音声は kyusuke、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kyusuke, decoration is very_happy_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_angry",
       "speaker": "kamiyama",
-      "text": "こんにちは, これは音声テストです。音声は kamiyama です",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is kamiyama"]
+        "markdown": [
+          "# Voice is kamiyama, decoration is angry"
+        ]
       }
     },
     {
-      "id": "cammy",
+      "id": "kamiyama_angry_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_confused",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_confused_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_crying",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_crying_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_disgusted",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_disgusted_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_friendly",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_friendly_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_happy",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_happy_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_interested",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_interested_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_laughing",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_laughing_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_neutral",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_neutral_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_sad",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_sad_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_scared",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_scared_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_surprised",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_surprised_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_laughing_speech",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_laughing_speech_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_crying_speech",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_crying_speech_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_very_happy",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "kamiyama_very_happy_en",
+      "speaker": "kamiyama",
+      "text": "こんにちは, これは音声テストです。音声は kamiyama、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kamiyama, decoration is very_happy_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_angry",
       "speaker": "cammy",
-      "text": "こんにちは, これは音声テストです。音声は cammy です",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is cammy"]
+        "markdown": [
+          "# Voice is cammy, decoration is angry"
+        ]
       }
     },
     {
-      "id": "marlo",
+      "id": "cammy_angry_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_confused",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "cammy_confused_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_crying",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "cammy_crying_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_disgusted",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "cammy_disgusted_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_friendly",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "cammy_friendly_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_happy",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "cammy_happy_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_interested",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "cammy_interested_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_laughing",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "cammy_laughing_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_neutral",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "cammy_neutral_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_sad",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "cammy_sad_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_scared",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "cammy_scared_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_surprised",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "cammy_surprised_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_laughing_speech",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "cammy_laughing_speech_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_crying_speech",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "cammy_crying_speech_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "cammy_very_happy",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "cammy_very_happy_en",
+      "speaker": "cammy",
+      "text": "こんにちは, これは音声テストです。音声は cammy、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is cammy, decoration is very_happy_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_angry",
       "speaker": "marlo",
-      "text": "こんにちは, これは音声テストです。音声は marlo です",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is marlo"]
+        "markdown": [
+          "# Voice is marlo, decoration is angry"
+        ]
       }
     },
     {
-      "id": "kitahara",
+      "id": "marlo_angry_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_confused",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "marlo_confused_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_crying",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "marlo_crying_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_disgusted",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "marlo_disgusted_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_friendly",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "marlo_friendly_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_happy",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "marlo_happy_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_interested",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "marlo_interested_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_laughing",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "marlo_laughing_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_neutral",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "marlo_neutral_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_sad",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "marlo_sad_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_scared",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "marlo_scared_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_surprised",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "marlo_surprised_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_laughing_speech",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "marlo_laughing_speech_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_crying_speech",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "marlo_crying_speech_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "marlo_very_happy",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "marlo_very_happy_en",
+      "speaker": "marlo",
+      "text": "こんにちは, これは音声テストです。音声は marlo、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is marlo, decoration is very_happy_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_angry",
       "speaker": "kitahara",
-      "text": "こんにちは, これは音声テストです。音声は kitahara です",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is kitahara"]
+        "markdown": [
+          "# Voice is kitahara, decoration is angry"
+        ]
       }
     },
     {
-      "id": "ishigaki",
+      "id": "kitahara_angry_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_confused",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_confused_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_crying",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_crying_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_disgusted",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_disgusted_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_friendly",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_friendly_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_happy",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_happy_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_interested",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_interested_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_laughing",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_laughing_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_neutral",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_neutral_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_sad",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_sad_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_scared",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_scared_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_surprised",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_surprised_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_laughing_speech",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_laughing_speech_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_crying_speech",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_crying_speech_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_very_happy",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "kitahara_very_happy_en",
+      "speaker": "kitahara",
+      "text": "こんにちは, これは音声テストです。音声は kitahara、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is kitahara, decoration is very_happy_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_angry",
       "speaker": "ishigaki",
-      "text": "こんにちは, これは音声テストです。音声は ishigaki です",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is ishigaki"]
+        "markdown": [
+          "# Voice is ishigaki, decoration is angry"
+        ]
       }
     },
     {
-      "id": "suginaka",
-      "speaker": "suginaka",
-      "text": "こんにちは, これは音声テストです。音声は suginaka です",
+      "id": "ishigaki_angry_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
       "image": {
         "type": "markdown",
-        "markdown": ["# Voice is suginaka"]
+        "markdown": [
+          "# Voice is ishigaki, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_confused",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_confused_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_crying",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_crying_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_disgusted",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_disgusted_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_friendly",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_friendly_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_happy",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_happy_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_interested",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_interested_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_laughing",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_laughing_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_neutral",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_neutral_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_sad",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_sad_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_scared",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_scared_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_surprised",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_surprised_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_laughing_speech",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_laughing_speech_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_crying_speech",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_crying_speech_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_very_happy",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "ishigaki_very_happy_en",
+      "speaker": "ishigaki",
+      "text": "こんにちは, これは音声テストです。音声は ishigaki、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is ishigaki, decoration is very_happy_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_angry",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は angry です",
+      "speechOptions": {
+        "decoration": "angry"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is angry"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_angry_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は angry_en です",
+      "speechOptions": {
+        "decoration": "angry_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is angry_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_confused",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は confused です",
+      "speechOptions": {
+        "decoration": "confused"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is confused"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_confused_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は confused_en です",
+      "speechOptions": {
+        "decoration": "confused_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is confused_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_crying",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は crying です",
+      "speechOptions": {
+        "decoration": "crying"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is crying"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_crying_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は crying_en です",
+      "speechOptions": {
+        "decoration": "crying_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is crying_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_disgusted",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は disgusted です",
+      "speechOptions": {
+        "decoration": "disgusted"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is disgusted"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_disgusted_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は disgusted_en です",
+      "speechOptions": {
+        "decoration": "disgusted_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is disgusted_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_friendly",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は friendly です",
+      "speechOptions": {
+        "decoration": "friendly"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is friendly"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_friendly_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は friendly_en です",
+      "speechOptions": {
+        "decoration": "friendly_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is friendly_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_happy",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は happy です",
+      "speechOptions": {
+        "decoration": "happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is happy"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_happy_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は happy_en です",
+      "speechOptions": {
+        "decoration": "happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is happy_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_interested",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は interested です",
+      "speechOptions": {
+        "decoration": "interested"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is interested"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_interested_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は interested_en です",
+      "speechOptions": {
+        "decoration": "interested_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is interested_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_laughing",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は laughing です",
+      "speechOptions": {
+        "decoration": "laughing"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is laughing"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_laughing_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は laughing_en です",
+      "speechOptions": {
+        "decoration": "laughing_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is laughing_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_neutral",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は neutral です",
+      "speechOptions": {
+        "decoration": "neutral"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is neutral"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_neutral_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は neutral_en です",
+      "speechOptions": {
+        "decoration": "neutral_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is neutral_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_sad",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は sad です",
+      "speechOptions": {
+        "decoration": "sad"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is sad"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_sad_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は sad_en です",
+      "speechOptions": {
+        "decoration": "sad_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is sad_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_scared",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は scared です",
+      "speechOptions": {
+        "decoration": "scared"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is scared"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_scared_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は scared_en です",
+      "speechOptions": {
+        "decoration": "scared_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is scared_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_surprised",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は surprised です",
+      "speechOptions": {
+        "decoration": "surprised"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is surprised"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_surprised_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は surprised_en です",
+      "speechOptions": {
+        "decoration": "surprised_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is surprised_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_laughing_speech",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は laughing_speech です",
+      "speechOptions": {
+        "decoration": "laughing_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is laughing_speech"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_laughing_speech_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は laughing_speech_en です",
+      "speechOptions": {
+        "decoration": "laughing_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is laughing_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_crying_speech",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は crying_speech です",
+      "speechOptions": {
+        "decoration": "crying_speech"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is crying_speech"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_crying_speech_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は crying_speech_en です",
+      "speechOptions": {
+        "decoration": "crying_speech_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is crying_speech_en"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_very_happy",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は very_happy です",
+      "speechOptions": {
+        "decoration": "very_happy"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is very_happy"
+        ]
+      }
+    },
+    {
+      "id": "suginaka_very_happy_en",
+      "speaker": "suginaka",
+      "text": "こんにちは, これは音声テストです。音声は suginaka、装飾は very_happy_en です",
+      "speechOptions": {
+        "decoration": "very_happy_en"
+      },
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Voice is suginaka, decoration is very_happy_en"
+        ]
       }
     }
   ]
