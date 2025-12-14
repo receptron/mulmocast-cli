@@ -17,7 +17,7 @@ export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBu
   config,
 }) => {
   const { text } = namedInputs;
-  const { voice, model, stability, similarityBoost, suppressError } = params;
+  const { voice, model, stability, similarityBoost, speed, suppressError } = params;
 
   const apiKey = config?.apiKey;
   if (!apiKey) {
@@ -38,9 +38,9 @@ export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBu
     voice_settings: {
       stability: stability ?? 0.5,
       similarity_boost: similarityBoost ?? 0.75,
+      speed: speed ?? 1.0,
     },
   };
-
   GraphAILogger.log("ElevenLabs TTS options", requestBody);
 
   const response = await (async () => {

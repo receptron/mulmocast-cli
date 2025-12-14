@@ -33,9 +33,11 @@ export const multiLingualTextsSchema = z.record(langSchema, localizedTextSchema)
 
 export const speechOptionsSchema = z
   .object({
-    speed: z.number().optional(), // default: 1.0 for google and niji voice
+    speed: z.number().optional(), // default: 1.0 for google and niji voice, elevenLabs
     instruction: z.string().optional(), // for tts openai
     decoration: z.string().optional(), // for kotodama. default: neutral
+    stability: z.number().optional(), // for elevenLabs
+    similarity_boost: z.number().optional(), // for elevenLabs
   })
   .strict();
 

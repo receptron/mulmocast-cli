@@ -58,6 +58,8 @@ export const getBeatAudioPathOrUrl = (text: string, context: MulmoStudioContext,
     provider,
     model ?? "",
     speechOptions?.decoration ?? "",
+    speechOptions?.stability ?? "",
+    speechOptions?.similarity_boost ?? "",
   ].join(":");
   GraphAILogger.log(`getBeatAudioPathOrUrl [${hash_string}]`);
   const audioFileName = `${context.studio.filename}_${text2hash(hash_string)}`;
@@ -148,6 +150,8 @@ const graph_tts: GraphData = {
           speed: ":preprocessor.speechOptions.speed",
           instructions: ":preprocessor.speechOptions.instruction",
           decoration: ":preprocessor.speechOptions.decoration",
+          stability: ":preprocessor.speechOptions.stability",
+          similarityBoost: ":preprocessor.speechOptions.similarity_boost",
           model: ":preprocessor.model",
         },
       },
