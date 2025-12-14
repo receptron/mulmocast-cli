@@ -1,0 +1,30 @@
+{
+  "$mulmocast": {
+    "version": "1.0",
+    "credit": "closing"
+  },
+  "speechParams": {
+    "speakers": {
+      "otan": {
+        "provider": "elevenlabs",
+        "voiceId": "21m00Tcm4TlvDq8ikWAM",
+        "speechOptions": {
+          "speed": 0.8,
+          "stability": 0.6,
+          "similarity_boost": 0.8
+        }
+      }
+    }
+  },
+  "beats": [
+    {
+      "id": "otan",
+      "speaker": "otan",
+      "text": "こんにちは, 良い天気です",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Voice is otan"]
+      }
+    }
+  ]
+}

@@ -93,4 +93,5 @@ export type ElevenlabsTTSAgentParams = TTSAgentParams & {
   model: string;
   stability: number;
   similarityBoost: number;
+  speed: number;
 };
