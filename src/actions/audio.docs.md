@@ -1,5 +1,5 @@
 ---
-generated_at: 2025-12-12T06:17:05.162Z
+generated_at: 2025-12-14T04:55:05.003Z
 ---
 
 # audio
@@ -46,6 +46,8 @@ flowchart TD
     n_map_preprocessor -- speechOptions.speed --> n_map_tts
     n_map_preprocessor -- speechOptions.instruction --> n_map_tts
     n_map_preprocessor -- speechOptions.decoration --> n_map_tts
+    n_map_preprocessor -- speechOptions.stability --> n_map_tts
+    n_map_preprocessor -- speechOptions.similarity_boost --> n_map_tts
     n_map_preprocessor -- model --> n_map_tts
   end
   n_context -- studio.script.beats --> n_map
