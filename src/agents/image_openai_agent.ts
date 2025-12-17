@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
 import OpenAI, { toFile, AuthenticationError, RateLimitError, APIError } from "openai";
-import { provider2ImageAgent } from "../utils/provider2agent.js";
+import { provider2ImageAgent, gptImages } from "../utils/provider2agent.js";
 import {
   apiKeyMissingError,
   agentGenerationError,
@@ -32,7 +32,7 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
   const model = params.model ?? provider2ImageAgent["openai"].defaultModel;
   const openai = new OpenAI({ apiKey, baseURL });
   const size = (() => {
-    if (model === "gpt-image-1" || model === "gpt-image-1-mini") {
+    if (gptImages.includes(model)) {
       if (canvasSize.width > canvasSize.height) {
         return "1536x1024";
       } else if (canvasSize.width < canvasSize.height) {
@@ -57,7 +57,7 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
     n: 1,
     size,
   };
-  if (model === "gpt-image-1" || model === "gpt-image-1-mini") {
+  if (gptImages.includes(model)) {
     imageOptions.moderation = moderation || "auto";
     imageOptions.background = "opaque";
     if (quality) {
