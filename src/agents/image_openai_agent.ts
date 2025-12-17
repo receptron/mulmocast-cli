@@ -32,7 +32,7 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
   const model = params.model ?? provider2ImageAgent["openai"].defaultModel;
   const openai = new OpenAI({ apiKey, baseURL });
   const size = (() => {
-    if (model === "gpt-image-1.5" || model === "gpt-image-1" || model === "gpt-image-1-mini") {
+    if (["gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini"].includes(model)) {
       if (canvasSize.width > canvasSize.height) {
         return "1536x1024";
       } else if (canvasSize.width < canvasSize.height) {
@@ -57,7 +57,7 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
     n: 1,
     size,
   };
-  if (model === "gpt-image-1.5" || model === "gpt-image-1" || model === "gpt-image-1-mini") {
+  if (["gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini"].includes(model)) {
     imageOptions.moderation = moderation || "auto";
     imageOptions.background = "opaque";
     if (quality) {
