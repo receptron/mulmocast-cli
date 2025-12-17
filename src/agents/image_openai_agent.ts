@@ -15,6 +15,8 @@ import {
 } from "../utils/error_cause.js";
 import type { AgentBufferResult, OpenAIImageOptions, OpenAIImageAgentParams, OpenAIImageAgentInputs, OpenAIImageAgentConfig } from "../types/agent.js";
 
+const gptImages = ["gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini"];
+
 // https://platform.openai.com/docs/guides/image-generation
 export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBufferResult, OpenAIImageAgentInputs, OpenAIImageAgentConfig> = async ({
   namedInputs,
@@ -32,7 +34,7 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
   const model = params.model ?? provider2ImageAgent["openai"].defaultModel;
   const openai = new OpenAI({ apiKey, baseURL });
   const size = (() => {
-    if (["gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini"].includes(model)) {
+    if (gptImages.includes(model)) {
       if (canvasSize.width > canvasSize.height) {
         return "1536x1024";
       } else if (canvasSize.width < canvasSize.height) {
@@ -57,7 +59,7 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
     n: 1,
     size,
   };
-  if (["gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini"].includes(model)) {
+  if (gptImages.includes(model)) {
     imageOptions.moderation = moderation || "auto";
     imageOptions.background = "opaque";
     if (quality) {
