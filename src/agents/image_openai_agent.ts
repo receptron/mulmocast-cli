@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
 import OpenAI, { toFile, AuthenticationError, RateLimitError, APIError } from "openai";
-import { provider2ImageAgent } from "../utils/provider2agent.js";
+import { provider2ImageAgent, gptImages } from "../utils/provider2agent.js";
 import {
   apiKeyMissingError,
   agentGenerationError,
@@ -14,8 +14,6 @@ import {
   imageFileTarget,
 } from "../utils/error_cause.js";
 import type { AgentBufferResult, OpenAIImageOptions, OpenAIImageAgentParams, OpenAIImageAgentInputs, OpenAIImageAgentConfig } from "../types/agent.js";
-
-const gptImages = ["gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini"];
 
 // https://platform.openai.com/docs/guides/image-generation
 export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBufferResult, OpenAIImageAgentInputs, OpenAIImageAgentConfig> = async ({
