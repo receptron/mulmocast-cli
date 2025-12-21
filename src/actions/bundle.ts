@@ -7,6 +7,7 @@ import { mkdir } from "../utils/file.js";
 import { ZipBuilder } from "../utils/zip.js";
 import { bundleTargetLang } from "../utils/const.js";
 import { createSilentAudio } from "../utils/ffmpeg_utils.js";
+import { silentMp3 } from "../utils/context.js";
 
 const downloadFile = async (url: string, destPath: string): Promise<void> => {
   const response = await fetch(url);
@@ -62,7 +63,7 @@ const imageSourceMappings: ImageSourceMapping = [
 export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   const isZip = true;
 
-  const dir = path.resolve(context.fileDirs.fileName);
+  const dir = context.fileDirs.outDirPath;
   mkdir(dir);
   const zipper = new ZipBuilder(path.resolve(dir, zipFileName));
 
@@ -78,18 +79,26 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   // audio
   for (const lang of bundleTargetLang) {
     const audios = listLocalizedAudioPaths({ ...context, lang });
-    audios.forEach((audio, index) => {
-      if (audio) {
-        const fileName = path.basename(audio ?? "");
-        if (resultJson[index] && resultJson[index].audioSources) {
-          resultJson[index].audioSources[lang] = fileName;
+    await Promise.all(
+      audios.map(async (audio, index) => {
+        if (audio) {
+          const fileName = path.basename(audio ?? "");
+          if (resultJson[index] && resultJson[index].audioSources) {
+            resultJson[index].audioSources[lang] = fileName;
+          }
+
+          if (fileName === "silent300.mp3") {
+            // Download from GitHub URL
+            const destPath = path.resolve(dir, fileName);
+            await downloadFile(silentMp3, destPath);
+            zipper.addFile(destPath, fileName);
+          } else if (fs.existsSync(audio)) {
+            fs.copyFileSync(audio, path.resolve(dir, fileName));
+            zipper.addFile(audio, fileName);
+          }
         }
-        if (fs.existsSync(audio)) {
-          fs.copyFileSync(audio, path.resolve(dir, fileName));
-          zipper.addFile(audio, fileName);
-        }
-      }
-    });
+      }),
+    );
   }
 
   // image, movie

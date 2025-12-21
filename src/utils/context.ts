@@ -13,6 +13,8 @@ import type {
 import { mulmoStudioSchema, mulmoCaptionParamsSchema, mulmoPresentationStyleSchema } from "../types/schema.js";
 import { MulmoPresentationStyleMethods, MulmoScriptMethods, MulmoStudioMultiLingualMethod } from "../methods/index.js";
 
+export const silentMp3 = "https://github.com/receptron/mulmocast-cli/raw/refs/heads/main/assets/audio/silent300.mp3";
+
 const mulmoCredit = (speaker: string) => {
   return {
     id: "mulmo_credit",
@@ -29,7 +31,7 @@ const mulmoCredit = (speaker: string) => {
       type: "audio" as const,
       source: {
         kind: "url" as const,
-        url: "https://github.com/receptron/mulmocast-cli/raw/refs/heads/main/assets/audio/silent300.mp3",
+        url: silentMp3,
       },
     },
   };
