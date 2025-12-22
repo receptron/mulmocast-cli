@@ -149,7 +149,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   // BGM
   const bgmFileName = await processBgm(context.studio?.script.audioParams?.bgm, dir, zipper);
 
-  const bundleData: MulmoViewerData = { beats: resultJson, bgmSource: bgmFileName };
+  const bundleData: MulmoViewerData = { beats: resultJson, bgmSource: bgmFileName, title: context.studio.script.title };
   fs.writeFileSync(path.resolve(dir, viewJsonFileName), JSON.stringify(bundleData, null, 2));
   zipper.addFile(path.resolve(dir, viewJsonFileName));
   if (isZip) {
