@@ -21,7 +21,6 @@ const getPrompt = (text: string, instructions?: string) => {
     return `### DIRECTOR'S NOTES\n${instructions}\n\n#### TRANSCRIPT\n${text}`;
   }
   return text;
-  
 };
 
 export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs> = async ({
