@@ -14,6 +14,14 @@
         "provider": "gemini",
         "model": "gemini-2.5-pro-preview-tts",
         "voiceId": "Puck"
+      },
+      "Presenter2": {
+        "provider": "gemini",
+        "model": "gemini-2.5-pro-preview-tts",
+        "voiceId": "leda",
+        "speechOptions": {
+          "instruction": "Role: You are a classic Tsundere character. Tone: Sharp, impatient, and defensive, but with underlying hesitation that suggests you actually care deeply. Voice Quality: Higher pitch, energetic, and slightly haughty."
+        }
       }
     }
   },
@@ -52,7 +60,7 @@
       }
     },
     {
-      "speaker": "Presenter",
+      "speaker": "Presenter2",
       "text": "Hello, I'm a presenter. I have a whisper instruction.",
       "speechOptions": {
         "instruction": "Whisper softly, like a pillow talk."

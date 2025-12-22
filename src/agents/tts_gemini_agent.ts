@@ -15,13 +15,22 @@ import { pcmToMp3 } from "../utils/ffmpeg_utils.js";
 
 import type { GoogleTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult } from "../types/agent.js";
 
+const getPrompt = (text: string, instructions?: strig) => {
+  // https://ai.google.dev/gemini-api/docs/speech-generation?hl=ja#controllable
+  if (instructions) {
+    return `### DIRECTOR'S NOTES\n${instructions}\n\n#### TRANSCRIPT\n${text}`;
+  }
+  return text;
+  
+};
+
 export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs> = async ({
   namedInputs,
   params,
   config,
 }) => {
   const { text } = namedInputs;
-  const { model, voice, suppressError } = params;
+  const { model, voice, suppressError, instructions } = params;
 
   const apiKey = config?.apiKey;
   if (!apiKey) {
@@ -32,10 +41,9 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
 
   try {
     const ai = new GoogleGenAI({ apiKey });
-
     const response = await ai.models.generateContent({
       model: model ?? provider2TTSAgent.gemini.defaultModel,
-      contents: [{ parts: [{ text }] }],
+      contents: [{ parts: [{ text: getPrompt(text, instructions) }] }],
       config: {
         responseModalities: ["AUDIO"],
         speechConfig: {
