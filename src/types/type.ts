@@ -219,4 +219,5 @@ export type MulmoViewerBeat = {
 export type MulmoViewerData = {
   beats: MulmoViewerBeat[];
   bgmSource?: string;
+  title?: string;
 };
