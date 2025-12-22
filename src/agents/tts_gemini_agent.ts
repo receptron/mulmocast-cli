@@ -15,7 +15,7 @@ import { pcmToMp3 } from "../utils/ffmpeg_utils.js";
 
 import type { GoogleTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult } from "../types/agent.js";
 
-const getPrompt = (text: string, instructions?: strig) => {
+const getPrompt = (text: string, instructions?: string) => {
   // https://ai.google.dev/gemini-api/docs/speech-generation?hl=ja#controllable
   if (instructions) {
     return `### DIRECTOR'S NOTES\n${instructions}\n\n#### TRANSCRIPT\n${text}`;
