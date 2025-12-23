@@ -18,7 +18,7 @@ import { ASPECT_RATIOS } from "../utils/const.js";
 import type { AgentBufferResult, ImageAgentInputs, ImageAgentParams, GenAIImageAgentConfig } from "../types/agent.js";
 import { GoogleGenAI, PersonGeneration, GenerateContentResponse } from "@google/genai";
 
-const getGeminiContents = (prompt: string, referenceImages?: string[] | null, aspectRatio?: string) => {
+const getGeminiContents = (prompt: string, referenceImages?: string[] | null) => {
   const contents: { text?: string; inlineData?: { mimeType: string; data: string } }[] = [{ text: prompt }];
   const images = [...(referenceImages ?? [])];
   images.forEach((imagePath) => {
