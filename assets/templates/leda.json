@@ -7,9 +7,9 @@
       "credit": "closing"
     },
     "speechParams": {
-      "provider": "gemini",
       "speakers": {
         "Presenter": {
+          "provider": "gemini",
           "voiceId": "Leda",
           "speechOptions": { "instruction": "Speak like a professional news presenter." }
         }

@@ -12,9 +12,9 @@
       "model": "bytedance/seedance-1-lite"
     },
     "speechParams": {
-      "provider": "gemini",
       "speakers": {
         "Presenter": {
+          "provider": "gemini",
           "voiceId": "Leda",
           "speechOptions": { "instruction": "Speak in a slightly high-pitched, curt tone with sudden flustered shifts—like a tsundere anime girl." }
         }
