@@ -17,3 +17,4 @@ export const storyToScriptGenerateMode = {
 export const bundleTargetLang = ["ja", "en"];
 
 export const ASPECT_RATIOS = ["1:1", "9:16", "16:9"];
+export const PRO_ASPECT_RATIOS = ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"];
