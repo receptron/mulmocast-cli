@@ -14,7 +14,7 @@ import {
   resultify,
 } from "../utils/error_cause.js";
 import { getAspectRatio } from "../utils/utils.js";
-import { ASPECT_RATIOS } from "../utils/const.js";
+import { ASPECT_RATIOS, PRO_ASPECT_RATIOS } from "../utils/const.js";
 import type { AgentBufferResult, ImageAgentInputs, ImageAgentParams, GenAIImageAgentConfig } from "../types/agent.js";
 import { GoogleGenAI, PersonGeneration, GenerateContentResponse } from "@google/genai";
 
@@ -76,7 +76,6 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
   config,
 }) => {
   const { prompt, referenceImages } = namedInputs;
-  const aspectRatio = getAspectRatio(params.canvasSize, ASPECT_RATIOS);
   const model = params.model ?? provider2ImageAgent["google"].defaultModel;
   const apiKey = config?.apiKey;
   if (!apiKey) {
@@ -90,7 +89,6 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
   if (model === "gemini-2.5-flash-image" || model === "gemini-3-pro-image-preview") {
     const contentParams = (() => {
       const contents = getGeminiContents(prompt, referenceImages);
-      const PRO_ASPECT_RATIOS = ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"];
       return {
         model,
         contents,
@@ -113,7 +111,7 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
     prompt,
     config: {
       numberOfImages: 1, // default is 4!
-      aspectRatio,
+      aspectRatio: getAspectRatio(params.canvasSize, ASPECT_RATIOS),
       personGeneration: PersonGeneration.ALLOW_ALL,
       // safetyFilterLevel: SafetyFilterLevel.BLOCK_ONLY_HIGH,
     },
