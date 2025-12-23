@@ -90,6 +90,8 @@ export const promptTemplates = [
             type: "image",
           },
         },
+        model: "gemini-2.5-flash-image",
+        provider: "google",
         style:
           "<style>A highly polished 2D digital illustration in anime and manga style, featuring clean linework, soft shading, vivid colors, and expressive facial detailing. The composition emphasizes clarity and visual impact with a minimalistic background and a strong character focus. The lighting is even and bright, giving the image a crisp and energetic feel, reminiscent of high-quality character art used in Japanese visual novels or mobile games.</style>",
       },
@@ -103,17 +105,11 @@ export const promptTemplates = [
       speechParams: {
         speakers: {
           Presenter: {
-            lang: {
-              ja: {
-                provider: "nijivoice",
-                voiceId: "9d9ed276-49ee-443a-bc19-26e6136d05f0",
-              },
-            },
-            provider: "openai",
+            provider: "gemini",
             speechOptions: {
               instruction: "Speak in a slightly high-pitched, curt tone with sudden flustered shifts—like a tsundere anime girl.",
             },
-            voiceId: "shimmer",
+            voiceId: "Leda",
           },
         },
       },
@@ -658,6 +654,57 @@ export const promptTemplates = [
     systemPrompt:
       "Another AI will generate images for each beat based on the image prompt of that beat. Movie prompts must be written in English. Mention the reference in one of beats, if it exists. Use the JSON below as a template.",
     title: "Plain Image Prompt",
+  },
+  {
+    description: "Template for presentation with Gemini voice Leda.",
+    filename: "leda",
+    presentationStyle: {
+      $mulmocast: {
+        credit: "closing",
+        version: "1.1",
+      },
+      audioParams: {
+        audioVolume: 1,
+        bgm: {
+          kind: "url",
+          url: "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/morning001.mp3",
+        },
+        bgmVolume: 0.2,
+        closingPadding: 0.8,
+        introPadding: 1,
+        outroPadding: 1,
+        padding: 0.3,
+        suppressSpeech: false,
+      },
+      canvasSize: {
+        height: 1536,
+        width: 1024,
+      },
+      imageParams: {
+        model: "gemini-2.5-flash-image",
+        provider: "google",
+      },
+      movieParams: {
+        provider: "replicate",
+      },
+      soundEffectParams: {
+        provider: "replicate",
+      },
+      speechParams: {
+        speakers: {
+          Presenter: {
+            provider: "gemini",
+            speechOptions: {
+              instruction: "Speak like a professional news presenter.",
+            },
+            voiceId: "Leda",
+          },
+        },
+      },
+    },
+    scriptName: "image_prompts_template.json",
+    systemPrompt: "",
+    title: "Presentation by Leda",
   },
   {
     description: "Template for One Piece style comic presentation.",
