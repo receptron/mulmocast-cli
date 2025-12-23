@@ -12,17 +12,11 @@
       "model": "bytedance/seedance-1-lite"
     },
     "speechParams": {
-      "provider": "openai",
       "speakers": {
         "Presenter": {
-          "voiceId": "shimmer",
-          "speechOptions": { "instruction": "Speak in a slightly high-pitched, curt tone with sudden flustered shifts—like a tsundere anime girl." },
-          "lang": {
-            "ja": {
-              "provider": "nijivoice",
-              "voiceId": "9d9ed276-49ee-443a-bc19-26e6136d05f0"
-            }
-          }
+          "provider": "gemini",
+          "voiceId": "Leda",
+          "speechOptions": { "instruction": "Speak in a slightly high-pitched, curt tone with sudden flustered shifts—like a tsundere anime girl." }
         }
       }
     },
@@ -37,6 +31,8 @@
       "height": 1536
     },
     "imageParams": {
+      "provider": "google",
+      "model": "gemini-2.5-flash-image",
       "style": "<style>A highly polished 2D digital illustration in anime and manga style, featuring clean linework, soft shading, vivid colors, and expressive facial detailing. The composition emphasizes clarity and visual impact with a minimalistic background and a strong character focus. The lighting is even and bright, giving the image a crisp and energetic feel, reminiscent of high-quality character art used in Japanese visual novels or mobile games.</style>",
       "images": {
         "ani": {

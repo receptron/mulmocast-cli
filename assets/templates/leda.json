@@ -1,0 +1,35 @@
+{
+  "title": "Presentation by Leda",
+  "description": "Template for presentation with Gemini voice Leda.",
+  "systemPrompt": "",
+  "presentationStyle": {
+    "$mulmocast": {
+      "version": "1.1",
+      "credit": "closing"
+    },
+    "speechParams": {
+      "speakers": {
+        "Presenter": {
+          "provider": "gemini",
+          "voiceId": "Leda",
+          "speechOptions": { "instruction": "Speak like a professional news presenter." }
+        }
+      }
+    },
+    "audioParams": {
+      "bgm": {
+        "kind": "url",
+        "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/morning001.mp3"
+      }
+    },
+    "canvasSize": {
+      "width": 1024,
+      "height": 1536
+    },
+    "imageParams": {
+      "provider": "google",
+      "model": "gemini-2.5-flash-image"
+    }
+  },
+  "scriptName": "image_prompts_template.json"
+}
