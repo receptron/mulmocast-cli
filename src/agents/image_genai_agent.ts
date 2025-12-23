@@ -19,22 +19,9 @@ import type { AgentBufferResult, ImageAgentInputs, ImageAgentParams, GenAIImageA
 import { GoogleGenAI, PersonGeneration, GenerateContentResponse } from "@google/genai";
 import { blankImagePath, blankSquareImagePath, blankVerticalImagePath } from "../utils/file.js";
 
-export const ratio2BlankPath = (aspectRatio: string) => {
-  if (aspectRatio === "9:16") {
-    return blankVerticalImagePath();
-  } else if (aspectRatio === "1:1") {
-    return blankSquareImagePath();
-  }
-  return blankImagePath();
-};
-
 const getGeminiContents = (prompt: string, referenceImages?: string[] | null, aspectRatio?: string) => {
   const contents: { text?: string; inlineData?: { mimeType: string; data: string } }[] = [{ text: prompt }];
   const images = [...(referenceImages ?? [])];
-  // NOTE: There is no way to explicitly specify the aspect ratio for Gemini. This is just a hint.
-  if (aspectRatio) {
-    images.push(ratio2BlankPath(aspectRatio));
-  }
   images.forEach((imagePath) => {
     const imageData = fs.readFileSync(imagePath);
     const base64Image = imageData.toString("base64");
@@ -103,11 +90,6 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
 
   if (model === "gemini-2.5-flash-image" || model === "gemini-3-pro-image-preview") {
     const contentParams = (() => {
-      if (model === "gemini-2.5-flash-image") {
-        const contents = getGeminiContents(prompt, referenceImages, aspectRatio);
-        return { model, contents };
-      }
-      // gemini-3-pro-image-preview
       const contents = getGeminiContents(prompt, referenceImages);
       const PRO_ASPECT_RATIOS = ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"];
       return {
