@@ -18,27 +18,27 @@ const downloadFile = async (url: string, destPath: string): Promise<void> => {
   fs.writeFileSync(destPath, Buffer.from(buffer));
 };
 
-const processBgm = async (bgm: MulmoMediaSource | undefined, dir: string, zipper: ZipBuilder): Promise<string | undefined> => {
+const processBgm = async (bgm: MulmoMediaSource | undefined, outDir: string, baseDir: string, zipper: ZipBuilder): Promise<string | undefined> => {
   if (!bgm) {
     return undefined;
   }
 
   if (bgm.kind === "path") {
     // Local file path
-    const sourcePath = path.resolve(bgm.path);
+    const sourcePath = path.resolve(baseDir, bgm.path);
     if (!fs.existsSync(sourcePath)) {
       GraphAILogger.log(`BGM file not found: ${sourcePath}`);
       return undefined;
     }
     const fileName = path.basename(bgm.path);
-    const destPath = path.resolve(dir, fileName);
+    const destPath = path.resolve(outDir, fileName);
     fs.copyFileSync(sourcePath, destPath);
     zipper.addFile(sourcePath, fileName);
     return fileName;
   } else if (bgm.kind === "url") {
     // URL download
     const fileName = path.basename(new URL(bgm.url).pathname) || "bgm.mp3";
-    const destPath = path.resolve(dir, fileName);
+    const destPath = path.resolve(outDir, fileName);
     await downloadFile(bgm.url, destPath);
     zipper.addFile(destPath);
     return fileName;
@@ -63,9 +63,10 @@ const imageSourceMappings: ImageSourceMapping = [
 export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   const isZip = true;
 
-  const dir = context.fileDirs.outDirPath;
-  mkdir(dir);
-  const zipper = new ZipBuilder(path.resolve(dir, zipFileName));
+  const outDir = context.fileDirs.outDirPath;
+  const baseDir = context.fileDirs.baseDirPath;
+  mkdir(outDir);
+  const zipper = new ZipBuilder(path.resolve(outDir, zipFileName));
 
   // text
   const resultJson: MulmoViewerBeat[] = [];
@@ -89,11 +90,11 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
 
           if (fileName === "silent300.mp3") {
             // Download from GitHub URL
-            const destPath = path.resolve(dir, fileName);
+            const destPath = path.resolve(outDir, fileName);
             await downloadFile(silentMp3, destPath);
             zipper.addFile(destPath, fileName);
           } else if (fs.existsSync(audio)) {
-            fs.copyFileSync(audio, path.resolve(dir, fileName));
+            fs.copyFileSync(audio, path.resolve(outDir, fileName));
             zipper.addFile(audio, fileName);
           }
         }
@@ -109,7 +110,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
       if (typeof value === "string") {
         (data[source] as string) = path.basename(value);
         if (fs.existsSync(value)) {
-          fs.copyFileSync(value, path.resolve(dir, path.basename(value)));
+          fs.copyFileSync(value, path.resolve(outDir, path.basename(value)));
           zipper.addFile(value);
         }
       }
@@ -128,7 +129,7 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
         data.duration
       ) {
         const file = `silent_${index}.mp3`;
-        const audioFile = path.resolve(dir, file);
+        const audioFile = path.resolve(outDir, file);
         await createSilentAudio(audioFile, data.duration);
         zipper.addFile(audioFile);
         data.audioSources.ja = file;
@@ -147,11 +148,11 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   });
 
   // BGM
-  const bgmFileName = await processBgm(context.studio?.script.audioParams?.bgm, dir, zipper);
+  const bgmFileName = await processBgm(context.studio?.script.audioParams?.bgm, outDir, baseDir, zipper);
 
   const bundleData: MulmoViewerData = { beats: resultJson, bgmSource: bgmFileName, title: context.studio.script.title };
-  fs.writeFileSync(path.resolve(dir, viewJsonFileName), JSON.stringify(bundleData, null, 2));
-  zipper.addFile(path.resolve(dir, viewJsonFileName));
+  fs.writeFileSync(path.resolve(outDir, viewJsonFileName), JSON.stringify(bundleData, null, 2));
+  zipper.addFile(path.resolve(outDir, viewJsonFileName));
   if (isZip) {
     await zipper.finalize();
   }
