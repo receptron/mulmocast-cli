@@ -1,0 +1,122 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "GUI Chat Protocol Demonstration",
+  "captionParams": {
+    "lang": "en"
+  },
+  "canvasSize": {
+    "width": 2252,
+    "height": 1354
+  },
+  "audioParams": {
+    "bgm": {
+      "kind": "url",
+      "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/morning001.mp3"
+    }
+  },
+  "beats": [
+    {
+      "text": "This is a demonstration of the GUI Chat Protocol in action.",
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://mag2.thelifeisbeautiful.com/Dec2025/recipe_omelette.mov"
+        }
+      }
+    },
+    {
+      "text": "The user just typed “hi” to start the conversation.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "The LLM, acting as a recipe guide, dynamically generates a form and calls the presentForm tool to display it.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "Notice that the form is presented to the user as part of the chat application interface.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "This style of interaction is enabled by the GUI Chat Protocol, and it is easier than asking the user to type everything in free-form text.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "When the user fills out the form and submits it, the chat application forwards the submission to the LLM.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "From the LLM’s perspective, this looks just like a normal message from the user, formatted as a JSON object.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "The schema of this JSON object is defined by the LLM itself when it calls the presentForm tool.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "The presentForm tool is a powerful feature because it allows the LLM to receive structured data from the user, which is difficult with traditional text-based chat applications.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "Based on this structured response, the LLM generates a recipe document in an enhanced version of Markdown and calls the presentDocument tool.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "This enhanced Markdown format allows the LLM to embed images in the document by specifying an image prompt for each one.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "The presentDocument tool then generates those images from the prompts and embeds them into the document.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "Notice that the generated document with embedded images is much more engaging than a plain text response from a typical chat application.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "At its core, the GUI Chat Protocol extends existing tool calling by adding one simple idea: typed GUI output.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "The LLM continues to see only tools and text responses. It does not need to understand anything about the user interface.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "GUI Chat Protocol is an open protocol, designed to be simple, extensible, and easy to adopt.",
+      "image": {
+        "type": "voice_over"
+      }
+    }
+  ]
+}
