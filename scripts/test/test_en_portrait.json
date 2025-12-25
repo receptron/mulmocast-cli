@@ -1,0 +1,31 @@
+{
+  "$mulmocast": {
+    "version": "1.1",
+    "credit": "closing"
+  },
+  "canvasSize": { "width": 1024, "height": 1536 },
+  "title": "THE ROAD TO SUPERINTELLIGENCE: EXPLORING AI-2027",
+  "speechParams": {
+    "speakers": {
+      "Host": {
+        "voiceId": "shimmer",
+        "displayName": {
+          "en": "Host"
+        }
+      }
+    }
+  },
+  "lang": "en",
+  "beats": [
+    {
+      "id": "beat1",
+      "speaker": "Host",
+      "text": "Welcome to Mulmocast Tech Insights."
+    },
+    {
+      "id": "beat2",
+      "speaker": "Host",
+      "text": "AI-2028 is a project from the AI Futures Project."
+    }
+  ]
+}
