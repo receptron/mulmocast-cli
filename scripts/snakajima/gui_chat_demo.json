@@ -1,0 +1,102 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "GUI Chat Protocol Demonstration",
+  "captionParams": {
+    "lang": "en"
+  },
+  "canvasSize": {
+    "width": 2252,
+    "height": 1354
+  },
+  "audioParams": {
+    "bgm": {
+      "kind": "url",
+      "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/morning001.mp3"
+    }
+  },
+  "beats": [
+    {
+      "text": "This is a demonstration of the GUI Chat Protocol in action.",
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "url",
+          "url": "https://mag2.thelifeisbeautiful.com/Dec2025/recipe_omelette.mov"
+        }
+      }
+    },
+    {
+      "text": "The user just typed 'hi' to start the conversation.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "The LLM acting as a recipe guide dynamically generate a form and calls presentForm tool to present it to the user.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "Notice that the form is presented to the user as a part of the chat application interface.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "This style of interaction is enabled by the GUI Chat Protocol, and it makes easy for the user to respond than giving a text responce.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "When the user fills out the form and submits it, the chat application forward it to the LLM.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "From LLM's perspective, it just looks like a message from the user, in a JSON object format.",
+      "image": {
+        "type": "voice_over",
+        "startAt": 39.0
+      }
+    },
+    {
+      "text": "The schema of this JSON objet is defined by the LLM itself when it calls the presentForm tool.",
+      "image": {
+        "type": "voice_over",
+        "startAt": 48.0
+      }
+    },
+    {
+      "text": "Based on this structured responce, the LLM generates a recipe document in an enhanced version of markdown and calls the presentDocument tool to present it to the user.",
+      "image": {
+        "type": "voice_over",
+        "startAt": 60.0
+      }
+    },
+    {
+      "text": "The this enhanced markdown document allows the LLM to embbed images in the document, specifying the image prompt for each image.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "The presentDocument tool generates those images using specified image prompts.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "Notice that the generated document with embedded images is much more engaging than a plain text responce from typical chat applications.",
+      "image": {
+        "type": "voice_over",
+        "startAt": 90.0
+      }
+    }
+  ]
+}
