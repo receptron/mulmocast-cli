@@ -47,7 +47,7 @@
       }
     },
     {
-      "text": "This style of interaction is enabled by the GUI Chat Protocol, and it makes easy for the user to respond than giving a text responce.",
+      "text": "This style of interaction is enabled by the GUI Chat Protocol. It is easier for the user than giving a responce in a free format text.",
       "image": {
         "type": "voice_over"
       }
@@ -73,10 +73,15 @@
       }
     },
     {
+      "text": "The 'presentForm' tool is a powerful feature that allows the LLM to receive structured data from the user, which is not possible with traditional text-based chat applications.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
       "text": "Based on this structured responce, the LLM generates a recipe document in an enhanced version of markdown and calls the presentDocument tool to present it to the user.",
       "image": {
-        "type": "voice_over",
-        "startAt": 60.0
+        "type": "voice_over"
       }
     },
     {
@@ -94,8 +99,7 @@
     {
       "text": "Notice that the generated document with embedded images is much more engaging than a plain text responce from typical chat applications.",
       "image": {
-        "type": "voice_over",
-        "startAt": 90.0
+        "type": "voice_over"
       }
     }
   ]
