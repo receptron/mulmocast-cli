@@ -29,81 +29,81 @@
       }
     },
     {
-      "text": "The user just typed 'hi' to start the conversation.",
+      "text": "The user just typed “hi” to start the conversation.",
       "image": {
         "type": "voice_over"
       }
     },
     {
-      "text": "The LLM acting as a recipe guide dynamically generate a form and calls presentForm tool to present it to the user.",
+      "text": "The LLM, acting as a recipe guide, dynamically generates a form and calls the presentForm tool to display it.",
       "image": {
         "type": "voice_over"
       }
     },
     {
-      "text": "Notice that the form is presented to the user as a part of the chat application interface.",
+      "text": "Notice that the form is presented to the user as part of the chat application interface.",
       "image": {
         "type": "voice_over"
       }
     },
     {
-      "text": "This style of interaction is enabled by the GUI Chat Protocol. It is easier for the user than giving a responce in a free format text.",
+      "text": "This style of interaction is enabled by the GUI Chat Protocol, and it is easier than asking the user to type everything in free-form text.",
       "image": {
         "type": "voice_over"
       }
     },
     {
-      "text": "When the user fills out the form and submits it, the chat application forward it to the LLM.",
+      "text": "When the user fills out the form and submits it, the chat application forwards the submission to the LLM.",
       "image": {
         "type": "voice_over"
       }
     },
     {
-      "text": "From LLM's perspective, it just looks like a message from the user, in a JSON object format.",
+      "text": "From the LLM’s perspective, this looks just like a normal message from the user, formatted as a JSON object.",
       "image": {
         "type": "voice_over",
         "startAt": 39.0
       }
     },
     {
-      "text": "The schema of this JSON objet is defined by the LLM itself when it calls the presentForm tool.",
+      "text": "The schema of this JSON object is defined by the LLM itself when it calls the presentForm tool.",
       "image": {
         "type": "voice_over",
         "startAt": 48.0
       }
     },
     {
-      "text": "The 'presentForm' tool is a powerful feature that allows the LLM to receive structured data from the user, which is not possible with traditional text-based chat applications.",
+      "text": "The presentForm tool is a powerful feature because it allows the LLM to receive structured data from the user, which is difficult with traditional text-based chat applications.",
       "image": {
         "type": "voice_over"
       }
     },
     {
-      "text": "Based on this structured responce, the LLM generates a recipe document in an enhanced version of markdown and calls the presentDocument tool to present it to the user.",
+      "text": "Based on this structured response, the LLM generates a recipe document in an enhanced version of Markdown and calls the presentDocument tool.",
       "image": {
         "type": "voice_over"
       }
     },
     {
-      "text": "The this enhanced markdown document allows the LLM to embbed images in the document, specifying the image prompt for each image.",
+      "text": "This enhanced Markdown format allows the LLM to embed images in the document by specifying an image prompt for each one.",
       "image": {
         "type": "voice_over"
       }
     },
     {
-      "text": "The presentDocument tool generates those images using specified image prompts.",
+      "text": "The presentDocument tool then generates those images from the prompts and embeds them into the document.",
       "image": {
         "type": "voice_over"
       }
     },
     {
-      "text": "Notice that the generated document with embedded images is much more engaging than a plain text responce from typical chat applications.",
+      "text": "Notice that the generated document with embedded images is much more engaging than a plain text response from a typical chat application.",
       "image": {
         "type": "voice_over"
       }
     },
     {
-      "text": "This rich interactive experience is enabled by the GUI Chat Protocol.",
+      "text": "This kind of rich, interactive experience is made possible by the GUI Chat Protocol.",
       "image": {
         "type": "voice_over"
       }
