@@ -15,7 +15,7 @@ import { MulmoPresentationStyleMethods, MulmoScriptMethods, MulmoStudioMultiLing
 
 export const silentMp3 = "https://github.com/receptron/mulmocast-cli/raw/refs/heads/main/assets/audio/silent300.mp3";
 
-const mulmoCredit = (speaker: string) => {
+const mulmoCredit = (speaker: string, isPortrait: boolean) => {
   return {
     id: "mulmo_credit",
     speaker,
@@ -24,7 +24,9 @@ const mulmoCredit = (speaker: string) => {
       type: "image" as const,
       source: {
         kind: "url" as const,
-        url: "https://github.com/receptron/mulmocast-cli/raw/refs/heads/main/assets/images/mulmocast_credit.png",
+        url:
+          "https://github.com/receptron/mulmocast-cli/raw/refs/heads/main/assets/images/" +
+          (isPortrait ? "mulmocast_credit-portrait.png" : "mulmocast_credit.png"),
       },
     },
     audio: {
@@ -76,11 +78,13 @@ export const createStudioData = (_mulmoScript: MulmoScript, fileName: string, vi
     beats: [...Array(mulmoScript.beats.length)].map(() => ({})),
   });
 
+  const isPortrait = mulmoScript.canvasSize.height > mulmoScript.canvasSize.width;
+
   // TODO: Move this code out of this function later
   // Addition cloing credit
   if (mulmoScript.$mulmocast.credit === "closing") {
     const defaultSpeaker = MulmoPresentationStyleMethods.getDefaultSpeaker(presentationStyle ?? studio.script);
-    mulmoScript.beats.push(mulmoCredit(mulmoScript.beats[0].speaker ?? defaultSpeaker)); // First speaker
+    mulmoScript.beats.push(mulmoCredit(mulmoScript.beats[0].speaker ?? defaultSpeaker, isPortrait)); // First speaker
   }
 
   studio.script = MulmoScriptMethods.validate(mulmoScript); // update the script
