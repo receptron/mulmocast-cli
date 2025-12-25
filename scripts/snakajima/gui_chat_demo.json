@@ -101,6 +101,12 @@
       "image": {
         "type": "voice_over"
       }
+    },
+    {
+      "text": "This rich interactive experience is enabled by the GUI Chat Protocol.",
+      "image": {
+        "type": "voice_over"
+      }
     }
   ]
 }
