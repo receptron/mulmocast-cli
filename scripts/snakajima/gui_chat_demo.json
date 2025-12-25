@@ -103,7 +103,55 @@
       }
     },
     {
-      "text": "This kind of rich, interactive experience is made possible by the GUI Chat Protocol.",
+      "text": "At its core, the GUI Chat Protocol extends existing tool calling by adding one simple idea: typed GUI output.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "The LLM continues to see only tools and text responses. It does not need to understand anything about the user interface.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "When a tool returns structured data with a specific type, the chat application renders the appropriate visual component automatically.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "This keeps the protocol model-agnostic and compatible with any LLM that supports function or tool calling.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "GUI Chat Protocol is an open protocol, designed to be simple, extensible, and easy to adopt.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "A reference implementation is available as open source, demonstrating how these ideas can be built on top of existing chat infrastructure.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "Looking ahead, this approach enables a future where chat becomes the primary user interface, and tools replace traditional applications.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "Instead of launching apps and learning interfaces, users simply express intent, and the system assembles the right tools and visuals on demand.",
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "text": "GUI Chat Protocol provides a foundation for that future: conversational, visual, interactive, and open by design.",
       "image": {
         "type": "voice_over"
       }
