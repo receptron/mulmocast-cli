@@ -934,6 +934,17 @@ imageNamesを省略すると、定義されたすべての登場人物が参照�
 }
 ```
 
+imageParams.imagesが定義されているときに、imagesを指定したくない場合は空の配列を指定してください
+
+```json
+{
+  "text": "教室の全体的な様子",
+  "imagePrompt": "General classroom scene",
+  "imageNames": []
+}
+```
+
+
 ### 処理の流れ
 
 1. **前処理**: `context.presentationStyle.imageParams?.images`で定義された画像（jpg/png）をurl/pathからダウンロード・保存してimageRefを作成
