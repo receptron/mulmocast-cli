@@ -19,7 +19,7 @@ export const ttsOpenaiAgent: AgentFunction<OpenAITTSAgentParams, AgentBufferResu
   config,
 }) => {
   const { text } = namedInputs;
-  const { model, voice, suppressError, instructions } = params;
+  const { model, voice, suppressError, instructions, speed } = params;
   const { apiKey, baseURL } = config ?? {};
   if (!apiKey) {
     throw new Error("OpenAI API key is required (OPENAI_API_KEY)", {
@@ -36,6 +36,9 @@ export const ttsOpenaiAgent: AgentFunction<OpenAITTSAgentParams, AgentBufferResu
     };
     if (instructions) {
       tts_options["instructions"] = instructions;
+    }
+    if (speed) {
+      tts_options["speed"] = speed;
     }
     GraphAILogger.log("ttsOptions", tts_options);
     const response = await openai.audio.speech.create(tts_options);
