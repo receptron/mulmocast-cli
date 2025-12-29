@@ -73,6 +73,7 @@ export type TTSAgentParams = {
 export type OpenAITTSAgentParams = TTSAgentParams & {
   instructions: string;
   model: string;
+  speed: number;
 };
 
 export type NijivoiceTTSAgentParams = TTSAgentParams & {
