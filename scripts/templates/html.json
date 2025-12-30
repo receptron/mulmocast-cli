@@ -13,7 +13,7 @@
   "title": "[TITLE: Brief, engaging title for the topic]",
   "htmlImageParams": {
     "provider": "anthropic",
-    "model": "claude-3-7-sonnet-20250219"
+    "model": "claude-sonnet-4-5-20250929"
   },
   "lang": "en",
   "beats": [
