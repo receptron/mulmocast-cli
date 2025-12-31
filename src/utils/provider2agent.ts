@@ -285,9 +285,9 @@ export const provider2LLMAgent = {
   },
   anthropic: {
     agentName: "anthropicAgent",
-    defaultModel: "claude-3-7-sonnet-20250219",
+    defaultModel: "claude-sonnet-4-5-20250929",
     max_tokens: 8192,
-    models: ["claude-opus-4-1-20250805", "claude-opus-4-20250514", "claude-sonnet-4-20250514", "claude-3-7-sonnet-20250219", "claude-3-haiku-20240307"],
+    models: ["claude-opus-4-1-20250805", "claude-opus-4-20250514", "claude-sonnet-4-20250514", "claude-sonnet-4-5-20250929", "claude-haiku-4-5-20251001"],
     keyName: "ANTHROPIC_API_KEY",
     apiKeyNameOverride: "ANTHROPIC_API_TOKEN",
     // GraphAI is currently using ANTHROPIC_API_KEY, but the official name is ANTHROPIC_API_TOKEN.

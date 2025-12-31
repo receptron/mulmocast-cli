@@ -506,7 +506,7 @@ export const scriptTemplates = [
     ],
     filename: "html",
     htmlImageParams: {
-      model: "claude-3-7-sonnet-20250219",
+      model: "claude-sonnet-4-5-20250929",
       provider: "anthropic",
     },
     lang: "en",
@@ -1015,7 +1015,7 @@ export const scriptTemplates = [
     ],
     filename: "presentation",
     htmlImageParams: {
-      model: "claude-3-7-sonnet-20250219",
+      model: "claude-sonnet-4-5-20250929",
       provider: "anthropic",
     },
     lang: "en",
