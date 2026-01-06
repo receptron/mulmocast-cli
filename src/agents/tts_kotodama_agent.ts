@@ -1,6 +1,6 @@
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
-import { provider2TTSAgent } from "../utils/provider2agent.js";
+import { provider2TTSAgent } from "../types/provider2agent.js";
 import { apiKeyMissingError, agentIncorrectAPIKeyError, agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 import type { KotodamaTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult, AgentConfig } from "../types/agent.js";
 

@@ -1,5 +1,5 @@
 import type { Argv } from "yargs";
-import { languages } from "../utils/const.js";
+import { languages } from "../types/const.js";
 
 export const commonOptions = (yargs: Argv) => {
   return yargs

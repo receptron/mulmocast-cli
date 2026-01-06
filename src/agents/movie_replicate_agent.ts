@@ -13,7 +13,7 @@ import {
 } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, MovieAgentInputs, ReplicateMovieAgentParams, ReplicateMovieAgentConfig } from "../types/agent.js";
-import { provider2MovieAgent, getModelDuration } from "../utils/provider2agent.js";
+import { provider2MovieAgent, getModelDuration } from "../types/provider2agent.js";
 
 async function generateMovie(
   model: `${string}/${string}`,

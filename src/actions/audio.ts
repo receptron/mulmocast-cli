@@ -23,7 +23,7 @@ import { fileCacheAgentFilter, nijovoiceTextAgentFilter } from "../utils/filters
 import { getAudioArtifactFilePath, getAudioFilePath, getOutputStudioFilePath, resolveDirPath, defaultBGMPath, mkdir, writingMessage } from "../utils/file.js";
 import { localizedText, settings2GraphAIConfig } from "../utils/utils.js";
 import { text2hash } from "../utils/utils_node.js";
-import { provider2TTSAgent } from "../utils/provider2agent.js";
+import { provider2TTSAgent } from "../types/provider2agent.js";
 import { invalidAudioSourceError } from "../utils/error_cause.js";
 
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";

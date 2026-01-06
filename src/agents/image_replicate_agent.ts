@@ -14,7 +14,7 @@ import {
 } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, ImageAgentInputs, AgentConfig } from "../types/agent.js";
-import { provider2ImageAgent } from "../utils/provider2agent.js";
+import { provider2ImageAgent } from "../types/provider2agent.js";
 
 export type ReplicateImageAgentConfig = AgentConfig;
 

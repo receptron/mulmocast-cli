@@ -15,7 +15,7 @@ import {
   provider2MovieAgent,
   provider2SoundEffectAgent,
   provider2LipSyncAgent,
-} from "./provider2agent.js";
+} from "../types/provider2agent.js";
 
 export const llmPair = (_llm?: LLM, _model?: string) => {
   const llmKey = _llm ?? "openai";

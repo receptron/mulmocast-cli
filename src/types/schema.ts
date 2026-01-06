@@ -1,13 +1,6 @@
 import { z } from "zod";
-import {
-  htmlLLMProvider,
-  provider2TTSAgent,
-  provider2ImageAgent,
-  provider2MovieAgent,
-  defaultProviders,
-  provider2SoundEffectAgent,
-} from "../utils/provider2agent.js";
-import { currentMulmoScriptVersion } from "../utils/const.js";
+import { htmlLLMProvider, provider2TTSAgent, provider2ImageAgent, provider2MovieAgent, defaultProviders, provider2SoundEffectAgent } from "./provider2agent.js";
+import { currentMulmoScriptVersion } from "./const.js";
 import { mulmoVideoFilterSchema } from "./schema_video_filter.js";
 
 // Re-export video filter schema

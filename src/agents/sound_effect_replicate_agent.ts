@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import Replicate from "replicate";
-import { provider2SoundEffectAgent } from "../utils/provider2agent.js";
+import { provider2SoundEffectAgent } from "../types/provider2agent.js";
 import { apiKeyMissingError, agentGenerationError, imageAction, movieFileTarget, hasCause } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, SoundEffectAgentInputs, ReplicateSoundEffectAgentParams, ReplicateSoundEffectAgentConfig } from "../types/agent.js";

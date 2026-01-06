@@ -1,7 +1,7 @@
 import { mulmoViewerBundle, audio, images, translate } from "../../../actions/index.js";
 import { CliArgs } from "../../../types/cli_types.js";
 import { initializeContext } from "../../helpers.js";
-import { bundleTargetLang } from "../../../utils/const.js";
+import { bundleTargetLang } from "../../../types/const.js";
 
 export const handler = async (argv: CliArgs<{ image_width?: string }>) => {
   const context = await initializeContext(argv);

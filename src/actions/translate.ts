@@ -10,7 +10,7 @@ import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 import { splitText } from "../utils/string.js";
 import { settings2GraphAIConfig, beatId, multiLingualObjectToArray } from "../utils/utils.js";
 import { getMultiLingual } from "../utils/context.js";
-import { currentMulmoScriptVersion } from "../utils/const.js";
+import { currentMulmoScriptVersion } from "../types/const.js";
 import { translateApiKeyMissingError, hasCause, agentGenerationError, translateAction, multiLingualFileTarget } from "../utils/error_cause.js";
 import type {
   LANG,

@@ -5,7 +5,7 @@ import { type MulmoStudioContext, type MulmoStudioBeat, type MulmoViewerBeat, ty
 import { listLocalizedAudioPaths } from "./audio.js";
 import { mkdir } from "../utils/file.js";
 import { ZipBuilder } from "../utils/zip.js";
-import { bundleTargetLang } from "../utils/const.js";
+import { bundleTargetLang } from "../types/const.js";
 import { createSilentAudio } from "../utils/ffmpeg_utils.js";
 import { silentMp3 } from "../utils/context.js";
 

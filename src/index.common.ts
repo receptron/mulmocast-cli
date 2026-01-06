@@ -1,8 +1,8 @@
 // Entry point for universal code
 
 export * from "./types/index.js";
-export * from "./utils/provider2agent.js";
-export * from "./utils/const.js";
+export * from "./types/provider2agent.js";
+export * from "./types/const.js";
 export * from "./utils/string.js";
 export * from "./utils/utils.js";
 export * from "./utils/prompt.js";

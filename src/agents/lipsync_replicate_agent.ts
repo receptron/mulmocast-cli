@@ -2,7 +2,7 @@ import { readFileSync, existsSync } from "fs";
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import Replicate from "replicate";
-import { provider2LipSyncAgent } from "../utils/provider2agent.js";
+import { provider2LipSyncAgent } from "../types/provider2agent.js";
 import {
   apiKeyMissingError,
   agentGenerationError,

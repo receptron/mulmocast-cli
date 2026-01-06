@@ -13,9 +13,9 @@ import {
   hasCause,
 } from "../utils/error_cause.js";
 import { getAspectRatio } from "../utils/utils.js";
-import { ASPECT_RATIOS } from "../utils/const.js";
+import { ASPECT_RATIOS } from "../types/const.js";
 import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, MovieAgentInputs } from "../types/agent.js";
-import { getModelDuration, provider2MovieAgent } from "../utils/provider2agent.js";
+import { getModelDuration, provider2MovieAgent } from "../types/provider2agent.js";
 
 type VideoPayload = {
   model: string;

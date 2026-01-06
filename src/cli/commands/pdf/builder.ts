@@ -1,6 +1,6 @@
 import type { Argv } from "yargs";
 import { commonOptions } from "../../common.js";
-import { pdf_modes, pdf_sizes } from "../../../utils/const.js";
+import { pdf_modes, pdf_sizes } from "../../../types/const.js";
 
 export const builder = (yargs: Argv) =>
   commonOptions(yargs)

@@ -16,7 +16,7 @@ import {
 import { beatId } from "../utils/utils.js";
 import { GraphAILogger } from "graphai";
 import { MulmoPresentationStyleMethods } from "./mulmo_presentation_style.js";
-import { provider2TTSAgent } from "../utils/provider2agent.js";
+import { provider2TTSAgent } from "../types/provider2agent.js";
 
 const sessionProgressCallbacks = new Set<SessionProgressCallback>();
 

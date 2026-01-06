@@ -10,7 +10,7 @@ import { fileURLToPath } from "url";
 import { GraphAILogger } from "graphai";
 import { audio, images, movie, captions, pdf } from "../actions/index.js";
 import { initializeContext, runTranslateIfNeeded } from "../cli/helpers.js";
-import { outDirName } from "../utils/const.js";
+import { outDirName } from "../types/const.js";
 import { resolveDirPath, mkdir, generateTimestampedFileName } from "../utils/file.js";
 import type { MulmoScript } from "../types/type.js";
 import { MulmoScriptMethods } from "../methods/index.js";

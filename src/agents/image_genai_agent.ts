@@ -1,7 +1,7 @@
 import fs from "fs";
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
-import { provider2ImageAgent } from "../utils/provider2agent.js";
+import { provider2ImageAgent } from "../types/provider2agent.js";
 import {
   apiKeyMissingError,
   agentIncorrectAPIKeyError,
@@ -14,7 +14,7 @@ import {
   resultify,
 } from "../utils/error_cause.js";
 import { getAspectRatio } from "../utils/utils.js";
-import { ASPECT_RATIOS, PRO_ASPECT_RATIOS } from "../utils/const.js";
+import { ASPECT_RATIOS, PRO_ASPECT_RATIOS } from "../types/const.js";
 import type { AgentBufferResult, ImageAgentInputs, ImageAgentParams, GenAIImageAgentConfig } from "../types/agent.js";
 import { GoogleGenAI, PersonGeneration, GenerateContentResponse } from "@google/genai";
 

@@ -1,5 +1,5 @@
 import { Argv } from "yargs";
-import { llm } from "../../../../utils/provider2agent.js";
+import { llm } from "../../../../types/provider2agent.js";
 import { getAvailablePromptTemplates } from "../../../../utils/file.js";
 
 const availableTemplateNames = getAvailablePromptTemplates().map((template) => template.filename);

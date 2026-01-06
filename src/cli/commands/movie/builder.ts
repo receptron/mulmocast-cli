@@ -1,6 +1,6 @@
 import type { Argv } from "yargs";
 import { commonOptions } from "../../common.js";
-import { languages } from "../../../utils/const.js";
+import { languages } from "../../../types/const.js";
 
 export const builder = (yargs: Argv) =>
   commonOptions(yargs)

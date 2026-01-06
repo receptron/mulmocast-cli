@@ -4,8 +4,8 @@ import { setGraphAILogger } from "../../../../cli/helpers.js";
 import { storyToScript } from "../../../../tools/story_to_script.js";
 import { mulmoStoryboardSchema } from "../../../../types/schema.js";
 import { getBaseDirPath, getFullPath, readAndParseJson } from "../../../../utils/file.js";
-import { outDirName } from "../../../../utils/const.js";
-import type { LLM } from "../../../../utils/provider2agent.js";
+import { outDirName } from "../../../../types/const.js";
+import type { LLM } from "../../../../types/provider2agent.js";
 import { StoryToScriptGenerateMode } from "../../../../types/type.js";
 
 export const handler = async (
