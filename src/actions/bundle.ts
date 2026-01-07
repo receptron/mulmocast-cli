@@ -18,7 +18,7 @@ const downloadFile = async (url: string, destPath: string): Promise<void> => {
   fs.writeFileSync(destPath, Buffer.from(buffer));
 };
 
-const processBgm = async (bgm: MulmoMediaSource | undefined, outDir: string, baseDir: string, zipper: ZipBuilder): Promise<string | undefined> => {
+const processBgm = async (bgm: MulmoMediaSource | undefined, outDir: string, baseDir: string, zipper: ZipBuilder | undefined): Promise<string | undefined> => {
   if (!bgm) {
     return undefined;
   }
@@ -31,16 +31,18 @@ const processBgm = async (bgm: MulmoMediaSource | undefined, outDir: string, bas
       return undefined;
     }
     const fileName = path.basename(bgm.path);
-    const destPath = path.resolve(outDir, fileName);
-    fs.copyFileSync(sourcePath, destPath);
-    zipper.addFile(sourcePath, fileName);
+    if (zipper) {
+      zipper.addFile(sourcePath, fileName);
+    } else {
+      fs.copyFileSync(sourcePath, path.resolve(outDir, fileName));
+    }
     return fileName;
   } else if (bgm.kind === "url") {
     // URL download
     const fileName = path.basename(new URL(bgm.url).pathname) || "bgm.mp3";
     const destPath = path.resolve(outDir, fileName);
     await downloadFile(bgm.url, destPath);
-    zipper.addFile(destPath);
+    zipper?.addFile(destPath);
     return fileName;
   }
 
@@ -60,13 +62,23 @@ const imageSourceMappings: ImageSourceMapping = [
   ["htmlImageFile", "htmlImageSource"],
 ];
 
-export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
-  const isZip = true;
+export type MulmoViewerBundleOptions = {
+  skipZip?: boolean;
+};
+
+export const mulmoViewerBundle = async (context: MulmoStudioContext, options: MulmoViewerBundleOptions = {}) => {
+  const { skipZip = false } = options;
 
   const outDir = context.fileDirs.outDirPath;
   const baseDir = context.fileDirs.baseDirPath;
+  const filename = context.studio.filename;
   mkdir(outDir);
-  const zipper = new ZipBuilder(path.resolve(outDir, zipFileName));
+
+  // Bundle directory: output/<script_name>/
+  const bundleDir = path.resolve(outDir, filename);
+  mkdir(bundleDir);
+
+  const zipper = skipZip ? undefined : new ZipBuilder(path.resolve(bundleDir, zipFileName));
 
   // text
   const resultJson: MulmoViewerBeat[] = [];
@@ -90,12 +102,15 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
 
           if (fileName === "silent300.mp3") {
             // Download from GitHub URL
-            const destPath = path.resolve(outDir, fileName);
+            const destPath = path.resolve(bundleDir, fileName);
             await downloadFile(silentMp3, destPath);
-            zipper.addFile(destPath, fileName);
+            zipper?.addFile(destPath, fileName);
           } else if (fs.existsSync(audio)) {
-            fs.copyFileSync(audio, path.resolve(outDir, fileName));
-            zipper.addFile(audio, fileName);
+            if (zipper) {
+              zipper.addFile(audio, fileName);
+            } else {
+              fs.copyFileSync(audio, path.resolve(bundleDir, fileName));
+            }
           }
         }
       }),
@@ -110,14 +125,17 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
       if (typeof value === "string") {
         (data[source] as string) = path.basename(value);
         if (fs.existsSync(value)) {
-          fs.copyFileSync(value, path.resolve(outDir, path.basename(value)));
-          zipper.addFile(value);
+          if (zipper) {
+            zipper.addFile(value);
+          } else {
+            fs.copyFileSync(value, path.resolve(bundleDir, path.basename(value)));
+          }
         }
       }
     });
   });
 
-  // silent
+  // silent - generated files always go to bundleDir
   await Promise.all(
     context.studio.script.beats.map(async (__, index) => {
       const data = resultJson[index];
@@ -129,9 +147,9 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
         data.duration
       ) {
         const file = `silent_${index}.mp3`;
-        const audioFile = path.resolve(outDir, file);
+        const audioFile = path.resolve(bundleDir, file);
         await createSilentAudio(audioFile, data.duration);
-        zipper.addFile(audioFile);
+        zipper?.addFile(audioFile);
         data.audioSources.ja = file;
         data.audioSources.en = file;
       }
@@ -148,12 +166,13 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext) => {
   });
 
   // BGM
-  const bgmFileName = await processBgm(context.studio?.script.audioParams?.bgm, outDir, baseDir, zipper);
+  const bgmFileName = await processBgm(context.studio?.script.audioParams?.bgm, bundleDir, baseDir, zipper);
 
   const bundleData: MulmoViewerData = { beats: resultJson, bgmSource: bgmFileName, title: context.studio.script.title };
-  fs.writeFileSync(path.resolve(outDir, viewJsonFileName), JSON.stringify(bundleData, null, 2));
-  zipper.addFile(path.resolve(outDir, viewJsonFileName));
-  if (isZip) {
+  const viewJsonPath = path.resolve(bundleDir, viewJsonFileName);
+  fs.writeFileSync(viewJsonPath, JSON.stringify(bundleData, null, 2));
+  zipper?.addFile(viewJsonPath);
+  if (zipper) {
     await zipper.finalize();
   }
 };
