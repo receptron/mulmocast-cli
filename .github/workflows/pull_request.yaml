@@ -40,6 +40,11 @@ jobs:
     - run: yarn run format
     - run: yarn run lint
     - run: yarn run build
+    - name: Build types package
+      run: |
+        cd types
+        yarn install
+        yarn run build
     - run: yarn run ci_test
     - run: yarn run cli images scripts/test/test_order.json
     - run: yarn run cli images scripts/test/test_beats.json

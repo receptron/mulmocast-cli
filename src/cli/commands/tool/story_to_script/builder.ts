@@ -1,7 +1,7 @@
 import { Argv } from "yargs";
 import { getAvailablePromptTemplates } from "../../../../utils/file.js";
-import { llm } from "../../../../utils/provider2agent.js";
-import { storyToScriptGenerateMode } from "../../../../utils/const.js";
+import { llm } from "../../../../types/provider2agent.js";
+import { storyToScriptGenerateMode } from "../../../../types/const.js";
 
 const availableTemplateNames = getAvailablePromptTemplates().map((template) => template.filename);
 

@@ -2,7 +2,7 @@ import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { GoogleGenAI } from "@google/genai";
 
-import { provider2TTSAgent } from "../utils/provider2agent.js";
+import { provider2TTSAgent } from "../types/provider2agent.js";
 import {
   agentIncorrectAPIKeyError,
   apiKeyMissingError,

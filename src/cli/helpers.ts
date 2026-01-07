@@ -12,7 +12,7 @@ import {
   generateTimestampedFileName,
 } from "../utils/file.js";
 import { isHttp } from "../utils/utils.js";
-import { outDirName, imageDirName, audioDirName } from "../utils/const.js";
+import { outDirName, imageDirName, audioDirName } from "../types/const.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 
 import { translate } from "../actions/translate.js";

@@ -12,8 +12,8 @@ import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 import validateSchemaAgent from "../agents/validate_schema_agent.js";
 import { ZodSchema } from "zod";
 import { llmPair } from "../utils/utils.js";
-import type { LLM } from "../utils/provider2agent.js";
-import { storyToScriptGenerateMode } from "../utils/const.js";
+import type { LLM } from "../types/provider2agent.js";
+import { storyToScriptGenerateMode } from "../types/const.js";
 import { cliLoadingPlugin } from "../utils/plugins.js";
 
 const vanillaAgents = agents.default ?? agents;

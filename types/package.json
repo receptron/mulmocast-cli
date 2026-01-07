@@ -1,0 +1,39 @@
+{
+  "name": "@mulmocast/types",
+  "version": "0.0.1",
+  "description": "Type definitions for MulmoCast",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "yarn run build"
+  },
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "zod": "^4.3.5"
+  },
+  "peerDependencies": {
+    "graphai": "^2.0.0",
+    "yargs": "^18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "graphai": {
+      "optional": true
+    },
+    "yargs": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  },
+  "keywords": [
+    "mulmocast",
+    "types",
+    "typescript"
+  ],
+  "license": "AGPL-3.0-only"
+}

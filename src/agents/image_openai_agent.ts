@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
 import OpenAI, { toFile, AuthenticationError, RateLimitError, APIError } from "openai";
-import { provider2ImageAgent, gptImages } from "../utils/provider2agent.js";
+import { provider2ImageAgent, gptImages } from "../types/provider2agent.js";
 import {
   apiKeyMissingError,
   agentGenerationError,

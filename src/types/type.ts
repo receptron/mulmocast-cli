@@ -52,8 +52,8 @@ import {
   mulmoReplicateMovieModelSchema,
   mulmoImagePromptMediaSchema,
 } from "./schema.js";
-import { pdf_modes, pdf_sizes, storyToScriptGenerateMode } from "../utils/const.js";
-import type { LLM } from "../utils/provider2agent.js";
+import { pdf_modes, pdf_sizes, storyToScriptGenerateMode } from "./const.js";
+import type { LLM } from "./provider2agent.js";
 import { z } from "zod";
 
 export type LANG = z.infer<typeof langSchema>;
