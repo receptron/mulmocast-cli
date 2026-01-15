@@ -1,0 +1,55 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "ja",
+  "title": "All TTS Providers Test",
+  "speechParams": {
+    "speakers": {
+      "Google": {
+        "provider": "google",
+        "voiceId": "ja-JP-Standard-A"
+      },
+      "GCPGemini": {
+        "provider": "google",
+        "model": "gemini-2.5-pro-tts",
+        "voiceId": "Kore"
+      }
+    }
+  },
+  "beats": [
+    {
+      "speaker": "Google",
+      "text": "こんにちは、テストです。グーグー",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Google TTS"
+        }
+      }
+    },
+    {
+      "speaker": "GCPGemini",
+      "text": "Hello. This is tts test. I'm GCP Gemini",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "GCP Gemini"
+        }
+      }
+    },
+    {
+      "speaker": "GCPGemini",
+      "text": "Hello. This is tts test. I'm GCP Gemini",
+      "speechOptions": {
+        "instruction": "Slowly."
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "GCP Gemini with Instructions (Slowly)"
+        }
+      }
+    }
+  ]
+}
