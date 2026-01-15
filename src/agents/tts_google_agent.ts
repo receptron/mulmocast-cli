@@ -7,9 +7,17 @@ import type { GoogleTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErr
 
 const client = new textToSpeech.TextToSpeechClient();
 
+const getPrompt = (text: string, instructions?: string) => {
+  if (instructions) {
+    return `### DIRECTOR'S NOTES\n${instructions}\n\n#### TRANSCRIPT\n${text}`;
+  }
+  return text;
+};
+
 export const ttsGoogleAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs> = async ({ namedInputs, params }) => {
   const { text } = namedInputs;
-  const { voice, suppressError, speed } = params;
+  const { voice, suppressError, speed, model, instructions } = params;
+  const useGeminiPrompt = Boolean(model && instructions);
 
   // Construct the voice request
   const voiceParams: textToSpeech.protos.google.cloud.texttospeech.v1.IVoiceSelectionParams = {
@@ -21,9 +29,16 @@ export const ttsGoogleAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
     voiceParams.name = voice;
   }
 
+  if (model) {
+    voiceParams.modelName = model;
+  }
+
   // Construct the request
   const request: textToSpeech.protos.google.cloud.texttospeech.v1.ISynthesizeSpeechRequest = {
-    input: { text },
+    input: {
+      text,
+      ...(useGeminiPrompt ? { prompt: getPrompt(text, instructions) } : {}),
+    },
     voice: voiceParams,
     audioConfig: {
       audioEncoding: "MP3",
