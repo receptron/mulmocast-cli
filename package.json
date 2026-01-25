@@ -65,7 +65,10 @@
     "nijivoice": "npx tsx batch/niji_sample.ts && yarn run movie  scripts/samples/niji_voice.json",
     "generate_action_docs": "npx tsx ./automation/generate_actions_docs/generate_action_docs.ts"
   },
-  "repository": "git+ssh://git@github.com/receptron/mulmocast-cli.git",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/receptron/mulmocast-cli.git"
+  },
   "author": "snakajima",
   "license": "AGPL-3.0-only",
   "bugs": {
