@@ -8,7 +8,6 @@ import movieGenAIAgent from "./movie_genai_agent.js";
 import movieReplicateAgent from "./movie_replicate_agent.js";
 import mediaMockAgent from "./media_mock_agent.js";
 import ttsElevenlabsAgent from "./tts_elevenlabs_agent.js";
-import ttsNijivoiceAgent from "./tts_nijivoice_agent.js";
 import ttsOpenaiAgent from "./tts_openai_agent.js";
 import ttsGoogleAgent from "./tts_google_agent.js";
 import ttsGeminiAgent from "./tts_gemini_agent.js";
@@ -40,7 +39,6 @@ export {
   movieReplicateAgent,
   mediaMockAgent,
   ttsElevenlabsAgent,
-  ttsNijivoiceAgent,
   ttsOpenaiAgent,
   ttsGoogleAgent,
   ttsGeminiAgent,

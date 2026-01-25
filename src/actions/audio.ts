@@ -6,7 +6,6 @@ import * as agents from "@graphai/vanilla";
 import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 
 import {
-  ttsNijivoiceAgent,
   ttsOpenaiAgent,
   ttsGoogleAgent,
   ttsGeminiAgent,
@@ -19,7 +18,7 @@ import {
 
 import { MulmoStudioContext, MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingualData, PublicAPIArgs, text2SpeechProviderSchema } from "../types/index.js";
 
-import { fileCacheAgentFilter, nijovoiceTextAgentFilter } from "../utils/filters.js";
+import { fileCacheAgentFilter } from "../utils/filters.js";
 import { getAudioArtifactFilePath, getAudioFilePath, getOutputStudioFilePath, resolveDirPath, defaultBGMPath, mkdir, writingMessage } from "../utils/file.js";
 import { localizedText, settings2GraphAIConfig } from "../utils/utils.js";
 import { text2hash } from "../utils/utils_node.js";
@@ -247,15 +246,10 @@ const agentFilters = [
     agent: fileCacheAgentFilter,
     nodeIds: ["tts"],
   },
-  {
-    name: "nijovoiceTextAgentFilter",
-    agent: nijovoiceTextAgentFilter,
-    nodeIds: ["tts"],
-  },
 ];
 
 const getConcurrency = (context: MulmoStudioContext) => {
-  // Check if any speaker uses nijivoice or elevenlabs (providers that require concurrency = 1)
+  // Check if any speaker uses elevenlabs or kotodama (providers that require concurrency = 1)
   const hasLimitedConcurrencyProvider = Object.values(context.presentationStyle.speechParams.speakers).some((speaker) => {
     const provider = text2SpeechProviderSchema.parse(speaker.provider) as keyof typeof provider2TTSAgent;
     return provider2TTSAgent[provider].hasLimitedConcurrency;
@@ -267,7 +261,6 @@ const audioAgents = {
   ...vanillaAgents,
   fileWriteAgent,
   ttsOpenaiAgent,
-  ttsNijivoiceAgent,
   ttsGoogleAgent,
   ttsGeminiAgent,
   ttsKotodamaAgent,
