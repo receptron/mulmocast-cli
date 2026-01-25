@@ -507,7 +507,16 @@ export const mulmoStudioBeatSchema = z
     movieFile: z.string().optional(), // path to the movie file
     soundEffectFile: z.string().optional(), // path to the sound effect file
     lipSyncFile: z.string().optional(), // path to the lip sync file
-    captionFile: z.string().optional(), // path to the caption image
+    captionFile: z.string().optional(), // path to the caption image (deprecated, use captionFiles)
+    captionFiles: z
+      .array(
+        z.object({
+          file: z.string(),
+          relativeStart: z.number(), // 0 to 1, relative position within beat duration
+          relativeEnd: z.number(), // 0 to 1, relative position within beat duration
+        }),
+      )
+      .optional(), // split caption images with timing
     htmlImageFile: z.string().optional(), // path to the html image
     markdown: z.string().optional(), // markdown string (alternative to image)
     html: z.string().optional(), // html string (alternative to image)

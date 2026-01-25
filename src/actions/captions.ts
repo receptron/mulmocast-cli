@@ -10,6 +10,31 @@ import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 
 const vanillaAgents = agents.default ?? agents;
 
+// Split text by delimiters while keeping delimiters attached to the preceding text
+const splitTextByDelimiters = (text: string, delimiters: string[]): string[] => {
+  if (!text || delimiters.length === 0) {
+    return [text];
+  }
+
+  const { segments, current } = [...text].reduce(
+    (acc, char) => {
+      const newCurrent = acc.current + char;
+      if (delimiters.includes(char)) {
+        const trimmed = newCurrent.trim();
+        return {
+          segments: trimmed ? [...acc.segments, trimmed] : acc.segments,
+          current: "",
+        };
+      }
+      return { ...acc, current: newCurrent };
+    },
+    { segments: [] as string[], current: "" },
+  );
+
+  const finalSegments = current.trim() ? [...segments, current.trim()] : segments;
+  return finalSegments.length > 0 ? finalSegments : [text];
+};
+
 export const caption_graph_data: GraphData = {
   version: 0.5,
   nodes: {
@@ -32,22 +57,40 @@ export const caption_graph_data: GraphData = {
                 MulmoStudioContextMethods.setBeatSessionState(context, "caption", index, beat.id, true);
                 const captionParams = mulmoCaptionParamsSchema.parse({ ...context.studio.script.captionParams, ...beat.captionParams });
                 const canvasSize = MulmoPresentationStyleMethods.getCanvasSize(context.presentationStyle);
-                const imagePath = getCaptionImagePath(context, index);
                 const template = getHTMLFile("caption");
 
                 if (captionParams.lang && !context.multiLingual?.[index]?.multiLingualTexts?.[captionParams.lang]) {
                   GraphAILogger.warn(`No multiLingual caption found for beat ${index}, lang: ${captionParams.lang}`);
                 }
                 const text = localizedText(beat, context.multiLingual?.[index], captionParams.lang, context.studio.script.lang);
-                const htmlData = interpolate(template, {
-                  caption: processLineBreaks(text),
-                  width: `${canvasSize.width}`,
-                  height: `${canvasSize.height}`,
-                  styles: captionParams.styles.join(";\n"),
-                });
-                await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, false, true);
-                context.studio.beats[index].captionFile = imagePath;
-                return imagePath;
+                const delimiters = ["。", "？", "！", ".", "?", "!"];
+
+                // Split text by delimiters
+                const splitTexts = splitTextByDelimiters(text, delimiters);
+
+                // Generate caption images (always use captionFiles array)
+                const segmentDuration = 1.0 / splitTexts.length;
+
+                const captionFiles = await Promise.all(
+                  splitTexts.map(async (segmentText, subIndex) => {
+                    const imagePath = getCaptionImagePath(context, index, subIndex);
+                    const htmlData = interpolate(template, {
+                      caption: processLineBreaks(segmentText),
+                      width: `${canvasSize.width}`,
+                      height: `${canvasSize.height}`,
+                      styles: captionParams.styles.join(";\n"),
+                    });
+                    await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, false, true);
+                    return {
+                      file: imagePath,
+                      relativeStart: subIndex * segmentDuration,
+                      relativeEnd: (subIndex + 1) * segmentDuration,
+                    };
+                  }),
+                );
+
+                context.studio.beats[index].captionFiles = captionFiles;
+                return captionFiles;
               } finally {
                 MulmoStudioContextMethods.setBeatSessionState(context, "caption", index, beat.id, false);
               }

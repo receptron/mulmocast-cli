@@ -146,8 +146,11 @@ export const getReferenceImagePath = (context: MulmoStudioContext, key: string, 
   const imageProjectDirPath = MulmoStudioContextMethods.getImageProjectDirPath(context);
   return `${imageProjectDirPath}/${key}.${extension}`;
 };
-export const getCaptionImagePath = (context: MulmoStudioContext, index: number) => {
+export const getCaptionImagePath = (context: MulmoStudioContext, index: number, subIndex?: number) => {
   const imageProjectDirPath = MulmoStudioContextMethods.getImageProjectDirPath(context);
+  if (subIndex !== undefined) {
+    return `${imageProjectDirPath}/${index}_caption_${subIndex}.png`;
+  }
   return `${imageProjectDirPath}/${index}_caption.png`;
 };
 
