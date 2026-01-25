@@ -395,7 +395,7 @@ test("test getConcatVideoFilter filtering undefined", async () => {
 // addSplitAndExtractFrames tests
 test("test addSplitAndExtractFrames with needFirst only", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v1", 100, false, true, false, { width: 1280, height: 720 });
+  addSplitAndExtractFrames(ffmpegContext, "v1", 100, 0, false, true, false, { width: 1280, height: 720 });
 
   assert.equal(ffmpegContext.filterComplex.length, 4);
   assert.equal(ffmpegContext.filterComplex[0], "[v1]split=2[v1][v1_first_src]");
@@ -406,7 +406,7 @@ test("test addSplitAndExtractFrames with needFirst only", async () => {
 
 test("test addSplitAndExtractFrames with needLast only for image", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v2", 150, false, false, true, { width: 1280, height: 720 });
+  addSplitAndExtractFrames(ffmpegContext, "v2", 0, 150, false, false, true, { width: 1280, height: 720 });
 
   assert.equal(ffmpegContext.filterComplex.length, 4);
   assert.equal(ffmpegContext.filterComplex[0], "[v2]split=2[v2][v2_last_src]");
@@ -417,7 +417,7 @@ test("test addSplitAndExtractFrames with needLast only for image", async () => {
 
 test("test addSplitAndExtractFrames with needLast only for movie", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v3", 200, true, false, true, { width: 1280, height: 720 });
+  addSplitAndExtractFrames(ffmpegContext, "v3", 0, 200, true, false, true, { width: 1280, height: 720 });
 
   assert.equal(ffmpegContext.filterComplex.length, 4);
   assert.equal(ffmpegContext.filterComplex[0], "[v3]split=2[v3][v3_last_src]");
@@ -428,7 +428,7 @@ test("test addSplitAndExtractFrames with needLast only for movie", async () => {
 
 test("test addSplitAndExtractFrames with both needFirst and needLast", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v4", 120, false, true, true, { width: 1280, height: 720 });
+  addSplitAndExtractFrames(ffmpegContext, "v4", 120, 120, false, true, true, { width: 1280, height: 720 });
 
   assert.equal(ffmpegContext.filterComplex.length, 7);
   assert.equal(ffmpegContext.filterComplex[0], "[v4]split=3[v4][v4_first_src][v4_last_src]");
@@ -442,7 +442,7 @@ test("test addSplitAndExtractFrames with both needFirst and needLast", async () 
 
 test("test addSplitAndExtractFrames with both for movie", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v5", 180, true, true, true, { width: 1280, height: 720 });
+  addSplitAndExtractFrames(ffmpegContext, "v5", 180, 180, true, true, true, { width: 1280, height: 720 });
 
   assert.equal(ffmpegContext.filterComplex.length, 7);
   assert.equal(ffmpegContext.filterComplex[0], "[v5]split=3[v5][v5_first_src][v5_last_src]");
