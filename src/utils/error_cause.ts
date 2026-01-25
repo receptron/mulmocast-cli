@@ -278,8 +278,8 @@ export const getGenAIErrorReason = (error: Error) => {
         return reasonDetail;
       }
     }
-  } catch (__error) {
-    // nothing.
+  } catch {
+    // Ignore JSON parse errors - return undefined if parsing fails
   }
   return undefined;
 };
