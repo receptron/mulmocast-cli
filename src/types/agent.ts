@@ -76,11 +76,6 @@ export type OpenAITTSAgentParams = TTSAgentParams & {
   speed: number;
 };
 
-export type NijivoiceTTSAgentParams = TTSAgentParams & {
-  speed: number;
-  speed_global: number;
-};
-
 export type KotodamaTTSAgentParams = TTSAgentParams & {
   decoration: string;
 };

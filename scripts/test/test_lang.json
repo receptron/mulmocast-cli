@@ -10,7 +10,7 @@
         "voiceId": "shimmer",
         "lang": {
           "ja": {
-            "provider": "nijivoice",
+            "provider": "gemini",
             "voiceId": "9d9ed276-49ee-443a-bc19-26e6136d05f0"
           }
         }

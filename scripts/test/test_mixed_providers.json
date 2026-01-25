@@ -30,7 +30,7 @@
       },
       "Host": {
         "voiceId": "3708ad43-cace-486c-a4ca-8fe41186e20c",
-        "provider": "nijivoice",
+        "provider": "gemini",
         "displayName": {
           "en": "Japanese Host"
         }
