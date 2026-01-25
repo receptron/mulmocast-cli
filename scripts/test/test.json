@@ -19,7 +19,7 @@
   "speechParams": {
     "speakers": {
       "Announcer": {
-        "provider": "nijivoice",
+        "provider": "gemini",
         "displayName": {
           "ja": "アナウンサー"
         },
@@ -29,14 +29,14 @@
         }
       },
       "Student": {
-        "provider": "nijivoice",
+        "provider": "gemini",
         "displayName": {
           "ja": "生徒"
         },
         "voiceId": "a7619e48-bf6a-4f9f-843f-40485651257f"
       },
       "Teacher": {
-        "provider": "nijivoice",
+        "provider": "gemini",
         "displayName": {
           "ja": "先生"
         },

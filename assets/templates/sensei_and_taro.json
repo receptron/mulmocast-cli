@@ -16,9 +16,9 @@
     },
     "speechParams": {
       "speakers": {
-        "Announcer": { "provider": "nijivoice", "displayName": { "ja": "アナウンサー" }, "voiceId": "3708ad43-cace-486c-a4ca-8fe41186e20c" },
-        "Student": { "provider": "nijivoice", "displayName": { "ja": "太郎" }, "voiceId": "a7619e48-bf6a-4f9f-843f-40485651257f" },
-        "Teacher": { "provider": "nijivoice", "displayName": { "ja": "先生" }, "voiceId": "bc06c63f-fef6-43b6-92f7-67f919bd5dae" }
+        "Announcer": { "provider": "gemini", "displayName": { "ja": "アナウンサー" }, "voiceId": "Aoede" },
+        "Student": { "provider": "gemini", "displayName": { "ja": "太郎" }, "voiceId": "Puck" },
+        "Teacher": { "provider": "gemini", "displayName": { "ja": "先生" }, "voiceId": "Charon" }
       }
     }
   },

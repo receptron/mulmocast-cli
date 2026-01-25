@@ -23,7 +23,7 @@
         "voiceId": "3JDquces8E8bkmvbh6Bc"
       },
       "Nijivoice": {
-        "provider": "nijivoice",
+        "provider": "gemini",
         "voiceId": "231e0170-0ece-4155-be44-231423062f41"
       }
     }
