@@ -442,20 +442,24 @@ test("test getTransitionFrameDurations defaults missing durations and handles fi
   assert.equal(result.lastDuration, 0.9);
 });
 
-test("test getTransitionFrameDurations handles last beat with null next transition", async () => {
+test("test getTransitionFrameDurations handles last beat with transition and null next transition", async () => {
   const context: TestContextForTransitionDurations = {
     studio: {
       script: {
-        beats: [{ speaker: "A", movieParams: { transition: { type: "fade", duration: 2.0 } } }, { speaker: "B" }],
+        beats: [
+          { speaker: "A" },
+          { speaker: "B" },
+          { speaker: "C", movieParams: { transition: { type: "fade", duration: 2.0 } } },
+        ],
       },
-      beats: [{ duration: 2.0 }, { duration: 2.0 }],
+      beats: [{ duration: 2.0 }, { duration: 2.0 }, { duration: 2.0 }],
     },
     presentationStyle: {},
   };
 
-  const result = getTransitionFrameDurations(context as MulmoStudioContext, 1);
+  const result = getTransitionFrameDurations(context as MulmoStudioContext, 2);
   const minFrame = 1 / 30;
-  assert.ok(Math.abs(result.firstDuration - minFrame) < 1e-6);
+  assert.equal(result.firstDuration, 1.8);
   assert.ok(Math.abs(result.lastDuration - minFrame) < 1e-6);
 });
 
