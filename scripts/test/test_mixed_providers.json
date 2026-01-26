@@ -29,7 +29,7 @@
         }
       },
       "Host": {
-        "voiceId": "3708ad43-cace-486c-a4ca-8fe41186e20c",
+        "voiceId": "Kore",
         "provider": "gemini",
         "displayName": {
           "en": "Japanese Host"
@@ -79,12 +79,12 @@
     },
     {
       "speaker": "Host",
-      "text": "そして私は、日本語音声合成のためのNijivoiceを使用するホストです。",
+      "text": "そして私は、Gemini TTS です。Google's TTS とは別の方法を利用しています。",
       "image": {
         "type": "textSlide",
         "slide": {
           "title": "Mixed Provider Demo",
-          "subtitle": "Nijivoice Speaker (Japanese)"
+          "subtitle": "Gemini Speaker (Japanese)"
         }
       }
     }
