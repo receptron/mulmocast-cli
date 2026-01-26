@@ -259,6 +259,101 @@ measure の場合:
        audio → stt → captions → movie
 ```
 
+## 現在の実装状況（2025-01時点）
+
+### 完了した実装
+
+| 項目 | ファイル | 内容 |
+|---|---|---|
+| スキーマ定義 | `src/types/schema.ts` | `textSplitSchema`, `captionSplitSchema`, `texts` フィールド追加 |
+| キャプション生成 | `src/actions/captions.ts` | `generateBeatCaptions`, `captionGenerationAgent` に分離 |
+| 動画合成 | `src/actions/movie.ts` | 絶対時間 (`startAt`/`endAt`) でキャプションオーバーレイ |
+| 設計ドキュメント | `docs/caption_split.md` | このファイル |
+
+### 主要関数（captions.ts）
+
+```typescript
+// テキスト分割
+splitTextByDelimiters(text, delimiters)  // デリミタで分割
+getSplitTexts(text, texts, textSplit)    // 分割テキスト取得（texts優先）
+
+// タイミング計算
+calculateTimingRatios(splitTexts)        // テキスト長から比率
+calculateCumulativeRatios(ratios)        // 累積比率に変換
+
+// キャプション生成
+generateBeatCaptions(beat, context, index)  // ビート単位のキャプション生成
+captionGenerationAgent(namedInputs)         // GraphAIエージェント（セッション管理）
+```
+
+## 既知の問題・制限事項
+
+### `texts` と `text` の関係
+
+現状、`texts` は**キャプション分割専用**。音声生成などは `text` を使用。
+
+```
+現在の動作:
+- 音声生成: beat.text を使用
+- キャプション: captionSplit="estimate" の場合、texts があれば texts を使用
+
+将来的には:
+- texts のみ指定 → text は texts.join("") として扱う
+- これには MulmoBeatMethods.getText(beat) のような関数が必要
+- audio.ts, translate.ts など beat.text を使う全箇所の修正が必要
+```
+
+**TODO**: `texts` のみ指定した場合の動作を検討・実装する
+
+### 日本語テキストのタイミング精度
+
+`estimate` モードは**文字数ベース**で時間配分するが、日本語では不正確:
+- 漢字1文字 ≠ ひらがな1文字（発音時間が異なる）
+- 例: 「東京」(2文字) vs 「とうきょう」(5文字) は同じ発音時間
+
+**TODO**: モーラ数ベースの計算（形態素解析ライブラリ: kuromoji, mecab など）
+
+### GraphAI の `:beat.text` 参照
+
+`translate.ts` などで GraphAI のデータ参照 `:beat.text` を使用している箇所あり。
+これらは `texts` を考慮していない。
+
+```typescript
+// translate.ts:107 - GraphAI input
+text: ":beat.text"  // texts を考慮していない
+```
+
+**TODO**: GraphAI 参照を使う箇所の `texts` 対応を検討
+
+## TODO リスト
+
+### 高優先度
+
+- [ ] `texts` のみ指定時の動作実装
+  - `MulmoBeatMethods.getText(beat)` 関数追加
+  - `audio.ts`, `translate.ts`, `prompt.ts` などの修正
+
+- [ ] E2Eテスト追加
+  - `scripts/test/test_captions.json` に captionSplit テストケース追加
+  - 分割キャプションが正しく生成されるか検証
+
+### 中優先度
+
+- [ ] `captionSplit: "generate"` 実装
+  - `audio.ts` で texts[] 対応
+  - studioBeat に分割音声 duration 保存
+
+- [ ] `captionSplit: "measure"` 実装
+  - Whisper API でタイムスタンプ取得
+  - `src/agents/stt_whisper_agent.ts` 新規作成
+
+### 低優先度
+
+- [ ] モーラ数ベースの estimate 改善
+- [ ] `textSplit: { type: "length" }` 実装
+- [ ] `textSplit: { type: "morphological" }` 実装
+- [ ] `captionSplit: "split"` 実装（音声分割生成→結合）
+
 ## 今後の拡張
 
 ### estimate の改善
@@ -273,3 +368,13 @@ measure の場合:
 - `generate`: 分割テキストごとに音声生成して時間測定
 - `measure`: STTでタイムスタンプ取得
 - `split`: 分割音声を結合して使用
+
+## 関連コミット履歴
+
+```
+feat/split-captions ブランチで開発
+
+- feat: add textSplit schema and caption split documentation
+- feat: use text-length-based timing and absolute times for captions
+- refactor: extract caption generation logic into separate functions
+```
