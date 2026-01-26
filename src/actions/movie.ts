@@ -128,23 +128,19 @@ const getOutputOption = (audioId: string, videoId: string) => {
 const addCaptions = (ffmpegContext: FfmpegContext, concatVideoId: string, context: MulmoStudioContext, caption: string | undefined) => {
   const beatsWithCaptions = context.studio.beats.filter(({ captionFiles }) => captionFiles && captionFiles.length > 0);
   if (caption && beatsWithCaptions.length > 0) {
-    const introPadding = MulmoStudioContextMethods.getIntroPadding(context);
-
     const { videoId } = beatsWithCaptions.reduce(
       (acc, beat) => {
-        const { startAt, duration, captionFiles } = beat;
-        if (startAt === undefined || duration === undefined || !captionFiles) {
+        const { captionFiles } = beat;
+        if (!captionFiles) {
           return acc;
         }
 
         return captionFiles.reduce((innerAcc, captionData) => {
-          const { file, relativeStart, relativeEnd } = captionData;
+          const { file, startAt, endAt } = captionData;
           const captionInputIndex = FfmpegContextAddInput(ffmpegContext, file);
           const compositeVideoId = `oc${innerAcc.captionIndex}`;
-          const absoluteStart = startAt + introPadding + duration * relativeStart;
-          const absoluteEnd = startAt + introPadding + duration * relativeEnd;
           ffmpegContext.filterComplex.push(
-            `[${innerAcc.videoId}][${captionInputIndex}:v]overlay=format=auto:enable='between(t,${absoluteStart},${absoluteEnd})'[${compositeVideoId}]`,
+            `[${innerAcc.videoId}][${captionInputIndex}:v]overlay=format=auto:enable='between(t,${startAt},${endAt})'[${compositeVideoId}]`,
           );
           return { videoId: compositeVideoId, captionIndex: innerAcc.captionIndex + 1 };
         }, acc);

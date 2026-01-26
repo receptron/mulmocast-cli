@@ -68,9 +68,20 @@ export const caption_graph_data: GraphData = {
                 // Split text by delimiters
                 const splitTexts = splitTextByDelimiters(text, delimiters);
 
-                // Generate caption images (always use captionFiles array)
-                const segmentDuration = 1.0 / splitTexts.length;
+                // Calculate timing based on text length
+                const totalLength = splitTexts.reduce((sum, t) => sum + t.length, 0);
+                const ratios = splitTexts.map((t) => t.length / totalLength);
 
+                // Get beat timing info
+                const studioBeat = context.studio.beats[index];
+                const beatStartAt = studioBeat.startAt ?? 0;
+                const beatDuration = studioBeat.duration ?? 0;
+                const introPadding = MulmoStudioContextMethods.getIntroPadding(context);
+
+                // Calculate cumulative positions
+                const cumulativeRatios = ratios.reduce((acc, ratio) => [...acc, acc[acc.length - 1] + ratio], [0]);
+
+                // Generate caption images with absolute timing
                 const captionFiles = await Promise.all(
                   splitTexts.map(async (segmentText, subIndex) => {
                     const imagePath = getCaptionImagePath(context, index, subIndex);
@@ -83,8 +94,8 @@ export const caption_graph_data: GraphData = {
                     await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, false, true);
                     return {
                       file: imagePath,
-                      relativeStart: subIndex * segmentDuration,
-                      relativeEnd: (subIndex + 1) * segmentDuration,
+                      startAt: beatStartAt + introPadding + beatDuration * cumulativeRatios[subIndex],
+                      endAt: beatStartAt + introPadding + beatDuration * cumulativeRatios[subIndex + 1],
                     };
                   }),
                 );

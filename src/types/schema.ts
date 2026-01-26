@@ -512,8 +512,8 @@ export const mulmoStudioBeatSchema = z
       .array(
         z.object({
           file: z.string(),
-          relativeStart: z.number(), // 0 to 1, relative position within beat duration
-          relativeEnd: z.number(), // 0 to 1, relative position within beat duration
+          startAt: z.number(), // absolute start time in seconds
+          endAt: z.number(), // absolute end time in seconds
         }),
       )
       .optional(), // split caption images with timing
