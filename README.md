@@ -1,5 +1,7 @@
 # MulmoCast: A Multi-Modal Presentation Tool for the AI-Native Era
 
+[![npm version](https://badge.fury.io/js/mulmocast.svg)](https://www.npmjs.com/package/mulmocast)
+
 ## Quick Start Guide
 
 If you want to try our beta version, follow the instruction in the release note below.
