@@ -62,7 +62,74 @@ const getSplitTexts = (
 // Calculate timing ratios based on text length
 const calculateTimingRatios = (splitTexts: string[]): number[] => {
   const totalLength = splitTexts.reduce((sum, t) => sum + t.length, 0);
+  if (totalLength === 0) {
+    return splitTexts.map(() => 1 / splitTexts.length);
+  }
   return splitTexts.map((t) => t.length / totalLength);
+};
+
+// Convert ratios to cumulative ratios: [0.3, 0.5, 0.2] -> [0, 0.3, 0.8, 1.0]
+const calculateCumulativeRatios = (ratios: number[]): number[] => {
+  return ratios.reduce((acc, ratio) => [...acc, acc[acc.length - 1] + ratio], [0]);
+};
+
+// Generate caption files for a single beat
+const generateBeatCaptions = async (beat: MulmoBeat, context: MulmoStudioContext, index: number) => {
+  const captionParams = mulmoCaptionParamsSchema.parse({ ...context.studio.script.captionParams, ...beat.captionParams });
+  const canvasSize = MulmoPresentationStyleMethods.getCanvasSize(context.presentationStyle);
+  const template = getHTMLFile("caption");
+
+  if (captionParams.lang && !context.multiLingual?.[index]?.multiLingualTexts?.[captionParams.lang]) {
+    GraphAILogger.warn(`No multiLingual caption found for beat ${index}, lang: ${captionParams.lang}`);
+  }
+  const text = localizedText(beat, context.multiLingual?.[index], captionParams.lang, context.studio.script.lang);
+
+  // Get beat timing info
+  const studioBeat = context.studio.beats[index];
+  const beatStartAt = studioBeat.startAt ?? 0;
+  const beatDuration = studioBeat.duration ?? 0;
+  const introPadding = MulmoStudioContextMethods.getIntroPadding(context);
+
+  // Determine split texts based on captionSplit setting
+  const captionSplit = captionParams.captionSplit ?? "none";
+  const splitTexts = captionSplit === "estimate" ? getSplitTexts(text, beat.texts, captionParams.textSplit) : [text];
+
+  // Calculate timing
+  const cumulativeRatios = calculateCumulativeRatios(calculateTimingRatios(splitTexts));
+
+  // Generate caption images with absolute timing
+  const captionFiles = await Promise.all(
+    splitTexts.map(async (segmentText, subIndex) => {
+      const imagePath = getCaptionImagePath(context, index, subIndex);
+      const htmlData = interpolate(template, {
+        caption: processLineBreaks(segmentText),
+        width: `${canvasSize.width}`,
+        height: `${canvasSize.height}`,
+        styles: captionParams.styles.join(";\n"),
+      });
+      await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, false, true);
+      return {
+        file: imagePath,
+        startAt: beatStartAt + introPadding + beatDuration * cumulativeRatios[subIndex],
+        endAt: beatStartAt + introPadding + beatDuration * cumulativeRatios[subIndex + 1],
+      };
+    }),
+  );
+
+  return captionFiles;
+};
+
+// GraphAI agent for caption generation
+const captionGenerationAgent = async (namedInputs: { beat: MulmoBeat; context: MulmoStudioContext; index: number }) => {
+  const { beat, context, index } = namedInputs;
+  try {
+    MulmoStudioContextMethods.setBeatSessionState(context, "caption", index, beat.id, true);
+    const captionFiles = await generateBeatCaptions(beat, context, index);
+    context.studio.beats[index].captionFiles = captionFiles;
+    return captionFiles;
+  } finally {
+    MulmoStudioContextMethods.setBeatSessionState(context, "caption", index, beat.id, false);
+  }
 };
 
 export const caption_graph_data: GraphData = {
@@ -81,63 +148,8 @@ export const caption_graph_data: GraphData = {
       graph: {
         nodes: {
           generateCaption: {
-            agent: async (namedInputs: { beat: MulmoBeat; context: MulmoStudioContext; index: number }) => {
-              const { beat, context, index } = namedInputs;
-              try {
-                MulmoStudioContextMethods.setBeatSessionState(context, "caption", index, beat.id, true);
-                const captionParams = mulmoCaptionParamsSchema.parse({ ...context.studio.script.captionParams, ...beat.captionParams });
-                const canvasSize = MulmoPresentationStyleMethods.getCanvasSize(context.presentationStyle);
-                const template = getHTMLFile("caption");
-
-                if (captionParams.lang && !context.multiLingual?.[index]?.multiLingualTexts?.[captionParams.lang]) {
-                  GraphAILogger.warn(`No multiLingual caption found for beat ${index}, lang: ${captionParams.lang}`);
-                }
-                const text = localizedText(beat, context.multiLingual?.[index], captionParams.lang, context.studio.script.lang);
-
-                // Get beat timing info
-                const studioBeat = context.studio.beats[index];
-                const beatStartAt = studioBeat.startAt ?? 0;
-                const beatDuration = studioBeat.duration ?? 0;
-                const introPadding = MulmoStudioContextMethods.getIntroPadding(context);
-
-                // Determine split texts based on captionSplit setting
-                const captionSplit = captionParams.captionSplit ?? "none";
-                const splitTexts = captionSplit === "estimate" ? getSplitTexts(text, beat.texts, captionParams.textSplit) : [text]; // "none" - no splitting
-
-                // Calculate timing ratios
-                const ratios = calculateTimingRatios(splitTexts);
-                const cumulativeRatios = ratios.reduce((acc, ratio) => [...acc, acc[acc.length - 1] + ratio], [0]);
-
-                // Generate caption images with absolute timing
-                const captionFiles = await Promise.all(
-                  splitTexts.map(async (segmentText, subIndex) => {
-                    const imagePath = getCaptionImagePath(context, index, subIndex);
-                    const htmlData = interpolate(template, {
-                      caption: processLineBreaks(segmentText),
-                      width: `${canvasSize.width}`,
-                      height: `${canvasSize.height}`,
-                      styles: captionParams.styles.join(";\n"),
-                    });
-                    await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, false, true);
-                    return {
-                      file: imagePath,
-                      startAt: beatStartAt + introPadding + beatDuration * cumulativeRatios[subIndex],
-                      endAt: beatStartAt + introPadding + beatDuration * cumulativeRatios[subIndex + 1],
-                    };
-                  }),
-                );
-
-                context.studio.beats[index].captionFiles = captionFiles;
-                return captionFiles;
-              } finally {
-                MulmoStudioContextMethods.setBeatSessionState(context, "caption", index, beat.id, false);
-              }
-            },
-            inputs: {
-              beat: ":beat",
-              context: ":context",
-              index: ":__mapIndex",
-            },
+            agent: captionGenerationAgent,
+            inputs: { beat: ":beat", context: ":context", index: ":__mapIndex" },
             isResult: true,
           },
         },
