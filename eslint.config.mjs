@@ -34,7 +34,7 @@ export default [
     },
     rules: {
       indent: ["error", 2],
-      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
@@ -47,15 +47,15 @@ export default [
       quotes: "off",
       "no-shadow": "error",
       "no-param-reassign": "error",
-      // "no-plusplus": "warn",
-      "no-undef": "warn",
+      // "no-plusplus": "error",
+      "no-undef": "error",
       "prefer-const": "error",
       "no-return-assign": "error",
       "object-shorthand": "error",
       semi: ["error", "always"],
       "prettier/prettier": "error",
       "no-console": "error",
-      "sonarjs/no-ignored-exceptions": "warn",
+      "sonarjs/no-ignored-exceptions": "error",
       "sonarjs/redundant-type-aliases": "off",
       "sonarjs/todo-tag": "off",
       "sonarjs/no-commented-code": "off",

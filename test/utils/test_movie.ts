@@ -15,7 +15,36 @@ import {
   addSplitAndExtractFrames,
 } from "../../src/actions/movie.js";
 import { FfmpegContextInit } from "../../src/utils/ffmpeg_utils.js";
-import type { MulmoStudioContext, MulmoBeat } from "../../src/types/index.js";
+import type { MulmoStudioContext, MulmoBeat, MulmoPresentationStyle, MulmoStudioBeat } from "../../src/types/index.js";
+
+// Test helper types for partial context objects
+type TestContextForFrameCheck = {
+  studio: {
+    script: {
+      beats: Partial<MulmoBeat>[];
+    };
+  };
+  presentationStyle: Partial<MulmoPresentationStyle>;
+};
+
+type TestContextForPadding = {
+  presentationStyle: {
+    audioParams: {
+      introPadding: number;
+      outroPadding: number;
+    };
+  };
+  studio: {
+    script: {
+      beats: Partial<MulmoBeat>[];
+    };
+    beats: Partial<MulmoStudioBeat>[];
+  };
+};
+
+type TestContextForFillOption = {
+  presentationStyle: Partial<MulmoPresentationStyle>;
+};
 
 test("test getVideoParts image", async () => {
   const { videoPart } = getVideoPart(1, false, 200, { width: 100, height: 300 }, { style: "aspectFit" }, 1.0);
@@ -120,7 +149,7 @@ test("test getInOverlayCoords invalid type", async () => {
 
 // getNeedFirstFrame tests
 test("test getNeedFirstFrame with slidein transitions", async () => {
-  const context: Partial<MulmoStudioContext> = {
+  const context: TestContextForFrameCheck = {
     studio: {
       script: {
         beats: [
@@ -130,8 +159,8 @@ test("test getNeedFirstFrame with slidein transitions", async () => {
           { speaker: "D", movieParams: { transition: { type: "fade", duration: 1.0 } } },
         ],
       },
-    } as any,
-    presentationStyle: {} as any,
+    },
+    presentationStyle: {},
   };
 
   const result = getNeedFirstFrame(context as MulmoStudioContext);
@@ -139,13 +168,13 @@ test("test getNeedFirstFrame with slidein transitions", async () => {
 });
 
 test("test getNeedFirstFrame with no transitions", async () => {
-  const context: Partial<MulmoStudioContext> = {
+  const context: TestContextForFrameCheck = {
     studio: {
       script: {
         beats: [{ speaker: "A" }, { speaker: "B" }, { speaker: "C" }],
       },
-    } as any,
-    presentationStyle: {} as any,
+    },
+    presentationStyle: {},
   };
 
   const result = getNeedFirstFrame(context as MulmoStudioContext);
@@ -153,13 +182,13 @@ test("test getNeedFirstFrame with no transitions", async () => {
 });
 
 test("test getNeedFirstFrame first beat cannot have transition", async () => {
-  const context: Partial<MulmoStudioContext> = {
+  const context: TestContextForFrameCheck = {
     studio: {
       script: {
         beats: [{ speaker: "A", movieParams: { transition: { type: "slidein_left", duration: 1.0 } } }, { speaker: "B" }],
       },
-    } as any,
-    presentationStyle: {} as any,
+    },
+    presentationStyle: {},
   };
 
   const result = getNeedFirstFrame(context as MulmoStudioContext);
@@ -168,7 +197,7 @@ test("test getNeedFirstFrame first beat cannot have transition", async () => {
 
 // getNeedLastFrame tests
 test("test getNeedLastFrame with transitions on next beats", async () => {
-  const context: Partial<MulmoStudioContext> = {
+  const context: TestContextForFrameCheck = {
     studio: {
       script: {
         beats: [
@@ -178,8 +207,8 @@ test("test getNeedLastFrame with transitions on next beats", async () => {
           { speaker: "D" },
         ],
       },
-    } as any,
-    presentationStyle: {} as any,
+    },
+    presentationStyle: {},
   };
 
   const result = getNeedLastFrame(context as MulmoStudioContext);
@@ -187,13 +216,13 @@ test("test getNeedLastFrame with transitions on next beats", async () => {
 });
 
 test("test getNeedLastFrame with no transitions", async () => {
-  const context: Partial<MulmoStudioContext> = {
+  const context: TestContextForFrameCheck = {
     studio: {
       script: {
         beats: [{ speaker: "A" }, { speaker: "B" }, { speaker: "C" }],
       },
-    } as any,
-    presentationStyle: {} as any,
+    },
+    presentationStyle: {},
   };
 
   const result = getNeedLastFrame(context as MulmoStudioContext);
@@ -201,13 +230,13 @@ test("test getNeedLastFrame with no transitions", async () => {
 });
 
 test("test getNeedLastFrame last beat never needs last frame", async () => {
-  const context: Partial<MulmoStudioContext> = {
+  const context: TestContextForFrameCheck = {
     studio: {
       script: {
         beats: [{ speaker: "A" }, { speaker: "B", movieParams: { transition: { type: "fade", duration: 1.0 } } }],
       },
-    } as any,
-    presentationStyle: {} as any,
+    },
+    presentationStyle: {},
   };
 
   const result = getNeedLastFrame(context as MulmoStudioContext);
@@ -216,19 +245,19 @@ test("test getNeedLastFrame last beat never needs last frame", async () => {
 
 // getExtraPadding tests
 test("test getExtraPadding for first beat", async () => {
-  const context: Partial<MulmoStudioContext> = {
+  const context: TestContextForPadding = {
     presentationStyle: {
       audioParams: {
         introPadding: 2.0,
         outroPadding: 3.0,
       },
-    } as any,
+    },
     studio: {
       script: {
         beats: [{}, {}, {}],
       },
       beats: [{}, {}, {}],
-    } as any,
+    },
   };
 
   const result = getExtraPadding(context as MulmoStudioContext, 0);
@@ -236,19 +265,19 @@ test("test getExtraPadding for first beat", async () => {
 });
 
 test("test getExtraPadding for last beat", async () => {
-  const context: Partial<MulmoStudioContext> = {
+  const context: TestContextForPadding = {
     presentationStyle: {
       audioParams: {
         introPadding: 2.0,
         outroPadding: 3.0,
       },
-    } as any,
+    },
     studio: {
       script: {
         beats: [{}, {}, {}],
       },
       beats: [{}, {}, {}],
-    } as any,
+    },
   };
 
   const result = getExtraPadding(context as MulmoStudioContext, 2);
@@ -256,19 +285,19 @@ test("test getExtraPadding for last beat", async () => {
 });
 
 test("test getExtraPadding for middle beat", async () => {
-  const context: Partial<MulmoStudioContext> = {
+  const context: TestContextForPadding = {
     presentationStyle: {
       audioParams: {
         introPadding: 2.0,
         outroPadding: 3.0,
       },
-    } as any,
+    },
     studio: {
       script: {
         beats: [{}, {}, {}],
       },
       beats: [{}, {}, {}],
-    } as any,
+    },
   };
 
   const result = getExtraPadding(context as MulmoStudioContext, 1);
@@ -277,8 +306,8 @@ test("test getExtraPadding for middle beat", async () => {
 
 // getFillOption tests
 test("test getFillOption with defaults only", async () => {
-  const context: Partial<MulmoStudioContext> = {
-    presentationStyle: {} as any,
+  const context: TestContextForFillOption = {
+    presentationStyle: {},
   };
   const beat: MulmoBeat = { speaker: "A" };
 
@@ -287,12 +316,12 @@ test("test getFillOption with defaults only", async () => {
 });
 
 test("test getFillOption with global setting", async () => {
-  const context: Partial<MulmoStudioContext> = {
+  const context: TestContextForFillOption = {
     presentationStyle: {
       movieParams: {
         fillOption: { style: "aspectFill" },
       },
-    } as any,
+    },
   };
   const beat: MulmoBeat = { speaker: "A" };
 
@@ -301,12 +330,12 @@ test("test getFillOption with global setting", async () => {
 });
 
 test("test getFillOption with beat override", async () => {
-  const context: Partial<MulmoStudioContext> = {
+  const context: TestContextForFillOption = {
     presentationStyle: {
       movieParams: {
         fillOption: { style: "aspectFill" },
       },
-    } as any,
+    },
   };
   const beat: MulmoBeat = {
     speaker: "A",
@@ -366,7 +395,7 @@ test("test getConcatVideoFilter filtering undefined", async () => {
 // addSplitAndExtractFrames tests
 test("test addSplitAndExtractFrames with needFirst only", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v1", 100, false, true, false, { width: 1280, height: 720 });
+  addSplitAndExtractFrames(ffmpegContext, "v1", 100, 0, false, true, false, { width: 1280, height: 720 });
 
   assert.equal(ffmpegContext.filterComplex.length, 4);
   assert.equal(ffmpegContext.filterComplex[0], "[v1]split=2[v1][v1_first_src]");
@@ -377,7 +406,7 @@ test("test addSplitAndExtractFrames with needFirst only", async () => {
 
 test("test addSplitAndExtractFrames with needLast only for image", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v2", 150, false, false, true, { width: 1280, height: 720 });
+  addSplitAndExtractFrames(ffmpegContext, "v2", 0, 150, false, false, true, { width: 1280, height: 720 });
 
   assert.equal(ffmpegContext.filterComplex.length, 4);
   assert.equal(ffmpegContext.filterComplex[0], "[v2]split=2[v2][v2_last_src]");
@@ -388,7 +417,7 @@ test("test addSplitAndExtractFrames with needLast only for image", async () => {
 
 test("test addSplitAndExtractFrames with needLast only for movie", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v3", 200, true, false, true, { width: 1280, height: 720 });
+  addSplitAndExtractFrames(ffmpegContext, "v3", 0, 200, true, false, true, { width: 1280, height: 720 });
 
   assert.equal(ffmpegContext.filterComplex.length, 4);
   assert.equal(ffmpegContext.filterComplex[0], "[v3]split=2[v3][v3_last_src]");
@@ -399,7 +428,7 @@ test("test addSplitAndExtractFrames with needLast only for movie", async () => {
 
 test("test addSplitAndExtractFrames with both needFirst and needLast", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v4", 120, false, true, true, { width: 1280, height: 720 });
+  addSplitAndExtractFrames(ffmpegContext, "v4", 120, 120, false, true, true, { width: 1280, height: 720 });
 
   assert.equal(ffmpegContext.filterComplex.length, 7);
   assert.equal(ffmpegContext.filterComplex[0], "[v4]split=3[v4][v4_first_src][v4_last_src]");
@@ -413,7 +442,7 @@ test("test addSplitAndExtractFrames with both needFirst and needLast", async () 
 
 test("test addSplitAndExtractFrames with both for movie", async () => {
   const ffmpegContext = FfmpegContextInit();
-  addSplitAndExtractFrames(ffmpegContext, "v5", 180, true, true, true, { width: 1280, height: 720 });
+  addSplitAndExtractFrames(ffmpegContext, "v5", 180, 180, true, true, true, { width: 1280, height: 720 });
 
   assert.equal(ffmpegContext.filterComplex.length, 7);
   assert.equal(ffmpegContext.filterComplex[0], "[v5]split=3[v5][v5_first_src][v5_last_src]");

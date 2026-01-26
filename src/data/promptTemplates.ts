@@ -911,22 +911,22 @@ export const promptTemplates = [
             displayName: {
               ja: "アナウンサー",
             },
-            provider: "nijivoice",
-            voiceId: "3708ad43-cace-486c-a4ca-8fe41186e20c",
+            provider: "gemini",
+            voiceId: "Aoede",
           },
           Student: {
             displayName: {
               ja: "太郎",
             },
-            provider: "nijivoice",
-            voiceId: "a7619e48-bf6a-4f9f-843f-40485651257f",
+            provider: "gemini",
+            voiceId: "Puck",
           },
           Teacher: {
             displayName: {
               ja: "先生",
             },
-            provider: "nijivoice",
-            voiceId: "bc06c63f-fef6-43b6-92f7-67f919bd5dae",
+            provider: "gemini",
+            voiceId: "Charon",
           },
         },
       },

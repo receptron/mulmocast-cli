@@ -1,11 +1,6 @@
 // node & browser
 
 export const provider2TTSAgent = {
-  nijivoice: {
-    agentName: "ttsNijivoiceAgent",
-    hasLimitedConcurrency: true,
-    keyName: "NIJIVOICE_API_KEY",
-  },
   openai: {
     agentName: "ttsOpenaiAgent",
     hasLimitedConcurrency: false,

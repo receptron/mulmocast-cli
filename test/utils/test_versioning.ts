@@ -11,7 +11,7 @@ const script_10 = {
     provider: "replicate",
   },
   speechParams: {
-    provider: "nijivoice", // this is not in the 1.1 schema
+    provider: "gemini", // this is not in the 1.1 schema
     speakers: {
       speaker1: {
         voiceId: "voice-123",
@@ -62,11 +62,11 @@ const script_11 = {
   speechParams: {
     speakers: {
       speaker1: {
-        provider: "nijivoice",
+        provider: "gemini",
         voiceId: "voice-123",
       },
       speaker2: {
-        provider: "nijivoice",
+        provider: "gemini",
         voiceId: "voice-456",
       },
       speaker3: {
