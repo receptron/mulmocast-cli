@@ -446,11 +446,7 @@ test("test getTransitionFrameDurations handles last beat with transition and nul
   const context: TestContextForTransitionDurations = {
     studio: {
       script: {
-        beats: [
-          { speaker: "A" },
-          { speaker: "B" },
-          { speaker: "C", movieParams: { transition: { type: "fade", duration: 2.0 } } },
-        ],
+        beats: [{ speaker: "A" }, { speaker: "B" }, { speaker: "C", movieParams: { transition: { type: "fade", duration: 2.0 } } }],
       },
       beats: [{ duration: 2.0 }, { duration: 2.0 }, { duration: 2.0 }],
     },
