@@ -349,7 +349,7 @@ const getClampedTransitionDuration = (transitionDuration: number, prevBeatDurati
   return Math.min(transitionDuration, maxDuration);
 };
 
-const getTransitionFrameDurations = (context: MulmoStudioContext, index: number) => {
+export const getTransitionFrameDurations = (context: MulmoStudioContext, index: number) => {
   const minFrame = 1 / 30; // 30fpsを想定。最小1フレーム
   const beats = context.studio.beats;
   const scriptBeats = context.studio.script.beats;
