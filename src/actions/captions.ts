@@ -10,6 +10,8 @@ import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 
 const vanillaAgents = agents.default ?? agents;
 
+const defaultDelimiters = ["。", "？", "！", ".", "?", "!"];
+
 // Split text by delimiters while keeping delimiters attached to the preceding text
 const splitTextByDelimiters = (text: string, delimiters: string[]): string[] => {
   if (!text || delimiters.length === 0) {
@@ -33,6 +35,34 @@ const splitTextByDelimiters = (text: string, delimiters: string[]): string[] => 
 
   const finalSegments = current.trim() ? [...segments, current.trim()] : segments;
   return finalSegments.length > 0 ? finalSegments : [text];
+};
+
+// Get split texts based on settings
+const getSplitTexts = (
+  text: string,
+  texts: string[] | undefined,
+  textSplit: { type: "none" } | { type: "delimiters"; delimiters?: string[] } | undefined,
+): string[] => {
+  // Manual split takes precedence
+  if (texts && texts.length > 0) {
+    return texts;
+  }
+  // No splitting or undefined
+  if (!textSplit || textSplit.type === "none") {
+    return [text];
+  }
+  // Split by delimiters
+  if (textSplit.type === "delimiters") {
+    const delimiters = textSplit.delimiters ?? defaultDelimiters;
+    return splitTextByDelimiters(text, delimiters);
+  }
+  return [text];
+};
+
+// Calculate timing ratios based on text length
+const calculateTimingRatios = (splitTexts: string[]): number[] => {
+  const totalLength = splitTexts.reduce((sum, t) => sum + t.length, 0);
+  return splitTexts.map((t) => t.length / totalLength);
 };
 
 export const caption_graph_data: GraphData = {
@@ -63,14 +93,6 @@ export const caption_graph_data: GraphData = {
                   GraphAILogger.warn(`No multiLingual caption found for beat ${index}, lang: ${captionParams.lang}`);
                 }
                 const text = localizedText(beat, context.multiLingual?.[index], captionParams.lang, context.studio.script.lang);
-                const delimiters = ["。", "？", "！", ".", "?", "!"];
-
-                // Split text by delimiters
-                const splitTexts = splitTextByDelimiters(text, delimiters);
-
-                // Calculate timing based on text length
-                const totalLength = splitTexts.reduce((sum, t) => sum + t.length, 0);
-                const ratios = splitTexts.map((t) => t.length / totalLength);
 
                 // Get beat timing info
                 const studioBeat = context.studio.beats[index];
@@ -78,7 +100,12 @@ export const caption_graph_data: GraphData = {
                 const beatDuration = studioBeat.duration ?? 0;
                 const introPadding = MulmoStudioContextMethods.getIntroPadding(context);
 
-                // Calculate cumulative positions
+                // Determine split texts based on captionSplit setting
+                const captionSplit = captionParams.captionSplit ?? "none";
+                const splitTexts = captionSplit === "estimate" ? getSplitTexts(text, beat.texts, captionParams.textSplit) : [text]; // "none" - no splitting
+
+                // Calculate timing ratios
+                const ratios = calculateTimingRatios(splitTexts);
                 const cumulativeRatios = ratios.reduce((acc, ratio) => [...acc, acc[acc.length - 1] + ratio], [0]);
 
                 // Generate caption images with absolute timing
