@@ -364,8 +364,7 @@ export const getTransitionFrameDurations = (context: MulmoStudioContext, index: 
   const currentTransition = MulmoPresentationStyleMethods.getMovieTransition(context, scriptBeats[index]);
   const firstDuration = index > 0 ? getTransitionDuration(currentTransition, index - 1, index) : 0;
 
-  const nextTransition =
-    index < scriptBeats.length - 1 ? MulmoPresentationStyleMethods.getMovieTransition(context, scriptBeats[index + 1]) : null;
+  const nextTransition = index < scriptBeats.length - 1 ? MulmoPresentationStyleMethods.getMovieTransition(context, scriptBeats[index + 1]) : null;
   const lastDuration = getTransitionDuration(nextTransition, index, index + 1);
 
   return {
