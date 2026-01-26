@@ -11,7 +11,7 @@
         "lang": {
           "ja": {
             "provider": "gemini",
-            "voiceId": "9d9ed276-49ee-443a-bc19-26e6136d05f0"
+            "voiceId": "Leda"
           }
         }
       }
@@ -70,7 +70,7 @@
       "image": {
         "type": "textSlide",
         "slide": {
-          "title": "Text replacement test for nijivoice"
+          "title": "Text replacement test for Gemini"
         }
       }
     },

@@ -22,9 +22,9 @@
         "provider": "elevenlabs",
         "voiceId": "3JDquces8E8bkmvbh6Bc"
       },
-      "Nijivoice": {
-        "provider": "gemini",
-        "voiceId": "231e0170-0ece-4155-be44-231423062f41"
+      "Kotodama": {
+        "provider": "kotodama",
+        "voiceId": "Poporo"
       }
     }
   },
@@ -41,7 +41,7 @@
     },
     {
       "speaker": "Gemini",
-      "text": "こんにちは、テストです。ジェミニ",
+      "text": "こんにちは、テストです。ジェミニです。",
       "image": {
         "type": "textSlide",
         "slide": {
@@ -70,12 +70,12 @@
       }
     },
     {
-      "speaker": "Nijivoice",
-      "text": "こんにちは、テストです。ニジヴォイス",
+      "speaker": "Kotodama",
+      "text": "こんにちは、テストです。コトダマ",
       "image": {
         "type": "textSlide",
         "slide": {
-          "title": "Nijivoice TTS"
+          "title": "Kotodama TTS"
         }
       }
     }
