@@ -349,26 +349,23 @@ const getClampedTransitionDuration = (transitionDuration: number, prevBeatDurati
   return Math.min(transitionDuration, maxDuration);
 };
 
-const getTransitionFrameDurations = (context: MulmoStudioContext, index: number) => {
+export const getTransitionFrameDurations = (context: MulmoStudioContext, index: number) => {
   const minFrame = 1 / 30; // 30fpsを想定。最小1フレーム
   const beats = context.studio.beats;
   const scriptBeats = context.studio.script.beats;
 
+  const getTransitionDuration = (transition: MulmoTransition | null, prevBeatIndex: number, currentBeatIndex: number) => {
+    if (!transition || prevBeatIndex < 0 || currentBeatIndex >= beats.length) return 0;
+    const prevBeatDuration = beats[prevBeatIndex].duration ?? 1;
+    const currentBeatDuration = beats[currentBeatIndex].duration ?? 1;
+    return getClampedTransitionDuration(transition.duration, prevBeatDuration, currentBeatDuration);
+  };
+
   const currentTransition = MulmoPresentationStyleMethods.getMovieTransition(context, scriptBeats[index]);
-  let firstDuration = 0;
-  if (currentTransition && index > 0) {
-    const prevBeatDuration = beats[index - 1].duration ?? 1;
-    const currentBeatDuration = beats[index].duration ?? 1;
-    firstDuration = getClampedTransitionDuration(currentTransition.duration, prevBeatDuration, currentBeatDuration);
-  }
+  const firstDuration = index > 0 ? getTransitionDuration(currentTransition, index - 1, index) : 0;
 
   const nextTransition = index < scriptBeats.length - 1 ? MulmoPresentationStyleMethods.getMovieTransition(context, scriptBeats[index + 1]) : null;
-  let lastDuration = 0;
-  if (nextTransition) {
-    const prevBeatDuration = beats[index].duration ?? 1;
-    const currentBeatDuration = beats[index + 1].duration ?? 1;
-    lastDuration = getClampedTransitionDuration(nextTransition.duration, prevBeatDuration, currentBeatDuration);
-  }
+  const lastDuration = getTransitionDuration(nextTransition, index, index + 1);
 
   return {
     firstDuration: Math.max(firstDuration, minFrame),

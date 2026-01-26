@@ -13,6 +13,7 @@ import {
   getTransitionVideoId,
   getConcatVideoFilter,
   addSplitAndExtractFrames,
+  getTransitionFrameDurations,
 } from "../../src/actions/movie.js";
 import { FfmpegContextInit } from "../../src/utils/ffmpeg_utils.js";
 import type { MulmoStudioContext, MulmoBeat, MulmoPresentationStyle, MulmoStudioBeat } from "../../src/types/index.js";
@@ -43,6 +44,16 @@ type TestContextForPadding = {
 };
 
 type TestContextForFillOption = {
+  presentationStyle: Partial<MulmoPresentationStyle>;
+};
+
+type TestContextForTransitionDurations = {
+  studio: {
+    script: {
+      beats: Partial<MulmoBeat>[];
+    };
+    beats: Partial<MulmoStudioBeat>[];
+  };
   presentationStyle: Partial<MulmoPresentationStyle>;
 };
 
@@ -371,6 +382,98 @@ test("test getTransitionVideoId for slidein transition", async () => {
 
   const result = getTransitionVideoId(transition, videoIdsForBeats, 1);
   assert.deepEqual(result, { videoId: "", nextVideoId: "v1_first", beatIndex: 1 });
+});
+
+// getTransitionFrameDurations tests
+test("test getTransitionFrameDurations clamps to 90 percent of adjacent beats", async () => {
+  const context: TestContextForTransitionDurations = {
+    studio: {
+      script: {
+        beats: [
+          { speaker: "A" },
+          { speaker: "B", movieParams: { transition: { type: "fade", duration: 2.0 } } },
+          { speaker: "C", movieParams: { transition: { type: "fade", duration: 2.0 } } },
+        ],
+      },
+      beats: [{ duration: 2.0 }, { duration: 4.0 }, { duration: 10.0 }],
+    },
+    presentationStyle: {},
+  };
+
+  const result = getTransitionFrameDurations(context as MulmoStudioContext, 1);
+  assert.equal(result.firstDuration, 1.8);
+  assert.equal(result.lastDuration, 2.0);
+});
+
+test("test getTransitionFrameDurations enforces min frame", async () => {
+  const context: TestContextForTransitionDurations = {
+    studio: {
+      script: {
+        beats: [
+          { speaker: "A" },
+          { speaker: "B", movieParams: { transition: { type: "fade", duration: 0.01 } } },
+          { speaker: "C", movieParams: { transition: { type: "fade", duration: 0.01 } } },
+        ],
+      },
+      beats: [{ duration: 1.0 }, { duration: 1.0 }, { duration: 1.0 }],
+    },
+    presentationStyle: {},
+  };
+
+  const result = getTransitionFrameDurations(context as MulmoStudioContext, 1);
+  const minFrame = 1 / 30;
+  assert.ok(Math.abs(result.firstDuration - minFrame) < 1e-6);
+  assert.ok(Math.abs(result.lastDuration - minFrame) < 1e-6);
+});
+
+test("test getTransitionFrameDurations defaults missing durations and handles first beat", async () => {
+  const context: TestContextForTransitionDurations = {
+    studio: {
+      script: {
+        beats: [{ speaker: "A" }, { speaker: "B", movieParams: { transition: { type: "fade", duration: 2.0 } } }],
+      },
+      beats: [{}, {}],
+    },
+    presentationStyle: {},
+  };
+
+  const result = getTransitionFrameDurations(context as MulmoStudioContext, 0);
+  assert.ok(Math.abs(result.firstDuration - 1 / 30) < 1e-6);
+  assert.equal(result.lastDuration, 0.9);
+});
+
+test("test getTransitionFrameDurations handles last beat with transition and null next transition", async () => {
+  const context: TestContextForTransitionDurations = {
+    studio: {
+      script: {
+        beats: [{ speaker: "A" }, { speaker: "B" }, { speaker: "C", movieParams: { transition: { type: "fade", duration: 2.0 } } }],
+      },
+      beats: [{ duration: 2.0 }, { duration: 2.0 }, { duration: 2.0 }],
+    },
+    presentationStyle: {},
+  };
+
+  const result = getTransitionFrameDurations(context as MulmoStudioContext, 2);
+  const minFrame = 1 / 30;
+  assert.equal(result.firstDuration, 1.8);
+  assert.ok(Math.abs(result.lastDuration - minFrame) < 1e-6);
+});
+
+test("test getTransitionFrameDurations handles null transitions", async () => {
+  const context: TestContextForTransitionDurations = {
+    studio: {
+      script: {
+        beats: [{ speaker: "A" }, { speaker: "B" }, { speaker: "C" }],
+      },
+      beats: [{ duration: 2.0 }, { duration: 2.0 }, { duration: 2.0 }],
+    },
+    presentationStyle: {},
+  };
+
+  const result = getTransitionFrameDurations(context as MulmoStudioContext, 1);
+  const minFrame = 1 / 30;
+  assert.ok(Math.abs(result.firstDuration - minFrame) < 1e-6);
+  assert.ok(Math.abs(result.lastDuration - minFrame) < 1e-6);
 });
 
 // getConcatVideoFilter tests
