@@ -5,7 +5,12 @@
   "lang": "en",
   "captionParams": {
     "lang": "en",
-    "styles": ["color: yellow"]
+    "styles": ["color: yellow"],
+    "captionSplit": "estimate",
+    "textSplit": {
+      "type": "delimiters",
+      "delimiters": ["。", "！", "？"]
+    }
   },
   "beats": [
     {
