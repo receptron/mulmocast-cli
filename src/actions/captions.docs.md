@@ -1,5 +1,5 @@
 ---
-generated_at: 2026-01-26T08:13:15.915Z
+generated_at: 2026-01-26T20:29:46.857Z
 ---
 
 # captions
@@ -18,7 +18,7 @@ flowchart TD
   n_context(context)
   n_outputStudioFilePath(outputStudioFilePath)
   subgraph n_map[map: mapAgent]
-    n_map_generateCaption(generateCaption<br/>agent)
+    n_map_generateCaption(generateCaption<br/>captionGenerationAgent)
     n_map_beat --> n_map_generateCaption
     n_map_context --> n_map_generateCaption
     n_map___mapIndex --> n_map_generateCaption
