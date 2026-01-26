@@ -126,21 +126,29 @@ const getOutputOption = (audioId: string, videoId: string) => {
 };
 
 const addCaptions = (ffmpegContext: FfmpegContext, concatVideoId: string, context: MulmoStudioContext, caption: string | undefined) => {
-  const beatsWithCaptions = context.studio.beats.filter(({ captionFile }) => captionFile);
+  const beatsWithCaptions = context.studio.beats.filter(({ captionFiles }) => captionFiles && captionFiles.length > 0);
   if (caption && beatsWithCaptions.length > 0) {
-    const introPadding = MulmoStudioContextMethods.getIntroPadding(context);
-    return beatsWithCaptions.reduce((prevVideoId, beat, index) => {
-      const { startAt, duration, captionFile } = beat;
-      if (startAt !== undefined && duration !== undefined && captionFile !== undefined) {
-        const captionInputIndex = FfmpegContextAddInput(ffmpegContext, captionFile);
-        const compositeVideoId = `oc${index}`;
-        ffmpegContext.filterComplex.push(
-          `[${prevVideoId}][${captionInputIndex}:v]overlay=format=auto:enable='between(t,${startAt + introPadding},${startAt + duration + introPadding})'[${compositeVideoId}]`,
-        );
-        return compositeVideoId;
-      }
-      return prevVideoId;
-    }, concatVideoId);
+    const { videoId } = beatsWithCaptions.reduce(
+      (acc, beat) => {
+        const { captionFiles } = beat;
+        if (!captionFiles) {
+          return acc;
+        }
+
+        return captionFiles.reduce((innerAcc, captionData) => {
+          const { file, startAt, endAt } = captionData;
+          const captionInputIndex = FfmpegContextAddInput(ffmpegContext, file);
+          const compositeVideoId = `oc${innerAcc.captionIndex}`;
+          ffmpegContext.filterComplex.push(
+            `[${innerAcc.videoId}][${captionInputIndex}:v]overlay=format=auto:enable='between(t,${startAt},${endAt})'[${compositeVideoId}]`,
+          );
+          return { videoId: compositeVideoId, captionIndex: innerAcc.captionIndex + 1 };
+        }, acc);
+      },
+      { videoId: concatVideoId, captionIndex: 0 },
+    );
+
+    return videoId;
   }
   return concatVideoId;
 };

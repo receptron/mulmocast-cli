@@ -142,10 +142,22 @@ export const mulmoTextSlideMediaSchema = z
   })
   .strict();
 
+export const captionSplitSchema = z.enum(["none", "estimate"]).default("none");
+
+export const textSplitSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("none") }),
+  z.object({
+    type: z.literal("delimiters"),
+    delimiters: z.array(z.string()).optional(), // default: ["。", "？", "！", ".", "?", "!"]
+  }),
+]);
+
 export const mulmoCaptionParamsSchema = z
   .object({
     lang: langSchema.optional(),
     styles: z.array(z.string()).optional().default([]), // css styles
+    captionSplit: captionSplitSchema.optional(), // how to determine caption timing
+    textSplit: textSplitSchema.optional(), // how to split text into segments (default: none)
   })
   .strict();
 
@@ -369,6 +381,7 @@ export const mulmoBeatSchema = z
   .object({
     speaker: speakerIdSchema.optional(),
     text: z.string().optional().default("").describe("Text to be spoken. If empty, the audio is not generated."),
+    texts: z.array(z.string()).optional().describe("Manually split texts for captions. Takes precedence over text for caption display."),
     id: z.string().optional().describe("Unique identifier for the beat."),
     description: z.string().optional(),
     image: mulmoImageAssetSchema.optional(),
@@ -507,7 +520,16 @@ export const mulmoStudioBeatSchema = z
     movieFile: z.string().optional(), // path to the movie file
     soundEffectFile: z.string().optional(), // path to the sound effect file
     lipSyncFile: z.string().optional(), // path to the lip sync file
-    captionFile: z.string().optional(), // path to the caption image
+    captionFile: z.string().optional(), // path to the caption image (deprecated, use captionFiles)
+    captionFiles: z
+      .array(
+        z.object({
+          file: z.string(),
+          startAt: z.number(), // absolute start time in seconds
+          endAt: z.number(), // absolute end time in seconds
+        }),
+      )
+      .optional(), // split caption images with timing
     htmlImageFile: z.string().optional(), // path to the html image
     markdown: z.string().optional(), // markdown string (alternative to image)
     html: z.string().optional(), // html string (alternative to image)
