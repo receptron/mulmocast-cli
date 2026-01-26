@@ -442,6 +442,40 @@ test("test getTransitionFrameDurations defaults missing durations and handles fi
   assert.equal(result.lastDuration, 0.9);
 });
 
+test("test getTransitionFrameDurations handles last beat with null next transition", async () => {
+  const context: TestContextForTransitionDurations = {
+    studio: {
+      script: {
+        beats: [{ speaker: "A", movieParams: { transition: { type: "fade", duration: 2.0 } } }, { speaker: "B" }],
+      },
+      beats: [{ duration: 2.0 }, { duration: 2.0 }],
+    },
+    presentationStyle: {},
+  };
+
+  const result = getTransitionFrameDurations(context as MulmoStudioContext, 1);
+  const minFrame = 1 / 30;
+  assert.ok(Math.abs(result.firstDuration - minFrame) < 1e-6);
+  assert.ok(Math.abs(result.lastDuration - minFrame) < 1e-6);
+});
+
+test("test getTransitionFrameDurations handles null transitions", async () => {
+  const context: TestContextForTransitionDurations = {
+    studio: {
+      script: {
+        beats: [{ speaker: "A" }, { speaker: "B" }, { speaker: "C" }],
+      },
+      beats: [{ duration: 2.0 }, { duration: 2.0 }, { duration: 2.0 }],
+    },
+    presentationStyle: {},
+  };
+
+  const result = getTransitionFrameDurations(context as MulmoStudioContext, 1);
+  const minFrame = 1 / 30;
+  assert.ok(Math.abs(result.firstDuration - minFrame) < 1e-6);
+  assert.ok(Math.abs(result.lastDuration - minFrame) < 1e-6);
+});
+
 // getConcatVideoFilter tests
 test("test getConcatVideoFilter with multiple videos", async () => {
   const videoIds = ["v0", "v1", "v2", "v3"];
