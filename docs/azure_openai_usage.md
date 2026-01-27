@@ -80,14 +80,34 @@ IMAGE_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
 
 ## TTS (音声合成)
 
-*（今後追記予定）*
-
 ### 環境変数
+
+`.env` ファイルに以下を設定:
 
 ```bash
 TTS_OPENAI_API_KEY=<Azure OpenAI APIキー>
 TTS_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
 ```
+
+### MulmoScript 設定
+
+```json
+{
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "provider": "openai",
+        "voiceId": "alloy",
+        "model": "tts"
+      }
+    }
+  }
+}
+```
+
+### 利用可能なボイス
+
+`alloy`, `ash`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`
 
 ### 対応モデル
 
