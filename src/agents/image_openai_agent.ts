@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
-import OpenAI, { toFile, AuthenticationError, RateLimitError, APIError } from "openai";
+import { toFile, AuthenticationError, RateLimitError, APIError } from "openai";
+import { createOpenAIClient } from "../utils/openai_client.js";
 import { provider2ImageAgent, gptImages } from "../types/provider2agent.js";
 import {
   apiKeyMissingError,
@@ -23,14 +24,14 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
 }) => {
   const { prompt, referenceImages } = namedInputs;
   const { moderation, canvasSize, quality } = params;
-  const { apiKey, baseURL } = { ...config };
+  const { apiKey, baseURL, apiVersion } = { ...config };
   if (!apiKey) {
     throw new Error("OpenAI API key is required (OPENAI_API_KEY)", {
       cause: apiKeyMissingError("imageOpenaiAgent", imageAction, "OPENAI_API_KEY"),
     });
   }
   const model = params.model ?? provider2ImageAgent["openai"].defaultModel;
-  const openai = new OpenAI({ apiKey, baseURL });
+  const openai = createOpenAIClient({ apiKey, baseURL, apiVersion });
   const size = (() => {
     if (gptImages.includes(model)) {
       if (canvasSize.width > canvasSize.height) {

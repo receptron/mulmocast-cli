@@ -36,7 +36,7 @@ export type ReplicateImageAgentParams = {
   guidanceScale?: number;
 };
 //   config
-export type OpenAIImageAgentConfig = { baseURL?: string; apiKey?: string };
+export type OpenAIImageAgentConfig = { baseURL?: string; apiKey?: string; apiVersion?: string };
 export type GoogleImageAgentConfig = {
   projectId?: string;
   token?: string;

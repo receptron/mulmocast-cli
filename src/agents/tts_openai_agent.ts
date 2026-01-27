@@ -1,8 +1,9 @@
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
-import OpenAI, { AuthenticationError, RateLimitError } from "openai";
+import { AuthenticationError, RateLimitError } from "openai";
 import type { SpeechCreateParams } from "openai/resources/audio/speech";
 import { provider2TTSAgent } from "../types/provider2agent.js";
+import { createOpenAIClient } from "../utils/openai_client.js";
 import {
   apiKeyMissingError,
   agentIncorrectAPIKeyError,
@@ -20,13 +21,13 @@ export const ttsOpenaiAgent: AgentFunction<OpenAITTSAgentParams, AgentBufferResu
 }) => {
   const { text } = namedInputs;
   const { model, voice, suppressError, instructions, speed } = params;
-  const { apiKey, baseURL } = config ?? {};
+  const { apiKey, baseURL, apiVersion } = config ?? {};
   if (!apiKey) {
     throw new Error("OpenAI API key is required (OPENAI_API_KEY)", {
       cause: apiKeyMissingError("ttsOpenaiAgent", audioAction, "OPENAI_API_KEY"),
     });
   }
-  const openai = new OpenAI({ apiKey, baseURL });
+  const openai = createOpenAIClient({ apiKey, baseURL, apiVersion });
 
   try {
     const tts_options: SpeechCreateParams = {
