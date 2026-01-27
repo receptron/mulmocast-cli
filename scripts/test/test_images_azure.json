@@ -1,0 +1,26 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "Test Images with Azure OpenAI",
+  "imageParams": {
+    "provider": "openai",
+    "model": "gpt-image-1.5"
+  },
+  "audioParams": {
+    "suppressSpeech": true
+  },
+  "beats": [
+    {
+      "text": "",
+      "imagePrompt": "A beautiful sunset over mountains, photorealistic style",
+      "duration": 3
+    },
+    {
+      "text": "",
+      "imagePrompt": "A cute robot waving hello, digital art style",
+      "duration": 3
+    }
+  ]
+}

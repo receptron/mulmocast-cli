@@ -282,6 +282,8 @@ export const mulmoBeatImageParamsSchema = z
     quality: z.string().optional(), // optional image quality (model specific)
     style: z.string().optional(), // optional image style
     moderation: z.string().optional(), // optional image style
+    baseURL: z.string().optional(), // Azure/custom endpoint URL
+    apiVersion: z.string().optional(), // Azure API version (e.g., "2025-04-01-preview")
   })
   .strict();
 
