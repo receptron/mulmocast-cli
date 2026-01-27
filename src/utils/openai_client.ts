@@ -8,9 +8,16 @@ export interface OpenAIClientOptions {
 
 /**
  * Detects if the given URL is an Azure OpenAI endpoint
+ * Safely parses the URL and checks if the hostname ends with ".openai.azure.com"
  */
 export const isAzureEndpoint = (baseURL: string | undefined): boolean => {
-  return baseURL?.includes(".openai.azure.com") ?? false;
+  if (!baseURL) return false;
+  try {
+    const url = new URL(baseURL);
+    return url.hostname.endsWith(".openai.azure.com");
+  } catch {
+    return false;
+  }
 };
 
 /**
@@ -21,9 +28,7 @@ export const isAzureEndpoint = (baseURL: string | undefined): boolean => {
 export const createOpenAIClient = (options: OpenAIClientOptions): OpenAI => {
   const { apiKey, baseURL, apiVersion } = options;
 
-  console.log(baseURL, options);
   if (isAzureEndpoint(baseURL)) {
-    console.log("AZURE");
     return new AzureOpenAI({
       apiKey,
       endpoint: baseURL,
