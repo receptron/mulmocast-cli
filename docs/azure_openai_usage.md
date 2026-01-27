@@ -165,6 +165,50 @@ az cognitiveservices account keys list \
   --query "key1" -o tsv
 ```
 
+## 設計について
+
+### 環境変数方式を採用した理由
+
+現在、Azure OpenAI のエンドポイント設定は**環境変数**で行います。MulmoScript 内での指定ではありません。
+
+```bash
+# 環境変数で設定（現在の方式）
+IMAGE_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
+```
+
+この方式を採用した理由:
+
+1. **Azure URL はユーザー固有**: Azure OpenAI のエンドポイントにはリソース名が含まれ、ユーザーごとに異なります。MulmoScript に埋め込むとスクリプトの共有が困難になります。
+
+2. **APIキーとの一貫性**: APIキーは環境変数で管理するため、エンドポイントも同様に環境変数で管理するのが自然です。
+
+3. **設定の簡素化**: プロジェクト全体で Azure を使用する場合、環境変数を1回設定するだけで全ての MulmoScript に適用されます。
+
+### 注意点
+
+環境変数で設定した場合、**プロジェクト全体で共有**されます:
+
+- 同一プロジェクト内の全ての MulmoScript が同じ Azure リソースを使用
+- OpenAI と Azure を MulmoScript 単位で切り替えることは現在できません
+- 切り替えが必要な場合は環境変数を変更してください
+
+### 将来の拡張
+
+MulmoScript のスキーマには `baseURL` と `apiVersion` フィールドが定義されています:
+
+```json
+{
+  "imageParams": {
+    "provider": "openai",
+    "model": "gpt-image-1.5",
+    "baseURL": "https://...",
+    "apiVersion": "2025-04-01-preview"
+  }
+}
+```
+
+これらは将来の拡張用に予約されています。MulmoScript 内でエンドポイントを指定できるようになれば、beat 単位での Azure/OpenAI 切り替えが可能になります。
+
 ## 参考リンク
 
 - [Azure OpenAI セットアップガイド](./azure_setup.md)
