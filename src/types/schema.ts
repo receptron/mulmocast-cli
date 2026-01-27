@@ -48,6 +48,8 @@ export const speakerDataSchema = z
     speechOptions: speechOptionsSchema.optional(),
     provider: text2SpeechProviderSchema.optional(),
     model: z.string().optional().describe("TTS model to use for this speaker"),
+    baseURL: z.string().optional(), // Azure/custom endpoint URL
+    apiVersion: z.string().optional(), // Azure API version (e.g., "2025-04-01-preview")
   })
   .strict();
 
