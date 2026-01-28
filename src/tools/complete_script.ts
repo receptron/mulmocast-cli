@@ -111,7 +111,16 @@ export const completeScript = (data: PartialMulmoScript, options: CompleteScript
   }
 
   // Get base config from template or style
-  const base = templateName ? getScriptFromPromptTemplate(templateName) : styleName ? getStyle(styleName) : undefined;
+  const getBase = () => {
+    if (templateName) {
+      return getScriptFromPromptTemplate(templateName);
+    }
+    if (styleName) {
+      return getStyle(styleName);
+    }
+    return undefined;
+  };
+  const base = getBase();
 
   // Merge base with input data (input data has highest precedence)
   const merged = base ? mergeScripts(base, data) : data;
