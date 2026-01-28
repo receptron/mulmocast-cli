@@ -128,9 +128,6 @@ REPLICATE_API_TOKEN=your_replicate_api_key
 
 #### (Optional) For TTS models
 ```bash
-# For Nijivoice TTS
-NIJIVOICE_API_KEY=your_nijivoice_api_key
-
 # For ElevenLabs TTS
 ELEVENLABS_API_KEY=your_elevenlabs_api_key
 ```
@@ -180,6 +177,11 @@ IMAGE_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
 # For TTS (Text-to-Speech)
 TTS_OPENAI_API_KEY=<your-azure-openai-api-key>
 TTS_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
+
+# For LLM (translate, scripting)
+LLM_OPENAI_API_KEY=<your-azure-openai-api-key>
+LLM_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
+LLM_OPENAI_API_VERSION=2025-04-01-preview  # optional
 ```
 
 MulmoScript configuration (same as OpenAI):
@@ -282,8 +284,7 @@ mulmo tool scripting --input-file story.txt
 mulmo tool scripting -i
 ```
 
-Note: 
-- When using the `⁠sensei_and_taro` template, a Nijivoice API key is required
+Note:
 - When -i is specified, --input-file value will be ignored
 - When --input-file is specified, -u value will be ignored
 
