@@ -217,10 +217,38 @@ mulmo tool scripting --input-file story.txt
 mulmo tool scripting -i
 ```
 
-Note: 
+Note:
 - When using the `⁠sensei_and_taro` template, a Nijivoice API key is required
 - When -i is specified, --input-file value will be ignored
 - When --input-file is specified, -u value will be ignored
+
+### Complete MulmoScript from minimal beats
+
+You can create a minimal JSON with just beats and complete it with `mulmo tool complete`:
+
+```json
+{
+  "beats": [
+    { "text": "Hello, welcome to MulmoCast!" },
+    { "text": "This is a simple example." }
+  ]
+}
+```
+
+Save this as `my_beats.json`, then complete it with a style:
+
+```bash
+# Complete with built-in style
+mulmo tool complete my_beats.json -s ani
+
+# Complete with custom style file
+mulmo tool complete my_beats.json -s ./my_style.json
+
+# Output to specific file
+mulmo tool complete my_beats.json -s ani -o my_script.json
+```
+
+This generates a complete MulmoScript with all required fields (canvasSize, speechParams, imageParams, etc.) from the style.
 
 
 ## Generate content from MulmoScript
