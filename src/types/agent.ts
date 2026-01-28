@@ -25,7 +25,12 @@ export type AgentConfig = { apiKey?: string };
 export type ImageAgentInputs = AgentPromptInputs & { referenceImages: string[] | null | undefined };
 export type OpenAIImageAgentInputs = AgentPromptInputs & { referenceImages: string[] | null | undefined };
 //   params
-export type ImageAgentParams = { model: string; canvasSize: { width: number; height: number } };
+export type ImageAgentParams = {
+  model: string;
+  canvasSize: { width: number; height: number };
+  vertexai_project?: string;
+  vertexai_location?: string;
+};
 export type OpenAIImageAgentParams = ImageAgentParams & { moderation: OpenAIImageModeration | null | undefined; quality?: OpenAIImageQuality };
 export type ReplicateImageAgentParams = {
   model: `${string}/${string}` | undefined;
@@ -48,7 +53,11 @@ export type ReplicateImageAgentConfig = AgentConfig;
 //   inputs
 export type MovieAgentInputs = AgentPromptInputs & { imagePath?: string; movieFile: string };
 //   params
-export type GoogleMovieAgentParams = ImageAgentParams & { duration?: number };
+export type GoogleMovieAgentParams = ImageAgentParams & {
+  duration?: number;
+  vertexai_project?: string;
+  vertexai_location?: string;
+};
 export type ReplicateMovieAgentParams = { model: `${string}/${string}` | undefined; canvasSize: { width: number; height: number }; duration?: number };
 // sound effect
 export type ReplicateSoundEffectAgentParams = { model: `${string}/${string}` | undefined; duration?: number };
