@@ -10,7 +10,7 @@ This document describes MulmoCast features, especially advanced features beyond 
 
 Basic video, audio, and image generation features:
 
-- **TTS (Text-to-Speech)** - 複数のプロバイダー対応（OpenAI, Gemini, Google, ElevenLabs, Nijivoice, Kotodama）
+- **TTS (Text-to-Speech)** - 複数のプロバイダー対応（OpenAI, Gemini, Google, ElevenLabs, Kotodama）
 - **画像生成 (Image Generation)** - OpenAI DALL-E, Google Imagen, Replicate対応
 - **動画生成 (Video Generation)** - Google Veo, Replicate各種モデル対応
 - **PDF生成 (PDF Generation)** - プレゼンテーション資料のPDF化
@@ -515,8 +515,8 @@ Use different voice settings for the same speaker across languages, optimizing v
         "voiceId": "shimmer",
         "lang": {
           "ja": {
-            "provider": "nijivoice",
-            "voiceId": "9d9ed276-49ee-443a-bc19-26e6136d05f0"
+            "provider": "gemini",
+            "voiceId": "Kore"
           },
           "zh": {
             "provider": "google",

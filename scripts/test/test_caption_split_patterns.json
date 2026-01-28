@@ -1,0 +1,244 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "ja",
+  "captionParams": {
+    "lang": "ja",
+    "styles": ["color: yellow"],
+    "captionSplit": "estimate",
+    "textSplit": {
+      "type": "delimiters",
+      "delimiters": ["。", "！", "？", ".", "!", "?"]
+    }
+  },
+  "beats": [
+    {
+      "text": "まずは基本の自動分割を確認します。これは長めの文章です。句点で分割されます。さらに一文を追加します。最後は疑問文ですか？",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Auto split (default)",
+          "bullets": ["Default delimiters", "Japanese + ASCII"]
+        }
+      }
+    },
+    {
+      "text": "手動分割が優先されることを確認します。区切り文字が存在しても自動分割は適用されません。",
+      "texts": ["手動分割が優先されます。区切り文字が存在しても、", "自動分割は適用されません。"],
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Manual texts override",
+          "bullets": ["texts[] wins", "No auto split"]
+        }
+      }
+    },
+    {
+      "text": "カスタム区切り文字の動作を確認します。縦棒とダッシュで分割します | このように — さらにこのように | 完了です。",
+      "captionParams": {
+        "captionSplit": "estimate",
+        "textSplit": {
+          "type": "delimiters",
+          "delimiters": ["|", "—"]
+        }
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Custom delimiters",
+          "bullets": ["| and —", "Non-punctuation split"]
+        }
+      }
+    },
+    {
+      "text": "分割なしの動作を確認します。句読点があっても一つのキャプションとして表示されます。",
+      "captionParams": {
+        "captionSplit": "none",
+        "textSplit": { "type": "none" }
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "captionSplit: none",
+          "bullets": ["No split", "Single caption"]
+        }
+      }
+    },
+    {
+      "text": "区切り文字が空配列の場合は分割されないことを確認します。分割されていないことを確認します。",
+      "captionParams": {
+        "captionSplit": "estimate",
+        "textSplit": {
+          "type": "delimiters",
+          "delimiters": []
+        }
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Empty delimiters",
+          "bullets": ["No split expected"]
+        }
+      }
+    },
+    {
+      "text": "混在する句読点と連続記号の挙動を確認します。英語記号...Yes!!日本語記号でも分割されるはずです！！本当でしょうか？",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Repeated punctuation",
+          "bullets": ["Consecutive punctuation", "Mixed scripts"]
+        }
+      }
+    },
+    {
+      "text": "スタイル上書きの動作を確認します。このビートだけ文字色を変更します。",
+      "captionParams": {
+        "styles": ["color: cyan"]
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Style override",
+          "bullets": ["Override styles", "Color: cyan"]
+        }
+      }
+    },
+    {
+      "text": "スタイルを空配列で上書きし、グローバルの色指定が消えることを確認します。",
+      "captionParams": {
+        "styles": []
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Style reset",
+          "bullets": ["styles: []", "Clear global styles"]
+        }
+      }
+    },
+    {
+      "text": "We verify the basic automatic splitting. This is a longer passage. It is split at sentence-ending punctuation. We add one more sentence! Is the last one a question?",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Auto split (EN)",
+          "bullets": ["Default delimiters", "English text"]
+        }
+      }
+    },
+    {
+      "text": "We verify explicit English delimiters. It should split only on period, question, or exclamation. This comma, however, should not split.",
+      "captionParams": {
+        "captionSplit": "estimate",
+        "textSplit": {
+          "type": "delimiters",
+          "delimiters": [".", "?", "!"]
+        }
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Auto split (EN explicit)",
+          "bullets": [".?! only", "Comma should not split"]
+        }
+      }
+    },
+    {
+      "text": "We confirm that manual splits take precedence. Even if delimiters exist, automatic splitting is not applied.",
+      "texts": ["We confirm that manual splits take precedence. Even if delimiters exist,", "automatic splitting is not applied."],
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Manual texts override (EN)",
+          "bullets": ["texts[] wins", "No auto split"]
+        }
+      }
+    },
+    {
+      "text": "We verify custom delimiters. We split with a vertical bar and a dash | like this — and also like this | done.",
+      "captionParams": {
+        "captionSplit": "estimate",
+        "textSplit": {
+          "type": "delimiters",
+          "delimiters": ["|", "—"]
+        }
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Custom delimiters (EN)",
+          "bullets": ["| and —", "Non-punctuation split"]
+        }
+      }
+    },
+    {
+      "text": "We confirm the no-split behavior. Even with punctuation, it is displayed as a single caption.",
+      "captionParams": {
+        "captionSplit": "none",
+        "textSplit": { "type": "none" }
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "captionSplit: none (EN)",
+          "bullets": ["No split", "Single caption"]
+        }
+      }
+    },
+    {
+      "text": "We confirm that an empty delimiter list does not split the text. We verify that it remains unsplit.",
+      "captionParams": {
+        "captionSplit": "estimate",
+        "textSplit": {
+          "type": "delimiters",
+          "delimiters": []
+        }
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Empty delimiters (EN)",
+          "bullets": ["No split expected"]
+        }
+      }
+    },
+    {
+      "text": "We check mixed punctuation and repeated marks. English symbols...Yes!! It should split with Japanese marks too!! Is that correct?",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Repeated punctuation (EN)",
+          "bullets": ["Consecutive punctuation", "Mixed scripts"]
+        }
+      }
+    },
+    {
+      "text": "We confirm style override behavior. Only this beat changes the text color.",
+      "captionParams": {
+        "styles": ["color: cyan"]
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Style override (EN)",
+          "bullets": ["Override styles", "Color: cyan"]
+        }
+      }
+    },
+    {
+      "text": "We override styles with an empty array to confirm that global styles are cleared.",
+      "captionParams": {
+        "styles": []
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Style reset (EN)",
+          "bullets": ["styles: []", "Clear global styles"]
+        }
+      }
+    }
+  ]
+}

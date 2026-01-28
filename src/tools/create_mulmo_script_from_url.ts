@@ -15,7 +15,7 @@ import { mulmoScriptSchema, urlsSchema } from "../types/schema.js";
 import { ScriptingParams } from "../types/index.js";
 import { cliLoadingPlugin } from "../utils/plugins.js";
 import { graphDataScriptFromUrlPrompt } from "../utils/prompt.js";
-import { llmPair } from "../utils/utils.js";
+import { llmPair, settings2GraphAIConfig } from "../utils/utils.js";
 import { readFileSync } from "fs";
 
 dotenv.config({ quiet: true });
@@ -230,6 +230,7 @@ export const createMulmoScriptFromUrl = async ({ urls, templateName, outDirPath,
   ];
   const { agent, model, max_tokens } = llmPair(llm, llm_model);
 
+  const config = settings2GraphAIConfig(undefined, process.env);
   const graph = new GraphAI(
     graphData,
     {
@@ -242,7 +243,7 @@ export const createMulmoScriptFromUrl = async ({ urls, templateName, outDirPath,
       validateSchemaAgent,
       fileWriteAgent,
     },
-    { agentFilters },
+    { agentFilters, config },
   );
 
   graph.injectValue("urls", parsedUrls);
@@ -273,15 +274,20 @@ export const createMulmoScriptFromFile = async (
   const text = readFileSync(filePath, "utf-8");
   const { agent, model, max_tokens } = llmPair(llm, llm_model);
 
-  const graph = new GraphAI(graphDataText, {
-    ...vanillaAgents,
-    openAIAgent,
-    anthropicAgent,
-    geminiAgent,
-    groqAgent,
-    validateSchemaAgent,
-    fileWriteAgent,
-  });
+  const config = settings2GraphAIConfig(undefined, process.env);
+  const graph = new GraphAI(
+    graphDataText,
+    {
+      ...vanillaAgents,
+      openAIAgent,
+      anthropicAgent,
+      geminiAgent,
+      groqAgent,
+      validateSchemaAgent,
+      fileWriteAgent,
+    },
+    { config },
+  );
 
   graph.injectValue("sourceText", { text });
   graph.injectValue("systemPrompt", readTemplatePrompt(templateName));
