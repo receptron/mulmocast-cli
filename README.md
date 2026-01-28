@@ -180,6 +180,11 @@ IMAGE_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
 # For TTS (Text-to-Speech)
 TTS_OPENAI_API_KEY=<your-azure-openai-api-key>
 TTS_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
+
+# For LLM (translate, scripting)
+LLM_OPENAI_API_KEY=<your-azure-openai-api-key>
+LLM_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
+LLM_OPENAI_API_VERSION=2025-04-01-preview  # optional
 ```
 
 MulmoScript configuration (same as OpenAI):
