@@ -136,3 +136,11 @@ test("styleExists - returns true for file path", () => {
 test("styleExists - returns false for non-existing file", () => {
   assert.strictEqual(styleExists("./nonexistent.json"), false);
 });
+
+test("completeScript - throws error when both templateName and styleName are specified", () => {
+  const input = { beats: [{ text: "Hello" }] };
+
+  assert.throws(() => completeScript(input, { templateName: "children_book", styleName: "ani" }), {
+    message: "Cannot specify both templateName and styleName. They are mutually exclusive.",
+  });
+});

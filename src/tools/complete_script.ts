@@ -81,22 +81,43 @@ type CompleteScriptOptions = {
 };
 
 /**
- * Complete a partial MulmoScript with schema defaults, optional style and template
- * Precedence: style (lowest) -> template -> input data (highest)
+ * Complete a partial MulmoScript with schema defaults, optional style or template
+ *
+ * @param data - Partial MulmoScript to complete (highest precedence)
+ * @param options - Optional template or style to use as base
+ * @param options.templateName - Template name (e.g., "children_book"). Mutually exclusive with styleName.
+ * @param options.styleName - Style name or file path. Mutually exclusive with templateName.
+ * @returns Zod safe parse result with completed MulmoScript or validation errors
+ * @throws Error if both templateName and styleName are specified
+ *
+ * @example
+ * // With template
+ * completeScript(data, { templateName: "children_book" })
+ *
+ * @example
+ * // With style
+ * completeScript(data, { styleName: "ghibli_comic" })
+ *
+ * @example
+ * // With style from file
+ * completeScript(data, { styleName: "./my-style.json" })
  */
 export const completeScript = (data: PartialMulmoScript, options: CompleteScriptOptions = {}): CompleteScriptResult => {
   const { templateName, styleName } = options;
 
-  // Start with style as base (lowest precedence)
-  const style = styleName ? getStyle(styleName) : undefined;
-  const withStyle = style ? mergeScripts(style, data) : data;
+  // template and style are mutually exclusive
+  if (templateName && styleName) {
+    throw new Error("Cannot specify both templateName and styleName. They are mutually exclusive.");
+  }
 
-  // Apply template (middle precedence)
-  const template = templateName ? getScriptFromPromptTemplate(templateName) : undefined;
-  const withTemplate = template ? mergeScripts(template, withStyle) : withStyle;
+  // Get base config from template or style
+  const base = templateName ? getScriptFromPromptTemplate(templateName) : styleName ? getStyle(styleName) : undefined;
+
+  // Merge base with input data (input data has highest precedence)
+  const merged = base ? mergeScripts(base, data) : data;
 
   // Add version if not present
-  const withVersion = addMulmocastVersion(withTemplate);
+  const withVersion = addMulmocastVersion(merged);
 
   return mulmoScriptSchema.safeParse(withVersion);
 };
