@@ -14,7 +14,6 @@ Create .env file.
 ```
 OPENAI_API_KEY=your_openai_api_key
 GOOGLE_PROJECT_ID=your_google_project_id # optional for movie, image generation
-NIJIVOICE_API_KEY=your_nijivoice_api_key # optional for movie, audio generation
 BROWSERLESS_API_TOKEN=your_browserless_api_token # optional for scripting from web content
 ```
 
@@ -65,7 +64,7 @@ This will create a MulmoScript JSON file in the ⁠./output folder by default.
   "description": "The description of the podcast.",
   "reference": "URL to the source data", // optional
   "speechParams": {
-    "provider": "openAI", // or "nijivoice", default is "openAI"
+    "provider": "openAI", // or "gemini", "elevenlabs", etc. Default is "openAI"
     "speakers": {
       "Host": {
         "voiceId": "shimmer",

@@ -45,7 +45,7 @@ yarn story_to_script        # Convert story to MulmoScript
 **MulmoScript Format**: JSON-based intermediate language that describes multi-modal content with beats (content segments), speakers, media sources, and presentation styles.
 
 **Multi-Provider AI Integration**: Supports multiple AI providers for different tasks:
-- Text-to-Speech: OpenAI, Google Cloud, ElevenLabs, Nijivoice
+- Text-to-Speech: OpenAI, Google Cloud, ElevenLabs, Gemini
 - Image Generation: OpenAI DALL-E, Google Imagen
 - Video Generation: Replicate models
 
@@ -71,7 +71,7 @@ yarn story_to_script        # Convert story to MulmoScript
 
 The system uses environment variables for API keys and configuration. Required `.env` setup:
 - `OPENAI_API_KEY` (required)
-- Optional: `GOOGLE_PROJECT_ID`, `REPLICATE_API_TOKEN`, `NIJIVOICE_API_KEY`, `ELEVENLABS_API_KEY`, `BROWSERLESS_API_TOKEN`
+- Optional: `GOOGLE_PROJECT_ID`, `REPLICATE_API_TOKEN`, `ELEVENLABS_API_KEY`, `BROWSERLESS_API_TOKEN`
 
 ### File Handling Conventions
 

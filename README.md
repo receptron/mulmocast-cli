@@ -128,9 +128,6 @@ REPLICATE_API_TOKEN=your_replicate_api_key
 
 #### (Optional) For TTS models
 ```bash
-# For Nijivoice TTS
-NIJIVOICE_API_KEY=your_nijivoice_api_key
-
 # For ElevenLabs TTS
 ELEVENLABS_API_KEY=your_elevenlabs_api_key
 ```
@@ -287,8 +284,7 @@ mulmo tool scripting --input-file story.txt
 mulmo tool scripting -i
 ```
 
-Note: 
-- When using the `⁠sensei_and_taro` template, a Nijivoice API key is required
+Note:
 - When -i is specified, --input-file value will be ignored
 - When --input-file is specified, -u value will be ignored
 
