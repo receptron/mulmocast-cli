@@ -470,9 +470,10 @@ mulmo tool <command>
 Generate Mulmo script and other tools
 
 Commands:
-  mulmo tool scripting  Generate mulmocast script
-  mulmo tool prompt     Dump prompt from template
-  mulmo tool schema     Dump mulmocast schema
+  mulmo tool scripting       Generate mulmocast script
+  mulmo tool complete <file> Complete partial MulmoScript with defaults
+  mulmo tool prompt          Dump prompt from template
+  mulmo tool schema          Dump mulmocast schema
 
 Options:
       --version  Show version number                                   [boolean]
@@ -558,6 +559,36 @@ Options:
       --version  Show version number                                   [boolean]
   -v, --verbose  verbose log               [boolean] [required] [default: false]
   -h, --help     Show help                                             [boolean]
+```
+
+```
+mulmo tool complete <file>
+
+Complete partial MulmoScript with schema defaults and optional style/template
+
+Positionals:
+  file  Input beats file path (JSON)                             [string] [required]
+
+Options:
+      --version   Show version number                                    [boolean]
+  -v, --verbose   verbose log                [boolean] [required] [default: false]
+  -h, --help      Show help                                              [boolean]
+  -o, --output    Output file path (default: <file>_completed.json)       [string]
+  -t, --template  Template name to apply                                  [string]
+  -s, --style     Style name or file path (.json)                         [string]
+
+Examples:
+  # Complete minimal script with schema defaults
+  mulmo tool complete input.json
+
+  # Apply built-in style
+  mulmo tool complete input.json -s ani
+
+  # Apply custom style file
+  mulmo tool complete input.json -s ./my_style.json
+
+  # Apply template
+  mulmo tool complete input.json -t children_book
 ```
 
 
