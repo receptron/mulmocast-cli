@@ -13,9 +13,15 @@ export const builder = (yargs: Argv) => {
     })
     .option("t", {
       alias: "template",
-      description: "Template/style name to apply",
+      description: "Template name to apply",
       demandOption: false,
       choices: availableTemplateNames,
+      type: "string",
+    })
+    .option("s", {
+      alias: "style",
+      description: "Style name or file path (.json)",
+      demandOption: false,
       type: "string",
     })
     .positional("file", {
