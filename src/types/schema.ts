@@ -286,6 +286,8 @@ export const mulmoBeatImageParamsSchema = z
     moderation: z.string().optional(), // optional image style
     baseURL: z.string().optional(), // Azure/custom endpoint URL
     apiVersion: z.string().optional(), // Azure API version (e.g., "2025-04-01-preview")
+    vertexai_project: z.string().optional(), // Google Cloud Project ID for Vertex AI
+    vertexai_location: z.string().optional(), // Vertex AI location (default: us-central1)
   })
   .strict();
 
@@ -379,6 +381,8 @@ export const mulmoMovieParamsSchema = z.object({
   fillOption: mulmoFillOptionSchema.optional(), // for movie.ts
   transition: mulmoTransitionSchema.optional(), // for movie.ts
   filters: z.array(mulmoVideoFilterSchema).optional(), // for movie.ts
+  vertexai_project: z.string().optional(), // Google Cloud Project ID for Vertex AI
+  vertexai_location: z.string().optional(), // Vertex AI location (default: us-central1)
 });
 
 export const mulmoBeatSchema = z

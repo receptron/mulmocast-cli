@@ -78,13 +78,21 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
   const { prompt, referenceImages } = namedInputs;
   const model = params.model ?? provider2ImageAgent["google"].defaultModel;
   const apiKey = config?.apiKey;
-  if (!apiKey) {
-    throw new Error("Google GenAI API key is required (GEMINI_API_KEY)", {
-      cause: apiKeyMissingError("imageGenAIAgent", imageAction, "GEMINI_API_KEY"),
-    });
-  }
 
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = params.vertexai_project
+    ? new GoogleGenAI({
+        vertexai: true,
+        project: params.vertexai_project,
+        location: params.vertexai_location ?? "us-central1",
+      })
+    : (() => {
+        if (!apiKey) {
+          throw new Error("Google GenAI API key is required (GEMINI_API_KEY)", {
+            cause: apiKeyMissingError("imageGenAIAgent", imageAction, "GEMINI_API_KEY"),
+          });
+        }
+        return new GoogleGenAI({ apiKey });
+      })();
 
   if (model === "gemini-2.5-flash-image" || model === "gemini-3-pro-image-preview") {
     const contentParams = (() => {

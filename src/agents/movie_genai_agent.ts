@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import { GraphAILogger, sleep } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { GoogleGenAI, PersonGeneration } from "@google/genai";
@@ -64,12 +64,18 @@ const loadImageAsBase64 = (imagePath: string): { imageBytes: string; mimeType: s
   };
 };
 
-const downloadVideo = async (ai: GoogleGenAI, video: GenAIVideo, movieFile: string): Promise<AgentBufferResult> => {
-  await ai.files.download({
-    file: video,
-    downloadPath: movieFile,
-  });
-  await sleep(5000); // HACK: Without this, the file is not ready yet.
+const downloadVideo = async (ai: GoogleGenAI, video: GenAIVideo, movieFile: string, isVertexAI: boolean): Promise<AgentBufferResult> => {
+  if (isVertexAI) {
+    // Vertex AI returns videoBytes directly
+    writeFileSync(movieFile, Buffer.from(video.videoBytes!, "base64"));
+  } else {
+    // Gemini API requires download via uri
+    await ai.files.download({
+      file: video,
+      downloadPath: movieFile,
+    });
+    await sleep(5000); // HACK: Without this, the file is not ready yet.
+  }
   return { saved: movieFile };
 };
 
@@ -97,6 +103,7 @@ const generateExtendedVideo = async (
   imagePath: string | undefined,
   requestedDuration: number,
   movieFile: string,
+  isVertexAI: boolean,
 ): Promise<AgentBufferResult> => {
   const initialDuration = 8;
   const maxExtensionDuration = 8;
@@ -148,7 +155,7 @@ const generateExtendedVideo = async (
     });
   }
 
-  return downloadVideo(ai, result.video, movieFile);
+  return downloadVideo(ai, result.video, movieFile, isVertexAI);
 };
 
 const generateStandardVideo = async (
@@ -159,6 +166,7 @@ const generateStandardVideo = async (
   imagePath: string | undefined,
   duration: number | undefined,
   movieFile: string,
+  isVertexAI: boolean,
 ): Promise<AgentBufferResult> => {
   const isVeo3 = model === "veo-3.0-generate-001" || model === "veo-3.1-generate-preview";
   const payload: VideoPayload = {
@@ -176,7 +184,7 @@ const generateStandardVideo = async (
   const response = await pollUntilDone(ai, operation);
   const video = getVideoFromResponse(response);
 
-  return downloadVideo(ai, video, movieFile);
+  return downloadVideo(ai, video, movieFile, isVertexAI);
 };
 
 export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferResult, MovieAgentInputs, GenAIImageAgentConfig> = async ({
@@ -189,11 +197,6 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
   const model = params.model ?? provider2MovieAgent.google.defaultModel;
 
   const apiKey = config?.apiKey;
-  if (!apiKey) {
-    throw new Error("Google GenAI API key is required (GEMINI_API_KEY)", {
-      cause: apiKeyMissingError("movieGenAIAgent", imageAction, "GEMINI_API_KEY"),
-    });
-  }
 
   try {
     const requestedDuration = params.duration ?? 8;
@@ -204,15 +207,29 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
       });
     }
 
-    const ai = new GoogleGenAI({ apiKey });
+    const isVertexAI = !!params.vertexai_project;
+    const ai = isVertexAI
+      ? new GoogleGenAI({
+          vertexai: true,
+          project: params.vertexai_project,
+          location: params.vertexai_location ?? "us-central1",
+        })
+      : (() => {
+          if (!apiKey) {
+            throw new Error("Google GenAI API key is required (GEMINI_API_KEY)", {
+              cause: apiKeyMissingError("movieGenAIAgent", imageAction, "GEMINI_API_KEY"),
+            });
+          }
+          return new GoogleGenAI({ apiKey });
+        })();
 
     // Veo 3.1: Video extension mode for videos longer than 8s
     if (model === "veo-3.1-generate-preview" && requestedDuration > 8 && params.canvasSize) {
-      return generateExtendedVideo(ai, model, prompt, aspectRatio, imagePath, requestedDuration, movieFile);
+      return generateExtendedVideo(ai, model, prompt, aspectRatio, imagePath, requestedDuration, movieFile, isVertexAI);
     }
 
     // Standard mode
-    return generateStandardVideo(ai, model, prompt, aspectRatio, imagePath, duration, movieFile);
+    return generateStandardVideo(ai, model, prompt, aspectRatio, imagePath, duration, movieFile, isVertexAI);
   } catch (error) {
     GraphAILogger.info("Failed to generate movie:", (error as Error).message);
     if (hasCause(error) && error.cause) {
