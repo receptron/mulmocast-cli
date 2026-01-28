@@ -157,7 +157,7 @@ export const textSplitSchema = z.discriminatedUnion("type", [
 export const mulmoCaptionParamsSchema = z
   .object({
     lang: langSchema.optional(),
-    styles: z.array(z.string()).optional().default([]), // css styles
+    styles: z.array(z.string()).optional(), // css styles
     captionSplit: captionSplitSchema.optional(), // how to determine caption timing
     textSplit: textSplitSchema.optional(), // how to split text into segments (default: none)
   })
