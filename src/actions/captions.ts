@@ -75,14 +75,20 @@ const calculateCumulativeRatios = (ratios: number[]): number[] => {
 
 // Generate caption files for a single beat
 const generateBeatCaptions = async (beat: MulmoBeat, context: MulmoStudioContext, index: number) => {
-  const captionParams = mulmoCaptionParamsSchema.parse({ ...context.studio.script.captionParams, ...beat.captionParams });
+  const globalCaptionParamsRaw = context.studio.script.captionParams ?? {};
+  const beatCaptionParamsRaw = beat.captionParams ?? {};
+  const mergedCaptionParams = mulmoCaptionParamsSchema.parse({
+    ...globalCaptionParamsRaw,
+    ...beatCaptionParamsRaw,
+    styles: Object.hasOwn(beatCaptionParamsRaw, "styles") ? beatCaptionParamsRaw.styles : globalCaptionParamsRaw.styles,
+  });
   const canvasSize = MulmoPresentationStyleMethods.getCanvasSize(context.presentationStyle);
   const template = getHTMLFile("caption");
 
-  if (captionParams.lang && !context.multiLingual?.[index]?.multiLingualTexts?.[captionParams.lang]) {
-    GraphAILogger.warn(`No multiLingual caption found for beat ${index}, lang: ${captionParams.lang}`);
+  if (mergedCaptionParams.lang && !context.multiLingual?.[index]?.multiLingualTexts?.[mergedCaptionParams.lang]) {
+    GraphAILogger.warn(`No multiLingual caption found for beat ${index}, lang: ${mergedCaptionParams.lang}`);
   }
-  const text = localizedText(beat, context.multiLingual?.[index], captionParams.lang, context.studio.script.lang);
+  const text = localizedText(beat, context.multiLingual?.[index], mergedCaptionParams.lang, context.studio.script.lang);
 
   // Get beat timing info
   const studioBeat = context.studio.beats[index];
@@ -91,8 +97,8 @@ const generateBeatCaptions = async (beat: MulmoBeat, context: MulmoStudioContext
   const introPadding = MulmoStudioContextMethods.getIntroPadding(context);
 
   // Determine split texts based on captionSplit setting
-  const captionSplit = captionParams.captionSplit ?? "none";
-  const splitTexts = captionSplit === "estimate" ? getSplitTexts(text, beat.texts, captionParams.textSplit) : [text];
+  const captionSplit = mergedCaptionParams.captionSplit ?? "none";
+  const splitTexts = captionSplit === "estimate" ? getSplitTexts(text, beat.texts, mergedCaptionParams.textSplit) : [text];
 
   // Calculate timing
   const cumulativeRatios = calculateCumulativeRatios(calculateTimingRatios(splitTexts));
@@ -105,7 +111,7 @@ const generateBeatCaptions = async (beat: MulmoBeat, context: MulmoStudioContext
         caption: processLineBreaks(segmentText),
         width: `${canvasSize.width}`,
         height: `${canvasSize.height}`,
-        styles: captionParams.styles.join(";\n"),
+        styles: (mergedCaptionParams.styles ?? []).join(";\n"),
       });
       await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, false, true);
       return {

@@ -180,8 +180,8 @@ mulmo movie script.json -p ~/.mulmocast/styles/my-style.json
         "voiceId": "voice-id-1"
       },
       "assistant": {
-        "provider": "nijivoice", 
-        "voiceId": "voice-id-2"
+        "provider": "gemini",
+        "voiceId": "Kore"
       }
     }
   }

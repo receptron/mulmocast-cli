@@ -145,8 +145,8 @@ MulmoCastは、同じスピーカーでも言語によって異なる音声設�
         "voiceId": "shimmer",
         "lang": {
           "ja": {
-            "provider": "nijivoice",
-            "voiceId": "9d9ed276-49ee-443a-bc19-26e6136d05f0"
+            "provider": "gemini",
+            "voiceId": "Kore"
           }
         }
       }
