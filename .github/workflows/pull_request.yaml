@@ -65,6 +65,7 @@ jobs:
     - run: yarn run cli bundle scripts/test/test_no_audio.json
     - run: yarn run cli markdown scripts/test/test_no_audio.json
     - run: yarn run cli html scripts/test/test_no_audio.json
+    - run: yarn run cli tool complete test/json/minimum_beats.json
     - name: Upload generated media
       uses: actions/upload-artifact@v4
       with:
