@@ -59,7 +59,13 @@ export const provider2ImageAgent = {
   google: {
     agentName: "imageGenAIAgent",
     defaultModel: "gemini-2.5-flash-image",
-    models: ["imagen-4.0-generate-preview-06-06", "imagen-4.0-ultra-generate-preview-06-06", "gemini-2.5-flash-image", "gemini-3-pro-image-preview"],
+    models: [
+      "imagen-4.0-generate-001",
+      "imagen-4.0-ultra-generate-001",
+      "imagen-4.0-fast-generate-001",
+      "gemini-2.5-flash-image",
+      "gemini-3-pro-image-preview",
+    ],
     keyName: "GEMINI_API_KEY",
   },
   replicate: {
