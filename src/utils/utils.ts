@@ -65,7 +65,9 @@ export const settings2GraphAIConfig = (
     return settings?.[`${prefix}_${key}`] ?? settings?.[key] ?? env?.[`${prefix}_${key}`] ?? env?.[key];
   };
 
-  const addProviderConfigs = <T extends Record<string, { agentName: string; keyName?: string; baseURLKeyName?: string; apiKeyNameOverride?: string }>>(
+  const addProviderConfigs = <
+    T extends Record<string, { agentName: string; keyName?: string; baseURLKeyName?: string; apiVersionKeyName?: string; apiKeyNameOverride?: string }>,
+  >(
     config: ConfigDataDictionary<DefaultConfigData>,
     providers: T,
     prefix: string,
@@ -80,6 +82,9 @@ export const settings2GraphAIConfig = (
 
       if (info.baseURLKeyName) {
         config[info.agentName].baseURL = getKey(prefix, info.baseURLKeyName);
+      }
+      if (info.apiVersionKeyName) {
+        config[info.agentName].apiVersion = getKey(prefix, info.apiVersionKeyName);
       }
     });
   };

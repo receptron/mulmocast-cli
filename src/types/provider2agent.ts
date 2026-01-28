@@ -261,6 +261,7 @@ export const provider2LLMAgent = {
     defaultModel: "gpt-5",
     keyName: "OPENAI_API_KEY",
     baseURLKeyName: "OPENAI_BASE_URL",
+    apiVersionKeyName: "OPENAI_API_VERSION",
     max_tokens: 8192,
     models: [
       "gpt-5",
