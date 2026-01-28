@@ -11,7 +11,7 @@ import { graphDataScriptGeneratePrompt, sceneToBeatsPrompt, storyToScriptInfoPro
 import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 import validateSchemaAgent from "../agents/validate_schema_agent.js";
 import { ZodSchema } from "zod";
-import { llmPair } from "../utils/utils.js";
+import { llmPair, settings2GraphAIConfig } from "../utils/utils.js";
 import type { LLM } from "../types/provider2agent.js";
 import { storyToScriptGenerateMode } from "../types/const.js";
 import { cliLoadingPlugin } from "../utils/plugins.js";
@@ -301,7 +301,12 @@ export const storyToScript = async ({
 
   const graphData = generateMode === storyToScriptGenerateMode.stepWise ? stepWiseGraphData : oneStepGraphData;
 
-  const graph = new GraphAI(graphData, { ...vanillaAgents, openAIAgent, anthropicAgent, geminiAgent, groqAgent, fileWriteAgent, validateSchemaAgent });
+  const config = settings2GraphAIConfig(undefined, process.env);
+  const graph = new GraphAI(
+    graphData,
+    { ...vanillaAgents, openAIAgent, anthropicAgent, geminiAgent, groqAgent, fileWriteAgent, validateSchemaAgent },
+    { config },
+  );
 
   if (generateMode === storyToScriptGenerateMode.stepWise) {
     graph.injectValue("scenes", story.scenes);
