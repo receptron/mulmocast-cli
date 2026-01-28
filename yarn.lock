@@ -310,15 +310,6 @@
   dependencies:
     google-gax "^5.0.0"
 
-"@google/genai@^1.37.0":
-  version "1.37.0"
-  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.37.0.tgz#923be134e4c34078e0e1473a6d9b38d01a901b0e"
-  integrity sha512-of85LwNqretPhBHHEljUY05OSsQVUPyw5n1RdNkUpKR36kgHq7CVVEGY4GplVbFaqbdT3DXfLSv5B/Avbe5vXw==
-  dependencies:
-    google-auth-library "^10.3.0"
-    protobufjs "^7.5.4"
-    ws "^8.18.0"
-
 "@google/genai@^1.38.0":
   version "1.38.0"
   resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.38.0.tgz#e26b5c269ddd6477ba71c03e829e903910010d02"
@@ -346,12 +337,12 @@
   resolved "https://registry.yarnpkg.com/@graphai/browserless_agent/-/browserless_agent-2.0.1.tgz#951e9800ef7c3d696f3b829347ac9d05ba4e4dc5"
   integrity sha512-Uq7gikcA7lrK3xyZwKPx6au0VcMKXDHbzHjOkuBV/I0RDNWo3qApmF6pTVBVR49WtrKKloN2/a48+8IzPGefLg==
 
-"@graphai/gemini_agent@^2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@graphai/gemini_agent/-/gemini_agent-2.0.4.tgz#6499e0e1a3e4286dac5c03258c56845c777710d8"
-  integrity sha512-KoaODcyYkpZKjVFN6mFimQk4rulZob1oV3igqhPw7waZJMIGC0biCYkzEdLtW+8PIM8cibcB1Roznm34Jsr4AA==
+"@graphai/gemini_agent@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@graphai/gemini_agent/-/gemini_agent-2.0.5.tgz#5bddac854e5943348e939e1755b00ee92624454f"
+  integrity sha512-8JHB+1LSRiJJGeLts0KqQJt3rjFIuK0dL98jGxBH799Kr8ETaY2yyUMewewmH53NRfietp4zKGH/Ph2e9q7ssQ==
   dependencies:
-    "@google/genai" "^1.37.0"
+    "@google/genai" "^1.38.0"
     "@graphai/llm_utils" "^2.0.3"
 
 "@graphai/groq_agent@^2.0.2":
