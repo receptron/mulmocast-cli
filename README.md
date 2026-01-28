@@ -140,6 +140,71 @@ ELEVENLABS_API_KEY=your_elevenlabs_api_key
 BROWSERLESS_API_TOKEN=your_browserless_api_token # to access web in mulmo tool
 ```
 
+### Google Vertex AI
+
+For enterprise/production environments or to access models like Imagen 4, use Vertex AI with Application Default Credentials (ADC):
+
+```bash
+# Install gcloud CLI and authenticate
+gcloud auth application-default login
+```
+
+Configure in MulmoScript:
+```json
+{
+  "imageParams": {
+    "provider": "google",
+    "model": "imagen-4.0-generate-001",
+    "vertexai_project": "your-project-id",
+    "vertexai_location": "us-central1"
+  }
+}
+```
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `vertexai_project` | Google Cloud Project ID | None (enables Vertex AI mode when set) |
+| `vertexai_location` | Region | `us-central1` |
+
+For detailed setup instructions, see [Vertex AI Setup Guide](./docs/vertexai_en.md).
+
+### Azure OpenAI
+
+To use Azure OpenAI instead of OpenAI API:
+
+```bash
+# For image generation
+IMAGE_OPENAI_API_KEY=<your-azure-openai-api-key>
+IMAGE_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
+
+# For TTS (Text-to-Speech)
+TTS_OPENAI_API_KEY=<your-azure-openai-api-key>
+TTS_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
+```
+
+MulmoScript configuration (same as OpenAI):
+```json
+{
+  "imageParams": {
+    "provider": "openai",
+    "model": "gpt-image-1.5"
+  },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "provider": "openai",
+        "voiceId": "alloy",
+        "model": "tts"
+      }
+    }
+  }
+}
+```
+
+**Important**: Azure deployment names must match model names exactly (e.g., deployment name `gpt-image-1.5` for model `gpt-image-1.5`).
+
+For detailed setup and region availability, see [Azure OpenAI Usage Guide](./docs/azure_openai_usage.md).
+
 ## Workflow
 
 1. Create a MulmoScript JSON file with `mulmo tool scripting`
