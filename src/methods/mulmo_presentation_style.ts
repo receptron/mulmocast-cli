@@ -160,10 +160,15 @@ export const MulmoPresentationStyleMethods = {
     const agentInfo = provider2LipSyncAgent[lipSyncProvider];
     return agentInfo;
   },
-  getConcurrency(__presentationStyle: MulmoPresentationStyle) {
-    // NOTE: OpenAI API rate limits allow higher concurrency (dall-e-3: 15/min, gpt-image-1: 150/min),
-    // but Puppeteer browser rendering (HTML/Chart/Mermaid) becomes unstable above 4 parallel operations.
-    // Using conservative value of 4 to ensure stability across all rendering types.
+  getConcurrency(presentationStyle: MulmoPresentationStyle) {
+    // NOTE: OpenAI API rate limits (dall-e-3: 15/min, gpt-image-1: 150/min) allow high concurrency.
+    // Puppeteer rendering is separately limited by a semaphore in markdown.ts (MAX_CONCURRENT_RENDERS).
+    const imageAgentInfo = MulmoPresentationStyleMethods.getImageAgentInfo(presentationStyle);
+    if (imageAgentInfo.imageParams.provider === "openai") {
+      if (imageAgentInfo.imageParams.model === provider2ImageAgent.openai.defaultModel) {
+        return 16;
+      }
+    }
     return 4;
   },
   getHtmlImageAgentInfo(presentationStyle: MulmoPresentationStyle): Text2HtmlAgentInfo {

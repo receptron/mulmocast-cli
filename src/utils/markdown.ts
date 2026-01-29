@@ -2,13 +2,18 @@ import { marked } from "marked";
 import puppeteer from "puppeteer";
 
 const isCI = process.env.CI === "true";
-const reuseBrowser = process.env.MULMO_PUPPETEER_REUSE !== "0";
+// Browser reuse disabled by default: with semaphore limiting concurrent renders,
+// individual browsers are faster and more stable than sharing pages on one browser.
+// Set MULMO_PUPPETEER_REUSE=1 to enable reuse for low-concurrency scenarios.
+const reuseBrowser = process.env.MULMO_PUPPETEER_REUSE === "1";
 const browserLaunchArgs = isCI ? ["--no-sandbox"] : [];
 
 // Browser idle timeout before closing (ms)
 const BROWSER_IDLE_TIMEOUT_MS = 300;
 // Default timeout for waiting on async content (ms)
 const CONTENT_READY_TIMEOUT_MS = 20000;
+// Maximum concurrent Puppeteer render operations (prevents browser overload)
+const MAX_CONCURRENT_RENDERS = 4;
 
 // --- Pure utility functions (unit testable) ---
 
@@ -101,6 +106,36 @@ const releaseBrowser = async (browser: puppeteer.Browser): Promise<void> => {
   }, BROWSER_IDLE_TIMEOUT_MS);
 };
 
+// --- Render concurrency control (semaphore) ---
+// Limits concurrent Puppeteer operations to prevent browser overload,
+// independent of GraphAI's task concurrency which may be higher for API calls.
+
+let activeRenders = 0;
+const renderQueue: Array<() => void> = [];
+
+/** Acquire a render slot; waits if max concurrent renders reached */
+const acquireRenderSlot = (): Promise<void> =>
+  new Promise((resolve) => {
+    if (activeRenders < MAX_CONCURRENT_RENDERS) {
+      activeRenders++;
+      resolve();
+    } else {
+      renderQueue.push(() => {
+        activeRenders++;
+        resolve();
+      });
+    }
+  });
+
+/** Release a render slot; allows next queued render to proceed */
+const releaseRenderSlot = (): void => {
+  activeRenders--;
+  const next = renderQueue.shift();
+  if (next) {
+    next();
+  }
+};
+
 // --- Page rendering helpers ---
 
 /** Wait for animation frames to let rendering settle */
@@ -167,6 +202,9 @@ export const renderHTMLToImage = async (
   isMermaid: boolean = false,
   omitBackground: boolean = false,
 ) => {
+  // Acquire render slot to limit concurrent Puppeteer operations
+  await acquireRenderSlot();
+
   const browser = reuseBrowser ? await acquireBrowser() : await puppeteer.launch({ args: browserLaunchArgs });
   let page: puppeteer.Page | null = null;
   let browserErrored = false;
@@ -228,6 +266,8 @@ export const renderHTMLToImage = async (
     } else {
       await browser.close().catch(() => {});
     }
+    // Release render slot to allow next queued render to proceed
+    releaseRenderSlot();
   }
 };
 
