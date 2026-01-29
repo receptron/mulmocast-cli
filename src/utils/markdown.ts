@@ -58,6 +58,15 @@ const releaseBrowser = async (browser: puppeteer.Browser): Promise<void> => {
   }, 300);
 };
 
+const waitForNextFrame = async (page: puppeteer.Page): Promise<void> => {
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        requestAnimationFrame(() => resolve());
+      }),
+  );
+};
+
 export const renderHTMLToImage = async (
   html: string,
   outputPath: string,
@@ -97,14 +106,8 @@ export const renderHTMLToImage = async (
         { timeout: 20000 },
       );
       // Give the browser a couple of frames to paint the canvas.
-      await page.evaluate(
-        () =>
-          new Promise<void>((resolve) => {
-            requestAnimationFrame(() => {
-              requestAnimationFrame(() => resolve());
-            });
-          }),
-      );
+      await waitForNextFrame(page);
+      await waitForNextFrame(page);
     }
 
     // Measure the size of the page and scale the page to the width and height
