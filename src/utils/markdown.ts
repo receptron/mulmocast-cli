@@ -101,13 +101,13 @@ export const renderHTMLToImage = async (
     // Measure the size of the page and scale the page to the width and height
     await page.evaluate(
       ({ vw, vh }) => {
-      const documentElement = document.documentElement;
-      const scrollWidth = Math.max(documentElement.scrollWidth, document.body.scrollWidth || 0);
-      const scrollHeight = Math.max(documentElement.scrollHeight, document.body.scrollHeight || 0);
-      const scale = Math.min(vw / (scrollWidth || vw), vh / (scrollHeight || vh), 1); // <=1 で縮小のみ
-      documentElement.style.overflow = "hidden";
-      (document.body as HTMLElement).style.zoom = String(scale);
-    },
+        const documentElement = document.documentElement;
+        const scrollWidth = Math.max(documentElement.scrollWidth, document.body.scrollWidth || 0);
+        const scrollHeight = Math.max(documentElement.scrollHeight, document.body.scrollHeight || 0);
+        const scale = Math.min(vw / (scrollWidth || vw), vh / (scrollHeight || vh), 1); // <=1 で縮小のみ
+        documentElement.style.overflow = "hidden";
+        (document.body as HTMLElement).style.zoom = String(scale);
+      },
       { vw: width, vh: height },
     );
 
