@@ -28,7 +28,14 @@
             const ctx = document.getElementById('myChart');
             if (!ctx) return false;
             const chartData = ${chart_data};
+
+            // Disable animation for static image generation
+            if (!chartData.options) chartData.options = {};
+            chartData.options.animation = false;
+
             new Chart(ctx, chartData);
+
+            // Mark ready after render
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     ctx.dataset.chartReady = "true";

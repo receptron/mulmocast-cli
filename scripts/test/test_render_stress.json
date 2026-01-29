@@ -1,0 +1,875 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "Render Stress Test",
+  "description": "Stress test for parallel HTML/JS rendering. Tests markdown, mermaid, chart, html_tailwind, and textSlide.",
+  "audioParams": {
+    "introPadding": 0,
+    "padding": 0.1,
+    "closingPadding": 0,
+    "outroPadding": 0
+  },
+  "beats": [
+    {
+      "id": "text-slide-1",
+      "text": "Text slide with title only",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Render Stress Test"
+        }
+      }
+    },
+    {
+      "id": "text-slide-2",
+      "text": "Text slide with bullets",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Rendering Types",
+          "bullets": [
+            "textSlide - Simple text slides",
+            "markdown - Markdown to HTML",
+            "chart - Chart.js graphs",
+            "mermaid - Diagram generation",
+            "html_tailwind - Custom HTML with Tailwind"
+          ]
+        }
+      }
+    },
+    {
+      "id": "markdown-table",
+      "text": "Markdown table rendering",
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Markdown Table Test",
+          "",
+          "| Renderer | JS Required | Complexity |",
+          "| :------- | :---------: | ---------: |",
+          "| textSlide | No | Low |",
+          "| markdown | No | Medium |",
+          "| chart | Yes | High |",
+          "| mermaid | Yes | High |",
+          "| html_tailwind | Maybe | Variable |"
+        ]
+      }
+    },
+    {
+      "id": "markdown-code",
+      "text": "Markdown code block rendering",
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Code Block Test",
+          "",
+          "```typescript",
+          "const renderHTMLToImage = async (",
+          "  html: string,",
+          "  outputPath: string,",
+          "  width: number,",
+          "  height: number,",
+          ") => {",
+          "  const browser = await acquireBrowser();",
+          "  const page = await browser.newPage();",
+          "  await page.setContent(html);",
+          "  await page.screenshot({ path: outputPath });",
+          "};",
+          "```"
+        ]
+      }
+    },
+    {
+      "id": "markdown-styled",
+      "text": "Markdown with custom background color using HTML",
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "<div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; min-height: 100vh; color: white;'>",
+          "",
+          "# Styled Markdown",
+          "",
+          "Markdownの中でHTMLを使って背景色を設定できます。",
+          "",
+          "- **グラデーション背景**",
+          "- カスタムパディング",
+          "- テキスト色の変更",
+          "",
+          "</div>"
+        ]
+      }
+    },
+    {
+      "id": "chart-bar",
+      "text": "Bar chart with animation enabled",
+      "image": {
+        "type": "chart",
+        "title": "Monthly Revenue (Bar Chart with Animation)",
+        "chartData": {
+          "type": "bar",
+          "data": {
+            "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            "datasets": [
+              {
+                "label": "Revenue 2024 ($K)",
+                "data": [120, 135, 180, 155, 170, 190, 210, 195, 220, 240, 260, 300],
+                "backgroundColor": "rgba(54, 162, 235, 0.5)",
+                "borderColor": "rgba(54, 162, 235, 1)",
+                "borderWidth": 2
+              },
+              {
+                "label": "Revenue 2023 ($K)",
+                "data": [100, 110, 150, 140, 160, 170, 180, 175, 200, 210, 230, 250],
+                "backgroundColor": "rgba(255, 99, 132, 0.5)",
+                "borderColor": "rgba(255, 99, 132, 1)",
+                "borderWidth": 2
+              }
+            ]
+          },
+          "options": {
+            "responsive": true,
+            "animation": {
+              "duration": 1000,
+              "easing": "easeOutQuart"
+            },
+            "plugins": {
+              "legend": {
+                "position": "top"
+              },
+              "title": {
+                "display": true,
+                "text": "Year over Year Comparison"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "chart-line",
+      "text": "Line chart with multiple datasets",
+      "image": {
+        "type": "chart",
+        "title": "Stock Price Trend (Line Chart)",
+        "chartData": {
+          "type": "line",
+          "data": {
+            "labels": ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6", "Week 7", "Week 8"],
+            "datasets": [
+              {
+                "label": "Company A",
+                "data": [100, 105, 102, 110, 115, 112, 120, 125],
+                "borderColor": "rgba(75, 192, 192, 1)",
+                "backgroundColor": "rgba(75, 192, 192, 0.2)",
+                "fill": true,
+                "tension": 0.4
+              },
+              {
+                "label": "Company B",
+                "data": [90, 95, 100, 98, 105, 110, 108, 115],
+                "borderColor": "rgba(255, 159, 64, 1)",
+                "backgroundColor": "rgba(255, 159, 64, 0.2)",
+                "fill": true,
+                "tension": 0.4
+              },
+              {
+                "label": "Company C",
+                "data": [80, 82, 85, 90, 88, 95, 100, 105],
+                "borderColor": "rgba(153, 102, 255, 1)",
+                "backgroundColor": "rgba(153, 102, 255, 0.2)",
+                "fill": true,
+                "tension": 0.4
+              }
+            ]
+          },
+          "options": {
+            "responsive": true,
+            "animation": {
+              "duration": 800
+            },
+            "interaction": {
+              "intersect": false,
+              "mode": "index"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "chart-pie",
+      "text": "Pie chart test",
+      "image": {
+        "type": "chart",
+        "title": "Market Share (Pie Chart)",
+        "chartData": {
+          "type": "pie",
+          "data": {
+            "labels": ["Product A", "Product B", "Product C", "Product D", "Others"],
+            "datasets": [
+              {
+                "data": [35, 25, 20, 12, 8],
+                "backgroundColor": [
+                  "rgba(255, 99, 132, 0.7)",
+                  "rgba(54, 162, 235, 0.7)",
+                  "rgba(255, 206, 86, 0.7)",
+                  "rgba(75, 192, 192, 0.7)",
+                  "rgba(153, 102, 255, 0.7)"
+                ],
+                "borderWidth": 2
+              }
+            ]
+          },
+          "options": {
+            "responsive": true,
+            "animation": {
+              "animateRotate": true,
+              "animateScale": true,
+              "duration": 1200
+            },
+            "plugins": {
+              "legend": {
+                "position": "right"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "chart-doughnut",
+      "text": "Doughnut chart test",
+      "image": {
+        "type": "chart",
+        "title": "Budget Allocation (Doughnut)",
+        "chartData": {
+          "type": "doughnut",
+          "data": {
+            "labels": ["R&D", "Marketing", "Operations", "HR", "IT", "Admin"],
+            "datasets": [
+              {
+                "data": [30, 25, 20, 10, 10, 5],
+                "backgroundColor": [
+                  "rgba(255, 99, 132, 0.8)",
+                  "rgba(54, 162, 235, 0.8)",
+                  "rgba(255, 206, 86, 0.8)",
+                  "rgba(75, 192, 192, 0.8)",
+                  "rgba(153, 102, 255, 0.8)",
+                  "rgba(255, 159, 64, 0.8)"
+                ]
+              }
+            ]
+          },
+          "options": {
+            "responsive": true,
+            "animation": {
+              "duration": 1000
+            },
+            "cutout": "60%"
+          }
+        }
+      }
+    },
+    {
+      "id": "chart-radar",
+      "text": "Radar chart test",
+      "image": {
+        "type": "chart",
+        "title": "Skills Assessment (Radar)",
+        "chartData": {
+          "type": "radar",
+          "data": {
+            "labels": ["JavaScript", "TypeScript", "Python", "Go", "Rust", "Java"],
+            "datasets": [
+              {
+                "label": "Developer A",
+                "data": [90, 85, 70, 60, 40, 75],
+                "backgroundColor": "rgba(255, 99, 132, 0.2)",
+                "borderColor": "rgba(255, 99, 132, 1)",
+                "pointBackgroundColor": "rgba(255, 99, 132, 1)"
+              },
+              {
+                "label": "Developer B",
+                "data": [70, 90, 85, 75, 65, 60],
+                "backgroundColor": "rgba(54, 162, 235, 0.2)",
+                "borderColor": "rgba(54, 162, 235, 1)",
+                "pointBackgroundColor": "rgba(54, 162, 235, 1)"
+              }
+            ]
+          },
+          "options": {
+            "responsive": true,
+            "animation": {
+              "duration": 1500
+            },
+            "scales": {
+              "r": {
+                "beginAtZero": true,
+                "max": 100
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "chart-polar",
+      "text": "Polar area chart test",
+      "image": {
+        "type": "chart",
+        "title": "Priority Distribution (Polar Area)",
+        "chartData": {
+          "type": "polarArea",
+          "data": {
+            "labels": ["Critical", "High", "Medium", "Low", "Trivial"],
+            "datasets": [
+              {
+                "data": [5, 12, 25, 18, 8],
+                "backgroundColor": [
+                  "rgba(255, 99, 132, 0.7)",
+                  "rgba(255, 159, 64, 0.7)",
+                  "rgba(255, 206, 86, 0.7)",
+                  "rgba(75, 192, 192, 0.7)",
+                  "rgba(153, 102, 255, 0.7)"
+                ]
+              }
+            ]
+          },
+          "options": {
+            "responsive": true,
+            "animation": {
+              "duration": 1000
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mermaid-flowchart-lr",
+      "text": "Mermaid flowchart left to right",
+      "image": {
+        "type": "mermaid",
+        "title": "CI/CD Pipeline",
+        "code": {
+          "kind": "text",
+          "text": "graph LR\n    A[Code Push] --> B[Build]\n    B --> C{Tests Pass?}\n    C -->|Yes| D[Deploy to Staging]\n    C -->|No| E[Fix Issues]\n    E --> A\n    D --> F{QA Approved?}\n    F -->|Yes| G[Deploy to Prod]\n    F -->|No| E"
+        }
+      }
+    },
+    {
+      "id": "mermaid-flowchart-tb",
+      "text": "Mermaid flowchart top to bottom",
+      "image": {
+        "type": "mermaid",
+        "title": "Decision Tree",
+        "code": {
+          "kind": "text",
+          "text": "graph TB\n    A[Start] --> B{Is it raining?}\n    B -->|Yes| C[Take umbrella]\n    B -->|No| D{Is it sunny?}\n    D -->|Yes| E[Wear sunglasses]\n    D -->|No| F[Dress normally]\n    C --> G[Go outside]\n    E --> G\n    F --> G\n    G --> H[End]"
+        }
+      }
+    },
+    {
+      "id": "mermaid-sequence",
+      "text": "Mermaid sequence diagram",
+      "image": {
+        "type": "mermaid",
+        "title": "API Request Flow",
+        "code": {
+          "kind": "text",
+          "text": "sequenceDiagram\n    participant C as Client\n    participant G as API Gateway\n    participant A as Auth Service\n    participant S as Backend Service\n    participant D as Database\n    C->>G: HTTP Request\n    G->>A: Validate Token\n    A-->>G: Token Valid\n    G->>S: Forward Request\n    S->>D: Query Data\n    D-->>S: Return Results\n    S-->>G: Response\n    G-->>C: HTTP Response"
+        }
+      }
+    },
+    {
+      "id": "mermaid-class",
+      "text": "Mermaid class diagram",
+      "image": {
+        "type": "mermaid",
+        "title": "Class Hierarchy",
+        "code": {
+          "kind": "text",
+          "text": "classDiagram\n    class Animal {\n        +String name\n        +int age\n        +makeSound()\n    }\n    class Dog {\n        +String breed\n        +bark()\n        +fetch()\n    }\n    class Cat {\n        +String color\n        +meow()\n        +scratch()\n    }\n    Animal <|-- Dog\n    Animal <|-- Cat"
+        }
+      }
+    },
+    {
+      "id": "mermaid-state",
+      "text": "Mermaid state diagram",
+      "image": {
+        "type": "mermaid",
+        "title": "Order State Machine",
+        "code": {
+          "kind": "text",
+          "text": "stateDiagram-v2\n    [*] --> Pending\n    Pending --> Processing: Payment Received\n    Processing --> Shipped: Items Packed\n    Shipped --> Delivered: Package Arrived\n    Delivered --> [*]\n    Processing --> Cancelled: Customer Request\n    Pending --> Cancelled: Timeout\n    Cancelled --> [*]"
+        }
+      }
+    },
+    {
+      "id": "mermaid-er",
+      "text": "Mermaid ER diagram",
+      "image": {
+        "type": "mermaid",
+        "title": "Database Schema",
+        "code": {
+          "kind": "text",
+          "text": "erDiagram\n    USER ||--o{ ORDER : places\n    USER {\n        int id PK\n        string name\n        string email\n    }\n    ORDER ||--|{ ORDER_ITEM : contains\n    ORDER {\n        int id PK\n        date created_at\n        string status\n    }\n    ORDER_ITEM }|--|| PRODUCT : references\n    ORDER_ITEM {\n        int quantity\n        decimal price\n    }\n    PRODUCT {\n        int id PK\n        string name\n        decimal price\n    }"
+        }
+      }
+    },
+    {
+      "id": "mermaid-gantt",
+      "text": "Mermaid Gantt chart",
+      "image": {
+        "type": "mermaid",
+        "title": "Project Timeline",
+        "code": {
+          "kind": "text",
+          "text": "gantt\n    title Project Development Schedule\n    dateFormat YYYY-MM-DD\n    section Planning\n        Requirements     :a1, 2024-01-01, 14d\n        Design          :a2, after a1, 21d\n    section Development\n        Backend         :b1, after a2, 30d\n        Frontend        :b2, after a2, 25d\n        Integration     :b3, after b1, 14d\n    section Testing\n        QA Testing      :c1, after b3, 14d\n        UAT             :c2, after c1, 7d\n    section Deployment\n        Release         :d1, after c2, 3d"
+        }
+      }
+    },
+    {
+      "id": "html-tailwind-1",
+      "text": "Tailwind HTML card component",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='flex items-center justify-center h-full bg-gradient-to-br from-blue-500 to-purple-600 p-8'>",
+          "  <div class='bg-white rounded-2xl shadow-2xl p-8 max-w-md'>",
+          "    <div class='flex items-center space-x-4 mb-6'>",
+          "      <div class='w-16 h-16 bg-gradient-to-r from-pink-500 to-yellow-500 rounded-full flex items-center justify-center'>",
+          "        <span class='text-white text-2xl font-bold'>AI</span>",
+          "      </div>",
+          "      <div>",
+          "        <h2 class='text-2xl font-bold text-gray-800'>MulmoCast</h2>",
+          "        <p class='text-gray-500'>AI-Native Presentations</p>",
+          "      </div>",
+          "    </div>",
+          "    <p class='text-gray-600 leading-relaxed'>",
+          "      Transform your content into videos, podcasts, and presentations with the power of AI.",
+          "    </p>",
+          "    <div class='mt-6 flex space-x-3'>",
+          "      <span class='px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'>Video</span>",
+          "      <span class='px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm'>Audio</span>",
+          "      <span class='px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm'>PDF</span>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ]
+      }
+    },
+    {
+      "id": "html-tailwind-2",
+      "text": "Tailwind HTML stats dashboard",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full bg-gray-900 p-8 flex flex-col justify-center'>",
+          "  <h1 class='text-3xl font-bold text-white mb-8 text-center'>Dashboard Stats</h1>",
+          "  <div class='grid grid-cols-2 gap-6'>",
+          "    <div class='bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl p-6 text-white'>",
+          "      <p class='text-sm opacity-80'>Total Users</p>",
+          "      <p class='text-4xl font-bold'>12,847</p>",
+          "      <p class='text-sm mt-2 text-green-200'>+12% from last month</p>",
+          "    </div>",
+          "    <div class='bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl p-6 text-white'>",
+          "      <p class='text-sm opacity-80'>Revenue</p>",
+          "      <p class='text-4xl font-bold'>$84.2K</p>",
+          "      <p class='text-sm mt-2 text-green-200'>+8% from last month</p>",
+          "    </div>",
+          "    <div class='bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-6 text-white'>",
+          "      <p class='text-sm opacity-80'>Active Sessions</p>",
+          "      <p class='text-4xl font-bold'>2,341</p>",
+          "      <p class='text-sm mt-2 text-yellow-200'>-3% from last hour</p>",
+          "    </div>",
+          "    <div class='bg-gradient-to-r from-green-500 to-teal-500 rounded-xl p-6 text-white'>",
+          "      <p class='text-sm opacity-80'>Conversion Rate</p>",
+          "      <p class='text-4xl font-bold'>4.28%</p>",
+          "      <p class='text-sm mt-2 text-green-200'>+0.5% from last week</p>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ]
+      }
+    },
+    {
+      "id": "html-tailwind-heavy-js",
+      "text": "Tailwind with heavy inline JS animation",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>",
+          "  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }",
+          "  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }",
+          "  @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }",
+          "  .float { animation: float 3s ease-in-out infinite; }",
+          "  .pulse { animation: pulse 2s ease-in-out infinite; }",
+          "  .rotate { animation: rotate 4s linear infinite; }",
+          "</style>",
+          "<div class='h-full bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 flex items-center justify-center'>",
+          "  <div class='text-center'>",
+          "    <div class='float mb-8'>",
+          "      <div class='w-32 h-32 mx-auto bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full shadow-2xl flex items-center justify-center'>",
+          "        <span class='text-white text-4xl font-bold rotate inline-block'>⚡</span>",
+          "      </div>",
+          "    </div>",
+          "    <h1 class='text-5xl font-bold text-white mb-4 pulse'>Heavy Animation Test</h1>",
+          "    <p class='text-xl text-purple-200'>CSS animations with transforms</p>",
+          "    <div class='mt-8 flex justify-center gap-4'>",
+          "      <div class='w-16 h-16 bg-pink-500 rounded-lg float' style='animation-delay: 0s;'></div>",
+          "      <div class='w-16 h-16 bg-purple-500 rounded-lg float' style='animation-delay: 0.2s;'></div>",
+          "      <div class='w-16 h-16 bg-indigo-500 rounded-lg float' style='animation-delay: 0.4s;'></div>",
+          "      <div class='w-16 h-16 bg-blue-500 rounded-lg float' style='animation-delay: 0.6s;'></div>",
+          "    </div>",
+          "  </div>",
+          "</div>",
+          "<script>",
+          "  // Simulate heavy computation",
+          "  const start = Date.now();",
+          "  let sum = 0;",
+          "  for (let i = 0; i < 100000; i++) { sum += Math.sqrt(i); }",
+          "  console.log('Computed in', Date.now() - start, 'ms');",
+          "</script>"
+        ]
+      }
+    },
+    {
+      "id": "html-tailwind-complex-grid",
+      "text": "Tailwind complex grid layout",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full bg-slate-900 p-4'>",
+          "  <div class='grid grid-cols-4 grid-rows-3 gap-2 h-full'>",
+          "    <div class='col-span-2 row-span-2 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl p-4 flex flex-col justify-between'>",
+          "      <h2 class='text-2xl font-bold text-white'>Main Feature</h2>",
+          "      <p class='text-violet-200'>Large spanning card with important content</p>",
+          "    </div>",
+          "    <div class='bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl p-3 text-white'>",
+          "      <p class='text-xs opacity-70'>Metric A</p><p class='text-xl font-bold'>1,234</p>",
+          "    </div>",
+          "    <div class='bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl p-3 text-white'>",
+          "      <p class='text-xs opacity-70'>Metric B</p><p class='text-xl font-bold'>5,678</p>",
+          "    </div>",
+          "    <div class='bg-gradient-to-r from-rose-500 to-pink-500 rounded-xl p-3 text-white'>",
+          "      <p class='text-xs opacity-70'>Metric C</p><p class='text-xl font-bold'>91.2%</p>",
+          "    </div>",
+          "    <div class='bg-gradient-to-r from-sky-500 to-cyan-500 rounded-xl p-3 text-white'>",
+          "      <p class='text-xs opacity-70'>Metric D</p><p class='text-xl font-bold'>$42K</p>",
+          "    </div>",
+          "    <div class='col-span-2 bg-slate-800 rounded-xl p-3'>",
+          "      <p class='text-slate-400 text-sm'>Status: <span class='text-emerald-400'>● Online</span></p>",
+          "    </div>",
+          "    <div class='col-span-2 bg-slate-800 rounded-xl p-3 flex items-center justify-center'>",
+          "      <p class='text-slate-300'>Footer Area</p>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ]
+      }
+    },
+    {
+      "id": "chart-heavy-data",
+      "text": "Chart with large dataset (100 points)",
+      "image": {
+        "type": "chart",
+        "title": "Large Dataset Performance Test",
+        "chartData": {
+          "type": "line",
+          "data": {
+            "labels": ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100"],
+            "datasets": [
+              {
+                "label": "Series A",
+                "data": [45,52,38,61,49,55,42,68,51,73,46,59,37,64,48,71,53,44,67,56,39,62,50,58,41,69,47,72,54,43,66,57,40,63,49,70,52,45,68,55,38,61,48,74,51,44,67,58,41,64,47,73,54,46,69,56,39,62,50,71,53,42,65,57,40,68,49,75,52,45,66,59,38,63,48,72,55,44,67,58,41,70,47,76,54,43,69,56,39,64,50,73,53,46,68,57,40,61,49,74],
+                "borderColor": "rgba(99, 102, 241, 1)",
+                "backgroundColor": "rgba(99, 102, 241, 0.1)",
+                "fill": true,
+                "tension": 0.4
+              },
+              {
+                "label": "Series B",
+                "data": [32,41,55,28,47,36,59,44,51,33,62,48,39,56,45,31,58,42,53,35,64,49,38,57,46,30,61,43,54,34,63,50,37,60,47,29,66,44,55,36,65,51,40,58,48,33,62,45,52,37,59,41,56,34,67,50,43,61,49,32,64,46,53,38,60,42,57,35,68,51,44,62,48,31,63,47,54,39,59,43,56,36,65,52,41,60,49,34,67,46,55,38,64,44,53,37,61,50,42,58],
+                "borderColor": "rgba(236, 72, 153, 1)",
+                "backgroundColor": "rgba(236, 72, 153, 0.1)",
+                "fill": true,
+                "tension": 0.4
+              }
+            ]
+          },
+          "options": {
+            "responsive": true,
+            "animation": { "duration": 2000 },
+            "plugins": { "legend": { "position": "top" } },
+            "scales": { "y": { "beginAtZero": true } }
+          }
+        }
+      }
+    },
+    {
+      "id": "chart-stacked-complex",
+      "text": "Complex stacked bar chart",
+      "image": {
+        "type": "chart",
+        "title": "Multi-Category Stacked Analysis",
+        "chartData": {
+          "type": "bar",
+          "data": {
+            "labels": ["Q1 2023", "Q2 2023", "Q3 2023", "Q4 2023", "Q1 2024", "Q2 2024"],
+            "datasets": [
+              { "label": "Product A", "data": [120, 150, 180, 200, 220, 250], "backgroundColor": "rgba(59, 130, 246, 0.8)" },
+              { "label": "Product B", "data": [80, 100, 120, 140, 160, 180], "backgroundColor": "rgba(16, 185, 129, 0.8)" },
+              { "label": "Product C", "data": [60, 70, 90, 100, 120, 140], "backgroundColor": "rgba(245, 158, 11, 0.8)" },
+              { "label": "Product D", "data": [40, 50, 60, 80, 90, 110], "backgroundColor": "rgba(239, 68, 68, 0.8)" },
+              { "label": "Product E", "data": [20, 30, 40, 50, 60, 70], "backgroundColor": "rgba(139, 92, 246, 0.8)" }
+            ]
+          },
+          "options": {
+            "responsive": true,
+            "animation": { "duration": 1500 },
+            "scales": { "x": { "stacked": true }, "y": { "stacked": true } },
+            "plugins": { "legend": { "position": "right" } }
+          }
+        }
+      }
+    },
+    {
+      "id": "mermaid-complex-flowchart",
+      "text": "Complex mermaid flowchart with many nodes",
+      "image": {
+        "type": "mermaid",
+        "title": "Complex System Architecture",
+        "code": {
+          "kind": "text",
+          "text": "graph TB\n    subgraph Client\n        A[Web App] --> B[Mobile App]\n        A --> C[Desktop App]\n    end\n    subgraph Gateway\n        D[Load Balancer] --> E[API Gateway]\n        E --> F[Auth Service]\n    end\n    subgraph Services\n        G[User Service] --> H[Order Service]\n        H --> I[Payment Service]\n        I --> J[Notification Service]\n    end\n    subgraph Data\n        K[(PostgreSQL)] --> L[(Redis Cache)]\n        L --> M[(Elasticsearch)]\n    end\n    Client --> Gateway\n    Gateway --> Services\n    Services --> Data"
+        }
+      }
+    },
+    {
+      "id": "parallel-chart-1",
+      "text": "Parallel test chart 1",
+      "image": {
+        "type": "chart",
+        "title": "Parallel Chart 1",
+        "chartData": {
+          "type": "bar",
+          "data": {
+            "labels": ["A", "B", "C", "D", "E"],
+            "datasets": [{ "label": "Data", "data": [10, 20, 30, 40, 50], "backgroundColor": "rgba(255,99,132,0.5)" }]
+          },
+          "options": { "animation": { "duration": 500 } }
+        }
+      }
+    },
+    {
+      "id": "parallel-chart-2",
+      "text": "Parallel test chart 2",
+      "image": {
+        "type": "chart",
+        "title": "Parallel Chart 2",
+        "chartData": {
+          "type": "line",
+          "data": {
+            "labels": ["A", "B", "C", "D", "E"],
+            "datasets": [{ "label": "Data", "data": [50, 40, 30, 20, 10], "borderColor": "rgba(54,162,235,1)" }]
+          },
+          "options": { "animation": { "duration": 500 } }
+        }
+      }
+    },
+    {
+      "id": "parallel-chart-3",
+      "text": "Parallel test chart 3",
+      "image": {
+        "type": "chart",
+        "title": "Parallel Chart 3",
+        "chartData": {
+          "type": "pie",
+          "data": {
+            "labels": ["X", "Y", "Z"],
+            "datasets": [{ "data": [33, 33, 34], "backgroundColor": ["#ff6384", "#36a2eb", "#ffce56"] }]
+          },
+          "options": { "animation": { "duration": 500 } }
+        }
+      }
+    },
+    {
+      "id": "parallel-mermaid-1",
+      "text": "Parallel mermaid 1",
+      "image": {
+        "type": "mermaid",
+        "title": "Parallel Diagram 1",
+        "code": { "kind": "text", "text": "graph LR\n    A-->B\n    B-->C\n    C-->D" }
+      }
+    },
+    {
+      "id": "parallel-mermaid-2",
+      "text": "Parallel mermaid 2",
+      "image": {
+        "type": "mermaid",
+        "title": "Parallel Diagram 2",
+        "code": { "kind": "text", "text": "graph TB\n    X-->Y\n    Y-->Z\n    Z-->X" }
+      }
+    },
+    {
+      "id": "vision-section-divider",
+      "text": "Vision section divider slide",
+      "image": {
+        "type": "vision",
+        "style": "sectionDividerSlide",
+        "data": {
+          "heading": "Vision Template Test",
+          "subheading": "Testing various vision slide styles"
+        }
+      }
+    },
+    {
+      "id": "vision-swot",
+      "text": "Vision SWOT analysis slide",
+      "image": {
+        "type": "vision",
+        "style": "swotSlide",
+        "data": {
+          "title": "SWOT Analysis",
+          "strengths": ["Strong brand", "Innovative tech", "Skilled team"],
+          "weaknesses": ["Limited budget", "Small market share"],
+          "opportunities": ["Growing market", "New partnerships"],
+          "threats": ["Competition", "Regulation changes"]
+        }
+      }
+    },
+    {
+      "id": "vision-kpi",
+      "text": "Vision KPI highlight slide",
+      "image": {
+        "type": "vision",
+        "style": "kpiHighlightSlide",
+        "data": {
+          "title": "Key Performance Indicators",
+          "kpis": [
+            { "label": "Revenue", "value": "$2.4M", "change": "+12%" },
+            { "label": "Users", "value": "50K", "change": "+25%" },
+            { "label": "NPS", "value": "72", "change": "+5" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "vision-executive-summary",
+      "text": "Vision executive summary slide",
+      "image": {
+        "type": "vision",
+        "style": "executiveSummarySlide",
+        "data": {
+          "title": "Executive Summary",
+          "points": [
+            "Revenue grew 15% YoY reaching $10M",
+            "Successfully launched 3 new products",
+            "Expanded to 5 new markets",
+            "Customer satisfaction at all-time high"
+          ]
+        }
+      }
+    },
+    {
+      "id": "vision-gantt",
+      "text": "Vision Gantt chart slide",
+      "image": {
+        "type": "vision",
+        "style": "ganttSimpleSlide",
+        "data": {
+          "title": "Project Timeline",
+          "tasks": [
+            { "name": "Planning", "start": "2024-01", "end": "2024-02" },
+            { "name": "Design", "start": "2024-02", "end": "2024-04" },
+            { "name": "Development", "start": "2024-03", "end": "2024-07" },
+            { "name": "Testing", "start": "2024-06", "end": "2024-08" },
+            { "name": "Launch", "start": "2024-08", "end": "2024-09" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "vision-timeline",
+      "text": "Vision milestone timeline slide",
+      "image": {
+        "type": "vision",
+        "style": "milestoneTimelineSlide",
+        "data": {
+          "title": "Product Roadmap",
+          "milestones": [
+            { "date": "2024 Q1", "title": "Alpha Release", "description": "Internal testing" },
+            { "date": "2024 Q2", "title": "Beta Launch", "description": "Public beta" },
+            { "date": "2024 Q3", "title": "GA Release", "description": "General availability" },
+            { "date": "2024 Q4", "title": "Enterprise", "description": "Enterprise features" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "vision-funnel",
+      "text": "Vision funnel slide",
+      "image": {
+        "type": "vision",
+        "style": "funnelSlide",
+        "data": {
+          "title": "Sales Funnel",
+          "stages": [
+            { "label": "Awareness", "value": 10000 },
+            { "label": "Interest", "value": 5000 },
+            { "label": "Consideration", "value": 2000 },
+            { "label": "Intent", "value": 500 },
+            { "label": "Purchase", "value": 200 }
+          ]
+        }
+      }
+    },
+    {
+      "id": "vision-porter",
+      "text": "Vision Porter's Five Forces slide",
+      "image": {
+        "type": "vision",
+        "style": "porterFiveForcesSlide",
+        "data": {
+          "title": "Industry Analysis",
+          "forces": {
+            "rivalry": { "level": "High", "description": "Many competitors" },
+            "newEntrants": { "level": "Medium", "description": "Moderate barriers" },
+            "substitutes": { "level": "Low", "description": "Few alternatives" },
+            "buyerPower": { "level": "High", "description": "Price sensitive" },
+            "supplierPower": { "level": "Medium", "description": "Multiple suppliers" }
+          }
+        }
+      }
+    },
+    {
+      "id": "vision-bcg-matrix",
+      "text": "Vision BCG Matrix slide",
+      "image": {
+        "type": "vision",
+        "style": "bcgMatrixSlide",
+        "data": {
+          "title": "Product Portfolio",
+          "products": [
+            { "name": "Product A", "growth": 0.25, "share": 0.4, "quadrant": "star" },
+            { "name": "Product B", "growth": 0.05, "share": 0.5, "quadrant": "cashCow" },
+            { "name": "Product C", "growth": 0.30, "share": 0.1, "quadrant": "questionMark" },
+            { "name": "Product D", "growth": 0.02, "share": 0.08, "quadrant": "dog" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "final",
+      "text": "Stress test complete",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Stress Test Complete",
+          "subtitle": "All rendering types tested"
+        }
+      }
+    }
+  ]
+}

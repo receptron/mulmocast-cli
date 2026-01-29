@@ -10,6 +10,11 @@ let sharedBrowserPromise: Promise<puppeteer.Browser> | null = null;
 let sharedBrowserRefs = 0;
 let sharedBrowserCloseTimer: ReturnType<typeof setTimeout> | null = null;
 
+// Invalidate the shared browser (called when browser is disconnected or errored).
+const invalidateSharedBrowser = (): void => {
+  sharedBrowserPromise = null;
+};
+
 // Acquire a browser instance; reuse a shared one when enabled.
 const acquireBrowser = async (): Promise<puppeteer.Browser> => {
   if (!reuseBrowser) {
@@ -28,7 +33,18 @@ const acquireBrowser = async (): Promise<puppeteer.Browser> => {
 
   const currentPromise = sharedBrowserPromise;
   try {
-    return await currentPromise;
+    const browser = await currentPromise;
+
+    // Check if browser is still connected; if not, invalidate and retry
+    if (!browser.isConnected()) {
+      if (sharedBrowserPromise === currentPromise) {
+        sharedBrowserPromise = null;
+      }
+      sharedBrowserRefs -= 1;
+      return acquireBrowser();
+    }
+
+    return browser;
   } catch (error) {
     if (sharedBrowserPromise === currentPromise) {
       sharedBrowserPromise = null;
@@ -79,19 +95,24 @@ export const renderHTMLToImage = async (
   isMermaid: boolean = false,
   omitBackground: boolean = false,
 ) => {
-  // Charts are rendered in a dedicated browser to avoid shared-page timing issues.
-  const useSharedBrowser = reuseBrowser && !html.includes("data-chart-ready");
+  // All content types now use shared browser - timing issues resolved with proper waits.
+  const useSharedBrowser = reuseBrowser;
   const browser = useSharedBrowser ? await acquireBrowser() : await puppeteer.launch({ args: browserLaunchArgs });
   let page: puppeteer.Page | null = null;
+  let browserErrored = false;
 
   try {
     page = await browser.newPage();
     // Adjust page settings if needed (like width, height, etc.)
     await page.setViewport({ width, height });
 
+    // Determine if HTML contains scripts that need time to execute
+    const hasScripts = html.includes("<script");
+
     // Set the page content to the HTML generated from the Markdown
-    await page.setContent(html, { waitUntil: "domcontentloaded" });
-    await page.addStyleTag({ content: "html,body{margin:0;padding:0;overflow:hidden}" });
+    // Use networkidle0 for JS-heavy content to wait for all network requests to settle
+    await page.setContent(html, { waitUntil: hasScripts ? "networkidle0" : "domcontentloaded" });
+    await page.addStyleTag({ content: "html,body{height:100%;margin:0;padding:0;overflow:hidden;background:white}" });
 
     if (isMermaid) {
       await page.waitForFunction(
@@ -116,27 +137,54 @@ export const renderHTMLToImage = async (
       await waitForNextFrame(page);
     }
 
-    // Measure the size of the page and scale the page to the width and height
+    // For any JS content, wait for rendering to stabilize
+    if (hasScripts && !isMermaid && !html.includes("data-chart-ready")) {
+      await waitForNextFrame(page);
+      await waitForNextFrame(page);
+    }
+
+    // Always wait for layout to stabilize before measuring
+    await waitForNextFrame(page);
+
+    // Measure content and scale only if needed (content larger than viewport)
     await page.evaluate(
       ({ vw, vh }) => {
-        const documentElement = document.documentElement;
-        const scrollWidth = Math.max(documentElement.scrollWidth, document.body.scrollWidth || 0);
-        const scrollHeight = Math.max(documentElement.scrollHeight, document.body.scrollHeight || 0);
-        const scale = Math.min(vw / (scrollWidth || vw), vh / (scrollHeight || vh), 1); // <=1 で縮小のみ
-        documentElement.style.overflow = "hidden";
-        (document.body as HTMLElement).style.zoom = String(scale);
+        const body = document.body as HTMLElement;
+        const scrollWidth = Math.max(document.documentElement.scrollWidth, body.scrollWidth || 0);
+        const scrollHeight = Math.max(document.documentElement.scrollHeight, body.scrollHeight || 0);
+        const scale = Math.min(vw / (scrollWidth || vw), vh / (scrollHeight || vh), 1);
+        document.documentElement.style.overflow = "hidden";
+        if (scale < 1) {
+          body.style.transformOrigin = "top left";
+          body.style.transform = `scale(${scale})`;
+        }
       },
       { vw: width, vh: height },
     );
-
-    // Step 3: Capture screenshot of the page (which contains the Markdown-rendered HTML)
     await page.screenshot({ path: outputPath as `${string}.png` | `${string}.jpeg` | `${string}.webp`, omitBackground });
+  } catch (error) {
+    // Invalidate shared browser on disconnection or timeout (browser may be hung)
+    const isTimeout = error instanceof Error && error.name === "TimeoutError";
+    if (useSharedBrowser && (!browser.isConnected() || isTimeout)) {
+      browserErrored = true;
+      invalidateSharedBrowser();
+      // Force close the browser if it's hung
+      if (isTimeout && browser.isConnected()) {
+        await browser.close().catch(() => {});
+      }
+    }
+    throw error;
   } finally {
     if (page) {
       await page.close().catch(() => {});
     }
     if (useSharedBrowser) {
-      await releaseBrowser(browser);
+      // If browser errored and was invalidated, don't call releaseBrowser (refs already handled)
+      if (!browserErrored) {
+        await releaseBrowser(browser);
+      } else {
+        sharedBrowserRefs = Math.max(0, sharedBrowserRefs - 1);
+      }
     } else {
       await browser.close().catch(() => {});
     }
