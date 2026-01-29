@@ -79,8 +79,7 @@ export const renderHTMLToImage = async (
   isMermaid: boolean = false,
   omitBackground: boolean = false,
 ) => {
-  // Charts are rendered in a dedicated browser to avoid shared-page timing issues.
-  const useSharedBrowser = reuseBrowser && !html.includes("data-chart-ready");
+  const useSharedBrowser = reuseBrowser;
   const browser = useSharedBrowser ? await acquireBrowser() : await puppeteer.launch({ args: browserLaunchArgs });
   let page: puppeteer.Page | null = null;
 

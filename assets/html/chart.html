@@ -28,6 +28,11 @@
             const ctx = document.getElementById('myChart');
             if (!ctx) return false;
             const chartData = ${chart_data};
+            // Create options only when missing to preserve caller-provided settings.
+            if (!chartData.options) {
+                chartData.options = {};
+            }
+            chartData.options.animation = false;
             new Chart(ctx, chartData);
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
