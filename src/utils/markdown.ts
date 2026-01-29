@@ -5,17 +5,41 @@ const isCI = process.env.CI === "true";
 const reuseBrowser = process.env.MULMO_PUPPETEER_REUSE !== "0";
 const browserLaunchArgs = isCI ? ["--no-sandbox"] : [];
 
-// Shared browser to avoid spawning a new Chromium per render.
+// Browser idle timeout before closing (ms)
+const BROWSER_IDLE_TIMEOUT_MS = 300;
+// Default timeout for waiting on async content (ms)
+const CONTENT_READY_TIMEOUT_MS = 20000;
+
+// --- Pure utility functions (unit testable) ---
+
+/** Check if HTML contains JavaScript that needs execution time */
+export const hasJavaScript = (html: string): boolean => html.includes("<script");
+
+/** Check if HTML contains Chart.js content that needs render time */
+export const isChartContent = (html: string): boolean => html.includes("data-chart-ready");
+
+/** Interpolate template variables in a string */
+export const interpolate = (template: string, data: Record<string, string>): string => {
+  return template.replace(/\$\{(.*?)\}/g, (_, key) => data[key.trim()] ?? "");
+};
+
+// --- Shared browser management ---
+
 let sharedBrowserPromise: Promise<puppeteer.Browser> | null = null;
 let sharedBrowserRefs = 0;
 let sharedBrowserCloseTimer: ReturnType<typeof setTimeout> | null = null;
 
-// Invalidate the shared browser (called when browser is disconnected or errored).
+/** Safely decrement browser reference count */
+const decrementBrowserRefs = (): void => {
+  sharedBrowserRefs = Math.max(0, sharedBrowserRefs - 1);
+};
+
+/** Invalidate the shared browser (called when browser is disconnected or errored) */
 const invalidateSharedBrowser = (): void => {
   sharedBrowserPromise = null;
 };
 
-// Acquire a browser instance; reuse a shared one when enabled.
+/** Acquire a browser instance; reuse a shared one when enabled */
 const acquireBrowser = async (): Promise<puppeteer.Browser> => {
   if (!reuseBrowser) {
     return await puppeteer.launch({ args: browserLaunchArgs });
@@ -40,7 +64,7 @@ const acquireBrowser = async (): Promise<puppeteer.Browser> => {
       if (sharedBrowserPromise === currentPromise) {
         sharedBrowserPromise = null;
       }
-      sharedBrowserRefs -= 1;
+      decrementBrowserRefs();
       return acquireBrowser();
     }
 
@@ -49,24 +73,24 @@ const acquireBrowser = async (): Promise<puppeteer.Browser> => {
     if (sharedBrowserPromise === currentPromise) {
       sharedBrowserPromise = null;
     }
-    sharedBrowserRefs = Math.max(0, sharedBrowserRefs - 1);
+    decrementBrowserRefs();
     throw error;
   }
 };
 
-// Release the browser; close only after a short idle window.
+/** Release the browser; close only after a short idle window */
 const releaseBrowser = async (browser: puppeteer.Browser): Promise<void> => {
   if (!reuseBrowser) {
     await browser.close().catch(() => {});
     return;
   }
 
-  sharedBrowserRefs = Math.max(0, sharedBrowserRefs - 1);
+  decrementBrowserRefs();
   if (sharedBrowserRefs > 0 || !sharedBrowserPromise) {
     return;
   }
 
-  // Delay close to allow back-to-back renders to reuse the browser.
+  // Delay close to allow back-to-back renders to reuse the browser
   sharedBrowserCloseTimer = setTimeout(async () => {
     const current = sharedBrowserPromise;
     sharedBrowserPromise = null;
@@ -74,18 +98,66 @@ const releaseBrowser = async (browser: puppeteer.Browser): Promise<void> => {
     if (current) {
       await (await current).close().catch(() => {});
     }
-  }, 300);
+  }, BROWSER_IDLE_TIMEOUT_MS);
 };
 
-// Wait for a single animation frame to let canvas paints settle.
-const waitForNextFrame = async (page: puppeteer.Page): Promise<void> => {
-  await page.evaluate(
-    () =>
-      new Promise<void>((resolve) => {
-        requestAnimationFrame(() => resolve());
-      }),
+// --- Page rendering helpers ---
+
+/** Wait for animation frames to let rendering settle */
+const waitForFrames = async (page: puppeteer.Page, count: number = 1): Promise<void> => {
+  for (let i = 0; i < count; i++) {
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => resolve());
+        }),
+    );
+  }
+};
+
+/** Wait for mermaid diagram to be ready */
+const waitForMermaid = async (page: puppeteer.Page): Promise<void> => {
+  await page.waitForFunction(
+    () => {
+      const element = document.querySelector(".mermaid");
+      return element && (element as HTMLElement).dataset.ready === "true";
+    },
+    { timeout: CONTENT_READY_TIMEOUT_MS },
   );
 };
+
+/** Wait for Chart.js canvas to be ready */
+const waitForChart = async (page: puppeteer.Page): Promise<void> => {
+  await page.waitForFunction(
+    () => {
+      const canvas = document.querySelector("canvas[data-chart-ready='true']");
+      return !!canvas;
+    },
+    { timeout: CONTENT_READY_TIMEOUT_MS },
+  );
+  // Give the browser a couple of frames to paint the canvas
+  await waitForFrames(page, 2);
+};
+
+/** Apply scaling to fit content within viewport */
+const applyContentScaling = async (page: puppeteer.Page, width: number, height: number): Promise<void> => {
+  await page.evaluate(
+    ({ vw, vh }) => {
+      const body = document.body as HTMLElement;
+      const scrollWidth = Math.max(document.documentElement.scrollWidth, body.scrollWidth || 0);
+      const scrollHeight = Math.max(document.documentElement.scrollHeight, body.scrollHeight || 0);
+      const scale = Math.min(vw / (scrollWidth || vw), vh / (scrollHeight || vh), 1);
+      document.documentElement.style.overflow = "hidden";
+      if (scale < 1) {
+        body.style.transformOrigin = "top left";
+        body.style.transform = `scale(${scale})`;
+      }
+    },
+    { vw: width, vh: height },
+  );
+};
+
+// --- Main rendering functions ---
 
 export const renderHTMLToImage = async (
   html: string,
@@ -95,77 +167,42 @@ export const renderHTMLToImage = async (
   isMermaid: boolean = false,
   omitBackground: boolean = false,
 ) => {
-  // All content types now use shared browser - timing issues resolved with proper waits.
-  const useSharedBrowser = reuseBrowser;
-  const browser = useSharedBrowser ? await acquireBrowser() : await puppeteer.launch({ args: browserLaunchArgs });
+  const browser = reuseBrowser ? await acquireBrowser() : await puppeteer.launch({ args: browserLaunchArgs });
   let page: puppeteer.Page | null = null;
   let browserErrored = false;
 
   try {
     page = await browser.newPage();
-    // Adjust page settings if needed (like width, height, etc.)
     await page.setViewport({ width, height });
 
-    // Determine if HTML contains scripts that need time to execute
-    const hasScripts = html.includes("<script");
+    const jsContent = hasJavaScript(html);
+    const chartContent = isChartContent(html);
 
-    // Set the page content to the HTML generated from the Markdown
     // Use networkidle0 for JS-heavy content to wait for all network requests to settle
-    await page.setContent(html, { waitUntil: hasScripts ? "networkidle0" : "domcontentloaded" });
+    await page.setContent(html, { waitUntil: jsContent ? "networkidle0" : "domcontentloaded" });
     await page.addStyleTag({ content: "html,body{height:100%;margin:0;padding:0;overflow:hidden;background:white}" });
 
+    // Wait for async content to be ready
     if (isMermaid) {
-      await page.waitForFunction(
-        () => {
-          const element = document.querySelector(".mermaid");
-          return element && (element as HTMLElement).dataset.ready === "true";
-        },
-        { timeout: 20000 },
-      );
-    }
-
-    if (html.includes("data-chart-ready")) {
-      await page.waitForFunction(
-        () => {
-          const canvas = document.querySelector("canvas[data-chart-ready='true']");
-          return !!canvas;
-        },
-        { timeout: 20000 },
-      );
-      // Give the browser a couple of frames to paint the canvas.
-      await waitForNextFrame(page);
-      await waitForNextFrame(page);
-    }
-
-    // For any JS content, wait for rendering to stabilize
-    if (hasScripts && !isMermaid && !html.includes("data-chart-ready")) {
-      await waitForNextFrame(page);
-      await waitForNextFrame(page);
+      await waitForMermaid(page);
+    } else if (chartContent) {
+      await waitForChart(page);
+    } else if (jsContent) {
+      // For other JS content, wait for rendering to stabilize
+      await waitForFrames(page, 2);
     }
 
     // Always wait for layout to stabilize before measuring
-    await waitForNextFrame(page);
+    await waitForFrames(page, 1);
 
-    // Measure content and scale only if needed (content larger than viewport)
-    await page.evaluate(
-      ({ vw, vh }) => {
-        const body = document.body as HTMLElement;
-        const scrollWidth = Math.max(document.documentElement.scrollWidth, body.scrollWidth || 0);
-        const scrollHeight = Math.max(document.documentElement.scrollHeight, body.scrollHeight || 0);
-        const scale = Math.min(vw / (scrollWidth || vw), vh / (scrollHeight || vh), 1);
-        document.documentElement.style.overflow = "hidden";
-        if (scale < 1) {
-          body.style.transformOrigin = "top left";
-          body.style.transform = `scale(${scale})`;
-        }
-      },
-      { vw: width, vh: height },
-    );
+    // Scale content to fit viewport if needed
+    await applyContentScaling(page, width, height);
+
     await page.screenshot({ path: outputPath as `${string}.png` | `${string}.jpeg` | `${string}.webp`, omitBackground });
   } catch (error) {
     // Invalidate shared browser on disconnection or timeout (browser may be hung)
     const isTimeout = error instanceof Error && error.name === "TimeoutError";
-    if (useSharedBrowser && (!browser.isConnected() || isTimeout)) {
+    if (reuseBrowser && (!browser.isConnected() || isTimeout)) {
       browserErrored = true;
       invalidateSharedBrowser();
       // Force close the browser if it's hung
@@ -178,12 +215,12 @@ export const renderHTMLToImage = async (
     if (page) {
       await page.close().catch(() => {});
     }
-    if (useSharedBrowser) {
+    if (reuseBrowser) {
       // If browser errored and was invalidated, don't call releaseBrowser (refs already handled)
       if (!browserErrored) {
         await releaseBrowser(browser);
       } else {
-        sharedBrowserRefs = Math.max(0, sharedBrowserRefs - 1);
+        decrementBrowserRefs();
       }
     } else {
       await browser.close().catch(() => {});
@@ -196,8 +233,4 @@ export const renderMarkdownToImage = async (markdown: string, style: string, out
   const body = await marked(markdown);
   const html = `<html>${header}<body>${body}</body></html>`;
   await renderHTMLToImage(html, outputPath, width, height);
-};
-
-export const interpolate = (template: string, data: Record<string, string>): string => {
-  return template.replace(/\$\{(.*?)\}/g, (_, key) => data[key.trim()] ?? "");
 };
