@@ -160,17 +160,10 @@ export const MulmoPresentationStyleMethods = {
     const agentInfo = provider2LipSyncAgent[lipSyncProvider];
     return agentInfo;
   },
-  getConcurrency(presentationStyle: MulmoPresentationStyle) {
-    const imageAgentInfo = MulmoPresentationStyleMethods.getImageAgentInfo(presentationStyle);
-    if (imageAgentInfo.imageParams.provider === "openai") {
-      // NOTE: Here are the rate limits of OpenAI's text2image API (1token = 32x32 patch).
-      // dall-e-3: 7,500 RPM、15 images per minute (4 images for max resolution)
-      // gpt-image-1：3,000,000 TPM、150 images per minute
-      // Reduced from 16 to 4 to prevent Puppeteer browser overload during parallel HTML/Chart rendering
-      if (imageAgentInfo.imageParams.model === provider2ImageAgent.openai.defaultModel) {
-        return 4;
-      }
-    }
+  getConcurrency(__presentationStyle: MulmoPresentationStyle) {
+    // NOTE: OpenAI API rate limits allow higher concurrency (dall-e-3: 15/min, gpt-image-1: 150/min),
+    // but Puppeteer browser rendering (HTML/Chart/Mermaid) becomes unstable above 4 parallel operations.
+    // Using conservative value of 4 to ensure stability across all rendering types.
     return 4;
   },
   getHtmlImageAgentInfo(presentationStyle: MulmoPresentationStyle): Text2HtmlAgentInfo {
