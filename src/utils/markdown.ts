@@ -200,13 +200,14 @@ export const renderHTMLToImage = async (
 
     await page.screenshot({ path: outputPath as `${string}.png` | `${string}.jpeg` | `${string}.webp`, omitBackground });
   } catch (error) {
-    // Invalidate shared browser on disconnection or timeout (browser may be hung)
+    // Invalidate shared browser on disconnection, timeout, or frame detached errors
     const isTimeout = error instanceof Error && error.name === "TimeoutError";
-    if (reuseBrowser && (!browser.isConnected() || isTimeout)) {
+    const isFrameDetached = error instanceof Error && error.message.includes("frame was detached");
+    if (reuseBrowser && (!browser.isConnected() || isTimeout || isFrameDetached)) {
       browserErrored = true;
       invalidateSharedBrowser();
-      // Force close the browser if it's hung
-      if (isTimeout && browser.isConnected()) {
+      // Force close the browser if it's hung or frame detached
+      if ((isTimeout || isFrameDetached) && browser.isConnected()) {
         await browser.close().catch(() => {});
       }
     }
