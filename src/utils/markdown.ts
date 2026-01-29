@@ -66,16 +66,16 @@ export const renderHTMLToImage = async (
   isMermaid: boolean = false,
   omitBackground: boolean = false,
 ) => {
-  // Use Puppeteer to render HTML to an image
-  const browser = await acquireBrowser();
+  const useSharedBrowser = reuseBrowser && !html.includes("data-chart-ready");
+  const browser = useSharedBrowser ? await acquireBrowser() : await puppeteer.launch({ args: browserLaunchArgs });
   const page = await browser.newPage();
 
   try {
-    // Set the page content to the HTML generated from the Markdown
-    await page.setContent(html, { waitUntil: "domcontentloaded" });
-
     // Adjust page settings if needed (like width, height, etc.)
     await page.setViewport({ width, height });
+
+    // Set the page content to the HTML generated from the Markdown
+    await page.setContent(html, { waitUntil: "domcontentloaded" });
     await page.addStyleTag({ content: "html,body{margin:0;padding:0;overflow:hidden}" });
 
     if (isMermaid) {
@@ -96,6 +96,15 @@ export const renderHTMLToImage = async (
         },
         { timeout: 20000 },
       );
+      // Give the browser a couple of frames to paint the canvas.
+      await page.evaluate(
+        () =>
+          new Promise<void>((resolve) => {
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => resolve());
+            });
+          }),
+      );
     }
 
     // Measure the size of the page and scale the page to the width and height
@@ -115,7 +124,11 @@ export const renderHTMLToImage = async (
     await page.screenshot({ path: outputPath as `${string}.png` | `${string}.jpeg` | `${string}.webp`, omitBackground });
   } finally {
     await page.close().catch(() => {});
-    await releaseBrowser(browser);
+    if (useSharedBrowser) {
+      await releaseBrowser(browser);
+    } else {
+      await browser.close().catch(() => {});
+    }
   }
 };
 

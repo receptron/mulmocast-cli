@@ -29,7 +29,11 @@
             if (!ctx) return false;
             const chartData = ${chart_data};
             new Chart(ctx, chartData);
-            ctx.dataset.chartReady = "true";
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    ctx.dataset.chartReady = "true";
+                });
+            });
             return true;
         }
 
