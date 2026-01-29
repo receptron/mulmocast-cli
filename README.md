@@ -285,8 +285,37 @@ mulmo tool scripting -i
 ```
 
 Note:
+
 - When -i is specified, --input-file value will be ignored
 - When --input-file is specified, -u value will be ignored
+
+### Complete MulmoScript from minimal beats
+
+You can create a minimal JSON with just beats and complete it with `mulmo tool complete`:
+
+```json
+{
+  "beats": [
+    { "text": "Hello, welcome to MulmoCast!" },
+    { "text": "This is a simple example." }
+  ]
+}
+```
+
+Save this as `my_beats.json`, then complete it with a style:
+
+```bash
+# Complete with built-in style
+mulmo tool complete my_beats.json -s ani
+
+# Complete with custom style file
+mulmo tool complete my_beats.json -s ./my_style.json
+
+# Output to specific file
+mulmo tool complete my_beats.json -s ani -o my_script.json
+```
+
+This generates a complete MulmoScript with all required fields (canvasSize, speechParams, imageParams, etc.) from the style.
 
 
 ## Generate content from MulmoScript
@@ -536,9 +565,10 @@ mulmo tool <command>
 Generate Mulmo script and other tools
 
 Commands:
-  mulmo tool scripting  Generate mulmocast script
-  mulmo tool prompt     Dump prompt from template
-  mulmo tool schema     Dump mulmocast schema
+  mulmo tool scripting       Generate mulmocast script
+  mulmo tool complete <file> Complete partial MulmoScript with defaults
+  mulmo tool prompt          Dump prompt from template
+  mulmo tool schema          Dump mulmocast schema
 
 Options:
       --version  Show version number                                   [boolean]
@@ -624,6 +654,36 @@ Options:
       --version  Show version number                                   [boolean]
   -v, --verbose  verbose log               [boolean] [required] [default: false]
   -h, --help     Show help                                             [boolean]
+```
+
+```
+mulmo tool complete <file>
+
+Complete partial MulmoScript with schema defaults and optional style/template
+
+Positionals:
+  file  Input beats file path (JSON)                             [string] [required]
+
+Options:
+      --version   Show version number                                    [boolean]
+  -v, --verbose   verbose log                [boolean] [required] [default: false]
+  -h, --help      Show help                                              [boolean]
+  -o, --output    Output file path (default: <file>_completed.json)       [string]
+  -t, --template  Template name to apply                                  [string]
+  -s, --style     Style name or file path (.json)                         [string]
+
+Examples:
+  # Complete minimal script with schema defaults
+  mulmo tool complete input.json
+
+  # Apply built-in style
+  mulmo tool complete input.json -s ani
+
+  # Apply custom style file
+  mulmo tool complete input.json -s ./my_style.json
+
+  # Apply template
+  mulmo tool complete input.json -t children_book
 ```
 
 

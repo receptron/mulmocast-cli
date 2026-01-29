@@ -1,17 +1,18 @@
 import { readFileSync, writeFileSync } from "fs";
 import path from "path";
 import { GraphAILogger } from "graphai";
-import { completeScript, templateExists } from "../../../../tools/complete_script.js";
+import { completeScript, templateExists, styleExists } from "../../../../tools/complete_script.js";
 
 type CompleteHandlerArgs = {
   file: string;
   o?: string;
   t?: string;
+  s?: string;
   v?: boolean;
 };
 
 export const handler = async (argv: CompleteHandlerArgs) => {
-  const { file, o: outputPath, t: templateName, v: verbose } = argv;
+  const { file, o: outputPath, t: templateName, s: styleName, v: verbose } = argv;
 
   if (!file) {
     GraphAILogger.error("Error: Input file is required");
@@ -35,7 +36,11 @@ export const handler = async (argv: CompleteHandlerArgs) => {
     GraphAILogger.warn(`Warning: Template '${templateName}' not found`);
   }
 
-  const result = completeScript(inputData, templateName);
+  if (styleName && !styleExists(styleName)) {
+    GraphAILogger.warn(`Warning: Style '${styleName}' not found`);
+  }
+
+  const result = completeScript(inputData, { templateName, styleName });
 
   if (!result.success) {
     GraphAILogger.error("Validation errors:");
@@ -45,8 +50,9 @@ export const handler = async (argv: CompleteHandlerArgs) => {
     process.exit(1);
   }
 
-  if (verbose && templateName) {
-    GraphAILogger.info(`Applied template: ${templateName}`);
+  if (verbose) {
+    if (styleName) GraphAILogger.info(`Applied style: ${styleName}`);
+    if (templateName) GraphAILogger.info(`Applied template: ${templateName}`);
   }
 
   const outputFilePath = outputPath ? path.resolve(outputPath) : inputPath.replace(/\.json$/, "_completed.json");

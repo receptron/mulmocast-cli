@@ -1,7 +1,10 @@
+import { readFileSync, existsSync } from "fs";
+import path from "path";
 import { type ZodSafeParseResult } from "zod";
 import { mulmoScriptSchema } from "../types/schema.js";
 import { getScriptFromPromptTemplate } from "../utils/file.js";
 import { currentMulmoScriptVersion } from "../types/const.js";
+import { promptTemplates } from "../data/index.js";
 import type { MulmoScript } from "../types/type.js";
 
 type PartialMulmoScript = Record<string, unknown>;
@@ -22,36 +25,110 @@ export const addMulmocastVersion = (data: PartialMulmoScript): PartialMulmoScrip
 const deepMergeKeys = ["speechParams", "imageParams", "movieParams", "audioParams"] as const;
 
 /**
- * Merge input data with template (input takes precedence)
+ * Merge base with override (override takes precedence)
  */
-export const mergeWithTemplate = (data: PartialMulmoScript, template: MulmoScript): PartialMulmoScript => {
-  const merged: PartialMulmoScript = { ...template, ...data };
+export const mergeScripts = (base: PartialMulmoScript, override: PartialMulmoScript): PartialMulmoScript => {
+  const merged: PartialMulmoScript = { ...base, ...override };
 
   deepMergeKeys.forEach((key) => {
-    if (template[key] && data[key]) {
-      merged[key] = { ...template[key], ...(data[key] as object) };
+    if (base[key] && override[key]) {
+      merged[key] = { ...(base[key] as object), ...(override[key] as object) };
     }
   });
 
   return merged;
 };
 
-export type CompleteScriptResult = ZodSafeParseResult<MulmoScript>;
+/**
+ * Check if style specifier is a file path
+ */
+const isFilePath = (style: string): boolean => {
+  return style.endsWith(".json") || style.includes("/") || style.includes("\\");
+};
 
 /**
- * Complete a partial MulmoScript with schema defaults and optional template
+ * Get style by name from promptTemplates
  */
-export const completeScript = (data: PartialMulmoScript, templateName?: string): CompleteScriptResult => {
-  const withVersion = addMulmocastVersion(data);
+const getStyleByName = (styleName: string): PartialMulmoScript | undefined => {
+  const template = promptTemplates.find((t) => t.filename === styleName);
+  return template?.presentationStyle as PartialMulmoScript | undefined;
+};
 
-  const withTemplate = templateName
-    ? (() => {
-        const template = getScriptFromPromptTemplate(templateName);
-        return template ? mergeWithTemplate(withVersion, template) : withVersion;
-      })()
-    : withVersion;
+/**
+ * Get style from file path
+ */
+const getStyleFromFile = (filePath: string): PartialMulmoScript | undefined => {
+  const resolvedPath = path.resolve(filePath);
+  if (!existsSync(resolvedPath)) {
+    return undefined;
+  }
+  const content = readFileSync(resolvedPath, "utf-8");
+  return JSON.parse(content) as PartialMulmoScript;
+};
 
-  return mulmoScriptSchema.safeParse(withTemplate);
+/**
+ * Get style by name or file path
+ */
+export const getStyle = (style: string): PartialMulmoScript | undefined => {
+  return isFilePath(style) ? getStyleFromFile(style) : getStyleByName(style);
+};
+
+export type CompleteScriptResult = ZodSafeParseResult<MulmoScript>;
+
+type CompleteScriptOptions = {
+  templateName?: string;
+  styleName?: string;
+};
+
+/**
+ * Complete a partial MulmoScript with schema defaults, optional style or template
+ *
+ * @param data - Partial MulmoScript to complete (highest precedence)
+ * @param options - Optional template or style to use as base
+ * @param options.templateName - Template name (e.g., "children_book"). Mutually exclusive with styleName.
+ * @param options.styleName - Style name or file path. Mutually exclusive with templateName.
+ * @returns Zod safe parse result with completed MulmoScript or validation errors
+ * @throws Error if both templateName and styleName are specified
+ *
+ * @example
+ * // With template
+ * completeScript(data, { templateName: "children_book" })
+ *
+ * @example
+ * // With style
+ * completeScript(data, { styleName: "ghibli_comic" })
+ *
+ * @example
+ * // With style from file
+ * completeScript(data, { styleName: "./my-style.json" })
+ */
+export const completeScript = (data: PartialMulmoScript, options: CompleteScriptOptions = {}): CompleteScriptResult => {
+  const { templateName, styleName } = options;
+
+  // template and style are mutually exclusive
+  if (templateName && styleName) {
+    throw new Error("Cannot specify both templateName and styleName. They are mutually exclusive.");
+  }
+
+  // Get base config from template or style
+  const getBase = () => {
+    if (templateName) {
+      return getScriptFromPromptTemplate(templateName);
+    }
+    if (styleName) {
+      return getStyle(styleName);
+    }
+    return undefined;
+  };
+  const base = getBase();
+
+  // Merge base with input data (input data has highest precedence)
+  const merged = base ? mergeScripts(base, data) : data;
+
+  // Add version if not present
+  const withVersion = addMulmocastVersion(merged);
+
+  return mulmoScriptSchema.safeParse(withVersion);
 };
 
 /**
@@ -59,4 +136,11 @@ export const completeScript = (data: PartialMulmoScript, templateName?: string):
  */
 export const templateExists = (templateName: string): boolean => {
   return getScriptFromPromptTemplate(templateName) !== undefined;
+};
+
+/**
+ * Check if style exists (by name or file path)
+ */
+export const styleExists = (style: string): boolean => {
+  return getStyle(style) !== undefined;
 };
