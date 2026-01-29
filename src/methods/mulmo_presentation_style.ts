@@ -161,10 +161,12 @@ export const MulmoPresentationStyleMethods = {
     return agentInfo;
   },
   getConcurrency(presentationStyle: MulmoPresentationStyle) {
-    // NOTE: OpenAI API rate limits (dall-e-3: 15/min, gpt-image-1: 150/min) allow high concurrency.
-    // Puppeteer rendering is separately limited by a semaphore in markdown.ts (MAX_CONCURRENT_RENDERS).
     const imageAgentInfo = MulmoPresentationStyleMethods.getImageAgentInfo(presentationStyle);
     if (imageAgentInfo.imageParams.provider === "openai") {
+      // NOTE: Here are the rate limits of OpenAI's text2image API (1token = 32x32 patch).
+      // dall-e-3: 7,500 RPM、15 images per minute (4 images for max resolution)
+      // gpt-image-1：3,000,000 TPM、150 images per minute
+      // Puppeteer rendering is separately limited by a semaphore in markdown.ts (MAX_CONCURRENT_RENDERS).
       if (imageAgentInfo.imageParams.model === provider2ImageAgent.openai.defaultModel) {
         return 16;
       }
