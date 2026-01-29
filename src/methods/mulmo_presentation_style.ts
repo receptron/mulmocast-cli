@@ -166,8 +166,9 @@ export const MulmoPresentationStyleMethods = {
       // NOTE: Here are the rate limits of OpenAI's text2image API (1token = 32x32 patch).
       // dall-e-3: 7,500 RPM、15 images per minute (4 images for max resolution)
       // gpt-image-1：3,000,000 TPM、150 images per minute
+      // Reduced from 16 to 4 to prevent Puppeteer browser overload during parallel HTML/Chart rendering
       if (imageAgentInfo.imageParams.model === provider2ImageAgent.openai.defaultModel) {
-        return 16;
+        return 4;
       }
     }
     return 4;
