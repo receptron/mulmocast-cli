@@ -361,6 +361,8 @@ export const images_graph_data: GraphData = {
       params: {
         rowKey: "beat",
         compositeResult: true,
+        // Limit parallel beat processing to prevent browser overload in Puppeteer rendering
+        concurrency: 10,
       },
       graph: beat_graph_data,
     },
