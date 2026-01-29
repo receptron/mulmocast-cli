@@ -5,10 +5,12 @@ const isCI = process.env.CI === "true";
 const reuseBrowser = process.env.MULMO_PUPPETEER_REUSE !== "0";
 const browserLaunchArgs = isCI ? ["--no-sandbox"] : [];
 
+// Shared browser to avoid spawning a new Chromium per render.
 let sharedBrowserPromise: Promise<puppeteer.Browser> | null = null;
 let sharedBrowserRefs = 0;
 let sharedBrowserCloseTimer: ReturnType<typeof setTimeout> | null = null;
 
+// Acquire a browser instance; reuse a shared one when enabled.
 const acquireBrowser = async (): Promise<puppeteer.Browser> => {
   if (!reuseBrowser) {
     return await puppeteer.launch({ args: browserLaunchArgs });
@@ -33,6 +35,7 @@ const acquireBrowser = async (): Promise<puppeteer.Browser> => {
   }
 };
 
+// Release the browser; close only after a short idle window.
 const releaseBrowser = async (browser: puppeteer.Browser): Promise<void> => {
   if (!reuseBrowser) {
     await browser.close().catch(() => {});
@@ -44,6 +47,7 @@ const releaseBrowser = async (browser: puppeteer.Browser): Promise<void> => {
     return;
   }
 
+  // Delay close to allow back-to-back renders to reuse the browser.
   sharedBrowserCloseTimer = setTimeout(async () => {
     const current = sharedBrowserPromise;
     sharedBrowserPromise = null;
