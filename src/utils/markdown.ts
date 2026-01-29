@@ -26,10 +26,13 @@ const acquireBrowser = async (): Promise<puppeteer.Browser> => {
     sharedBrowserPromise = puppeteer.launch({ args: browserLaunchArgs });
   }
 
+  const currentPromise = sharedBrowserPromise;
   try {
-    return await sharedBrowserPromise;
+    return await currentPromise;
   } catch (error) {
-    sharedBrowserPromise = null;
+    if (sharedBrowserPromise === currentPromise) {
+      sharedBrowserPromise = null;
+    }
     sharedBrowserRefs = Math.max(0, sharedBrowserRefs - 1);
     throw error;
   }
