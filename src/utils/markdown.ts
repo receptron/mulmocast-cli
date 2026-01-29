@@ -205,11 +205,12 @@ export const renderHTMLToImage = async (
   // Acquire render slot to limit concurrent Puppeteer operations
   await acquireRenderSlot();
 
-  const browser = reuseBrowser ? await acquireBrowser() : await puppeteer.launch({ args: browserLaunchArgs });
+  let browser: puppeteer.Browser | null = null;
   let page: puppeteer.Page | null = null;
   let browserErrored = false;
 
   try {
+    browser = reuseBrowser ? await acquireBrowser() : await puppeteer.launch({ args: browserLaunchArgs });
     page = await browser.newPage();
     await page.setViewport({ width, height });
 
@@ -239,16 +240,18 @@ export const renderHTMLToImage = async (
     await page.screenshot({ path: outputPath as `${string}.png` | `${string}.jpeg` | `${string}.webp`, omitBackground });
   } catch (error) {
     // Invalidate shared browser on disconnection, timeout, or browser/page closure errors
-    const isTimeout = error instanceof Error && error.name === "TimeoutError";
-    const isFrameDetached = error instanceof Error && error.message.includes("frame was detached");
-    const isTargetClosed = error instanceof Error && error.message.includes("Target closed");
-    const isBrowserError = isTimeout || isFrameDetached || isTargetClosed;
-    if (reuseBrowser && (!browser.isConnected() || isBrowserError)) {
-      browserErrored = true;
-      invalidateSharedBrowser();
-      // Force close the browser if it's in an unstable state
-      if (isBrowserError && browser.isConnected()) {
-        await browser.close().catch(() => {});
+    if (browser) {
+      const isTimeout = error instanceof Error && error.name === "TimeoutError";
+      const isFrameDetached = error instanceof Error && error.message.includes("frame was detached");
+      const isTargetClosed = error instanceof Error && error.message.includes("Target closed");
+      const isBrowserError = isTimeout || isFrameDetached || isTargetClosed;
+      if (reuseBrowser && (!browser.isConnected() || isBrowserError)) {
+        browserErrored = true;
+        invalidateSharedBrowser();
+        // Force close the browser if it's in an unstable state
+        if (isBrowserError && browser.isConnected()) {
+          await browser.close().catch(() => {});
+        }
       }
     }
     throw error;
@@ -256,15 +259,17 @@ export const renderHTMLToImage = async (
     if (page) {
       await page.close().catch(() => {});
     }
-    if (reuseBrowser) {
-      // If browser errored and was invalidated, don't call releaseBrowser (refs already handled)
-      if (!browserErrored) {
-        await releaseBrowser(browser);
+    if (browser) {
+      if (reuseBrowser) {
+        // If browser errored and was invalidated, don't call releaseBrowser (refs already handled)
+        if (!browserErrored) {
+          await releaseBrowser(browser);
+        } else {
+          decrementBrowserRefs();
+        }
       } else {
-        decrementBrowserRefs();
+        await browser.close().catch(() => {});
       }
-    } else {
-      await browser.close().catch(() => {});
     }
     // Release render slot to allow next queued render to proceed
     releaseRenderSlot();
