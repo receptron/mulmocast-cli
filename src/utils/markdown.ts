@@ -58,6 +58,7 @@ const releaseBrowser = async (browser: puppeteer.Browser): Promise<void> => {
   }, 300);
 };
 
+// Wait for a single animation frame to let canvas paints settle.
 const waitForNextFrame = async (page: puppeteer.Page): Promise<void> => {
   await page.evaluate(
     () =>
@@ -75,6 +76,7 @@ export const renderHTMLToImage = async (
   isMermaid: boolean = false,
   omitBackground: boolean = false,
 ) => {
+  // Charts are rendered in a dedicated browser to avoid shared-page timing issues.
   const useSharedBrowser = reuseBrowser && !html.includes("data-chart-ready");
   const browser = useSharedBrowser ? await acquireBrowser() : await puppeteer.launch({ args: browserLaunchArgs });
   const page = await browser.newPage();
