@@ -17,21 +17,29 @@
 <body>
     <h1>${title}</h1>
     <div class="chart-container">
-        <canvas id="myChart"></canvas>
+        <canvas id="myChart" data-chart-ready="false"></canvas>
     </div>
 
     <!-- Plain JavaScript instead of TypeScript -->
     <script>
-        // Wait for DOM to be fully loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get the canvas element
+        // Wait for DOM and Chart.js to be ready, then render.
+        function initChart() {
+            if (!window.Chart) return false;
             const ctx = document.getElementById('myChart');
-            
-            // Create the data object (no TypeScript interfaces)
+            if (!ctx) return false;
             const chartData = ${chart_data};
-
-            // Initialize the chart
             new Chart(ctx, chartData);
+            ctx.dataset.chartReady = "true";
+            return true;
+        }
+
+        function waitForChart() {
+            if (initChart()) return;
+            setTimeout(waitForChart, 50);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            waitForChart();
         });
     </script>
 </body>

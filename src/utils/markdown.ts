@@ -72,7 +72,7 @@ export const renderHTMLToImage = async (
 
   try {
     // Set the page content to the HTML generated from the Markdown
-    await page.setContent(html);
+    await page.setContent(html, { waitUntil: "domcontentloaded" });
 
     // Adjust page settings if needed (like width, height, etc.)
     await page.setViewport({ width, height });
@@ -81,8 +81,18 @@ export const renderHTMLToImage = async (
     if (isMermaid) {
       await page.waitForFunction(
         () => {
-          const el = document.querySelector(".mermaid");
-          return el && (el as HTMLElement).dataset.ready === "true";
+          const element = document.querySelector(".mermaid");
+          return element && (element as HTMLElement).dataset.ready === "true";
+        },
+        { timeout: 20000 },
+      );
+    }
+
+    if (html.includes("data-chart-ready")) {
+      await page.waitForFunction(
+        () => {
+          const canvas = document.querySelector("canvas[data-chart-ready='true']");
+          return !!canvas;
         },
         { timeout: 20000 },
       );
@@ -91,13 +101,13 @@ export const renderHTMLToImage = async (
     // Measure the size of the page and scale the page to the width and height
     await page.evaluate(
       ({ vw, vh }) => {
-        const de = document.documentElement;
-        const sw = Math.max(de.scrollWidth, document.body.scrollWidth || 0);
-        const sh = Math.max(de.scrollHeight, document.body.scrollHeight || 0);
-        const scale = Math.min(vw / (sw || vw), vh / (sh || vh), 1); // <=1 で縮小のみ
-        de.style.overflow = "hidden";
-        (document.body as HTMLElement).style.zoom = String(scale);
-      },
+      const documentElement = document.documentElement;
+      const scrollWidth = Math.max(documentElement.scrollWidth, document.body.scrollWidth || 0);
+      const scrollHeight = Math.max(documentElement.scrollHeight, document.body.scrollHeight || 0);
+      const scale = Math.min(vw / (scrollWidth || vw), vh / (scrollHeight || vh), 1); // <=1 で縮小のみ
+      documentElement.style.overflow = "hidden";
+      (document.body as HTMLElement).style.zoom = String(scale);
+    },
       { vw: width, vh: height },
     );
 
