@@ -45,6 +45,7 @@
     "pdf": "npx tsx ./src/cli/bin.ts pdf",
     "test": "rm -f scratchpad/test*.* && npx tsx ./src/audio.ts scripts/test/test.json && npx tsx ./src/images.ts scripts/test/test.json && npx tsx ./src/movie.ts scripts/test/test.json",
     "ci_test": "NODE_ENV=test tsx --test  --experimental-test-coverage ./test/*/test_*.ts",
+    "ci_render_test": "yarn images scripts/test/test_render_stress.json -f",
     "lint": "eslint src test",
     "build": "tsc",
     "build_test": "tsc && git checkout -- lib/*",

@@ -48,6 +48,7 @@ jobs:
     - run: yarn run ci_test
     - run: yarn run cli images scripts/test/test_order.json
     - run: yarn run cli images scripts/test/test_beats.json
+    - run: yarn run cli images scripts/test/test_render_stress.json
     - run: yarn run cli movie scripts/test/test_no_audio.json
     - run: yarn run cli movie scripts/test/test_no_audio_with_credit.json
     - run: yarn run cli movie scripts/test/test_transition_no_audio.json
