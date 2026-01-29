@@ -82,9 +82,10 @@ export const renderHTMLToImage = async (
   // Charts are rendered in a dedicated browser to avoid shared-page timing issues.
   const useSharedBrowser = reuseBrowser && !html.includes("data-chart-ready");
   const browser = useSharedBrowser ? await acquireBrowser() : await puppeteer.launch({ args: browserLaunchArgs });
-  const page = await browser.newPage();
+  let page: puppeteer.Page | null = null;
 
   try {
+    page = await browser.newPage();
     // Adjust page settings if needed (like width, height, etc.)
     await page.setViewport({ width, height });
 
@@ -131,7 +132,9 @@ export const renderHTMLToImage = async (
     // Step 3: Capture screenshot of the page (which contains the Markdown-rendered HTML)
     await page.screenshot({ path: outputPath as `${string}.png` | `${string}.jpeg` | `${string}.webp`, omitBackground });
   } finally {
-    await page.close().catch(() => {});
+    if (page) {
+      await page.close().catch(() => {});
+    }
     if (useSharedBrowser) {
       await releaseBrowser(browser);
     } else {
