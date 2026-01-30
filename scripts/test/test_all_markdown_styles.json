@@ -1,0 +1,809 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "All Markdown Styles (100 patterns)",
+  "beats": [
+    {
+      "text": "corporate-blue style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# corporate-blue\n\n## Category: business\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "corporate-blue"
+      }
+    },
+    {
+      "text": "executive-gray style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# executive-gray\n\n## Category: business\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "executive-gray"
+      }
+    },
+    {
+      "text": "finance-green style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# finance-green\n\n## Category: business\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "finance-green"
+      }
+    },
+    {
+      "text": "startup-orange style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# startup-orange\n\n## Category: business\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "startup-orange"
+      }
+    },
+    {
+      "text": "consulting-navy style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# consulting-navy\n\n## Category: business\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "consulting-navy"
+      }
+    },
+    {
+      "text": "professional-white style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# professional-white\n\n## Category: business\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "professional-white"
+      }
+    },
+    {
+      "text": "corporate-teal style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# corporate-teal\n\n## Category: business\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "corporate-teal"
+      }
+    },
+    {
+      "text": "enterprise-purple style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# enterprise-purple\n\n## Category: business\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "enterprise-purple"
+      }
+    },
+    {
+      "text": "banking-gold style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# banking-gold\n\n## Category: business\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "banking-gold"
+      }
+    },
+    {
+      "text": "modern-corporate style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# modern-corporate\n\n## Category: business\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "modern-corporate"
+      }
+    },
+    {
+      "text": "cyber-neon style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# cyber-neon\n\n## Category: tech\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "cyber-neon"
+      }
+    },
+    {
+      "text": "terminal-dark style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# terminal-dark\n\n## Category: tech\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "terminal-dark"
+      }
+    },
+    {
+      "text": "gradient-purple style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# gradient-purple\n\n## Category: tech\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "gradient-purple"
+      }
+    },
+    {
+      "text": "matrix-green style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# matrix-green\n\n## Category: tech\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "matrix-green"
+      }
+    },
+    {
+      "text": "ai-blue style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# ai-blue\n\n## Category: tech\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "ai-blue"
+      }
+    },
+    {
+      "text": "hologram style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# hologram\n\n## Category: tech\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "hologram"
+      }
+    },
+    {
+      "text": "circuit-board style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# circuit-board\n\n## Category: tech\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "circuit-board"
+      }
+    },
+    {
+      "text": "dark-code style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# dark-code\n\n## Category: tech\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "dark-code"
+      }
+    },
+    {
+      "text": "cyberpunk style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# cyberpunk\n\n## Category: tech\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "cyberpunk"
+      }
+    },
+    {
+      "text": "blockchain style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# blockchain\n\n## Category: tech\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "blockchain"
+      }
+    },
+    {
+      "text": "artistic-splash style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# artistic-splash\n\n## Category: creative\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "artistic-splash"
+      }
+    },
+    {
+      "text": "watercolor-soft style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# watercolor-soft\n\n## Category: creative\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "watercolor-soft"
+      }
+    },
+    {
+      "text": "bold-pop style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# bold-pop\n\n## Category: creative\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "bold-pop"
+      }
+    },
+    {
+      "text": "pastel-dream style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# pastel-dream\n\n## Category: creative\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "pastel-dream"
+      }
+    },
+    {
+      "text": "graffiti style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# graffiti\n\n## Category: creative\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "graffiti"
+      }
+    },
+    {
+      "text": "neon-glow style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# neon-glow\n\n## Category: creative\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "neon-glow"
+      }
+    },
+    {
+      "text": "retro-comic style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# retro-comic\n\n## Category: creative\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "retro-comic"
+      }
+    },
+    {
+      "text": "abstract-shapes style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# abstract-shapes\n\n## Category: creative\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "abstract-shapes"
+      }
+    },
+    {
+      "text": "vintage-poster style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# vintage-poster\n\n## Category: creative\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "vintage-poster"
+      }
+    },
+    {
+      "text": "rainbow-gradient style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# rainbow-gradient\n\n## Category: creative\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "rainbow-gradient"
+      }
+    },
+    {
+      "text": "clean-white style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# clean-white\n\n## Category: minimalist\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "clean-white"
+      }
+    },
+    {
+      "text": "zen-beige style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# zen-beige\n\n## Category: minimalist\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "zen-beige"
+      }
+    },
+    {
+      "text": "nordic-light style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# nordic-light\n\n## Category: minimalist\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "nordic-light"
+      }
+    },
+    {
+      "text": "paper-minimal style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# paper-minimal\n\n## Category: minimalist\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "paper-minimal"
+      }
+    },
+    {
+      "text": "swiss-design style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# swiss-design\n\n## Category: minimalist\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "swiss-design"
+      }
+    },
+    {
+      "text": "soft-gray style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# soft-gray\n\n## Category: minimalist\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "soft-gray"
+      }
+    },
+    {
+      "text": "mono-elegant style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# mono-elegant\n\n## Category: minimalist\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "mono-elegant"
+      }
+    },
+    {
+      "text": "airy-blue style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# airy-blue\n\n## Category: minimalist\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "airy-blue"
+      }
+    },
+    {
+      "text": "cream-simple style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# cream-simple\n\n## Category: minimalist\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "cream-simple"
+      }
+    },
+    {
+      "text": "ultra-minimal style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# ultra-minimal\n\n## Category: minimalist\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "ultra-minimal"
+      }
+    },
+    {
+      "text": "forest-green style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# forest-green\n\n## Category: nature\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "forest-green"
+      }
+    },
+    {
+      "text": "ocean-blue style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# ocean-blue\n\n## Category: nature\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "ocean-blue"
+      }
+    },
+    {
+      "text": "sunset-orange style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# sunset-orange\n\n## Category: nature\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "sunset-orange"
+      }
+    },
+    {
+      "text": "autumn-leaves style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# autumn-leaves\n\n## Category: nature\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "autumn-leaves"
+      }
+    },
+    {
+      "text": "spring-bloom style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# spring-bloom\n\n## Category: nature\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "spring-bloom"
+      }
+    },
+    {
+      "text": "mountain-mist style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# mountain-mist\n\n## Category: nature\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "mountain-mist"
+      }
+    },
+    {
+      "text": "tropical-vibes style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# tropical-vibes\n\n## Category: nature\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "tropical-vibes"
+      }
+    },
+    {
+      "text": "desert-sand style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# desert-sand\n\n## Category: nature\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "desert-sand"
+      }
+    },
+    {
+      "text": "night-sky style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# night-sky\n\n## Category: nature\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "night-sky"
+      }
+    },
+    {
+      "text": "lavender-field style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# lavender-field\n\n## Category: nature\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "lavender-field"
+      }
+    },
+    {
+      "text": "charcoal-elegant style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# charcoal-elegant\n\n## Category: dark\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "charcoal-elegant"
+      }
+    },
+    {
+      "text": "midnight-blue style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# midnight-blue\n\n## Category: dark\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "midnight-blue"
+      }
+    },
+    {
+      "text": "dark-gradient style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# dark-gradient\n\n## Category: dark\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "dark-gradient"
+      }
+    },
+    {
+      "text": "deep-purple-dark style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# deep-purple-dark\n\n## Category: dark\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "deep-purple-dark"
+      }
+    },
+    {
+      "text": "obsidian style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# obsidian\n\n## Category: dark\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "obsidian"
+      }
+    },
+    {
+      "text": "dark-forest style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# dark-forest\n\n## Category: dark\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "dark-forest"
+      }
+    },
+    {
+      "text": "dark-ocean style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# dark-ocean\n\n## Category: dark\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "dark-ocean"
+      }
+    },
+    {
+      "text": "slate-dark style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# slate-dark\n\n## Category: dark\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "slate-dark"
+      }
+    },
+    {
+      "text": "noir style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# noir\n\n## Category: dark\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "noir"
+      }
+    },
+    {
+      "text": "carbon-fiber style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# carbon-fiber\n\n## Category: dark\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "carbon-fiber"
+      }
+    },
+    {
+      "text": "vibrant-pink style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# vibrant-pink\n\n## Category: colorful\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "vibrant-pink"
+      }
+    },
+    {
+      "text": "electric-blue style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# electric-blue\n\n## Category: colorful\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "electric-blue"
+      }
+    },
+    {
+      "text": "lime-green style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# lime-green\n\n## Category: colorful\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "lime-green"
+      }
+    },
+    {
+      "text": "candy-colors style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# candy-colors\n\n## Category: colorful\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "candy-colors"
+      }
+    },
+    {
+      "text": "sunset-vibes style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# sunset-vibes\n\n## Category: colorful\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "sunset-vibes"
+      }
+    },
+    {
+      "text": "aurora style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# aurora\n\n## Category: colorful\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "aurora"
+      }
+    },
+    {
+      "text": "fiesta style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# fiesta\n\n## Category: colorful\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "fiesta"
+      }
+    },
+    {
+      "text": "cosmic style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# cosmic\n\n## Category: colorful\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "cosmic"
+      }
+    },
+    {
+      "text": "mango-tango style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# mango-tango\n\n## Category: colorful\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "mango-tango"
+      }
+    },
+    {
+      "text": "grape-soda style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# grape-soda\n\n## Category: colorful\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "grape-soda"
+      }
+    },
+    {
+      "text": "retro-70s style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# retro-70s\n\n## Category: vintage\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "retro-70s"
+      }
+    },
+    {
+      "text": "paper-texture style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# paper-texture\n\n## Category: vintage\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "paper-texture"
+      }
+    },
+    {
+      "text": "typewriter style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# typewriter\n\n## Category: vintage\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "typewriter"
+      }
+    },
+    {
+      "text": "sepia-photo style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# sepia-photo\n\n## Category: vintage\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "sepia-photo"
+      }
+    },
+    {
+      "text": "art-deco style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# art-deco\n\n## Category: vintage\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "art-deco"
+      }
+    },
+    {
+      "text": "newspaper style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# newspaper\n\n## Category: vintage\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "newspaper"
+      }
+    },
+    {
+      "text": "polaroid style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# polaroid\n\n## Category: vintage\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "polaroid"
+      }
+    },
+    {
+      "text": "old-book style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# old-book\n\n## Category: vintage\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "old-book"
+      }
+    },
+    {
+      "text": "vinyl-record style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# vinyl-record\n\n## Category: vintage\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "vinyl-record"
+      }
+    },
+    {
+      "text": "mid-century style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# mid-century\n\n## Category: vintage\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "mid-century"
+      }
+    },
+    {
+      "text": "washi-paper style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# washi-paper\n\n## Category: japanese\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "washi-paper"
+      }
+    },
+    {
+      "text": "sumi-ink style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# sumi-ink\n\n## Category: japanese\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "sumi-ink"
+      }
+    },
+    {
+      "text": "sakura-pink style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# sakura-pink\n\n## Category: japanese\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "sakura-pink"
+      }
+    },
+    {
+      "text": "matcha-green style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# matcha-green\n\n## Category: japanese\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "matcha-green"
+      }
+    },
+    {
+      "text": "indigo-blue style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# indigo-blue\n\n## Category: japanese\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "indigo-blue"
+      }
+    },
+    {
+      "text": "autumn-maple style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# autumn-maple\n\n## Category: japanese\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "autumn-maple"
+      }
+    },
+    {
+      "text": "zen-garden style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# zen-garden\n\n## Category: japanese\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "zen-garden"
+      }
+    },
+    {
+      "text": "ukiyo-e style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# ukiyo-e\n\n## Category: japanese\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "ukiyo-e"
+      }
+    },
+    {
+      "text": "fuji-mountain style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# fuji-mountain\n\n## Category: japanese\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "fuji-mountain"
+      }
+    },
+    {
+      "text": "koi-pond style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# koi-pond\n\n## Category: japanese\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "koi-pond"
+      }
+    },
+    {
+      "text": "hexagon-pattern style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# hexagon-pattern\n\n## Category: geometric\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "hexagon-pattern"
+      }
+    },
+    {
+      "text": "isometric style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# isometric\n\n## Category: geometric\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "isometric"
+      }
+    },
+    {
+      "text": "grid-modern style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# grid-modern\n\n## Category: geometric\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "grid-modern"
+      }
+    },
+    {
+      "text": "triangles style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# triangles\n\n## Category: geometric\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "triangles"
+      }
+    },
+    {
+      "text": "circles-overlap style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# circles-overlap\n\n## Category: geometric\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "circles-overlap"
+      }
+    },
+    {
+      "text": "diagonal-stripes style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# diagonal-stripes\n\n## Category: geometric\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "diagonal-stripes"
+      }
+    },
+    {
+      "text": "bauhaus style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# bauhaus\n\n## Category: geometric\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "bauhaus"
+      }
+    },
+    {
+      "text": "polka-dots style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# polka-dots\n\n## Category: geometric\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "polka-dots"
+      }
+    },
+    {
+      "text": "waves style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# waves\n\n## Category: geometric\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "waves"
+      }
+    },
+    {
+      "text": "mondrian style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# mondrian\n\n## Category: geometric\n\n- Sample bullet point 1\n- Sample bullet point 2\n- Sample bullet point 3",
+        "style": "mondrian"
+      }
+    }
+  ]
+}

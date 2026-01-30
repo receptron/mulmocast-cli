@@ -1,0 +1,53 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "title": "Markdown Styles Test",
+  "beats": [
+    {
+      "text": "Corporate Blue style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# Corporate Blue\n\n## Business Presentation\n\n- Professional design\n- Clean gradients\n- Modern typography",
+        "style": "corporate-blue"
+      }
+    },
+    {
+      "text": "Cyber Neon style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# Cyber Neon\n\n## Tech Presentation\n\n- Neon glow effects\n- Dark background\n- Futuristic feel",
+        "style": "cyber-neon"
+      }
+    },
+    {
+      "text": "Sakura Pink style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# 桜ピンク\n\n## 日本風デザイン\n\n- 桜をイメージ\n- 柔らかいグラデーション\n- 和のテイスト",
+        "style": "sakura-pink"
+      }
+    },
+    {
+      "text": "Minimalist clean white style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# Clean White\n\n## Minimalist Design\n\n- Simple and elegant\n- White space\n- Light typography",
+        "style": "clean-white"
+      }
+    },
+    {
+      "text": "Rainbow Gradient style",
+      "image": {
+        "type": "markdown",
+        "markdown": "# Rainbow Gradient\n\n## Creative Design\n\n- Bold colors\n- Eye-catching\n- Playful feel",
+        "style": "rainbow-gradient"
+      }
+    }
+  ],
+  "canvasSize": { "width": 1920, "height": 1080 },
+  "speechParams": {
+    "speakers": {
+      "Presenter": { "provider": "openai", "voiceId": "alloy" }
+    }
+  }
+}
