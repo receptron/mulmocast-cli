@@ -30,6 +30,10 @@
             // Create the data object (no TypeScript interfaces)
             const chartData = ${chart_data};
 
+            // Disable animation for static image generation
+            if (!chartData.options) chartData.options = {};
+            chartData.options.animation = false;
+
             // Initialize the chart
             new Chart(ctx, chartData);
         });
