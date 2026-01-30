@@ -343,6 +343,50 @@ To force regeneration, delete the old files — including temporary files — un
 
 If you modify the text or instruction fields in a MulmoScript, mulmo will automatically detect the changes and regenerate the corresponding audio content upon re-run.
 
+## Markdown Slide Styles
+
+MulmoCast includes 100 pre-designed CSS styles for markdown slides, organized in 10 categories:
+
+| Category | Description | Example Styles |
+|----------|-------------|----------------|
+| business | Professional corporate designs | corporate-blue, executive-gray, finance-green |
+| tech | Technology and developer themes | cyber-neon, matrix-green, terminal-dark |
+| creative | Artistic and expressive styles | artistic-splash, watercolor-soft, graffiti |
+| minimalist | Clean and simple designs | clean-white, zen-beige, nordic-light |
+| nature | Nature-inspired themes | forest-green, ocean-blue, sunset-orange |
+| dark | Dark mode and elegant themes | charcoal-elegant, midnight-blue, obsidian |
+| colorful | Vibrant and bold colors | vibrant-pink, candy-colors, aurora |
+| vintage | Retro and classic styles | retro-70s, art-deco, typewriter |
+| japanese | Japanese aesthetic designs | washi-paper, sakura-pink, zen-garden |
+| geometric | Pattern-based designs | hexagon-pattern, isometric, bauhaus |
+
+### Usage
+
+Add the `style` property to a markdown beat:
+
+```json
+{
+  "beats": [
+    {
+      "text": "Corporate presentation slide",
+      "image": {
+        "type": "markdown",
+        "markdown": "# Quarterly Report\n\n## Key Highlights\n\n- Revenue up 15%\n- New market expansion\n- Team growth",
+        "style": "corporate-blue"
+      }
+    }
+  ]
+}
+```
+
+### Discover Available Styles
+
+Use the `mulmo tool info` command to see all available styles:
+
+```bash
+mulmo tool info styles
+```
+
 ## MulmoScript Format
 
 MulmoScript is a JSON format to define podcast or video scripts:
@@ -569,6 +613,7 @@ Commands:
   mulmo tool complete <file> Complete partial MulmoScript with defaults
   mulmo tool prompt          Dump prompt from template
   mulmo tool schema          Dump mulmocast schema
+  mulmo tool info [category] Show available options (styles, bgm, voices, etc.)
 
 Options:
       --version  Show version number                                   [boolean]
@@ -684,6 +729,38 @@ Examples:
 
   # Apply template
   mulmo tool complete input.json -t children_book
+```
+
+```
+mulmo tool info [category]
+
+Show available options for MulmoScript configuration
+
+Positionals:
+  category  Category to show info for
+    [string] [choices: "styles", "bgm", "templates", "voices", "images", "movies", "llm"]
+
+Options:
+      --version  Show version number                                   [boolean]
+  -v, --verbose  verbose log               [boolean] [required] [default: false]
+  -h, --help     Show help                                             [boolean]
+  -F, --format   Output format      [string] [choices: "text", "json", "yaml"]
+
+Examples:
+  # Show all available categories
+  mulmo tool info
+
+  # List all 100 markdown styles
+  mulmo tool info styles
+
+  # List available BGM assets
+  mulmo tool info bgm
+
+  # List TTS providers and voices
+  mulmo tool info voices
+
+  # Output as JSON for programmatic use
+  mulmo tool info styles --format json
 ```
 
 
