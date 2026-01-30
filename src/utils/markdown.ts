@@ -34,6 +34,17 @@ export const renderHTMLToImage = async (
     );
   }
 
+  // Wait for Chart.js to finish rendering if this is a chart
+  if (html.includes("data-chart-ready")) {
+    await page.waitForFunction(
+      () => {
+        const canvas = document.querySelector("canvas[data-chart-ready='true']");
+        return !!canvas;
+      },
+      { timeout: 20000 },
+    );
+  }
+
   // Measure the size of the page and scale the page to the width and height
   await page.evaluate(
     ({ vw, vh }) => {
