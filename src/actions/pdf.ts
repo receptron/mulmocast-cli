@@ -6,7 +6,7 @@ import { MulmoStudioContext, PDFMode, PDFSize } from "../types/index.js";
 import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { localizedText, isHttp } from "../utils/utils.js";
 import { getOutputPdfFilePath, writingMessage, getHTMLFile, mulmoCreditPath } from "../utils/file.js";
-import { interpolate } from "../utils/markdown.js";
+import { interpolate } from "../utils/html_render.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 
 const isCI = process.env.CI === "true";
