@@ -5,12 +5,22 @@ import * as schemaCmd from "./schema/index.js";
 import * as storyToScriptCmd from "./story_to_script/index.js";
 import * as whisperCmd from "./whisper/index.js";
 import * as completeCmd from "./complete/index.js";
+import * as infoCmd from "./info/index.js";
 import { Argv } from "yargs";
 
 export const command = "tool <command>";
 export const desc = "Generate Mulmo script and other tools";
 
 export const builder = (y: Argv) =>
-  y.command(scriptingCmd).command(promptCmd).command(schemaCmd).command(storyToScriptCmd).command(whisperCmd).command(completeCmd).demandCommand().strict();
+  y
+    .command(scriptingCmd)
+    .command(promptCmd)
+    .command(schemaCmd)
+    .command(storyToScriptCmd)
+    .command(whisperCmd)
+    .command(completeCmd)
+    .command(infoCmd)
+    .demandCommand()
+    .strict();
 
 export const handler = (__argv: ToolCliArgs) => {};
