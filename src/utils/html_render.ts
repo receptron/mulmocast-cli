@@ -22,8 +22,8 @@ export const renderHTMLToImage = async (
 
   // Adjust page settings if needed (like width, height, etc.)
   await page.setViewport({ width, height });
-  // height:100% ensures background fills viewport; background:white prevents transparent areas
-  await page.addStyleTag({ content: "html,body{height:100%;margin:0;padding:0;overflow:hidden;background:white}" });
+  // height:100% ensures background fills viewport; only reset html, let body styles come from custom CSS
+  await page.addStyleTag({ content: "html{height:100%;margin:0;padding:0;overflow:hidden}" });
 
   if (isMermaid) {
     await page.waitForFunction(

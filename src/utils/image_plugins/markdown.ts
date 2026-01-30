@@ -1,6 +1,7 @@
 import { ImageProcessorParams } from "../../types/index.js";
 import { renderMarkdownToImage } from "../html_render.js";
 import { parrotingImagePath } from "./utils.js";
+import { getMarkdownStyle } from "../../data/markdownStyles.js";
 
 import { marked } from "marked";
 
@@ -11,7 +12,13 @@ const processMarkdown = async (params: ImageProcessorParams) => {
   if (!beat.image || beat.image.type !== imageType) return;
 
   const markdown = dumpMarkdown(params) ?? "";
-  await renderMarkdownToImage(markdown, textSlideStyle, imagePath, canvasSize.width, canvasSize.height);
+
+  // Use custom style if specified, otherwise use default textSlideStyle
+  const styleName = beat.image.style;
+  const customStyle = styleName ? getMarkdownStyle(styleName) : undefined;
+  const style = customStyle ? customStyle.css : textSlideStyle;
+
+  await renderMarkdownToImage(markdown, style, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;
 };
 
