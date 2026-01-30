@@ -1,7 +1,7 @@
 import { ImageProcessorParams } from "../../types/index.js";
 import { MulmoMediaSourceMethods } from "../../methods/index.js";
 import { getHTMLFile } from "../file.js";
-import { renderHTMLToImage, interpolate } from "../markdown.js";
+import { renderHTMLToImage, interpolate } from "../html_render.js";
 import { parrotingImagePath } from "./utils.js";
 import nodeProcess from "node:process";
 

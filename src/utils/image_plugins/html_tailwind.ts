@@ -1,6 +1,6 @@
 import { ImageProcessorParams } from "../../types/index.js";
 import { getHTMLFile } from "../file.js";
-import { renderHTMLToImage, interpolate } from "../markdown.js";
+import { renderHTMLToImage, interpolate } from "../html_render.js";
 import { parrotingImagePath } from "./utils.js";
 
 export const imageType = "html_tailwind";

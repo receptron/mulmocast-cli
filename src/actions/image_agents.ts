@@ -3,7 +3,7 @@ import { MulmoStudioContext, MulmoBeat, MulmoCanvasDimension, MulmoImageParams, 
 import { MulmoPresentationStyleMethods, MulmoStudioContextMethods, MulmoBeatMethods, MulmoMediaSourceMethods } from "../methods/index.js";
 import { getBeatPngImagePath, getBeatMoviePaths, getAudioFilePath } from "../utils/file.js";
 import { imagePrompt, htmlImageSystemPrompt } from "../utils/prompt.js";
-import { renderHTMLToImage } from "../utils/markdown.js";
+import { renderHTMLToImage } from "../utils/html_render.js";
 import { beatId } from "../utils/utils.js";
 import { localizedPath } from "./audio.js";
 

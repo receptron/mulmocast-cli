@@ -28,8 +28,8 @@ export const renderHTMLToImage = async (
   if (isMermaid) {
     await page.waitForFunction(
       () => {
-        const el = document.querySelector(".mermaid");
-        return el && (el as HTMLElement).dataset.ready === "true";
+        const element = document.querySelector(".mermaid");
+        return element && (element as HTMLElement).dataset.ready === "true";
       },
       { timeout: 20000 },
     );
@@ -48,15 +48,15 @@ export const renderHTMLToImage = async (
 
   // Measure the size of the page and scale the page to the width and height
   await page.evaluate(
-    ({ vw, vh }) => {
-      const de = document.documentElement;
-      const sw = Math.max(de.scrollWidth, document.body.scrollWidth || 0);
-      const sh = Math.max(de.scrollHeight, document.body.scrollHeight || 0);
-      const scale = Math.min(vw / (sw || vw), vh / (sh || vh), 1); // <=1 で縮小のみ
-      de.style.overflow = "hidden";
+    ({ viewportWidth, viewportHeight }) => {
+      const docElement = document.documentElement;
+      const scrollWidth = Math.max(docElement.scrollWidth, document.body.scrollWidth || 0);
+      const scrollHeight = Math.max(docElement.scrollHeight, document.body.scrollHeight || 0);
+      const scale = Math.min(viewportWidth / (scrollWidth || viewportWidth), viewportHeight / (scrollHeight || viewportHeight), 1);
+      docElement.style.overflow = "hidden";
       (document.body as HTMLElement).style.zoom = String(scale);
     },
-    { vw: width, vh: height },
+    { viewportWidth: width, viewportHeight: height },
   );
 
   // Step 3: Capture screenshot of the page (which contains the Markdown-rendered HTML)

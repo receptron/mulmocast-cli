@@ -1,5 +1,5 @@
 import { ImageProcessorParams } from "../../types/index.js";
-import { renderMarkdownToImage } from "../markdown.js";
+import { renderMarkdownToImage } from "../html_render.js";
 import { parrotingImagePath } from "./utils.js";
 
 import { marked } from "marked";
