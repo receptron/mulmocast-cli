@@ -95,6 +95,7 @@ export const mulmoMarkdownMediaSchema = z
   .object({
     type: z.literal("markdown"),
     markdown: stringOrStringArray,
+    style: z.string().optional(),
   })
   .strict();
 
