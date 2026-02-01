@@ -23,11 +23,7 @@
         "slide": {
           "title": "Corporate Blue",
           "subtitle": "Business Style",
-          "bullets": [
-            "Professional appearance",
-            "Blue gradient background",
-            "Clean typography"
-          ]
+          "bullets": ["Professional appearance", "Blue gradient background", "Clean typography"]
         },
         "style": "corporate-blue"
       }
@@ -40,11 +36,7 @@
         "slide": {
           "title": "Cyber Neon",
           "subtitle": "Tech Style",
-          "bullets": [
-            "Glowing green text",
-            "Dark background",
-            "Futuristic feel"
-          ]
+          "bullets": ["Glowing green text", "Dark background", "Futuristic feel"]
         },
         "style": "cyber-neon"
       }
@@ -57,11 +49,7 @@
         "slide": {
           "title": "Zen Garden",
           "subtitle": "Japanese Style",
-          "bullets": [
-            "Minimalist design",
-            "Calm colors",
-            "Elegant typography"
-          ]
+          "bullets": ["Minimalist design", "Calm colors", "Elegant typography"]
         },
         "style": "zen-garden"
       }
@@ -74,10 +62,7 @@
         "slide": {
           "title": "Default Style",
           "subtitle": "No Style Specified",
-          "bullets": [
-            "Uses textSlideParams",
-            "Fallback behavior"
-          ]
+          "bullets": ["Uses textSlideParams", "Fallback behavior"]
         }
       }
     }
