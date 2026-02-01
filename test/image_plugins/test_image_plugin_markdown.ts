@@ -19,6 +19,9 @@ test("test imagePlugin markdown - markdown method with array", async () => {
 
   const result = plugin.markdown({ beat });
   assert.equal(result, "# Title\n\n- Item 1\n- Item 2");
+
+  const htmlResult = await plugin.html({ beat });
+  assert.equal(htmlResult, ["<h1>Title</h1>", "<ul>", "<li>Item 1</li>", "<li>Item 2</li>", "</ul>"].join("\n") + "\n");
 });
 
 test("test imagePlugin markdown - markdown method with string", async () => {
@@ -185,4 +188,23 @@ test("test imagePlugin mermaid - markdown method with wrong type", async () => {
 
   const result = plugin.markdown({ beat });
   assert.equal(result, undefined);
+});
+
+test("test imagePlugin markdown - markdown method with object", async () => {
+  const plugin = findImagePlugin("markdown");
+  const beat = {
+    image: {
+      type: "markdown",
+      markdown: {
+        header: "# Title",
+        body: ["- Item 1", "- Item 2"],
+      },
+    },
+  };
+
+  const result = plugin.markdown({ beat });
+  assert.equal(result, "# Title\n\n- Item 1\n- Item 2");
+
+  const htmlResult = await plugin.html({ beat });
+  assert.equal(htmlResult, ["<h1>Title</h1>", "<ul>", "<li>Item 1</li>", "<li>Item 2</li>", "</ul>"].join("\n") + "\n");
 });
