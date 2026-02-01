@@ -18,7 +18,8 @@ export const renderHTMLToImage = async (
   const page = await browser.newPage();
 
   // Set the page content to the HTML generated from the Markdown
-  await page.setContent(html);
+  // waitUntil: "networkidle0" ensures external scripts (CDN) are loaded and DOMContentLoaded fires
+  await page.setContent(html, { waitUntil: "networkidle0" });
 
   // Adjust page settings if needed (like width, height, etc.)
   await page.setViewport({ width, height });
@@ -28,8 +29,10 @@ export const renderHTMLToImage = async (
   if (isMermaid) {
     await page.waitForFunction(
       () => {
-        const element = document.querySelector(".mermaid");
-        return element && (element as HTMLElement).dataset.ready === "true";
+        const elements = document.querySelectorAll(".mermaid");
+        if (elements.length === 0) return true;
+        // Wait until all mermaid elements have SVG rendered
+        return Array.from(elements).every((el) => el.querySelector("svg") !== null);
       },
       { timeout: 20000 },
     );

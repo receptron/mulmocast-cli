@@ -53,12 +53,19 @@ const generateHtml = async (params: ImageProcessorParams): Promise<string> => {
   return `<html><head><style>${style}</style></head><body>${body}</body></html>`;
 };
 
+// Check if markdown content contains mermaid code blocks
+const containsMermaid = (md: string | string[] | MulmoMarkdownLayout): boolean => {
+  const text = isMarkdownLayout(md) ? layoutToMarkdown(md) : toMarkdownString(md);
+  return text.includes("```mermaid");
+};
+
 const processMarkdown = async (params: ImageProcessorParams) => {
   const { beat, imagePath, canvasSize } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
   const html = await generateHtml(params);
-  await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height);
+  const hasMermaid = containsMermaid(beat.image.markdown);
+  await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height, hasMermaid);
 
   return imagePath;
 };
