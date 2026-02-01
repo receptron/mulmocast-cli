@@ -7,7 +7,39 @@
   <title>${title}</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>${custom_style}</style>
+  <!-- Mermaid CDN for embedded diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      flowchart: { useMaxWidth: true }
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+      const mermaidElements = document.querySelectorAll(".mermaid");
+      if (mermaidElements.length > 0) {
+        mermaid.init(undefined, ".mermaid");
+        mermaidElements.forEach(el => el.dataset.ready = "true");
+      }
+    });
+  </script>
+  <style>
+    /* Mermaid diagram styling */
+    .mermaid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      min-height: 100px;
+    }
+    .mermaid svg {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+    }
+    ${custom_style}
+  </style>
 </head>
 <body class="bg-white text-gray-800 h-full flex flex-col">
   ${html_body}

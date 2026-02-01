@@ -1,5 +1,9 @@
 import { type MulmoMarkdownLayout, type MulmoRow2, type MulmoGrid2x2 } from "../../types/type.js";
 import { marked } from "marked";
+import { generateMermaidHtml } from "./mermaid.js";
+
+// Regex to match mermaid code blocks
+const mermaidBlockRegex = /```mermaid\n([\s\S]*?)```/g;
 
 // Convert string or string array to markdown string
 const toMarkdownString = (content: string | string[]): string => {
@@ -9,10 +13,18 @@ const toMarkdownString = (content: string | string[]): string => {
   return content;
 };
 
-// Parse markdown content to HTML
+// Replace mermaid code blocks with rendered HTML
+const convertMermaidBlocks = (text: string): string => {
+  return text.replace(mermaidBlockRegex, (_match, code) => {
+    return generateMermaidHtml(code.trim());
+  });
+};
+
+// Parse markdown content to HTML (with mermaid support)
 const parseMarkdown = async (content: string | string[]): Promise<string> => {
   const text = toMarkdownString(content);
-  return await marked.parse(text);
+  const textWithMermaidHtml = convertMermaidBlocks(text);
+  return await marked.parse(textWithMermaidHtml);
 };
 
 // Generate header HTML
@@ -130,4 +142,4 @@ export const layoutToMarkdown = (md: MulmoMarkdownLayout): string => {
   return parts.join("\n\n");
 };
 
-export { toMarkdownString };
+export { toMarkdownString, parseMarkdown };

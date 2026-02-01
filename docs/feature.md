@@ -448,6 +448,119 @@ Reference and reuse images from other beats.
 }
 ```
 
+#### 10.7 Markdownレイアウト (Markdown Layout)
+
+複雑なレイアウトでmarkdownコンテンツを表示。2列、4分割、ヘッダー、サイドバー対応。
+
+Display markdown content with complex layouts. Supports 2-column, 2x2 grid, header, and sidebar.
+
+**2列レイアウト / 2-Column Layout:**
+```json
+{
+  "image": {
+    "type": "markdown",
+    "markdown": {
+      "row-2": [
+        ["# Left", "Left content"],
+        ["# Right", "Right content"]
+      ]
+    }
+  }
+}
+```
+
+**4分割レイアウト / 2x2 Grid Layout:**
+```json
+{
+  "image": {
+    "type": "markdown",
+    "markdown": {
+      "2x2": ["Top-Left", "Top-Right", "Bottom-Left", "Bottom-Right"]
+    }
+  }
+}
+```
+
+**ヘッダー・サイドバー付き / With Header and Sidebar:**
+```json
+{
+  "image": {
+    "type": "markdown",
+    "markdown": {
+      "header": "# Page Title",
+      "sidebar-left": ["Menu Item 1", "Menu Item 2"],
+      "content": "Main content here"
+    }
+  }
+}
+```
+
+#### 10.8 スタイル (Styles for Markdown/TextSlide)
+
+100種類のプリセットスタイルでmarkdownやtextSlideを装飾。
+
+Decorate markdown and textSlide with 100 preset styles.
+
+**markdownでの使用 / Using with Markdown:**
+```json
+{
+  "image": {
+    "type": "markdown",
+    "markdown": ["# Title", "Content"],
+    "style": "corporate-blue"
+  }
+}
+```
+
+**textSlideでの使用 / Using with TextSlide:**
+```json
+{
+  "image": {
+    "type": "textSlide",
+    "slide": { "title": "Styled Slide" },
+    "style": "cyber-neon"
+  }
+}
+```
+
+**スタイルカテゴリー / Style Categories:**
+- `business`: corporate-blue, executive-gray など / etc.
+- `tech`: cyber-neon, terminal-dark, ai-blue など
+- `creative`: artistic-splash, neon-glow など
+- `minimalist`: clean-white, nordic-light など
+- `nature`: forest-green, ocean-blue など
+- `dark`: charcoal-elegant, midnight-blue など
+- `colorful`: vibrant-pink, aurora など
+- `vintage`: retro-70s, art-deco など
+- `japanese`: washi-paper, sakura-pink, zen-garden など
+- `geometric`: bauhaus, mondrian など
+
+全スタイル一覧は `npx mulmocast tool info --category markdown-styles` で確認可能。
+
+View all styles with `npx mulmocast tool info --category markdown-styles`.
+
+#### 10.9 Markdown内Mermaid埋め込み (Mermaid in Markdown)
+
+markdownコンテンツ内でmermaidダイアグラムを直接使用可能。レイアウト機能と組み合わせて図とテキストを並べて表示。
+
+Use mermaid diagrams directly within markdown content. Combine with layout features to display diagrams alongside text.
+
+```json
+{
+  "image": {
+    "type": "markdown",
+    "markdown": {
+      "row-2": [
+        ["```mermaid", "graph TD", "  A-->B", "```"],
+        ["# Explanation", "This diagram shows the flow."]
+      ]
+    }
+  }
+}
+```
+
+**サンプル / Sample:** [scripts/test/test_markdown_mermaid.json](../scripts/test/test_markdown_mermaid.json)
+
 ---
 
 ### 11. Fill Options（アスペクト比調整）

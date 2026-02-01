@@ -3,9 +3,8 @@ import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../html_render.js";
 import { parrotingImagePath, resolveStyle } from "./utils.js";
 import { type MulmoMarkdownLayout } from "../../types/type.js";
-import { generateLayoutHtml, layoutToMarkdown, toMarkdownString } from "./markdown_layout.js";
+import { generateLayoutHtml, layoutToMarkdown, toMarkdownString, parseMarkdown } from "./markdown_layout.js";
 
-import { marked } from "marked";
 import { isObject } from "graphai";
 
 export const imageType = "markdown";
@@ -50,8 +49,14 @@ const generateHtml = async (params: ImageProcessorParams): Promise<string> => {
   }
 
   const markdown = dumpMarkdown(params) ?? "";
-  const body = await marked.parse(markdown);
+  const body = await parseMarkdown(markdown);
   return `<html><head><style>${style}</style></head><body>${body}</body></html>`;
+};
+
+// Check if markdown content contains mermaid code blocks
+const containsMermaid = (md: string | string[] | MulmoMarkdownLayout): boolean => {
+  const text = isMarkdownLayout(md) ? layoutToMarkdown(md) : toMarkdownString(md);
+  return text.includes("```mermaid");
 };
 
 const processMarkdown = async (params: ImageProcessorParams) => {
@@ -59,7 +64,8 @@ const processMarkdown = async (params: ImageProcessorParams) => {
   if (!beat.image || beat.image.type !== imageType) return;
 
   const html = await generateHtml(params);
-  await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height);
+  const hasMermaid = containsMermaid(beat.image.markdown);
+  await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height, hasMermaid);
 
   return imagePath;
 };
@@ -74,7 +80,7 @@ const dumpHtml = async (params: ImageProcessorParams) => {
     return await generateLayoutHtml(md);
   } else {
     const markdown = dumpMarkdown(params);
-    return await marked.parse(markdown ?? "");
+    return await parseMarkdown(markdown ?? "");
   }
 };
 
