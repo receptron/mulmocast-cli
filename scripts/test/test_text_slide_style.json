@@ -1,0 +1,85 @@
+{
+  "$mulmocast": {
+    "version": "1.0",
+    "credit": "closing"
+  },
+  "title": "Text Slide Style Test",
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "voiceId": "shimmer",
+        "displayName": {
+          "en": "Presenter"
+        }
+      }
+    }
+  },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "This is a corporate blue style slide.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Corporate Blue",
+          "subtitle": "Business Style",
+          "bullets": [
+            "Professional appearance",
+            "Blue gradient background",
+            "Clean typography"
+          ]
+        },
+        "style": "corporate-blue"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "This is a cyber neon style slide.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Cyber Neon",
+          "subtitle": "Tech Style",
+          "bullets": [
+            "Glowing green text",
+            "Dark background",
+            "Futuristic feel"
+          ]
+        },
+        "style": "cyber-neon"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "This is a zen garden style slide.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Zen Garden",
+          "subtitle": "Japanese Style",
+          "bullets": [
+            "Minimalist design",
+            "Calm colors",
+            "Elegant typography"
+          ]
+        },
+        "style": "zen-garden"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "This slide uses default style without specifying style property.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Default Style",
+          "subtitle": "No Style Specified",
+          "bullets": [
+            "Uses textSlideParams",
+            "Fallback behavior"
+          ]
+        }
+      }
+    }
+  ]
+}
