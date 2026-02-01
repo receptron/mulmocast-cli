@@ -18,9 +18,10 @@ export const renderHTMLToImage = async (
   const page = await browser.newPage();
 
   // Set the page content to the HTML generated from the Markdown
-  // Use networkidle0 only for mermaid (needs CDN), otherwise use domcontentloaded for faster rendering
-  const waitUntil = isMermaid ? "networkidle0" : "domcontentloaded";
-  await page.setContent(html, { waitUntil });
+  // Use networkidle0 for mermaid (needs CDN) or external images, otherwise use domcontentloaded for faster rendering
+  const hasExternalImages = /src=["']https?:\/\//.test(html);
+  const waitUntil = isMermaid || hasExternalImages ? "networkidle0" : "domcontentloaded";
+  await page.setContent(html, { waitUntil, timeout: 30000 });
 
   // Adjust page settings if needed (like width, height, etc.)
   await page.setViewport({ width, height });
