@@ -14,7 +14,7 @@ jobs:
     if: github.repository_owner == 'receptron'
     strategy:
       matrix:
-        node-version: [22.x]
+        node-version: [24.x]
     steps:
     - uses: actions/checkout@v5
     - name: Use Node.js ${{ matrix.node-version }}
@@ -22,7 +22,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
-    - run: yarn install
+    - name: Cache node_modules
+      uses: actions/cache@v4
+      with:
+        path: node_modules
+        key: node-modules-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+    - run: yarn install --frozen-lockfile
     - run: yarn run template
     - run: |
         git config user.name "GitHub Actions Bot"

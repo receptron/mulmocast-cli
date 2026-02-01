@@ -33,8 +33,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: '24'
+          cache: 'yarn'
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-24-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
