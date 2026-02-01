@@ -17,15 +17,13 @@ permissions:
 
 env:
   OPENAI_API_KEY: dummuy
-  
+
 jobs:
   lint_test:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [22.x, 24.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
     - uses: actions/checkout@v5
     - name: Use Node.js ${{ matrix.node-version }}
@@ -33,42 +31,99 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
-    - run: sudo apt-get update
-    - run: sudo apt-get install chromium-browser
-    - run: sudo apt-get install -y ca-certificates fonts-liberation libatk-bridge2.0-0 libatk1.0-0 libcups2 libdrm2 libgbm1 libnspr4 libnss3 libxcomposite1 libxdamage1 libxrandr2 xdg-utils wget ffmpeg
-    - run: yarn install
+    - name: Cache node_modules
+      uses: actions/cache@v4
+      with:
+        path: node_modules
+        key: node-modules-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+    - name: Install ffmpeg
+      run: sudo apt-get update && sudo apt-get install -y ffmpeg
+    - run: yarn install --frozen-lockfile
     - run: yarn run format
     - run: yarn run lint
     - run: yarn run build
     - name: Build types package
       run: |
         cd types
-        yarn install
+        yarn install --frozen-lockfile
         yarn run build
     - run: yarn run ci_test
-    - run: yarn run cli images scripts/test/test_order.json
-    - run: yarn run cli images scripts/test/test_beats.json
-    - run: yarn run cli images scripts/test/test_render_stress.json
-    - run: yarn run cli movie scripts/test/test_no_audio.json
-    - run: yarn run cli movie scripts/test/test_no_audio_with_credit.json
-    - run: yarn run cli movie scripts/test/test_transition_no_audio.json
-    - run: yarn run cli movie scripts/test/test_slideout_left_no_audio.json
-    - run: yarn run cli movie scripts/test/test_hello_caption.json
-    - run: yarn run cli movie scripts/test/test_hello_image.json
-    - run: yarn run cli movie scripts/test/test_vision.json
-    - run: yarn run cli pdf scripts/test/test_order.json --pdf_mode slide --pdf_size a4
-    - run: yarn run cli pdf scripts/test/test_order.json --pdf_mode talk --pdf_size a4
-    - run: yarn run cli pdf scripts/test/test_order.json --pdf_mode handout --pdf_size a4
-    - run: yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode slide --pdf_size a4
-    - run: yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode talk --pdf_size a4
-    - run: yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode handout --pdf_size a4
-    - run: yarn run cli pdf scripts/test/test_no_audio.json
-    - run: yarn run cli bundle scripts/test/test_no_audio.json
-    - run: yarn run cli markdown scripts/test/test_no_audio.json
-    - run: yarn run cli html scripts/test/test_no_audio.json
-    - run: yarn run cli tool complete test/json/minimum_beats.json
-    - run: yarn run cli tool complete test/json/minimum_beats.json -s ani
-    - run: yarn run cli tool complete test/json/minimum_beats.json -s ./assets/styles/ani.json
+
+  e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x, 24.x]
+    steps:
+    - uses: actions/checkout@v5
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v5
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+    - name: Cache node_modules
+      uses: actions/cache@v4
+      with:
+        path: node_modules
+        key: node-modules-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+    - name: Cache Puppeteer
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/puppeteer
+        key: puppeteer-${{ runner.os }}-${{ matrix.node-version }}
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y chromium-browser ca-certificates fonts-liberation libatk-bridge2.0-0 libatk1.0-0 libcups2 libdrm2 libgbm1 libnspr4 libnss3 libxcomposite1 libxdamage1 libxrandr2 xdg-utils wget ffmpeg
+    - run: yarn install --frozen-lockfile
+    - run: yarn run format
+    - run: yarn run build
+    - name: Run image tests (parallel)
+      run: |
+        yarn run cli images scripts/test/test_order.json &
+        yarn run cli images scripts/test/test_beats.json &
+        yarn run cli images scripts/test/test_render_stress.json &
+        wait
+    - name: Run movie tests batch 1 (parallel)
+      run: |
+        yarn run cli movie scripts/test/test_no_audio.json &
+        yarn run cli movie scripts/test/test_no_audio_with_credit.json &
+        yarn run cli movie scripts/test/test_transition_no_audio.json &
+        wait
+    - name: Run movie tests batch 2 (parallel)
+      run: |
+        yarn run cli movie scripts/test/test_slideout_left_no_audio.json &
+        yarn run cli movie scripts/test/test_hello_caption.json &
+        yarn run cli movie scripts/test/test_hello_image.json &
+        wait
+    - name: Run movie test (vision)
+      run: yarn run cli movie scripts/test/test_vision.json
+    - name: Run pdf tests batch 1 (parallel)
+      run: |
+        yarn run cli pdf scripts/test/test_order.json --pdf_mode slide --pdf_size a4 &
+        yarn run cli pdf scripts/test/test_order.json --pdf_mode talk --pdf_size a4 &
+        yarn run cli pdf scripts/test/test_order.json --pdf_mode handout --pdf_size a4 &
+        wait
+    - name: Run pdf tests batch 2 (parallel)
+      run: |
+        yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode slide --pdf_size a4 &
+        yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode talk --pdf_size a4 &
+        yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode handout --pdf_size a4 &
+        wait
+    - name: Run pdf test (no_audio)
+      run: yarn run cli pdf scripts/test/test_no_audio.json
+    - name: Run other tests (parallel)
+      run: |
+        yarn run cli bundle scripts/test/test_no_audio.json &
+        yarn run cli markdown scripts/test/test_no_audio.json &
+        yarn run cli html scripts/test/test_no_audio.json &
+        wait
+    - name: Run tool complete tests (parallel)
+      run: |
+        yarn run cli tool complete test/json/minimum_beats.json &
+        yarn run cli tool complete test/json/minimum_beats.json -s ani &
+        yarn run cli tool complete test/json/minimum_beats.json -s ./assets/styles/ani.json &
+        wait
     - name: Upload generated media
       uses: actions/upload-artifact@v4
       with:
