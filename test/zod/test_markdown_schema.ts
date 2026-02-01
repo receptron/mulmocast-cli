@@ -539,12 +539,12 @@ test("mulmoMarkdownMediaSchema: invalid with null markdown", () => {
   assert(!data.success);
 });
 
-test("mulmoMarkdownMediaSchema: invalid with string markdown", () => {
+test("mulmoMarkdownMediaSchema: valid with string markdown (backward compatible)", () => {
   const data = mulmoMarkdownMediaSchema.safeParse({
     type: "markdown",
-    markdown: "this should be an object",
+    markdown: "# Title\n\nText content",
   });
-  assert(!data.success);
+  assert(data.success);
 });
 
 test("mulmoMarkdownMediaSchema: invalid with array markdown", () => {

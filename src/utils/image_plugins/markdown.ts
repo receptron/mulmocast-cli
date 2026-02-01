@@ -69,7 +69,7 @@ const processMarkdown = async (params: ImageProcessorParams) => {
 
 const dumpHtml = async (params: ImageProcessorParams) => {
   const { beat } = params;
-  if (!beat.image || beat.image.type !== imageType) return;
+  if (!beat.image || beat.image.type !== imageType) return "";
 
   const md = beat.image.markdown;
 

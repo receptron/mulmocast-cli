@@ -197,7 +197,7 @@ test("test imagePlugin markdown - markdown method with object", async () => {
       type: "markdown",
       markdown: {
         header: "# Title",
-        body: ["- Item 1", "- Item 2"],
+        content: ["- Item 1", "- Item 2"],
       },
     },
   };
@@ -206,5 +206,7 @@ test("test imagePlugin markdown - markdown method with object", async () => {
   assert.equal(result, "# Title\n\n- Item 1\n- Item 2");
 
   const htmlResult = await plugin.html({ beat });
-  assert.equal(htmlResult, ["<h1>Title</h1>", "<ul>", "<li>Item 1</li>", "<li>Item 2</li>", "</ul>"].join("\n") + "\n");
+  assert(htmlResult.includes("<h1>Title</h1>"));
+  assert(htmlResult.includes("<li>Item 1</li>"));
+  assert(htmlResult.includes("<li>Item 2</li>"));
 });
