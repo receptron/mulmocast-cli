@@ -19,8 +19,7 @@ export const renderHTMLToImage = async (
 
   // Set the page content to the HTML generated from the Markdown
   // Use networkidle0 only for external images, otherwise use domcontentloaded for faster rendering
-  // Only match <img> tags with external src, not <script> tags
-  const hasExternalImages = /<img[^>]+src=["']https?:\/\//.test(html);
+  const hasExternalImages = html.includes("<img") && /src=["']https?:\/\//.test(html);
   const waitUntil = hasExternalImages ? "networkidle0" : "domcontentloaded";
   await page.setContent(html, { waitUntil, timeout: 30000 });
 
