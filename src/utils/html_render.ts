@@ -19,7 +19,8 @@ export const renderHTMLToImage = async (
 
   // Set the page content to the HTML generated from the Markdown
   // Use networkidle0 for mermaid (needs CDN) or external images, otherwise use domcontentloaded for faster rendering
-  const hasExternalImages = /src=["']https?:\/\//.test(html);
+  // Only match <img> tags with external src, not <script> tags
+  const hasExternalImages = /<img[^>]+src=["']https?:\/\//.test(html);
   const waitUntil = isMermaid || hasExternalImages ? "networkidle0" : "domcontentloaded";
   await page.setContent(html, { waitUntil, timeout: 30000 });
 
