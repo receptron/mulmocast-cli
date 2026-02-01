@@ -36,6 +36,8 @@ jobs:
       with:
         path: node_modules
         key: node-modules-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+    - name: Install ffmpeg
+      run: sudo apt-get update && sudo apt-get install -y ffmpeg
     - run: yarn install --frozen-lockfile
     - run: yarn run format
     - run: yarn run lint
@@ -49,7 +51,6 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
-    needs: lint_test
     strategy:
       matrix:
         node-version: [22.x, 24.x]
