@@ -77,29 +77,52 @@ jobs:
     - run: yarn install --frozen-lockfile
     - run: yarn run format
     - run: yarn run build
-    - run: yarn run cli images scripts/test/test_order.json
-    - run: yarn run cli images scripts/test/test_beats.json
-    - run: yarn run cli images scripts/test/test_render_stress.json
-    - run: yarn run cli movie scripts/test/test_no_audio.json
-    - run: yarn run cli movie scripts/test/test_no_audio_with_credit.json
-    - run: yarn run cli movie scripts/test/test_transition_no_audio.json
-    - run: yarn run cli movie scripts/test/test_slideout_left_no_audio.json
-    - run: yarn run cli movie scripts/test/test_hello_caption.json
-    - run: yarn run cli movie scripts/test/test_hello_image.json
-    - run: yarn run cli movie scripts/test/test_vision.json
-    - run: yarn run cli pdf scripts/test/test_order.json --pdf_mode slide --pdf_size a4
-    - run: yarn run cli pdf scripts/test/test_order.json --pdf_mode talk --pdf_size a4
-    - run: yarn run cli pdf scripts/test/test_order.json --pdf_mode handout --pdf_size a4
-    - run: yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode slide --pdf_size a4
-    - run: yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode talk --pdf_size a4
-    - run: yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode handout --pdf_size a4
-    - run: yarn run cli pdf scripts/test/test_no_audio.json
-    - run: yarn run cli bundle scripts/test/test_no_audio.json
-    - run: yarn run cli markdown scripts/test/test_no_audio.json
-    - run: yarn run cli html scripts/test/test_no_audio.json
-    - run: yarn run cli tool complete test/json/minimum_beats.json
-    - run: yarn run cli tool complete test/json/minimum_beats.json -s ani
-    - run: yarn run cli tool complete test/json/minimum_beats.json -s ./assets/styles/ani.json
+    - name: Run image tests (parallel)
+      run: |
+        yarn run cli images scripts/test/test_order.json &
+        yarn run cli images scripts/test/test_beats.json &
+        yarn run cli images scripts/test/test_render_stress.json &
+        wait
+    - name: Run movie tests batch 1 (parallel)
+      run: |
+        yarn run cli movie scripts/test/test_no_audio.json &
+        yarn run cli movie scripts/test/test_no_audio_with_credit.json &
+        yarn run cli movie scripts/test/test_transition_no_audio.json &
+        wait
+    - name: Run movie tests batch 2 (parallel)
+      run: |
+        yarn run cli movie scripts/test/test_slideout_left_no_audio.json &
+        yarn run cli movie scripts/test/test_hello_caption.json &
+        yarn run cli movie scripts/test/test_hello_image.json &
+        wait
+    - name: Run movie test (vision)
+      run: yarn run cli movie scripts/test/test_vision.json
+    - name: Run pdf tests batch 1 (parallel)
+      run: |
+        yarn run cli pdf scripts/test/test_order.json --pdf_mode slide --pdf_size a4 &
+        yarn run cli pdf scripts/test/test_order.json --pdf_mode talk --pdf_size a4 &
+        yarn run cli pdf scripts/test/test_order.json --pdf_mode handout --pdf_size a4 &
+        wait
+    - name: Run pdf tests batch 2 (parallel)
+      run: |
+        yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode slide --pdf_size a4 &
+        yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode talk --pdf_size a4 &
+        yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode handout --pdf_size a4 &
+        wait
+    - name: Run pdf test (no_audio)
+      run: yarn run cli pdf scripts/test/test_no_audio.json
+    - name: Run other tests (parallel)
+      run: |
+        yarn run cli bundle scripts/test/test_no_audio.json &
+        yarn run cli markdown scripts/test/test_no_audio.json &
+        yarn run cli html scripts/test/test_no_audio.json &
+        wait
+    - name: Run tool complete tests (parallel)
+      run: |
+        yarn run cli tool complete test/json/minimum_beats.json &
+        yarn run cli tool complete test/json/minimum_beats.json -s ani &
+        yarn run cli tool complete test/json/minimum_beats.json -s ./assets/styles/ani.json &
+        wait
     - name: Upload generated media
       uses: actions/upload-artifact@v4
       with:
