@@ -22,7 +22,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
-    - run: yarn install
+    - name: Cache node_modules
+      uses: actions/cache@v4
+      with:
+        path: node_modules
+        key: node-modules-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+    - run: yarn install --frozen-lockfile
     - run: yarn run template
     - run: |
         git config user.name "GitHub Actions Bot"
