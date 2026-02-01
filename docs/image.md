@@ -576,7 +576,7 @@ slideinは特殊な処理を行います：
 }
 ```
 
-### markdonwのslide
+### textSlide（スライド形式）
 ```json
 {
   "type": "textSlide",
@@ -593,6 +593,26 @@ slideinは特殊な処理を行います：
     ]
   }
 }
+```
+
+#### textSlide with style
+`style` プロパティでカスタムスタイルを指定できます。markdown と同じ100種類のプリセットスタイルが利用可能です。
+
+```json
+{
+  "type": "textSlide",
+  "slide": {
+    "title": "Corporate Presentation",
+    "subtitle": "Business Meeting",
+    "bullets": ["Point 1", "Point 2"]
+  },
+  "style": "corporate-blue"
+}
+```
+
+利用可能なすべてのスタイル名を表示するには:
+```bash
+npx mulmocast tool info --category markdown-styles
 ```
 
 ### markdown
@@ -613,6 +633,107 @@ slideinは特殊な処理を行います：
   ]
 }
 ```
+
+#### markdown with style
+`style` プロパティでカスタムスタイルを指定できます。100種類のプリセットスタイルが利用可能です。
+
+```json
+{
+  "type": "markdown",
+  "markdown": ["# Title", "Content here"],
+  "style": "corporate-blue"
+}
+```
+
+**利用可能なスタイルカテゴリ**:
+- `business`: corporate-blue, executive-gray, finance-green, startup-orange など
+- `tech`: cyber-neon, terminal-dark, matrix-green, ai-blue など
+- `creative`: artistic-splash, watercolor-soft, bold-pop, neon-glow など
+- `minimalist`: clean-white, zen-beige, nordic-light, swiss-design など
+- `nature`: forest-green, ocean-blue, sunset-orange, tropical-vibes など
+- `dark`: charcoal-elegant, midnight-blue, obsidian, noir など
+- `colorful`: vibrant-pink, electric-blue, aurora, cosmic など
+- `vintage`: retro-70s, typewriter, art-deco, newspaper など
+- `japanese`: washi-paper, sakura-pink, matcha-green, zen-garden など
+- `geometric`: hexagon-pattern, grid-modern, bauhaus, mondrian など
+
+利用可能なすべてのスタイル名を表示するには:
+```bash
+npx mulmocast tool info --category markdown-styles
+```
+
+#### markdown layout（レイアウト機能）
+markdown では複雑なレイアウトも指定できます。`row-2`（2列）、`2x2`（4分割）、`header`（ヘッダー）、`sidebar-left`（左サイドバー）を組み合わせて使用できます。
+
+**2列レイアウト (row-2)**:
+```json
+{
+  "type": "markdown",
+  "markdown": {
+    "row-2": [
+      ["# Left Column", "Left content here"],
+      ["# Right Column", "Right content here"]
+    ]
+  }
+}
+```
+
+**4分割レイアウト (2x2)**:
+```json
+{
+  "type": "markdown",
+  "markdown": {
+    "2x2": [
+      "# Top Left",
+      "# Top Right",
+      "# Bottom Left",
+      "# Bottom Right"
+    ]
+  }
+}
+```
+
+**ヘッダー付きレイアウト**:
+```json
+{
+  "type": "markdown",
+  "markdown": {
+    "header": "# Page Title",
+    "row-2": [
+      "Left content",
+      "Right content"
+    ]
+  }
+}
+```
+
+**左サイドバー付きレイアウト**:
+```json
+{
+  "type": "markdown",
+  "markdown": {
+    "sidebar-left": ["## Menu", "- Item 1", "- Item 2"],
+    "content": ["# Main Content", "Main content here"]
+  }
+}
+```
+
+#### markdown 内での mermaid 埋め込み
+markdown コンテンツ内で mermaid コードブロックを直接使用できます。レイアウト機能と組み合わせて、図とテキストを並べて表示できます。
+
+```json
+{
+  "type": "markdown",
+  "markdown": {
+    "row-2": [
+      ["# Flow Diagram", "```mermaid", "graph TD", "    A-->B", "    B-->C", "```"],
+      ["# Explanation", "This diagram shows the flow from A to B to C."]
+    ]
+  }
+}
+```
+
+**詳細なサンプル**: [scripts/test/test_markdown_mermaid.json](../scripts/test/test_markdown_mermaid.json)
 
 ### chart.js
 ```json
