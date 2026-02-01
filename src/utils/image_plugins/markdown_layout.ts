@@ -55,12 +55,7 @@ const generateRow2Html = async (data: MulmoRow2): Promise<string> => {
 // Generate 2x2 grid layout HTML
 const generate2x2Html = async (data: MulmoGrid2x2): Promise<string> => {
   const [tl, tr, bl, br] = data;
-  const [tlHtml, trHtml, blHtml, brHtml] = await Promise.all([
-    parseMarkdown(tl),
-    parseMarkdown(tr),
-    parseMarkdown(bl),
-    parseMarkdown(br),
-  ]);
+  const [tlHtml, trHtml, blHtml, brHtml] = await Promise.all([parseMarkdown(tl), parseMarkdown(tr), parseMarkdown(bl), parseMarkdown(br)]);
   return `
     <div class="h-full grid grid-cols-2 grid-rows-2 gap-4">
       <div class="overflow-auto p-4 bg-gray-50 rounded-lg">

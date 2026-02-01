@@ -65,9 +65,9 @@ export const renderHTMLToImage = async (
   await browser.close();
 };
 
-export const renderMarkdownToImage = async (markdown: string[], layout: string, style: string, outputPath: string, width: number, height: number) => {
+export const renderMarkdownToImage = async (markdown: string, style: string, outputPath: string, width: number, height: number) => {
   const header = `<head><style>${style}</style></head>`;
-  const body = await marked(markdown[0]);
+  const body = await marked(markdown);
   const html = `<html>${header}<body>${body}</body></html>`;
   await renderHTMLToImage(html, outputPath, width, height);
 };

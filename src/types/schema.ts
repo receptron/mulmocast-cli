@@ -110,11 +110,7 @@ const layoutFrameSchema = z.object({
 });
 
 // Main: exactly one of row-2, 2x2, or content
-const layoutMainSchema = z.union([
-  z.object({ "row-2": row2Schema }),
-  z.object({ "2x2": grid2x2Schema }),
-  z.object({ content: stringOrStringArray }),
-]);
+const layoutMainSchema = z.union([z.object({ "row-2": row2Schema }), z.object({ "2x2": grid2x2Schema }), z.object({ content: stringOrStringArray })]);
 
 // Combine frame + main (loose validation - extra properties not rejected at schema level)
 export const markdownLayoutSchema = layoutFrameSchema.and(layoutMainSchema);
