@@ -36,8 +36,15 @@ jobs:
       with:
         path: node_modules
         key: node-modules-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
-    - name: Install ffmpeg
-      run: sudo apt-get update && sudo apt-get install -y ffmpeg
+    - name: Cache Puppeteer
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/puppeteer
+        key: puppeteer-${{ runner.os }}-${{ matrix.node-version }}
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y chromium-browser ca-certificates fonts-liberation libatk-bridge2.0-0 libatk1.0-0 libcups2 libdrm2 libgbm1 libnspr4 libnss3 libxcomposite1 libxdamage1 libxrandr2 xdg-utils ffmpeg
     - run: yarn install --frozen-lockfile
     - run: yarn run format
     - run: yarn run lint
