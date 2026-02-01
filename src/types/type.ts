@@ -51,6 +51,7 @@ import {
   mulmoGoogleMovieModelSchema,
   mulmoReplicateMovieModelSchema,
   mulmoImagePromptMediaSchema,
+  mulmoMarkdownDataSchema,
 } from "./schema.js";
 import { pdf_modes, pdf_sizes, storyToScriptGenerateMode } from "./const.js";
 import type { LLM } from "./provider2agent.js";
@@ -99,6 +100,8 @@ export type MulmoGoogleImageModel = z.infer<typeof mulmoGoogleImageModelSchema>;
 export type MulmoGoogleMovieModel = z.infer<typeof mulmoGoogleMovieModelSchema>;
 export type MulmoReplicateMovieModel = z.infer<typeof mulmoReplicateMovieModelSchema>;
 export type MulmoImagePromptMedia = z.infer<typeof mulmoImagePromptMediaSchema>;
+
+export type MulmoMarkdownData = z.infer<mulmoMarkdownDataSchema>;
 
 // images
 export type MulmoImageAsset = z.infer<typeof mulmoImageAssetSchema>;
