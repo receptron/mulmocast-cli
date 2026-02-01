@@ -1,6 +1,6 @@
 import { ImageProcessorParams } from "../../types/index.js";
 import { renderMarkdownToImage } from "../html_render.js";
-import { parrotingImagePath } from "./utils.js";
+import { parrotingImagePath, resolveStyle } from "./utils.js";
 
 import { marked } from "marked";
 
@@ -11,6 +11,8 @@ const processTextSlide = async (params: ImageProcessorParams) => {
   if (!beat.image || beat.image.type !== imageType) return;
 
   const slide = beat.image.slide;
+  const style = resolveStyle(beat.image.style, textSlideStyle);
+
   const markdown = dumpMarkdown(params) ?? "";
   const topMargin = (() => {
     if (slide.bullets?.length && slide.bullets.length > 0) {
@@ -19,7 +21,7 @@ const processTextSlide = async (params: ImageProcessorParams) => {
     const marginTop = slide.subtitle ? canvasSize.height * 0.4 : canvasSize.height * 0.45;
     return `body {margin-top: ${marginTop}px;}`;
   })();
-  await renderMarkdownToImage(markdown, textSlideStyle + topMargin, imagePath, canvasSize.width, canvasSize.height);
+  await renderMarkdownToImage(markdown, style + topMargin, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;
 };
 

@@ -1,8 +1,7 @@
 import { ImageProcessorParams } from "../../types/index.js";
 import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../html_render.js";
-import { parrotingImagePath } from "./utils.js";
-import { getMarkdownStyle } from "../../data/markdownStyles.js";
+import { parrotingImagePath, resolveStyle } from "./utils.js";
 import { type MulmoMarkdownLayout } from "../../types/type.js";
 import { generateLayoutHtml, layoutToMarkdown, toMarkdownString } from "./markdown_layout.js";
 
@@ -38,9 +37,7 @@ const generateHtml = async (params: ImageProcessorParams): Promise<string> => {
   if (!beat.image || beat.image.type !== imageType) return "";
 
   const md = beat.image.markdown;
-  const styleName = beat.image.style;
-  const customStyle = styleName ? getMarkdownStyle(styleName) : undefined;
-  const style = customStyle ? customStyle.css : params.textSlideStyle;
+  const style = resolveStyle(beat.image.style, params.textSlideStyle);
 
   if (isMarkdownLayout(md)) {
     const htmlBody = await generateLayoutHtml(md);

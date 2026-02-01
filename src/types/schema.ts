@@ -166,6 +166,7 @@ export const mulmoTextSlideMediaSchema = z
       subtitle: z.string().optional(),
       bullets: z.array(z.string()).optional(),
     }),
+    style: z.string().optional(),
   })
   .strict();
 
