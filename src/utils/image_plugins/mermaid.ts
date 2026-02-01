@@ -2,10 +2,24 @@ import { ImageProcessorParams } from "../../types/index.js";
 import { MulmoMediaSourceMethods } from "../../methods/index.js";
 import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../html_render.js";
-import { parrotingImagePath } from "./utils.js";
-import nodeProcess from "node:process";
+import { parrotingImagePath, generateUniqueId } from "./utils.js";
 
 export const imageType = "mermaid";
+
+// Generate mermaid HTML from code string (shared utility)
+export const generateMermaidHtml = (code: string, title?: string): string => {
+  const diagramId = generateUniqueId("mermaid");
+  const titleHtml = title ? `<h3 class="text-xl font-semibold mb-4">${title}</h3>` : "";
+  return `
+<div class="mermaid-container mb-6">
+  ${titleHtml}
+  <div class="flex justify-center">
+    <div id="${diagramId}" class="mermaid">
+      ${code.trim()}
+    </div>
+  </div>
+</div>`;
+};
 
 const processMermaid = async (params: ImageProcessorParams) => {
   const { beat, imagePath, canvasSize, context, textSlideStyle } = params;
@@ -41,18 +55,8 @@ const dumpHtml = async (params: ImageProcessorParams) => {
   const title = beat.image.title || "Diagram";
   const appendix = beat.image.appendix?.join("\n") || "";
   const fullCode = `${diagramCode}\n${appendix}`.trim();
-  // eslint-disable-next-line sonarjs/pseudo-random
-  const diagramId = nodeProcess.env.NODE_ENV === "test" ? "id" : `mermaid-${Math.random().toString(36).substr(2, 9)}`;
 
-  return `
-<div class="mermaid-container mb-6">
-  <h3 class="text-xl font-semibold mb-4">${title}</h3>
-  <div class="flex justify-center">
-    <div id="${diagramId}" class="mermaid">
-      ${fullCode}
-    </div>
-  </div>
-</div>`;
+  return generateMermaidHtml(fullCode, title);
 };
 
 export const process = processMermaid;

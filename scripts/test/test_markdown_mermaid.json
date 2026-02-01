@@ -1,0 +1,58 @@
+{
+  "$mulmocast": {
+    "version": "1.0",
+    "credit": "closing"
+  },
+  "title": "Markdown with Mermaid Test",
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "voiceId": "shimmer",
+        "displayName": {
+          "en": "Presenter"
+        }
+      }
+    }
+  },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "This slide shows markdown with embedded mermaid using row-2 layout.",
+      "image": {
+        "type": "markdown",
+        "markdown": {
+          "row-2": [
+            ["# Architecture Overview", "", "- Component A handles requests", "- Component B processes data", "", "Key points about the flow..."],
+            ["```mermaid", "graph TD", "    A[Component A] --> B[Component B]", "    B --> C[Database]", "```"]
+          ]
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "This slide shows a simple markdown with mermaid in content area.",
+      "image": {
+        "type": "markdown",
+        "markdown": {
+          "header": "# System Architecture",
+          "content": ["## Flow Diagram", "", "```mermaid", "flowchart LR", "    User --> API", "    API --> Service", "    Service --> DB[(Database)]", "```"]
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "This uses 2x2 layout with mermaid in one cell.",
+      "image": {
+        "type": "markdown",
+        "markdown": {
+          "2x2": [
+            ["# Input", "User provides data"],
+            ["```mermaid", "graph TD", "    Input --> Process", "```"],
+            ["# Processing", "Data is transformed"],
+            ["```mermaid", "graph TD", "    Process --> Output", "```"]
+          ]
+        }
+      }
+    }
+  ]
+}
