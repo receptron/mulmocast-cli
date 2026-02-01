@@ -18,9 +18,10 @@ export const renderHTMLToImage = async (
   const page = await browser.newPage();
 
   // Set the page content to the HTML generated from the Markdown
-  // Use networkidle0 only for mermaid (needs CDN), otherwise use domcontentloaded for faster rendering
-  const waitUntil = isMermaid ? "networkidle0" : "domcontentloaded";
-  await page.setContent(html, { waitUntil });
+  // Use networkidle0 only for external images, otherwise use domcontentloaded for faster rendering
+  const hasExternalImages = html.includes("<img") && /src=["']https?:\/\//.test(html);
+  const waitUntil = hasExternalImages ? "networkidle0" : "domcontentloaded";
+  await page.setContent(html, { waitUntil, timeout: 30000 });
 
   // Adjust page settings if needed (like width, height, etc.)
   await page.setViewport({ width, height });
@@ -28,11 +29,13 @@ export const renderHTMLToImage = async (
   await page.addStyleTag({ content: "html{height:100%;margin:0;padding:0;overflow:hidden}" });
 
   if (isMermaid) {
+    // Wait for mermaid library to load from CDN
+    await page.waitForFunction(() => typeof (window as unknown as { mermaid: unknown }).mermaid !== "undefined", { timeout: 20000 });
+    // Wait until all mermaid elements have SVG rendered
     await page.waitForFunction(
       () => {
         const elements = document.querySelectorAll(".mermaid");
         if (elements.length === 0) return true;
-        // Wait until all mermaid elements have SVG rendered
         return Array.from(elements).every((el) => el.querySelector("svg") !== null);
       },
       { timeout: 20000 },
