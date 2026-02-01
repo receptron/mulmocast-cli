@@ -91,10 +91,34 @@ export const mediaSourceMermaidSchema = z.discriminatedUnion("kind", [
 // String is easier for AI, string array is easier for human
 const stringOrStringArray = z.union([z.string(), z.array(z.string())]);
 
+export const row2Schema = z.tuple([
+  stringOrStringArray, // left
+  stringOrStringArray, // right
+]);
+
+export const grid2x2Schema = z.tuple([
+  stringOrStringArray, // top-left
+  stringOrStringArray, // top-right
+  stringOrStringArray, // bottom-left
+  stringOrStringArray, // bottom-right
+]);
+
+// Frame: optional header and sidebar
+const layoutFrameSchema = z.object({
+  header: stringOrStringArray.optional(),
+  "sidebar-left": stringOrStringArray.optional(),
+});
+
+// Main: exactly one of row-2, 2x2, or content
+const layoutMainSchema = z.union([z.object({ "row-2": row2Schema }), z.object({ "2x2": grid2x2Schema }), z.object({ content: stringOrStringArray })]);
+
+// Combine frame + main (loose validation - extra properties not rejected at schema level)
+export const markdownLayoutSchema = layoutFrameSchema.and(layoutMainSchema);
+
 export const mulmoMarkdownMediaSchema = z
   .object({
     type: z.literal("markdown"),
-    markdown: stringOrStringArray,
+    markdown: z.union([stringOrStringArray, markdownLayoutSchema]),
     style: z.string().optional(),
   })
   .strict();
