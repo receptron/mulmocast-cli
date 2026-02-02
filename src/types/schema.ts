@@ -88,6 +88,22 @@ export const mediaSourceMermaidSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("path"), path: z.string().min(1) }).strict(), // foo.pdf
 ]);
 
+// Background image schema for markdown and textSlide
+export const backgroundImageSourceSchema = z.object({
+  source: mediaSourceSchema,
+  size: z.enum(["cover", "contain", "auto"]).optional(), // default: "cover"
+  position: z.string().optional(), // default: "center" (CSS background-position)
+  opacity: z.number().min(0).max(1).optional(), // default: 1
+});
+
+export const backgroundImageSchema = z
+  .union([
+    z.string(), // Simple: URL string
+    backgroundImageSourceSchema,
+  ])
+  .nullable()
+  .optional();
+
 // String is easier for AI, string array is easier for human
 const stringOrStringArray = z.union([z.string(), z.array(z.string())]);
 
@@ -120,6 +136,7 @@ export const mulmoMarkdownMediaSchema = z
     type: z.literal("markdown"),
     markdown: z.union([stringOrStringArray, markdownLayoutSchema]),
     style: z.string().optional(),
+    backgroundImage: backgroundImageSchema,
   })
   .strict();
 
@@ -167,6 +184,7 @@ export const mulmoTextSlideMediaSchema = z
       bullets: z.array(z.string()).optional(),
     }),
     style: z.string().optional(),
+    backgroundImage: backgroundImageSchema,
   })
   .strict();
 
@@ -320,6 +338,7 @@ export const mulmoBeatImageParamsSchema = z
 export const mulmoImageParamsSchema = mulmoBeatImageParamsSchema
   .extend({
     images: mulmoImageParamsImagesSchema.optional(),
+    backgroundImage: backgroundImageSchema,
   })
   .strict();
 
