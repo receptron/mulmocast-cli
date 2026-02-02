@@ -1,0 +1,74 @@
+{
+  "$mulmocast": {
+    "version": "1.0"
+  },
+  "title": "Singularity Society 紹介",
+  "description": "Background image feature test with Singularity Society content",
+  "lang": "ja",
+  "imageParams": {
+    "backgroundImage": {
+      "source": {
+        "kind": "url",
+        "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/logo/facebook_opengraph.png"
+      },
+      "opacity": 0.3,
+      "size": "cover",
+      "position": "center"
+    }
+  },
+  "speechParams": {
+    "provider": "openai",
+    "speakers": {
+      "host": {
+        "voiceId": "shimmer"
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "シンギュラリティ・ソサエティは、テクノロジーを活用して社会課題の解決を目指すコミュニティです。",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Singularity Society",
+          "subtitle": "テクノロジーで未来を創る",
+          "bullets": ["社会課題の解決", "イノベーション促進", "人材育成プラットフォーム"]
+        }
+      }
+    },
+    {
+      "text": "高校生から60代まで、年齢に関係なく活発に議論しています。オンライン主体で24時間活動しています。",
+      "image": {
+        "type": "markdown",
+        "markdown": "# 多様なメンバー\n\n- **高校生から60代**まで参加\n- オンライン主体で**24時間**活動\n- 海外や国内各地から参加"
+      }
+    },
+    {
+      "text": "MulmoCastは、シンギュラリティ・ソサエティが開発したAIネイティブなプレゼンテーションツールです。",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "MulmoCast",
+          "subtitle": "AI-native Presentation Platform"
+        },
+        "backgroundImage": {
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/mulmocast/mulmocast-logo.png"
+          },
+          "opacity": 0.2,
+          "size": "contain",
+          "position": "center"
+        }
+      }
+    },
+    {
+      "text": "枠にとらわれず、やりたいと思ったらなんでもやる。それがシンギュラリティ・ソサエティの精神です。",
+      "image": {
+        "type": "markdown",
+        "markdown": "# 自由な活動スタイル\n\n> 許可はいりません\n\n- 海外アクセラレーターへの挑戦\n- YC出身企業とのコラボイベント\n- 個人での開発活動",
+        "backgroundImage": null
+      }
+    }
+  ]
+}
