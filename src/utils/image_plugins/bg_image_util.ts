@@ -73,16 +73,17 @@ export const backgroundImageToCSS = async (backgroundImage: BackgroundImage | un
   // Use pseudo-element for opacity to not affect content
   if (opacity < 1) {
     return `
-      body {
-        position: relative;
+      html, body {
+        height: 100%;
+        margin: 0;
       }
       body::before {
         content: '';
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
+        right: 0;
+        bottom: 0;
         background-image: url('${imageUrl}');
         background-size: ${size};
         background-position: center;
@@ -94,6 +95,10 @@ export const backgroundImageToCSS = async (backgroundImage: BackgroundImage | un
   }
 
   return `
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
     body {
       background-image: url('${imageUrl}');
       background-size: ${size};
