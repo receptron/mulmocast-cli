@@ -2,19 +2,9 @@
   "$mulmocast": {
     "version": "1.0"
   },
-  "title": "Singularity Society 紹介",
-  "description": "Background image feature test with Singularity Society content",
+  "title": "Background Image Size Options",
+  "description": "Demonstrates cover, fill, and contain options for backgroundImage",
   "lang": "ja",
-  "imageParams": {
-    "backgroundImage": {
-      "source": {
-        "kind": "url",
-        "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/logo/facebook_opengraph.png"
-      },
-      "opacity": 0.6,
-      "size": "cover"
-    }
-  },
   "speechParams": {
     "provider": "openai",
     "speakers": {
@@ -25,47 +15,48 @@
   },
   "beats": [
     {
-      "text": "シンギュラリティ・ソサエティは、テクノロジーを活用して社会課題の解決を目指すコミュニティです。",
-      "image": {
-        "type": "textSlide",
-        "slide": {
-          "title": "Singularity Society",
-          "subtitle": "テクノロジーで未来を創る",
-          "bullets": ["社会課題の解決", "イノベーション促進", "人材育成プラットフォーム"]
-        }
-      }
-    },
-    {
-      "text": "高校生から60代まで、年齢に関係なく活発に議論しています。オンライン主体で24時間活動しています。",
+      "text": "coverは、アスペクト比を維持しながら画面全体を覆います。はみ出す部分はトリミングされます。",
       "image": {
         "type": "markdown",
-        "markdown": "# 多様なメンバー\n\n- **高校生から60代**まで参加\n- オンライン主体で**24時間**活動\n- 海外や国内各地から参加"
-      }
-    },
-    {
-      "text": "MulmoCastは、シンギュラリティ・ソサエティが開発したAIネイティブなプレゼンテーションツールです。",
-      "image": {
-        "type": "textSlide",
-        "slide": {
-          "title": "MulmoCast",
-          "subtitle": "AI-native Presentation Platform"
-        },
+        "markdown": "# size: cover\n\n- アスペクト比を**維持**\n- 画面全体を**隙間なく**覆う\n- はみ出す部分は**トリミング**",
         "backgroundImage": {
           "source": {
             "kind": "url",
             "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/mulmocast/mulmocast-logo.png"
           },
-          "opacity": 0.2,
+          "opacity": 0.3,
           "size": "cover"
         }
       }
     },
     {
-      "text": "枠にとらわれず、やりたいと思ったらなんでもやる。それがシンギュラリティ・ソサエティの精神です。",
+      "text": "fillは、アスペクト比を無視して画面いっぱいに引き伸ばします。画像が歪む可能性があります。",
       "image": {
         "type": "markdown",
-        "markdown": "# 自由な活動スタイル\n\n> 許可はいりません\n\n- 海外アクセラレーターへの挑戦\n- YC出身企業とのコラボイベント\n- 個人での開発活動",
-        "backgroundImage": null
+        "markdown": "# size: fill\n\n- アスペクト比を**無視**\n- 画面に**100%フィット**\n- 画像が**歪む**可能性あり",
+        "backgroundImage": {
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/mulmocast/mulmocast-logo.png"
+          },
+          "opacity": 0.3,
+          "size": "fill"
+        }
+      }
+    },
+    {
+      "text": "containは、アスペクト比を維持しながら画像全体が収まるようにします。余白が生じます。",
+      "image": {
+        "type": "markdown",
+        "markdown": "# size: contain\n\n- アスペクト比を**維持**\n- 画像全体が**収まる**\n- **余白**が生じる",
+        "backgroundImage": {
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/mulmocast/mulmocast-logo.png"
+          },
+          "opacity": 0.3,
+          "size": "contain"
+        }
       }
     }
   ]
