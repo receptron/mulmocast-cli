@@ -170,6 +170,34 @@ export const imagePluginUnknownMediaError = (imageType: string) => {
   };
 };
 
+export const mediaSourceToDataUrlError = (url: string) => {
+  return {
+    type: urlFileNotFoundType,
+    action: imageAction,
+    target: imageFileTarget,
+    agentName: "mediaSourceToDataUrl",
+    url,
+  };
+};
+
+export const mediaSourceFileNotFoundError = (filePath: string) => {
+  return {
+    type: fileNotExistType,
+    action: imageAction,
+    target: imageFileTarget,
+    agentName: "mediaSourceToDataUrl",
+    fileName: filePath,
+  };
+};
+
+export const mediaSourceUnknownKindError = () => {
+  return {
+    type: unknownMediaType,
+    action: imageAction,
+    agentName: "mediaSourceToDataUrl",
+  };
+};
+
 // Agent API Key Errors
 export const apiKeyMissingError = (agentName: string, action: string, envVarName: string) => {
   return {

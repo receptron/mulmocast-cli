@@ -8,6 +8,9 @@ import {
   imageReferenceUnknownMediaError,
   downloadImagePluginError,
   imagePluginUnknownMediaError,
+  mediaSourceToDataUrlError,
+  mediaSourceFileNotFoundError,
+  mediaSourceUnknownKindError,
 } from "../utils/error_cause.js";
 
 // for image reference
@@ -50,6 +53,43 @@ function pluginSourceFixExtention(path: string, imageType: ImageType) {
 }
 
 // end of util
+
+const DEFAULT_FETCH_TIMEOUT_MS = 30000;
+
+// Convert URL to data URL (base64 encoded)
+const urlToDataUrl = async (url: string, timeoutMs = DEFAULT_FETCH_TIMEOUT_MS): Promise<string> => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    assert(response.ok, `Failed to fetch: ${url}`, false, mediaSourceToDataUrlError(url));
+    const buffer = Buffer.from(await response.arrayBuffer());
+    const contentType = response.headers.get("content-type") || "image/png";
+    return `data:${contentType};base64,${buffer.toString("base64")}`;
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error(`Fetch timeout: ${url}`, { cause: mediaSourceToDataUrlError(url) });
+    }
+    throw new Error(`Fetch failed: ${url}`, { cause: mediaSourceToDataUrlError(url) });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+};
+
+// Convert local file path to data URL (base64 encoded)
+const pathToDataUrl = (filePath: string): string => {
+  assert(fs.existsSync(filePath), `File not found: ${filePath}`, false, mediaSourceFileNotFoundError(filePath));
+  const buffer = fs.readFileSync(filePath);
+  const extension = getExtention(null, filePath);
+  const mimeType = extension === "jpg" ? "image/jpeg" : `image/${extension}`;
+  return `data:${mimeType};base64,${buffer.toString("base64")}`;
+};
+
+// Convert base64 string to data URL format
+const base64ToDataUrl = (data: string): string => {
+  return data.startsWith("data:") ? data : `data:image/png;base64,${data}`;
+};
 
 export const MulmoMediaSourceMethods = {
   async getText(mediaSource: MulmoMediaMermaidSource, context: MulmoStudioContext) {
@@ -117,5 +157,22 @@ export const MulmoMediaSourceMethods = {
       return path;
     }
     return undefined;
+  },
+
+  /**
+   * Convert MediaSource to data URL (base64 encoded)
+   */
+  async toDataUrl(mediaSource: MulmoMediaSource, context: MulmoStudioContext): Promise<string> {
+    if (mediaSource.kind === "url") {
+      return urlToDataUrl(mediaSource.url);
+    }
+    if (mediaSource.kind === "path") {
+      const fullPath = getFullPath(context.fileDirs.mulmoFileDirPath, mediaSource.path);
+      return pathToDataUrl(fullPath);
+    }
+    if (mediaSource.kind === "base64") {
+      return base64ToDataUrl(mediaSource.data);
+    }
+    throw new Error(`Unknown media source kind`, { cause: mediaSourceUnknownKindError() });
   },
 };
