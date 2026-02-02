@@ -54,10 +54,71 @@ yarn story_to_script        # Convert story to MulmoScript
 - `src/actions/` - Main processing actions (audio, images, movie, pdf, translate, captions)
 - `src/agents/` - GraphAI custom agents for AI services and media processing
 - `src/cli/` - CLI interface with command builders and handlers
-- `src/methods/` - Business logic for presentation styles, templates, and context handling
+- `src/methods/` - Schema-specific methods (see Methods Pattern below)
 - `src/tools/` - Higher-level tools for script generation and research
 - `src/types/` - TypeScript schemas and type definitions (core: schema.ts)
 - `src/utils/` - Utilities for file handling, FFmpeg, image processing, etc.
+- `src/utils/image_plugins/` - Image type processors (markdown, textSlide, mermaid, etc.)
+
+### Methods Pattern (`src/methods/`)
+
+Each Methods object contains functions that process the corresponding schema type. **When implementing data processing, first check if a relevant function exists in the Methods; if yes use it, if no add a new function to the appropriate Methods file.**
+
+| Methods Object | Processes | Key Functions |
+|----------------|-----------|---------------|
+| `MulmoBeatMethods` | `MulmoBeat` | getPlugin, getHtmlPrompt |
+| `MulmoMediaSourceMethods` | `MulmoMediaSource` | toDataUrl, getText, resolve, imageReference |
+| `MulmoScriptMethods` | `MulmoScript` | validate (with version migration) |
+| `MulmoStudioContextMethods` | `MulmoStudioContext` | getAudioDirPath, setSessionState, getAudioParam |
+| `MulmoPresentationStyleMethods` | `MulmoPresentationStyle` | getSpeaker, getCanvasSize, getImageAgentInfo |
+
+Example - processing MediaSource:
+```typescript
+import { MulmoMediaSourceMethods } from "../methods/mulmo_media_source.js";
+
+// Convert to data URL (handles url/path/base64 automatically)
+const dataUrl = await MulmoMediaSourceMethods.toDataUrl(mediaSource, context);
+
+// Get text content (for mermaid code, etc.)
+const text = await MulmoMediaSourceMethods.getText(mediaSource, context);
+```
+
+When adding new functionality:
+1. Identify which schema type the data belongs to
+2. Check if `Mulmo[Type]Methods` already has a suitable method
+3. If not, add the method to the corresponding Methods file
+4. Keep methods browser-compatible when possible (avoid Node.js built-ins like `fs`)
+
+### Error Handling Pattern (`src/utils/error_cause.ts`)
+
+Use structured error causes for i18n-friendly error messages. **Always add try/catch and timeout handling for fetch operations and external API calls.**
+
+```typescript
+import { mediaSourceToDataUrlError } from "../utils/error_cause.js";
+
+// With timeout using AbortController
+const controller = new AbortController();
+const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+try {
+  const response = await fetch(url, { signal: controller.signal });
+  assert(response.ok, `Failed to fetch: ${url}`, false, mediaSourceToDataUrlError(url));
+  // ... process response
+} catch (error) {
+  if (error instanceof Error && error.name === "AbortError") {
+    throw new Error(`Fetch timeout: ${url}`, { cause: mediaSourceToDataUrlError(url) });
+  }
+  throw new Error(`Fetch failed: ${url}`, { cause: mediaSourceToDataUrlError(url) });
+} finally {
+  clearTimeout(timeoutId);
+}
+```
+
+### Implementation Plans (`docs/plans/`)
+
+Store implementation plans as markdown files before implementing complex features:
+- `plan_<feature_name>.md` - Feature implementation plan
+- Include: schema design, affected files, usage examples, implementation steps
 
 ### Key Workflows
 
