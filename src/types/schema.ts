@@ -91,8 +91,7 @@ export const mediaSourceMermaidSchema = z.discriminatedUnion("kind", [
 // Background image schema for markdown and textSlide
 export const backgroundImageSourceSchema = z.object({
   source: mediaSourceSchema,
-  size: z.enum(["cover", "contain", "auto"]).optional(), // default: "cover"
-  position: z.string().optional(), // default: "center" (CSS background-position)
+  size: z.enum(["cover", "contain", "fill", "auto"]).optional(), // default: "cover", "fill" stretches to 100% 100%
   opacity: z.number().min(0).max(1).optional(), // default: 1
 });
 

@@ -55,6 +55,11 @@ const fetchUrlAsDataUrl = async (url: string, timeoutMs = DEFAULT_FETCH_TIMEOUT_
 /**
  * Convert BackgroundImage to CSS string
  */
+// Convert size option to CSS background-size value
+const sizeToCSS = (size: string): string => {
+  return size === "fill" ? "100% 100%" : size;
+};
+
 export const backgroundImageToCSS = async (backgroundImage: BackgroundImage | undefined, context: MulmoStudioContext): Promise<string> => {
   if (!backgroundImage) {
     return "";
@@ -62,8 +67,7 @@ export const backgroundImageToCSS = async (backgroundImage: BackgroundImage | un
 
   const isSimpleUrl = typeof backgroundImage === "string";
   const imageUrl = isSimpleUrl ? await fetchUrlAsDataUrl(backgroundImage) : await MulmoMediaSourceMethods.toDataUrl(backgroundImage.source, context);
-  const size = isSimpleUrl ? "cover" : (backgroundImage.size ?? "cover");
-  const position = isSimpleUrl ? "center" : (backgroundImage.position ?? "center");
+  const size = sizeToCSS(isSimpleUrl ? "cover" : (backgroundImage.size ?? "cover"));
   const opacity = isSimpleUrl ? 1 : (backgroundImage.opacity ?? 1);
 
   // Use pseudo-element for opacity to not affect content
@@ -81,7 +85,7 @@ export const backgroundImageToCSS = async (backgroundImage: BackgroundImage | un
         height: 100%;
         background-image: url('${imageUrl}');
         background-size: ${size};
-        background-position: ${position};
+        background-position: center;
         background-repeat: no-repeat;
         opacity: ${opacity};
         z-index: -1;
@@ -93,7 +97,7 @@ export const backgroundImageToCSS = async (backgroundImage: BackgroundImage | un
     body {
       background-image: url('${imageUrl}');
       background-size: ${size};
-      background-position: ${position};
+      background-position: center;
       background-repeat: no-repeat;
     }
   `;
