@@ -2,6 +2,7 @@ import { ImageProcessorParams } from "../../types/index.js";
 import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../html_render.js";
 import { parrotingImagePath, resolveStyle } from "./utils.js";
+import { resolveBackgroundImage, backgroundImageToCSS } from "./bg_image_util.js";
 import { type MulmoMarkdownLayout } from "../../types/type.js";
 import { generateLayoutHtml, layoutToMarkdown, toMarkdownString, parseMarkdown } from "./markdown_layout.js";
 
@@ -32,11 +33,19 @@ const dumpMarkdown = (params: ImageProcessorParams): string | undefined => {
 
 // Generate full HTML for rendering
 const generateHtml = async (params: ImageProcessorParams): Promise<string> => {
-  const { beat } = params;
+  const { beat, context } = params;
   if (!beat.image || beat.image.type !== imageType) return "";
 
   const md = beat.image.markdown;
   const style = resolveStyle(beat.image.style, params.textSlideStyle);
+
+  // Resolve background image (beat level overrides global)
+  const globalBackgroundImage = context.studio.script.imageParams?.backgroundImage;
+  const beatBackgroundImage = beat.image.backgroundImage;
+  const resolvedBackgroundImage = resolveBackgroundImage(beatBackgroundImage, globalBackgroundImage);
+  const backgroundCSS = await backgroundImageToCSS(resolvedBackgroundImage, context);
+
+  const combinedStyle = backgroundCSS + style;
 
   if (isMarkdownLayout(md)) {
     const htmlBody = await generateLayoutHtml(md);
@@ -44,13 +53,13 @@ const generateHtml = async (params: ImageProcessorParams): Promise<string> => {
     return interpolate(template, {
       title: "Markdown Layout",
       html_body: htmlBody,
-      custom_style: style,
+      custom_style: combinedStyle,
     });
   }
 
   const markdown = dumpMarkdown(params) ?? "";
   const body = await parseMarkdown(markdown);
-  return `<html><head><style>${style}</style></head><body>${body}</body></html>`;
+  return `<html><head><style>${combinedStyle}</style></head><body>${body}</body></html>`;
 };
 
 // Check if markdown content contains mermaid code blocks
