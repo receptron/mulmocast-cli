@@ -2,8 +2,8 @@
   "$mulmocast": {
     "version": "1.0"
   },
-  "title": "Background Image Size Options",
-  "description": "Demonstrates cover, fill, and contain options for backgroundImage",
+  "title": "Background Image Demo",
+  "description": "Demonstrates backgroundImage feature with Singularity Society and size options",
   "lang": "ja",
   "speechParams": {
     "provider": "openai",
@@ -15,7 +15,40 @@
   },
   "beats": [
     {
-      "text": "coverは、アスペクト比を維持しながら画面全体を覆います。はみ出す部分はトリミングされます。",
+      "text": "シンギュラリティ・ソサエティは、テクノロジーを活用して社会課題の解決を目指すコミュニティです。",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Singularity Society",
+          "subtitle": "テクノロジーで未来を創る"
+        },
+        "backgroundImage": {
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/logo/facebook_opengraph.png"
+          },
+          "opacity": 0.5,
+          "size": "cover"
+        }
+      }
+    },
+    {
+      "text": "高校生から60代まで、年齢に関係なく活発に議論しています。",
+      "image": {
+        "type": "markdown",
+        "markdown": "# 多様なメンバー\n\n- 高校生から60代まで参加\n- オンライン主体で24時間活動\n- 海外や国内各地から参加",
+        "backgroundImage": {
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/logo/facebook_opengraph.png"
+          },
+          "opacity": 0.5,
+          "size": "cover"
+        }
+      }
+    },
+    {
+      "text": "coverは、アスペクト比を維持しながら画面全体を覆います。",
       "image": {
         "type": "markdown",
         "markdown": "# size: cover\n\n- アスペクト比を**維持**\n- 画面全体を**隙間なく**覆う\n- はみ出す部分は**トリミング**",
@@ -30,7 +63,7 @@
       }
     },
     {
-      "text": "fillは、アスペクト比を無視して画面いっぱいに引き伸ばします。画像が歪む可能性があります。",
+      "text": "fillは、アスペクト比を無視して画面いっぱいに引き伸ばします。",
       "image": {
         "type": "markdown",
         "markdown": "# size: fill\n\n- アスペクト比を**無視**\n- 画面に**100%フィット**\n- 画像が**歪む**可能性あり",
@@ -45,7 +78,7 @@
       }
     },
     {
-      "text": "containは、アスペクト比を維持しながら画像全体が収まるようにします。余白が生じます。",
+      "text": "containは、アスペクト比を維持しながら画像全体が収まるようにします。",
       "image": {
         "type": "markdown",
         "markdown": "# size: contain\n\n- アスペクト比を**維持**\n- 画像全体が**収まる**\n- **余白**が生じる",
