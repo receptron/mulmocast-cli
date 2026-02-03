@@ -97,10 +97,7 @@
       "image": {
         "type": "markdown",
         "markdown": {
-          "row-2": [
-            "## 左カラム\n\n- 項目1\n- 項目2\n- 項目3",
-            "## 右カラム\n\n- 項目A\n- 項目B\n- 項目C"
-          ]
+          "row-2": ["## 左カラム\n\n- 項目1\n- 項目2\n- 項目3", "## 右カラム\n\n- 項目A\n- 項目B\n- 項目C"]
         },
         "backgroundImage": {
           "source": {
