@@ -2,7 +2,7 @@
   "$mulmocast": { "version": "1.1" },
   "lang": "en",
   "title": "Vertex AI Simple Test",
-  "comment": "Replace YOUR_PROJECT_ID with your Google Cloud project ID",
+  "description": "Replace YOUR_PROJECT_ID with your Google Cloud project ID",
   "imageParams": {
     "provider": "google",
     "model": "imagen-4.0-generate-001",

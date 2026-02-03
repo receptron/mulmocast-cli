@@ -2,7 +2,7 @@
   "$mulmocast": { "version": "1.1" },
   "lang": "en",
   "title": "Vertex AI Test (TTS + Image + Movie)",
-  "comment": "Replace YOUR_PROJECT_ID with your Google Cloud project ID",
+  "description": "Replace YOUR_PROJECT_ID with your Google Cloud project ID",
   "speechParams": {
     "speakers": {
       "GCP": {
