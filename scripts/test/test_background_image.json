@@ -1,0 +1,116 @@
+{
+  "$mulmocast": {
+    "version": "1.0"
+  },
+  "title": "Background Image Demo",
+  "description": "Demonstrates backgroundImage feature with various content types",
+  "lang": "ja",
+  "speechParams": {
+    "provider": "openai",
+    "speakers": {
+      "host": {
+        "voiceId": "shimmer"
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "シンギュラリティ・ソサエティは、テクノロジーを活用して社会課題の解決を目指すコミュニティです。",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Singularity Society",
+          "subtitle": "テクノロジーで未来を創る"
+        },
+        "backgroundImage": {
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/logo/facebook_opengraph.png"
+          },
+          "opacity": 0.5,
+          "size": "cover"
+        }
+      }
+    },
+    {
+      "text": "高校生から60代まで、年齢に関係なく活発に議論しています。",
+      "image": {
+        "type": "markdown",
+        "markdown": "# 多様なメンバー\n\n- 高校生から60代まで参加\n- オンライン主体で24時間活動\n- 海外や国内各地から参加",
+        "backgroundImage": {
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/logo/facebook_opengraph.png"
+          },
+          "opacity": 0.5,
+          "size": "cover"
+        }
+      }
+    },
+    {
+      "text": "coverは、アスペクト比を維持しながら画面全体を覆います。",
+      "image": {
+        "type": "markdown",
+        "markdown": "# size: cover\n\n```json\n\"backgroundImage\": {\n  \"source\": { \"kind\": \"url\", \"url\": \"...\" },\n  \"opacity\": 0.3,\n  \"size\": \"cover\"\n}\n```\n\n- アスペクト比を**維持**\n- 画面全体を**隙間なく**覆う",
+        "backgroundImage": {
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/mulmocast/mulmocast-logo.png"
+          },
+          "opacity": 0.3,
+          "size": "cover"
+        }
+      }
+    },
+    {
+      "text": "fillは、アスペクト比を無視して画面いっぱいに引き伸ばします。",
+      "image": {
+        "type": "markdown",
+        "markdown": "# size: fill\n\n```json\n\"backgroundImage\": {\n  \"source\": { \"kind\": \"url\", \"url\": \"...\" },\n  \"opacity\": 0.3,\n  \"size\": \"fill\"\n}\n```\n\n- アスペクト比を**無視**\n- 画面に**100%フィット**",
+        "backgroundImage": {
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/mulmocast/mulmocast-logo.png"
+          },
+          "opacity": 0.3,
+          "size": "fill"
+        }
+      }
+    },
+    {
+      "text": "containは、アスペクト比を維持しながら画像全体が収まるようにします。",
+      "image": {
+        "type": "markdown",
+        "markdown": "# size: contain\n\n```json\n\"backgroundImage\": {\n  \"source\": { \"kind\": \"url\", \"url\": \"...\" },\n  \"opacity\": 0.3,\n  \"size\": \"contain\"\n}\n```\n\n- アスペクト比を**維持**\n- 画像全体が**収まる**",
+        "backgroundImage": {
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/mulmocast/mulmocast-logo.png"
+          },
+          "opacity": 0.3,
+          "size": "contain"
+        }
+      }
+    },
+    {
+      "text": "マークダウンレイアウトでも背景画像が使えます。",
+      "image": {
+        "type": "markdown",
+        "markdown": {
+          "row-2": [
+            "## 左カラム\n\n- 項目1\n- 項目2\n- 項目3",
+            "## 右カラム\n\n- 項目A\n- 項目B\n- 項目C"
+          ]
+        },
+        "backgroundImage": {
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/mulmocast/mulmocast-logo.png"
+          },
+          "opacity": 0.2,
+          "size": "cover"
+        }
+      }
+    }
+  ]
+}

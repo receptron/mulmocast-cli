@@ -1,17 +1,26 @@
 import { ImageProcessorParams } from "../../types/index.js";
 import { renderMarkdownToImage } from "../html_render.js";
 import { parrotingImagePath, resolveStyle } from "./utils.js";
+import { resolveBackgroundImage, backgroundImageToCSS } from "./bg_image_util.js";
 
 import { marked } from "marked";
 
 export const imageType = "textSlide";
 
 const processTextSlide = async (params: ImageProcessorParams) => {
-  const { beat, imagePath, textSlideStyle, canvasSize } = params;
+  const { beat, context, imagePath, textSlideStyle, canvasSize } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
   const slide = beat.image.slide;
   const style = resolveStyle(beat.image.style, textSlideStyle);
+
+  // Resolve background image (beat level overrides global)
+  const globalBackgroundImage = context.studio.script.imageParams?.backgroundImage;
+  const beatBackgroundImage = beat.image.backgroundImage;
+  const resolvedBackgroundImage = resolveBackgroundImage(beatBackgroundImage, globalBackgroundImage);
+  const backgroundCSS = await backgroundImageToCSS(resolvedBackgroundImage, context);
+
+  const combinedStyle = backgroundCSS + style;
 
   const markdown = dumpMarkdown(params) ?? "";
   const topMargin = (() => {
@@ -21,7 +30,7 @@ const processTextSlide = async (params: ImageProcessorParams) => {
     const marginTop = slide.subtitle ? canvasSize.height * 0.4 : canvasSize.height * 0.45;
     return `body {margin-top: ${marginTop}px;}`;
   })();
-  await renderMarkdownToImage(markdown, style + topMargin, imagePath, canvasSize.width, canvasSize.height);
+  await renderMarkdownToImage(markdown, combinedStyle + topMargin, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;
 };
 
