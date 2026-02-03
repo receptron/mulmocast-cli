@@ -1,0 +1,122 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "title": "Vertex AI Test (TTS + Image + Movie)",
+  "comment": "Replace YOUR_PROJECT_ID with your Google Cloud project ID",
+  "speechParams": {
+    "speakers": {
+      "GCP": {
+        "provider": "google",
+        "voiceId": "en-US-Studio-O"
+      },
+      "Gemini": {
+        "provider": "google",
+        "model": "gemini-2.5-pro-tts",
+        "voiceId": "Kore"
+      }
+    }
+  },
+  "imageParams": {
+    "provider": "google",
+    "model": "imagen-4.0-generate-001",
+    "vertexai_project": "YOUR_PROJECT_ID",
+    "vertexai_location": "us-central1"
+  },
+  "movieParams": {
+    "provider": "google",
+    "model": "veo-2.0-generate-001",
+    "vertexai_project": "YOUR_PROJECT_ID",
+    "vertexai_location": "us-central1"
+  },
+  "beats": [
+    {
+      "id": "gcp_tts_imagen4",
+      "speaker": "GCP",
+      "text": "TTS: Google Cloud TTS en-US-Studio-O. Image: Imagen 4.",
+      "imagePrompt": "A beautiful mountain landscape at sunrise"
+    },
+    {
+      "id": "gemini_tts_imagen4",
+      "speaker": "Gemini",
+      "text": "TTS: Gemini 2.5 Pro TTS Kore. Image: Imagen 4.",
+      "imagePrompt": "A futuristic city with flying cars"
+    },
+    {
+      "id": "imagen4_ultra_override",
+      "speaker": "GCP",
+      "text": "TTS: Google Cloud TTS en-US-Studio-O. Image: Imagen 4 Ultra override.",
+      "imagePrompt": "A woman walking through Tokyo at night with neon lights",
+      "imageParams": {
+        "model": "imagen-4.0-ultra-generate-001",
+        "vertexai_project": "YOUR_PROJECT_ID",
+        "vertexai_location": "us-central1"
+      }
+    },
+    {
+      "id": "imagen4_fast_override",
+      "speaker": "Gemini",
+      "text": "TTS: Gemini 2.5 Pro TTS Kore. Image: Imagen 4 Fast override.",
+      "imagePrompt": "A cat sitting on a windowsill watching rain",
+      "imageParams": {
+        "model": "imagen-4.0-fast-generate-001",
+        "vertexai_project": "YOUR_PROJECT_ID",
+        "vertexai_location": "us-central1"
+      }
+    },
+    {
+      "id": "veo2_movie",
+      "speaker": "GCP",
+      "text": "TTS: Google Cloud TTS en-US-Studio-O. Movie: Veo 2.",
+      "moviePrompt": "A butterfly flying in slow motion through a garden",
+      "duration": 5
+    },
+    {
+      "id": "veo3_movie_override",
+      "speaker": "Gemini",
+      "text": "TTS: Gemini 2.5 Pro TTS Kore. Movie: Veo 3 override.",
+      "moviePrompt": "Ocean waves crashing on a beach at sunset",
+      "movieParams": {
+        "model": "veo-3.0-generate-001",
+        "vertexai_project": "YOUR_PROJECT_ID",
+        "vertexai_location": "us-central1"
+      }
+    },
+    {
+      "id": "image_to_movie_veo2",
+      "speaker": "GCP",
+      "text": "TTS: Google Cloud TTS en-US-Studio-O. Image: Imagen 4. Movie: Veo 2 with image reference.",
+      "imagePrompt": "A woman standing in a busy Tokyo street at night",
+      "moviePrompt": "The woman takes a selfie with her phone",
+      "duration": 5
+    },
+    {
+      "id": "image_to_movie_veo3_override",
+      "speaker": "Gemini",
+      "text": "TTS: Gemini 2.5 Pro TTS Kore. Image: Imagen 4 Fast override. Movie: Veo 3 override with image reference.",
+      "imagePrompt": "A robot standing in a futuristic laboratory",
+      "imageParams": {
+        "model": "imagen-4.0-fast-generate-001",
+        "vertexai_project": "YOUR_PROJECT_ID",
+        "vertexai_location": "us-central1"
+      },
+      "moviePrompt": "The robot turns its head and waves at the camera",
+      "movieParams": {
+        "model": "veo-3.0-generate-001",
+        "vertexai_project": "YOUR_PROJECT_ID",
+        "vertexai_location": "us-central1"
+      },
+      "duration": 5
+    },
+    {
+      "id": "gemini_flash_image_override",
+      "speaker": "GCP",
+      "text": "TTS: Google Cloud TTS en-US-Studio-O. Image: Gemini 2.5 Flash Image override.",
+      "imagePrompt": "A cozy coffee shop interior with warm lighting",
+      "imageParams": {
+        "model": "gemini-2.5-flash-image",
+        "vertexai_project": "YOUR_PROJECT_ID",
+        "vertexai_location": "us-central1"
+      }
+    }
+  ]
+}
