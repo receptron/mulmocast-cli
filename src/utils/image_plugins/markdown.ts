@@ -1,8 +1,8 @@
 import { ImageProcessorParams } from "../../types/index.js";
 import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../html_render.js";
-import { parrotingImagePath, resolveStyle } from "./utils.js";
-import { resolveBackgroundImage, backgroundImageToCSS } from "./bg_image_util.js";
+import { parrotingImagePath } from "./utils.js";
+import { resolveCombinedStyle } from "./bg_image_util.js";
 import { type MulmoMarkdownLayout } from "../../types/type.js";
 import { generateLayoutHtml, layoutToMarkdown, toMarkdownString, parseMarkdown } from "./markdown_layout.js";
 
@@ -33,19 +33,11 @@ const dumpMarkdown = (params: ImageProcessorParams): string | undefined => {
 
 // Generate full HTML for rendering
 const generateHtml = async (params: ImageProcessorParams): Promise<string> => {
-  const { beat, context } = params;
+  const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return "";
 
   const md = beat.image.markdown;
-  const style = resolveStyle(beat.image.style, params.textSlideStyle);
-
-  // Resolve background image (beat level overrides global)
-  const globalBackgroundImage = context.studio.script.imageParams?.backgroundImage;
-  const beatBackgroundImage = beat.image.backgroundImage;
-  const resolvedBackgroundImage = resolveBackgroundImage(beatBackgroundImage, globalBackgroundImage);
-  const backgroundCSS = await backgroundImageToCSS(resolvedBackgroundImage, context);
-
-  const combinedStyle = backgroundCSS + style;
+  const combinedStyle = await resolveCombinedStyle(params, beat.image.backgroundImage, beat.image.style);
 
   if (isMarkdownLayout(md)) {
     const htmlBody = await generateLayoutHtml(md);
@@ -59,6 +51,17 @@ const generateHtml = async (params: ImageProcessorParams): Promise<string> => {
 
   const markdown = dumpMarkdown(params) ?? "";
   const body = await parseMarkdown(markdown);
+
+  // Use tailwind template if mermaid is present to ensure mermaid CDN is loaded
+  if (containsMermaid(md)) {
+    const template = getHTMLFile("tailwind");
+    return interpolate(template, {
+      title: "Markdown",
+      html_body: `<div class="prose max-w-none p-6">${body}</div>`,
+      custom_style: combinedStyle,
+    });
+  }
+
   return `<html><head><style>${combinedStyle}</style></head><body>${body}</body></html>`;
 };
 
