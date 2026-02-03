@@ -1,5 +1,5 @@
 ---
-generated_at: 2026-01-30T03:03:24.862Z
+generated_at: 2026-02-03T12:26:54.511Z
 ---
 
 # images
@@ -70,6 +70,8 @@ flowchart TD
   n_preprocessor -- imageParams.moderation --> n_imageGenerator
   n_context -- presentationStyle.canvasSize --> n_imageGenerator
   n_preprocessor -- imageParams.quality --> n_imageGenerator
+  n_preprocessor -- imageParams.vertexai_project --> n_imageGenerator
+  n_preprocessor -- imageParams.vertexai_location --> n_imageGenerator
   n_movieGenerator(movieGenerator<br/>:preprocessor.movieAgentInfo.agent)
   n_imageGenerator --> n_movieGenerator
   n_imagePlugin --> n_movieGenerator
@@ -87,6 +89,8 @@ flowchart TD
   n_preprocessor -- movieAgentInfo.movieParams.model --> n_movieGenerator
   n_preprocessor -- beatDuration --> n_movieGenerator
   n_context -- presentationStyle.canvasSize --> n_movieGenerator
+  n_preprocessor -- movieAgentInfo.movieParams.vertexai_project --> n_movieGenerator
+  n_preprocessor -- movieAgentInfo.movieParams.vertexai_location --> n_movieGenerator
   n_imageFromMovie(imageFromMovie<br/>agent)
   n_movieGenerator --> n_imageFromMovie
   n_preprocessor -- imagePath --> n_imageFromMovie
@@ -225,6 +229,8 @@ flowchart TD
     n_map_preprocessor -- imageParams.moderation --> n_map_imageGenerator
     n_map_context -- presentationStyle.canvasSize --> n_map_imageGenerator
     n_map_preprocessor -- imageParams.quality --> n_map_imageGenerator
+    n_map_preprocessor -- imageParams.vertexai_project --> n_map_imageGenerator
+    n_map_preprocessor -- imageParams.vertexai_location --> n_map_imageGenerator
     n_map_movieGenerator(movieGenerator<br/>:preprocessor.movieAgentInfo.agent)
     n_map_imageGenerator --> n_map_movieGenerator
     n_map_imagePlugin --> n_map_movieGenerator
@@ -242,6 +248,8 @@ flowchart TD
     n_map_preprocessor -- movieAgentInfo.movieParams.model --> n_map_movieGenerator
     n_map_preprocessor -- beatDuration --> n_map_movieGenerator
     n_map_context -- presentationStyle.canvasSize --> n_map_movieGenerator
+    n_map_preprocessor -- movieAgentInfo.movieParams.vertexai_project --> n_map_movieGenerator
+    n_map_preprocessor -- movieAgentInfo.movieParams.vertexai_location --> n_map_movieGenerator
     n_map_imageFromMovie(imageFromMovie<br/>agent)
     n_map_movieGenerator --> n_map_imageFromMovie
     n_map_preprocessor -- imagePath --> n_map_imageFromMovie
