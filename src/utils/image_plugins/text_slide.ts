@@ -1,26 +1,18 @@
 import { ImageProcessorParams } from "../../types/index.js";
 import { renderMarkdownToImage } from "../html_render.js";
-import { parrotingImagePath, resolveStyle } from "./utils.js";
-import { resolveBackgroundImage, backgroundImageToCSS } from "./bg_image_util.js";
+import { parrotingImagePath } from "./utils.js";
+import { resolveCombinedStyle } from "./bg_image_util.js";
 
 import { marked } from "marked";
 
 export const imageType = "textSlide";
 
 const processTextSlide = async (params: ImageProcessorParams) => {
-  const { beat, context, imagePath, textSlideStyle, canvasSize } = params;
+  const { beat, imagePath, canvasSize } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
   const slide = beat.image.slide;
-  const style = resolveStyle(beat.image.style, textSlideStyle);
-
-  // Resolve background image (beat level overrides global)
-  const globalBackgroundImage = context.studio.script.imageParams?.backgroundImage;
-  const beatBackgroundImage = beat.image.backgroundImage;
-  const resolvedBackgroundImage = resolveBackgroundImage(beatBackgroundImage, globalBackgroundImage);
-  const backgroundCSS = await backgroundImageToCSS(resolvedBackgroundImage, context);
-
-  const combinedStyle = backgroundCSS + style;
+  const combinedStyle = await resolveCombinedStyle(params, beat.image.backgroundImage, beat.image.style);
 
   const markdown = dumpMarkdown(params) ?? "";
   const topMargin = (() => {

@@ -220,6 +220,8 @@ export const mulmoMermaidMediaSchema = z
     title: z.string().describe("The title of the diagram"),
     code: mediaSourceMermaidSchema.describe("The code of the mermaid diagram"),
     appendix: z.array(z.string()).optional().describe("The appendix of the mermaid diagram; typically, style information."),
+    style: z.string().optional(),
+    backgroundImage: backgroundImageSchema,
   })
   .strict();
 

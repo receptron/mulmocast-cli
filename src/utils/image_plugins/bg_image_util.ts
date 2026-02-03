@@ -1,5 +1,6 @@
-import { BackgroundImage, MulmoStudioContext } from "../../types/index.js";
+import { BackgroundImage, MulmoStudioContext, ImageProcessorParams } from "../../types/index.js";
 import { MulmoMediaSourceMethods } from "../../methods/mulmo_media_source.js";
+import { resolveStyle } from "./utils.js";
 
 const DEFAULT_FETCH_TIMEOUT_MS = 30000;
 
@@ -58,6 +59,23 @@ const fetchUrlAsDataUrl = async (url: string, timeoutMs = DEFAULT_FETCH_TIMEOUT_
 // Convert size option to CSS background-size value
 const sizeToCSS = (size: string): string => {
   return size === "fill" ? "100% 100%" : size;
+};
+
+/**
+ * Resolve combined style from background image and custom style.
+ * Common pattern used by markdown, textSlide, mermaid plugins.
+ */
+export const resolveCombinedStyle = async (
+  params: ImageProcessorParams,
+  beatBackgroundImage: BackgroundImage | undefined,
+  beatStyle: string | undefined,
+): Promise<string> => {
+  const { context, textSlideStyle } = params;
+  const globalBackgroundImage = context.studio.script.imageParams?.backgroundImage;
+  const resolvedBackgroundImage = resolveBackgroundImage(beatBackgroundImage, globalBackgroundImage);
+  const backgroundCSS = await backgroundImageToCSS(resolvedBackgroundImage, context);
+  const style = resolveStyle(beatStyle, textSlideStyle);
+  return backgroundCSS + style;
 };
 
 export const backgroundImageToCSS = async (backgroundImage: BackgroundImage | undefined, context: MulmoStudioContext): Promise<string> => {

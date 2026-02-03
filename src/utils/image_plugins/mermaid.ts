@@ -3,6 +3,7 @@ import { MulmoMediaSourceMethods } from "../../methods/index.js";
 import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../html_render.js";
 import { parrotingImagePath, generateUniqueId } from "./utils.js";
+import { resolveCombinedStyle } from "./bg_image_util.js";
 
 export const imageType = "mermaid";
 
@@ -22,15 +23,16 @@ export const generateMermaidHtml = (code: string, title?: string): string => {
 };
 
 const processMermaid = async (params: ImageProcessorParams) => {
-  const { beat, imagePath, canvasSize, context, textSlideStyle } = params;
+  const { beat, imagePath, canvasSize, context } = params;
   if (!beat?.image || beat.image.type !== imageType) return;
 
   const template = getHTMLFile("mermaid");
   const diagram_code = await MulmoMediaSourceMethods.getText(beat.image.code, context);
   if (diagram_code) {
+    const combinedStyle = await resolveCombinedStyle(params, beat.image.backgroundImage, beat.image.style);
     const htmlData = interpolate(template, {
       title: beat.image.title,
-      style: textSlideStyle,
+      style: combinedStyle,
       diagram_code: `${diagram_code}\n${beat.image.appendix?.join("\n") ?? ""}`,
     });
     await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, true);

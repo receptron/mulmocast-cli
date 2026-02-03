@@ -108,6 +108,40 @@
           "size": "cover"
         }
       }
+    },
+    {
+      "text": "マークダウンにMermaid図を埋め込むこともできます。",
+      "image": {
+        "type": "markdown",
+        "markdown": "# システム構成\n\n```mermaid\ngraph TD\n    A[ユーザー] --> B[API]\n    B --> C[データベース]\n```",
+        "backgroundImage": {
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/mulmocast/mulmocast-logo.png"
+          },
+          "opacity": 0.2,
+          "size": "cover"
+        }
+      }
+    },
+    {
+      "text": "Mermaidタイプでも背景画像が使えます。",
+      "image": {
+        "type": "mermaid",
+        "title": "アーキテクチャ",
+        "code": {
+          "kind": "text",
+          "text": "graph LR\n    Client --> Gateway\n    Gateway --> Service\n    Service --> Database[(DB)]"
+        },
+        "backgroundImage": {
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/SingularitySociety/societys_statement/main/images/mulmocast/mulmocast-logo.png"
+          },
+          "opacity": 0.2,
+          "size": "cover"
+        }
+      }
     }
   ]
 }
