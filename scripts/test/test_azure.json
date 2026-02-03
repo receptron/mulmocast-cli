@@ -1,0 +1,26 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "Test Azure OpenAI (TTS + Images)",
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "provider": "openai",
+        "voiceId": "alloy",
+        "model": "tts"
+      }
+    }
+  },
+  "imageParams": {
+    "provider": "openai",
+    "model": "gpt-image-1.5"
+  },
+  "beats": [
+    {
+      "text": "Hello, this is a test of Azure OpenAI text to speech.",
+      "imagePrompt": "A beautiful sunset over mountains, photorealistic style"
+    }
+  ]
+}
