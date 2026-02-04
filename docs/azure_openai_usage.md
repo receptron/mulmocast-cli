@@ -105,35 +105,96 @@ TTS_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
 }
 ```
 
-### 利用可能なボイス
+### 利用可能なボイス（tts / tts-hd モデル）
 
 `alloy`, `ash`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`
 
 ### 対応モデル
 
-| モデル | 利用可能リージョン |
-|--------|-------------------|
-| `tts` | North Central US, Sweden Central |
-| `tts-hd` | North Central US, Sweden Central |
+| モデル | 説明 | 利用可能リージョン |
+|--------|------|-------------------|
+| `tts` | 標準 TTS モデル | North Central US, Sweden Central |
+| `tts-hd` | 高品質 TTS モデル | North Central US, Sweden Central |
+| `gpt-4o-mini-tts` | GPT-4o mini ベースの新世代モデル | East US 2 |
+
+**注意**: MulmoCast のデフォルトモデルは `gpt-4o-mini-tts` です。Azure で `model` を省略するとこのモデルが使用されます。
+
+## LLM（テキスト生成・翻訳など）
+
+### 環境変数
+
+`.env` ファイルに以下を設定:
+
+```bash
+LLM_OPENAI_API_KEY=<Azure OpenAI APIキー>
+LLM_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
+```
+
+### MulmoScript 設定
+
+LLM は主にスクリプト生成や翻訳で内部的に使用されます。MulmoScript での直接指定は通常不要です。
+
+### CLI でのモデル指定
+
+```bash
+# スクリプト生成
+mulmo tool scripting -i --llm openai --llm_model gpt-4o
+
+# ストーリーからスクリプト変換
+mulmo tool story_to_script --llm openai --llm_model gpt-4o
+```
 
 ## リージョン選択
 
-全モデル（画像生成 + TTS）を1つのリソースで使用する場合は **Sweden Central** を推奨します。
+以下は `az cognitiveservices model list` コマンドを実行した結果です。利用したいモデルに合わせてリージョンを選択してください。
 
-| リージョン | gpt-image-1.5 | TTS |
-|-----------|---------------|-----|
-| Sweden Central | ✓ | ✓ |
-| East US | ✗ | ✓ |
-| East US 2 | ✓ | ✗ |
-| West US 3 | ✓ | ✗ |
-| North Central US | ✗ | ✓ |
-| Japan | ✗ | ✗ |
+| リージョン | TTS(L) | TTS(4m) | GPT4o | Img10 | Img15 |
+|------------|--------|---------|-------|-------|-------|
+| East US | ✗ | ✗ | ✓ | ✗ | ✗ |
+| East US 2 | ✗ | ✓ | ✓ | ✓ | ✓ |
+| West US 3 | ✓ | ✗ | ✓ | ✓ | ✓ |
+| Sweden Central | ✓ | ✗ | ✓ | ✓ | ✓ |
+| West Europe | ✗ | ✗ | ✓ | ✗ | ✗ |
+| Japan East | ✗ | ✗ | ✓ | ✗ | ✗ |
+| Australia East | ✗ | ✗ | ✓ | ✗ | ✗ |
+
+- **TTS(L)**: `tts`, `tts-hd`（レガシーモデル）
+- **TTS(4m)**: `gpt-4o-mini-tts`
+- **GPT4o**: `gpt-4o`
+- **Img10**: `gpt-image-1`
+- **Img15**: `gpt-image-1.5`
+
+```bash
+regions="eastus eastus2 westus3 swedencentral westeurope japaneast australiaeast"
+
+printf "%-16s | %-6s | %-7s | %-6s | %-6s | %-6s\n" "Region" "TTS(L)" "TTS(4m)" "GPT4o" "Img10" "Img15"
+echo "-----------------------------------------------------------------------"
+
+for loc in ${=regions}; do
+    models=$(az cognitiveservices model list --location $loc --query "[].model.name" -o tsv 2>/dev/null)
+    
+    f_leg="no"; printf "%s" "$models" | grep -qx "tts" && f_leg="YES"
+    printf "%s" "$models" | grep -qx "tts-hd" && f_leg="YES"
+    
+    f_4om="no"; printf "%s" "$models" | grep -q "gpt-4o-mini-tts" && f_4om="YES"
+    
+    f_4o="no";  printf "%s" "$models" | grep -qx "gpt-4o" && f_4o="YES"
+    
+    f_i10="no"; printf "%s" "$models" | grep -q "gpt-image-1" && printf "%s" "$models" | grep -qv "1.5" && f_i10="YES"
+    
+    f_i15="no"; printf "%s" "$models" | grep -q "gpt-image-1.5" && f_i15="YES"
+
+    printf "%-16s | %-6s | %-7s | %-6s | %-6s | %-6s\n" "$loc" "$f_leg" "$f_4om" "$f_4o" "$f_i10" "$f_i15"
+done
+```
 
 ## トラブルシューティング
 
 ### 404 The API deployment for this resource does not exist
 
-**原因**: デプロイメント名とモデル名が一致していない
+**原因**:
+1. デプロイメント名とモデル名が一致していない
+2. MulmoScript でモデルを省略した場合、MulmoCast がデフォルト値（例: `gpt-4o-mini-tts`）を補完するが、そのモデルが Azure にデプロイされていない
 
 **解決方法**:
 1. 現在のデプロイメントを確認:
@@ -233,3 +294,4 @@ MulmoScript のスキーマには `baseURL` と `apiVersion` フィールドが�
 
 - [Azure OpenAI セットアップガイド](./azure_setup.md)
 - [Azure OpenAI 統合設計ドキュメント](./azure_openai_integration.md)
+- [テスト用スクリプト](../scripts/test/test_azure.json)
