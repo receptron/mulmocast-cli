@@ -3,8 +3,21 @@
 {
   "title": "韓国の戒厳令とその日本への影響",
   "description": "韓国で最近発令された戒厳令とその可能性のある影響について、また日本の憲法に関する考慮事項との類似点を含めた洞察に満ちた議論。",
-  "tts": "nijivoice",
-  "script": [
+  "speechParams": {
+    "speakers": {
+      "Host": {
+        "provider": "elevenlabs",
+        "voiceId": "j210dv0vWm7fCknyQpbA",
+        "model": "eleven_multilingual_v2"
+      },
+      "Guest": {
+        "provider": "elevenlabs",
+        "voiceId": "l39JidvAMB3s85XyNSRd",
+        "model": "eleven_multilingual_v2"
+      }
+    }
+  },
+  "beats": [
     {
       "speaker": "Host",
       "text": "先生、今日は韓国で起きた戒厳令のことを教えてもらえますか？"

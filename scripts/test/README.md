@@ -23,7 +23,7 @@ Simple test scripts for basic functionality verification
 
 Tests for various TTS providers
 
-- [**test_all_tts.json**](./test_all_tts.json) - 全TTSプロバイダーのテスト（OpenAI, Gemini, Google, ElevenLabs, Nijivoice） / All TTS providers test
+- [**test_all_tts.json**](./test_all_tts.json) - 全TTSプロバイダーのテスト（OpenAI, Gemini, Google, ElevenLabs） / All TTS providers test
 - [**test_audio.json**](./test_audio.json) - 音声パラメータのテスト（padding, duration, movieVolumeなど） / Audio parameters test
 - [**test_audio_gemini.json**](./test_audio_gemini.json) - Gemini TTSの個別テスト / Gemini TTS specific test
 - [**test_audio_instructions.json**](./test_audio_instructions.json) - OpenAI TTS instructionsのテスト / OpenAI TTS instructions test

@@ -31,7 +31,7 @@
       "properties": {
         "provider": {
           "type": "string",
-          "enum": ["openai", "nijivoice", "google", "elevenlabs"],
+          "enum": ["openai", "google", "elevenlabs"],
           "default": "openai"
         },
         "speakers": {
@@ -54,7 +54,7 @@
               },
               "provider": {
                 "type": "string",
-                "enum": ["openai", "nijivoice", "google", "elevenlabs"]
+                "enum": ["openai", "google", "elevenlabs"]
               }
             },
             "required": ["voiceId"],

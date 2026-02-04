@@ -4,10 +4,11 @@
     "style": "Ghibli style anime"
   },
   "speechParams": {
-    "provider": "nijivoice",
     "speakers": {
       "Presenter": {
-        "voiceId": "3708ad43-cace-486c-a4ca-8fe41186e20c"
+        "provider": "elevenlabs",
+        "voiceId": "j210dv0vWm7fCknyQpbA",
+        "model": "eleven_multilingual_v2"
       }
     }
   },
