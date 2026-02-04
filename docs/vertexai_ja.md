@@ -169,6 +169,8 @@ Vertex AI 経由で Google Cloud TTS または Gemini TTS を使用できます�
 | Google Cloud TTS | `ja-JP-Standard-A` | 日本語 Standard 音声 |
 | Gemini TTS | `gemini-2.5-pro-tts` | Gemini ベースの TTS |
 
+**注意**: 利用可能な voiceId は各サービスのドキュメントを参照してください。
+
 ## リージョン
 
 Vertex AI は以下のリージョンで利用可能です：
