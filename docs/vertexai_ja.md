@@ -197,9 +197,8 @@ Vertex AI は以下のリージョンで利用可能です：
 Error: Could not load the default credentials
 ```
 
-**原因**: ADC が設定されていない
+- ADC が設定されていません。以下を実行してください：
 
-**解決方法**:
 ```bash
 gcloud auth application-default login
 ```
@@ -210,9 +209,8 @@ gcloud auth application-default login
 Error: Permission denied
 ```
 
-**原因**: プロジェクトへのアクセス権限がない
+- IAM 権限を確認してください：
 
-**解決方法**:
 ```bash
 # Vertex AI ユーザー権限の付与
 gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
@@ -222,9 +220,7 @@ gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
 
 ### リージョンエラー
 
-**原因**: モデルが指定したリージョンで利用できない
-
-**解決方法**: `us-central1` を試してください
+- モデルが指定したリージョンで利用できない場合があります。`us-central1` を試してください
 
 ### vertexai_project 未設定エラー
 
