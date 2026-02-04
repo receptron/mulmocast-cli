@@ -117,7 +117,7 @@ TTS_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
 | `tts-hd` | 高品質 TTS モデル | North Central US, Sweden Central |
 | `gpt-4o-mini-tts` | GPT-4o mini ベースの新世代モデル | East US 2 |
 
-**注意**: MulmoCast のデフォルトモデルは `gpt-4o-mini-tts` です。Azure で `model` を省略するとこのモデルが使用されます。
+**注意**: MulmoCast のデフォルトモデルは `gpt-4o-mini-tts` です。 `model` を省略するとこのモデルが使用されます。
 
 ## LLM（テキスト生成・翻訳など）
 
@@ -132,7 +132,7 @@ LLM_OPENAI_BASE_URL=https://<resource-name>.openai.azure.com/
 
 ### MulmoScript 設定
 
-LLM は主にスクリプト生成や翻訳で内部的に使用されます。MulmoScript での直接指定は通常不要です。
+LLM は主にスクリプト生成や翻訳で内部的に使用されます。MulmoScript での直接指定は通常不要です。翻訳には `gpt-4o` を使用するため、デプロイしてください。
 
 ### CLI でのモデル指定
 
@@ -157,6 +157,7 @@ mulmo tool story_to_script --llm openai --llm_model gpt-4o
 | West Europe | ✗ | ✗ | ✓ | ✗ | ✗ |
 | Japan East | ✗ | ✗ | ✓ | ✗ | ✗ |
 | Australia East | ✗ | ✗ | ✓ | ✗ | ✗ |
+** 注: 2026-02-04 に実行した結果です。
 
 - **TTS(L)**: `tts`, `tts-hd`（レガシーモデル）
 - **TTS(4m)**: `gpt-4o-mini-tts`
@@ -194,7 +195,7 @@ done
 
 **原因**:
 1. デプロイメント名とモデル名が一致していない
-2. MulmoScript でモデルを省略した場合、MulmoCast がデフォルト値（例: `gpt-4o-mini-tts`）を補完するが、そのモデルが Azure にデプロイされていない
+2. MulmoScript でモデルを省略した場合、MulmoCast がデフォルト値を補完します。そのモデルが Azure にデプロイされていない。（例: tts model のデフォルト値は `gpt-4o-mini-tts` です。）
 
 **解決方法**:
 1. 現在のデプロイメントを確認:
