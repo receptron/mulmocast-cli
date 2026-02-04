@@ -228,9 +228,9 @@ gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
 Error: Google GenAI API key is required (GEMINI_API_KEY)
 ```
 
-**原因**: `vertexai_project` が MulmoScript で指定されていない
+**原因**: `vertexai_project` を設定しないと Gemini API 経由で生成しようとします。Gemini API も設定されていない場合にこのエラーが発生します。
 
-**解決方法**: `imageParams` または `movieParams` に `vertexai_project` を追加
+**解決方法**: `vertexai_project` が正しく設定されているか確認してください
 
 ### モデルが見つからないエラー
 
@@ -240,7 +240,7 @@ Error: Publisher Model was not found
 
 **原因**: 指定したモデルが Vertex AI で利用できない、またはリージョン未対応
 
-**解決方法**: Imagen 系モデル（`imagen-4.0-*`）を使用してください
+**解決方法**: モデル名の再確認、または `vertexai_location` をモデルが対応しているリージョンに変更してください
 
 ## 参考リンク
 
