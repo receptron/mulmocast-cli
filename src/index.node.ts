@@ -8,3 +8,6 @@ export * from "./utils/context.js";
 export * from "./utils/ffmpeg_utils.js";
 export * from "./methods/index.js";
 export * from "./agents/index.js";
+
+// CLI entry point for programmatic usage (e.g., mulmocast-easy)
+export { main as cliMain } from "./cli/bin.js";
