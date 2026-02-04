@@ -103,6 +103,70 @@ gcloud auth application-default print-access-token
 }
 ```
 
+### TTS（音声合成）の設定
+
+TTS は ADC で認証され、`vertexai_project` の指定は不要です。
+
+#### Google Cloud TTS
+
+```json
+{
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "provider": "google",
+        "voiceId": "en-US-Studio-O"
+      }
+    }
+  }
+}
+```
+
+#### Gemini TTS
+
+```json
+{
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "provider": "google",
+        "model": "gemini-2.5-pro-tts",
+        "voiceId": "Kore"
+      }
+    }
+  }
+}
+```
+
+### beat レベルでのオーバーライド
+
+個別の beat でモデルを変更する場合、`vertexai_project` と `vertexai_location` も指定が必要です：
+
+```json
+{
+  "beats": [
+    {
+      "text": "高品質な画像を生成します",
+      "imagePrompt": "A woman walking through Tokyo at night",
+      "imageParams": {
+        "model": "imagen-4.0-ultra-generate-001",
+        "vertexai_project": "your-project-id",
+        "vertexai_location": "us-central1"
+      }
+    },
+    {
+      "text": "動画を生成します",
+      "moviePrompt": "Ocean waves crashing on a beach",
+      "movieParams": {
+        "model": "veo-3.0-generate-001",
+        "vertexai_project": "your-project-id",
+        "vertexai_location": "us-central1"
+      }
+    }
+  ]
+}
+```
+
 ## 利用可能なモデル
 
 ### 画像生成
@@ -115,6 +179,11 @@ gcloud auth application-default print-access-token
 | `gemini-2.5-flash-image` | Gemini ベースの画像生成 |
 | `gemini-3-pro-image-preview` | Gemini 3 Pro 画像生成 |
 
+**注意**:
+- Gemini 画像モデルはリージョンによって利用できない場合があります
+- `gemini-3-pro-image-preview` は global で利用可能です（[参考](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro-image) 2026-02-04 現在）
+- エラーが出た場合は Imagen 系モデルを使用してください
+
 ### 動画生成
 
 | モデル | 説明 |
@@ -122,6 +191,14 @@ gcloud auth application-default print-access-token
 | `veo-2.0-generate-001` | Veo 2.0 |
 | `veo-3.0-generate-001` | Veo 3.0 |
 | `veo-3.1-generate-preview` | Veo 3.1 プレビュー |
+
+### TTS（音声合成）
+
+| プロバイダー | モデル/voiceId | 説明 |
+|-------------|---------------|------|
+| Google Cloud TTS | `en-US-Studio-O` | 英語（米国）Studio 音声 |
+| Google Cloud TTS | `ja-JP-Standard-A` | 日本語 Standard 音声 |
+| Gemini TTS | `gemini-2.5-pro-tts` | Gemini ベースの TTS |
 
 ## リージョン
 
@@ -151,8 +228,9 @@ Vertex AI は以下のリージョンで利用可能です：
 Error: Could not load the default credentials
 ```
 
-ADC が設定されていません。以下を実行してください：
+**原因**: ADC が設定されていない
 
+**解決方法**:
 ```bash
 gcloud auth application-default login
 ```
@@ -163,8 +241,9 @@ gcloud auth application-default login
 Error: Permission denied
 ```
 
-IAM 権限を確認してください：
+**原因**: プロジェクトへのアクセス権限がない
 
+**解決方法**:
 ```bash
 # Vertex AI ユーザー権限の付与
 gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
@@ -174,7 +253,29 @@ gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
 
 ### リージョンエラー
 
-モデルが指定したリージョンで利用できない場合があります。`us-central1` を試してください。
+**原因**: モデルが指定したリージョンで利用できない
+
+**解決方法**: `us-central1` を試してください
+
+### vertexai_project 未設定エラー
+
+```
+Error: Google GenAI API key is required (GEMINI_API_KEY)
+```
+
+**原因**: `vertexai_project` が MulmoScript で指定されていない
+
+**解決方法**: `imageParams` または `movieParams` に `vertexai_project` を追加
+
+### モデルが見つからないエラー
+
+```
+Error: Publisher Model was not found
+```
+
+**原因**: 指定したモデルが Vertex AI で利用できない、またはリージョン未対応
+
+**解決方法**: Imagen 系モデル（`imagen-4.0-*`）を使用してください
 
 ## 参考リンク
 
@@ -182,3 +283,4 @@ gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
 - [Imagen API リファレンス](https://cloud.google.com/vertex-ai/generative-ai/docs/image/overview)
 - [Veo API リファレンス](https://cloud.google.com/vertex-ai/generative-ai/docs/video/overview)
 - [ADC の設定](https://cloud.google.com/docs/authentication/provide-credentials-adc)
+- [テスト用スクリプト](../scripts/test/test_vertexai.json) - `YOUR_PROJECT_ID` を置き換えて使用
