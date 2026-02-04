@@ -194,8 +194,8 @@ beats:
         url: https://github.com/receptron/mulmocast-media/raw/refs/heads/main/tutorial/helloworld_ghibli.png
   - text: >
       Voice customization is supported through the speechParams property.
-      You can specify the voice ID and voice provider, such as "nijivoice" or "openai".
-      Here's an example using a Nijivoice-generated voice:
+      You can specify the voice ID and voice provider, such as "elevenlabs" or "openai".
+      Here's an example using an ElevenLabs-generated voice:
     image:
       type: markdown
       markdown: |
@@ -208,20 +208,21 @@ beats:
             "style": "Ghibli style anime"
           },
           "speechParams": {
-            "provider": "nijivoice",
             "speakers": {
               "Presenter": {
-                "voiceId": "3708ad43-cace-486c-a4ca-8fe41186e20c"
+                "provider": "elevenlabs",
+                "voiceId": "j210dv0vWm7fCknyQpbA",
+                "model": "eleven_multilingual_v2"
               }
             }
           },
           "beats": [
-            { 
+            {
               "text": "こんにちは、世界の皆さん！",
               "imagePrompt": "A female model with business suit, holding a globe, saying hello"
             }
           ]
-        }        
+        }
         ```
   - text: >
       こんにちは、世界の皆さん。
@@ -229,7 +230,7 @@ beats:
       type: audio
       source:
         kind: url
-        url: https://github.com/receptron/mulmocast-media/raw/refs/heads/main/tutorial/helloworld_nijivoice.mp3
+        url: https://github.com/receptron/mulmocast-media/raw/refs/heads/main/tutorial/helloworld_elevenlabs.mp3
     image:
       type: image
       source:

@@ -5,14 +5,26 @@
 {
   "title": "韓国の戒厳令とその日本への影響",
   "description": "韓国で最近発令された戒厳令とその可能性のある影響について、また日本の憲法に関する考慮事項との類似点を含めた洞察に満ちた議論。",
-  "tts": "nijivoice",
-  "voices": [
-    "c05bf02d-bed2-4335-aa69-0798e9e85205",
-    "b9277ce3-ba1c-4f6f-9a65-c05ca102ded0",
-    "bc06c63f-fef6-43b6-92f7-67f919bd5dae"
-  ],
-  "speakers": ["Announcer", "Student", "Teacher"],
-  "script": [
+  "speechParams": {
+    "speakers": {
+      "Announcer": {
+        "provider": "elevenlabs",
+        "voiceId": "3JDquces8E8bkmvbh6Bc",
+        "model": "eleven_multilingual_v2"
+      },
+      "Student": {
+        "provider": "elevenlabs",
+        "voiceId": "j210dv0vWm7fCknyQpbA",
+        "model": "eleven_multilingual_v2"
+      },
+      "Teacher": {
+        "provider": "elevenlabs",
+        "voiceId": "l39JidvAMB3s85XyNSRd",
+        "model": "eleven_multilingual_v2"
+      }
+    }
+  },
+  "beats": [
     {
       "speaker": "Announcer",
       "text": "米国で活躍するエンジニアが、新しい技術やビジネスを分かりやすく解説する、中島聡のLife is beautiful。今日は、韓国で最近発令された戒厳令についての解説です。"

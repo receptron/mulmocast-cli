@@ -5,7 +5,7 @@ Generate a podcast script based on the materials provided by the user. The scrip
   "title": "(title of this episode)",
   "description": "(short description of this episode)",
   "reference": "(url to the article)",
-  "tts": "openAI", // or "nijivoice", default is "openAI"
+  "tts": "openAI", // default is "openAI"
   "speechParams": {
     "speakers": {
       "Host": {

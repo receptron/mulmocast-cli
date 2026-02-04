@@ -7,7 +7,7 @@ The output should follow the JSON format specified below.
   "title": "(title of this episode)",
   "description": "(short description of this episode)",
   "reference": "(url to the article)",
-  "tts": "openAI", // or "nijivoice", default is "openAI"
+  "tts": "openAI", // default is "openAI"
   "speakers": {
     "Host": {
       "voiceId": "shimmer",
