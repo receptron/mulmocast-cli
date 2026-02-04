@@ -105,38 +105,8 @@ gcloud auth application-default print-access-token
 
 ### TTS（音声合成）の設定
 
-TTS は ADC で認証され、`vertexai_project` の指定は不要です。
+Vertex AI 経由で Google Cloud TTS または Gemini TTS を使用できます。TTS は ADC で認証され、`vertexai_project` の指定は不要です。設定例は [テスト用スクリプト](../scripts/test/test_vertexai.json) を参照してください。
 
-#### Google Cloud TTS
-
-```json
-{
-  "speechParams": {
-    "speakers": {
-      "Presenter": {
-        "provider": "google",
-        "voiceId": "en-US-Studio-O"
-      }
-    }
-  }
-}
-```
-
-#### Gemini TTS
-
-```json
-{
-  "speechParams": {
-    "speakers": {
-      "Presenter": {
-        "provider": "google",
-        "model": "gemini-2.5-pro-tts",
-        "voiceId": "Kore"
-      }
-    }
-  }
-}
-```
 
 ### beat レベルでのオーバーライド
 
@@ -181,9 +151,8 @@ TTS は ADC で認証され、`vertexai_project` の指定は不要です。
 
 **注意**:
 - Gemini 画像モデルはリージョンによって利用できない場合があります
-- `gemini-3-pro-image-preview` は global で利用可能です（[参考](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro-image) 2026-02-04 現在）
-- エラーが出た場合は Imagen 系モデルを使用してください
-
+- `gemini-3-pro-image-preview` は `global` で利用可能です（[参考](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro-image) 2026-02-04 現在）
+  
 ### 動画生成
 
 | モデル | 説明 |
