@@ -303,16 +303,7 @@
   dependencies:
     google-gax "^5.0.0"
 
-"@google/genai@^1.38.0":
-  version "1.39.0"
-  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.39.0.tgz#38b22bf49e831eebb7bad67c39cd20e63263f044"
-  integrity sha512-Vz7AQsOdBeiIcxmXIQNy/hzDvyAOE1lSpWA10itUQza7h3aQFF6QSGaQ7o1GYsjMD3XslK4Ee/Ol0eLhRXb7gA==
-  dependencies:
-    google-auth-library "^10.3.0"
-    protobufjs "^7.5.4"
-    ws "^8.18.0"
-
-"@google/genai@^1.40.0":
+"@google/genai@^1.38.0", "@google/genai@^1.40.0":
   version "1.40.0"
   resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.40.0.tgz#ea74af03b7cb70c915f62cf82559b71cfea2f7a8"
   integrity sha512-fhIww8smT0QYRX78qWOiz/nIQhHMF5wXOrlXvj33HBrz3vKDBb+wibLcEmTA+L9dmPD4KmfNr7UF3LDQVTXNjA==
@@ -3329,19 +3320,7 @@ puppeteer-core@24.37.1:
     webdriver-bidi-protocol "0.4.0"
     ws "^8.19.0"
 
-puppeteer@^24.32.0:
-  version "24.36.1"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-24.36.1.tgz#55b328215090b9617eb71ca541232c14a60c14cb"
-  integrity sha512-uPiDUyf7gd7Il1KnqfNUtHqntL0w1LapEw5Zsuh8oCK8GsqdxySX1PzdIHKB2Dw273gWY4MW0zC5gy3Re9XlqQ==
-  dependencies:
-    "@puppeteer/browsers" "2.11.2"
-    chromium-bidi "13.0.1"
-    cosmiconfig "^9.0.0"
-    devtools-protocol "0.0.1551306"
-    puppeteer-core "24.36.1"
-    typed-query-selector "^2.12.0"
-
-puppeteer@^24.37.1:
+puppeteer@^24.32.0, puppeteer@^24.37.1:
   version "24.37.1"
   resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-24.37.1.tgz#b5fb8d4eb83e2b5a9d9f91f8267e03d313471e9f"
   integrity sha512-iugAcwjRIX6XsMS1dzWbjKKUcEE0ZmmRbV0T6RyTtXNSHyBdss0r9GYJ9eOjUZfOoWeKCIOAptogdHYoBbJDeA==
