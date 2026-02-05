@@ -303,10 +303,10 @@
   dependencies:
     google-gax "^5.0.0"
 
-"@google/genai@^1.38.0", "@google/genai@^1.39.0":
-  version "1.39.0"
-  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.39.0.tgz#38b22bf49e831eebb7bad67c39cd20e63263f044"
-  integrity sha512-Vz7AQsOdBeiIcxmXIQNy/hzDvyAOE1lSpWA10itUQza7h3aQFF6QSGaQ7o1GYsjMD3XslK4Ee/Ol0eLhRXb7gA==
+"@google/genai@^1.38.0", "@google/genai@^1.40.0":
+  version "1.40.0"
+  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.40.0.tgz#ea74af03b7cb70c915f62cf82559b71cfea2f7a8"
+  integrity sha512-fhIww8smT0QYRX78qWOiz/nIQhHMF5wXOrlXvj33HBrz3vKDBb+wibLcEmTA+L9dmPD4KmfNr7UF3LDQVTXNjA==
   dependencies:
     google-auth-library "^10.3.0"
     protobufjs "^7.5.4"
@@ -366,10 +366,10 @@
     "@graphai/llm_utils" "^2.0.3"
     openai "^6.16.0"
 
-"@graphai/stream_agent_filter@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@graphai/stream_agent_filter/-/stream_agent_filter-2.0.2.tgz#128250d8de876ffcfe8db488170ea43ac8c9d9f0"
-  integrity sha512-S45q/cnzc8s2FTOUUcCCvMTOW7M7H1En10lKI5YCgH7UhmIeM3aP4x43fxTazeX9mqAC6od01wYIIDBvK/B2yA==
+"@graphai/stream_agent_filter@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@graphai/stream_agent_filter/-/stream_agent_filter-2.0.3.tgz#52500e5d008c307841add780ac4e5fc1e8185ee5"
+  integrity sha512-E13navF+UUNj03zyQCqACZxBnGjmPkSKSzlLZznfrS9bh/OfDBcKiki6l+858HYpMz/5d0xPGY9GpRMymDChDw==
 
 "@graphai/vanilla@^2.0.12":
   version "2.0.12"
@@ -636,6 +636,19 @@
   version "2.11.2"
   resolved "https://registry.yarnpkg.com/@puppeteer/browsers/-/browsers-2.11.2.tgz#54ac339579c23014535011e6dc04bf3157705d73"
   integrity sha512-GBY0+2lI9fDrjgb5dFL9+enKXqyOPok9PXg/69NVkjW3bikbK9RQrNrI3qccQXmDNN7ln4j/yL89Qgvj/tfqrw==
+  dependencies:
+    debug "^4.4.3"
+    extract-zip "^2.0.1"
+    progress "^2.0.3"
+    proxy-agent "^6.5.0"
+    semver "^7.7.3"
+    tar-fs "^3.1.1"
+    yargs "^17.7.2"
+
+"@puppeteer/browsers@2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@puppeteer/browsers/-/browsers-2.12.0.tgz#da618270082bb6dfa8b0565623efa80d5bf911b1"
+  integrity sha512-Xuq42yxcQJ54ti8ZHNzF5snFvtpgXzNToJ1bXUGQRaiO8t+B6UM8sTUJfvV+AJnqtkJU/7hdy6nbKyA12aHtRw==
   dependencies:
     debug "^4.4.3"
     extract-zip "^2.0.1"
@@ -1219,6 +1232,14 @@ chromium-bidi@13.0.1:
     mitt "^3.0.1"
     zod "^3.24.1"
 
+chromium-bidi@13.1.1:
+  version "13.1.1"
+  resolved "https://registry.yarnpkg.com/chromium-bidi/-/chromium-bidi-13.1.1.tgz#e4c1ef6307b19cb00b048a03d34dfd60746e31ca"
+  integrity sha512-zB9MpoPd7VJwjowQqiW3FKOvQwffFMjQ8Iejp5ZW+sJaKLRhZX1sTxzl3Zt22TDB4zP0OOqs8lRoY7eAW5geyQ==
+  dependencies:
+    mitt "^3.0.1"
+    zod "^3.24.1"
+
 cli-cursor@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/cli-cursor/-/cli-cursor-5.0.0.tgz#24a4831ecf5a6b01ddeb32fb71a4b2088b0dce38"
@@ -1472,15 +1493,20 @@ devtools-protocol@0.0.1551306:
   resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.1551306.tgz#fbdc36ed4e9e0be2946c826680fa4c6a9ac55cd3"
   integrity sha512-CFx8QdSim8iIv+2ZcEOclBKTQY6BI1IEDa7Tm9YkwAXzEWFndTEzpTo5jAUhSnq24IC7xaDw0wvGcm96+Y3PEg==
 
+devtools-protocol@0.0.1566079:
+  version "0.0.1566079"
+  resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.1566079.tgz#28049eed025a25cf3aea964f6c6bd517796c44ac"
+  integrity sha512-MJfAEA1UfVhSs7fbSQOG4czavUp1ajfg6prlAN0+cmfa2zNjaIbvq8VneP7do1WAQQIvgNJWSMeP6UyI90gIlQ==
+
 dfa@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/dfa/-/dfa-1.2.0.tgz#96ac3204e2d29c49ea5b57af8d92c2ae12790657"
   integrity sha512-ED3jP8saaweFTjeGX8HQPjeC1YYyZs98jGNZx6IiBvxW7JG5v492kamAQB3m2wop07CvU/RQmzcKr6bgcC5D/Q==
 
-dotenv@^17.2.3:
-  version "17.2.3"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-17.2.3.tgz#ad995d6997f639b11065f419a22fabf567cdb9a2"
-  integrity sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w==
+dotenv@^17.2.4:
+  version "17.2.4"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-17.2.4.tgz#b5a0e2f015e0be287a5330a90bf0e804606504c2"
+  integrity sha512-mudtfb4zRB4bVvdj0xRo+e6duH1csJRM8IukBqfTRvHotn9+LBXB8ynAidP9zHqoRC/fsllXgk4kCKlR21fIhw==
 
 dunder-proto@^1.0.1:
   version "1.0.1"
@@ -2994,10 +3020,10 @@ optionator@^0.9.3:
     type-check "^0.4.0"
     word-wrap "^1.2.5"
 
-ora@^9.2.0:
-  version "9.2.0"
-  resolved "https://registry.yarnpkg.com/ora/-/ora-9.2.0.tgz#e093ab051455157ec5210577ea20811013d4d0bb"
-  integrity sha512-4sGT6oNDbqIuciDfD2aCkoPgHLmOe+g+xpFK2WDO0aQuD/bNHNwfdFosWP+DXmcxRyXeF8vnki6kXnOOHTuRSA==
+ora@^9.3.0:
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/ora/-/ora-9.3.0.tgz#187c87cc1062350f549f481de32bf91424c2b0e3"
+  integrity sha512-lBX72MWFduWEf7v7uWf5DHp9Jn5BI8bNPGuFgtXMmr2uDz2Gz2749y3am3agSDdkhHPHYmmxEGSKH85ZLGzgXw==
   dependencies:
     chalk "^5.6.2"
     cli-cursor "^5.0.0"
@@ -3281,16 +3307,29 @@ puppeteer-core@24.36.1:
     webdriver-bidi-protocol "0.4.0"
     ws "^8.19.0"
 
-puppeteer@^24.32.0, puppeteer@^24.36.1:
-  version "24.36.1"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-24.36.1.tgz#55b328215090b9617eb71ca541232c14a60c14cb"
-  integrity sha512-uPiDUyf7gd7Il1KnqfNUtHqntL0w1LapEw5Zsuh8oCK8GsqdxySX1PzdIHKB2Dw273gWY4MW0zC5gy3Re9XlqQ==
+puppeteer-core@24.37.1:
+  version "24.37.1"
+  resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-24.37.1.tgz#84dc5a54123c78b47632ab257fee59f3842a1629"
+  integrity sha512-ylRJReaA6kd/CrahdrxxnSZf5S2hf1QR0S39QeoS55fuBoOl4UggGPW94zheu9lmCokpRQpa7q8r98xYyiQl0Q==
   dependencies:
-    "@puppeteer/browsers" "2.11.2"
-    chromium-bidi "13.0.1"
+    "@puppeteer/browsers" "2.12.0"
+    chromium-bidi "13.1.1"
+    debug "^4.4.3"
+    devtools-protocol "0.0.1566079"
+    typed-query-selector "^2.12.0"
+    webdriver-bidi-protocol "0.4.0"
+    ws "^8.19.0"
+
+puppeteer@^24.32.0, puppeteer@^24.37.1:
+  version "24.37.1"
+  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-24.37.1.tgz#b5fb8d4eb83e2b5a9d9f91f8267e03d313471e9f"
+  integrity sha512-iugAcwjRIX6XsMS1dzWbjKKUcEE0ZmmRbV0T6RyTtXNSHyBdss0r9GYJ9eOjUZfOoWeKCIOAptogdHYoBbJDeA==
+  dependencies:
+    "@puppeteer/browsers" "2.12.0"
+    chromium-bidi "13.1.1"
     cosmiconfig "^9.0.0"
-    devtools-protocol "0.0.1551306"
-    puppeteer-core "24.36.1"
+    devtools-protocol "0.0.1566079"
+    puppeteer-core "24.37.1"
     typed-query-selector "^2.12.0"
 
 qs@^6.14.0:
