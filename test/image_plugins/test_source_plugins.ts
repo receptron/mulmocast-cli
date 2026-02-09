@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
+import { resolve } from "node:path";
 import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
 import { ImageProcessorParams } from "../../src/types/index.js";
 
@@ -54,7 +55,7 @@ test("image plugin path with path source", () => {
   };
 
   const path = plugin.path(mockParams);
-  assert.strictEqual(path, "/project/assets/image.jpg");
+  assert.strictEqual(path, resolve("/project", "assets/image.jpg"));
 });
 
 test("image plugin path with relative path source", () => {
@@ -80,7 +81,7 @@ test("image plugin path with relative path source", () => {
   };
 
   const path = plugin.path(mockParams);
-  assert.strictEqual(path, "/home/user/project/images/photo.png");
+  assert.strictEqual(path, resolve("/home/user/project", "./images/photo.png"));
 });
 
 test("image plugin path with wrong image type", () => {
@@ -153,7 +154,7 @@ test("movie plugin path with path source", () => {
   };
 
   const path = plugin.path(mockParams);
-  assert.strictEqual(path, "/project/videos/presentation.mp4");
+  assert.strictEqual(path, resolve("/project", "videos/presentation.mp4"));
 });
 
 test("movie plugin path extension fix", () => {
@@ -265,6 +266,6 @@ test("image plugin with absolute path source", () => {
   };
 
   const path = plugin.path(mockParams);
-  // Absolute paths should be used as-is
-  assert.strictEqual(path, "/absolute/path/to/image.jpg");
+  // Absolute paths should be resolved (path.resolve handles platform differences)
+  assert.strictEqual(path, resolve("/project", "/absolute/path/to/image.jpg"));
 });
