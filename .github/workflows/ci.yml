@@ -41,6 +41,4 @@ jobs:
         run: yarn build
 
       - name: Run tests
-        env:
-          NODE_ENV: test
-        run: npx tsx --test ./test/*/test_*.ts
+        run: yarn ci_test
