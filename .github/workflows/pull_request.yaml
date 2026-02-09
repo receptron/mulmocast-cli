@@ -56,6 +56,35 @@ jobs:
         yarn run build
     - run: yarn run ci_test
 
+  lint_test_cross_platform:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+        node-version: [22.x]
+    steps:
+    - uses: actions/checkout@v5
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v5
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+    - name: Cache node_modules
+      uses: actions/cache@v4
+      with:
+        path: node_modules
+        key: node-modules-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+    - name: Install ffmpeg (macOS)
+      if: runner.os == 'macOS'
+      run: brew install ffmpeg
+    - name: Install ffmpeg (Windows)
+      if: runner.os == 'Windows'
+      run: choco install ffmpeg -y
+    - run: yarn install --frozen-lockfile
+    - run: yarn run lint
+    - run: yarn run build
+    - run: yarn ci_test
+
   e2e:
     runs-on: ubuntu-latest
     strategy:
