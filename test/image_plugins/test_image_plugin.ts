@@ -1,4 +1,5 @@
 import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
+import { resolve } from "node:path";
 
 import test from "node:test";
 import assert from "node:assert";
@@ -44,7 +45,7 @@ test("test imagePlugin image path", async () => {
     },
     context: { fileDirs: { mulmoFileDirPath: "/bin" } },
   });
-  assert.equal(path, "/bin/expectImagePath");
+  assert.equal(path, resolve("/bin", "expectImagePath"));
 });
 
 test("test imagePlugin beat", async () => {
