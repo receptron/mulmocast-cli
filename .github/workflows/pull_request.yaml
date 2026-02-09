@@ -40,12 +40,17 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.cache/puppeteer
-        key: puppeteer-${{ runner.os }}-${{ matrix.node-version }}
+        key: puppeteer-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y chromium-browser ca-certificates fonts-liberation libatk-bridge2.0-0 libatk1.0-0 libcups2 libdrm2 libgbm1 libnspr4 libnss3 libxcomposite1 libxdamage1 libxrandr2 xdg-utils ffmpeg
-    - run: yarn install --frozen-lockfile
+        sudo apt-get install -y ca-certificates fonts-liberation libatk-bridge2.0-0 libatk1.0-0 libcups2 libdrm2 libgbm1 libnspr4 libnss3 libxcomposite1 libxdamage1 libxrandr2 xdg-utils ffmpeg
+    - name: Install dependencies
+      env:
+        PUPPETEER_SKIP_DOWNLOAD: true
+      run: yarn install --frozen-lockfile
+    - name: Install Chromium for Puppeteer
+      run: npx puppeteer browsers install chrome
     - run: yarn run format
     - run: yarn run lint
     - run: yarn run build
@@ -59,6 +64,7 @@ jobs:
   lint_test_cross_platform:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [windows-latest, macos-latest]
         node-version: [22.x]
@@ -80,7 +86,12 @@ jobs:
     - name: Install ffmpeg (Windows)
       if: runner.os == 'Windows'
       run: choco install ffmpeg -y
-    - run: yarn install --frozen-lockfile
+    - name: Install dependencies
+      env:
+        PUPPETEER_SKIP_DOWNLOAD: true
+      run: yarn install --frozen-lockfile
+    - name: Install Chromium for Puppeteer
+      run: npx puppeteer browsers install chrome
     - run: yarn run lint
     - run: yarn run build
     - run: yarn ci_test
@@ -106,12 +117,17 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.cache/puppeteer
-        key: puppeteer-${{ runner.os }}-${{ matrix.node-version }}
+        key: puppeteer-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y chromium-browser ca-certificates fonts-liberation libatk-bridge2.0-0 libatk1.0-0 libcups2 libdrm2 libgbm1 libnspr4 libnss3 libxcomposite1 libxdamage1 libxrandr2 xdg-utils wget ffmpeg
-    - run: yarn install --frozen-lockfile
+        sudo apt-get install -y ca-certificates fonts-liberation libatk-bridge2.0-0 libatk1.0-0 libcups2 libdrm2 libgbm1 libnspr4 libnss3 libxcomposite1 libxdamage1 libxrandr2 xdg-utils wget ffmpeg
+    - name: Install dependencies
+      env:
+        PUPPETEER_SKIP_DOWNLOAD: true
+      run: yarn install --frozen-lockfile
+    - name: Install Chromium for Puppeteer
+      run: npx puppeteer browsers install chrome
     - run: yarn run format
     - run: yarn run build
     - name: Run image tests (parallel)
