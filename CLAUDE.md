@@ -36,6 +36,14 @@ yarn schema                 # Output MulmoScript schema
 yarn story_to_script        # Convert story to MulmoScript
 ```
 
+### Publishing
+
+This repository contains two npm packages:
+- **Root** (`mulmocast`): The main CLI package
+- **`types/`** (`@mulmocast/types`): Shared type definitions (symlinks to `src/types/`)
+
+When publishing, if the diff includes changes under `src/types/`, MUST publish `types/` package as well. Both packages use the `/publish` skill.
+
 ## Architecture Overview
 
 ### Core Components
