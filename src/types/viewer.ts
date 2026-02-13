@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const mulmoViewerBeatSchema = z.object({
+  id: z.string().optional(),
   text: z.string().optional(),
   duration: z.number().optional(),
   startTime: z.number().optional(),
