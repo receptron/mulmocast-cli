@@ -86,7 +86,15 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext, options: Mu
     const sudioBeats = context.studio.beats[index];
     const { duration, startAt } = sudioBeats;
     // console.log(context.studio.beats[index]);
-    resultJson.push({ text: beat.text, duration, startTime: startAt, endTime: (startAt ?? 0) + (duration ?? 0), audioSources: {}, multiLinguals: {} });
+    resultJson.push({
+      id: beat.id,
+      text: beat.text,
+      duration,
+      startTime: startAt,
+      endTime: (startAt ?? 0) + (duration ?? 0),
+      audioSources: {},
+      multiLinguals: {},
+    });
   });
 
   // audio
