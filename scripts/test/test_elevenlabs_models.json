@@ -64,6 +64,22 @@
           "en": "Flash V2"
         }
       },
+      "V3": {
+        "provider": "elevenlabs",
+        "voiceId": "1SM7GgM6IMuvQlz2BwM3",
+        "model": "eleven_v3",
+        "displayName": {
+          "en": "Eleven V3 (Mark)"
+        }
+      },
+      "V3Japanese": {
+        "provider": "elevenlabs",
+        "voiceId": "KtSs8OSniRPofXnr5PeA",
+        "model": "eleven_v3",
+        "displayName": {
+          "en": "V3 Japanese (Sumire)"
+        }
+      },
       "MultilingualJapanese": {
         "provider": "elevenlabs",
         "voiceId": "Mv8AjrYZCBkdsmDHNwcB",
@@ -154,6 +170,28 @@
         "slide": {
           "title": "Flash V2",
           "subtitle": "English-only ultra-fast model"
+        }
+      }
+    },
+    {
+      "speaker": "V3",
+      "text": "Testing Eleven v3, the latest and most advanced model with human-like expressiveness and high emotional range across over 70 languages.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Eleven V3",
+          "subtitle": "Latest model, 70+ languages"
+        }
+      }
+    },
+    {
+      "speaker": "V3Japanese",
+      "text": "Eleven V3モデルの日本語テストです。最新の音声合成モデルで、70以上の言語に対応し、豊かな感情表現が可能です。",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Eleven V3日本語テスト",
+          "subtitle": "最新モデル、70+言語対応"
         }
       }
     },

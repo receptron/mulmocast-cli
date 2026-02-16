@@ -253,7 +253,9 @@ test("test createVideo with test_elevenlabs_models.json", async () => {
     "[6:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v6]",
     "[7:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v7]",
     "[8:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v8]",
-    "[v0][v1][v2][v3][v4][v5][v6][v7][v8]concat=n=9:v=1:a=0[concat_video]",
+    "[9:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v9]",
+    "[10:v]loop=loop=-1:size=1:start=0,trim=duration=5,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v10]",
+    "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10]concat=n=11:v=1:a=0[concat_video]",
   ]);
 });
 
