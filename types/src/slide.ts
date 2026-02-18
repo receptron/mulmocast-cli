@@ -1,0 +1,1 @@
+../../src/slide/schema.ts
