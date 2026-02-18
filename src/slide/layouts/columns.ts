@@ -1,6 +1,18 @@
-import type { ColumnsSlide, Card } from "../schema.js";
+import type { ColumnsSlide, Card, ContentBlock } from "../schema.js";
 import { escapeHtml, c, cardWrap, numBadge, iconSquare, slideHeader, renderCalloutBar } from "../utils.js";
-import { renderContentBlocks } from "../blocks.js";
+import { renderContentBlock, renderContentBlocks } from "../blocks.js";
+
+/** Render content blocks for columns: image blocks get a fixed aspect-ratio container for vertical alignment */
+const renderColumnContent = (blocks: ContentBlock[]): string => {
+  return blocks
+    .map((block) => {
+      if (block.type === "image") {
+        return `<div class="aspect-video shrink-0 overflow-hidden">${renderContentBlock(block)}</div>`;
+      }
+      return renderContentBlock(block);
+    })
+    .join("\n");
+};
 
 const buildColumnCard = (col: Card): string => {
   const accent = col.accentColor || "primary";
@@ -26,7 +38,7 @@ const buildColumnCard = (col: Card): string => {
   if (col.content) {
     const centerCls = col.icon ? "text-center" : "";
     inner.push(`<div class="mt-3 space-y-3 flex-1 min-h-0 overflow-hidden flex flex-col ${centerCls}">`);
-    inner.push(renderContentBlocks(col.content));
+    inner.push(renderColumnContent(col.content));
     inner.push(`</div>`);
   }
 
