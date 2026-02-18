@@ -10,7 +10,7 @@ export const generateSlideHTML = (theme: SlideTheme, slide: SlideLayout): string
   const slideStyle = slide.style;
   const bgCls = slideStyle?.bgColor ? "" : "bg-d-bg";
   const inlineStyle = slideStyle?.bgColor ? ` style="background-color:#${sanitizeHex(slideStyle.bgColor)}"` : "";
-  const footer = slideStyle?.footer ? `\n<p class="absolute bottom-2 right-4 text-xs text-d-dim font-body">${escapeHtml(slideStyle.footer)}</p>` : "";
+  const footer = slideStyle?.footer ? `<p class="absolute bottom-2 right-4 text-xs text-d-dim font-body">${escapeHtml(slideStyle.footer)}</p>` : "";
 
   return `<!DOCTYPE html>
 <html lang="en" class="h-full">
@@ -25,7 +25,8 @@ export const generateSlideHTML = (theme: SlideTheme, slide: SlideLayout): string
 </head>
 <body class="h-full">
 <div class="relative overflow-hidden ${bgCls} w-full h-full flex flex-col"${inlineStyle}>
-${content}${footer}
+${content}
+${footer}
 </div>
 </body>
 </html>`;
