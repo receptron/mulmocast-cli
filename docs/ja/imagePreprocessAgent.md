@@ -55,6 +55,7 @@ type PreprocessResult = {
 - `markdown`: Markdown画像生成
 - `chart`: チャート画像生成
 - `mermaid`: mermaid図表生成
+- `slide`: 構造化スライドDSL（11レイアウト、Tailwind CSS + Puppeteer）
 
 プラグイン処理時：
 - セッション状態を管理（`MulmoStudioContextMethods.setBeatSessionState`）

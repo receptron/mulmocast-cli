@@ -830,7 +830,64 @@ markdown コンテンツ内で mermaid コードブロックを直接使用で�
 }
 ```
 
-### beat 
+### slide（構造化スライド）
+
+JSON DSLで構造化されたプレゼンテーションスライドを生成。11種のレイアウト、7種のコンテンツブロック、13色のテーマシステムをサポート。Tailwind CSS + Puppeteerでレンダリング。
+
+テーマは`slideParams.theme`でグローバルに設定するか、`beat.image.theme`でbeat単位に上書き可能。
+
+```json
+{
+  "type": "slide",
+  "slide": {
+    "layout": "title",
+    "title": "Main Title",
+    "subtitle": "Subtitle"
+  }
+}
+```
+
+#### columns レイアウト
+```json
+{
+  "type": "slide",
+  "slide": {
+    "layout": "columns",
+    "title": "Three Approaches",
+    "columns": [
+      { "title": "Plan A", "accentColor": "primary", "content": [{ "type": "bullets", "items": ["Feature 1", "Feature 2"] }] },
+      { "title": "Plan B", "accentColor": "accent", "content": [{ "type": "bullets", "items": ["Feature 3", "Feature 4"] }] },
+      { "title": "Plan C", "accentColor": "success", "content": [{ "type": "bullets", "items": ["Feature 5", "Feature 6"] }] }
+    ]
+  }
+}
+```
+
+#### stats レイアウト
+```json
+{
+  "type": "slide",
+  "slide": {
+    "layout": "stats",
+    "title": "Key Metrics",
+    "stats": [
+      { "value": "99.9%", "label": "Uptime", "color": "success", "change": "+0.1%" },
+      { "value": "2.3M", "label": "Users", "color": "primary", "change": "+15%" }
+    ]
+  }
+}
+```
+
+利用可能なレイアウト: `title`, `columns`, `comparison`, `grid`, `bigQuote`, `stats`, `timeline`, `split`, `matrix`, `table`, `funnel`
+
+利用可能なコンテンツブロック: `text`, `bullets`, `code`, `callout`, `metric`, `divider`, `image`
+
+プリセットテーマ: `dark`, `pop`, `warm`, `creative`, `minimal`, `corporate`（`assets/slide_themes/`に格納）
+
+**詳細なスキーマ定義**: [src/slide/schema.ts](../src/slide/schema.ts)
+**サンプル**: [scripts/test/test_slide_12.json](../scripts/test/test_slide_12.json)
+
+### beat
 #### 前のbeatのimageを使う
 ```json
 {

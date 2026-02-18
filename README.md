@@ -343,6 +343,49 @@ To force regeneration, delete the old files — including temporary files — un
 
 If you modify the text or instruction fields in a MulmoScript, mulmo will automatically detect the changes and regenerate the corresponding audio content upon re-run.
 
+## Slide Presentations
+
+MulmoCast includes a powerful **Slide DSL** (`type: "slide"`) for creating structured presentation slides with JSON. Slides are rendered via Tailwind CSS + Puppeteer into images.
+
+### Features
+
+- **11 Layouts**: title, columns, comparison, grid, bigQuote, stats, timeline, split, matrix, table, funnel
+- **7 Content Block Types**: text, bullets, code, callout, metric, divider, image
+- **13-Color Theme System**: Semantic color palette with dark/light support
+- **6 Preset Themes**: dark, pop, warm, creative, minimal, corporate
+
+### Usage
+
+Set a theme once with `slideParams.theme`, then use `"type": "slide"` in each beat:
+
+```json
+{
+  "$mulmocast": { "version": "1.1" },
+  "slideParams": {
+    "theme": { "colors": { "bg": "0F172A", "bgCard": "1E293B", "bgCardAlt": "334155", "text": "F8FAFC", "textMuted": "CBD5E1", "textDim": "64748B", "primary": "3B82F6", "accent": "8B5CF6", "success": "22C55E", "warning": "F59E0B", "danger": "EF4444", "info": "14B8A6", "highlight": "EC4899" }, "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" } }
+  },
+  "beats": [
+    {
+      "text": "Welcome to the presentation",
+      "image": {
+        "type": "slide",
+        "slide": { "layout": "title", "title": "Main Title", "subtitle": "Subtitle" }
+      }
+    }
+  ]
+}
+```
+
+Or use a preset presentation style:
+
+```bash
+mulmo tool complete beats.json -s slide_dark -o presentation.json
+```
+
+Available preset styles: `slide_dark`, `slide_pop`, `slide_warm`, `slide_creative`, `slide_minimal`, `slide_corporate`
+
+For detailed layout specifications and content block reference, see the [Slide DSL documentation](./.claude/skills/slide/SKILL.md).
+
 ## Markdown Slide Styles
 
 MulmoCast includes 100 pre-designed CSS styles for markdown slides, organized in 10 categories:

@@ -495,7 +495,47 @@ Display markdown content with complex layouts. Supports 2-column, 2x2 grid, head
 }
 ```
 
-#### 10.8 スタイル (Styles for Markdown/TextSlide)
+#### 10.8 構造化スライド (Slide DSL)
+
+JSON DSLで構造化プレゼンテーションスライドを生成。11レイアウト、7コンテンツブロック、13色テーマシステム。
+
+Generate structured presentation slides using JSON DSL. 11 layouts, 7 content blocks, 13-color theme system.
+
+```json
+{
+  "image": {
+    "type": "slide",
+    "slide": {
+      "layout": "columns",
+      "title": "Comparison",
+      "columns": [
+        { "title": "Plan A", "accentColor": "primary", "content": [{ "type": "bullets", "items": ["Fast", "Simple"] }] },
+        { "title": "Plan B", "accentColor": "accent", "content": [{ "type": "bullets", "items": ["Scalable", "Robust"] }] }
+      ]
+    }
+  }
+}
+```
+
+**レイアウト / Layouts:** title, columns, comparison, grid, bigQuote, stats, timeline, split, matrix, table, funnel
+
+**コンテンツブロック / Content Blocks:** text, bullets, code, callout, metric, divider, image
+
+**プリセットテーマ / Preset Themes:** dark, pop, warm, creative, minimal, corporate
+
+**プレゼンテーションスタイル / Presentation Styles:**
+```bash
+mulmo tool complete beats.json -s slide_dark -o presentation.json
+```
+
+**詳細ドキュメント / Documentation:** [Slide SKILL.md](../.claude/skills/slide/SKILL.md)
+**サンプル / Samples:**
+- [scripts/test/test_slide_01.json](../scripts/test/test_slide_01.json)
+- [scripts/test/test_slide_12.json](../scripts/test/test_slide_12.json) - 全11レイアウトデモ / All 11 layouts demo
+
+---
+
+#### 10.9 スタイル (Styles for Markdown/TextSlide)
 
 100種類のプリセットスタイルでmarkdownやtextSlideを装飾。
 
@@ -539,7 +579,7 @@ Decorate markdown and textSlide with 100 preset styles.
 
 View all styles with `npx mulmocast tool info --category markdown-styles`.
 
-#### 10.9 Markdown内Mermaid埋め込み (Mermaid in Markdown)
+#### 10.10 Markdown内Mermaid埋め込み (Mermaid in Markdown)
 
 markdownコンテンツ内でmermaidダイアグラムを直接使用可能。レイアウト機能と組み合わせて図とテキストを並べて表示。
 

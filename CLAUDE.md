@@ -66,7 +66,8 @@ When publishing, if the diff includes changes under `src/types/`, MUST publish `
 - `src/tools/` - Higher-level tools for script generation and research
 - `src/types/` - TypeScript schemas and type definitions (core: schema.ts)
 - `src/utils/` - Utilities for file handling, FFmpeg, image processing, etc.
-- `src/utils/image_plugins/` - Image type processors (markdown, textSlide, mermaid, etc.)
+- `src/utils/image_plugins/` - Image type processors (markdown, textSlide, mermaid, slide, etc.)
+- `src/slide/` - Self-contained slide DSL module (schema, layouts, blocks, render)
 
 ### Methods Pattern (`src/methods/`)
 
