@@ -368,7 +368,7 @@ export const slideLayoutSchema = z.discriminatedUnion("layout", [
 export const mulmoSlideMediaSchema = z
   .object({
     type: z.literal("slide"),
-    theme: slideThemeSchema,
+    theme: slideThemeSchema.optional(),
     slide: slideLayoutSchema,
   })
   .strict();
