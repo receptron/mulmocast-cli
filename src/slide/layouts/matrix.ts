@@ -22,9 +22,9 @@ export const layoutMatrix = (data: MatrixSlide): string => {
 
   parts.push(`<div class="flex-1 flex flex-col gap-3">`);
 
-  Array.from({ length: rows }).forEach((_, r) => {
+  Array.from({ length: rows }).forEach((_row, r) => {
     parts.push(`<div class="flex gap-3 flex-1">`);
-    Array.from({ length: cols }).forEach((_, ci) => {
+    Array.from({ length: cols }).forEach((_col, ci) => {
       const idx = r * cols + ci;
       const cell = cells[idx] || { label: "" };
       const accent = cell.accentColor || "primary";
