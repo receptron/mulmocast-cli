@@ -1,0 +1,105 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "title": "Slide Plugin Test - Dark Theme",
+  "beats": [
+    {
+      "text": "TechVault Series A - title slide",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "FFFFFF",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F97316",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "title",
+          "title": "TechVault Series A",
+          "subtitle": "Redefining Cloud Security",
+          "author": "Sarah Chen, CEO"
+        }
+      }
+    },
+    {
+      "text": "Key metrics showing strong growth",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "FFFFFF",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F97316",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "stats",
+          "title": "Key Metrics",
+          "stats": [
+            { "value": "$4.2M", "label": "ARR", "change": "+127%" },
+            { "value": "12,500", "label": "Active Users", "change": "+45%" },
+            { "value": "99.9%", "label": "Uptime" },
+            { "value": "4.8", "label": "NPS Score" }
+          ]
+        }
+      }
+    },
+    {
+      "text": "2026 roadmap with quarterly milestones",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "FFFFFF",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F97316",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "timeline",
+          "title": "2026 Roadmap",
+          "items": [
+            { "date": "Q1 2026", "title": "Alpha", "done": true },
+            { "date": "Q2 2026", "title": "Beta", "done": true },
+            { "date": "Q3 2026", "title": "Public Launch", "done": false },
+            { "date": "Q4 2026", "title": "Enterprise", "done": false }
+          ]
+        }
+      }
+    }
+  ]
+}

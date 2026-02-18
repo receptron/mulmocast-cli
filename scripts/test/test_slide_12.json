@@ -1,0 +1,887 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "title": "Slide Plugin Showcase - All Layouts",
+  "beats": [
+    {
+      "text": "Title slide with decorative elements",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "title",
+          "title": "MulmoCast Slide DSL\nShowcase 2026",
+          "subtitle": "All 11 layouts, 7 content blocks, and rich theming in action",
+          "author": "MulmoCast Team  |  February 2026",
+          "note": "This showcase demonstrates every slide layout and content block type available in the MulmoCast Slide DSL."
+        }
+      }
+    },
+    {
+      "text": "Three-column workflow with numbered steps and arrows",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "columns",
+          "accentColor": "primary",
+          "stepLabel": "WORKFLOW",
+          "title": "How It Works",
+          "subtitle": "From JSON to beautiful slides in three steps",
+          "showArrows": true,
+          "columns": [
+            {
+              "title": "Define",
+              "num": 1,
+              "accentColor": "primary",
+              "content": [
+                { "type": "text", "value": "Write your slide data in structured JSON using the MulmoCast DSL schema." },
+                { "type": "bullets", "items": ["Theme colors & fonts", "Layout selection", "Content blocks"] }
+              ]
+            },
+            {
+              "title": "Render",
+              "num": 2,
+              "accentColor": "accent",
+              "content": [
+                { "type": "text", "value": "The renderer converts JSON into Tailwind-powered HTML documents." },
+                { "type": "bullets", "items": ["11 layout engines", "Semantic color mapping", "Responsive design"] }
+              ]
+            },
+            {
+              "title": "Capture",
+              "num": 3,
+              "accentColor": "success",
+              "content": [
+                { "type": "text", "value": "Puppeteer captures pixel-perfect screenshots from the HTML." },
+                { "type": "bullets", "items": ["1280x720 default", "PNG output", "Batch processing"] }
+              ]
+            }
+          ],
+          "callout": { "label": "Tip", "text": "All steps run automatically via the mulmo images command", "color": "info", "leftBar": true }
+        }
+      }
+    },
+    {
+      "text": "Key performance metrics with change indicators",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "stats",
+          "accentColor": "primary",
+          "title": "Platform Metrics",
+          "subtitle": "Real-time performance snapshot as of February 2026",
+          "stats": [
+            { "value": "11", "label": "Layout Types", "color": "primary" },
+            { "value": "7", "label": "Content Blocks", "color": "accent" },
+            { "value": "13", "label": "Theme Colors", "color": "info" },
+            { "value": "<1s", "label": "Render Time", "color": "success", "change": "-40%" }
+          ],
+          "callout": { "text": "All metrics are validated at build time via Zod schemas", "align": "center" }
+        }
+      }
+    },
+    {
+      "text": "Before and after comparison with content blocks",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "comparison",
+          "accentColor": "primary",
+          "stepLabel": "MIGRATION",
+          "title": "Before vs After",
+          "subtitle": "The shift from manual slide creation to DSL-driven automation",
+          "left": {
+            "title": "Manual (pptxgenjs)",
+            "accentColor": "danger",
+            "content": [
+              { "type": "code", "code": "slide.addText('Title', {\n  x: 0.5, y: 0.3,\n  fontSize: 36,\n  color: '3B82F6'\n});" },
+              { "type": "bullets", "items": ["Repetitive API calls", "Magic numbers everywhere", "No type safety", "Hard to maintain"], "icon": "✗" },
+              { "type": "metric", "value": "200+", "label": "Lines per slide", "color": "danger" }
+            ],
+            "footer": "Error-prone and tedious"
+          },
+          "right": {
+            "title": "DSL (MulmoCast Slide)",
+            "accentColor": "success",
+            "content": [
+              { "type": "code", "code": "{\n  \"layout\": \"title\",\n  \"title\": \"Hello World\",\n  \"subtitle\": \"Clean & typed\"\n}" },
+              { "type": "bullets", "items": ["Declarative JSON", "Zod-validated schemas", "Full type inference", "LLM-friendly output"], "icon": "✓" },
+              { "type": "metric", "value": "5", "label": "Lines per slide", "color": "success" }
+            ],
+            "footer": "Clean, fast, and reliable"
+          },
+          "callout": { "label": "Result", "text": "40x less code, 100% type-safe, LLM-generatable", "color": "success", "leftBar": true }
+        }
+      }
+    },
+    {
+      "text": "Grid layout with icons showing content block types",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "grid",
+          "accentColor": "accent",
+          "title": "Content Block Types",
+          "subtitle": "7 atomic building blocks for composing slide content",
+          "gridColumns": 4,
+          "items": [
+            { "title": "Text", "icon": "Aa", "accentColor": "primary", "description": "Paragraphs with bold, dim, color, alignment" },
+            { "title": "Bullets", "icon": "•", "accentColor": "accent", "description": "Ordered/unordered lists with custom icons" },
+            { "title": "Code", "icon": "</>", "accentColor": "info", "description": "Syntax-highlighted code blocks" },
+            { "title": "Callout", "icon": "!", "accentColor": "warning", "description": "Quote, info, and warning callouts" },
+            { "title": "Metric", "icon": "#", "accentColor": "success", "description": "Large numbers with labels and changes" },
+            { "title": "Divider", "icon": "—", "accentColor": "danger", "description": "Horizontal separators with color" },
+            { "title": "Image", "icon": "IMG", "accentColor": "highlight", "description": "External images with contain/cover fit" }
+          ],
+          "footer": "All blocks are composable — combine them freely inside cards, panels, and grids"
+        }
+      }
+    },
+    {
+      "text": "Inspirational quote with big quote layout",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "bigQuote",
+          "accentColor": "accent",
+          "quote": "The best way to predict the future is to invent it.",
+          "author": "Alan Kay",
+          "role": "Computer Scientist & Turing Award Recipient"
+        }
+      }
+    },
+    {
+      "text": "Project timeline with milestones",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "timeline",
+          "accentColor": "primary",
+          "stepLabel": "ROADMAP",
+          "title": "Development Timeline",
+          "subtitle": "Key milestones from prototype to production",
+          "items": [
+            { "date": "Jan 2026", "title": "Prototype", "description": "pptxgenjs proof-of-concept\nBasic 5 layouts", "color": "primary", "done": true },
+            { "date": "Feb 2026", "title": "DSL Design", "description": "JSON schema definition\nZod validation", "color": "accent", "done": true },
+            { "date": "Feb 2026", "title": "Integration", "description": "mulmocast-cli plugin\n11 layouts + 7 blocks", "color": "info", "done": true },
+            { "date": "Mar 2026", "title": "Package", "description": "Standalone npm package\nmulmocast-slide", "color": "warning" },
+            { "date": "Q2 2026", "title": "LLM Agents", "description": "Auto-generation from\nnatural language prompts", "color": "success" }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Split layout with image on the right",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "split",
+          "accentColor": "primary",
+          "left": {
+            "title": "Architecture",
+            "label": "DESIGN",
+            "accentColor": "primary",
+            "ratio": 55,
+            "content": [
+              { "type": "text", "value": "The slide module is fully self-contained with zero dependencies on mulmocast-cli internals.", "bold": true },
+              { "type": "divider", "color": "primary" },
+              {
+                "type": "bullets",
+                "items": [
+                  "Pure function: theme + slide → HTML string",
+                  "Tailwind CSS via CDN for styling",
+                  "Puppeteer for screenshot capture",
+                  "Zod schemas for validation"
+                ]
+              },
+              { "type": "callout", "text": "Can be extracted to standalone mulmocast-slide package", "style": "info" }
+            ]
+          },
+          "right": {
+            "title": "Module Structure",
+            "dark": true,
+            "ratio": 45,
+            "content": [
+              {
+                "type": "code",
+                "code": "src/slide/\n├── schema.ts    # Zod schemas\n├── utils.ts     # HTML helpers\n├── blocks.ts    # Content blocks\n├── render.ts    # Main entry\n├── index.ts     # Public API\n└── layouts/\n    ├── title.ts\n    ├── columns.ts\n    ├── comparison.ts\n    ├── grid.ts\n    ├── stats.ts\n    ├── timeline.ts\n    ├── split.ts\n    ├── big_quote.ts\n    ├── matrix.ts\n    ├── table.ts\n    └── funnel.ts"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "2x2 strategic matrix with axis labels",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "matrix",
+          "accentColor": "info",
+          "title": "Slide Generation Approaches",
+          "subtitle": "Comparing methods by flexibility and ease of use",
+          "xAxis": { "low": "Low Flexibility", "high": "High Flexibility" },
+          "yAxis": { "low": "Hard to Use", "high": "Easy to Use" },
+          "cells": [
+            { "label": "Manual HTML", "accentColor": "danger", "items": ["Full control", "Very tedious", "No validation"] },
+            { "label": "MulmoCast DSL", "accentColor": "success", "items": ["Flexible layouts", "Type-safe JSON", "LLM-friendly"] },
+            { "label": "pptxgenjs API", "accentColor": "warning", "items": ["Native PPTX", "Verbose code", "Magic numbers"] },
+            { "label": "Template Engine", "accentColor": "info", "items": ["Pre-built themes", "Limited custom", "Quick start"] }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Data table with styled cells and row headers",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "table",
+          "accentColor": "primary",
+          "title": "Layout Feature Matrix",
+          "subtitle": "Capabilities of each slide layout type",
+          "headers": ["Layout", "Cards", "Content Blocks", "Callout Bar", "Axes/Headers"],
+          "rowHeaders": true,
+          "rows": [
+            ["title", "—", "note only", "—", "—"],
+            [
+              "columns",
+              { "text": "✓", "color": "success", "bold": true },
+              { "text": "✓", "color": "success", "bold": true },
+              { "text": "✓", "color": "success", "bold": true },
+              "—"
+            ],
+            ["comparison", "—", { "text": "✓", "color": "success", "bold": true }, { "text": "✓", "color": "success", "bold": true }, "—"],
+            ["grid", "—", { "text": "✓", "color": "success", "bold": true }, "—", "—"],
+            ["stats", "—", "—", { "text": "✓", "color": "success", "bold": true }, "—"],
+            ["timeline", "—", "—", "—", "—"],
+            ["split", "—", { "text": "✓", "color": "success", "bold": true }, "—", "—"],
+            ["matrix", "—", { "text": "✓", "color": "success", "bold": true }, "—", { "text": "✓", "color": "success", "bold": true }],
+            ["table", "—", "—", { "text": "✓", "color": "success", "bold": true }, { "text": "✓", "color": "success", "bold": true }],
+            ["funnel", "—", "—", { "text": "✓", "color": "success", "bold": true }, "—"]
+          ],
+          "callout": { "label": "Note", "text": "bigQuote layout is minimal by design — quote, author, and role only", "color": "info", "leftBar": true }
+        }
+      }
+    },
+    {
+      "text": "Sales funnel with conversion data",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "funnel",
+          "accentColor": "primary",
+          "title": "Developer Adoption Funnel",
+          "subtitle": "From awareness to active contributors",
+          "stages": [
+            { "label": "Awareness", "value": "50K", "description": "GitHub stars, blog posts, conference talks", "color": "primary" },
+            { "label": "Trial", "value": "12K", "description": "npm install, first JSON authored", "color": "accent" },
+            { "label": "Adoption", "value": "3.2K", "description": "Production usage, CI/CD integration", "color": "info" },
+            { "label": "Champion", "value": "840", "description": "Team rollout, internal evangelism", "color": "warning" },
+            { "label": "Contributor", "value": "120", "description": "PRs, plugins, community layouts", "color": "success" }
+          ],
+          "callout": { "text": "2.4% awareness-to-contributor conversion rate", "align": "center" }
+        }
+      }
+    },
+    {
+      "text": "Columns with rich content blocks including code and callouts",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "columns",
+          "accentColor": "accent",
+          "title": "Content Block Showcase",
+          "subtitle": "Cards can contain any combination of content blocks",
+          "columns": [
+            {
+              "title": "Code + Text",
+              "accentColor": "info",
+              "icon": "</>",
+              "content": [
+                { "type": "code", "code": "const html = generateSlideHTML(\n  theme,\n  slide\n);" },
+                { "type": "text", "value": "One function call renders a complete HTML document with Tailwind styling.", "dim": true }
+              ]
+            },
+            {
+              "title": "Metrics + Callout",
+              "accentColor": "success",
+              "icon": "#",
+              "content": [
+                { "type": "metric", "value": "141", "label": "Unit Tests", "color": "success", "change": "+141" },
+                { "type": "divider" },
+                { "type": "callout", "text": "All tests pass on Linux, macOS, and Windows", "style": "info" }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Split layout with image block on the right side",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "split",
+          "accentColor": "highlight",
+          "left": {
+            "title": "Image Support",
+            "label": "FEATURE",
+            "accentColor": "highlight",
+            "ratio": 50,
+            "content": [
+              { "type": "text", "value": "Content blocks can include external images with flexible sizing options.", "bold": true },
+              { "type": "divider", "color": "highlight" },
+              {
+                "type": "bullets",
+                "items": ["contain mode preserves aspect ratio", "cover mode fills the container", "Alt text for accessibility", "Works with any public URL"]
+              },
+              { "type": "callout", "label": "Note", "text": "Images are loaded via Puppeteer at render time", "color": "info" }
+            ]
+          },
+          "right": {
+            "ratio": 50,
+            "content": [{ "type": "image", "src": "https://picsum.photos/seed/mulmo1/600/400", "alt": "Sample landscape photo", "fit": "cover" }]
+          }
+        }
+      }
+    },
+    {
+      "text": "Grid layout with images in content blocks",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "grid",
+          "accentColor": "primary",
+          "title": "Image Gallery",
+          "subtitle": "Grid items with embedded images from Picsum",
+          "gridColumns": 3,
+          "items": [
+            {
+              "title": "Mountain Vista",
+              "accentColor": "primary",
+              "content": [{ "type": "image", "src": "https://picsum.photos/seed/mountain/400/250", "alt": "Mountain landscape", "fit": "cover" }]
+            },
+            {
+              "title": "Ocean Waves",
+              "accentColor": "info",
+              "content": [{ "type": "image", "src": "https://picsum.photos/seed/ocean42/400/250", "alt": "Ocean view", "fit": "cover" }]
+            },
+            {
+              "title": "City Lights",
+              "accentColor": "accent",
+              "content": [{ "type": "image", "src": "https://picsum.photos/seed/citynight/400/250", "alt": "City skyline at night", "fit": "cover" }]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Comparison of light vs dark themes",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "comparison",
+          "accentColor": "accent",
+          "title": "Theme Variants",
+          "subtitle": "The same DSL supports any color palette",
+          "left": {
+            "title": "Dark Theme",
+            "accentColor": "primary",
+            "content": [
+              { "type": "code", "code": "\"bg\": \"0F172A\",\n\"bgCard\": \"1E293B\",\n\"text\": \"F8FAFC\",\n\"primary\": \"3B82F6\"" },
+              { "type": "bullets", "items": ["Easy on the eyes", "Great for presentations", "Professional look"] },
+              { "type": "callout", "text": "Recommended for conference talks and videos", "style": "info" }
+            ]
+          },
+          "right": {
+            "title": "Light Theme",
+            "accentColor": "highlight",
+            "content": [
+              { "type": "code", "code": "\"bg\": \"FFF0F5\",\n\"bgCard\": \"FFFFFF\",\n\"text\": \"1A1A2E\",\n\"primary\": \"E91E63\"" },
+              { "type": "bullets", "items": ["Clean and bright", "Print-friendly", "Accessible contrast"] },
+              { "type": "callout", "text": "Ideal for documents and printed handouts", "style": "info" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "Stats slide with bright pink light theme",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "FFF0F5",
+            "bgCard": "FFFFFF",
+            "bgCardAlt": "FDE8EF",
+            "text": "1A1A2E",
+            "textMuted": "4A4A6A",
+            "textDim": "9090B0",
+            "primary": "E91E63",
+            "accent": "7C3AED",
+            "success": "10B981",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "06B6D4",
+            "highlight": "F97316"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "stats",
+          "accentColor": "primary",
+          "stepLabel": "LIGHT THEME DEMO",
+          "title": "Campaign Performance",
+          "subtitle": "Same layout, completely different feel with a light color palette",
+          "stats": [
+            { "value": "2.4M", "label": "Impressions", "color": "primary", "change": "+128%" },
+            { "value": "340K", "label": "Engagements", "color": "accent", "change": "+85%" },
+            { "value": "12.4%", "label": "Conv. Rate", "color": "success", "change": "+3.2%" },
+            { "value": "$1.8M", "label": "Revenue", "color": "highlight", "change": "+67%" }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Table showing Zod schema field types",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "table",
+          "accentColor": "accent",
+          "title": "Schema Type Reference",
+          "subtitle": "Key Zod types used in the slide DSL",
+          "headers": ["Schema", "Type", "Required", "Description"],
+          "rowHeaders": true,
+          "striped": true,
+          "rows": [
+            ["hexColorSchema", "string", { "text": "Yes", "color": "success", "bold": true }, "6-digit hex (e.g. 3B82F6)"],
+            ["accentColorKey", "enum", { "text": "Yes", "color": "success", "bold": true }, "primary | accent | success | ..."],
+            ["contentBlockSchema", "union", { "text": "Yes", "color": "success", "bold": true }, "Discriminated union of 7 types"],
+            ["slideLayoutSchema", "union", { "text": "Yes", "color": "success", "bold": true }, "Discriminated union of 11 layouts"],
+            ["cardSchema", "object", { "text": "No", "color": "warning" }, "Title + optional content/num/icon"],
+            ["calloutBarSchema", "object", { "text": "No", "color": "warning" }, "Bottom bar with label + text"],
+            ["slideStyleSchema", "object", { "text": "No", "color": "warning" }, "bgColor, footer, decorations"]
+          ]
+        }
+      }
+    },
+    {
+      "text": "Timeline with all items completed",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "timeline",
+          "accentColor": "success",
+          "stepLabel": "COMPLETED",
+          "title": "Implementation Progress",
+          "subtitle": "All planned milestones achieved",
+          "items": [
+            { "date": "Day 1", "title": "Schema", "description": "Zod schemas for\n11 layouts + 7 blocks", "color": "primary", "done": true },
+            { "date": "Day 2", "title": "Renderers", "description": "HTML generators for\nevery layout type", "color": "accent", "done": true },
+            { "date": "Day 3", "title": "Tests", "description": "141 unit tests covering\nall edge cases", "color": "info", "done": true },
+            { "date": "Day 3", "title": "Integration", "description": "Plugin system and\nmulmo CLI support", "color": "warning", "done": true },
+            { "date": "Day 4", "title": "Review", "description": "Security fixes and\nPR feedback", "color": "success", "done": true }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Columns with image content blocks",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "columns",
+          "accentColor": "primary",
+          "title": "Use Cases",
+          "subtitle": "Real-world applications of the MulmoCast Slide DSL",
+          "columns": [
+            {
+              "title": "Tech Talks",
+              "accentColor": "primary",
+              "content": [
+                { "type": "image", "src": "https://picsum.photos/seed/techtalk/500/200", "alt": "Conference presentation", "fit": "cover" },
+                { "type": "text", "value": "Generate beautiful slides from structured data for conference presentations." }
+              ]
+            },
+            {
+              "title": "Documentation",
+              "accentColor": "info",
+              "content": [
+                { "type": "image", "src": "https://picsum.photos/seed/docs99/500/200", "alt": "Technical documentation", "fit": "cover" },
+                { "type": "text", "value": "Create visual documentation with consistent branding and layouts." }
+              ]
+            },
+            {
+              "title": "Video Content",
+              "accentColor": "accent",
+              "content": [
+                { "type": "image", "src": "https://picsum.photos/seed/video77/500/200", "alt": "Video production", "fit": "cover" },
+                { "type": "text", "value": "MulmoCast renders slides as images for podcast and video overlays." }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Closing title slide with custom background color",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "title",
+          "accentColor": "accent",
+          "title": "Thank You",
+          "subtitle": "MulmoCast Slide DSL — 11 layouts, 7 blocks, infinite possibilities",
+          "author": "github.com/receptron/mulmocast-cli",
+          "style": {
+            "bgColor": "1A1033",
+            "footer": "MulmoCast Slide DSL Showcase  |  February 2026"
+          }
+        }
+      }
+    }
+  ]
+}

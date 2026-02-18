@@ -2,9 +2,13 @@ import { z } from "zod";
 import { htmlLLMProvider, provider2TTSAgent, provider2ImageAgent, provider2MovieAgent, defaultProviders, provider2SoundEffectAgent } from "./provider2agent.js";
 import { currentMulmoScriptVersion } from "./const.js";
 import { mulmoVideoFilterSchema } from "./schema_video_filter.js";
+import { mulmoSlideMediaSchema, slideThemeSchema } from "./slide.js";
 
 // Re-export video filter schema
 export { mulmoVideoFilterSchema } from "./schema_video_filter.js";
+
+// Re-export slide schema
+export { mulmoSlideMediaSchema } from "./slide.js";
 
 export const langSchema = z.string();
 const URLStringSchema = z.url();
@@ -268,6 +272,7 @@ export const mulmoImageAssetSchema = z.union([
   mulmoBeatReferenceMediaSchema,
   mulmoVoiceOverMediaSchema,
   mulmoVisionMediaSchema,
+  mulmoSlideMediaSchema,
 ]);
 
 const mulmoAudioMediaSchema = z
@@ -346,6 +351,12 @@ export const mulmoImageParamsSchema = mulmoBeatImageParamsSchema
 export const textSlideParamsSchema = z
   .object({
     cssStyles: stringOrStringArray,
+  })
+  .strict();
+
+export const mulmoSlideParamsSchema = z
+  .object({
+    theme: slideThemeSchema,
   })
   .strict();
 
@@ -521,6 +532,8 @@ export const mulmoPresentationStyleSchema = z.object({
     .optional(),
   // for textSlides
   textSlideParams: textSlideParamsSchema.optional(),
+  // for slide plugin
+  slideParams: mulmoSlideParamsSchema.optional(),
   captionParams: mulmoCaptionParamsSchema.optional(),
   audioParams: audioParamsSchema.default({
     introPadding: 1.0,

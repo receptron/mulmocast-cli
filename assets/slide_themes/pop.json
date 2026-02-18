@@ -1,0 +1,18 @@
+{
+  "colors": {
+    "bg": "FFF0F5",
+    "bgCard": "FFFFFF",
+    "bgCardAlt": "FDE8EF",
+    "text": "1A1A2E",
+    "textMuted": "4A4A6A",
+    "textDim": "9090B0",
+    "primary": "E91E63",
+    "accent": "7C3AED",
+    "success": "10B981",
+    "warning": "F59E0B",
+    "danger": "EF4444",
+    "info": "06B6D4",
+    "highlight": "F97316"
+  },
+  "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+}
