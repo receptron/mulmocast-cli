@@ -1,3 +1,5 @@
+import nodePath from "node:path";
+import { pathToFileURL } from "node:url";
 import { ImageProcessorParams } from "../../types/index.js";
 import { generateSlideHTML } from "../../slide/index.js";
 import type { SlideLayout, SlideTheme, ContentBlock } from "../../slide/index.js";
@@ -8,6 +10,11 @@ import { pathToDataUrl } from "../../methods/mulmo_media_source.js";
 export const imageType = "slide";
 
 const REF_PREFIX = "ref:";
+
+/** Convert a file path to a file:// URL string */
+const toFileUrl = (filePath: string): string => {
+  return pathToFileURL(nodePath.resolve(filePath)).href;
+};
 
 /**
  * Collect all content block arrays from a slide layout.
@@ -49,9 +56,15 @@ export const collectContentArrays = (slide: SlideLayout): ContentBlock[][] => {
 
 /**
  * Deep-clone a slide layout and resolve `ref:<key>` image sources
- * to data URLs using the resolved imageRefs map.
+ * using the resolved imageRefs map and a path-to-URL converter.
+ * Default converter produces data URLs (for self-contained HTML).
+ * Pass `toFileUrl` for Puppeteer rendering (avoids huge inline base64).
  */
-export const resolveSlideImageRefs = (slide: SlideLayout, imageRefs: Record<string, string>): SlideLayout => {
+export const resolveSlideImageRefs = (
+  slide: SlideLayout,
+  imageRefs: Record<string, string>,
+  converter: (filePath: string) => string = pathToDataUrl,
+): SlideLayout => {
   const cloned: SlideLayout = JSON.parse(JSON.stringify(slide));
   const contentArrays = collectContentArrays(cloned);
   contentArrays.forEach((blocks) => {
@@ -63,7 +76,7 @@ export const resolveSlideImageRefs = (slide: SlideLayout, imageRefs: Record<stri
       if (!filePath) {
         throw new Error(`Unknown image ref key: "${key}"`);
       }
-      block.src = pathToDataUrl(filePath);
+      block.src = converter(filePath);
     });
   });
   return cloned;
@@ -82,14 +95,14 @@ const resolveTheme = (params: ImageProcessorParams): SlideTheme => {
   return theme;
 };
 
-const resolveSlide = (params: ImageProcessorParams): SlideLayout => {
+const resolveSlide = (params: ImageProcessorParams, converter: (filePath: string) => string = pathToDataUrl): SlideLayout => {
   const { beat, imageRefs } = params;
   if (!beat.image || beat.image.type !== imageType) {
     throw new Error("resolveSlide called on non-slide beat");
   }
   const slide = beat.image.slide;
   if (imageRefs && Object.keys(imageRefs).length > 0) {
-    return resolveSlideImageRefs(slide, imageRefs);
+    return resolveSlideImageRefs(slide, imageRefs, converter);
   }
   return slide;
 };
@@ -99,7 +112,7 @@ const processSlide = async (params: ImageProcessorParams) => {
   if (!beat.image || beat.image.type !== imageType) return;
 
   const theme = resolveTheme(params);
-  const slide = resolveSlide(params);
+  const slide = resolveSlide(params, toFileUrl);
   const html = generateSlideHTML(theme, slide);
   await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;

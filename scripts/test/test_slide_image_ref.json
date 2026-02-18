@@ -1,48 +1,259 @@
 {
   "$mulmocast": { "version": "1.1" },
-  "lang": "en",
-  "title": "Slide Image Ref Test",
+  "lang": "ja",
+  "title": "ヒッグス粒子 — 質量の起源を探る",
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "0B1120",
+        "bgCard": "162032",
+        "bgCardAlt": "1E2D45",
+        "text": "F0F4F8",
+        "textMuted": "A0AEC0",
+        "textDim": "4A5568",
+        "primary": "63B3ED",
+        "accent": "B794F4",
+        "success": "68D391",
+        "warning": "F6AD55",
+        "danger": "FC8181",
+        "info": "4FD1C5",
+        "highlight": "F687B3"
+      },
+      "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+    }
+  },
   "imageParams": {
     "images": {
-      "logo": {
-        "type": "image",
-        "source": { "kind": "path", "path": "scripts/test/image-2.png" }
+      "detector": {
+        "type": "imagePrompt",
+        "prompt": "A massive cylindrical particle detector at CERN, showing intricate layers of sensors and electronics in warm orange and gold lighting, photorealistic, wide-angle view from inside the detector barrel"
+      },
+      "lhc": {
+        "type": "imagePrompt",
+        "prompt": "The Large Hadron Collider tunnel at CERN, a long curved underground tunnel with blue superconducting magnets stretching into the distance, cool blue lighting, photorealistic"
+      },
+      "higgs_event": {
+        "type": "imagePrompt",
+        "prompt": "A colorful particle collision event display from the CMS detector at CERN, showing radiating particle tracks in green, red and blue lines emanating from a central collision point on a dark background, scientific visualization style"
       }
     }
   },
   "beats": [
     {
-      "text": "A split slide referencing an image via ref:",
+      "text": "ヒッグス粒子とは何か。その発見の歴史を振り返ります。",
       "image": {
         "type": "slide",
-        "theme": {
-          "colors": {
-            "bg": "0F172A",
-            "bgCard": "1E293B",
-            "bgCardAlt": "334155",
-            "text": "FFFFFF",
-            "textMuted": "CBD5E1",
-            "textDim": "64748B",
-            "primary": "3B82F6",
-            "accent": "8B5CF6",
-            "success": "22C55E",
-            "warning": "F97316",
-            "danger": "EF4444",
-            "info": "14B8A6",
-            "highlight": "EC4899"
-          },
-          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
-        },
+        "slide": {
+          "layout": "title",
+          "title": "ヒッグス粒子",
+          "subtitle": "質量の起源を探る旅",
+          "author": "素粒子物理学入門"
+        }
+      }
+    },
+    {
+      "text": "標準模型の中で、ヒッグス粒子は特別な位置を占めています。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "columns",
+          "title": "標準模型の粒子たち",
+          "subtitle": "17種類の素粒子",
+          "columns": [
+            {
+              "title": "フェルミオン",
+              "accentColor": "primary",
+              "content": [
+                { "type": "image", "src": "ref:detector", "alt": "フェルミオンの相互作用" },
+                { "type": "bullets", "items": ["クォーク（6種）", "レプトン（6種）"], "icon": "⚛" },
+                { "type": "text", "value": "物質を構成する粒子", "dim": true }
+              ]
+            },
+            {
+              "title": "ボソン",
+              "accentColor": "accent",
+              "content": [
+                { "type": "image", "src": "ref:lhc", "alt": "LHCトンネル" },
+                { "type": "bullets", "items": ["光子", "Wボソン・Zボソン", "グルーオン"], "icon": "⚡" },
+                { "type": "text", "value": "力を媒介する粒子", "dim": true }
+              ]
+            },
+            {
+              "title": "ヒッグス粒子",
+              "accentColor": "highlight",
+              "content": [
+                { "type": "image", "src": "ref:higgs_event", "alt": "ヒッグス粒子の崩壊" },
+                { "type": "text", "value": "質量の起源", "bold": true, "color": "highlight" },
+                { "type": "text", "value": "唯一のスカラー粒子。2012年にCERNで発見。", "dim": true }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "LHCの検出器が捉えたヒッグス粒子の崩壊イベントを見てみましょう。",
+      "image": {
+        "type": "slide",
         "slide": {
           "layout": "split",
           "left": {
-            "title": "Our Logo",
-            "content": [{ "type": "image", "src": "ref:logo", "alt": "Company Logo" }]
+            "title": "CMS検出器イベント",
+            "content": [{ "type": "image", "src": "ref:detector", "alt": "CMS検出器のイベントディスプレイ", "fit": "cover" }]
           },
           "right": {
-            "title": "About Us",
-            "content": [{ "type": "text", "value": "We build great things." }]
+            "title": "何が見えているのか",
+            "content": [
+              { "type": "text", "value": "陽子同士を光速近くで衝突させ、生じた粒子の軌跡を検出器で捉えます。" },
+              {
+                "type": "callout",
+                "text": "ヒッグス粒子は直接観測できず、崩壊後の粒子のペアから存在を推定します。",
+                "label": "Point",
+                "color": "info",
+                "style": "info"
+              },
+              { "type": "metric", "value": "125 GeV", "label": "ヒッグス粒子の質量" }
+            ]
           }
+        }
+      }
+    },
+    {
+      "text": "ATLAS実験とCMS実験の比較です。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "title": "二つの実験が同時に発見",
+          "subtitle": "それぞれ独立に5σを達成",
+          "left": {
+            "title": "ATLAS実験",
+            "accentColor": "primary",
+            "content": [
+              { "type": "image", "src": "ref:detector", "alt": "ATLAS検出器" },
+              { "type": "metric", "value": "5.9σ", "label": "統計的有意性", "color": "primary" },
+              { "type": "text", "value": "直径25m、長さ46mの巨大検出器。約3,000人の物理学者が参加。" }
+            ]
+          },
+          "right": {
+            "title": "CMS実験",
+            "accentColor": "accent",
+            "content": [
+              { "type": "image", "src": "ref:lhc", "alt": "CMS検出器" },
+              { "type": "metric", "value": "5.0σ", "label": "統計的有意性", "color": "accent" },
+              { "type": "text", "value": "よりコンパクトだが超伝導ソレノイド磁石を搭載。約4,000人が参加。" }
+            ]
+          },
+          "callout": { "text": "二つの独立実験が同時に発見を確認したことで、結果の信頼性が飛躍的に高まった", "color": "success" }
+        }
+      }
+    },
+    {
+      "text": "CERNの主要施設をグリッドで紹介します。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "grid",
+          "title": "CERNの実験施設",
+          "subtitle": "スイス・フランス国境に位置する世界最大の素粒子物理学研究所",
+          "gridColumns": 2,
+          "items": [
+            {
+              "title": "LHC加速器",
+              "accentColor": "primary",
+              "content": [
+                { "type": "image", "src": "ref:lhc", "alt": "LHCトンネル", "fit": "cover" },
+                { "type": "text", "value": "周長27km、地下100mに設置", "dim": true }
+              ]
+            },
+            {
+              "title": "ATLAS検出器",
+              "accentColor": "accent",
+              "content": [
+                { "type": "image", "src": "ref:detector", "alt": "ATLAS検出器全景", "fit": "cover" },
+                { "type": "text", "value": "直径25m、重量7,000トン", "dim": true }
+              ]
+            },
+            {
+              "title": "CMS検出器",
+              "accentColor": "info",
+              "content": [
+                { "type": "image", "src": "ref:higgs_event", "alt": "CMS検出器", "fit": "cover" },
+                { "type": "text", "value": "超伝導ソレノイド搭載", "dim": true }
+              ]
+            },
+            {
+              "title": "CERN制御室",
+              "accentColor": "warning",
+              "content": [
+                { "type": "image", "src": "ref:detector", "alt": "CERN制御室", "fit": "cover" },
+                { "type": "text", "value": "24時間体制で加速器を監視", "dim": true }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "発見に至るまでの主要なマイルストーンです。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "timeline",
+          "title": "発見への道のり",
+          "items": [
+            { "date": "1964", "title": "ヒッグス機構の提唱", "description": "P.ヒッグスらが質量獲得の理論を発表", "done": true },
+            { "date": "1983", "title": "W・Zボソン発見", "description": "CERNのSPSでの実験で確認", "done": true, "color": "accent" },
+            { "date": "2008", "title": "LHC稼働開始", "description": "世界最大の粒子加速器が始動", "done": true, "color": "info" },
+            { "date": "2012.7.4", "title": "ヒッグス粒子発見", "description": "ATLAS・CMS実験が同時に発表", "done": true, "color": "highlight" },
+            { "date": "2013", "title": "ノーベル物理学賞", "description": "ヒッグスとアングレールが受賞", "done": true, "color": "success" }
+          ]
+        }
+      }
+    },
+    {
+      "text": "ヒッグス場と質量の関係を解説します。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "title": "ヒッグス場のイメージ",
+            "content": [
+              { "type": "image", "src": "ref:higgs_event", "alt": "ヒッグス場の概念図", "fit": "contain" },
+              { "type": "text", "value": "宇宙全体を満たす「場」", "dim": true, "align": "center" }
+            ]
+          },
+          "right": {
+            "title": "なぜ質量が生まれるのか",
+            "content": [
+              { "type": "callout", "text": "ヒッグス場は宇宙のあらゆる場所に存在し、粒子はこの場と相互作用することで質量を得る。", "style": "quote" },
+              { "type": "divider", "color": "accent" },
+              {
+                "type": "bullets",
+                "items": ["光子：ヒッグス場と相互作用しない → 質量ゼロ", "Wボソン：強く相互作用 → 重い", "トップクォーク：最も強く相互作用 → 最重量"],
+                "icon": "→"
+              },
+              { "type": "callout", "text": "質量 ＝ ヒッグス場との結合の強さ", "label": "核心", "color": "highlight" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "発見の統計的な意義を数字で見てみましょう。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "stats",
+          "title": "数字で見るヒッグス粒子の発見",
+          "stats": [
+            { "value": "5σ", "label": "統計的有意性", "color": "highlight" },
+            { "value": "125.25 GeV", "label": "測定質量" },
+            { "value": "~10⁻²² 秒", "label": "寿命" },
+            { "value": "10,000+", "label": "参加研究者数", "color": "info" }
+          ],
+          "callout": { "text": "5σは偶然の確率が350万分の1であることを意味し、素粒子物理学での「発見」の基準です。", "color": "warning" }
         }
       }
     }
