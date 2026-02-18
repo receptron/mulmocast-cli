@@ -5,9 +5,9 @@ import { renderSlideContent } from "./layouts/index.js";
 /** Generate a complete HTML document for a single slide */
 export const generateSlideHTML = (theme: SlideTheme, slide: SlideLayout): string => {
   const content = renderSlideContent(slide);
-  const twConfig = buildTailwindConfig(theme.colors, theme.fonts);
+  const twConfig = buildTailwindConfig(theme);
 
-  const slideStyle = "style" in slide ? (slide as { style?: { bgColor?: string; footer?: string } }).style : undefined;
+  const slideStyle = slide.style;
   const bgCls = slideStyle?.bgColor ? "" : "bg-d-bg";
   const inlineStyle = slideStyle?.bgColor ? ` style="background-color:#${sanitizeHex(slideStyle.bgColor)}"` : "";
   const footer = slideStyle?.footer ? `\n<p class="absolute bottom-2 right-4 text-xs text-d-dim font-body">${escapeHtml(slideStyle.footer)}</p>` : "";

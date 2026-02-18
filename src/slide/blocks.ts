@@ -65,11 +65,12 @@ const renderCode = (block: ContentBlock & { type: "code" }): string => {
 
 const renderCallout = (block: ContentBlock & { type: "callout" }): string => {
   const isQuote = block.style === "quote";
-  const borderMap: Record<string, string> = {
-    warning: `border-l-2 border-${c("warning")}`,
-    info: `border-l-2 border-${c("info")}`,
+  const resolveBorderCls = (style: "quote" | "info" | "warning" | undefined): string => {
+    if (style === "warning") return `border-l-2 border-${c("warning")}`;
+    if (style === "info") return `border-l-2 border-${c("info")}`;
+    return "";
   };
-  const borderCls = (block.style && borderMap[block.style]) || "";
+  const borderCls = resolveBorderCls(block.style);
   const bg = isQuote ? "bg-d-alt" : "bg-d-card";
   const textCls = isQuote ? "italic text-d-muted" : "text-d-muted";
   const content = block.label

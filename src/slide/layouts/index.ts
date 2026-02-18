@@ -12,27 +12,34 @@ import { layoutTable } from "./table.js";
 import { layoutFunnel } from "./funnel.js";
 import { escapeHtml } from "../utils.js";
 
-type LayoutRenderer = (data: never) => string;
-
-const layoutMap: Record<string, LayoutRenderer> = {
-  title: layoutTitle as LayoutRenderer,
-  columns: layoutColumns as LayoutRenderer,
-  comparison: layoutComparison as LayoutRenderer,
-  grid: layoutGrid as LayoutRenderer,
-  bigQuote: layoutBigQuote as LayoutRenderer,
-  stats: layoutStats as LayoutRenderer,
-  timeline: layoutTimeline as LayoutRenderer,
-  split: layoutSplit as LayoutRenderer,
-  matrix: layoutMatrix as LayoutRenderer,
-  table: layoutTable as LayoutRenderer,
-  funnel: layoutFunnel as LayoutRenderer,
-};
-
 /** Render the inner content of a slide (without the wrapper div) */
 export const renderSlideContent = (slide: SlideLayout): string => {
-  const renderer = layoutMap[slide.layout];
-  if (!renderer) {
-    return `<p class="text-white p-8">Unknown layout: ${escapeHtml(slide.layout)}</p>`;
+  switch (slide.layout) {
+    case "title":
+      return layoutTitle(slide);
+    case "columns":
+      return layoutColumns(slide);
+    case "comparison":
+      return layoutComparison(slide);
+    case "grid":
+      return layoutGrid(slide);
+    case "bigQuote":
+      return layoutBigQuote(slide);
+    case "stats":
+      return layoutStats(slide);
+    case "timeline":
+      return layoutTimeline(slide);
+    case "split":
+      return layoutSplit(slide);
+    case "matrix":
+      return layoutMatrix(slide);
+    case "table":
+      return layoutTable(slide);
+    case "funnel":
+      return layoutFunnel(slide);
+    default: {
+      const _exhaustive: never = slide;
+      return `<p class="text-white p-8">Unknown layout: ${escapeHtml(String((_exhaustive as { layout: string }).layout))}</p>`;
+    }
   }
-  return renderer(slide as never);
 };

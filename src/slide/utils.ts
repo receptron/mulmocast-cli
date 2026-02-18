@@ -1,4 +1,4 @@
-import type { SlideThemeColors, SlideThemeFonts } from "./schema.js";
+import type { SlideTheme, SlideThemeColors, AccentColorKey } from "./schema.js";
 
 /** Escape HTML special characters */
 export const escapeHtml = (s: string): string => {
@@ -30,26 +30,29 @@ export const c = (key: string): string => {
   return `d-${sanitizeCssClass(key)}`;
 };
 
+type TailwindColorKey = "bg" | "card" | "alt" | "text" | "muted" | "dim" | AccentColorKey;
+
+const colorKeyMap: { [K in keyof SlideThemeColors]: TailwindColorKey } = {
+  bg: "bg",
+  bgCard: "card",
+  bgCardAlt: "alt",
+  text: "text",
+  textMuted: "muted",
+  textDim: "dim",
+  primary: "primary",
+  accent: "accent",
+  success: "success",
+  warning: "warning",
+  danger: "danger",
+  info: "info",
+  highlight: "highlight",
+};
+
 /** Build the Tailwind config JSON string for theme colors and fonts */
-export const buildTailwindConfig = (colors: SlideThemeColors, fonts: SlideThemeFonts): string => {
-  const keyMap: Record<string, string> = {
-    bg: "bg",
-    bgCard: "card",
-    bgCardAlt: "alt",
-    text: "text",
-    textMuted: "muted",
-    textDim: "dim",
-    primary: "primary",
-    accent: "accent",
-    success: "success",
-    warning: "warning",
-    danger: "danger",
-    info: "info",
-    highlight: "highlight",
-  };
-  const colorMap: Record<string, string> = {};
-  Object.entries(colors).forEach(([k, v]) => {
-    const mapped = keyMap[k];
+export const buildTailwindConfig = (theme: SlideTheme): string => {
+  const colorMap: { [K in TailwindColorKey]?: string } = {};
+  Object.entries(theme.colors).forEach(([k, v]) => {
+    const mapped = colorKeyMap[k as keyof SlideThemeColors];
     if (mapped) {
       colorMap[mapped] = `#${v}`;
     }
@@ -59,9 +62,9 @@ export const buildTailwindConfig = (colors: SlideThemeColors, fonts: SlideThemeF
       extend: {
         colors: { d: colorMap },
         fontFamily: {
-          title: [fonts.title, "serif"],
-          body: [fonts.body, "Arial", "sans-serif"],
-          mono: [fonts.mono, "monospace"],
+          title: [theme.fonts.title, "serif"],
+          body: [theme.fonts.body, "Arial", "sans-serif"],
+          mono: [theme.fonts.mono, "monospace"],
         },
       },
     },
