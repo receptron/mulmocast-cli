@@ -2,6 +2,7 @@ import { z } from "zod";
 import { htmlLLMProvider, provider2TTSAgent, provider2ImageAgent, provider2MovieAgent, defaultProviders, provider2SoundEffectAgent } from "./provider2agent.js";
 import { currentMulmoScriptVersion } from "./const.js";
 import { mulmoVideoFilterSchema } from "./schema_video_filter.js";
+import { mulmoSlideMediaSchema } from "../slide/schema.js";
 
 // Re-export video filter schema
 export { mulmoVideoFilterSchema } from "./schema_video_filter.js";
@@ -268,6 +269,7 @@ export const mulmoImageAssetSchema = z.union([
   mulmoBeatReferenceMediaSchema,
   mulmoVoiceOverMediaSchema,
   mulmoVisionMediaSchema,
+  mulmoSlideMediaSchema,
 ]);
 
 const mulmoAudioMediaSchema = z

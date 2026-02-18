@@ -1,0 +1,112 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "title": "Slide Plugin Test - Bright Theme",
+  "beats": [
+    {
+      "text": "Creative Campaign title in bright pink theme",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "FFF0F5", "bgCard": "FFFFFF", "bgCardAlt": "FDE8EF",
+            "text": "1A1A2E", "textMuted": "4A4A6A", "textDim": "9090B0",
+            "primary": "E91E63", "accent": "7C3AED", "success": "10B981",
+            "warning": "F59E0B", "danger": "EF4444", "info": "06B6D4", "highlight": "F97316"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "title",
+          "title": "Creative Campaign 2026",
+          "subtitle": "Bold Ideas. Bright Future.",
+          "author": "Marketing Team  |  Spring 2026"
+        }
+      }
+    },
+    {
+      "text": "Campaign performance with vibrant stats",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "FFF0F5", "bgCard": "FFFFFF", "bgCardAlt": "FDE8EF",
+            "text": "1A1A2E", "textMuted": "4A4A6A", "textDim": "9090B0",
+            "primary": "E91E63", "accent": "7C3AED", "success": "10B981",
+            "warning": "F59E0B", "danger": "EF4444", "info": "06B6D4", "highlight": "F97316"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "stats",
+          "accentColor": "primary",
+          "title": "Campaign Performance",
+          "subtitle": "Q1 2026 highlights across all channels",
+          "stats": [
+            { "value": "2.4M", "label": "Impressions", "color": "primary", "change": "+128%" },
+            { "value": "340K", "label": "Engagements", "color": "accent", "change": "+85%" },
+            { "value": "12.4%", "label": "Conv. Rate", "color": "success", "change": "+3.2%" },
+            { "value": "$1.8M", "label": "Revenue", "color": "highlight", "change": "+67%" }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Customer journey funnel visualization",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "FFF0F5", "bgCard": "FFFFFF", "bgCardAlt": "FDE8EF",
+            "text": "1A1A2E", "textMuted": "4A4A6A", "textDim": "9090B0",
+            "primary": "E91E63", "accent": "7C3AED", "success": "10B981",
+            "warning": "F59E0B", "danger": "EF4444", "info": "06B6D4", "highlight": "F97316"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "funnel",
+          "accentColor": "primary",
+          "title": "Customer Journey",
+          "subtitle": "From first touch to loyal advocate",
+          "stages": [
+            { "label": "Awareness", "value": "2.4M", "description": "Social + Ads", "color": "primary" },
+            { "label": "Consideration", "value": "580K", "description": "Website visits", "color": "accent" },
+            { "label": "Trial", "value": "92K", "description": "Free signups", "color": "info" },
+            { "label": "Purchase", "value": "18K", "description": "Paid conversion", "color": "warning" },
+            { "label": "Advocacy", "value": "4.2K", "description": "Referrals", "color": "success" }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Channel mix with icon grid",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "FFF0F5", "bgCard": "FFFFFF", "bgCardAlt": "FDE8EF",
+            "text": "1A1A2E", "textMuted": "4A4A6A", "textDim": "9090B0",
+            "primary": "E91E63", "accent": "7C3AED", "success": "10B981",
+            "warning": "F59E0B", "danger": "EF4444", "info": "06B6D4", "highlight": "F97316"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "grid",
+          "accentColor": "primary",
+          "title": "Channel Mix",
+          "gridColumns": 3,
+          "items": [
+            { "title": "Instagram", "icon": "IG", "accentColor": "primary", "description": "Visual storytelling & Reels" },
+            { "title": "YouTube", "icon": "YT", "accentColor": "danger", "description": "Long-form tutorials" },
+            { "title": "TikTok", "icon": "TT", "accentColor": "accent", "description": "Viral short content" },
+            { "title": "LinkedIn", "icon": "in", "accentColor": "info", "description": "B2B thought leadership" },
+            { "title": "Email", "icon": "@", "accentColor": "warning", "description": "Direct engagement" },
+            { "title": "Podcast", "icon": "P", "accentColor": "success", "description": "Deep-dive interviews" }
+          ]
+        }
+      }
+    }
+  ]
+}
