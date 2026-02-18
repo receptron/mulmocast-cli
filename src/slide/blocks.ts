@@ -1,5 +1,5 @@
 import type { ContentBlock } from "./schema.js";
-import { escapeHtml, nl2br, c } from "./utils.js";
+import { escapeHtml, nl2br, c, generateSlideId } from "./utils.js";
 
 /** Render a single content block to HTML */
 export const renderContentBlock = (block: ContentBlock): string => {
@@ -20,6 +20,10 @@ export const renderContentBlock = (block: ContentBlock): string => {
       return renderImage(block);
     case "imageRef":
       return renderImageRefPlaceholder(block);
+    case "chart":
+      return renderChart(block);
+    case "mermaid":
+      return renderMermaid(block);
     default:
       return `<p class="text-sm text-d-muted font-body">[unknown block type]</p>`;
   }
@@ -119,4 +123,37 @@ const renderImage = (block: ContentBlock & { type: "image" }): string => {
 /** Placeholder for unresolved imageRef blocks — should be resolved before rendering */
 const renderImageRefPlaceholder = (block: ContentBlock & { type: "imageRef" }): string => {
   return `<div class="min-h-0 flex-1 overflow-hidden flex items-center justify-center bg-d-alt rounded"><p class="text-sm text-d-dim font-body">[imageRef: ${escapeHtml(block.ref)}]</p></div>`;
+};
+
+const renderChart = (block: ContentBlock & { type: "chart" }): string => {
+  const chartId = generateSlideId("chart");
+  const chartData = JSON.stringify(block.chartData);
+  const titleHtml = block.title ? `<p class="text-sm font-bold text-d-text font-body mb-2">${escapeHtml(block.title)}</p>` : "";
+  return `<div class="flex-1 min-h-0 flex flex-col">
+  ${titleHtml}
+  <div class="flex-1 min-h-0 relative">
+    <canvas id="${chartId}" data-chart-ready="false"></canvas>
+  </div>
+  <script>(function(){
+    const ctx=document.getElementById('${chartId}');
+    const d=${chartData};
+    if(!d.options)d.options={};
+    d.options.animation=false;
+    d.options.responsive=true;
+    d.options.maintainAspectRatio=false;
+    new Chart(ctx,d);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ctx.dataset.chartReady="true"}));
+  })()</script>
+</div>`;
+};
+
+const renderMermaid = (block: ContentBlock & { type: "mermaid" }): string => {
+  const mermaidId = generateSlideId("mermaid");
+  const titleHtml = block.title ? `<p class="text-sm font-bold text-d-text font-body mb-2">${escapeHtml(block.title)}</p>` : "";
+  return `<div class="flex-1 min-h-0 flex flex-col">
+  ${titleHtml}
+  <div class="flex-1 min-h-0 flex justify-center items-center">
+    <div id="${mermaidId}" class="mermaid">${escapeHtml(block.code)}</div>
+  </div>
+</div>`;
 };
