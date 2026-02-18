@@ -35,7 +35,7 @@ test("generateSlideHTML: returns complete HTML document with DOCTYPE", () => {
 
 test("generateSlideHTML: includes Tailwind CDN script tag", () => {
   const html = generateSlideHTML(theme, { layout: "title", title: "Test" });
-  assert.ok(html.includes("https://cdn.tailwindcss.com"));
+  assert.ok(html.includes('src="https://cdn.tailwindcss.com"'));
 });
 
 test("generateSlideHTML: includes tailwind.config with theme colors", () => {
@@ -112,7 +112,7 @@ allLayouts.forEach((slide) => {
   test(`generateSlideHTML: generates valid HTML for ${slide.layout} layout`, () => {
     const html = generateSlideHTML(theme, slide);
     assert.ok(html.includes("<!DOCTYPE html>"));
-    assert.ok(html.includes("https://cdn.tailwindcss.com"));
+    assert.ok(html.includes('src="https://cdn.tailwindcss.com"'));
     assert.ok(html.includes("</html>"));
     // Should not contain undefined or null text
     assert.ok(!html.includes(">undefined<"));
