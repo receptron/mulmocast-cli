@@ -12,14 +12,13 @@ export const generateSlideHTML = (theme: SlideTheme, slide: SlideLayout): string
   const inlineStyle = slideStyle?.bgColor ? ` style="background-color:#${sanitizeHex(slideStyle.bgColor)}"` : "";
   const footer = slideStyle?.footer ? `\n<p class="absolute bottom-2 right-4 text-xs text-d-dim font-body">${escapeHtml(slideStyle.footer)}</p>` : "";
 
-  const scriptEnd = "<" + "/script>";
   return `<!DOCTYPE html>
 <html lang="en" class="h-full">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1280">
-<script src="https://cdn.tailwindcss.com">${scriptEnd}
-<script>tailwind.config = ${twConfig}${scriptEnd}
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = ${twConfig}</script>
 <style>
   html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
 </style>
