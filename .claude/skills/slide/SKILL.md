@@ -280,6 +280,41 @@ Used in the `content` array of layouts such as columns, comparison, grid, split,
 { "type": "image", "src": "photo.png", "alt?": "Description", "fit?": "contain|cover" }
 ```
 
+#### Referencing imageParams.images via `ref:`
+
+Images defined in `imageParams.images` can be embedded in slide content blocks using the `ref:` prefix. This allows reusing the same reference image across multiple slides.
+
+```json
+{
+  "imageParams": {
+    "images": {
+      "logo": { "type": "imagePrompt", "prompt": "A modern company logo..." },
+      "photo": { "type": "image", "source": { "kind": "path", "path": "team.png" } }
+    }
+  },
+  "beats": [
+    {
+      "text": "...",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "columns", "title": "Our Team",
+          "columns": [
+            { "title": "Brand", "content": [{ "type": "image", "src": "ref:logo" }] },
+            { "title": "Team",  "content": [{ "type": "image", "src": "ref:photo", "fit": "cover" }] }
+          ]
+        }
+      }
+    }
+  ]
+}
+```
+
+- `src: "ref:<key>"` resolves to the image generated/loaded by `imageParams.images.<key>`
+- Works with all source types: `imagePrompt` (AI-generated), `image` with `path`/`url`/`base64`
+- Non-ref `src` values (URLs, paths) are passed through unchanged
+- Unknown ref keys throw an error
+
 ## Shared Components
 
 ### card (used in columns, grid)
