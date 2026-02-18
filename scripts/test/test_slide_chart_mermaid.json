@@ -1,0 +1,148 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "title": "Chart & Mermaid Content Blocks Demo",
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "0F172A",
+        "bgCard": "1E293B",
+        "bgCardAlt": "334155",
+        "text": "F8FAFC",
+        "textMuted": "CBD5E1",
+        "textDim": "64748B",
+        "primary": "3B82F6",
+        "accent": "8B5CF6",
+        "success": "22C55E",
+        "warning": "F59E0B",
+        "danger": "EF4444",
+        "info": "14B8A6",
+        "highlight": "EC4899"
+      },
+      "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+    }
+  },
+  "beats": [
+    {
+      "text": "This slide shows a bar chart inside a columns layout.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "columns",
+          "title": "Quarterly Revenue",
+          "subtitle": "FY2025 performance overview",
+          "columns": [
+            {
+              "title": "Revenue by Quarter",
+              "accentColor": "primary",
+              "content": [
+                {
+                  "type": "chart",
+                  "title": "Revenue ($ millions)",
+                  "chartData": {
+                    "type": "bar",
+                    "data": {
+                      "labels": ["Q1", "Q2", "Q3", "Q4"],
+                      "datasets": [
+                        {
+                          "label": "Revenue",
+                          "data": [12, 19, 15, 24],
+                          "backgroundColor": ["#3B82F6", "#8B5CF6", "#22C55E", "#F59E0B"]
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "title": "Key Takeaways",
+              "accentColor": "success",
+              "content": [
+                { "type": "metric", "value": "$70M", "label": "Total Revenue", "color": "primary" },
+                { "type": "bullets", "items": ["Q4 strongest quarter", "24% QoQ growth in Q4", "Exceeded annual target by 8%"] }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "This slide demonstrates a mermaid diagram in a split layout.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "title": "System Architecture",
+            "accentColor": "accent",
+            "content": [
+              {
+                "type": "mermaid",
+                "title": "Data Flow",
+                "code": "graph TD\n  A[Client] --> B[API Gateway]\n  B --> C[Auth Service]\n  B --> D[App Service]\n  D --> E[Database]\n  D --> F[Cache]"
+              }
+            ]
+          },
+          "right": {
+            "title": "Components",
+            "accentColor": "info",
+            "content": [
+              {
+                "type": "bullets",
+                "items": [
+                  "API Gateway handles routing",
+                  "Auth Service manages tokens",
+                  "App Service processes requests",
+                  "Database stores persistent data",
+                  "Cache layer for performance"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "This slide combines both chart and mermaid in a comparison layout.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "title": "Pipeline Analysis",
+          "left": {
+            "title": "Conversion Funnel",
+            "accentColor": "primary",
+            "content": [
+              {
+                "type": "chart",
+                "chartData": {
+                  "type": "doughnut",
+                  "data": {
+                    "labels": ["Leads", "Qualified", "Proposals", "Won"],
+                    "datasets": [
+                      {
+                        "data": [500, 200, 80, 35],
+                        "backgroundColor": ["#3B82F6", "#8B5CF6", "#22C55E", "#F59E0B"]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "right": {
+            "title": "Process Flow",
+            "accentColor": "accent",
+            "content": [
+              {
+                "type": "mermaid",
+                "code": "graph LR\n  A[Lead] --> B[Qualify]\n  B --> C[Propose]\n  C --> D[Close]\n  D --> E[Onboard]"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

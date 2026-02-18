@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert";
 import { renderContentBlock, renderContentBlocks } from "../../src/slide/blocks.js";
+import { resetSlideIdCounter } from "../../src/slide/utils.js";
 
 // ═══════════════════════════════════════════════════════════
 // text block
@@ -243,4 +244,80 @@ test("renderContentBlocks: renders multiple blocks concatenated", () => {
 test("renderContentBlocks: returns empty string for empty array", () => {
   const html = renderContentBlocks([]);
   assert.strictEqual(html, "");
+});
+
+// ═══════════════════════════════════════════════════════════
+// chart block
+// ═══════════════════════════════════════════════════════════
+
+test("chart: renders canvas element with unique ID", () => {
+  resetSlideIdCounter();
+  const html = renderContentBlock({
+    type: "chart",
+    chartData: { type: "bar", data: { labels: ["A"], datasets: [{ data: [1] }] } },
+  });
+  assert.ok(html.includes('<canvas id="chart-0"'));
+  assert.ok(html.includes("data-chart-ready"));
+});
+
+test("chart: embeds chart data as JSON in script", () => {
+  resetSlideIdCounter();
+  const chartData = { type: "pie", data: { labels: ["X", "Y"], datasets: [{ data: [10, 20] }] } };
+  const html = renderContentBlock({ type: "chart", chartData });
+  assert.ok(html.includes('"type":"pie"'));
+  assert.ok(html.includes("new Chart"));
+});
+
+test("chart: renders optional title", () => {
+  resetSlideIdCounter();
+  const html = renderContentBlock({
+    type: "chart",
+    chartData: { type: "bar", data: {} },
+    title: "Sales Report",
+  });
+  assert.ok(html.includes("Sales Report"));
+  assert.ok(html.includes("font-bold"));
+});
+
+test("chart: omits title element when not provided", () => {
+  resetSlideIdCounter();
+  const html = renderContentBlock({ type: "chart", chartData: { type: "bar", data: {} } });
+  assert.ok(!html.includes("font-bold text-d-text"));
+});
+
+test("chart: disables animation for Puppeteer rendering", () => {
+  resetSlideIdCounter();
+  const html = renderContentBlock({ type: "chart", chartData: { type: "bar", data: {} } });
+  assert.ok(html.includes("d.options.animation=false"));
+});
+
+// ═══════════════════════════════════════════════════════════
+// mermaid block
+// ═══════════════════════════════════════════════════════════
+
+test("mermaid: renders div with mermaid class", () => {
+  resetSlideIdCounter();
+  const html = renderContentBlock({ type: "mermaid", code: "graph TD\n  A-->B" });
+  assert.ok(html.includes('class="mermaid"'));
+  assert.ok(html.includes('id="mermaid-0"'));
+});
+
+test("mermaid: escapes HTML in code", () => {
+  resetSlideIdCounter();
+  const html = renderContentBlock({ type: "mermaid", code: '<script>alert("xss")</script>' });
+  assert.ok(html.includes("&lt;script&gt;"));
+  assert.ok(!html.includes("<script>alert"));
+});
+
+test("mermaid: renders optional title", () => {
+  resetSlideIdCounter();
+  const html = renderContentBlock({ type: "mermaid", code: "graph LR\n  A-->B", title: "Flow Diagram" });
+  assert.ok(html.includes("Flow Diagram"));
+  assert.ok(html.includes("font-bold"));
+});
+
+test("mermaid: omits title element when not provided", () => {
+  resetSlideIdCounter();
+  const html = renderContentBlock({ type: "mermaid", code: "graph LR\n  A-->B" });
+  assert.ok(!html.includes("font-bold text-d-text"));
 });
