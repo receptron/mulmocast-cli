@@ -14,9 +14,19 @@ export const nl2br = (s: string): string => {
   return escapeHtml(s).replace(/\n/g, "<br>");
 };
 
+/** Sanitize a value for safe use in CSS class names (alphanumeric + hyphens only) */
+const sanitizeCssClass = (s: string): string => {
+  return s.replace(/[^a-zA-Z0-9-]/g, "");
+};
+
+/** Sanitize a hex color value (hex digits only) */
+export const sanitizeHex = (s: string): string => {
+  return s.replace(/[^0-9A-Fa-f]/g, "");
+};
+
 /** Accent color key → Tailwind class segment: "primary" → "d-primary" */
 export const c = (key: string): string => {
-  return `d-${key}`;
+  return `d-${sanitizeCssClass(key)}`;
 };
 
 /** Build the Tailwind config JSON string for theme colors and fonts */
@@ -73,7 +83,7 @@ export const iconSquare = (icon: string, colorKey: string): string => {
 
 /** Render a card wrapper with accent top bar */
 export const cardWrap = (accentColor: string, innerHtml: string, extraClass?: string): string => {
-  return `<div class="bg-d-card rounded-lg shadow-lg overflow-hidden flex flex-col ${extraClass || ""}">
+  return `<div class="bg-d-card rounded-lg shadow-lg overflow-hidden flex flex-col ${sanitizeCssClass(extraClass || "")}">
   <div class="h-[3px] bg-${c(accentColor)} shrink-0"></div>
   <div class="p-5 flex flex-col flex-1">
 ${innerHtml}

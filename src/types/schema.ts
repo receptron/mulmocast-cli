@@ -7,6 +7,9 @@ import { mulmoSlideMediaSchema } from "../slide/schema.js";
 // Re-export video filter schema
 export { mulmoVideoFilterSchema } from "./schema_video_filter.js";
 
+// Re-export slide schema
+export { mulmoSlideMediaSchema } from "../slide/schema.js";
+
 export const langSchema = z.string();
 const URLStringSchema = z.url();
 

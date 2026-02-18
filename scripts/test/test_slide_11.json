@@ -9,10 +9,19 @@
         "type": "slide",
         "theme": {
           "colors": {
-            "bg": "0F172A", "bgCard": "1E293B", "bgCardAlt": "334155",
-            "text": "F8FAFC", "textMuted": "CBD5E1", "textDim": "64748B",
-            "primary": "3B82F6", "accent": "8B5CF6", "success": "22C55E",
-            "warning": "F59E0B", "danger": "EF4444", "info": "06B6D4", "highlight": "EC4899"
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "06B6D4",
+            "highlight": "EC4899"
           },
           "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
         },
@@ -24,10 +33,26 @@
           "rows": 2,
           "cols": 2,
           "cells": [
-            { "label": "Strengths", "accentColor": "success", "items": ["Strong brand recognition", "Experienced engineering team", "High customer retention (95%)"] },
-            { "label": "Weaknesses", "accentColor": "danger", "items": ["Limited international presence", "Legacy codebase in core product", "High customer acquisition cost"] },
-            { "label": "Opportunities", "accentColor": "primary", "items": ["AI-driven product features", "Expansion to APAC market", "Strategic partnership with AWS"] },
-            { "label": "Threats", "accentColor": "warning", "items": ["Increasing competition from startups", "Regulatory changes in EU", "Economic downturn risk"] }
+            {
+              "label": "Strengths",
+              "accentColor": "success",
+              "items": ["Strong brand recognition", "Experienced engineering team", "High customer retention (95%)"]
+            },
+            {
+              "label": "Weaknesses",
+              "accentColor": "danger",
+              "items": ["Limited international presence", "Legacy codebase in core product", "High customer acquisition cost"]
+            },
+            {
+              "label": "Opportunities",
+              "accentColor": "primary",
+              "items": ["AI-driven product features", "Expansion to APAC market", "Strategic partnership with AWS"]
+            },
+            {
+              "label": "Threats",
+              "accentColor": "warning",
+              "items": ["Increasing competition from startups", "Regulatory changes in EU", "Economic downturn risk"]
+            }
           ]
         }
       }
@@ -38,10 +63,19 @@
         "type": "slide",
         "theme": {
           "colors": {
-            "bg": "0F172A", "bgCard": "1E293B", "bgCardAlt": "334155",
-            "text": "F8FAFC", "textMuted": "CBD5E1", "textDim": "64748B",
-            "primary": "3B82F6", "accent": "8B5CF6", "success": "22C55E",
-            "warning": "F59E0B", "danger": "EF4444", "info": "06B6D4", "highlight": "EC4899"
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "06B6D4",
+            "highlight": "EC4899"
           },
           "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
         },
@@ -70,10 +104,19 @@
         "type": "slide",
         "theme": {
           "colors": {
-            "bg": "0F172A", "bgCard": "1E293B", "bgCardAlt": "334155",
-            "text": "F8FAFC", "textMuted": "CBD5E1", "textDim": "64748B",
-            "primary": "3B82F6", "accent": "8B5CF6", "success": "22C55E",
-            "warning": "F59E0B", "danger": "EF4444", "info": "06B6D4", "highlight": "EC4899"
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "F8FAFC",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F59E0B",
+            "danger": "EF4444",
+            "info": "06B6D4",
+            "highlight": "EC4899"
           },
           "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
         },
