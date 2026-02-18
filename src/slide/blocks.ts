@@ -18,6 +18,8 @@ export const renderContentBlock = (block: ContentBlock): string => {
       return renderDivider(block);
     case "image":
       return renderImage(block);
+    default:
+      return `<p class="text-sm text-d-muted font-body">[unknown block type]</p>`;
   }
 };
 
