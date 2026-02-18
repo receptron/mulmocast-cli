@@ -97,6 +97,7 @@ export const beat_graph_data = {
         context: ":context",
         beat: ":beat",
         index: ":__mapIndex",
+        imageRefs: ":imageRefs",
         onComplete: [":preprocessor"],
       },
     },

@@ -147,6 +147,7 @@ export type ImageProcessorParams = {
   imagePath: string;
   textSlideStyle: string;
   canvasSize: MulmoCanvasDimension;
+  imageRefs?: Record<string, string>;
 };
 
 export type PDFMode = (typeof pdf_modes)[number];

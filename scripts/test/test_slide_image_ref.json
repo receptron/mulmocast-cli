@@ -1,0 +1,50 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "title": "Slide Image Ref Test",
+  "imageParams": {
+    "images": {
+      "logo": {
+        "type": "image",
+        "source": { "kind": "path", "path": "scripts/test/image-2.png" }
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "A split slide referencing an image via ref:",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "0F172A",
+            "bgCard": "1E293B",
+            "bgCardAlt": "334155",
+            "text": "FFFFFF",
+            "textMuted": "CBD5E1",
+            "textDim": "64748B",
+            "primary": "3B82F6",
+            "accent": "8B5CF6",
+            "success": "22C55E",
+            "warning": "F97316",
+            "danger": "EF4444",
+            "info": "14B8A6",
+            "highlight": "EC4899"
+          },
+          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+        },
+        "slide": {
+          "layout": "split",
+          "left": {
+            "title": "Our Logo",
+            "content": [{ "type": "image", "src": "ref:logo", "alt": "Company Logo" }]
+          },
+          "right": {
+            "title": "About Us",
+            "content": [{ "type": "text", "value": "We build great things." }]
+          }
+        }
+      }
+    }
+  ]
+}

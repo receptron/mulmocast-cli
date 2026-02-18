@@ -78,7 +78,7 @@ const urlToDataUrl = async (url: string, timeoutMs = DEFAULT_FETCH_TIMEOUT_MS): 
 };
 
 // Convert local file path to data URL (base64 encoded)
-const pathToDataUrl = (filePath: string): string => {
+export const pathToDataUrl = (filePath: string): string => {
   assert(fs.existsSync(filePath), `File not found: ${filePath}`, false, mediaSourceFileNotFoundError(filePath));
   const buffer = fs.readFileSync(filePath);
   const extension = getExtention(null, filePath);
