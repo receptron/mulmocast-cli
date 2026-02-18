@@ -22,9 +22,9 @@ export const layoutMatrix = (data: MatrixSlide): string => {
 
   parts.push(`<div class="flex-1 flex flex-col gap-3">`);
 
-  for (let r = 0; r < rows; r++) {
+  Array.from({ length: rows }).forEach((_, r) => {
     parts.push(`<div class="flex gap-3 flex-1">`);
-    for (let ci = 0; ci < cols; ci++) {
+    Array.from({ length: cols }).forEach((_, ci) => {
       const idx = r * cols + ci;
       const cell = cells[idx] || { label: "" };
       const accent = cell.accentColor || "primary";
@@ -41,9 +41,9 @@ export const layoutMatrix = (data: MatrixSlide): string => {
         inner.push(`<div class="mt-2 space-y-2">${renderContentBlocks(cell.content)}</div>`);
       }
       parts.push(cardWrap(accent, inner.join("\n"), "flex-1"));
-    }
+    });
     parts.push(`</div>`);
-  }
+  });
 
   if (data.xAxis) {
     parts.push(`<div class="flex justify-between px-2 mt-1">`);
