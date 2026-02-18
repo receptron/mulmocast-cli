@@ -14,6 +14,21 @@ beatのimage プロパティがセットされているとImage Pluginによっ�
 ```
 
 pluginの実装は[src/utils/image_plugins/](../src/utils/image_plugins)にある。
+
+現在のplugin一覧:
+- `image` - 画像ファイル参照（URL/ローカル）
+- `movie` - 動画ファイル参照
+- `textSlide` - テキストベースのスライド
+- `markdown` - Markdownレンダリング（レイアウト機能付き）
+- `chart` - Chart.jsチャート
+- `mermaid` - Mermaidダイアグラム
+- `html_tailwind` - カスタムHTML + Tailwind CSS
+- `slide` - 構造化スライドDSL（11レイアウト、Tailwind CSS + Puppeteer）
+- `beat` - 他のbeatの画像を参照
+- `voice_over` - ナレーション重ね（画像生成なし）
+- `vision` - Vision API
+- `source` - ソースファイル参照
+
 pluginを追加する場合は、
 
 - このdirにPluginのソースを追加
