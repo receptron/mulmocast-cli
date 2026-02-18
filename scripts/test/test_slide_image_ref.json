@@ -64,7 +64,7 @@
               "title": "フェルミオン",
               "accentColor": "primary",
               "content": [
-                { "type": "image", "src": "ref:detector", "alt": "フェルミオンの相互作用" },
+                { "type": "imageRef", "ref": "detector", "alt": "フェルミオンの相互作用" },
                 { "type": "bullets", "items": ["クォーク（6種）", "レプトン（6種）"], "icon": "⚛" },
                 { "type": "text", "value": "物質を構成する粒子", "dim": true }
               ]
@@ -73,7 +73,7 @@
               "title": "ボソン",
               "accentColor": "accent",
               "content": [
-                { "type": "image", "src": "ref:lhc", "alt": "LHCトンネル" },
+                { "type": "imageRef", "ref": "lhc", "alt": "LHCトンネル" },
                 { "type": "bullets", "items": ["光子", "Wボソン・Zボソン", "グルーオン"], "icon": "⚡" },
                 { "type": "text", "value": "力を媒介する粒子", "dim": true }
               ]
@@ -82,7 +82,7 @@
               "title": "ヒッグス粒子",
               "accentColor": "highlight",
               "content": [
-                { "type": "image", "src": "ref:higgs_event", "alt": "ヒッグス粒子の崩壊" },
+                { "type": "imageRef", "ref": "higgs_event", "alt": "ヒッグス粒子の崩壊" },
                 { "type": "text", "value": "質量の起源", "bold": true, "color": "highlight" },
                 { "type": "text", "value": "唯一のスカラー粒子。2012年にCERNで発見。", "dim": true }
               ]
@@ -99,7 +99,7 @@
           "layout": "split",
           "left": {
             "title": "CMS検出器イベント",
-            "content": [{ "type": "image", "src": "ref:detector", "alt": "CMS検出器のイベントディスプレイ", "fit": "cover" }]
+            "content": [{ "type": "imageRef", "ref": "detector", "alt": "CMS検出器のイベントディスプレイ", "fit": "cover" }]
           },
           "right": {
             "title": "何が見えているのか",
@@ -130,7 +130,7 @@
             "title": "ATLAS実験",
             "accentColor": "primary",
             "content": [
-              { "type": "image", "src": "ref:detector", "alt": "ATLAS検出器" },
+              { "type": "imageRef", "ref": "detector", "alt": "ATLAS検出器" },
               { "type": "metric", "value": "5.9σ", "label": "統計的有意性", "color": "primary" },
               { "type": "text", "value": "直径25m、長さ46mの巨大検出器。約3,000人の物理学者が参加。" }
             ]
@@ -139,7 +139,7 @@
             "title": "CMS実験",
             "accentColor": "accent",
             "content": [
-              { "type": "image", "src": "ref:lhc", "alt": "CMS検出器" },
+              { "type": "imageRef", "ref": "lhc", "alt": "CMS検出器" },
               { "type": "metric", "value": "5.0σ", "label": "統計的有意性", "color": "accent" },
               { "type": "text", "value": "よりコンパクトだが超伝導ソレノイド磁石を搭載。約4,000人が参加。" }
             ]
@@ -162,7 +162,7 @@
               "title": "LHC加速器",
               "accentColor": "primary",
               "content": [
-                { "type": "image", "src": "ref:lhc", "alt": "LHCトンネル", "fit": "cover" },
+                { "type": "imageRef", "ref": "lhc", "alt": "LHCトンネル", "fit": "cover" },
                 { "type": "text", "value": "周長27km、地下100mに設置", "dim": true }
               ]
             },
@@ -170,7 +170,7 @@
               "title": "ATLAS検出器",
               "accentColor": "accent",
               "content": [
-                { "type": "image", "src": "ref:detector", "alt": "ATLAS検出器全景", "fit": "cover" },
+                { "type": "imageRef", "ref": "detector", "alt": "ATLAS検出器全景", "fit": "cover" },
                 { "type": "text", "value": "直径25m、重量7,000トン", "dim": true }
               ]
             },
@@ -178,7 +178,7 @@
               "title": "CMS検出器",
               "accentColor": "info",
               "content": [
-                { "type": "image", "src": "ref:higgs_event", "alt": "CMS検出器", "fit": "cover" },
+                { "type": "imageRef", "ref": "higgs_event", "alt": "CMS検出器", "fit": "cover" },
                 { "type": "text", "value": "超伝導ソレノイド搭載", "dim": true }
               ]
             },
@@ -186,7 +186,7 @@
               "title": "CERN制御室",
               "accentColor": "warning",
               "content": [
-                { "type": "image", "src": "ref:detector", "alt": "CERN制御室", "fit": "cover" },
+                { "type": "imageRef", "ref": "detector", "alt": "CERN制御室", "fit": "cover" },
                 { "type": "text", "value": "24時間体制で加速器を監視", "dim": true }
               ]
             }
@@ -220,7 +220,7 @@
           "left": {
             "title": "ヒッグス場のイメージ",
             "content": [
-              { "type": "image", "src": "ref:higgs_event", "alt": "ヒッグス場の概念図", "fit": "contain" },
+              { "type": "imageRef", "ref": "higgs_event", "alt": "ヒッグス場の概念図", "fit": "contain" },
               { "type": "text", "value": "宇宙全体を満たす「場」", "dim": true, "align": "center" }
             ]
           },

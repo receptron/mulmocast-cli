@@ -18,6 +18,8 @@ export const renderContentBlock = (block: ContentBlock): string => {
       return renderDivider(block);
     case "image":
       return renderImage(block);
+    case "imageRef":
+      return renderImageRefPlaceholder(block);
     default:
       return `<p class="text-sm text-d-muted font-body">[unknown block type]</p>`;
   }
@@ -100,4 +102,9 @@ const renderDivider = (block: ContentBlock & { type: "divider" }): string => {
 const renderImage = (block: ContentBlock & { type: "image" }): string => {
   const fit = block.fit === "cover" ? "object-cover" : "object-contain";
   return `<div class="min-h-0 flex-1 overflow-hidden flex items-center"><img src="${escapeHtml(block.src)}" alt="${escapeHtml(block.alt || "")}" class="rounded ${fit} w-full h-full" /></div>`;
+};
+
+/** Placeholder for unresolved imageRef blocks — should be resolved before rendering */
+const renderImageRefPlaceholder = (block: ContentBlock & { type: "imageRef" }): string => {
+  return `<div class="min-h-0 flex-1 overflow-hidden flex items-center justify-center bg-d-alt rounded"><p class="text-sm text-d-dim font-body">[imageRef: ${escapeHtml(block.ref)}]</p></div>`;
 };

@@ -1,6 +1,6 @@
 import type { ColumnsSlide, Card, ContentBlock } from "../schema.js";
 import { escapeHtml, c, cardWrap, numBadge, iconSquare, slideHeader, renderCalloutBar } from "../utils.js";
-import { renderContentBlock, renderContentBlocks } from "../blocks.js";
+import { renderContentBlock } from "../blocks.js";
 
 /** Render content blocks for columns: image blocks get a fixed aspect-ratio container for vertical alignment */
 const renderColumnContent = (blocks: ContentBlock[]): string => {

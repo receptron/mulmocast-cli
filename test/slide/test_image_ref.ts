@@ -130,22 +130,23 @@ const createTestPng = (): string => {
   return filePath;
 };
 
-test("resolveSlideImageRefs: resolves ref:key to data URL", () => {
+test("resolveSlideImageRefs: resolves imageRef to image block with data URL", () => {
   const testPng = createTestPng();
   const slide: SlideLayout = {
     layout: "split",
     left: {
-      content: [{ type: "image", src: "ref:logo" }],
+      content: [{ type: "imageRef", ref: "logo" }],
     },
   };
   const imageRefs = { logo: testPng };
   const resolved = resolveSlideImageRefs(slide, imageRefs);
   const content = (resolved as { left: { content: ContentBlock[] } }).left.content;
   const imageBlock = content[0] as ContentBlock & { type: "image" };
+  assert.strictEqual(imageBlock.type, "image");
   assert.ok(imageBlock.src.startsWith("data:image/png;base64,"));
 });
 
-test("resolveSlideImageRefs: non-ref src is not modified", () => {
+test("resolveSlideImageRefs: image block src is not modified", () => {
   const slide: SlideLayout = {
     layout: "split",
     left: {
@@ -162,7 +163,7 @@ test("resolveSlideImageRefs: throws on unknown ref key", () => {
   const slide: SlideLayout = {
     layout: "split",
     left: {
-      content: [{ type: "image", src: "ref:unknown_key" }],
+      content: [{ type: "imageRef", ref: "unknown_key" }],
     },
   };
   assert.throws(
@@ -176,17 +177,18 @@ test("resolveSlideImageRefs: does not mutate original slide", () => {
   const slide: SlideLayout = {
     layout: "split",
     left: {
-      content: [{ type: "image", src: "ref:logo" }],
+      content: [{ type: "imageRef", ref: "logo" }],
     },
   };
   const imageRefs = { logo: testPng };
   resolveSlideImageRefs(slide, imageRefs);
   const content = (slide as { left: { content: ContentBlock[] } }).left.content;
-  const imageBlock = content[0] as ContentBlock & { type: "image" };
-  assert.strictEqual(imageBlock.src, "ref:logo");
+  const refBlock = content[0] as ContentBlock & { type: "imageRef" };
+  assert.strictEqual(refBlock.type, "imageRef");
+  assert.strictEqual(refBlock.ref, "logo");
 });
 
-test("resolveSlideImageRefs: handles mixed ref and non-ref blocks", () => {
+test("resolveSlideImageRefs: handles mixed imageRef and image blocks", () => {
   const testPng = createTestPng();
   const slide: SlideLayout = {
     layout: "columns",
@@ -195,7 +197,7 @@ test("resolveSlideImageRefs: handles mixed ref and non-ref blocks", () => {
       {
         title: "A",
         content: [
-          { type: "image", src: "ref:logo" },
+          { type: "imageRef", ref: "logo" },
           { type: "text", value: "text block" },
           { type: "image", src: "https://example.com/img.png" },
         ],
@@ -206,8 +208,25 @@ test("resolveSlideImageRefs: handles mixed ref and non-ref blocks", () => {
   const content = (resolved as { columns: { content: ContentBlock[] }[] }).columns[0].content;
   const img1 = content[0] as ContentBlock & { type: "image" };
   const img2 = content[2] as ContentBlock & { type: "image" };
+  assert.strictEqual(img1.type, "image");
   assert.ok(img1.src.startsWith("data:image/png;base64,"));
   assert.strictEqual(img2.src, "https://example.com/img.png");
+});
+
+test("resolveSlideImageRefs: preserves alt and fit from imageRef block", () => {
+  const testPng = createTestPng();
+  const slide: SlideLayout = {
+    layout: "split",
+    left: {
+      content: [{ type: "imageRef", ref: "logo", alt: "Company logo", fit: "cover" }],
+    },
+  };
+  const resolved = resolveSlideImageRefs(slide, { logo: testPng });
+  const content = (resolved as { left: { content: ContentBlock[] } }).left.content;
+  const imageBlock = content[0] as ContentBlock & { type: "image" };
+  assert.strictEqual(imageBlock.type, "image");
+  assert.strictEqual(imageBlock.alt, "Company logo");
+  assert.strictEqual(imageBlock.fit, "cover");
 });
 
 test("resolveSlideImageRefs: layout without content blocks returns unchanged clone", () => {

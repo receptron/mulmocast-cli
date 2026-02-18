@@ -241,7 +241,7 @@ yarn cli tool complete beats.json -s slide_dark -o presentation.json
 - `accentColor?`: `"primary" | "accent" | "success" | "warning" | "danger" | "info" | "highlight"`
 - `style?`: `{ "bgColor?": "hex", "decorations?": boolean, "bgOpacity?": number, "footer?": "..." }`
 
-## Content Blocks (7 types)
+## Content Blocks (8 types)
 
 Used in the `content` array of layouts such as columns, comparison, grid, split, and matrix.
 
@@ -280,9 +280,12 @@ Used in the `content` array of layouts such as columns, comparison, grid, split,
 { "type": "image", "src": "photo.png", "alt?": "Description", "fit?": "contain|cover" }
 ```
 
-#### Referencing imageParams.images via `ref:`
+### imageRef
+```json
+{ "type": "imageRef", "ref": "logo", "alt?": "Description", "fit?": "contain|cover" }
+```
 
-Images defined in `imageParams.images` can be embedded in slide content blocks using the `ref:` prefix. This allows reusing the same reference image across multiple slides.
+References an image defined in `imageParams.images`. The `ref` value is a key in `imageParams.images`. At render time, the `imageRef` block is resolved to an `image` block with the generated/loaded image as `src`.
 
 ```json
 {
@@ -300,8 +303,8 @@ Images defined in `imageParams.images` can be embedded in slide content blocks u
         "slide": {
           "layout": "columns", "title": "Our Team",
           "columns": [
-            { "title": "Brand", "content": [{ "type": "image", "src": "ref:logo" }] },
-            { "title": "Team",  "content": [{ "type": "image", "src": "ref:photo", "fit": "cover" }] }
+            { "title": "Brand", "content": [{ "type": "imageRef", "ref": "logo" }] },
+            { "title": "Team",  "content": [{ "type": "imageRef", "ref": "photo", "fit": "cover" }] }
           ]
         }
       }
@@ -310,9 +313,8 @@ Images defined in `imageParams.images` can be embedded in slide content blocks u
 }
 ```
 
-- `src: "ref:<key>"` resolves to the image generated/loaded by `imageParams.images.<key>`
+- `ref` resolves to the image generated/loaded by `imageParams.images.<key>`
 - Works with all source types: `imagePrompt` (AI-generated), `image` with `path`/`url`/`base64`
-- Non-ref `src` values (URLs, paths) are passed through unchanged
 - Unknown ref keys throw an error
 
 ## Shared Components

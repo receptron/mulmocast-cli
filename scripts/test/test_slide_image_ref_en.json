@@ -64,7 +64,7 @@
               "title": "Fermions",
               "accentColor": "primary",
               "content": [
-                { "type": "image", "src": "ref:detector", "alt": "Fermion interactions" },
+                { "type": "imageRef", "ref": "detector", "alt": "Fermion interactions" },
                 { "type": "bullets", "items": ["Quarks (6 types)", "Leptons (6 types)"], "icon": "⚛" },
                 { "type": "text", "value": "Particles that make up matter", "dim": true }
               ]
@@ -73,7 +73,7 @@
               "title": "Bosons",
               "accentColor": "accent",
               "content": [
-                { "type": "image", "src": "ref:lhc", "alt": "LHC tunnel" },
+                { "type": "imageRef", "ref": "lhc", "alt": "LHC tunnel" },
                 { "type": "bullets", "items": ["Photon", "W & Z bosons", "Gluon"], "icon": "⚡" },
                 { "type": "text", "value": "Force-carrying particles", "dim": true }
               ]
@@ -82,7 +82,7 @@
               "title": "Higgs Boson",
               "accentColor": "highlight",
               "content": [
-                { "type": "image", "src": "ref:higgs_event", "alt": "Higgs boson decay" },
+                { "type": "imageRef", "ref": "higgs_event", "alt": "Higgs boson decay" },
                 { "type": "text", "value": "Origin of Mass", "bold": true, "color": "highlight" },
                 { "type": "text", "value": "The only scalar particle. Discovered at CERN in 2012.", "dim": true }
               ]
@@ -99,7 +99,7 @@
           "layout": "split",
           "left": {
             "title": "CMS Detector Event",
-            "content": [{ "type": "image", "src": "ref:detector", "alt": "CMS detector event display", "fit": "cover" }]
+            "content": [{ "type": "imageRef", "ref": "detector", "alt": "CMS detector event display", "fit": "cover" }]
           },
           "right": {
             "title": "What Are We Seeing?",
@@ -130,7 +130,7 @@
             "title": "ATLAS Experiment",
             "accentColor": "primary",
             "content": [
-              { "type": "image", "src": "ref:detector", "alt": "ATLAS detector" },
+              { "type": "imageRef", "ref": "detector", "alt": "ATLAS detector" },
               { "type": "metric", "value": "5.9σ", "label": "Statistical significance", "color": "primary" },
               { "type": "text", "value": "25m diameter, 46m long. About 3,000 physicists participated." }
             ]
@@ -139,7 +139,7 @@
             "title": "CMS Experiment",
             "accentColor": "accent",
             "content": [
-              { "type": "image", "src": "ref:lhc", "alt": "CMS detector" },
+              { "type": "imageRef", "ref": "lhc", "alt": "CMS detector" },
               { "type": "metric", "value": "5.0σ", "label": "Statistical significance", "color": "accent" },
               { "type": "text", "value": "More compact but equipped with a superconducting solenoid magnet. About 4,000 participants." }
             ]
@@ -165,7 +165,7 @@
               "title": "LHC Accelerator",
               "accentColor": "primary",
               "content": [
-                { "type": "image", "src": "ref:lhc", "alt": "LHC tunnel", "fit": "cover" },
+                { "type": "imageRef", "ref": "lhc", "alt": "LHC tunnel", "fit": "cover" },
                 { "type": "text", "value": "27km circumference, 100m underground", "dim": true }
               ]
             },
@@ -173,7 +173,7 @@
               "title": "ATLAS Detector",
               "accentColor": "accent",
               "content": [
-                { "type": "image", "src": "ref:detector", "alt": "ATLAS detector overview", "fit": "cover" },
+                { "type": "imageRef", "ref": "detector", "alt": "ATLAS detector overview", "fit": "cover" },
                 { "type": "text", "value": "25m diameter, weighing 7,000 tonnes", "dim": true }
               ]
             },
@@ -181,7 +181,7 @@
               "title": "CMS Detector",
               "accentColor": "info",
               "content": [
-                { "type": "image", "src": "ref:higgs_event", "alt": "CMS detector", "fit": "cover" },
+                { "type": "imageRef", "ref": "higgs_event", "alt": "CMS detector", "fit": "cover" },
                 { "type": "text", "value": "Features superconducting solenoid", "dim": true }
               ]
             },
@@ -189,7 +189,7 @@
               "title": "CERN Control Centre",
               "accentColor": "warning",
               "content": [
-                { "type": "image", "src": "ref:detector", "alt": "CERN control room", "fit": "cover" },
+                { "type": "imageRef", "ref": "detector", "alt": "CERN control room", "fit": "cover" },
                 { "type": "text", "value": "24/7 accelerator monitoring", "dim": true }
               ]
             }
@@ -235,7 +235,7 @@
           "left": {
             "title": "Visualizing the Higgs Field",
             "content": [
-              { "type": "image", "src": "ref:higgs_event", "alt": "Higgs field concept", "fit": "contain" },
+              { "type": "imageRef", "ref": "higgs_event", "alt": "Higgs field concept", "fit": "contain" },
               { "type": "text", "value": "A field that fills all of space", "dim": true, "align": "center" }
             ]
           },

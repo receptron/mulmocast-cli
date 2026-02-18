@@ -350,7 +350,7 @@ MulmoCast includes a powerful **Slide DSL** (`type: "slide"`) for creating struc
 ### Features
 
 - **11 Layouts**: title, columns, comparison, grid, bigQuote, stats, timeline, split, matrix, table, funnel
-- **7 Content Block Types**: text, bullets, code, callout, metric, divider, image
+- **8 Content Block Types**: text, bullets, code, callout, metric, divider, image, imageRef
 - **13-Color Theme System**: Semantic color palette with dark/light support
 - **6 Preset Themes**: dark, pop, warm, creative, minimal, corporate
 

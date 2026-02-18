@@ -6,7 +6,7 @@ export { renderSlideContent } from "./layouts/index.js";
 export { renderContentBlock, renderContentBlocks } from "./blocks.js";
 
 // Schemas
-export { mulmoSlideMediaSchema, slideLayoutSchema, slideThemeSchema, contentBlockSchema, accentColorKeySchema } from "./schema.js";
+export { mulmoSlideMediaSchema, slideLayoutSchema, slideThemeSchema, contentBlockSchema, imageRefBlockSchema, accentColorKeySchema } from "./schema.js";
 
 // Types
 export type {
@@ -16,6 +16,7 @@ export type {
   SlideThemeColors,
   SlideThemeFonts,
   ContentBlock,
+  ImageRefBlock,
   AccentColorKey,
   TitleSlide,
   ColumnsSlide,

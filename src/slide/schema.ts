@@ -92,6 +92,13 @@ export const imageBlockSchema = z.object({
   fit: z.enum(["contain", "cover"]).optional(),
 });
 
+export const imageRefBlockSchema = z.object({
+  type: z.literal("imageRef"),
+  ref: z.string(),
+  alt: z.string().optional(),
+  fit: z.enum(["contain", "cover"]).optional(),
+});
+
 export const contentBlockSchema = z.discriminatedUnion("type", [
   textBlockSchema,
   bulletsBlockSchema,
@@ -100,6 +107,7 @@ export const contentBlockSchema = z.discriminatedUnion("type", [
   metricBlockSchema,
   dividerBlockSchema,
   imageBlockSchema,
+  imageRefBlockSchema,
 ]);
 
 // ═══════════════════════════════════════════════════════════
@@ -389,6 +397,7 @@ export type CalloutBlock = z.infer<typeof calloutBlockSchema>;
 export type MetricBlock = z.infer<typeof metricBlockSchema>;
 export type DividerBlock = z.infer<typeof dividerBlockSchema>;
 export type ImageBlock = z.infer<typeof imageBlockSchema>;
+export type ImageRefBlock = z.infer<typeof imageRefBlockSchema>;
 export type CalloutBar = z.infer<typeof calloutBarSchema>;
 export type Card = z.infer<typeof cardSchema>;
 export type SlideStyle = z.infer<typeof slideStyleSchema>;

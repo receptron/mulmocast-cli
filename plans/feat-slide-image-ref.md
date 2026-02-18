@@ -5,7 +5,7 @@
 `imageParams.images` で定義された参照画像は、既存の `getImageRefs()` パイプラインでローカルファイルパスに解決される。
 この仕組みは一切変更しない。
 
-slide plugin の `image` コンテンツブロック (`{ "type": "image", "src": "..." }`) で、解決済みの imageRefs を `ref:キー名` で参照できるようにする。
+slide plugin の `imageRef` コンテンツブロック (`{ "type": "imageRef", "ref": "..." }`) で、解決済みの imageRefs をキー名で参照できるようにする。`image` の `src` に `ref:` プレフィクスをつける方式から、専用の `imageRef` タイプに変更。
 
 ## 変更しないもの
 
@@ -51,9 +51,16 @@ optional で追加。既存プラグインに影響なし。
   - title/bigQuote/stats/timeline/table/funnel → なし
 - `resolveSlideImageRefs(slide, imageRefs)`:
   1. JSON deep-clone
-  2. image ブロックの `src` が `ref:` で始まるものを検出
-  3. `imageRefs[key]` → `pathToDataUrl()` で data URL に変換
+  2. `type: "imageRef"` ブロックを検出
+  3. `imageRefs[block.ref]` → converter で URL に変換し、`type: "image"` ブロックに置換
+  4. `alt`, `fit` はそのまま保持
 - `processSlide`/`dumpHtml` で解決後のデータを `generateSlideHTML` に渡す
+
+### 5b. slide schema に `imageRef` ブロック追加 (`src/slide/schema.ts`)
+
+- `imageRefBlockSchema`: `{ type: "imageRef", ref: string, alt?: string, fit?: "contain"|"cover" }`
+- `contentBlockSchema` の discriminatedUnion に追加
+- `blocks.ts` にプレースホルダーレンダリング追加（未解決時の fallback）
 
 ### 6. サンプル (`scripts/test/test_slide_image_ref.json`)
 

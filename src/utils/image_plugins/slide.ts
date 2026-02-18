@@ -9,8 +9,6 @@ import { pathToDataUrl } from "../../methods/mulmo_media_source.js";
 
 export const imageType = "slide";
 
-const REF_PREFIX = "ref:";
-
 /** Convert a file path to a file:// URL string */
 const toFileUrl = (filePath: string): string => {
   return pathToFileURL(nodePath.resolve(filePath)).href;
@@ -55,8 +53,8 @@ export const collectContentArrays = (slide: SlideLayout): ContentBlock[][] => {
 };
 
 /**
- * Deep-clone a slide layout and resolve `ref:<key>` image sources
- * using the resolved imageRefs map and a path-to-URL converter.
+ * Deep-clone a slide layout and resolve `imageRef` content blocks
+ * into `image` blocks using the resolved imageRefs map and a path-to-URL converter.
  * Default converter produces data URLs (for self-contained HTML).
  * Pass `toFileUrl` for Puppeteer rendering (avoids huge inline base64).
  */
@@ -68,15 +66,18 @@ export const resolveSlideImageRefs = (
   const cloned: SlideLayout = JSON.parse(JSON.stringify(slide));
   const contentArrays = collectContentArrays(cloned);
   contentArrays.forEach((blocks) => {
-    blocks.forEach((block) => {
-      if (block.type !== "image") return;
-      if (!block.src.startsWith(REF_PREFIX)) return;
-      const key = block.src.slice(REF_PREFIX.length);
-      const filePath = imageRefs[key];
+    blocks.forEach((block, index) => {
+      if (block.type !== "imageRef") return;
+      const filePath = imageRefs[block.ref];
       if (!filePath) {
-        throw new Error(`Unknown image ref key: "${key}"`);
+        throw new Error(`Unknown image ref key: "${block.ref}"`);
       }
-      block.src = converter(filePath);
+      blocks[index] = {
+        type: "image",
+        src: converter(filePath),
+        ...(block.alt !== undefined && { alt: block.alt }),
+        ...(block.fit !== undefined && { fit: block.fit }),
+      };
     });
   });
   return cloned;
