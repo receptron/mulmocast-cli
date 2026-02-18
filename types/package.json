@@ -1,6 +1,6 @@
 {
   "name": "@mulmocast/types",
-  "version": "2.1.38",
+  "version": "2.1.40",
   "description": "Type definitions for MulmoCast",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
