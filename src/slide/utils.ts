@@ -87,9 +87,9 @@ export const iconSquare = (icon: string, colorKey: string): string => {
 
 /** Render a card wrapper with accent top bar */
 export const cardWrap = (accentColor: string, innerHtml: string, extraClass?: string): string => {
-  return `<div class="bg-d-card rounded-lg shadow-lg overflow-hidden flex flex-col ${sanitizeCssClass(extraClass || "")}">
+  return `<div class="bg-d-card rounded-lg shadow-lg overflow-hidden flex flex-col min-h-0 ${sanitizeCssClass(extraClass || "")}">
   <div class="h-[3px] bg-${c(accentColor)} shrink-0"></div>
-  <div class="p-5 flex flex-col flex-1">
+  <div class="p-5 flex flex-col flex-1 min-h-0 overflow-hidden">
 ${innerHtml}
   </div>
 </div>`;

@@ -99,5 +99,5 @@ const renderDivider = (block: ContentBlock & { type: "divider" }): string => {
 
 const renderImage = (block: ContentBlock & { type: "image" }): string => {
   const fit = block.fit === "cover" ? "object-cover" : "object-contain";
-  return `<img src="${escapeHtml(block.src)}" alt="${escapeHtml(block.alt || "")}" class="rounded ${fit} max-h-full w-full" />`;
+  return `<div class="min-h-0 flex-1 overflow-hidden flex items-center"><img src="${escapeHtml(block.src)}" alt="${escapeHtml(block.alt || "")}" class="rounded ${fit} w-full h-full" /></div>`;
 };

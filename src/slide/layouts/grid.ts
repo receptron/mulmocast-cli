@@ -12,7 +12,7 @@ export const layoutGrid = (data: GridSlide): string => {
   parts.push(`  <h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${nl2br(data.title)}</h2>`);
   parts.push(`</div>`);
 
-  parts.push(`<div class="grid grid-cols-${nCols} gap-4 px-12 mt-5 flex-1 content-start">`);
+  parts.push(`<div class="grid grid-cols-${nCols} gap-4 px-12 mt-5 flex-1 min-h-0 overflow-hidden content-start">`);
 
   (data.items || []).forEach((item) => {
     const itemAccent = item.accentColor || "primary";
@@ -37,7 +37,7 @@ export const layoutGrid = (data: GridSlide): string => {
     }
 
     if (item.content) {
-      inner.push(`<div class="mt-3 space-y-3">${renderContentBlocks(item.content)}</div>`);
+      inner.push(`<div class="mt-3 space-y-3 flex-1 min-h-0 overflow-hidden flex flex-col">${renderContentBlocks(item.content)}</div>`);
     }
 
     parts.push(cardWrap(itemAccent, inner.join("\n")));

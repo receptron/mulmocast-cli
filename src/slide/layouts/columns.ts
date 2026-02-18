@@ -25,7 +25,7 @@ const buildColumnCard = (col: Card): string => {
 
   if (col.content) {
     const centerCls = col.icon ? "text-center" : "";
-    inner.push(`<div class="mt-3 space-y-3 ${centerCls}">`);
+    inner.push(`<div class="mt-3 space-y-3 flex-1 min-h-0 overflow-hidden flex flex-col ${centerCls}">`);
     inner.push(renderContentBlocks(col.content));
     inner.push(`</div>`);
   }
@@ -50,7 +50,7 @@ export const layoutColumns = (data: ColumnsSlide): string => {
     }
   });
 
-  parts.push(`<div class="flex gap-4 px-12 mt-5 flex-1">`);
+  parts.push(`<div class="flex gap-4 px-12 mt-5 flex-1 min-h-0 items-stretch">`);
   parts.push(colElements.join("\n"));
   parts.push(`</div>`);
 

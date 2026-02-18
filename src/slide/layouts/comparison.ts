@@ -9,7 +9,7 @@ const buildPanel = (panel: ComparisonPanel): string => {
   inner.push(`<h3 class="text-xl font-bold text-${c(accent)} font-body">${escapeHtml(panel.title)}</h3>`);
 
   if (panel.content) {
-    inner.push(`<div class="mt-4 space-y-3">`);
+    inner.push(`<div class="mt-4 space-y-3 flex-1 min-h-0 overflow-hidden flex flex-col">`);
     inner.push(renderContentBlocks(panel.content));
     inner.push(`</div>`);
   }
@@ -25,7 +25,7 @@ const buildPanel = (panel: ComparisonPanel): string => {
 export const layoutComparison = (data: ComparisonSlide): string => {
   const parts: string[] = [slideHeader(data)];
 
-  parts.push(`<div class="flex gap-5 px-12 mt-5 flex-1">`);
+  parts.push(`<div class="flex gap-5 px-12 mt-5 flex-1 min-h-0 items-stretch">`);
   parts.push(buildPanel(data.left));
   parts.push(buildPanel(data.right));
   parts.push(`</div>`);
