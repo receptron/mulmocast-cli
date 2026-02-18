@@ -1,10 +1,22 @@
-import test from "node:test";
+import test, { after } from "node:test";
 import assert from "node:assert";
 import path from "node:path";
 import fs from "node:fs";
 import os from "node:os";
+import crypto from "node:crypto";
 import { collectContentArrays, resolveSlideImageRefs } from "../../src/utils/image_plugins/slide.js";
 import type { SlideLayout, ContentBlock } from "../../src/slide/schema.js";
+
+const createdFiles: string[] = [];
+after(() => {
+  createdFiles.forEach((f) => {
+    try {
+      fs.unlinkSync(f);
+    } catch {
+      /* ignore */
+    }
+  });
+});
 
 // ═══════════════════════════════════════════════════════════
 // collectContentArrays
@@ -123,10 +135,11 @@ test("collectContentArrays: funnel layout returns empty", () => {
 // Helper: create a minimal PNG file for testing pathToDataUrl
 const createTestPng = (): string => {
   const tmpDir = os.tmpdir();
-  const filePath = path.join(tmpDir, "test_image_ref_unit.png");
+  const filePath = path.join(tmpDir, `test_image_ref_${crypto.randomUUID()}.png`);
   // Minimal 1x1 PNG (67 bytes)
   const pngBuffer = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
   fs.writeFileSync(filePath, pngBuffer);
+  createdFiles.push(filePath);
   return filePath;
 };
 

@@ -1,18 +1,6 @@
-import type { GridSlide, ContentBlock } from "../schema.js";
+import type { GridSlide } from "../schema.js";
 import { escapeHtml, nl2br, c, cardWrap, numBadge, iconSquare } from "../utils.js";
-import { renderContentBlock } from "../blocks.js";
-
-/** Render content blocks for grid: image blocks get a fixed aspect-ratio container for vertical alignment */
-const renderGridContent = (blocks: ContentBlock[]): string => {
-  return blocks
-    .map((block) => {
-      if (block.type === "image") {
-        return `<div class="aspect-video shrink-0 overflow-hidden">${renderContentBlock(block)}</div>`;
-      }
-      return renderContentBlock(block);
-    })
-    .join("\n");
-};
+import { renderCardContentBlocks } from "../blocks.js";
 
 export const layoutGrid = (data: GridSlide): string => {
   const accent = data.accentColor || "primary";
@@ -49,7 +37,7 @@ export const layoutGrid = (data: GridSlide): string => {
     }
 
     if (item.content) {
-      inner.push(`<div class="mt-3 space-y-3 flex-1 min-h-0 overflow-hidden flex flex-col">${renderGridContent(item.content)}</div>`);
+      inner.push(`<div class="mt-3 space-y-3 flex-1 min-h-0 overflow-hidden flex flex-col">${renderCardContentBlocks(item.content)}</div>`);
     }
 
     parts.push(cardWrap(itemAccent, inner.join("\n")));

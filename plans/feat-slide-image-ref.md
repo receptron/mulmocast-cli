@@ -11,7 +11,6 @@ slide plugin の `imageRef` コンテンツブロック (`{ "type": "imageRef", 
 
 - `imageParams.images` のスキーマ・配置場所
 - `getImageRefs()` の画像解決・生成プロセス
-- `src/slide/` モジュール内部（standalone パッケージ化対応）
 
 ## 変更ファイル一覧
 
@@ -21,9 +20,20 @@ slide plugin の `imageRef` コンテンツブロック (`{ "type": "imageRef", 
 | `src/actions/images.ts` | graph の `imagePlugin` node に `imageRefs` を渡す |
 | `src/actions/image_agents.ts` | `imagePluginAgent` で `imageRefs` を中継 |
 | `src/methods/mulmo_media_source.ts` | `pathToDataUrl` を export |
-| `src/utils/image_plugins/slide.ts` | ref 解決ロジック追加 |
+| `src/utils/image_plugins/slide.ts` | `imageRef` → `image` 解決ロジック |
+| `src/slide/schema.ts` | `imageRefBlockSchema` 追加 |
+| `src/slide/blocks.ts` | `imageRef` プレースホルダー、`renderCardContentBlocks` 共通ヘルパー |
+| `src/slide/index.ts` | `imageRefBlockSchema`, `ImageRefBlock` を re-export |
+| `src/slide/layouts/columns.ts` | 共通ヘルパー使用に切替 |
+| `src/slide/layouts/grid.ts` | 共通ヘルパー使用に切替 |
+| `src/slide/layouts/comparison.ts` | items-stretch 追加、footer spacer 修正 |
+| `src/slide/utils.ts` | cardWrap に min-h-0 overflow-hidden 追加 |
+| `src/utils/html_render.ts` | file:// URL → 一時ファイル経由 page.goto |
+| `README.md` | Content Block Types を 8 に更新 |
+| `.claude/skills/slide/SKILL.md` | `imageRef` ドキュメント追加 |
 | `plans/feat-slide-image-ref.md` | 本計画ファイル |
-| `scripts/test/test_slide_image_ref.json` | サンプル MulmoScript |
+| `scripts/test/test_slide_image_ref.json` | ヒッグス粒子サンプル（imagePrompt + imageRef） |
+| `scripts/test/test_slide_image_ref_en.json` | 英語版サンプル |
 | `test/slide/test_image_ref.ts` | ユニットテスト |
 
 ## 実装詳細
@@ -64,14 +74,16 @@ optional で追加。既存プラグインに影響なし。
 
 ### 6. サンプル (`scripts/test/test_slide_image_ref.json`)
 
-既存の `scripts/test/image-2.png` を `imageParams.images` で参照画像として定義し、slide の image ブロックから `ref:` で使用。
+`imageParams.images` に `imagePrompt` タイプで AI 生成画像を定義し、slide の `imageRef` ブロックから参照。ヒッグス粒子の解説プレゼン。英語版も `test_slide_image_ref_en.json` として用意。
 
 ### 7. テスト (`test/slide/test_image_ref.ts`)
 
-- ref → data URL に解決される
-- 非 ref の src はそのまま
+- `imageRef` → `image` ブロックに解決（data URL）
+- `image` ブロックの `src` は変更されない
+- `alt`, `fit` が保持される
 - 不明な ref key でエラー
 - 各レイアウトの content 収集
+- テスト後の temp file クリーンアップ
 
 ## 検証
 

@@ -30,6 +30,18 @@ export const renderContentBlocks = (blocks: ContentBlock[]): string => {
   return blocks.map(renderContentBlock).join("\n");
 };
 
+/** Render content blocks with fixed aspect-ratio container for image blocks (used in card layouts) */
+export const renderCardContentBlocks = (blocks: ContentBlock[]): string => {
+  return blocks
+    .map((block) => {
+      if (block.type === "image") {
+        return `<div class="aspect-video shrink-0 overflow-hidden">${renderContentBlock(block)}</div>`;
+      }
+      return renderContentBlock(block);
+    })
+    .join("\n");
+};
+
 const resolveTextColor = (block: ContentBlock & { type: "text" }): string => {
   if (block.color) return `text-${c(block.color)}`;
   if (block.dim) return "text-d-dim";

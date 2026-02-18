@@ -15,7 +15,7 @@ const buildPanel = (panel: ComparisonPanel): string => {
   }
 
   if (panel.footer) {
-    inner.push(`<div class="flex-1"></div>`);
+    if (!panel.content) inner.push(`<div class="flex-1"></div>`);
     inner.push(`<p class="text-sm text-d-dim font-body mt-3">${escapeHtml(panel.footer)}</p>`);
   }
 
