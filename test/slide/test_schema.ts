@@ -1,6 +1,13 @@
 import test from "node:test";
 import assert from "node:assert";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { slideLayoutSchema, mulmoSlideMediaSchema, slideThemeSchema, contentBlockSchema } from "../../src/slide/schema.js";
+import { mulmoSlideParamsSchema } from "../../src/types/schema.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // ═══════════════════════════════════════════════════════════
 // Theme Validation
@@ -319,12 +326,12 @@ test("mulmoSlideMediaSchema accepts complete slide media object", () => {
   assert.strictEqual(result.success, true);
 });
 
-test("mulmoSlideMediaSchema rejects missing theme", () => {
+test("mulmoSlideMediaSchema accepts missing theme (optional)", () => {
   const result = mulmoSlideMediaSchema.safeParse({
     type: "slide",
     slide: { layout: "title", title: "Hello" },
   });
-  assert.strictEqual(result.success, false);
+  assert.strictEqual(result.success, true);
 });
 
 test("mulmoSlideMediaSchema rejects missing slide", () => {
@@ -343,4 +350,40 @@ test("mulmoSlideMediaSchema rejects extra properties (strict mode)", () => {
     extra: "not allowed",
   });
   assert.strictEqual(result.success, false);
+});
+
+// ═══════════════════════════════════════════════════════════
+// mulmoSlideParamsSchema Validation
+// ═══════════════════════════════════════════════════════════
+
+test("mulmoSlideParamsSchema accepts valid theme", () => {
+  const result = mulmoSlideParamsSchema.safeParse({ theme: validTheme });
+  assert.strictEqual(result.success, true);
+});
+
+test("mulmoSlideParamsSchema rejects missing theme", () => {
+  const result = mulmoSlideParamsSchema.safeParse({});
+  assert.strictEqual(result.success, false);
+});
+
+test("mulmoSlideParamsSchema rejects extra properties (strict mode)", () => {
+  const result = mulmoSlideParamsSchema.safeParse({ theme: validTheme, extra: "not allowed" });
+  assert.strictEqual(result.success, false);
+});
+
+// ═══════════════════════════════════════════════════════════
+// Preset Theme JSON File Validation
+// ═══════════════════════════════════════════════════════════
+
+const themeNames = ["dark", "pop", "warm", "creative", "minimal", "corporate"];
+const themeDir = path.resolve(__dirname, "../../assets/slide_themes");
+
+themeNames.forEach((name) => {
+  test(`slide theme file ${name}.json is valid against slideThemeSchema`, () => {
+    const filePath = path.resolve(themeDir, `${name}.json`);
+    const content = fs.readFileSync(filePath, "utf-8");
+    const jsonData = JSON.parse(content);
+    const result = slideThemeSchema.safeParse(jsonData);
+    assert.strictEqual(result.success, true, `Theme ${name}.json failed validation: ${JSON.stringify(result.error?.issues)}`);
+  });
 });

@@ -1,0 +1,30 @@
+{
+  "$mulmocast": {
+    "version": "1.1",
+    "credit": "closing"
+  },
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "F8FAFC",
+        "bgCard": "FFFFFF",
+        "bgCardAlt": "F1F5F9",
+        "text": "0F172A",
+        "textMuted": "475569",
+        "textDim": "94A3B8",
+        "primary": "2563EB",
+        "accent": "7C3AED",
+        "success": "059669",
+        "warning": "D97706",
+        "danger": "DC2626",
+        "info": "0891B2",
+        "highlight": "DB2777"
+      },
+      "fonts": { "title": "Trebuchet MS", "body": "Calibri", "mono": "Consolas" }
+    }
+  },
+  "canvasSize": {
+    "width": 1280,
+    "height": 720
+  }
+}

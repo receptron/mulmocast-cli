@@ -1,0 +1,30 @@
+{
+  "$mulmocast": {
+    "version": "1.1",
+    "credit": "closing"
+  },
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "1C1917",
+        "bgCard": "292524",
+        "bgCardAlt": "3D3733",
+        "text": "FAFAF9",
+        "textMuted": "D6D3D1",
+        "textDim": "A8A29E",
+        "primary": "F43F5E",
+        "accent": "FB923C",
+        "success": "4ADE80",
+        "warning": "FBBF24",
+        "danger": "EF4444",
+        "info": "38BDF8",
+        "highlight": "E879F9"
+      },
+      "fonts": { "title": "Georgia", "body": "Helvetica", "mono": "Consolas" }
+    }
+  },
+  "canvasSize": {
+    "width": 1280,
+    "height": 720
+  }
+}
