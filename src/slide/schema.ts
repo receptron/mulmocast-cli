@@ -92,6 +92,25 @@ export const imageBlockSchema = z.object({
   fit: z.enum(["contain", "cover"]).optional(),
 });
 
+export const imageRefBlockSchema = z.object({
+  type: z.literal("imageRef"),
+  ref: z.string(),
+  alt: z.string().optional(),
+  fit: z.enum(["contain", "cover"]).optional(),
+});
+
+export const chartBlockSchema = z.object({
+  type: z.literal("chart"),
+  chartData: z.record(z.string(), z.unknown()),
+  title: z.string().optional(),
+});
+
+export const mermaidBlockSchema = z.object({
+  type: z.literal("mermaid"),
+  code: z.string(),
+  title: z.string().optional(),
+});
+
 export const contentBlockSchema = z.discriminatedUnion("type", [
   textBlockSchema,
   bulletsBlockSchema,
@@ -100,6 +119,9 @@ export const contentBlockSchema = z.discriminatedUnion("type", [
   metricBlockSchema,
   dividerBlockSchema,
   imageBlockSchema,
+  imageRefBlockSchema,
+  chartBlockSchema,
+  mermaidBlockSchema,
 ]);
 
 // ═══════════════════════════════════════════════════════════
@@ -389,6 +411,9 @@ export type CalloutBlock = z.infer<typeof calloutBlockSchema>;
 export type MetricBlock = z.infer<typeof metricBlockSchema>;
 export type DividerBlock = z.infer<typeof dividerBlockSchema>;
 export type ImageBlock = z.infer<typeof imageBlockSchema>;
+export type ImageRefBlock = z.infer<typeof imageRefBlockSchema>;
+export type ChartBlock = z.infer<typeof chartBlockSchema>;
+export type MermaidBlock = z.infer<typeof mermaidBlockSchema>;
 export type CalloutBar = z.infer<typeof calloutBarSchema>;
 export type Card = z.infer<typeof cardSchema>;
 export type SlideStyle = z.infer<typeof slideStyleSchema>;

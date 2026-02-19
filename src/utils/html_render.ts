@@ -1,7 +1,47 @@
+import fs from "node:fs";
+import os from "node:os";
+import nodePath from "node:path";
+import crypto from "node:crypto";
 import { marked } from "marked";
 import puppeteer from "puppeteer";
 
 const isCI = process.env.CI === "true";
+
+/** Determine the appropriate waitUntil strategy based on HTML content */
+const resolveWaitUntil = (html: string): "networkidle0" | "load" | "domcontentloaded" => {
+  const hasExternalImages = html.includes("<img") && /src=["']https?:\/\//.test(html);
+  const hasLocalImages = html.includes("<img") && /src=["']file:\/\//.test(html);
+  if (hasExternalImages) return "networkidle0";
+  if (hasLocalImages) return "load";
+  return "domcontentloaded";
+};
+
+/**
+ * Load HTML into a Puppeteer page.
+ * When the HTML references file:// URLs, write it to a temp file
+ * and navigate via page.goto (setContent uses about:blank origin
+ * which blocks file:// loading).
+ */
+const loadHtmlIntoPage = async (page: puppeteer.Page, html: string, timeout_ms: number): Promise<void> => {
+  const waitUntil = resolveWaitUntil(html);
+  const hasFileUrls = /file:\/\//.test(html);
+
+  if (hasFileUrls) {
+    const tmpFile = nodePath.join(os.tmpdir(), `mulmocast_render_${crypto.randomUUID()}.html`);
+    fs.writeFileSync(tmpFile, html);
+    try {
+      await page.goto(`file://${tmpFile}`, { waitUntil, timeout: timeout_ms });
+    } finally {
+      try {
+        fs.unlinkSync(tmpFile);
+      } catch {
+        /* ignore cleanup errors */
+      }
+    }
+  } else {
+    await page.setContent(html, { waitUntil, timeout: timeout_ms });
+  }
+};
 
 export const renderHTMLToImage = async (
   html: string,
@@ -13,15 +53,11 @@ export const renderHTMLToImage = async (
 ) => {
   // Use Puppeteer to render HTML to an image
   const browser = await puppeteer.launch({
-    args: isCI ? ["--no-sandbox"] : [],
+    args: isCI ? ["--no-sandbox", "--allow-file-access-from-files"] : ["--allow-file-access-from-files"],
   });
   const page = await browser.newPage();
 
-  // Set the page content to the HTML generated from the Markdown
-  // Use networkidle0 only for external images, otherwise use domcontentloaded for faster rendering
-  const hasExternalImages = html.includes("<img") && /src=["']https?:\/\//.test(html);
-  const waitUntil = hasExternalImages ? "networkidle0" : "domcontentloaded";
-  await page.setContent(html, { waitUntil, timeout: 30000 });
+  await loadHtmlIntoPage(page, html, 30000);
 
   // Adjust page settings if needed (like width, height, etc.)
   await page.setViewport({ width, height });

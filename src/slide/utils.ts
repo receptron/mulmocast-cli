@@ -1,4 +1,4 @@
-import type { SlideTheme, SlideThemeColors, AccentColorKey } from "./schema.js";
+import type { SlideTheme, SlideThemeColors, AccentColorKey, SlideLayout, ContentBlock } from "./schema.js";
 
 /** Escape HTML special characters */
 export const escapeHtml = (s: string): string => {
@@ -87,9 +87,9 @@ export const iconSquare = (icon: string, colorKey: string): string => {
 
 /** Render a card wrapper with accent top bar */
 export const cardWrap = (accentColor: string, innerHtml: string, extraClass?: string): string => {
-  return `<div class="bg-d-card rounded-lg shadow-lg overflow-hidden flex flex-col ${sanitizeCssClass(extraClass || "")}">
+  return `<div class="bg-d-card rounded-lg shadow-lg overflow-hidden flex flex-col min-h-0 ${sanitizeCssClass(extraClass || "")}">
   <div class="h-[3px] bg-${c(accentColor)} shrink-0"></div>
-  <div class="p-5 flex flex-col flex-1">
+  <div class="p-5 flex flex-col flex-1 min-h-0 overflow-hidden">
 ${innerHtml}
   </div>
 </div>`;
@@ -124,4 +124,66 @@ export const slideHeader = (data: { accentColor?: string; stepLabel?: string; ti
   }
   lines.push(`</div>`);
   return lines.join("\n");
+};
+
+// ═══════════════════════════════════════════════════════════
+// Counter-based ID generation (unique within a single slide)
+// ═══════════════════════════════════════════════════════════
+
+let slideIdCounter = 0;
+
+/** Generate a unique ID with the given prefix (e.g. "chart-0", "mermaid-1") */
+export const generateSlideId = (prefix: string): string => `${prefix}-${slideIdCounter++}`;
+
+/** Reset the ID counter (for testing) */
+export const resetSlideIdCounter = (): void => {
+  slideIdCounter = 0;
+};
+
+// ═══════════════════════════════════════════════════════════
+// Content block type detection
+// ═══════════════════════════════════════════════════════════
+
+type BlockTypeFlags = { hasChart: boolean; hasMermaid: boolean };
+
+/** Collect all content block arrays from a slide layout */
+const collectContentArrays = (slide: SlideLayout): ContentBlock[][] => {
+  const arrays: ContentBlock[][] = [];
+  const pushIfPresent = (content: ContentBlock[] | undefined) => {
+    if (content) arrays.push(content);
+  };
+  switch (slide.layout) {
+    case "columns":
+      slide.columns.forEach((col) => pushIfPresent(col.content));
+      break;
+    case "comparison":
+      pushIfPresent(slide.left.content);
+      pushIfPresent(slide.right.content);
+      break;
+    case "grid":
+      slide.items.forEach((item) => pushIfPresent(item.content));
+      break;
+    case "split":
+      pushIfPresent(slide.left?.content);
+      pushIfPresent(slide.right?.content);
+      break;
+    case "matrix":
+      slide.cells.forEach((cell) => pushIfPresent(cell.content));
+      break;
+  }
+  return arrays;
+};
+
+/** Detect whether chart or mermaid content blocks exist in a slide */
+export const detectBlockTypes = (slide: SlideLayout): BlockTypeFlags => {
+  const arrays = collectContentArrays(slide);
+  let hasChart = false;
+  let hasMermaid = false;
+  arrays.forEach((blocks) => {
+    blocks.forEach((block) => {
+      if (block.type === "chart") hasChart = true;
+      if (block.type === "mermaid") hasMermaid = true;
+    });
+  });
+  return { hasChart, hasMermaid };
 };

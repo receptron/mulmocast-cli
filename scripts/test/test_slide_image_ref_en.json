@@ -1,0 +1,287 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "title": "The Higgs Boson — Exploring the Origin of Mass",
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "0B1120",
+        "bgCard": "162032",
+        "bgCardAlt": "1E2D45",
+        "text": "F0F4F8",
+        "textMuted": "A0AEC0",
+        "textDim": "4A5568",
+        "primary": "63B3ED",
+        "accent": "B794F4",
+        "success": "68D391",
+        "warning": "F6AD55",
+        "danger": "FC8181",
+        "info": "4FD1C5",
+        "highlight": "F687B3"
+      },
+      "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+    }
+  },
+  "imageParams": {
+    "images": {
+      "detector": {
+        "type": "imagePrompt",
+        "prompt": "A massive cylindrical particle detector at CERN, showing intricate layers of sensors and electronics in warm orange and gold lighting, photorealistic, wide-angle view from inside the detector barrel"
+      },
+      "lhc": {
+        "type": "imagePrompt",
+        "prompt": "The Large Hadron Collider tunnel at CERN, a long curved underground tunnel with blue superconducting magnets stretching into the distance, cool blue lighting, photorealistic"
+      },
+      "higgs_event": {
+        "type": "imagePrompt",
+        "prompt": "A colorful particle collision event display from the CMS detector at CERN, showing radiating particle tracks in green, red and blue lines emanating from a central collision point on a dark background, scientific visualization style"
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "What is the Higgs boson? Let's look back at the history of its discovery.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "title",
+          "title": "The Higgs Boson",
+          "subtitle": "A Journey to the Origin of Mass",
+          "author": "Introduction to Particle Physics"
+        }
+      }
+    },
+    {
+      "text": "The Higgs boson holds a special place in the Standard Model.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "columns",
+          "title": "Particles of the Standard Model",
+          "subtitle": "17 Elementary Particles",
+          "columns": [
+            {
+              "title": "Fermions",
+              "accentColor": "primary",
+              "content": [
+                { "type": "imageRef", "ref": "detector", "alt": "Fermion interactions" },
+                { "type": "bullets", "items": ["Quarks (6 types)", "Leptons (6 types)"], "icon": "⚛" },
+                { "type": "text", "value": "Particles that make up matter", "dim": true }
+              ]
+            },
+            {
+              "title": "Bosons",
+              "accentColor": "accent",
+              "content": [
+                { "type": "imageRef", "ref": "lhc", "alt": "LHC tunnel" },
+                { "type": "bullets", "items": ["Photon", "W & Z bosons", "Gluon"], "icon": "⚡" },
+                { "type": "text", "value": "Force-carrying particles", "dim": true }
+              ]
+            },
+            {
+              "title": "Higgs Boson",
+              "accentColor": "highlight",
+              "content": [
+                { "type": "imageRef", "ref": "higgs_event", "alt": "Higgs boson decay" },
+                { "type": "text", "value": "Origin of Mass", "bold": true, "color": "highlight" },
+                { "type": "text", "value": "The only scalar particle. Discovered at CERN in 2012.", "dim": true }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Let's look at the Higgs boson decay event captured by the LHC detector.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "title": "CMS Detector Event",
+            "content": [{ "type": "imageRef", "ref": "detector", "alt": "CMS detector event display", "fit": "cover" }]
+          },
+          "right": {
+            "title": "What Are We Seeing?",
+            "content": [
+              { "type": "text", "value": "Protons are collided at near light speed, and the resulting particle tracks are captured by the detector." },
+              {
+                "type": "callout",
+                "text": "The Higgs boson cannot be observed directly — its existence is inferred from pairs of decay particles.",
+                "label": "Key Point",
+                "color": "info",
+                "style": "info"
+              },
+              { "type": "metric", "value": "125 GeV", "label": "Mass of the Higgs boson" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "A comparison of the ATLAS and CMS experiments.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "title": "Two Experiments, One Discovery",
+          "subtitle": "Each independently achieved 5σ significance",
+          "left": {
+            "title": "ATLAS Experiment",
+            "accentColor": "primary",
+            "content": [
+              { "type": "imageRef", "ref": "detector", "alt": "ATLAS detector" },
+              { "type": "metric", "value": "5.9σ", "label": "Statistical significance", "color": "primary" },
+              { "type": "text", "value": "25m diameter, 46m long. About 3,000 physicists participated." }
+            ]
+          },
+          "right": {
+            "title": "CMS Experiment",
+            "accentColor": "accent",
+            "content": [
+              { "type": "imageRef", "ref": "lhc", "alt": "CMS detector" },
+              { "type": "metric", "value": "5.0σ", "label": "Statistical significance", "color": "accent" },
+              { "type": "text", "value": "More compact but equipped with a superconducting solenoid magnet. About 4,000 participants." }
+            ]
+          },
+          "callout": {
+            "text": "The simultaneous confirmation by two independent experiments dramatically increased confidence in the result",
+            "color": "success"
+          }
+        }
+      }
+    },
+    {
+      "text": "Here's a grid overview of CERN's key facilities.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "grid",
+          "title": "CERN Experimental Facilities",
+          "subtitle": "The world's largest particle physics laboratory on the Swiss-French border",
+          "gridColumns": 2,
+          "items": [
+            {
+              "title": "LHC Accelerator",
+              "accentColor": "primary",
+              "content": [
+                { "type": "imageRef", "ref": "lhc", "alt": "LHC tunnel", "fit": "cover" },
+                { "type": "text", "value": "27km circumference, 100m underground", "dim": true }
+              ]
+            },
+            {
+              "title": "ATLAS Detector",
+              "accentColor": "accent",
+              "content": [
+                { "type": "imageRef", "ref": "detector", "alt": "ATLAS detector overview", "fit": "cover" },
+                { "type": "text", "value": "25m diameter, weighing 7,000 tonnes", "dim": true }
+              ]
+            },
+            {
+              "title": "CMS Detector",
+              "accentColor": "info",
+              "content": [
+                { "type": "imageRef", "ref": "higgs_event", "alt": "CMS detector", "fit": "cover" },
+                { "type": "text", "value": "Features superconducting solenoid", "dim": true }
+              ]
+            },
+            {
+              "title": "CERN Control Centre",
+              "accentColor": "warning",
+              "content": [
+                { "type": "imageRef", "ref": "detector", "alt": "CERN control room", "fit": "cover" },
+                { "type": "text", "value": "24/7 accelerator monitoring", "dim": true }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Here are the key milestones leading to the discovery.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "timeline",
+          "title": "Road to Discovery",
+          "items": [
+            { "date": "1964", "title": "Higgs Mechanism Proposed", "description": "P. Higgs et al. published the mass acquisition theory", "done": true },
+            { "date": "1983", "title": "W & Z Bosons Discovered", "description": "Confirmed at CERN's SPS experiments", "done": true, "color": "accent" },
+            {
+              "date": "2008",
+              "title": "LHC Begins Operation",
+              "description": "The world's largest particle accelerator starts up",
+              "done": true,
+              "color": "info"
+            },
+            {
+              "date": "2012.7.4",
+              "title": "Higgs Boson Discovered",
+              "description": "ATLAS and CMS experiments announce simultaneously",
+              "done": true,
+              "color": "highlight"
+            },
+            { "date": "2013", "title": "Nobel Prize in Physics", "description": "Awarded to Higgs and Englert", "done": true, "color": "success" }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Let's explore the relationship between the Higgs field and mass.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "title": "Visualizing the Higgs Field",
+            "content": [
+              { "type": "imageRef", "ref": "higgs_event", "alt": "Higgs field concept", "fit": "contain" },
+              { "type": "text", "value": "A field that fills all of space", "dim": true, "align": "center" }
+            ]
+          },
+          "right": {
+            "title": "Why Does Mass Arise?",
+            "content": [
+              {
+                "type": "callout",
+                "text": "The Higgs field exists everywhere in the universe. Particles acquire mass by interacting with this field.",
+                "style": "quote"
+              },
+              { "type": "divider", "color": "accent" },
+              {
+                "type": "bullets",
+                "items": [
+                  "Photon: no interaction with Higgs field → zero mass",
+                  "W boson: strong interaction → heavy",
+                  "Top quark: strongest interaction → heaviest"
+                ],
+                "icon": "→"
+              },
+              { "type": "callout", "text": "Mass = strength of coupling to the Higgs field", "label": "Key Insight", "color": "highlight" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "Let's look at the statistical significance of the discovery in numbers.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "stats",
+          "title": "The Higgs Discovery in Numbers",
+          "stats": [
+            { "value": "5σ", "label": "Statistical significance", "color": "highlight" },
+            { "value": "125.25 GeV", "label": "Measured mass" },
+            { "value": "~10⁻²² s", "label": "Lifetime" },
+            { "value": "10,000+", "label": "Researchers involved", "color": "info" }
+          ],
+          "callout": {
+            "text": "5σ means the probability of a fluke is 1 in 3.5 million — the threshold for 'discovery' in particle physics.",
+            "color": "warning"
+          }
+        }
+      }
+    }
+  ]
+}

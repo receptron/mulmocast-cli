@@ -241,7 +241,7 @@ yarn cli tool complete beats.json -s slide_dark -o presentation.json
 - `accentColor?`: `"primary" | "accent" | "success" | "warning" | "danger" | "info" | "highlight"`
 - `style?`: `{ "bgColor?": "hex", "decorations?": boolean, "bgOpacity?": number, "footer?": "..." }`
 
-## Content Blocks (7 types)
+## Content Blocks (10 types)
 
 Used in the `content` array of layouts such as columns, comparison, grid, split, and matrix.
 
@@ -279,6 +279,57 @@ Used in the `content` array of layouts such as columns, comparison, grid, split,
 ```json
 { "type": "image", "src": "photo.png", "alt?": "Description", "fit?": "contain|cover" }
 ```
+
+### imageRef
+```json
+{ "type": "imageRef", "ref": "logo", "alt?": "Description", "fit?": "contain|cover" }
+```
+
+References an image defined in `imageParams.images`. The `ref` value is a key in `imageParams.images`. At render time, the `imageRef` block is resolved to an `image` block with the generated/loaded image as `src`.
+
+```json
+{
+  "imageParams": {
+    "images": {
+      "logo": { "type": "imagePrompt", "prompt": "A modern company logo..." },
+      "photo": { "type": "image", "source": { "kind": "path", "path": "team.png" } }
+    }
+  },
+  "beats": [
+    {
+      "text": "...",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "columns", "title": "Our Team",
+          "columns": [
+            { "title": "Brand", "content": [{ "type": "imageRef", "ref": "logo" }] },
+            { "title": "Team",  "content": [{ "type": "imageRef", "ref": "photo", "fit": "cover" }] }
+          ]
+        }
+      }
+    }
+  ]
+}
+```
+
+- `ref` resolves to the image generated/loaded by `imageParams.images.<key>`
+- Works with all source types: `imagePrompt` (AI-generated), `image` with `path`/`url`/`base64`
+- Unknown ref keys throw an error
+
+### chart
+```json
+{ "type": "chart", "chartData": { "type": "bar", "data": { "labels": ["Q1", "Q2"], "datasets": [{ "data": [10, 20] }] } }, "title?": "Revenue" }
+```
+
+Renders a Chart.js chart inline. `chartData` is passed directly to `new Chart(ctx, chartData)`. Any Chart.js chart type (bar, line, pie, doughnut, radar, polarArea, etc.) is supported. Animation is automatically disabled for Puppeteer rendering. The Chart.js CDN is only loaded when a chart block is present.
+
+### mermaid
+```json
+{ "type": "mermaid", "code": "graph TD\n  A-->B\n  B-->C", "title?": "Flow Diagram" }
+```
+
+Renders a Mermaid diagram inline. `code` is the Mermaid diagram definition string. The Mermaid CDN is only loaded when a mermaid block is present. The mermaid theme (dark/default) is automatically chosen based on the slide background color.
 
 ## Shared Components
 
