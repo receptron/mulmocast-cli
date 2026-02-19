@@ -1,5 +1,5 @@
 ---
-generated_at: 2026-02-18T19:30:37.484Z
+generated_at: 2026-02-19T02:17:26.634Z
 ---
 
 # images
@@ -34,6 +34,7 @@ flowchart TD
   n_context --> n_imagePlugin
   n_beat --> n_imagePlugin
   n___mapIndex --> n_imagePlugin
+  n_imageRefs --> n_imagePlugin
   n_preprocessor --> n_imagePlugin
   n_htmlImageAgent(htmlImageAgent<br/>:htmlImageAgentInfo.agent)
   n_preprocessor -- htmlPrompt --> n_htmlImageAgent
@@ -193,6 +194,7 @@ flowchart TD
     n_map_context --> n_map_imagePlugin
     n_map_beat --> n_map_imagePlugin
     n_map___mapIndex --> n_map_imagePlugin
+    n_map_imageRefs --> n_map_imagePlugin
     n_map_preprocessor --> n_map_imagePlugin
     n_map_htmlImageAgent(htmlImageAgent<br/>:htmlImageAgentInfo.agent)
     n_map_preprocessor -- htmlPrompt --> n_map_htmlImageAgent
