@@ -1,5 +1,6 @@
 import { getAvailablePromptTemplates, getAvailableScriptTemplates, readTemplatePrompt } from "../src/utils/file.js";
 import fs from "fs";
+import path from "path";
 import util from "util";
 
 const main = () => {
@@ -57,6 +58,32 @@ const main = () => {
   const scriptTsExport = `export const scriptTemplates = ${scriptData}\n`;
   //  console.log(scriptTsExport);
   fs.writeFileSync("./src/data/scriptTemplates.ts", scriptTsExport, "utf8");
+
+  // slide themes
+  const slideThemesDir = "./assets/slide_themes";
+  const slideThemesObj: Record<string, unknown> = {};
+  fs.readdirSync(slideThemesDir)
+    .filter((f) => f.endsWith(".json"))
+    .sort()
+    .forEach((f) => {
+      const name = path.basename(f, ".json");
+      slideThemesObj[name] = JSON.parse(fs.readFileSync(path.join(slideThemesDir, f), "utf8"));
+    });
+  const slideThemesData = util.inspect(slideThemesObj, { depth: null, compact: false, sorted: true, breakLength: 120 });
+  fs.writeFileSync("./src/data/slideThemes.ts", `export const slideThemes = ${slideThemesData}\n`, "utf8");
+
+  // slide styles
+  const stylesDir = "./assets/styles";
+  const slideStylesObj: Record<string, unknown> = {};
+  fs.readdirSync(stylesDir)
+    .filter((f) => f.startsWith("slide_") && f.endsWith(".json"))
+    .sort()
+    .forEach((f) => {
+      const name = path.basename(f, ".json");
+      slideStylesObj[name] = JSON.parse(fs.readFileSync(path.join(stylesDir, f), "utf8"));
+    });
+  const slideStylesData = util.inspect(slideStylesObj, { depth: null, compact: false, sorted: true, breakLength: 120 });
+  fs.writeFileSync("./src/data/slideStyles.ts", `export const slideStyles = ${slideStylesData}\n`, "utf8");
 };
 
 main();
