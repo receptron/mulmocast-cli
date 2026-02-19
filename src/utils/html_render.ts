@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import nodePath from "node:path";
+import crypto from "node:crypto";
 import { marked } from "marked";
 import puppeteer from "puppeteer";
 
@@ -26,12 +27,16 @@ const loadHtmlIntoPage = async (page: puppeteer.Page, html: string, timeout_ms: 
   const hasFileUrls = /file:\/\//.test(html);
 
   if (hasFileUrls) {
-    const tmpFile = nodePath.join(os.tmpdir(), `mulmocast_render_${Date.now()}.html`);
+    const tmpFile = nodePath.join(os.tmpdir(), `mulmocast_render_${crypto.randomUUID()}.html`);
     fs.writeFileSync(tmpFile, html);
     try {
       await page.goto(`file://${tmpFile}`, { waitUntil, timeout: timeout_ms });
     } finally {
-      fs.unlinkSync(tmpFile);
+      try {
+        fs.unlinkSync(tmpFile);
+      } catch {
+        /* ignore cleanup errors */
+      }
     }
   } else {
     await page.setContent(html, { waitUntil, timeout: timeout_ms });

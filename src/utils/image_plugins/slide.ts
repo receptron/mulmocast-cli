@@ -6,8 +6,17 @@ import type { SlideLayout, SlideTheme, ContentBlock } from "../../slide/index.js
 import { renderHTMLToImage } from "../html_render.js";
 import { parrotingImagePath } from "./utils.js";
 import { pathToDataUrl } from "../../methods/mulmo_media_source.js";
+import { imageAction, imageFileTarget, unknownMediaType } from "../error_cause.js";
 
 export const imageType = "slide";
+
+const slideImageRefError = (refKey: string) => ({
+  type: unknownMediaType,
+  action: imageAction,
+  target: imageFileTarget,
+  agentName: "slidePlugin",
+  refKey,
+});
 
 /** Convert a file path to a file:// URL string */
 const toFileUrl = (filePath: string): string => {
@@ -70,7 +79,7 @@ export const resolveSlideImageRefs = (
       if (block.type !== "imageRef") return;
       const filePath = imageRefs[block.ref];
       if (!filePath) {
-        throw new Error(`Unknown image ref key: "${block.ref}"`);
+        throw new Error(`Unknown image ref key: "${block.ref}"`, { cause: slideImageRefError(block.ref) });
       }
       blocks[index] = {
         type: "image",

@@ -139,7 +139,7 @@
             "title": "CMS実験",
             "accentColor": "accent",
             "content": [
-              { "type": "imageRef", "ref": "lhc", "alt": "CMS検出器" },
+              { "type": "imageRef", "ref": "lhc", "alt": "LHCトンネル" },
               { "type": "metric", "value": "5.0σ", "label": "統計的有意性", "color": "accent" },
               { "type": "text", "value": "よりコンパクトだが超伝導ソレノイド磁石を搭載。約4,000人が参加。" }
             ]
@@ -178,7 +178,7 @@
               "title": "CMS検出器",
               "accentColor": "info",
               "content": [
-                { "type": "imageRef", "ref": "higgs_event", "alt": "CMS検出器", "fit": "cover" },
+                { "type": "imageRef", "ref": "higgs_event", "alt": "衝突イベントディスプレイ", "fit": "cover" },
                 { "type": "text", "value": "超伝導ソレノイド搭載", "dim": true }
               ]
             },
@@ -186,7 +186,7 @@
               "title": "CERN制御室",
               "accentColor": "warning",
               "content": [
-                { "type": "imageRef", "ref": "detector", "alt": "CERN制御室", "fit": "cover" },
+                { "type": "imageRef", "ref": "detector", "alt": "粒子検出器", "fit": "cover" },
                 { "type": "text", "value": "24時間体制で加速器を監視", "dim": true }
               ]
             }

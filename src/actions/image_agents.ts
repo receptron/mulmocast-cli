@@ -72,7 +72,7 @@ export const imagePreprocessAgent = async (namedInputs: {
   context: MulmoStudioContext;
   beat: MulmoBeat;
   index: number;
-  imageRefs: Record<string, string>;
+  imageRefs?: Record<string, string>;
 }): Promise<ImagePreprocessAgentResponse> => {
   const { context, beat, index, imageRefs } = namedInputs;
 
@@ -158,14 +158,14 @@ export const imagePreprocessAgent = async (namedInputs: {
   }
 
   // referenceImages for "edit_image", openai agent.
-  const referenceImages = MulmoBeatMethods.getImageReferenceForImageGenerator(beat, imageRefs);
+  const referenceImages = MulmoBeatMethods.getImageReferenceForImageGenerator(beat, imageRefs ?? {});
 
   const prompt = imagePrompt(beat, imageAgentInfo.imageParams.style);
   // ImageGenearalPreprocessAgentResponse
   return { ...returnValue, imagePath, referenceImageForMovie: imagePath, imageAgentInfo, prompt, referenceImages };
 };
 
-export const imagePluginAgent = async (namedInputs: { context: MulmoStudioContext; beat: MulmoBeat; index: number; imageRefs: Record<string, string> }) => {
+export const imagePluginAgent = async (namedInputs: { context: MulmoStudioContext; beat: MulmoBeat; index: number; imageRefs?: Record<string, string> }) => {
   const { context, beat, index, imageRefs } = namedInputs;
   const { imagePath } = getBeatPngImagePath(context, index);
 
