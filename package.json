@@ -17,7 +17,11 @@
       "default": "./lib/data/index.js"
     },
     "./assets/*": "./assets/*",
-    "./scripts/*": "./scripts/*"
+    "./scripts/*": "./scripts/*",
+    "./tools/complete_script": {
+      "types": "./lib/tools/complete_script.d.ts",
+      "default": "./lib/tools/complete_script.js"
+    }
   },
   "bin": {
     "mulmo": "lib/cli/bin.js",
@@ -30,6 +34,9 @@
     "./assets/audio/silent60sec.mp3",
     "./assets/html/",
     "./assets/images/",
+    "./assets/schemas/",
+    "./assets/slide_themes/",
+    "./assets/styles/",
     "./assets/templates/"
   ],
   "directories": {
