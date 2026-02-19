@@ -375,8 +375,8 @@ Renders a Mermaid diagram inline. `code` is the Mermaid diagram definition strin
 yarn cli tool complete beats.json -s slide_dark -o presentation.json
 
 # 3. Generate slide images
-yarn cli image presentation.json -o output/
+yarn cli images presentation.json -o output/
 
 # 4. Preview a specific beat
-yarn cli image presentation.json -o output/ --beat 0
+yarn cli images presentation.json -o output/ --beat 0
 ```
