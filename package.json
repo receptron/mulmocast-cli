@@ -107,7 +107,7 @@
     "marked": "^17.0.3",
     "mulmocast-vision": "^1.0.8",
     "ora": "^9.3.0",
-    "puppeteer": "^24.37.4",
+    "puppeteer": "^24.37.5",
     "replicate": "^1.4.0",
     "yaml": "^2.8.2",
     "yargs": "^18.0.0",
