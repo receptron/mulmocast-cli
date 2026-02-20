@@ -275,7 +275,7 @@ test("stats: renders stat cards with large values", () => {
       { value: "$1M", label: "Revenue" },
     ],
   });
-  assert.ok(html.includes("text-[48px]"));
+  assert.ok(html.includes("text-[52px]"));
   assert.ok(html.includes("10K"));
   assert.ok(html.includes("$1M"));
 });

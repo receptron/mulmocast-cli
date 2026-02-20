@@ -1,12 +1,26 @@
 import type { TimelineSlide } from "../schema.js";
-import { escapeHtml, nl2br, c, slideHeader } from "../utils.js";
+import { escapeHtml, nl2br, c } from "../utils.js";
 
 export const layoutTimeline = (data: TimelineSlide): string => {
-  const parts: string[] = [slideHeader(data)];
+  const accent = data.accentColor || "primary";
+  const parts: string[] = [];
   const items = data.items || [];
 
-  parts.push(`<div class="flex items-start px-12 mt-8 flex-1 relative">`);
-  parts.push(`<div class="absolute left-16 right-16 top-[52px] h-[2px] bg-d-alt"></div>`);
+  parts.push(`<div class="h-[3px] bg-${c(accent)} shrink-0"></div>`);
+  parts.push(`<div class="flex-1 flex flex-col justify-center px-12 min-h-0">`);
+
+  // Header inside centering wrapper
+  if (data.stepLabel) {
+    parts.push(`<p class="text-sm font-bold text-${c(accent)} font-body">${escapeHtml(data.stepLabel)}</p>`);
+  }
+  parts.push(`<h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${nl2br(data.title)}</h2>`);
+  if (data.subtitle) {
+    parts.push(`<p class="text-[15px] text-d-dim mt-2 font-body">${nl2br(data.subtitle)}</p>`);
+  }
+
+  // Timeline items
+  parts.push(`<div class="flex items-start mt-10 relative">`);
+  parts.push(`<div class="absolute left-4 right-4 top-[52px] h-[2px] bg-d-alt"></div>`);
 
   items.forEach((item) => {
     const color = item.color || data.accentColor || "primary";
@@ -24,6 +38,7 @@ export const layoutTimeline = (data: TimelineSlide): string => {
     parts.push(`</div>`);
   });
 
+  parts.push(`</div>`);
   parts.push(`</div>`);
   return parts.join("\n");
 };
