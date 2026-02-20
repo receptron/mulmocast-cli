@@ -8,88 +8,88 @@
   },
   "speechParams": {
     "speakers": {
-      "OpenAI_slow": {
+      "OpenAISlow": {
         "voiceId": "shimmer",
         "speechOptions": {
           "speed": 0.5
         },
         "provider": "openai"
       },
-      "OpenAI_normal": {
+      "OpenAINormal": {
         "voiceId": "shimmer",
         "speechOptions": {
           "speed": 1
         },
         "provider": "openai"
       },
-      "OpenAI_2x": {
+      "OpenAI2x": {
         "voiceId": "shimmer",
         "speechOptions": {
           "speed": 2
         },
         "provider": "openai"
       },
-      "OpenAI_max": {
+      "OpenAIMax": {
         "voiceId": "shimmer",
         "speechOptions": {
           "speed": 4
         },
         "provider": "openai"
       },
-      "Google_slow": {
+      "GoogleSlow": {
         "voiceId": "en-US-Standard-F",
         "speechOptions": {
           "speed": 0.5
         },
         "provider": "google"
       },
-      "Google_normal": {
+      "GoogleNormal": {
         "voiceId": "en-US-Standard-F",
         "speechOptions": {
           "speed": 1
         },
         "provider": "google"
       },
-      "Google_max": {
+      "GoogleMax": {
         "voiceId": "en-US-Standard-F",
         "speechOptions": {
           "speed": 2
         },
         "provider": "google"
       },
-      "ElevenLabs_slow": {
+      "ElevenLabsSlow": {
         "voiceId": "3JDquces8E8bkmvbh6Bc",
         "speechOptions": {
           "speed": 0.7
         },
         "provider": "elevenlabs"
       },
-      "ElevenLabs_normal": {
+      "ElevenLabsNormal": {
         "voiceId": "3JDquces8E8bkmvbh6Bc",
         "speechOptions": {
           "speed": 1
         },
         "provider": "elevenlabs"
       },
-      "ElevenLabs_max": {
+      "ElevenLabsMax": {
         "voiceId": "3JDquces8E8bkmvbh6Bc",
         "speechOptions": {
           "speed": 1.2
         },
         "provider": "elevenlabs"
       },
-      "Gemini_slow": {
+      "GeminiSlow": {
         "voiceId": "Kore",
         "speechOptions": {
           "instruction": "Speak very slowly and deliberately, with long pauses between words. Take your time with each syllable."
         },
         "provider": "gemini"
       },
-      "Gemini_normal": {
+      "GeminiNormal": {
         "voiceId": "Kore",
         "provider": "gemini"
       },
-      "Gemini_fast": {
+      "GeminiFast": {
         "voiceId": "Kore",
         "speechOptions": {
           "instruction": "Speak at a very fast pace, like a rapid-fire news anchor delivering breaking news. Rush through the words quickly."
@@ -124,7 +124,7 @@
   "lang": "en",
   "beats": [
     {
-      "speaker": "OpenAI_slow",
+      "speaker": "OpenAISlow",
       "text": "The quick brown fox jumps over the lazy dog. OpenAI at half speed.",
       "id": "d67a8f87-013a-4016-b4cd-528c04cbc297",
       "image": {
@@ -133,7 +133,7 @@
       }
     },
     {
-      "speaker": "OpenAI_normal",
+      "speaker": "OpenAINormal",
       "text": "The quick brown fox jumps over the lazy dog. OpenAI at normal speed.",
       "id": "36119196-a206-4aed-8674-cc9bad47ef0c",
       "image": {
@@ -142,7 +142,7 @@
       }
     },
     {
-      "speaker": "OpenAI_2x",
+      "speaker": "OpenAI2x",
       "text": "The quick brown fox jumps over the lazy dog. OpenAI at double speed.",
       "id": "970e7d58-d497-4eea-9861-f04e848db10b",
       "image": {
@@ -151,7 +151,7 @@
       }
     },
     {
-      "speaker": "OpenAI_max",
+      "speaker": "OpenAIMax",
       "text": "The quick brown fox jumps over the lazy dog. OpenAI at maximum speed.",
       "id": "3ca5d27e-82af-48de-97e9-1a43f739f79b",
       "image": {
@@ -160,7 +160,7 @@
       }
     },
     {
-      "speaker": "Google_slow",
+      "speaker": "GoogleSlow",
       "text": "The quick brown fox jumps over the lazy dog. Google Cloud at half speed.",
       "id": "04628574-8b75-4ca8-b6a5-6c37713c0c0e",
       "image": {
@@ -169,7 +169,7 @@
       }
     },
     {
-      "speaker": "Google_normal",
+      "speaker": "GoogleNormal",
       "text": "The quick brown fox jumps over the lazy dog. Google Cloud at normal speed.",
       "id": "4716cafe-3b5f-4d23-b6e9-716f44b14171",
       "image": {
@@ -178,7 +178,7 @@
       }
     },
     {
-      "speaker": "Google_max",
+      "speaker": "GoogleMax",
       "text": "The quick brown fox jumps over the lazy dog. Google Cloud at maximum speed.",
       "id": "dc98f3a6-4394-4c14-a88e-7308ddace081",
       "image": {
@@ -187,7 +187,7 @@
       }
     },
     {
-      "speaker": "ElevenLabs_slow",
+      "speaker": "ElevenLabsSlow",
       "text": "The quick brown fox jumps over the lazy dog. ElevenLabs at minimum speed.",
       "id": "d8a72016-c51d-45d4-9e14-bc5889066cdc",
       "image": {
@@ -196,7 +196,7 @@
       }
     },
     {
-      "speaker": "ElevenLabs_normal",
+      "speaker": "ElevenLabsNormal",
       "text": "The quick brown fox jumps over the lazy dog. ElevenLabs at normal speed.",
       "id": "cad52e62-9981-44cd-ae26-70c230fdf850",
       "image": {
@@ -205,7 +205,7 @@
       }
     },
     {
-      "speaker": "ElevenLabs_max",
+      "speaker": "ElevenLabsMax",
       "text": "The quick brown fox jumps over the lazy dog. ElevenLabs at maximum speed.",
       "id": "a13cbd67-2fd7-4f97-90fb-82d5dcd40bcb",
       "image": {
@@ -214,7 +214,7 @@
       }
     },
     {
-      "speaker": "Gemini_slow",
+      "speaker": "GeminiSlow",
       "text": "The quick brown fox jumps over the lazy dog. Gemini with slow prompt.",
       "id": "14e932ae-9bcb-4d17-802e-902a7dec9aad",
       "image": {
@@ -227,7 +227,7 @@
       }
     },
     {
-      "speaker": "Gemini_normal",
+      "speaker": "GeminiNormal",
       "text": "The quick brown fox jumps over the lazy dog. Gemini at normal speed.",
       "id": "c223b046-65dc-4425-987f-3ea3f36e7b27",
       "image": {
@@ -236,7 +236,7 @@
       }
     },
     {
-      "speaker": "Gemini_fast",
+      "speaker": "GeminiFast",
       "text": "The quick brown fox jumps over the lazy dog. Gemini with fast prompt.",
       "id": "88db419f-bf6d-42f7-8d04-02131806c3a5",
       "image": {
