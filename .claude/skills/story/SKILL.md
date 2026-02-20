@@ -1,7 +1,7 @@
 ---
 name: story
 description: Create high-quality MulmoScript through structured multi-phase creative process
-allowed-tools: Read, Write, Edit, Bash, Grep, Glob, WebSearch, WebFetch, mcp__playwright__browser_navigate, mcp__playwright__browser_snapshot, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_close, mcp__playwright__browser_install
+allowed-tools: Read, Write, Edit, Bash, Grep, Glob, WebSearch, WebFetch, mcp__playwright__browser_navigate, mcp__playwright__browser_snapshot, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_evaluate, mcp__playwright__browser_close, mcp__playwright__browser_install
 user-invocable: true
 ---
 
@@ -74,7 +74,7 @@ When using Playwright to fetch article content:
 For diagrams, charts, infographics, or embedded visuals that are not standalone images:
 
 - Use `browser_take_screenshot` with element `ref` to capture specific page elements, saving to `output/images/{scriptBasename}/`:
-  ```
+  ```text
   browser_take_screenshot with filename: "output/images/{scriptBasename}/diagram.png"
   ```
 
@@ -94,7 +94,7 @@ Use WebSearch to find authoritative photographs and official images:
 #### 4. Record collected assets
 
 Maintain a list of downloaded local images for use in Phase 4:
-```
+```text
 Collected images (saved to output/images/{scriptBasename}/):
 - product_photo.jpg: Product photograph from press release
 - diagram.png: Architecture diagram captured from article
@@ -285,7 +285,7 @@ For a script at `scripts/samples/my_topic.json` with images at `output/images/my
 }
 ```
 
-**Path formula**: From `scripts/samples/` to `output/images/{basename}/` → `../../output/images/{basename}/{filename}`
+**Path formula**: Compute the relative path from the script's directory to `output/images/{basename}/`. For scripts in `scripts/samples/`, this is `../../output/images/{basename}/{filename}`. Adjust the depth (`../`) based on the script's actual location.
 
 **Mix real and generated images** — use downloaded real images for recognizable subjects (people, products, places, hardware) and AI-generated images for abstract concepts, moods, or scenes without real counterparts. **Never use `kind: "url"`** — always download first for stability.
 
@@ -567,7 +567,7 @@ Before writing the final file, self-review against these criteria:
 5. **Specificity test**: Replace any vague statement with a concrete example, number, or name.
 6. **Visual variety**: Are at least 3 different layout types or visual approaches used?
 7. **Visual-narration alignment**: Does each visual directly support its narration? No generic stock-photo vibes.
-8. **Length check**: Total beats between 5-12 for most content (adjust for user request).
+8. **Length check**: 5-12 beats for short/medium content; 15-25 for long/chapter-based content (see Phase 2 scale table).
 9. **Closing impact**: Does the last beat leave the listener with something memorable?
 10. **Schema compliance**: All JSON follows MulmoScript schema (version "1.1", proper beat structure).
 
@@ -639,7 +639,7 @@ Make any improvements found during this review. Do not ask for approval on indiv
 
 Output the file path and summarize what was produced:
 
-```
+```text
 Wrote: <filename>
 
 Summary:
