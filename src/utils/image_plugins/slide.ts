@@ -2,7 +2,7 @@ import nodePath from "node:path";
 import { pathToFileURL } from "node:url";
 import { ImageProcessorParams } from "../../types/index.js";
 import { generateSlideHTML } from "../../slide/index.js";
-import type { SlideLayout, SlideTheme, ContentBlock } from "../../slide/index.js";
+import type { SlideLayout, SlideTheme, ContentBlock, MulmoSlideMedia } from "../../slide/index.js";
 import { renderHTMLToImage } from "../html_render.js";
 import { parrotingImagePath } from "./utils.js";
 import { pathToDataUrl } from "../../methods/mulmo_media_source.js";
@@ -123,7 +123,8 @@ const processSlide = async (params: ImageProcessorParams) => {
 
   const theme = resolveTheme(params);
   const slide = resolveSlide(params, toFileUrl);
-  const html = generateSlideHTML(theme, slide);
+  const reference = (beat.image as MulmoSlideMedia).reference;
+  const html = generateSlideHTML(theme, slide, reference);
   await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;
 };
@@ -134,7 +135,8 @@ const dumpHtml = async (params: ImageProcessorParams) => {
 
   const theme = resolveTheme(params);
   const slide = resolveSlide(params);
-  return generateSlideHTML(theme, slide);
+  const reference = (beat.image as MulmoSlideMedia).reference;
+  return generateSlideHTML(theme, slide, reference);
 };
 
 export const process = processSlide;

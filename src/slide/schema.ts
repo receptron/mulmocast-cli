@@ -392,6 +392,7 @@ export const mulmoSlideMediaSchema = z
     type: z.literal("slide"),
     theme: slideThemeSchema.optional(),
     slide: slideLayoutSchema,
+    reference: z.string().optional(),
   })
   .strict();
 

@@ -26,7 +26,7 @@ const buildCdnScripts = (theme: SlideTheme, slide: SlideLayout): string => {
 };
 
 /** Generate a complete HTML document for a single slide */
-export const generateSlideHTML = (theme: SlideTheme, slide: SlideLayout): string => {
+export const generateSlideHTML = (theme: SlideTheme, slide: SlideLayout, reference?: string): string => {
   const content = renderSlideContent(slide);
   const twConfig = buildTailwindConfig(theme);
   const cdnScripts = buildCdnScripts(theme, slide);
@@ -35,6 +35,7 @@ export const generateSlideHTML = (theme: SlideTheme, slide: SlideLayout): string
   const bgCls = slideStyle?.bgColor ? "" : "bg-d-bg";
   const inlineStyle = slideStyle?.bgColor ? ` style="background-color:#${sanitizeHex(slideStyle.bgColor)}"` : "";
   const footer = slideStyle?.footer ? `<p class="absolute bottom-2 right-4 text-xs text-d-dim font-body">${escapeHtml(slideStyle.footer)}</p>` : "";
+  const referenceHtml = reference ? `<p class="absolute bottom-2 left-4 text-sm text-d-muted font-body opacity-80">${escapeHtml(reference)}</p>` : "";
 
   return `<!DOCTYPE html>
 <html lang="en" class="h-full">
@@ -52,6 +53,7 @@ ${cdnScripts}
 <div class="relative overflow-hidden ${bgCls} w-full h-full flex flex-col"${inlineStyle}>
 ${content}
 ${footer}
+${referenceHtml}
 </div>
 </body>
 </html>`;
