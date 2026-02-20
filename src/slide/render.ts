@@ -35,7 +35,7 @@ export const generateSlideHTML = (theme: SlideTheme, slide: SlideLayout, referen
   const bgCls = slideStyle?.bgColor ? "" : "bg-d-bg";
   const inlineStyle = slideStyle?.bgColor ? ` style="background-color:#${sanitizeHex(slideStyle.bgColor)}"` : "";
   const footer = slideStyle?.footer ? `<p class="absolute bottom-2 right-4 text-xs text-d-dim font-body">${escapeHtml(slideStyle.footer)}</p>` : "";
-  const referenceHtml = reference ? `<p class="absolute bottom-2 left-4 text-xs text-d-dim font-body opacity-70">${escapeHtml(reference)}</p>` : "";
+  const referenceHtml = reference ? `<p class="absolute bottom-2 left-4 text-sm text-d-muted font-body opacity-80">${escapeHtml(reference)}</p>` : "";
 
   return `<!DOCTYPE html>
 <html lang="en" class="h-full">
