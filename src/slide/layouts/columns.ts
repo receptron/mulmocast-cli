@@ -25,7 +25,7 @@ const buildColumnCard = (col: Card): string => {
 
   if (col.content) {
     const centerCls = col.icon ? "text-center" : "";
-    inner.push(`<div class="mt-3 space-y-3 flex-1 min-h-0 overflow-hidden flex flex-col ${centerCls}">`);
+    inner.push(`<div class="mt-3 space-y-3 flex-1 min-h-0 overflow-auto flex flex-col justify-center ${centerCls}">`);
     inner.push(renderCardContentBlocks(col.content));
     inner.push(`</div>`);
   }

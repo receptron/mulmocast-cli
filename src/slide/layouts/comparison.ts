@@ -9,7 +9,7 @@ const buildPanel = (panel: ComparisonPanel): string => {
   inner.push(`<h3 class="text-xl font-bold text-${c(accent)} font-body">${escapeHtml(panel.title)}</h3>`);
 
   if (panel.content) {
-    inner.push(`<div class="mt-4 space-y-3 flex-1 min-h-0 overflow-hidden flex flex-col">`);
+    inner.push(`<div class="mt-4 space-y-3 flex-1 min-h-0 overflow-auto flex flex-col justify-center">`);
     inner.push(renderContentBlocks(panel.content));
     inner.push(`</div>`);
   }
