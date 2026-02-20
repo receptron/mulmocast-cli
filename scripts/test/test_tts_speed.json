@@ -1,0 +1,252 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "canvasSize": {
+    "width": 720,
+    "height": 720
+  },
+  "speechParams": {
+    "speakers": {
+      "OpenAI_slow": {
+        "voiceId": "shimmer",
+        "speechOptions": {
+          "speed": 0.5
+        },
+        "provider": "openai"
+      },
+      "OpenAI_normal": {
+        "voiceId": "shimmer",
+        "speechOptions": {
+          "speed": 1
+        },
+        "provider": "openai"
+      },
+      "OpenAI_2x": {
+        "voiceId": "shimmer",
+        "speechOptions": {
+          "speed": 2
+        },
+        "provider": "openai"
+      },
+      "OpenAI_max": {
+        "voiceId": "shimmer",
+        "speechOptions": {
+          "speed": 4
+        },
+        "provider": "openai"
+      },
+      "Google_slow": {
+        "voiceId": "en-US-Standard-F",
+        "speechOptions": {
+          "speed": 0.5
+        },
+        "provider": "google"
+      },
+      "Google_normal": {
+        "voiceId": "en-US-Standard-F",
+        "speechOptions": {
+          "speed": 1
+        },
+        "provider": "google"
+      },
+      "Google_max": {
+        "voiceId": "en-US-Standard-F",
+        "speechOptions": {
+          "speed": 2
+        },
+        "provider": "google"
+      },
+      "ElevenLabs_slow": {
+        "voiceId": "3JDquces8E8bkmvbh6Bc",
+        "speechOptions": {
+          "speed": 0.7
+        },
+        "provider": "elevenlabs"
+      },
+      "ElevenLabs_normal": {
+        "voiceId": "3JDquces8E8bkmvbh6Bc",
+        "speechOptions": {
+          "speed": 1
+        },
+        "provider": "elevenlabs"
+      },
+      "ElevenLabs_max": {
+        "voiceId": "3JDquces8E8bkmvbh6Bc",
+        "speechOptions": {
+          "speed": 1.2
+        },
+        "provider": "elevenlabs"
+      },
+      "Gemini_slow": {
+        "voiceId": "Kore",
+        "speechOptions": {
+          "instruction": "Speak very slowly and deliberately, with long pauses between words. Take your time with each syllable."
+        },
+        "provider": "gemini"
+      },
+      "Gemini_normal": {
+        "voiceId": "Kore",
+        "provider": "gemini"
+      },
+      "Gemini_fast": {
+        "voiceId": "Kore",
+        "speechOptions": {
+          "instruction": "Speak at a very fast pace, like a rapid-fire news anchor delivering breaking news. Rush through the words quickly."
+        },
+        "provider": "gemini"
+      }
+    }
+  },
+  "imageParams": {
+    "provider": "openai",
+    "images": {}
+  },
+  "movieParams": {
+    "provider": "replicate"
+  },
+  "soundEffectParams": {
+    "provider": "replicate"
+  },
+  "textSlideParams": {
+    "cssStyles": ["body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; text-align: center; }"]
+  },
+  "audioParams": {
+    "padding": 0.3,
+    "introPadding": 1,
+    "closingPadding": 0.8,
+    "outroPadding": 1,
+    "bgmVolume": 0.2,
+    "audioVolume": 1,
+    "suppressSpeech": false
+  },
+  "title": "TTS Speed Parameter Test",
+  "lang": "en",
+  "beats": [
+    {
+      "speaker": "OpenAI_slow",
+      "text": "The quick brown fox jumps over the lazy dog. OpenAI at half speed.",
+      "id": "d67a8f87-013a-4016-b4cd-528c04cbc297",
+      "image": {
+        "type": "markdown",
+        "markdown": ["## OpenAI", "## speed: 0.5 (slow)"]
+      }
+    },
+    {
+      "speaker": "OpenAI_normal",
+      "text": "The quick brown fox jumps over the lazy dog. OpenAI at normal speed.",
+      "id": "36119196-a206-4aed-8674-cc9bad47ef0c",
+      "image": {
+        "type": "markdown",
+        "markdown": ["## OpenAI", "## speed: 1.0 (normal)"]
+      }
+    },
+    {
+      "speaker": "OpenAI_2x",
+      "text": "The quick brown fox jumps over the lazy dog. OpenAI at double speed.",
+      "id": "970e7d58-d497-4eea-9861-f04e848db10b",
+      "image": {
+        "type": "markdown",
+        "markdown": ["## OpenAI", "## speed: 2.0 (2x)"]
+      }
+    },
+    {
+      "speaker": "OpenAI_max",
+      "text": "The quick brown fox jumps over the lazy dog. OpenAI at maximum speed.",
+      "id": "3ca5d27e-82af-48de-97e9-1a43f739f79b",
+      "image": {
+        "type": "markdown",
+        "markdown": ["## OpenAI", "## speed: 4.0 (max)"]
+      }
+    },
+    {
+      "speaker": "Google_slow",
+      "text": "The quick brown fox jumps over the lazy dog. Google Cloud at half speed.",
+      "id": "04628574-8b75-4ca8-b6a5-6c37713c0c0e",
+      "image": {
+        "type": "markdown",
+        "markdown": ["## Google", "## speed: 0.5 (slow)"]
+      }
+    },
+    {
+      "speaker": "Google_normal",
+      "text": "The quick brown fox jumps over the lazy dog. Google Cloud at normal speed.",
+      "id": "4716cafe-3b5f-4d23-b6e9-716f44b14171",
+      "image": {
+        "type": "markdown",
+        "markdown": ["## Google", "## speed: 1.0 (normal)"]
+      }
+    },
+    {
+      "speaker": "Google_max",
+      "text": "The quick brown fox jumps over the lazy dog. Google Cloud at maximum speed.",
+      "id": "dc98f3a6-4394-4c14-a88e-7308ddace081",
+      "image": {
+        "type": "markdown",
+        "markdown": ["## Google", "## speed: 2.0 (max)"]
+      }
+    },
+    {
+      "speaker": "ElevenLabs_slow",
+      "text": "The quick brown fox jumps over the lazy dog. ElevenLabs at minimum speed.",
+      "id": "d8a72016-c51d-45d4-9e14-bc5889066cdc",
+      "image": {
+        "type": "markdown",
+        "markdown": ["## ElevenLabs", "## speed: 0.7 (slow)"]
+      }
+    },
+    {
+      "speaker": "ElevenLabs_normal",
+      "text": "The quick brown fox jumps over the lazy dog. ElevenLabs at normal speed.",
+      "id": "cad52e62-9981-44cd-ae26-70c230fdf850",
+      "image": {
+        "type": "markdown",
+        "markdown": ["## ElevenLabs", "## speed: 1.0 (normal)"]
+      }
+    },
+    {
+      "speaker": "ElevenLabs_max",
+      "text": "The quick brown fox jumps over the lazy dog. ElevenLabs at maximum speed.",
+      "id": "a13cbd67-2fd7-4f97-90fb-82d5dcd40bcb",
+      "image": {
+        "type": "markdown",
+        "markdown": ["## ElevenLabs", "## speed: 1.2 (max)"]
+      }
+    },
+    {
+      "speaker": "Gemini_slow",
+      "text": "The quick brown fox jumps over the lazy dog. Gemini with slow prompt.",
+      "id": "14e932ae-9bcb-4d17-802e-902a7dec9aad",
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "## Gemini slow",
+          "### instruction (prompt):",
+          "### Speak very slowly and deliberately, with long pauses between words. Take your time with each syllable."
+        ]
+      }
+    },
+    {
+      "speaker": "Gemini_normal",
+      "text": "The quick brown fox jumps over the lazy dog. Gemini at normal speed.",
+      "id": "c223b046-65dc-4425-987f-3ea3f36e7b27",
+      "image": {
+        "type": "markdown",
+        "markdown": ["## Gemini normal", "### instruction (prompt):", "### (no instruction)"]
+      }
+    },
+    {
+      "speaker": "Gemini_fast",
+      "text": "The quick brown fox jumps over the lazy dog. Gemini with fast prompt.",
+      "id": "88db419f-bf6d-42f7-8d04-02131806c3a5",
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "## Gemini fast",
+          "### instruction (prompt):",
+          "### Speak at a very fast pace, like a rapid-fire news anchor delivering breaking news. Rush through the words quickly."
+        ]
+      }
+    }
+  ]
+}
