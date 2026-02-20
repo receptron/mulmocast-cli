@@ -25,14 +25,13 @@ const buildColumnCard = (col: Card): string => {
 
   if (col.content) {
     const centerCls = col.icon ? "text-center" : "";
-    inner.push(`<div class="mt-3 space-y-3 flex-1 min-h-0 overflow-auto flex flex-col justify-center ${centerCls}">`);
+    inner.push(`<div class="mt-4 space-y-4 flex-1 min-h-0 overflow-auto flex flex-col ${centerCls}">`);
     inner.push(renderCardContentBlocks(col.content));
     inner.push(`</div>`);
   }
 
   if (col.footer) {
-    inner.push(`<div class="flex-1"></div>`);
-    inner.push(`<p class="text-sm text-d-dim font-body mt-3">${escapeHtml(col.footer)}</p>`);
+    inner.push(`<p class="text-sm text-d-dim font-body mt-auto pt-3">${escapeHtml(col.footer)}</p>`);
   }
 
   return cardWrap(accent, inner.join("\n"), "flex-1");
@@ -50,7 +49,7 @@ export const layoutColumns = (data: ColumnsSlide): string => {
     }
   });
 
-  parts.push(`<div class="flex gap-4 px-12 mt-5 flex-1 min-h-0 items-stretch">`);
+  parts.push(`<div class="flex gap-4 px-12 mt-5 flex-1 min-h-0 items-start">`);
   parts.push(colElements.join("\n"));
   parts.push(`</div>`);
 
