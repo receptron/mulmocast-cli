@@ -15,14 +15,6 @@ Create compelling MulmoScript through a 6-phase creative process. Each phase pro
 
 ## Phase 1: Research & Understanding
 
-### Playwright MCP setup (one-time)
-
-Before fetching web URLs, check if Playwright MCP is available by attempting to use `mcp__playwright__browser_navigate`. If the tool is not available:
-
-1. Tell the user: "Playwright MCP が未インストールです。インストールします。"
-2. Run: `claude mcp add playwright -- npx @playwright/mcp@latest`
-3. Tell the user to restart Claude Code for the MCP to take effect, then re-run `/story`
-
 ### Determine the input source
 
 Ask the user what they want to create content about. Inputs can be:
@@ -33,13 +25,20 @@ Ask the user what they want to create content about. Inputs can be:
 
 ### Web fetching strategy
 
-For URL inputs, use Playwright MCP as the primary method:
+For URL inputs, try **WebFetch first**. Only use Playwright MCP when WebFetch fails (paywalled sites, JS-heavy content, cookie walls).
 
-1. **Playwright MCP (preferred)**: Navigate to the URL with `browser_navigate`, then use `browser_snapshot` to extract the full page content as structured text. This handles paywalled sites, JavaScript-rendered content, and cookie dialogs that block WebFetch.
-2. **WebFetch (fallback)**: If Playwright MCP is not available, use WebFetch. Note that this may fail on paywalled or JS-heavy sites.
+1. **WebFetch (default)**: Use WebFetch to retrieve the page content. This is simpler and sufficient for most public pages.
+2. **Playwright MCP (fallback for blocked sites)**: If WebFetch fails or returns incomplete content (paywalled, JS-rendered), use `browser_navigate` + `browser_snapshot`. Close the browser with `browser_close` after fetching.
 3. **WebSearch (supplement)**: Use WebSearch to gather additional context, related articles, and fact-checking regardless of the primary fetch method.
 
-After fetching, close the browser with `browser_close` to free resources.
+#### Paginated content
+
+If the page has pagination (e.g., "Next page", "Page 2 of 5", numbered page links), **fetch ALL pages** before proceeding. Do not create a presentation from only the first page.
+
+1. After fetching the first page, check for pagination indicators: "Next", "次へ", page numbers, "Load more", or `rel="next"` links
+2. Follow each page link and fetch its content (using the same method — WebFetch or Playwright)
+3. Combine all page content in order before conducting research
+4. If the article spans multiple URLs (e.g., Part 1, Part 2 linked at the bottom), fetch all parts
 
 ### Conduct deep research
 
@@ -55,10 +54,10 @@ During research, actively collect real images that can enhance the presentation.
 
 #### 1. Extract and download images from the source article
 
-When using Playwright to fetch article content:
+When fetching article content (via WebFetch or Playwright):
 
-- Use `browser_snapshot` to identify `<img>` elements and their URLs
-- Use `browser_evaluate` to collect all image URLs:
+- Identify image URLs from the fetched content (look for `<img>` elements in the HTML)
+- If using Playwright, use `browser_evaluate` to collect image URLs:
   ```javascript
   () => Array.from(document.querySelectorAll('img')).filter(img => img.naturalWidth > 200).map(img => ({src: img.src, alt: img.alt || ''}))
   ```
@@ -69,9 +68,9 @@ When using Playwright to fetch article content:
   curl -L -o output/images/{scriptBasename}/{descriptive_name}.jpg "https://example.com/photo.jpg"
   ```
 
-#### 2. Capture element screenshots
+#### 2. Capture element screenshots (Playwright only)
 
-For diagrams, charts, infographics, or embedded visuals that are not standalone images:
+For diagrams, charts, infographics, or embedded visuals that are not standalone images and Playwright is in use:
 
 - Use `browser_take_screenshot` with element `ref` to capture specific page elements, saving to `output/images/{scriptBasename}/`:
   ```text
@@ -83,7 +82,6 @@ For diagrams, charts, infographics, or embedded visuals that are not standalone 
 Use WebSearch to find authoritative photographs and official images:
 
 - Search for `"[subject] official photo"`, `"[subject] press release image"`, or `"[subject] product shot"`
-- Navigate to image results with Playwright if needed to get direct image URLs
 - **Download found images** to `output/images/{scriptBasename}/`:
   ```bash
   curl -L -o output/images/{scriptBasename}/{descriptive_name}.jpg "https://found-image-url.jpg"
