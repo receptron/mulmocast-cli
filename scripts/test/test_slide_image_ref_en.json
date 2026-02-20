@@ -280,7 +280,8 @@
             "text": "5σ means the probability of a fluke is 1 in 3.5 million — the threshold for 'discovery' in particle physics.",
             "color": "warning"
           }
-        }
+        },
+        "reference": "Source: CERN Annual Report 2024 — https://home.cern/resources/report"
       }
     }
   ]
