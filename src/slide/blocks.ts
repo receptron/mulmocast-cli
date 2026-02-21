@@ -184,7 +184,7 @@ const renderMetric = (block: ContentBlock & { type: "metric" }): string => {
   lines.push(`  <p class="text-4xl font-bold text-${c(block.color || "primary")}">${renderInlineMarkup(block.value)}</p>`);
   lines.push(`  <p class="text-sm text-d-dim mt-1">${renderInlineMarkup(block.label)}</p>`);
   if (block.change) {
-    const changeColor = block.change.startsWith("+") ? "success" : "danger";
+    const changeColor = /\+/.test(block.change) ? "success" : "danger";
     lines.push(`  <p class="text-sm font-bold text-${c(changeColor)} mt-1">${escapeHtml(block.change)}</p>`);
   }
   lines.push(`</div>`);
@@ -239,6 +239,18 @@ const renderMermaid = (block: ContentBlock & { type: "mermaid" }): string => {
 </div>`;
 };
 
+/** Render the text + content blocks inside a section (shared by sidebar/default variants) */
+const renderSectionContent = (block: SectionBlock): string => {
+  const parts: string[] = [];
+  if (block.text) {
+    parts.push(`<p class="text-[15px] text-d-muted font-body">${renderInlineMarkup(block.text)}</p>`);
+  }
+  if (block.content) {
+    parts.push(block.content.map(renderContentBlock).join("\n"));
+  }
+  return parts.join("\n");
+};
+
 const renderSectionSidebar = (block: SectionBlock): string => {
   const color = block.color || "primary";
   const chars = block.label
@@ -246,32 +258,18 @@ const renderSectionSidebar = (block: SectionBlock): string => {
     .map((ch) => escapeHtml(ch))
     .join("<br>");
   const sidebar = `<div class="w-[48px] shrink-0 rounded-l bg-${c(color)} flex items-center justify-center"><span class="text-sm font-bold text-white font-body leading-snug text-center">${chars}</span></div>`;
-  const contentParts: string[] = [];
-  if (block.text) {
-    contentParts.push(`<p class="text-[15px] text-d-muted font-body">${renderInlineMarkup(block.text)}</p>`);
-  }
-  if (block.content) {
-    contentParts.push(block.content.map(renderContentBlock).join("\n"));
-  }
   return `<div class="flex rounded overflow-hidden bg-d-card">
   ${sidebar}
-  <div class="flex-1 space-y-2 p-3">${contentParts.join("\n")}</div>
+  <div class="flex-1 space-y-2 p-3">${renderSectionContent(block)}</div>
 </div>`;
 };
 
 const renderSectionDefault = (block: SectionBlock): string => {
   const color = block.color || "primary";
   const badge = `<span class="min-w-[80px] px-3 py-1 rounded text-sm font-bold text-white bg-${c(color)} shrink-0">${renderInlineMarkup(block.label)}</span>`;
-  const contentParts: string[] = [];
-  if (block.text) {
-    contentParts.push(`<p class="text-[15px] text-d-muted font-body">${renderInlineMarkup(block.text)}</p>`);
-  }
-  if (block.content) {
-    contentParts.push(block.content.map(renderContentBlock).join("\n"));
-  }
   return `<div class="flex gap-4 items-start">
   ${badge}
-  <div class="flex-1 space-y-2">${contentParts.join("\n")}</div>
+  <div class="flex-1 space-y-2">${renderSectionContent(block)}</div>
 </div>`;
 };
 

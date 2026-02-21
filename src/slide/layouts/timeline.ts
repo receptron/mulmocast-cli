@@ -1,5 +1,5 @@
 import type { TimelineSlide } from "../schema.js";
-import { renderInlineMarkup, c } from "../utils.js";
+import { renderInlineMarkup, c, renderHeaderText } from "../utils.js";
 
 export const layoutTimeline = (data: TimelineSlide): string => {
   const accent = data.accentColor || "primary";
@@ -10,13 +10,7 @@ export const layoutTimeline = (data: TimelineSlide): string => {
   parts.push(`<div class="flex-1 flex flex-col justify-center px-12 min-h-0">`);
 
   // Header inside centering wrapper
-  if (data.stepLabel) {
-    parts.push(`<p class="text-sm font-bold text-${c(accent)} font-body">${renderInlineMarkup(data.stepLabel)}</p>`);
-  }
-  parts.push(`<h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${renderInlineMarkup(data.title)}</h2>`);
-  if (data.subtitle) {
-    parts.push(`<p class="text-[15px] text-d-dim mt-2 font-body">${renderInlineMarkup(data.subtitle)}</p>`);
-  }
+  parts.push(renderHeaderText(data));
 
   // Timeline items
   parts.push(`<div class="flex items-start mt-10 relative">`);

@@ -133,21 +133,24 @@ export const renderCalloutBar = (obj: { text: string; label?: string; color?: st
 </div>`;
 };
 
+/** Render header text elements (stepLabel + title + subtitle) without wrapping div */
+export const renderHeaderText = (data: { accentColor?: string; stepLabel?: string; title: string; subtitle?: string }): string => {
+  const accent = data.accentColor || "primary";
+  const lines: string[] = [];
+  if (data.stepLabel) {
+    lines.push(`<p class="text-sm font-bold text-${c(accent)} font-body">${renderInlineMarkup(data.stepLabel)}</p>`);
+  }
+  lines.push(`<h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${renderInlineMarkup(data.title)}</h2>`);
+  if (data.subtitle) {
+    lines.push(`<p class="text-[15px] text-d-dim mt-2 font-body">${renderInlineMarkup(data.subtitle)}</p>`);
+  }
+  return lines.join("\n");
+};
+
 /** Render the common slide header (accent bar + title + subtitle) */
 export const slideHeader = (data: { accentColor?: string; stepLabel?: string; title: string; subtitle?: string }): string => {
   const accent = data.accentColor || "primary";
-  const lines: string[] = [];
-  lines.push(`<div class="h-[3px] bg-${c(accent)} shrink-0"></div>`);
-  lines.push(`<div class="px-12 pt-5 shrink-0">`);
-  if (data.stepLabel) {
-    lines.push(`  <p class="text-sm font-bold text-${c(accent)} font-body">${renderInlineMarkup(data.stepLabel)}</p>`);
-  }
-  lines.push(`  <h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${renderInlineMarkup(data.title)}</h2>`);
-  if (data.subtitle) {
-    lines.push(`  <p class="text-[15px] text-d-dim mt-2 font-body">${renderInlineMarkup(data.subtitle)}</p>`);
-  }
-  lines.push(`</div>`);
-  return lines.join("\n");
+  return [`<div class="h-[3px] bg-${c(accent)} shrink-0"></div>`, `<div class="px-12 pt-5 shrink-0">`, renderHeaderText(data), `</div>`].join("\n");
 };
 
 // ═══════════════════════════════════════════════════════════
