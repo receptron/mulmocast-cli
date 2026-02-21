@@ -1,5 +1,5 @@
 import type { FunnelSlide } from "../schema.js";
-import { renderInlineMarkup, c, slideHeader, renderCalloutBar } from "../utils.js";
+import { renderInlineMarkup, c, slideHeader, renderOptionalCallout, resolveItemColor } from "../utils.js";
 
 export const layoutFunnel = (data: FunnelSlide): string => {
   const parts: string[] = [slideHeader(data)];
@@ -9,7 +9,7 @@ export const layoutFunnel = (data: FunnelSlide): string => {
   parts.push(`<div class="flex flex-col items-center gap-2 px-12 mt-6 flex-1">`);
 
   stages.forEach((stage, i) => {
-    const color = stage.color || data.accentColor || "primary";
+    const color = resolveItemColor(stage.color, data.accentColor);
     const widthPct = 100 - (i / Math.max(total - 1, 1)) * 55;
     parts.push(`<div class="bg-${c(color)} rounded-lg flex items-center justify-between px-6 py-4" style="width: ${widthPct}%">`);
     parts.push(`  <div class="flex items-center gap-3">`);
@@ -26,9 +26,7 @@ export const layoutFunnel = (data: FunnelSlide): string => {
 
   parts.push(`</div>`);
 
-  if (data.callout) {
-    parts.push(`<div class="mt-auto pb-4">${renderCalloutBar(data.callout)}</div>`);
-  }
+  parts.push(renderOptionalCallout(data.callout));
 
   return parts.join("\n");
 };

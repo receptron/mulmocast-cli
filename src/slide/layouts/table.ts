@@ -1,5 +1,5 @@
 import type { TableSlide } from "../schema.js";
-import { slideHeader, renderCalloutBar } from "../utils.js";
+import { slideHeader, renderOptionalCallout } from "../utils.js";
 import { renderTableCore } from "../blocks.js";
 
 export const layoutTable = (data: TableSlide): string => {
@@ -9,9 +9,7 @@ export const layoutTable = (data: TableSlide): string => {
   parts.push(renderTableCore(data.headers, data.rows, data.rowHeaders, data.striped));
   parts.push(`</div>`);
 
-  if (data.callout) {
-    parts.push(`<div class="mt-auto pb-4">${renderCalloutBar(data.callout)}</div>`);
-  }
+  parts.push(renderOptionalCallout(data.callout));
 
   return parts.join("\n");
 };

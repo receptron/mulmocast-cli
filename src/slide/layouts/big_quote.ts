@@ -1,15 +1,15 @@
 import type { BigQuoteSlide } from "../schema.js";
-import { renderInlineMarkup, c } from "../utils.js";
+import { renderInlineMarkup, accentBar, resolveAccent } from "../utils.js";
 
 export const layoutBigQuote = (data: BigQuoteSlide): string => {
-  const accent = data.accentColor || "primary";
+  const accent = resolveAccent(data.accentColor);
   const parts: string[] = [];
   parts.push(`<div class="flex flex-col items-center justify-center h-full px-20">`);
-  parts.push(`  <div class="h-[3px] w-24 bg-${c(accent)} mb-8"></div>`);
+  parts.push(`  ${accentBar(accent, "w-24 mb-8")}`);
   parts.push(`  <blockquote class="text-[32px] text-d-text font-title italic text-center leading-relaxed">`);
   parts.push(`    &ldquo;${renderInlineMarkup(data.quote)}&rdquo;`);
   parts.push(`  </blockquote>`);
-  parts.push(`  <div class="h-[3px] w-24 bg-${c(accent)} mt-8 mb-6"></div>`);
+  parts.push(`  ${accentBar(accent, "w-24 mt-8 mb-6")}`);
   if (data.author) {
     parts.push(`  <p class="text-lg text-d-muted font-body">${renderInlineMarkup(data.author)}</p>`);
   }

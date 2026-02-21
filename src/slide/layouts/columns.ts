@@ -1,9 +1,9 @@
 import type { ColumnsSlide, Card } from "../schema.js";
-import { renderInlineMarkup, c, cardWrap, numBadge, iconSquare, slideHeader, renderCalloutBar } from "../utils.js";
+import { renderInlineMarkup, c, cardWrap, numBadge, iconSquare, slideHeader, renderOptionalCallout, resolveAccent } from "../utils.js";
 import { renderCardContentBlocks } from "../blocks.js";
 
 const buildColumnCard = (col: Card): string => {
-  const accent = col.accentColor || "primary";
+  const accent = resolveAccent(col.accentColor);
   const inner: string[] = [];
 
   if (col.icon) {
@@ -53,9 +53,7 @@ export const layoutColumns = (data: ColumnsSlide): string => {
   parts.push(colElements.join("\n"));
   parts.push(`</div>`);
 
-  if (data.callout) {
-    parts.push(`<div class="mt-auto pb-4">${renderCalloutBar(data.callout)}</div>`);
-  }
+  parts.push(renderOptionalCallout(data.callout));
   if (data.bottomText) {
     parts.push(`<p class="text-center text-sm text-d-dim font-body pb-4">${renderInlineMarkup(data.bottomText)}</p>`);
   }

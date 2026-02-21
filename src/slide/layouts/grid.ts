@@ -1,21 +1,15 @@
 import type { GridSlide } from "../schema.js";
-import { renderInlineMarkup, c, cardWrap, numBadge, iconSquare } from "../utils.js";
+import { renderInlineMarkup, cardWrap, numBadge, iconSquare, slideHeader, resolveAccent } from "../utils.js";
 import { renderCardContentBlocks } from "../blocks.js";
 
 export const layoutGrid = (data: GridSlide): string => {
-  const accent = data.accentColor || "primary";
   const nCols = data.gridColumns || 3;
-  const parts: string[] = [];
-
-  parts.push(`<div class="h-[3px] bg-${c(accent)} shrink-0"></div>`);
-  parts.push(`<div class="px-12 pt-5 shrink-0">`);
-  parts.push(`  <h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${renderInlineMarkup(data.title)}</h2>`);
-  parts.push(`</div>`);
+  const parts: string[] = [slideHeader(data)];
 
   parts.push(`<div class="grid grid-cols-${nCols} gap-4 px-12 mt-5 flex-1 min-h-0 overflow-hidden content-center">`);
 
   (data.items || []).forEach((item) => {
-    const itemAccent = item.accentColor || "primary";
+    const itemAccent = resolveAccent(item.accentColor);
     const inner: string[] = [];
 
     if (item.icon) {

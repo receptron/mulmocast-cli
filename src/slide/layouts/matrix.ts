@@ -1,5 +1,5 @@
 import type { MatrixSlide } from "../schema.js";
-import { renderInlineMarkup, c, cardWrap, slideHeader } from "../utils.js";
+import { renderInlineMarkup, c, cardWrap, slideHeader, resolveAccent } from "../utils.js";
 import { renderContentBlocks } from "../blocks.js";
 
 export const layoutMatrix = (data: MatrixSlide): string => {
@@ -29,7 +29,7 @@ export const layoutMatrix = (data: MatrixSlide): string => {
     Array.from({ length: cols }).forEach((_col, ci) => {
       const idx = r * cols + ci;
       const cell = cells[idx] || { label: "" };
-      const accent = cell.accentColor || "primary";
+      const accent = resolveAccent(cell.accentColor);
       const inner: string[] = [];
       inner.push(`<h3 class="text-lg font-bold text-${c(accent)} font-body">${renderInlineMarkup(cell.label)}</h3>`);
       if (cell.items) {
