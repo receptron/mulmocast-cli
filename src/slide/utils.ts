@@ -15,6 +15,30 @@ export const nl2br = (s: string): string => {
   return escapeHtml(s).replace(/\n/g, "<br>");
 };
 
+/** Valid accent color keys for inline markup */
+const inlineColorKeys = new Set(["primary", "accent", "success", "warning", "danger", "info", "highlight"]);
+
+/**
+ * Render inline markup: escape HTML first, then parse **bold** and {color:text}.
+ * Also converts newlines to <br>.
+ * Safe: escapeHtml runs before any markup parsing, so XSS is impossible.
+ */
+export const renderInlineMarkup = (s: string): string => {
+  let result = escapeHtml(s);
+  // **bold** → <strong>bold</strong>
+  result = result.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  // {color:text} → <span class="text-d-color">text</span>
+  result = result.replace(/\{([a-z]+):(.+?)\}/g, (_match, color: string, text: string) => {
+    if (inlineColorKeys.has(color)) {
+      return `<span class="text-${c(color)}">${text}</span>`;
+    }
+    return `{${color}:${text}}`;
+  });
+  // newlines to <br>
+  result = result.replace(/\n/g, "<br>");
+  return result;
+};
+
 /** Sanitize a value for safe use in CSS class names (alphanumeric + hyphens only) */
 const sanitizeCssClass = (s: string): string => {
   return s.replace(/[^a-zA-Z0-9-]/g, "");
@@ -101,8 +125,8 @@ export const renderCalloutBar = (obj: { text: string; label?: string; color?: st
   const leftBar = obj.leftBar ? `<div class="w-1 bg-${c(color)} shrink-0"></div>` : "";
   const align = obj.align === "center" ? "text-center" : "";
   const inner = obj.label
-    ? `<span class="font-bold text-${c(color)}">${escapeHtml(obj.label)}:</span> <span class="text-d-muted">${escapeHtml(obj.text)}</span>`
-    : `<span class="text-d-muted">${escapeHtml(obj.text)}</span>`;
+    ? `<span class="font-bold text-${c(color)}">${renderInlineMarkup(obj.label)}:</span> <span class="text-d-muted">${renderInlineMarkup(obj.text)}</span>`
+    : `<span class="text-d-muted">${renderInlineMarkup(obj.text)}</span>`;
   return `<div class="mx-12 bg-d-card rounded flex overflow-hidden ${align}">
   ${leftBar}
   <div class="px-4 py-3 text-sm font-body flex-1">${inner}</div>
@@ -116,11 +140,11 @@ export const slideHeader = (data: { accentColor?: string; stepLabel?: string; ti
   lines.push(`<div class="h-[3px] bg-${c(accent)} shrink-0"></div>`);
   lines.push(`<div class="px-12 pt-5 shrink-0">`);
   if (data.stepLabel) {
-    lines.push(`  <p class="text-sm font-bold text-${c(accent)} font-body">${escapeHtml(data.stepLabel)}</p>`);
+    lines.push(`  <p class="text-sm font-bold text-${c(accent)} font-body">${renderInlineMarkup(data.stepLabel)}</p>`);
   }
-  lines.push(`  <h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${nl2br(data.title)}</h2>`);
+  lines.push(`  <h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${renderInlineMarkup(data.title)}</h2>`);
   if (data.subtitle) {
-    lines.push(`  <p class="text-[15px] text-d-dim mt-2 font-body">${nl2br(data.subtitle)}</p>`);
+    lines.push(`  <p class="text-[15px] text-d-dim mt-2 font-body">${renderInlineMarkup(data.subtitle)}</p>`);
   }
   lines.push(`</div>`);
   return lines.join("\n");
@@ -183,6 +207,12 @@ export const detectBlockTypes = (slide: SlideLayout): BlockTypeFlags => {
     blocks.forEach((block) => {
       if (block.type === "chart") hasChart = true;
       if (block.type === "mermaid") hasMermaid = true;
+      if (block.type === "section" && block.content) {
+        block.content.forEach((inner) => {
+          if (inner.type === "chart") hasChart = true;
+          if (inner.type === "mermaid") hasMermaid = true;
+        });
+      }
     });
   });
   return { hasChart, hasMermaid };

@@ -1,0 +1,100 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "ja",
+  "canvasSize": { "width": 720, "height": 1280 },
+  "title": "ニュース ひとめで — 最高裁、相互関税は違憲 v2",
+  "description": "Slide DSL: table block inside split panel (news + market data on one slide)",
+  "speechParams": {
+    "speakers": {
+      "Presenter": { "voiceId": "shimmer" }
+    }
+  },
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "2B3A2B",
+        "bgCard": "F2ECD8",
+        "bgCardAlt": "E8E0C8",
+        "text": "F0F0E0",
+        "textMuted": "2A2A1A",
+        "textDim": "606050",
+        "primary": "2E7D32",
+        "accent": "1A3A1A",
+        "success": "2E7D32",
+        "warning": "5D4037",
+        "danger": "C62828",
+        "info": "1A3A1A",
+        "highlight": "AD1457"
+      },
+      "fonts": {
+        "title": "Noto Sans JP",
+        "body": "Noto Sans JP",
+        "mono": "Consolas"
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "最高裁が相互関税は違憲と判断。NY市況では主要指標がいずれも上昇しました。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "accentColor": "primary",
+          "left": {
+            "label": "ニュース ひとめで",
+            "labelBadge": true,
+            "accentColor": "primary",
+            "ratio": 100,
+            "valign": "top",
+            "dark": true,
+            "content": [
+              {
+                "type": "text",
+                "value": "🇺🇸最高裁、相互関税は違憲",
+                "bold": true,
+                "fontSize": 24,
+                "color": "danger"
+              },
+              {
+                "type": "bullets",
+                "icon": "▼",
+                "items": [
+                  {
+                    "text": "米最高裁、トランプ氏の{danger:相互関税は違憲}",
+                    "items": ["票決は{danger:6:3}", "IEEPA、{danger:大統領権限の逸脱}"]
+                  },
+                  {
+                    "text": "🇺🇸政府、代替案を模索",
+                    "items": ["別の法的根拠で**{danger:「10%グローバル関税」検討}**", "数日中に大統領令に署名する構え"]
+                  }
+                ]
+              },
+              { "type": "divider", "color": "primary" },
+              {
+                "type": "section",
+                "label": "NY市況",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "table",
+                    "rows": [
+                      [{ "text": "S&P500", "bold": true }, "6,909", { "text": "+0.69%", "color": "success", "badge": true }],
+                      [{ "text": "NASDAQ", "bold": true }, "22,886", { "text": "+0.90%", "color": "success", "badge": true }],
+                      [{ "text": "日経先物", "bold": true }, "57,130", { "text": "+0.51%", "color": "success", "badge": true }],
+                      [{ "text": "ドル円", "bold": true }, "155.05", { "text": "+0.01", "color": "success", "badge": true }],
+                      [{ "text": "NY金", "bold": true }, "5,129", { "text": "+2.64%", "color": "success", "badge": true }]
+                    ],
+                    "striped": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -51,9 +51,21 @@ export const textBlockSchema = z.object({
   color: accentColorKeySchema.optional(),
 });
 
+/** Sub-bullet item: plain string or object with text */
+const subBulletItemSchema = z.union([z.string(), z.object({ text: z.string() })]);
+
+/** Bullet item: plain string or object with text and optional sub-items (2 levels max) */
+export const bulletItemSchema = z.union([
+  z.string(),
+  z.object({
+    text: z.string(),
+    items: z.array(subBulletItemSchema).optional(),
+  }),
+]);
+
 export const bulletsBlockSchema = z.object({
   type: z.literal("bullets"),
-  items: z.array(z.string()),
+  items: z.array(bulletItemSchema),
   ordered: z.boolean().optional(),
   icon: z.string().optional(),
 });
@@ -111,6 +123,49 @@ export const mermaidBlockSchema = z.object({
   title: z.string().optional(),
 });
 
+export const tableCellValueSchema = z.union([
+  z.string(),
+  z.object({
+    text: z.string(),
+    color: accentColorKeySchema.optional(),
+    bold: z.boolean().optional(),
+    badge: z.boolean().optional(),
+  }),
+]);
+
+export const tableBlockSchema = z.object({
+  type: z.literal("table"),
+  title: z.string().optional(),
+  headers: z.array(z.string()).optional(),
+  rows: z.array(z.array(tableCellValueSchema)),
+  rowHeaders: z.boolean().optional(),
+  striped: z.boolean().optional(),
+});
+
+/** All content block types except section (used inside section to prevent recursion) */
+const nonSectionContentBlockSchema = z.discriminatedUnion("type", [
+  textBlockSchema,
+  bulletsBlockSchema,
+  codeBlockSchema,
+  calloutBlockSchema,
+  metricBlockSchema,
+  dividerBlockSchema,
+  imageBlockSchema,
+  imageRefBlockSchema,
+  chartBlockSchema,
+  mermaidBlockSchema,
+  tableBlockSchema,
+]);
+
+export const sectionBlockSchema = z.object({
+  type: z.literal("section"),
+  label: z.string(),
+  color: accentColorKeySchema.optional(),
+  content: z.array(nonSectionContentBlockSchema).optional(),
+  text: z.string().optional(),
+  sidebar: z.boolean().optional(),
+});
+
 export const contentBlockSchema = z.discriminatedUnion("type", [
   textBlockSchema,
   bulletsBlockSchema,
@@ -122,6 +177,8 @@ export const contentBlockSchema = z.discriminatedUnion("type", [
   imageRefBlockSchema,
   chartBlockSchema,
   mermaidBlockSchema,
+  sectionBlockSchema,
+  tableBlockSchema,
 ]);
 
 // ═══════════════════════════════════════════════════════════
@@ -281,10 +338,12 @@ export const splitPanelSchema = z.object({
   title: z.string().optional(),
   subtitle: z.string().optional(),
   label: z.string().optional(),
+  labelBadge: z.boolean().optional(),
   accentColor: accentColorKeySchema.optional(),
   content: z.array(contentBlockSchema).optional(),
   dark: z.boolean().optional(),
   ratio: z.number().optional(),
+  valign: z.enum(["top", "center", "bottom"]).optional(),
 });
 
 export const splitSlideSchema = z.object({
@@ -328,15 +387,6 @@ export const matrixSlideSchema = z.object({
 });
 
 // ─── table ───
-export const tableCellValueSchema = z.union([
-  z.string(),
-  z.object({
-    text: z.string(),
-    color: accentColorKeySchema.optional(),
-    bold: z.boolean().optional(),
-  }),
-]);
-
 export const tableSlideSchema = z.object({
   layout: z.literal("table"),
   ...slideBaseFields,
@@ -406,6 +456,7 @@ export type SlideThemeFonts = z.infer<typeof slideThemeFontsSchema>;
 export type SlideTheme = z.infer<typeof slideThemeSchema>;
 export type ContentBlock = z.infer<typeof contentBlockSchema>;
 export type TextBlock = z.infer<typeof textBlockSchema>;
+export type BulletItem = z.infer<typeof bulletItemSchema>;
 export type BulletsBlock = z.infer<typeof bulletsBlockSchema>;
 export type CodeBlock = z.infer<typeof codeBlockSchema>;
 export type CalloutBlock = z.infer<typeof calloutBlockSchema>;
@@ -415,6 +466,8 @@ export type ImageBlock = z.infer<typeof imageBlockSchema>;
 export type ImageRefBlock = z.infer<typeof imageRefBlockSchema>;
 export type ChartBlock = z.infer<typeof chartBlockSchema>;
 export type MermaidBlock = z.infer<typeof mermaidBlockSchema>;
+export type SectionBlock = z.infer<typeof sectionBlockSchema>;
+export type TableBlock = z.infer<typeof tableBlockSchema>;
 export type CalloutBar = z.infer<typeof calloutBarSchema>;
 export type Card = z.infer<typeof cardSchema>;
 export type SlideStyle = z.infer<typeof slideStyleSchema>;

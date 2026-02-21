@@ -1,12 +1,12 @@
 import type { ComparisonSlide, ComparisonPanel } from "../schema.js";
-import { escapeHtml, c, cardWrap, slideHeader, renderCalloutBar } from "../utils.js";
+import { renderInlineMarkup, c, cardWrap, slideHeader, renderCalloutBar } from "../utils.js";
 import { renderContentBlocks } from "../blocks.js";
 
 const buildPanel = (panel: ComparisonPanel): string => {
   const accent = panel.accentColor || "primary";
   const inner: string[] = [];
 
-  inner.push(`<h3 class="text-xl font-bold text-${c(accent)} font-body">${escapeHtml(panel.title)}</h3>`);
+  inner.push(`<h3 class="text-xl font-bold text-${c(accent)} font-body">${renderInlineMarkup(panel.title)}</h3>`);
 
   if (panel.content) {
     inner.push(`<div class="mt-5 space-y-4 flex-1 min-h-0 overflow-auto flex flex-col">`);
@@ -15,7 +15,7 @@ const buildPanel = (panel: ComparisonPanel): string => {
   }
 
   if (panel.footer) {
-    inner.push(`<p class="text-sm text-d-dim font-body mt-auto pt-3">${escapeHtml(panel.footer)}</p>`);
+    inner.push(`<p class="text-sm text-d-dim font-body mt-auto pt-3">${renderInlineMarkup(panel.footer)}</p>`);
   }
 
   return cardWrap(accent, inner.join("\n"), "flex-1");

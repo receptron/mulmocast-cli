@@ -1,5 +1,5 @@
 import type { GridSlide } from "../schema.js";
-import { escapeHtml, nl2br, c, cardWrap, numBadge, iconSquare } from "../utils.js";
+import { renderInlineMarkup, c, cardWrap, numBadge, iconSquare } from "../utils.js";
 import { renderCardContentBlocks } from "../blocks.js";
 
 export const layoutGrid = (data: GridSlide): string => {
@@ -9,7 +9,7 @@ export const layoutGrid = (data: GridSlide): string => {
 
   parts.push(`<div class="h-[3px] bg-${c(accent)} shrink-0"></div>`);
   parts.push(`<div class="px-12 pt-5 shrink-0">`);
-  parts.push(`  <h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${nl2br(data.title)}</h2>`);
+  parts.push(`  <h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${renderInlineMarkup(data.title)}</h2>`);
   parts.push(`</div>`);
 
   parts.push(`<div class="grid grid-cols-${nCols} gap-4 px-12 mt-5 flex-1 min-h-0 overflow-hidden content-center">`);
@@ -22,18 +22,18 @@ export const layoutGrid = (data: GridSlide): string => {
       inner.push(`<div class="flex flex-col items-center mb-2">`);
       inner.push(`  ${iconSquare(item.icon, itemAccent)}`);
       inner.push(`</div>`);
-      inner.push(`<h3 class="text-lg font-bold text-d-text text-center font-body">${escapeHtml(item.title)}</h3>`);
+      inner.push(`<h3 class="text-lg font-bold text-d-text text-center font-body">${renderInlineMarkup(item.title)}</h3>`);
     } else if (item.num != null) {
       inner.push(`<div class="flex items-center gap-3">`);
       inner.push(`  ${numBadge(item.num, itemAccent)}`);
-      inner.push(`  <h3 class="text-sm font-bold text-d-text font-body">${escapeHtml(item.title)}</h3>`);
+      inner.push(`  <h3 class="text-sm font-bold text-d-text font-body">${renderInlineMarkup(item.title)}</h3>`);
       inner.push(`</div>`);
     } else {
-      inner.push(`<h3 class="text-lg font-bold text-d-text font-body">${escapeHtml(item.title)}</h3>`);
+      inner.push(`<h3 class="text-lg font-bold text-d-text font-body">${renderInlineMarkup(item.title)}</h3>`);
     }
 
     if (item.description) {
-      inner.push(`<p class="text-sm text-d-muted font-body mt-3">${escapeHtml(item.description)}</p>`);
+      inner.push(`<p class="text-sm text-d-muted font-body mt-3">${renderInlineMarkup(item.description)}</p>`);
     }
 
     if (item.content) {
@@ -46,7 +46,7 @@ export const layoutGrid = (data: GridSlide): string => {
   parts.push(`</div>`);
 
   if (data.footer) {
-    parts.push(`<p class="text-xs text-d-dim font-body px-12 pb-3">${escapeHtml(data.footer)}</p>`);
+    parts.push(`<p class="text-xs text-d-dim font-body px-12 pb-3">${renderInlineMarkup(data.footer)}</p>`);
   }
 
   return parts.join("\n");

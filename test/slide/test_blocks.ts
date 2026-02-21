@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert";
 import { renderContentBlock, renderContentBlocks } from "../../src/slide/blocks.js";
-import { resetSlideIdCounter } from "../../src/slide/utils.js";
+import { resetSlideIdCounter, renderInlineMarkup } from "../../src/slide/utils.js";
 
 // ═══════════════════════════════════════════════════════════
 // text block
@@ -320,4 +320,255 @@ test("mermaid: omits title element when not provided", () => {
   resetSlideIdCounter();
   const html = renderContentBlock({ type: "mermaid", code: "graph LR\n  A-->B" });
   assert.ok(!html.includes("font-bold text-d-text"));
+});
+
+// ═══════════════════════════════════════════════════════════
+// renderInlineMarkup
+// ═══════════════════════════════════════════════════════════
+
+test("renderInlineMarkup: escapes HTML before parsing markup", () => {
+  const result = renderInlineMarkup('<script>alert("xss")</script>');
+  assert.ok(result.includes("&lt;script&gt;"));
+  assert.ok(!result.includes("<script>"));
+});
+
+test("renderInlineMarkup: renders **bold** as <strong>", () => {
+  const result = renderInlineMarkup("This is **bold** text");
+  assert.ok(result.includes("<strong>bold</strong>"));
+  assert.ok(result.includes("This is "));
+});
+
+test("renderInlineMarkup: renders {color:text} with accent color", () => {
+  const result = renderInlineMarkup("{danger:red text}");
+  assert.ok(result.includes('class="text-d-danger"'));
+  assert.ok(result.includes("red text"));
+});
+
+test("renderInlineMarkup: ignores invalid color keys", () => {
+  const result = renderInlineMarkup("{invalid:text}");
+  assert.ok(result.includes("{invalid:text}"));
+  assert.ok(!result.includes("text-d-invalid"));
+});
+
+test("renderInlineMarkup: supports all accent color keys", () => {
+  const keys = ["primary", "accent", "success", "warning", "danger", "info", "highlight"];
+  keys.forEach((key) => {
+    const result = renderInlineMarkup(`{${key}:test}`);
+    assert.ok(result.includes(`text-d-${key}`), `Expected text-d-${key} in result`);
+  });
+});
+
+test("renderInlineMarkup: converts newlines to <br>", () => {
+  const result = renderInlineMarkup("Line1\nLine2");
+  assert.ok(result.includes("Line1<br>Line2"));
+});
+
+test("renderInlineMarkup: combines bold and color", () => {
+  const result = renderInlineMarkup("**{success:+5.2%}**");
+  assert.ok(result.includes("<strong>"));
+  assert.ok(result.includes("text-d-success"));
+});
+
+test("renderInlineMarkup: returns empty string for empty input", () => {
+  const result = renderInlineMarkup("");
+  assert.strictEqual(result, "");
+});
+
+// ═══════════════════════════════════════════════════════════
+// nested bullets
+// ═══════════════════════════════════════════════════════════
+
+test("bullets: backward compatible with string-only items", () => {
+  const html = renderContentBlock({ type: "bullets", items: ["A", "B"] });
+  assert.ok(html.includes("A"));
+  assert.ok(html.includes("B"));
+  assert.ok(html.includes("\u2022"));
+});
+
+test("bullets: renders nested sub-items with hollow bullet", () => {
+  const html = renderContentBlock({
+    type: "bullets",
+    items: [{ text: "Parent", items: ["Child A", "Child B"] }, "Simple"],
+  });
+  assert.ok(html.includes("Parent"));
+  assert.ok(html.includes("Child A"));
+  assert.ok(html.includes("Child B"));
+  assert.ok(html.includes("Simple"));
+  assert.ok(html.includes("\u25E6"));
+  assert.ok(html.includes("ml-6"));
+});
+
+test("bullets: renders nested object sub-items", () => {
+  const html = renderContentBlock({
+    type: "bullets",
+    items: [{ text: "Top", items: [{ text: "Sub" }] }],
+  });
+  assert.ok(html.includes("Top"));
+  assert.ok(html.includes("Sub"));
+});
+
+test("bullets: no sub-bullets when items is empty", () => {
+  const html = renderContentBlock({
+    type: "bullets",
+    items: [{ text: "No children", items: [] }],
+  });
+  assert.ok(html.includes("No children"));
+  assert.ok(!html.includes("\u25E6"));
+});
+
+test("bullets: inline markup works in nested bullets", () => {
+  const html = renderContentBlock({
+    type: "bullets",
+    items: [{ text: "**Bold parent**", items: ["{success:green child}"] }],
+  });
+  assert.ok(html.includes("<strong>Bold parent</strong>"));
+  assert.ok(html.includes("text-d-success"));
+});
+
+// ═══════════════════════════════════════════════════════════
+// section block
+// ═══════════════════════════════════════════════════════════
+
+test("section: renders label badge and text", () => {
+  const html = renderContentBlock({ type: "section", label: "Overview", text: "Some description" });
+  assert.ok(html.includes("Overview"));
+  assert.ok(html.includes("Some description"));
+  assert.ok(html.includes("bg-d-primary"));
+  assert.ok(html.includes("text-white"));
+});
+
+test("section: renders with custom color", () => {
+  const html = renderContentBlock({ type: "section", label: "Alert", color: "danger", text: "Warning text" });
+  assert.ok(html.includes("bg-d-danger"));
+});
+
+test("section: renders nested content blocks", () => {
+  const html = renderContentBlock({
+    type: "section",
+    label: "Details",
+    content: [{ type: "bullets", items: ["Point A", "Point B"] }],
+  });
+  assert.ok(html.includes("Details"));
+  assert.ok(html.includes("Point A"));
+  assert.ok(html.includes("Point B"));
+});
+
+test("section: renders both text and content", () => {
+  const html = renderContentBlock({
+    type: "section",
+    label: "Info",
+    text: "Intro text",
+    content: [{ type: "text", value: "More details" }],
+  });
+  assert.ok(html.includes("Intro text"));
+  assert.ok(html.includes("More details"));
+});
+
+test("section: inline markup works in label and text", () => {
+  const html = renderContentBlock({
+    type: "section",
+    label: "**Important**",
+    text: "{danger:critical issue}",
+  });
+  assert.ok(html.includes("<strong>Important</strong>"));
+  assert.ok(html.includes("text-d-danger"));
+});
+
+test("section: sidebar mode renders vertical label with card background", () => {
+  const html = renderContentBlock({
+    type: "section",
+    label: "影響",
+    color: "warning",
+    sidebar: true,
+    content: [{ type: "bullets", items: ["Item A"] }],
+  });
+  assert.ok(html.includes("bg-d-warning"), "sidebar badge uses bg-d-{color}");
+  assert.ok(html.includes("bg-d-card"), "sidebar section has card background");
+  assert.ok(html.includes("影<br>響"), "label chars are split vertically");
+  assert.ok(html.includes("Item A"));
+});
+
+// ═══════════════════════════════════════════════════════════
+// table block
+// ═══════════════════════════════════════════════════════════
+
+test("table block: renders headers and rows", () => {
+  const html = renderContentBlock({
+    type: "table",
+    headers: ["Name", "Score"],
+    rows: [
+      ["Alice", "95"],
+      ["Bob", "87"],
+    ],
+  });
+  assert.ok(html.includes("<table"));
+  assert.ok(html.includes("<th"));
+  assert.ok(html.includes("Name"));
+  assert.ok(html.includes("Score"));
+  assert.ok(html.includes("Alice"));
+  assert.ok(html.includes("87"));
+});
+
+test("table block: renders badge cell with rounded-full pill", () => {
+  const html = renderContentBlock({
+    type: "table",
+    headers: ["Metric", "Change"],
+    rows: [["S&P 500", { text: "+0.69%", color: "success", badge: true }]],
+  });
+  assert.ok(html.includes("rounded-full"));
+  assert.ok(html.includes("bg-d-success"));
+  assert.ok(html.includes("text-white"));
+  assert.ok(html.includes("+0.69%"));
+});
+
+test("table block: renders striped rows by default", () => {
+  const html = renderContentBlock({
+    type: "table",
+    rows: [["1"], ["2"], ["3"]],
+  });
+  assert.ok(html.includes("bg-d-alt/30"));
+});
+
+test("table block: renders title when provided", () => {
+  const html = renderContentBlock({
+    type: "table",
+    title: "Market Data",
+    headers: ["Index", "Value"],
+    rows: [["DJIA", "44,500"]],
+  });
+  assert.ok(html.includes("Market Data"));
+  assert.ok(html.includes("font-bold"));
+});
+
+test("table block: works inside section block", () => {
+  const html = renderContentBlock({
+    type: "section",
+    label: "Markets",
+    color: "info",
+    content: [
+      {
+        type: "table",
+        headers: ["Index", "Change"],
+        rows: [["DJIA", { text: "+0.5%", color: "success", bold: true }]],
+      },
+    ],
+  });
+  assert.ok(html.includes("Markets"));
+  assert.ok(html.includes("<table"));
+  assert.ok(html.includes("DJIA"));
+  assert.ok(html.includes("text-d-success"));
+});
+
+test("table block: renders rows without headers", () => {
+  const html = renderContentBlock({
+    type: "table",
+    rows: [
+      ["Key", "Value"],
+      ["Name", "Alice"],
+    ],
+  });
+  assert.ok(html.includes("<table"));
+  assert.ok(!html.includes("<th"));
+  assert.ok(html.includes("Key"));
+  assert.ok(html.includes("Alice"));
 });
