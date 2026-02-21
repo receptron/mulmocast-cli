@@ -142,8 +142,8 @@ export const tableBlockSchema = z.object({
   striped: z.boolean().optional(),
 });
 
-/** All content block types except section (used inside section to prevent recursion) */
-const nonSectionContentBlockSchema = z.discriminatedUnion("type", [
+/** Block schemas shared between contentBlockSchema and nonSectionContentBlockSchema */
+const baseBlockSchemas = [
   textBlockSchema,
   bulletsBlockSchema,
   codeBlockSchema,
@@ -155,7 +155,10 @@ const nonSectionContentBlockSchema = z.discriminatedUnion("type", [
   chartBlockSchema,
   mermaidBlockSchema,
   tableBlockSchema,
-]);
+] as const;
+
+/** All content block types except section (used inside section to prevent recursion) */
+const nonSectionContentBlockSchema = z.discriminatedUnion("type", [...baseBlockSchemas]);
 
 export const sectionBlockSchema = z.object({
   type: z.literal("section"),
@@ -166,20 +169,7 @@ export const sectionBlockSchema = z.object({
   sidebar: z.boolean().optional(),
 });
 
-export const contentBlockSchema = z.discriminatedUnion("type", [
-  textBlockSchema,
-  bulletsBlockSchema,
-  codeBlockSchema,
-  calloutBlockSchema,
-  metricBlockSchema,
-  dividerBlockSchema,
-  imageBlockSchema,
-  imageRefBlockSchema,
-  chartBlockSchema,
-  mermaidBlockSchema,
-  sectionBlockSchema,
-  tableBlockSchema,
-]);
+export const contentBlockSchema = z.discriminatedUnion("type", [...baseBlockSchemas, sectionBlockSchema]);
 
 // ═══════════════════════════════════════════════════════════
 // Shared Components
