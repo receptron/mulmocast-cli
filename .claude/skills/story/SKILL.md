@@ -54,8 +54,6 @@ If using Playwright, collect image URLs with `browser_evaluate`:
 () => Array.from(document.querySelectorAll('img')).filter(img => img.naturalWidth > 200).map(img => ({src: img.src, alt: img.alt || ''}))
 ```
 
-For diagrams/infographics, download directly via curl from the extracted URLs.
-
 ### Present Topic Brief for approval
 
 ```
@@ -72,7 +70,7 @@ For diagrams/infographics, download directly via curl from the extracted URLs.
 - [description]: [local path]
 ```
 
-#### Theme-to-Content Matching
+### Theme-to-Content Matching
 
 **Default to light/bright themes.** Dark theme is only for explicitly technical/developer content.
 
@@ -132,204 +130,44 @@ When user asks for condensed/few slides, aim for 3-5 dense beats.
 
 ## Phase 4: Visual Design
 
-### Default approach: Mixed slides with embedded images
+### Theme selection
 
-Use Slide DSL layouts with real/AI images embedded via `imageRef`. This is the default for all content.
-
-Define images in `imageParams.images` (prefer `kind: "path"` for downloaded images), then embed inside slide content blocks:
-```json
-{ "type": "imageRef", "ref": "keyVisual", "alt": "Description", "fit": "contain" }
-```
-
-**Path formula**: From `scripts/samples/` to `output/images/` = `../../output/images/{basename}/{filename}`.
-
-For AI-generated images when no real counterpart exists:
-```json
-{ "type": "imagePrompt", "prompt": "Detailed description..." }
-```
+Read the theme JSON from `assets/slide_themes/{theme}.json` and embed in `slideParams.theme`.
 
 ### Color scheme discipline
 
-**Follow a restrained color palette.** Too many colors creates visual noise. Each slide should feel cohesive, not like a rainbow.
+**Follow a restrained color palette.** Too many colors creates visual noise.
 
-#### Rules
+1. **Pick 1 base color per presentation** (usually `primary`): Use for headings, sidebars, badges, dividers. Creates visual unity.
+2. **Add 1-2 highlight colors sparingly**: `danger`/`warning` only for alarming data; `success` only for positive metrics. Target **specific words or values**, not entire sections.
+3. **Section sidebars share the base color**: Don't assign different colors to each sidebar — use `primary` for all. Differentiation comes from label text.
+4. **Inline `{color:text}` is surgical**: Highlight 1-2 key terms per bullet. Default text color handles the rest.
+5. **Metrics encode meaning consistently**: Green=positive, red=negative, primary=neutral. Don't use 4 colors for 4 metrics unless each encodes different meaning.
 
-1. **Pick 1 base color per presentation** (usually `primary`): Use this for headings, section sidebars, badges, dividers, and accent bars. This creates visual unity across all slides.
-
-2. **Add 1-2 highlight colors sparingly**: Use `danger` or `warning` only for genuinely alarming data points or critical warnings. Use `success` only for positive metrics. These should appear on **specific words or values**, not entire sections.
-
-3. **Section sidebars within a single slide should share the base color**: Don't assign a different color to each section sidebar — use the same `primary` color for all sidebars on a slide. Differentiation comes from the label text, not color.
-
-4. **Inline markup `{color:text}` is for surgical emphasis**: Highlight 1-2 key terms per bullet, not every noun. Default text color (from theme) handles the rest.
-
-5. **Metrics can use color to encode meaning**: Green for positive, red for negative, primary for neutral. But keep it consistent — don't use 4 different colors for 4 metrics unless each encodes different meaning.
-
-#### BAD color usage (too many colors, no hierarchy):
+**BAD** (rainbow sidebars):
 ```json
-{ "type": "section", "label": "A", "color": "primary", ... },
-{ "type": "section", "label": "B", "color": "accent", ... },
-{ "type": "section", "label": "C", "color": "warning", ... }
+{ "type": "section", "label": "A", "color": "primary" },
+{ "type": "section", "label": "B", "color": "accent" },
+{ "type": "section", "label": "C", "color": "warning" }
 ```
 
-#### GOOD color usage (unified base + surgical accent):
+**GOOD** (unified base + surgical accent):
 ```json
-{ "type": "section", "label": "A", "color": "primary", ... },
-{ "type": "section", "label": "B", "color": "primary", ... },
-{ "type": "section", "label": "C", "color": "primary", ... }
+{ "type": "section", "label": "A", "color": "primary" },
+{ "type": "section", "label": "B", "color": "primary" },
+{ "type": "section", "label": "C", "color": "primary" }
 ```
 Then inside bullets: `"Key point about {danger:critical risk} and normal context"`
 
-### Dense slide design principles
+### Slide density by beat count
 
-**Pack information into each slide.** Every slide should feel like a "cheat sheet" — dense, structured, and scannable. Avoid sparse slides with large empty areas.
+| Beat count | Density | Approach |
+|-----------|---------|----------|
+| 3-5 beats | Maximum | Pack each slide like a cheat sheet. Use split + multiple sections, nested bullets, tables, metrics. Every pixel should carry information. |
+| 6-10 beats | Standard | 3-5 bullet points per slide. Use split layout with image/chart in one panel and text in the other. Fill empty space with imageRef or callout blocks. |
+| 11+ beats | Relaxed | Focus on one key point per slide. Generous whitespace. Use title/bigQuote for section breaks. |
 
-#### Key techniques for dense slides
-
-1. **Use `split` layout as the primary workhorse**: Left panel for structured text content, right panel for images/diagrams or complementary metrics.
-
-2. **Use `section` blocks with `sidebar: true` to organize multiple topics**: Each section gets a colored vertical label bar. Use the **same base color** for all sidebars within a slide for visual unity.
-
-3. **Nest content blocks inside sections**: `section` > `bullets` with sub-items provides 3 levels of information hierarchy.
-
-4. **Combine block types in one panel**: Mix `text` (header) + `section` + `section` + `section` or `text` + `bullets` + `divider` + `table` for maximum density.
-
-5. **Use `metric` blocks for KPIs**: Pack 3-4 metrics in a panel for data-heavy slides.
-
-6. **Use `callout` blocks for key quotes or warnings**: Adds visual weight to important statements.
-
-7. **Use `table` blocks for structured data**: Embed tables inside section blocks or split panels for financial data, comparisons, etc.
-
-#### Dense slide pattern: split with multiple sections
-
-This is the go-to pattern for information-dense slides. Note: all section sidebars share `primary` color; accent is used only for inline emphasis on key terms.
-
-```json
-{
-  "layout": "split",
-  "accentColor": "primary",
-  "left": {
-    "ratio": 55,
-    "valign": "top",
-    "content": [
-      {
-        "type": "text",
-        "value": "Main headline or thesis",
-        "bold": true, "fontSize": 24, "color": "primary"
-      },
-      {
-        "type": "section",
-        "label": "Topic A",
-        "color": "primary",
-        "sidebar": true,
-        "content": [
-          {
-            "type": "bullets",
-            "items": [
-              { "text": "Key point about {danger:critical term}", "items": ["Detail 1", "Detail 2"] }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "section",
-        "label": "Topic B",
-        "color": "primary",
-        "sidebar": true,
-        "content": [
-          {
-            "type": "bullets",
-            "items": [
-              { "text": "Another key point", "items": ["Sub-detail A", "Sub-detail B"] }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "section",
-        "label": "Topic C",
-        "color": "primary",
-        "sidebar": true,
-        "content": [
-          {
-            "type": "bullets",
-            "items": [
-              { "text": "Third topic", "items": ["Data point", "Conclusion"] }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  "right": {
-    "dark": true,
-    "ratio": 45,
-    "valign": "center",
-    "content": [
-      { "type": "imageRef", "ref": "diagram", "alt": "Description", "fit": "contain" },
-      { "type": "callout", "text": "Key takeaway quote", "style": "info" }
-    ]
-  }
-}
-```
-
-#### Dense slide pattern: split with metrics + context
-
-Metrics use color to encode meaning (green=positive, red=negative, primary=neutral):
-
-```json
-{
-  "layout": "split",
-  "left": {
-    "labelBadge": true, "label": "Badge Title", "accentColor": "primary",
-    "title": "Main Title", "subtitle": "Context line",
-    "ratio": 55,
-    "content": [
-      { "type": "text", "value": "Supporting context paragraph.", "dim": true }
-    ]
-  },
-  "right": {
-    "dark": true, "ratio": 45, "valign": "center",
-    "content": [
-      { "type": "metric", "value": "42%", "label": "Growth rate", "color": "success" },
-      { "type": "metric", "value": "1.2M", "label": "Users", "color": "primary" },
-      { "type": "metric", "value": "-3%", "label": "Churn", "color": "danger" }
-    ]
-  }
-}
-```
-
-#### Dense slide pattern: split with table + bullets
-
-```json
-{
-  "layout": "split",
-  "left": {
-    "ratio": 45, "dark": true,
-    "content": [
-      { "type": "imageRef", "ref": "photo", "alt": "...", "fit": "contain" },
-      { "type": "callout", "text": "Caption or context", "label": "Note", "style": "info" }
-    ]
-  },
-  "right": {
-    "ratio": 55, "labelBadge": true, "label": "Section Title", "accentColor": "primary",
-    "content": [
-      {
-        "type": "bullets", "icon": "▸",
-        "items": [
-          { "text": "Point 1 with {danger:critical term}", "items": ["Detail"] },
-          { "text": "Point 2 with supporting context", "items": ["Detail"] }
-        ]
-      }
-    ]
-  }
-}
-```
-
-### Inline markup reference
-
-Use `{color:text}` for colored inline text within bullets and text blocks:
-- `{primary:keyword}`, `{danger:warning}`, `{success:positive}`, `{accent:emphasis}`, `{warning:caution}`, `{info:technical}`
-- Use `**bold**` for bold text within inline markup
+**Fill empty space with visuals**: In any density, if a panel has room, add `imageRef`, `imagePrompt`, `chart`, or `mermaid`. Never leave panels empty.
 
 ### Layout selection guide
 
@@ -342,77 +180,25 @@ Use `{color:text}` for colored inline text within bullets and text blocks:
 | Compare/contrast | `comparison` |
 | Data tables | `table` or `split` with `table` block |
 
-**Theme selection**: Read the theme JSON from `assets/slide_themes/{theme}.json` and embed in `slideParams.theme`.
+### DSL reference and patterns
 
-### Embedding charts and diagrams
+For layout/block specifications, **Read** `slide_dsl_reference.md` in this skill directory.
 
-Slide content blocks support `chart` and `mermaid` types directly inside layouts. **Always embed inside slide layouts** (e.g., `split`) rather than using standalone — this ensures consistent theming and allows adding context alongside the visualization.
+For design pattern examples (dense slides, charts, mermaid), **Read** `slide_patterns.md` in this skill directory.
 
-**Chart block** (Chart.js — bar, line, pie, doughnut, radar, polarArea):
+### Image embedding
+
+Define images in `imageParams.images`, then reference with `imageRef` blocks in slide content:
 ```json
-{
-  "type": "chart",
-  "chartData": {
-    "type": "bar",
-    "data": {
-      "labels": ["Q1", "Q2", "Q3"],
-      "datasets": [{ "label": "Revenue", "data": [10, 20, 30] }]
-    }
-  },
-  "title": "Quarterly Revenue"
-}
+{ "type": "imageRef", "ref": "keyVisual", "alt": "Description", "fit": "contain" }
 ```
 
-**Mermaid block** (flowcharts, sequence diagrams, timelines):
-```json
-{
-  "type": "mermaid",
-  "code": "graph TD\n  A[Start] --> B[Process]\n  B --> C[End]",
-  "title": "Flow"
-}
-```
+**Path formula**: From `scripts/samples/` to `output/images/` = `../../output/images/{basename}/{filename}`.
 
-**Recommended pattern** — chart inside a `split` layout:
+For AI-generated images when no real counterpart exists:
 ```json
-{
-  "layout": "split",
-  "left": {
-    "title": "Key Insight",
-    "content": [
-      { "type": "text", "value": "Context for the data" },
-      { "type": "metric", "value": "42%", "label": "Growth rate", "color": "success" }
-    ]
-  },
-  "right": {
-    "content": [
-      { "type": "chart", "chartData": { "type": "bar", "data": { "labels": ["A","B","C"], "datasets": [{"label":"X","data":[10,20,30]}] } }, "title": "Revenue" }
-    ]
-  }
-}
+{ "type": "imagePrompt", "prompt": "Detailed description..." }
 ```
-
-**Recommended pattern** — mermaid inside a `split` layout:
-```json
-{
-  "layout": "split",
-  "left": {
-    "content": [
-      { "type": "mermaid", "code": "graph TD\n  A-->B\n  B-->C", "title": "Process" }
-    ]
-  },
-  "right": {
-    "title": "Explanation",
-    "content": [
-      { "type": "bullets", "items": ["Step 1", "Step 2", "Step 3"] }
-    ]
-  }
-}
-```
-
-**Design tips**:
-- Use charts for quantitative data (stock prices, market size, percentages)
-- Use mermaid for relationships and processes (org structures, cause-and-effect chains)
-- Pair with text/metric/callout blocks in the adjacent panel for context
 
 ### Present visual plan for approval
 
@@ -439,17 +225,12 @@ Slide content blocks support `chart` and `mermaid` types directly inside layouts
       "speaker": "Presenter",
       "image": {
         "type": "slide",
-        "slide": { "layout": "...", ... },
+        "slide": { "layout": "...", "..." : "..." },
         "reference": "Source: ... (optional)"
       }
     }
   ]
 }
-```
-
-For image-based beats (narrative/creative content):
-```json
-{ "text": "Narration", "imagePrompt": "Detailed prompt...", "imageNames": ["namedImage"] }
 ```
 
 ### Add `reference` to data-citing beats
@@ -458,10 +239,8 @@ For beats showing statistics or research findings, add `"reference": "Source: ..
 
 ### Quality checklist
 
-Before writing the final file:
-
 1. **Hook test**: Does beat 1 grab attention?
-2. **Density test**: Does every slide feel packed with useful information? No sparse empty slides.
+2. **Density test**: Does every slide match the target density for its beat count?
 3. **Specificity test**: Replace vague statements with concrete numbers, names, examples.
 4. **Visual variety**: At least 2-3 different layout types used.
 5. **Visual-narration alignment**: Each visual directly supports its narration.
