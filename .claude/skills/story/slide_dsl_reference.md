@@ -1,20 +1,4 @@
----
-name: slide
-description: Generate and edit MulmoScript for presentations using the MulmoCast Slide DSL. Write slide JSON in the image field of the beats array.
-allowed-tools: Read, Write, Edit, Bash, Grep, Glob
----
-
-# MulmoCast Slide DSL
-
-## Overview
-
-The MulmoCast Slide DSL describes presentation slides in JSON. Pipeline: JSON -> Tailwind HTML -> Puppeteer PNG.
-
-- Schema definitions: `src/slide/schema.ts`
-- HTML generation: `src/slide/render.ts`
-- Layout implementations: `src/slide/layouts/`
-- Content blocks: `src/slide/blocks.ts`
-- Plugin integration: `src/utils/image_plugins/slide.ts`
+# Slide DSL Reference
 
 ## MulmoScript Beat Structure
 
@@ -40,20 +24,6 @@ Use `slideParams.theme` to specify the default theme, then only write `image.sli
         "type": "slide",
         "slide": { "layout": "title", "title": "Main Title", "subtitle": "Subtitle" }
       }
-    },
-    {
-      "text": "Three-column comparison",
-      "image": {
-        "type": "slide",
-        "slide": {
-          "layout": "columns",
-          "title": "Comparison",
-          "columns": [
-            { "title": "Plan A", "accentColor": "primary", "content": [{ "type": "bullets", "items": ["Feature 1", "Feature 2"] }] },
-            { "title": "Plan B", "accentColor": "accent", "content": [{ "type": "bullets", "items": ["Feature 3", "Feature 4"] }] }
-          ]
-        }
-      }
     }
   ]
 }
@@ -64,8 +34,6 @@ Use `slideParams.theme` to specify the default theme, then only write `image.sli
 1. If `beat.image.theme` exists, use it (beat-level override)
 2. Otherwise fall back to `slideParams.theme`
 3. If neither exists, throw an error
-
-To use a different theme for a specific beat, set `beat.image.theme`.
 
 ## Theme
 
@@ -103,14 +71,12 @@ Theme JSON files are stored in `assets/slide_themes/`. Read the appropriate file
 
 | File | Name | Style | Best for |
 |------|------|-------|----------|
-| `assets/slide_themes/dark.json` | dark | Dark Professional | Tech talks, developer presentations, evening events |
-| `assets/slide_themes/pop.json` | pop | Bright and Energetic | Marketing, product launches, creative pitches |
-| `assets/slide_themes/warm.json` | warm | Warm and Welcoming | Education, workshops, community events |
-| `assets/slide_themes/creative.json` | creative | Bold and Modern | Design reviews, startup pitches, creative showcases |
-| `assets/slide_themes/minimal.json` | minimal | Clean and Fresh | Academic, research, data-focused presentations |
-| `assets/slide_themes/corporate.json` | corporate | Professional and Trustworthy | Business reports, client presentations, formal meetings |
-
-#### Using a theme
+| `assets/slide_themes/dark.json` | dark | Dark Professional | Tech talks, developer presentations |
+| `assets/slide_themes/pop.json` | pop | Bright and Energetic | Marketing, product launches |
+| `assets/slide_themes/warm.json` | warm | Warm and Welcoming | Education, workshops |
+| `assets/slide_themes/creative.json` | creative | Bold and Modern | Design reviews, startup pitches |
+| `assets/slide_themes/minimal.json` | minimal | Clean and Fresh | Academic, research |
+| `assets/slide_themes/corporate.json` | corporate | Professional | Business reports, formal meetings |
 
 Read the theme JSON file and embed it in `slideParams.theme`:
 
@@ -354,17 +320,17 @@ References an image defined in `imageParams.images`. The `ref` value is a key in
 { "type": "chart", "chartData": { "type": "bar", "data": { "labels": ["Q1", "Q2"], "datasets": [{ "data": [10, 20] }] } }, "title?": "Revenue" }
 ```
 
-Renders a Chart.js chart inline. `chartData` is passed directly to `new Chart(ctx, chartData)`. Any Chart.js chart type (bar, line, pie, doughnut, radar, polarArea, etc.) is supported. Animation is automatically disabled for Puppeteer rendering. The Chart.js CDN is only loaded when a chart block is present.
+Renders a Chart.js chart inline. `chartData` is passed directly to `new Chart(ctx, chartData)`. Any Chart.js chart type (bar, line, pie, doughnut, radar, polarArea, etc.) is supported. Animation is automatically disabled for Puppeteer rendering.
 
 ### mermaid
 ```json
 { "type": "mermaid", "code": "graph TD\n  A-->B\n  B-->C", "title?": "Flow Diagram" }
 ```
 
-Renders a Mermaid diagram inline. `code` is the Mermaid diagram definition string. The Mermaid CDN is only loaded when a mermaid block is present. The mermaid theme (dark/default) is automatically chosen based on the slide background color.
+Renders a Mermaid diagram inline. `code` is the Mermaid diagram definition string. The mermaid theme (dark/default) is automatically chosen based on the slide background color.
 
 ### table
-Inline table block. Renders a data table inside any content area (columns, split panels, sections, etc.). Unlike the `table` layout (which is a full-slide layout), this is a content block that can be combined with other blocks on the same slide.
+Inline table block. Unlike the `table` layout (full-slide), this is a content block combinable with other blocks.
 ```json
 { "type": "table", "title?": "Market Data", "headers?": ["Index", "Change"], "rows": [["DJIA", { "text": "+0.5%", "color": "success", "badge": true }]], "rowHeaders?": true, "striped?": true }
 ```
@@ -374,10 +340,10 @@ Notes:
 - `rows` uses the same cell format as the `table` layout (string or `{ text, color?, bold?, badge? }`)
 - `title` renders a bold heading above the table
 - `striped` defaults to true (alternating row backgrounds)
-- Can be nested inside `section` blocks for structured layouts (e.g., news + market data on one slide)
+- Can be nested inside `section` blocks for structured layouts
 
 ### section
-Labeled section with a color badge on the left and content on the right. Ideal for news summaries, key-value layouts, and structured information.
+Labeled section with a color badge and content. Ideal for news summaries and structured information.
 ```json
 { "type": "section", "label": "Overview", "color?": "primary", "text?": "Short description", "content?": [...], "sidebar?": true }
 ```
@@ -399,7 +365,7 @@ Notes:
 - `text` is a shorthand for a simple text paragraph; use `content` for richer layouts
 - `content` accepts all block types except `section` (no recursion)
 - Default color is `primary`
-- `sidebar`: When `true`, renders a vertical colored sidebar with the label characters stacked vertically, and wraps the content in a card background. Ideal for compact labeled sections like news summaries
+- `sidebar`: When `true`, renders a vertical colored sidebar with the label characters stacked vertically, and wraps the content in a card background
 
 ## Shared Components
 
@@ -416,37 +382,4 @@ Notes:
 ### slideStyle (available on all layouts)
 ```json
 { "bgColor?": "hex value", "decorations?": true, "bgOpacity?": 0.8, "footer?": "Page footer" }
-```
-
-## Design Principles
-
-1. **Theme consistency**: Use one theme per presentation. Set it once with `slideParams.theme`
-2. **Color usage**: Apply semantic colors via `accentColor` on cards, stats, timeline items, etc. Use all 7 accent colors purposefully
-3. **Typography**: `font-title` for headings, `font-body` for body text, `font-mono` for code are applied automatically
-4. **Layout selection guide**:
-   - Opening / closing -> `title`
-   - Steps / process -> `columns` (showArrows: true)
-   - Compare / contrast -> `comparison`
-   - Categories / overview -> `grid`
-   - Quotes / key messages -> `bigQuote`
-   - Numbers / KPIs -> `stats`
-   - Chronological -> `timeline`
-   - Two-pane detail -> `split`
-   - 2x2 analysis -> `matrix`
-   - Data tables -> `table`
-   - Conversion / pipeline -> `funnel`
-5. **Content density**: Avoid cramming too much into one slide. 3-5 bullet points per slide is ideal
-
-## Workflow
-
-```bash
-# 1. Create a beats-only JSON (Claude generates this)
-# 2. Convert to complete MulmoScript (with presentation style)
-yarn cli tool complete beats.json -s slide_dark -o presentation.json
-
-# 3. Generate slide images
-yarn cli images presentation.json -o output/
-
-# 4. Preview a specific beat
-yarn cli images presentation.json -o output/ --beat 0
 ```
