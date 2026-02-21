@@ -56,7 +56,7 @@ If using Playwright, collect image URLs with `browser_evaluate`:
 
 ### Present Topic Brief for approval
 
-```
+```text
 ## Topic Brief
 
 **Subject**: [one line]
@@ -99,7 +99,7 @@ When user asks for condensed/few slides, aim for 3-5 dense beats.
 
 ### Present Beat Outline for approval
 
-```
+```text
 ## Beat Outline (N beats)
 
 | # | Tag | Summary |
@@ -164,10 +164,10 @@ Then inside bullets: `"Key point about {danger:critical risk} and normal context
 | Beat count | Density | Approach |
 |-----------|---------|----------|
 | 3-5 beats | Maximum | Pack each slide like a cheat sheet. Use split + multiple sections, nested bullets, tables, metrics. Every pixel should carry information. |
-| 6-10 beats | Standard | 3-5 bullet points per slide. Use split layout with image/chart in one panel and text in the other. Fill empty space with imageRef or callout blocks. |
+| 6-10 beats | Standard | 3-5 bullet points per slide. Use split layout with image/chart in one panel and text in the other. Fill space with imageRef or callout blocks. |
 | 11+ beats | Relaxed | Focus on one key point per slide. Generous whitespace. Use title/bigQuote for section breaks. |
 
-**Fill empty space with visuals**: In any density, if a panel has room, add `imageRef`, `imagePrompt`, `chart`, or `mermaid`. Never leave panels empty.
+**Fill space with visuals**: In any density, if a panel has room, add `imageRef`, `imagePrompt`, `chart`, or `mermaid`. Never leave panels empty.
 
 ### Layout selection guide
 
@@ -195,9 +195,14 @@ Define images in `imageParams.images`, then reference with `imageRef` blocks in 
 
 **Path formula**: From `scripts/samples/` to `output/images/` = `../../output/images/{basename}/{filename}`.
 
-For AI-generated images when no real counterpart exists:
+For AI-generated images when no real counterpart exists, use `imagePrompt` in `imageParams.images` (object form — defines a named image for `imageRef` to reference):
 ```json
 { "type": "imagePrompt", "prompt": "Detailed description..." }
+```
+
+For image-only beats without slide layout, use `imagePrompt` as a beat-level string field (generates a standalone background image):
+```json
+{ "text": "Narration", "imagePrompt": "Detailed prompt..." }
 ```
 
 ### Present visual plan for approval
