@@ -123,6 +123,25 @@ export const mermaidBlockSchema = z.object({
   title: z.string().optional(),
 });
 
+export const tableCellValueSchema = z.union([
+  z.string(),
+  z.object({
+    text: z.string(),
+    color: accentColorKeySchema.optional(),
+    bold: z.boolean().optional(),
+    badge: z.boolean().optional(),
+  }),
+]);
+
+export const tableBlockSchema = z.object({
+  type: z.literal("table"),
+  title: z.string().optional(),
+  headers: z.array(z.string()).optional(),
+  rows: z.array(z.array(tableCellValueSchema)),
+  rowHeaders: z.boolean().optional(),
+  striped: z.boolean().optional(),
+});
+
 /** All content block types except section (used inside section to prevent recursion) */
 const nonSectionContentBlockSchema = z.discriminatedUnion("type", [
   textBlockSchema,
@@ -135,6 +154,7 @@ const nonSectionContentBlockSchema = z.discriminatedUnion("type", [
   imageRefBlockSchema,
   chartBlockSchema,
   mermaidBlockSchema,
+  tableBlockSchema,
 ]);
 
 export const sectionBlockSchema = z.object({
@@ -158,6 +178,7 @@ export const contentBlockSchema = z.discriminatedUnion("type", [
   chartBlockSchema,
   mermaidBlockSchema,
   sectionBlockSchema,
+  tableBlockSchema,
 ]);
 
 // ═══════════════════════════════════════════════════════════
@@ -366,16 +387,6 @@ export const matrixSlideSchema = z.object({
 });
 
 // ─── table ───
-export const tableCellValueSchema = z.union([
-  z.string(),
-  z.object({
-    text: z.string(),
-    color: accentColorKeySchema.optional(),
-    bold: z.boolean().optional(),
-    badge: z.boolean().optional(),
-  }),
-]);
-
 export const tableSlideSchema = z.object({
   layout: z.literal("table"),
   ...slideBaseFields,
@@ -456,6 +467,7 @@ export type ImageRefBlock = z.infer<typeof imageRefBlockSchema>;
 export type ChartBlock = z.infer<typeof chartBlockSchema>;
 export type MermaidBlock = z.infer<typeof mermaidBlockSchema>;
 export type SectionBlock = z.infer<typeof sectionBlockSchema>;
+export type TableBlock = z.infer<typeof tableBlockSchema>;
 export type CalloutBar = z.infer<typeof calloutBarSchema>;
 export type Card = z.infer<typeof cardSchema>;
 export type SlideStyle = z.infer<typeof slideStyleSchema>;

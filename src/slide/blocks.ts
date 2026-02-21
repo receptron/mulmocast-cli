@@ -1,5 +1,64 @@
-import type { ContentBlock, BulletItem, SectionBlock } from "./schema.js";
+import type { ContentBlock, BulletItem, SectionBlock, TableBlock, TableCellValue } from "./schema.js";
 import { escapeHtml, c, generateSlideId, renderInlineMarkup } from "./utils.js";
+
+// ─── Table cell rendering (shared with layouts/table.ts) ───
+
+export const resolveCellColor = (cellObj: { color?: string }, isRowHeader: boolean): string => {
+  if (cellObj.color) return `text-${c(cellObj.color)}`;
+  if (isRowHeader) return "text-d-text";
+  return "text-d-muted";
+};
+
+export const renderBadge = (text: string, color: string): string => {
+  return `<span class="px-2 py-0.5 rounded-full text-xs font-bold text-white bg-${c(color)}">${renderInlineMarkup(text)}</span>`;
+};
+
+export const renderCellValue = (cell: TableCellValue, isRowHeader: boolean): string => {
+  const cellObj = typeof cell === "object" && cell !== null ? cell : { text: String(cell) };
+  if (cellObj.badge && cellObj.color) {
+    return `<td class="px-4 py-3 text-sm font-body border-b border-d-alt">${renderBadge(cellObj.text, cellObj.color)}</td>`;
+  }
+  const colorCls = resolveCellColor(cellObj, isRowHeader);
+  const boldCls = cellObj.bold || isRowHeader ? "font-bold" : "";
+  return `<td class="px-4 py-3 text-sm ${colorCls} ${boldCls} font-body border-b border-d-alt">${renderInlineMarkup(cellObj.text)}</td>`;
+};
+
+export const renderTableCore = (headers: string[] | undefined, rows: TableCellValue[][], rowHeaders?: boolean, striped?: boolean): string => {
+  const parts: string[] = [];
+  const isStriped = striped !== false;
+
+  parts.push(`<table class="w-full border-collapse">`);
+
+  if (headers && headers.length > 0) {
+    parts.push(`<thead>`);
+    parts.push(`<tr>`);
+    headers.forEach((h) => {
+      parts.push(`  <th class="text-left px-4 py-3 text-sm font-bold text-d-text font-body border-b-2 border-d-alt">${renderInlineMarkup(h)}</th>`);
+    });
+    parts.push(`</tr>`);
+    parts.push(`</thead>`);
+  }
+
+  parts.push(`<tbody>`);
+  rows.forEach((row, ri) => {
+    const bgCls = isStriped && ri % 2 === 1 ? "bg-d-alt/30" : "";
+    parts.push(`<tr class="${bgCls}">`);
+    (row || []).forEach((cell, ci) => {
+      const isRowHeader = ci === 0 && !!rowHeaders;
+      parts.push(`  ${renderCellValue(cell, isRowHeader)}`);
+    });
+    parts.push(`</tr>`);
+  });
+  parts.push(`</tbody>`);
+
+  parts.push(`</table>`);
+  return parts.join("\n");
+};
+
+const renderTableBlock = (block: TableBlock): string => {
+  const titleHtml = block.title ? `<p class="text-sm font-bold text-d-text font-body mb-2">${escapeHtml(block.title)}</p>` : "";
+  return `<div class="overflow-auto">${titleHtml}${renderTableCore(block.headers, block.rows, block.rowHeaders, block.striped)}</div>`;
+};
 
 /** Render a single content block to HTML */
 export const renderContentBlock = (block: ContentBlock): string => {
@@ -26,6 +85,8 @@ export const renderContentBlock = (block: ContentBlock): string => {
       return renderMermaid(block);
     case "section":
       return renderSection(block);
+    case "table":
+      return renderTableBlock(block);
     default:
       return `<p class="text-sm text-d-muted font-body">[unknown block type]</p>`;
   }

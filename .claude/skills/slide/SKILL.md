@@ -256,7 +256,7 @@ Can be combined: `**{success:+5.2%}**` renders bold green text.
 
 HTML is always escaped first, so inline markup is XSS-safe.
 
-## Content Blocks (11 types)
+## Content Blocks (12 types)
 
 Used in the `content` array of layouts such as columns, comparison, grid, split, and matrix.
 
@@ -359,6 +359,19 @@ Renders a Chart.js chart inline. `chartData` is passed directly to `new Chart(ct
 ```
 
 Renders a Mermaid diagram inline. `code` is the Mermaid diagram definition string. The Mermaid CDN is only loaded when a mermaid block is present. The mermaid theme (dark/default) is automatically chosen based on the slide background color.
+
+### table
+Inline table block. Renders a data table inside any content area (columns, split panels, sections, etc.). Unlike the `table` layout (which is a full-slide layout), this is a content block that can be combined with other blocks on the same slide.
+```json
+{ "type": "table", "title?": "Market Data", "headers?": ["Index", "Change"], "rows": [["DJIA", { "text": "+0.5%", "color": "success", "badge": true }]], "rowHeaders?": true, "striped?": true }
+```
+
+Notes:
+- `headers` is optional; omit for key-value style tables
+- `rows` uses the same cell format as the `table` layout (string or `{ text, color?, bold?, badge? }`)
+- `title` renders a bold heading above the table
+- `striped` defaults to true (alternating row backgrounds)
+- Can be nested inside `section` blocks for structured layouts (e.g., news + market data on one slide)
 
 ### section
 Labeled section with a color badge on the left and content on the right. Ideal for news summaries, key-value layouts, and structured information.

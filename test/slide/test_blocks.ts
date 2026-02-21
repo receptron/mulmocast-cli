@@ -487,3 +487,88 @@ test("section: sidebar mode renders vertical label with card background", () => 
   assert.ok(html.includes("影<br>響"), "label chars are split vertically");
   assert.ok(html.includes("Item A"));
 });
+
+// ═══════════════════════════════════════════════════════════
+// table block
+// ═══════════════════════════════════════════════════════════
+
+test("table block: renders headers and rows", () => {
+  const html = renderContentBlock({
+    type: "table",
+    headers: ["Name", "Score"],
+    rows: [
+      ["Alice", "95"],
+      ["Bob", "87"],
+    ],
+  });
+  assert.ok(html.includes("<table"));
+  assert.ok(html.includes("<th"));
+  assert.ok(html.includes("Name"));
+  assert.ok(html.includes("Score"));
+  assert.ok(html.includes("Alice"));
+  assert.ok(html.includes("87"));
+});
+
+test("table block: renders badge cell with rounded-full pill", () => {
+  const html = renderContentBlock({
+    type: "table",
+    headers: ["Metric", "Change"],
+    rows: [["S&P 500", { text: "+0.69%", color: "success", badge: true }]],
+  });
+  assert.ok(html.includes("rounded-full"));
+  assert.ok(html.includes("bg-d-success"));
+  assert.ok(html.includes("text-white"));
+  assert.ok(html.includes("+0.69%"));
+});
+
+test("table block: renders striped rows by default", () => {
+  const html = renderContentBlock({
+    type: "table",
+    rows: [["1"], ["2"], ["3"]],
+  });
+  assert.ok(html.includes("bg-d-alt/30"));
+});
+
+test("table block: renders title when provided", () => {
+  const html = renderContentBlock({
+    type: "table",
+    title: "Market Data",
+    headers: ["Index", "Value"],
+    rows: [["DJIA", "44,500"]],
+  });
+  assert.ok(html.includes("Market Data"));
+  assert.ok(html.includes("font-bold"));
+});
+
+test("table block: works inside section block", () => {
+  const html = renderContentBlock({
+    type: "section",
+    label: "Markets",
+    color: "info",
+    content: [
+      {
+        type: "table",
+        headers: ["Index", "Change"],
+        rows: [["DJIA", { text: "+0.5%", color: "success", bold: true }]],
+      },
+    ],
+  });
+  assert.ok(html.includes("Markets"));
+  assert.ok(html.includes("<table"));
+  assert.ok(html.includes("DJIA"));
+  assert.ok(html.includes("text-d-success"));
+});
+
+test("table block: renders rows without headers", () => {
+  const html = renderContentBlock({
+    type: "table",
+    rows: [
+      ["Key", "Value"],
+      ["Name", "Alice"],
+    ],
+  });
+  assert.ok(html.includes("<table"));
+  assert.ok(!html.includes("<th"));
+  assert.ok(html.includes("Key"));
+  assert.ok(html.includes("Alice"));
+});
