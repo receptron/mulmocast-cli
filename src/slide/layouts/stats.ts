@@ -28,7 +28,7 @@ export const layoutStats = (data: StatsSlide): string => {
     parts.push(`  <p class="text-[52px] font-bold text-${c(color)} font-body leading-none">${renderInlineMarkup(stat.value)}</p>`);
     parts.push(`  <p class="text-lg text-d-muted font-body mt-4">${renderInlineMarkup(stat.label)}</p>`);
     if (stat.change) {
-      const changeColor = stat.change.startsWith("+") ? "success" : "danger";
+      const changeColor = /\+/.test(stat.change) ? "success" : "danger";
       parts.push(`  <p class="text-base font-bold text-${c(changeColor)} font-body mt-3">${renderInlineMarkup(stat.change)}</p>`);
     }
     parts.push(`</div>`);

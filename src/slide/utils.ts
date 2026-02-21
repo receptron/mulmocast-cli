@@ -140,7 +140,7 @@ export const slideHeader = (data: { accentColor?: string; stepLabel?: string; ti
   lines.push(`<div class="h-[3px] bg-${c(accent)} shrink-0"></div>`);
   lines.push(`<div class="px-12 pt-5 shrink-0">`);
   if (data.stepLabel) {
-    lines.push(`  <p class="text-sm font-bold text-${c(accent)} font-body">${escapeHtml(data.stepLabel)}</p>`);
+    lines.push(`  <p class="text-sm font-bold text-${c(accent)} font-body">${renderInlineMarkup(data.stepLabel)}</p>`);
   }
   lines.push(`  <h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${renderInlineMarkup(data.title)}</h2>`);
   if (data.subtitle) {

@@ -67,10 +67,7 @@
                   },
                   {
                     "text": "🇺🇸政府、代替案を模索",
-                    "items": [
-                      "別の法的根拠で**{danger:「10%グローバル関税」検討}**",
-                      "数日中に大統領令に署名する構え"
-                    ]
+                    "items": ["別の法的根拠で**{danger:「10%グローバル関税」検討}**", "数日中に大統領令に署名する構え"]
                   }
                 ]
               },
@@ -84,31 +81,11 @@
                   {
                     "type": "table",
                     "rows": [
-                      [
-                        { "text": "S&P500", "bold": true },
-                        "6,909",
-                        { "text": "+0.69%", "color": "success", "badge": true }
-                      ],
-                      [
-                        { "text": "NASDAQ", "bold": true },
-                        "22,886",
-                        { "text": "+0.90%", "color": "success", "badge": true }
-                      ],
-                      [
-                        { "text": "日経先物", "bold": true },
-                        "57,130",
-                        { "text": "+0.51%", "color": "success", "badge": true }
-                      ],
-                      [
-                        { "text": "ドル円", "bold": true },
-                        "155.05",
-                        { "text": "+0.01", "color": "success", "badge": true }
-                      ],
-                      [
-                        { "text": "NY金", "bold": true },
-                        "5,129",
-                        { "text": "+2.64%", "color": "success", "badge": true }
-                      ]
+                      [{ "text": "S&P500", "bold": true }, "6,909", { "text": "+0.69%", "color": "success", "badge": true }],
+                      [{ "text": "NASDAQ", "bold": true }, "22,886", { "text": "+0.90%", "color": "success", "badge": true }],
+                      [{ "text": "日経先物", "bold": true }, "57,130", { "text": "+0.51%", "color": "success", "badge": true }],
+                      [{ "text": "ドル円", "bold": true }, "155.05", { "text": "+0.01", "color": "success", "badge": true }],
+                      [{ "text": "NY金", "bold": true }, "5,129", { "text": "+2.64%", "color": "success", "badge": true }]
                     ],
                     "striped": true
                   }

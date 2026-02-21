@@ -201,10 +201,13 @@ yarn cli tool complete beats.json -s slide_dark -o presentation.json
 ```json
 {
   "layout": "split",
-  "left?": { "title?": "...", "subtitle?": "...", "label?": "...", "accentColor?": "primary", "content?": [...], "dark?": true, "ratio?": 60 },
-  "right?": { "title?": "...", "subtitle?": "...", "content?": [...], "ratio?": 40 }
+  "left?": { "title?": "...", "subtitle?": "...", "label?": "...", "labelBadge?": true, "accentColor?": "primary", "content?": [...], "dark?": true, "ratio?": 60, "valign?": "top|center|bottom" },
+  "right?": { "title?": "...", "subtitle?": "...", "content?": [...], "ratio?": 40, "valign?": "top|center|bottom" }
 }
 ```
+
+- `labelBadge`: When `true`, renders the `label` as a large rounded badge instead of a small text label
+- `valign`: Vertical alignment of panel content (`"top"`, `"center"` (default), `"bottom"`)
 
 ### matrix - Matrix (2x2 etc.)
 ```json
@@ -252,7 +255,7 @@ All text fields across all layouts and content blocks support inline markup:
 
 Valid color keys: `primary`, `accent`, `success`, `warning`, `danger`, `info`, `highlight`
 
-Can be combined: `**{success:+5.2%}**` renders bold green text.
+These can be combined: `**{success:+5.2%}**` renders bold green text.
 
 HTML is always escaped first, so inline markup is XSS-safe.
 
@@ -376,7 +379,7 @@ Notes:
 ### section
 Labeled section with a color badge on the left and content on the right. Ideal for news summaries, key-value layouts, and structured information.
 ```json
-{ "type": "section", "label": "Overview", "color?": "primary", "text?": "Short description", "content?": [...] }
+{ "type": "section", "label": "Overview", "color?": "primary", "text?": "Short description", "content?": [...], "sidebar?": true }
 ```
 
 Example with nested content:
@@ -396,6 +399,7 @@ Notes:
 - `text` is a shorthand for a simple text paragraph; use `content` for richer layouts
 - `content` accepts all block types except `section` (no recursion)
 - Default color is `primary`
+- `sidebar`: When `true`, renders a vertical colored sidebar with the label characters stacked vertically, and wraps the content in a card background. Ideal for compact labeled sections like news summaries
 
 ## Shared Components
 

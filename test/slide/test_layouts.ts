@@ -514,6 +514,41 @@ test("table: renders row headers in bold", () => {
   assert.ok(cells[0].includes("font-bold"));
 });
 
+test("table: renders badge-styled cell with rounded-full pill", () => {
+  const html = renderSlideContent({
+    layout: "table",
+    title: "T",
+    headers: ["Name", "Status"],
+    rows: [["Item", { text: "+0.69%", color: "success", badge: true }]],
+  });
+  assert.ok(html.includes("rounded-full"));
+  assert.ok(html.includes("bg-d-success"));
+  assert.ok(html.includes("text-white"));
+  assert.ok(html.includes("+0.69%"));
+});
+
+test("table: badge without color falls back to normal rendering", () => {
+  const html = renderSlideContent({
+    layout: "table",
+    title: "T",
+    headers: ["Name", "Value"],
+    rows: [["Item", { text: "Normal", badge: true }]],
+  });
+  assert.ok(!html.includes("rounded-full"));
+  assert.ok(html.includes("Normal"));
+});
+
+test("table: badge cell applies inline markup", () => {
+  const html = renderSlideContent({
+    layout: "table",
+    title: "T",
+    headers: ["Metric"],
+    rows: [[{ text: "**+5%**", color: "success", badge: true }]],
+  });
+  assert.ok(html.includes("<strong>+5%</strong>"));
+  assert.ok(html.includes("rounded-full"));
+});
+
 // ═══════════════════════════════════════════════════════════
 // funnel layout
 // ═══════════════════════════════════════════════════════════
@@ -565,41 +600,6 @@ test("funnel: single stage renders at 100% width", () => {
     stages: [{ label: "Only" }],
   });
   assert.ok(html.includes('width: 100%"'));
-});
-
-test("table: renders badge-styled cell with rounded-full pill", () => {
-  const html = renderSlideContent({
-    layout: "table",
-    title: "T",
-    headers: ["Name", "Status"],
-    rows: [["Item", { text: "+0.69%", color: "success", badge: true }]],
-  });
-  assert.ok(html.includes("rounded-full"));
-  assert.ok(html.includes("bg-d-success"));
-  assert.ok(html.includes("text-white"));
-  assert.ok(html.includes("+0.69%"));
-});
-
-test("table: badge without color falls back to normal rendering", () => {
-  const html = renderSlideContent({
-    layout: "table",
-    title: "T",
-    headers: ["Name", "Value"],
-    rows: [["Item", { text: "Normal", badge: true }]],
-  });
-  assert.ok(!html.includes("rounded-full"));
-  assert.ok(html.includes("Normal"));
-});
-
-test("table: badge cell applies inline markup", () => {
-  const html = renderSlideContent({
-    layout: "table",
-    title: "T",
-    headers: ["Metric"],
-    rows: [[{ text: "**+5%**", color: "success", badge: true }]],
-  });
-  assert.ok(html.includes("<strong>+5%</strong>"));
-  assert.ok(html.includes("rounded-full"));
 });
 
 // ═══════════════════════════════════════════════════════════

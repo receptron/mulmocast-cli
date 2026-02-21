@@ -17,7 +17,7 @@ const buildSplitPanel = (panel: SplitPanel, fallbackAccent: string, ratio: numbe
   if (panel.label) {
     if (panel.labelBadge) {
       lines.push(
-        `  <span class="inline-block px-6 py-2.5 rounded-lg bg-${c(accent)} text-lg font-bold text-white font-title mb-4">${renderInlineMarkup(panel.label)}</span>`,
+        `  <span class="inline-block self-start px-6 py-2.5 rounded-lg bg-${c(accent)} text-lg font-bold text-white font-title mb-4">${renderInlineMarkup(panel.label)}</span>`,
       );
     } else {
       lines.push(`  <p class="text-sm font-bold text-${c(accent)} font-body mb-2">${renderInlineMarkup(panel.label)}</p>`);

@@ -56,7 +56,7 @@ export const renderTableCore = (headers: string[] | undefined, rows: TableCellVa
 };
 
 const renderTableBlock = (block: TableBlock): string => {
-  const titleHtml = block.title ? `<p class="text-sm font-bold text-d-text font-body mb-2">${escapeHtml(block.title)}</p>` : "";
+  const titleHtml = block.title ? `<p class="text-sm font-bold text-d-text font-body mb-2">${renderInlineMarkup(block.title)}</p>` : "";
   return `<div class="overflow-auto">${titleHtml}${renderTableCore(block.headers, block.rows, block.rowHeaders, block.striped)}</div>`;
 };
 
@@ -139,8 +139,7 @@ const renderSubBullets = (item: BulletItem): string => {
   if (typeof item === "string" || !item.items || item.items.length === 0) return "";
   const subs = item.items
     .map((sub) => {
-      const text = typeof sub === "string" ? sub : sub.text;
-      return `    <li class="flex gap-2 ml-6 text-[14px]"><span class="text-d-dim shrink-0">\u25E6</span><span>${renderInlineMarkup(text)}</span></li>`;
+      return `    <li class="flex gap-2 ml-6 text-[14px]"><span class="text-d-dim shrink-0">\u25E6</span><span>${renderInlineMarkup(bulletItemText(sub))}</span></li>`;
     })
     .join("\n");
   return `\n${subs}`;
@@ -210,7 +209,7 @@ const renderImageRefPlaceholder = (block: ContentBlock & { type: "imageRef" }): 
 const renderChart = (block: ContentBlock & { type: "chart" }): string => {
   const chartId = generateSlideId("chart");
   const chartData = JSON.stringify(block.chartData);
-  const titleHtml = block.title ? `<p class="text-sm font-bold text-d-text font-body mb-2">${escapeHtml(block.title)}</p>` : "";
+  const titleHtml = block.title ? `<p class="text-sm font-bold text-d-text font-body mb-2">${renderInlineMarkup(block.title)}</p>` : "";
   return `<div class="flex-1 min-h-0 flex flex-col">
   ${titleHtml}
   <div class="flex-1 min-h-0 relative">
@@ -231,7 +230,7 @@ const renderChart = (block: ContentBlock & { type: "chart" }): string => {
 
 const renderMermaid = (block: ContentBlock & { type: "mermaid" }): string => {
   const mermaidId = generateSlideId("mermaid");
-  const titleHtml = block.title ? `<p class="text-sm font-bold text-d-text font-body mb-2">${escapeHtml(block.title)}</p>` : "";
+  const titleHtml = block.title ? `<p class="text-sm font-bold text-d-text font-body mb-2">${renderInlineMarkup(block.title)}</p>` : "";
   return `<div class="flex-1 min-h-0 flex flex-col">
   ${titleHtml}
   <div class="flex-1 min-h-0 flex justify-center items-center">
@@ -242,7 +241,10 @@ const renderMermaid = (block: ContentBlock & { type: "mermaid" }): string => {
 
 const renderSectionSidebar = (block: SectionBlock): string => {
   const color = block.color || "primary";
-  const chars = block.label.split("").join("<br>");
+  const chars = block.label
+    .split("")
+    .map((ch) => escapeHtml(ch))
+    .join("<br>");
   const sidebar = `<div class="w-[48px] shrink-0 rounded-l bg-${c(color)} flex items-center justify-center"><span class="text-sm font-bold text-white font-body leading-snug text-center">${chars}</span></div>`;
   const contentParts: string[] = [];
   if (block.text) {
