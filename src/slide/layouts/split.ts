@@ -1,5 +1,5 @@
 import type { SplitSlide, SplitPanel } from "../schema.js";
-import { renderInlineMarkup, c } from "../utils.js";
+import { renderInlineMarkup, c, accentBar, resolveAccent } from "../utils.js";
 import { renderContentBlocks } from "../blocks.js";
 
 const resolveValign = (valign: "top" | "center" | "bottom" | undefined): string => {
@@ -37,9 +37,9 @@ const buildSplitPanel = (panel: SplitPanel, fallbackAccent: string, ratio: numbe
 };
 
 export const layoutSplit = (data: SplitSlide): string => {
-  const accent = data.accentColor || "primary";
+  const accent = resolveAccent(data.accentColor);
   const parts: string[] = [];
-  parts.push(`<div class="h-[3px] bg-${c(accent)} shrink-0"></div>`);
+  parts.push(accentBar(accent));
 
   const leftRatio = data.left?.ratio || 50;
   const rightRatio = data.right?.ratio || 50;

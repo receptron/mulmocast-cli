@@ -1,5 +1,5 @@
 import type { ContentBlock, BulletItem, SectionBlock, TableBlock, TableCellValue } from "./schema.js";
-import { escapeHtml, c, generateSlideId, renderInlineMarkup } from "./utils.js";
+import { escapeHtml, c, generateSlideId, renderInlineMarkup, blockTitle, resolveChangeColor, resolveAccent } from "./utils.js";
 
 // ─── Table cell rendering (shared with layouts/table.ts) ───
 
@@ -56,8 +56,7 @@ export const renderTableCore = (headers: string[] | undefined, rows: TableCellVa
 };
 
 const renderTableBlock = (block: TableBlock): string => {
-  const titleHtml = block.title ? `<p class="text-sm font-bold text-d-text font-body mb-2">${renderInlineMarkup(block.title)}</p>` : "";
-  return `<div class="overflow-auto">${titleHtml}${renderTableCore(block.headers, block.rows, block.rowHeaders, block.striped)}</div>`;
+  return `<div class="overflow-auto">${blockTitle(block.title)}${renderTableCore(block.headers, block.rows, block.rowHeaders, block.striped)}</div>`;
 };
 
 /** Render a single content block to HTML */
@@ -181,11 +180,10 @@ const renderCallout = (block: ContentBlock & { type: "callout" }): string => {
 const renderMetric = (block: ContentBlock & { type: "metric" }): string => {
   const lines: string[] = [];
   lines.push(`<div class="text-center">`);
-  lines.push(`  <p class="text-4xl font-bold text-${c(block.color || "primary")}">${renderInlineMarkup(block.value)}</p>`);
+  lines.push(`  <p class="text-4xl font-bold text-${c(resolveAccent(block.color))}">${renderInlineMarkup(block.value)}</p>`);
   lines.push(`  <p class="text-sm text-d-dim mt-1">${renderInlineMarkup(block.label)}</p>`);
   if (block.change) {
-    const changeColor = /\+/.test(block.change) ? "success" : "danger";
-    lines.push(`  <p class="text-sm font-bold text-${c(changeColor)} mt-1">${escapeHtml(block.change)}</p>`);
+    lines.push(`  <p class="text-sm font-bold text-${c(resolveChangeColor(block.change))} mt-1">${escapeHtml(block.change)}</p>`);
   }
   lines.push(`</div>`);
   return lines.join("\n");
@@ -209,9 +207,8 @@ const renderImageRefPlaceholder = (block: ContentBlock & { type: "imageRef" }): 
 const renderChart = (block: ContentBlock & { type: "chart" }): string => {
   const chartId = generateSlideId("chart");
   const chartData = JSON.stringify(block.chartData);
-  const titleHtml = block.title ? `<p class="text-sm font-bold text-d-text font-body mb-2">${renderInlineMarkup(block.title)}</p>` : "";
   return `<div class="flex-1 min-h-0 flex flex-col">
-  ${titleHtml}
+  ${blockTitle(block.title)}
   <div class="flex-1 min-h-0 relative">
     <canvas id="${chartId}" data-chart-ready="false"></canvas>
   </div>
@@ -230,9 +227,8 @@ const renderChart = (block: ContentBlock & { type: "chart" }): string => {
 
 const renderMermaid = (block: ContentBlock & { type: "mermaid" }): string => {
   const mermaidId = generateSlideId("mermaid");
-  const titleHtml = block.title ? `<p class="text-sm font-bold text-d-text font-body mb-2">${renderInlineMarkup(block.title)}</p>` : "";
   return `<div class="flex-1 min-h-0 flex flex-col">
-  ${titleHtml}
+  ${blockTitle(block.title)}
   <div class="flex-1 min-h-0 flex justify-center items-center">
     <div id="${mermaidId}" class="mermaid">${escapeHtml(block.code)}</div>
   </div>
@@ -252,7 +248,7 @@ const renderSectionContent = (block: SectionBlock): string => {
 };
 
 const renderSectionSidebar = (block: SectionBlock): string => {
-  const color = block.color || "primary";
+  const color = resolveAccent(block.color);
   const chars = block.label
     .split("")
     .map((ch) => escapeHtml(ch))
@@ -265,7 +261,7 @@ const renderSectionSidebar = (block: SectionBlock): string => {
 };
 
 const renderSectionDefault = (block: SectionBlock): string => {
-  const color = block.color || "primary";
+  const color = resolveAccent(block.color);
   const badge = `<span class="min-w-[80px] px-3 py-1 rounded text-sm font-bold text-white bg-${c(color)} shrink-0">${renderInlineMarkup(block.label)}</span>`;
   return `<div class="flex gap-4 items-start">
   ${badge}
