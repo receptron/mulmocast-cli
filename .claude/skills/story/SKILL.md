@@ -28,7 +28,7 @@ Ask the user what they want to create content about. Inputs can be:
 Try **WebFetch first**. Only use Playwright MCP when WebFetch fails (403, paywalled, JS-heavy).
 
 1. **WebFetch (default)**: Simple and sufficient for most public pages.
-2. **Playwright MCP (fallback)**: `browser_navigate` + `browser_snapshot`. Close with `browser_close` after fetching.
+2. **Playwright MCP (fallback)**: `browser_navigate` + `browser_snapshot`. Close with `browser_close` after all browser operations (fetching + image collection).
 3. **WebSearch (supplement)**: Gather additional context regardless of the primary fetch method.
 
 If the page has pagination, **fetch ALL pages** before proceeding.
@@ -46,7 +46,7 @@ During research, actively download real images. **Real images > AI-generated** f
 Store in `output/images/{scriptBasename}/`:
 ```bash
 mkdir -p output/images/{scriptBasename}
-curl -L -o output/images/{scriptBasename}/{name}.jpg "URL"
+curl -fL -o output/images/{scriptBasename}/{name}.jpg "URL"
 ```
 
 If using Playwright, collect image URLs with `browser_evaluate`:
