@@ -99,7 +99,7 @@ Metrics use color to encode meaning (green=positive, red=negative, primary=neutr
 }
 ```
 
-## Dense slide: table + bullets
+## Dense slide: image + bullets
 
 ```json
 {
@@ -173,6 +173,6 @@ Use mermaid for relationships and processes (org structures, cause-and-effect ch
 
 - **Chart vs Mermaid**: Use charts for quantitative data, mermaid for relationships and processes
 - **Always embed inside split**: Pair with text/metric/callout blocks in the adjacent panel for context
-- **Fill empty space**: If a panel has room, add `imageRef`, `imagePrompt`, `chart`, or `mermaid` blocks — never leave panels empty
+- **Fill space**: If a panel has room, add `imageRef`, `imagePrompt`, `chart`, or `mermaid` blocks — never leave panels empty
 - **Inline markup for emphasis**: Use `{color:text}` to highlight 1-2 key terms per bullet, not every noun
 - **Consistent sidebars**: All `section` blocks with `sidebar: true` on one slide should share the same base color
