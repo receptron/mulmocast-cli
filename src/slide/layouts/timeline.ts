@@ -1,5 +1,5 @@
 import type { TimelineSlide } from "../schema.js";
-import { escapeHtml, nl2br, c } from "../utils.js";
+import { renderInlineMarkup, c } from "../utils.js";
 
 export const layoutTimeline = (data: TimelineSlide): string => {
   const accent = data.accentColor || "primary";
@@ -11,11 +11,11 @@ export const layoutTimeline = (data: TimelineSlide): string => {
 
   // Header inside centering wrapper
   if (data.stepLabel) {
-    parts.push(`<p class="text-sm font-bold text-${c(accent)} font-body">${escapeHtml(data.stepLabel)}</p>`);
+    parts.push(`<p class="text-sm font-bold text-${c(accent)} font-body">${renderInlineMarkup(data.stepLabel)}</p>`);
   }
-  parts.push(`<h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${nl2br(data.title)}</h2>`);
+  parts.push(`<h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${renderInlineMarkup(data.title)}</h2>`);
   if (data.subtitle) {
-    parts.push(`<p class="text-[15px] text-d-dim mt-2 font-body">${nl2br(data.subtitle)}</p>`);
+    parts.push(`<p class="text-[15px] text-d-dim mt-2 font-body">${renderInlineMarkup(data.subtitle)}</p>`);
   }
 
   // Timeline items
@@ -30,10 +30,10 @@ export const layoutTimeline = (data: TimelineSlide): string => {
     parts.push(`  <div class="w-10 h-10 rounded-full ${dotBorder} flex items-center justify-center shadow-lg">`);
     parts.push(`    <div class="w-4 h-4 rounded-full ${dotInner}"></div>`);
     parts.push(`  </div>`);
-    parts.push(`  <p class="text-sm font-bold text-${c(color)} font-body mt-4">${escapeHtml(item.date)}</p>`);
-    parts.push(`  <p class="text-base font-bold text-d-text font-body mt-2">${escapeHtml(item.title)}</p>`);
+    parts.push(`  <p class="text-sm font-bold text-${c(color)} font-body mt-4">${renderInlineMarkup(item.date)}</p>`);
+    parts.push(`  <p class="text-base font-bold text-d-text font-body mt-2">${renderInlineMarkup(item.title)}</p>`);
     if (item.description) {
-      parts.push(`  <p class="text-sm text-d-muted font-body mt-1 px-3">${nl2br(item.description)}</p>`);
+      parts.push(`  <p class="text-sm text-d-muted font-body mt-1 px-3">${renderInlineMarkup(item.description)}</p>`);
     }
     parts.push(`</div>`);
   });

@@ -1,5 +1,5 @@
-import type { ContentBlock } from "./schema.js";
-import { escapeHtml, nl2br, c, generateSlideId } from "./utils.js";
+import type { ContentBlock, BulletItem, SectionBlock } from "./schema.js";
+import { escapeHtml, c, generateSlideId, renderInlineMarkup } from "./utils.js";
 
 /** Render a single content block to HTML */
 export const renderContentBlock = (block: ContentBlock): string => {
@@ -24,6 +24,8 @@ export const renderContentBlock = (block: ContentBlock): string => {
       return renderChart(block);
     case "mermaid":
       return renderMermaid(block);
+    case "section":
+      return renderSection(block);
     default:
       return `<p class="text-sm text-d-muted font-body">[unknown block type]</p>`;
   }
@@ -63,7 +65,24 @@ const renderText = (block: ContentBlock & { type: "text" }): string => {
   const bold = block.bold ? "font-bold" : "";
   const size = block.fontSize !== undefined && block.fontSize >= 18 ? "text-xl" : "text-[15px]";
   const alignCls = resolveAlign(block.align);
-  return `<p class="${size} ${color} ${bold} ${alignCls} font-body leading-relaxed">${nl2br(block.value)}</p>`;
+  return `<p class="${size} ${color} ${bold} ${alignCls} font-body leading-relaxed">${renderInlineMarkup(block.value)}</p>`;
+};
+
+/** Extract text from a bullet item (string or object) */
+const bulletItemText = (item: BulletItem): string => {
+  return typeof item === "string" ? item : item.text;
+};
+
+/** Render sub-bullets for a nested bullet item */
+const renderSubBullets = (item: BulletItem): string => {
+  if (typeof item === "string" || !item.items || item.items.length === 0) return "";
+  const subs = item.items
+    .map((sub) => {
+      const text = typeof sub === "string" ? sub : sub.text;
+      return `    <li class="flex gap-2 ml-6 text-[14px]"><span class="text-d-dim shrink-0">\u25E6</span><span>${renderInlineMarkup(text)}</span></li>`;
+    })
+    .join("\n");
+  return `\n${subs}`;
 };
 
 const renderBullets = (block: ContentBlock & { type: "bullets" }): string => {
@@ -71,7 +90,9 @@ const renderBullets = (block: ContentBlock & { type: "bullets" }): string => {
   const items = block.items
     .map((item, i) => {
       const marker = block.ordered ? `${i + 1}.` : escapeHtml(block.icon || "\u2022");
-      return `  <li class="flex gap-2"><span class="text-d-dim shrink-0">${marker}</span><span>${escapeHtml(item)}</span></li>`;
+      const text = bulletItemText(item);
+      const subHtml = renderSubBullets(item);
+      return `  <li class="flex flex-col gap-1"><div class="flex gap-2"><span class="text-d-dim shrink-0">${marker}</span><span>${renderInlineMarkup(text)}</span></div>${subHtml}</li>`;
     })
     .join("\n");
   return `<${tag} class="space-y-2 text-[15px] text-d-muted font-body">\n${items}\n</${tag}>`;
@@ -92,16 +113,16 @@ const renderCallout = (block: ContentBlock & { type: "callout" }): string => {
   const bg = isQuote ? "bg-d-alt" : "bg-d-card";
   const textCls = isQuote ? "italic text-d-muted" : "text-d-muted";
   const content = block.label
-    ? `<span class="font-bold text-${c(block.color || "warning")}">${escapeHtml(block.label)}:</span> <span class="text-d-muted">${escapeHtml(block.text)}</span>`
-    : `<span class="${textCls}">${nl2br(block.text)}</span>`;
+    ? `<span class="font-bold text-${c(block.color || "warning")}">${renderInlineMarkup(block.label)}:</span> <span class="text-d-muted">${renderInlineMarkup(block.text)}</span>`
+    : `<span class="${textCls}">${renderInlineMarkup(block.text)}</span>`;
   return `<div class="${bg} ${borderCls} p-3 rounded text-sm font-body">${content}</div>`;
 };
 
 const renderMetric = (block: ContentBlock & { type: "metric" }): string => {
   const lines: string[] = [];
   lines.push(`<div class="text-center">`);
-  lines.push(`  <p class="text-4xl font-bold text-${c(block.color || "primary")}">${escapeHtml(block.value)}</p>`);
-  lines.push(`  <p class="text-sm text-d-dim mt-1">${escapeHtml(block.label)}</p>`);
+  lines.push(`  <p class="text-4xl font-bold text-${c(block.color || "primary")}">${renderInlineMarkup(block.value)}</p>`);
+  lines.push(`  <p class="text-sm text-d-dim mt-1">${renderInlineMarkup(block.label)}</p>`);
   if (block.change) {
     const changeColor = block.change.startsWith("+") ? "success" : "danger";
     lines.push(`  <p class="text-sm font-bold text-${c(changeColor)} mt-1">${escapeHtml(block.change)}</p>`);
@@ -156,4 +177,41 @@ const renderMermaid = (block: ContentBlock & { type: "mermaid" }): string => {
     <div id="${mermaidId}" class="mermaid">${escapeHtml(block.code)}</div>
   </div>
 </div>`;
+};
+
+const renderSectionSidebar = (block: SectionBlock): string => {
+  const color = block.color || "primary";
+  const chars = block.label.split("").join("<br>");
+  const sidebar = `<div class="w-[48px] shrink-0 rounded-l bg-${c(color)} flex items-center justify-center"><span class="text-sm font-bold text-white font-body leading-snug text-center">${chars}</span></div>`;
+  const contentParts: string[] = [];
+  if (block.text) {
+    contentParts.push(`<p class="text-[15px] text-d-muted font-body">${renderInlineMarkup(block.text)}</p>`);
+  }
+  if (block.content) {
+    contentParts.push(block.content.map(renderContentBlock).join("\n"));
+  }
+  return `<div class="flex rounded overflow-hidden bg-d-card">
+  ${sidebar}
+  <div class="flex-1 space-y-2 p-3">${contentParts.join("\n")}</div>
+</div>`;
+};
+
+const renderSectionDefault = (block: SectionBlock): string => {
+  const color = block.color || "primary";
+  const badge = `<span class="min-w-[80px] px-3 py-1 rounded text-sm font-bold text-white bg-${c(color)} shrink-0">${renderInlineMarkup(block.label)}</span>`;
+  const contentParts: string[] = [];
+  if (block.text) {
+    contentParts.push(`<p class="text-[15px] text-d-muted font-body">${renderInlineMarkup(block.text)}</p>`);
+  }
+  if (block.content) {
+    contentParts.push(block.content.map(renderContentBlock).join("\n"));
+  }
+  return `<div class="flex gap-4 items-start">
+  ${badge}
+  <div class="flex-1 space-y-2">${contentParts.join("\n")}</div>
+</div>`;
+};
+
+const renderSection = (block: SectionBlock): string => {
+  return block.sidebar ? renderSectionSidebar(block) : renderSectionDefault(block);
 };

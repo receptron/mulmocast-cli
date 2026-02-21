@@ -1,5 +1,5 @@
 import type { ColumnsSlide, Card } from "../schema.js";
-import { escapeHtml, c, cardWrap, numBadge, iconSquare, slideHeader, renderCalloutBar } from "../utils.js";
+import { renderInlineMarkup, c, cardWrap, numBadge, iconSquare, slideHeader, renderCalloutBar } from "../utils.js";
 import { renderCardContentBlocks } from "../blocks.js";
 
 const buildColumnCard = (col: Card): string => {
@@ -10,17 +10,17 @@ const buildColumnCard = (col: Card): string => {
     inner.push(`<div class="flex flex-col items-center mb-3">`);
     inner.push(`  ${iconSquare(col.icon, accent)}`);
     inner.push(`</div>`);
-    inner.push(`<h3 class="text-lg font-bold text-d-text text-center font-body">${escapeHtml(col.title)}</h3>`);
+    inner.push(`<h3 class="text-lg font-bold text-d-text text-center font-body">${renderInlineMarkup(col.title)}</h3>`);
   } else if (col.num != null) {
     inner.push(`<div class="flex items-center gap-3 mb-1">`);
     inner.push(`  ${numBadge(col.num, accent)}`);
-    inner.push(`  <h3 class="text-lg font-bold text-d-text font-body">${escapeHtml(col.title)}</h3>`);
+    inner.push(`  <h3 class="text-lg font-bold text-d-text font-body">${renderInlineMarkup(col.title)}</h3>`);
     inner.push(`</div>`);
   } else {
     if (col.label) {
-      inner.push(`<p class="text-sm font-bold text-${c(accent)} font-body">${escapeHtml(col.label)}</p>`);
+      inner.push(`<p class="text-sm font-bold text-${c(accent)} font-body">${renderInlineMarkup(col.label)}</p>`);
     }
-    inner.push(`<h3 class="text-2xl font-title font-bold text-d-text mt-1">${escapeHtml(col.title)}</h3>`);
+    inner.push(`<h3 class="text-2xl font-title font-bold text-d-text mt-1">${renderInlineMarkup(col.title)}</h3>`);
   }
 
   if (col.content) {
@@ -31,7 +31,7 @@ const buildColumnCard = (col: Card): string => {
   }
 
   if (col.footer) {
-    inner.push(`<p class="text-sm text-d-dim font-body mt-auto pt-3">${escapeHtml(col.footer)}</p>`);
+    inner.push(`<p class="text-sm text-d-dim font-body mt-auto pt-3">${renderInlineMarkup(col.footer)}</p>`);
   }
 
   return cardWrap(accent, inner.join("\n"), "flex-1");
@@ -57,7 +57,7 @@ export const layoutColumns = (data: ColumnsSlide): string => {
     parts.push(`<div class="mt-auto pb-4">${renderCalloutBar(data.callout)}</div>`);
   }
   if (data.bottomText) {
-    parts.push(`<p class="text-center text-sm text-d-dim font-body pb-4">${escapeHtml(data.bottomText)}</p>`);
+    parts.push(`<p class="text-center text-sm text-d-dim font-body pb-4">${renderInlineMarkup(data.bottomText)}</p>`);
   }
 
   return parts.join("\n");

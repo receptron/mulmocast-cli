@@ -1,5 +1,5 @@
 import type { TableSlide, TableCellValue } from "../schema.js";
-import { escapeHtml, c, slideHeader, renderCalloutBar } from "../utils.js";
+import { renderInlineMarkup, c, slideHeader, renderCalloutBar } from "../utils.js";
 
 const resolveCellColor = (cellObj: { color?: string }, isRowHeader: boolean): string => {
   if (cellObj.color) return `text-${c(cellObj.color)}`;
@@ -7,11 +7,18 @@ const resolveCellColor = (cellObj: { color?: string }, isRowHeader: boolean): st
   return "text-d-muted";
 };
 
+const renderBadge = (text: string, color: string): string => {
+  return `<span class="px-2 py-0.5 rounded-full text-xs font-bold text-white bg-${c(color)}">${renderInlineMarkup(text)}</span>`;
+};
+
 const renderCellValue = (cell: TableCellValue, isRowHeader: boolean): string => {
   const cellObj = typeof cell === "object" && cell !== null ? cell : { text: String(cell) };
+  if (cellObj.badge && cellObj.color) {
+    return `<td class="px-4 py-3 text-sm font-body border-b border-d-alt">${renderBadge(cellObj.text, cellObj.color)}</td>`;
+  }
   const colorCls = resolveCellColor(cellObj, isRowHeader);
   const boldCls = cellObj.bold || isRowHeader ? "font-bold" : "";
-  return `<td class="px-4 py-3 text-sm ${colorCls} ${boldCls} font-body border-b border-d-alt">${escapeHtml(cellObj.text)}</td>`;
+  return `<td class="px-4 py-3 text-sm ${colorCls} ${boldCls} font-body border-b border-d-alt">${renderInlineMarkup(cellObj.text)}</td>`;
 };
 
 export const layoutTable = (data: TableSlide): string => {
@@ -26,7 +33,7 @@ export const layoutTable = (data: TableSlide): string => {
   parts.push(`<thead>`);
   parts.push(`<tr>`);
   headers.forEach((h) => {
-    parts.push(`  <th class="text-left px-4 py-3 text-sm font-bold text-d-text font-body border-b-2 border-d-alt">${escapeHtml(h)}</th>`);
+    parts.push(`  <th class="text-left px-4 py-3 text-sm font-bold text-d-text font-body border-b-2 border-d-alt">${renderInlineMarkup(h)}</th>`);
   });
   parts.push(`</tr>`);
   parts.push(`</thead>`);

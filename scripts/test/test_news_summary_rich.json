@@ -1,0 +1,185 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "ja",
+  "canvasSize": { "width": 720, "height": 1280 },
+  "title": "ニュース ひとめで — 最高裁、相互関税は違憲",
+  "description": "Slide DSL リッチコンテンツ拡張のデモ：sidebar section, nested bullets, inline markup, table badge",
+  "speechParams": {
+    "speakers": {
+      "Presenter": { "voiceId": "shimmer" }
+    }
+  },
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "2B2B1A",
+        "bgCard": "F2ECD8",
+        "bgCardAlt": "E8E0C8",
+        "text": "F0F0E0",
+        "textMuted": "2A2A1A",
+        "textDim": "606050",
+        "primary": "2E7D32",
+        "accent": "1A3A1A",
+        "success": "2E7D32",
+        "warning": "5D4037",
+        "danger": "C62828",
+        "info": "1A3A1A",
+        "highlight": "AD1457"
+      },
+      "fonts": {
+        "title": "Noto Sans JP",
+        "body": "Noto Sans JP",
+        "mono": "Consolas"
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "最高裁が相互関税はIEEPAに基づく大統領権限を逸脱しており違憲と判断しました。続いてNY市況です。主要指標はいずれも上昇しました。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "accentColor": "primary",
+          "left": {
+            "label": "ニュース ひとめで",
+            "labelBadge": true,
+            "title": "🇺🇸 最高裁、相互関税は違憲",
+            "accentColor": "primary",
+            "ratio": 100,
+            "valign": "top",
+            "content": [
+              {
+                "type": "section",
+                "label": "なにが？",
+                "color": "info",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "icon": "▼",
+                    "items": ["{danger:「大統領権限を逸脱」}　最高裁 票決6:3", "{danger:IEEPA}（国際緊急経済権限法）の関税", "トランプ政権に法的なブレーキ"]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "米政府は？",
+                "color": "info",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "icon": "▼",
+                    "items": [
+                      "トランプ氏「判事は愚か者」",
+                      {
+                        "text": "別の法的根拠で**{danger:「10%グローバル課税」}**検討",
+                        "items": ["数日中に大統領令に署名する構え", "ベッセント財務長官「実質的に変わらない」"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "影響",
+                "color": "warning",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "icon": "▼",
+                    "items": [
+                      {
+                        "text": "徴収済みの関税扱いは不透明",
+                        "items": ["最高裁は返金すべきか言及せず 1500億ドル規模"]
+                      },
+                      "関税を原資として現金給付案など不透明に"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "市場は？",
+                "color": "danger",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "icon": "▼",
+                    "items": ["Amazonなど{danger:関税銘柄が上昇}", "財政不安から{danger:米国債金利が上昇}する場面も"]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "NY市況です。主要指標はいずれも上昇しました。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "theme": {
+          "colors": {
+            "bg": "2B2B1A",
+            "bgCard": "3A3A28",
+            "bgCardAlt": "454530",
+            "text": "F0F0E0",
+            "textMuted": "E0E0D0",
+            "textDim": "A0A090",
+            "primary": "2E7D32",
+            "accent": "1A3A1A",
+            "success": "2E7D32",
+            "warning": "5D4037",
+            "danger": "C62828",
+            "info": "1A3A1A",
+            "highlight": "AD1457"
+          },
+          "fonts": {
+            "title": "Noto Sans JP",
+            "body": "Noto Sans JP",
+            "mono": "Consolas"
+          }
+        },
+        "slide": {
+          "layout": "table",
+          "title": "NY市況",
+          "accentColor": "primary",
+          "headers": ["指標", "値", "変動", "指標", "値", "変動"],
+          "rows": [
+            [
+              { "text": "S&P500", "bold": true },
+              "6,909",
+              { "text": "+0.69%", "color": "success", "badge": true },
+              { "text": "NASDAQ", "bold": true },
+              "22,886",
+              { "text": "+0.90%", "color": "success", "badge": true }
+            ],
+            [
+              { "text": "日経平均先物", "bold": true },
+              "57,130",
+              { "text": "+0.51%", "color": "success", "badge": true },
+              { "text": "ドル円", "bold": true },
+              "155.05",
+              { "text": "+0.01", "color": "success", "badge": true }
+            ],
+            [
+              { "text": "NY金", "bold": true },
+              "5,129",
+              { "text": "+2.64%", "color": "success", "badge": true },
+              { "text": "米10年債", "bold": true },
+              "4.085%",
+              { "text": "+0.010", "color": "success", "badge": true }
+            ]
+          ],
+          "striped": true
+        }
+      }
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import type { FunnelSlide } from "../schema.js";
-import { escapeHtml, c, slideHeader, renderCalloutBar } from "../utils.js";
+import { renderInlineMarkup, c, slideHeader, renderCalloutBar } from "../utils.js";
 
 export const layoutFunnel = (data: FunnelSlide): string => {
   const parts: string[] = [slideHeader(data)];
@@ -13,13 +13,13 @@ export const layoutFunnel = (data: FunnelSlide): string => {
     const widthPct = 100 - (i / Math.max(total - 1, 1)) * 55;
     parts.push(`<div class="bg-${c(color)} rounded-lg flex items-center justify-between px-6 py-4" style="width: ${widthPct}%">`);
     parts.push(`  <div class="flex items-center gap-3">`);
-    parts.push(`    <span class="text-base font-bold text-white font-body">${escapeHtml(stage.label)}</span>`);
+    parts.push(`    <span class="text-base font-bold text-white font-body">${renderInlineMarkup(stage.label)}</span>`);
     if (stage.description) {
-      parts.push(`    <span class="text-sm text-white/70 font-body">${escapeHtml(stage.description)}</span>`);
+      parts.push(`    <span class="text-sm text-white/70 font-body">${renderInlineMarkup(stage.description)}</span>`);
     }
     parts.push(`  </div>`);
     if (stage.value) {
-      parts.push(`  <span class="text-lg font-bold text-white font-body">${escapeHtml(stage.value)}</span>`);
+      parts.push(`  <span class="text-lg font-bold text-white font-body">${renderInlineMarkup(stage.value)}</span>`);
     }
     parts.push(`</div>`);
   });

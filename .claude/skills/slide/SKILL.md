@@ -222,10 +222,12 @@ yarn cli tool complete beats.json -s slide_dark -o presentation.json
 {
   "layout": "table", "title": "...", "subtitle?": "...", "stepLabel?": "...",
   "headers": ["Col1", "Col2"],
-  "rows": [["val1", { "text": "val2", "color?": "success", "bold?": true }]],
+  "rows": [["val1", { "text": "val2", "color?": "success", "bold?": true, "badge?": true }]],
   "rowHeaders?": true, "striped?": true, "callout?": {...}
 }
 ```
+
+Cell values can be strings or objects. Object cells support `badge: true` with a `color` to render as a colored pill badge (e.g., `{ "text": "+0.69%", "color": "success", "badge": true }`).
 
 ### funnel - Funnel
 ```json
@@ -241,7 +243,20 @@ yarn cli tool complete beats.json -s slide_dark -o presentation.json
 - `accentColor?`: `"primary" | "accent" | "success" | "warning" | "danger" | "info" | "highlight"`
 - `style?`: `{ "bgColor?": "hex", "decorations?": boolean, "bgOpacity?": number, "footer?": "..." }`
 
-## Content Blocks (10 types)
+## Inline Markup
+
+All text fields across all layouts and content blocks support inline markup:
+
+- `**bold text**` → renders as bold (`<strong>`)
+- `{color:colored text}` → renders with accent color (e.g., `{danger:red text}`, `{success:+5.2%}`)
+
+Valid color keys: `primary`, `accent`, `success`, `warning`, `danger`, `info`, `highlight`
+
+Can be combined: `**{success:+5.2%}**` renders bold green text.
+
+HTML is always escaped first, so inline markup is XSS-safe.
+
+## Content Blocks (11 types)
 
 Used in the `content` array of layouts such as columns, comparison, grid, split, and matrix.
 
@@ -251,9 +266,23 @@ Used in the `content` array of layouts such as columns, comparison, grid, split,
 ```
 
 ### bullets
+Supports flat items (strings) and nested items (2 levels max):
 ```json
 { "type": "bullets", "items": ["Item 1", "Item 2"], "ordered?": true, "icon?": ">" }
 ```
+
+Nested bullets example:
+```json
+{
+  "type": "bullets",
+  "items": [
+    { "text": "Parent item", "items": ["Sub-item A", "Sub-item B"] },
+    "Simple flat item",
+    { "text": "Another parent", "items": [{ "text": "Object sub-item" }] }
+  ]
+}
+```
+Sub-items render with `◦` (hollow bullet) marker and are indented.
 
 ### code
 ```json
@@ -330,6 +359,30 @@ Renders a Chart.js chart inline. `chartData` is passed directly to `new Chart(ct
 ```
 
 Renders a Mermaid diagram inline. `code` is the Mermaid diagram definition string. The Mermaid CDN is only loaded when a mermaid block is present. The mermaid theme (dark/default) is automatically chosen based on the slide background color.
+
+### section
+Labeled section with a color badge on the left and content on the right. Ideal for news summaries, key-value layouts, and structured information.
+```json
+{ "type": "section", "label": "Overview", "color?": "primary", "text?": "Short description", "content?": [...] }
+```
+
+Example with nested content:
+```json
+{
+  "type": "section",
+  "label": "Market Data",
+  "color": "success",
+  "content": [
+    { "type": "text", "value": "S&P 500 hit **record high**" },
+    { "type": "bullets", "items": ["{success:+1.2%} this week", "{danger:-0.3%} futures"] }
+  ]
+}
+```
+
+Notes:
+- `text` is a shorthand for a simple text paragraph; use `content` for richer layouts
+- `content` accepts all block types except `section` (no recursion)
+- Default color is `primary`
 
 ## Shared Components
 
