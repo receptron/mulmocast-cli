@@ -1,6 +1,6 @@
 {
   "name": "mulmocast",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "",
   "type": "module",
   "main": "lib/index.node.js",
@@ -28,6 +28,7 @@
   },
   "bin": {
     "mulmo": "lib/cli/bin.js",
+    "mulmocast": "lib/cli/bin.js",
     "mulmo-mcp": "lib/mcp/server.js"
   },
   "files": [
