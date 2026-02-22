@@ -254,6 +254,12 @@ For beats showing statistics or research findings, add `"reference": "Source: ..
 
 ### Write the file and present output
 
+Generate the movie directly — `yarn movie` automatically generates images and audio as well, so separate `yarn images` / `yarn audio` steps are unnecessary.
+
+```bash
+yarn movie <filename>
+```
+
 ```text
 Wrote: <filename>
 
@@ -261,8 +267,5 @@ Summary:
 - N beats, [theme] theme
 - Key topics: [brief list]
 
-Next steps:
-- Preview: yarn cli images <filename>
-- Audio: yarn audio <filename>
-- Video: yarn movie <filename>
+Output: output/video/<basename>.mp4
 ```
