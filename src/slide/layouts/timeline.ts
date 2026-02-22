@@ -1,29 +1,18 @@
 import type { TimelineSlide } from "../schema.js";
-import { renderInlineMarkup, c } from "../utils.js";
+import { renderInlineMarkup, c, resolveItemColor, centeredSlideHeader } from "../utils.js";
 
 export const layoutTimeline = (data: TimelineSlide): string => {
-  const accent = data.accentColor || "primary";
   const parts: string[] = [];
   const items = data.items || [];
 
-  parts.push(`<div class="h-[3px] bg-${c(accent)} shrink-0"></div>`);
-  parts.push(`<div class="flex-1 flex flex-col justify-center px-12 min-h-0">`);
-
-  // Header inside centering wrapper
-  if (data.stepLabel) {
-    parts.push(`<p class="text-sm font-bold text-${c(accent)} font-body">${renderInlineMarkup(data.stepLabel)}</p>`);
-  }
-  parts.push(`<h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${renderInlineMarkup(data.title)}</h2>`);
-  if (data.subtitle) {
-    parts.push(`<p class="text-[15px] text-d-dim mt-2 font-body">${renderInlineMarkup(data.subtitle)}</p>`);
-  }
+  parts.push(centeredSlideHeader(data));
 
   // Timeline items
   parts.push(`<div class="flex items-start mt-10 relative">`);
   parts.push(`<div class="absolute left-4 right-4 top-[52px] h-[2px] bg-d-alt"></div>`);
 
   items.forEach((item) => {
-    const color = item.color || data.accentColor || "primary";
+    const color = resolveItemColor(item.color, data.accentColor);
     const dotBorder = item.done ? `bg-${c(color)}` : `bg-d-alt`;
     const dotInner = item.done ? "bg-d-text" : `bg-${c(color)}`;
     parts.push(`<div class="flex-1 flex flex-col items-center text-center relative z-10">`);

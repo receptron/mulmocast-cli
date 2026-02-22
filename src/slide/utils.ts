@@ -1,4 +1,4 @@
-import type { SlideTheme, SlideThemeColors, AccentColorKey, SlideLayout, ContentBlock } from "./schema.js";
+import type { SlideTheme, SlideThemeColors, AccentColorKey, SlideLayout, ContentBlock, CalloutBar } from "./schema.js";
 
 /** Escape HTML special characters */
 export const escapeHtml = (s: string): string => {
@@ -52,6 +52,35 @@ export const sanitizeHex = (s: string): string => {
 /** Accent color key → Tailwind class segment: "primary" → "d-primary" */
 export const c = (key: string): string => {
   return `d-${sanitizeCssClass(key)}`;
+};
+
+// ═══════════════════════════════════════════════════════════
+// Shared micro-helpers for HTML generation
+// ═══════════════════════════════════════════════════════════
+
+/** Default accent color used when none is specified */
+const DEFAULT_ACCENT = "primary";
+
+/** Resolve accent color key with "primary" as fallback */
+export const resolveAccent = (color: string | undefined): string => color || DEFAULT_ACCENT;
+
+/** Resolve item-level color with slide-level fallback then "primary" */
+export const resolveItemColor = (itemColor: string | undefined, slideAccent: string | undefined): string => itemColor || slideAccent || DEFAULT_ACCENT;
+
+/** Render a horizontal accent bar (3px full-width). Pass extraClass for width/margin variants. */
+export const accentBar = (colorKey: string, extraClass?: string): string => `<div class="h-[3px] bg-${c(colorKey)} shrink-0 ${extraClass || ""}"></div>`;
+
+/** Render an optional block title (chart, mermaid, table) */
+export const blockTitle = (title: string | undefined): string =>
+  title ? `<p class="text-sm font-bold text-d-text font-body mb-2">${renderInlineMarkup(title)}</p>` : "";
+
+/** Resolve change indicator color: "success" for positive (+), "danger" for negative */
+export const resolveChangeColor = (change: string): string => (/\+/.test(change) ? "success" : "danger");
+
+/** Render the optional callout bar at the bottom of a slide, or empty string */
+export const renderOptionalCallout = (callout: CalloutBar | undefined): string => {
+  if (!callout) return "";
+  return `<div class="mt-auto pb-4">${renderCalloutBar(callout)}</div>`;
 };
 
 type TailwindColorKey = "bg" | "card" | "alt" | "text" | "muted" | "dim" | AccentColorKey;
@@ -112,7 +141,7 @@ export const iconSquare = (icon: string, colorKey: string): string => {
 /** Render a card wrapper with accent top bar */
 export const cardWrap = (accentColor: string, innerHtml: string, extraClass?: string): string => {
   return `<div class="bg-d-card rounded-lg shadow-lg overflow-hidden flex flex-col min-h-0 ${sanitizeCssClass(extraClass || "")}">
-  <div class="h-[3px] bg-${c(accentColor)} shrink-0"></div>
+  ${accentBar(accentColor)}
   <div class="p-5 flex flex-col flex-1 min-h-0 overflow-hidden">
 ${innerHtml}
   </div>
@@ -133,21 +162,30 @@ export const renderCalloutBar = (obj: { text: string; label?: string; color?: st
 </div>`;
 };
 
+/** Render header text elements (stepLabel + title + subtitle) without wrapping div */
+export const renderHeaderText = (data: { accentColor?: string; stepLabel?: string; title: string; subtitle?: string }): string => {
+  const accent = resolveAccent(data.accentColor);
+  const lines: string[] = [];
+  if (data.stepLabel) {
+    lines.push(`<p class="text-sm font-bold text-${c(accent)} font-body">${renderInlineMarkup(data.stepLabel)}</p>`);
+  }
+  lines.push(`<h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${renderInlineMarkup(data.title)}</h2>`);
+  if (data.subtitle) {
+    lines.push(`<p class="text-[15px] text-d-dim mt-2 font-body">${renderInlineMarkup(data.subtitle)}</p>`);
+  }
+  return lines.join("\n");
+};
+
 /** Render the common slide header (accent bar + title + subtitle) */
 export const slideHeader = (data: { accentColor?: string; stepLabel?: string; title: string; subtitle?: string }): string => {
-  const accent = data.accentColor || "primary";
-  const lines: string[] = [];
-  lines.push(`<div class="h-[3px] bg-${c(accent)} shrink-0"></div>`);
-  lines.push(`<div class="px-12 pt-5 shrink-0">`);
-  if (data.stepLabel) {
-    lines.push(`  <p class="text-sm font-bold text-${c(accent)} font-body">${renderInlineMarkup(data.stepLabel)}</p>`);
-  }
-  lines.push(`  <h2 class="text-[42px] leading-tight font-title font-bold text-d-text">${renderInlineMarkup(data.title)}</h2>`);
-  if (data.subtitle) {
-    lines.push(`  <p class="text-[15px] text-d-dim mt-2 font-body">${renderInlineMarkup(data.subtitle)}</p>`);
-  }
-  lines.push(`</div>`);
-  return lines.join("\n");
+  const accent = resolveAccent(data.accentColor);
+  return [accentBar(accent), `<div class="px-12 pt-5 shrink-0">`, renderHeaderText(data), `</div>`].join("\n");
+};
+
+/** Render accent bar + vertically-centered wrapper with header text (used by stats, timeline) */
+export const centeredSlideHeader = (data: { accentColor?: string; stepLabel?: string; title: string; subtitle?: string }): string => {
+  const accent = resolveAccent(data.accentColor);
+  return [accentBar(accent), `<div class="flex-1 flex flex-col justify-center px-12 min-h-0">`, renderHeaderText(data)].join("\n");
 };
 
 // ═══════════════════════════════════════════════════════════

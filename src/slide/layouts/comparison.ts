@@ -1,9 +1,9 @@
 import type { ComparisonSlide, ComparisonPanel } from "../schema.js";
-import { renderInlineMarkup, c, cardWrap, slideHeader, renderCalloutBar } from "../utils.js";
+import { renderInlineMarkup, c, cardWrap, slideHeader, renderOptionalCallout, resolveAccent } from "../utils.js";
 import { renderContentBlocks } from "../blocks.js";
 
 const buildPanel = (panel: ComparisonPanel): string => {
-  const accent = panel.accentColor || "primary";
+  const accent = resolveAccent(panel.accentColor);
   const inner: string[] = [];
 
   inner.push(`<h3 class="text-xl font-bold text-${c(accent)} font-body">${renderInlineMarkup(panel.title)}</h3>`);
@@ -29,9 +29,7 @@ export const layoutComparison = (data: ComparisonSlide): string => {
   parts.push(buildPanel(data.right));
   parts.push(`</div>`);
 
-  if (data.callout) {
-    parts.push(`<div class="mt-auto pb-4">${renderCalloutBar(data.callout)}</div>`);
-  }
+  parts.push(renderOptionalCallout(data.callout));
 
   return parts.join("\n");
 };
