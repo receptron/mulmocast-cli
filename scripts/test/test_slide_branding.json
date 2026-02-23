@@ -23,12 +23,12 @@
     },
     "branding": {
       "logo": {
-        "source": { "kind": "path", "path": "scripts/test/branding/logo.svg" },
+        "source": { "kind": "path", "path": "branding/logo.svg" },
         "position": "top-right",
         "width": 120
       },
       "backgroundImage": {
-        "source": { "kind": "path", "path": "scripts/test/branding/banner.jpg" },
+        "source": { "kind": "path", "path": "branding/banner.jpg" },
         "size": "cover",
         "opacity": 0.06
       }
@@ -69,7 +69,7 @@
         "type": "slide",
         "branding": {
           "logo": {
-            "source": { "kind": "path", "path": "scripts/test/branding/logo.svg" },
+            "source": { "kind": "path", "path": "branding/logo.svg" },
             "position": "bottom-left",
             "width": 80
           }
