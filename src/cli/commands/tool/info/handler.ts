@@ -2,10 +2,11 @@
 import { getMarkdownStyleNames, getMarkdownCategories, getMarkdownStylesByCategory } from "../../../../data/markdownStyles.js";
 import { bgmAssets } from "../../../../data/bgmAssets.js";
 import { templateDataSet } from "../../../../data/templateDataSet.js";
+import { slideThemes } from "../../../../data/slideThemes.js";
 import { provider2TTSAgent, provider2ImageAgent, provider2MovieAgent, provider2LLMAgent } from "../../../../types/provider2agent.js";
 import YAML from "yaml";
 
-type InfoCategory = "styles" | "bgm" | "templates" | "voices" | "images" | "movies" | "llm";
+type InfoCategory = "styles" | "bgm" | "templates" | "voices" | "images" | "movies" | "llm" | "themes";
 
 interface InfoCliArgs {
   category?: string;
@@ -93,6 +94,10 @@ const getLlmInfo = () => {
   return { llmProviders: result };
 };
 
+const getThemesInfo = () => {
+  return { themes: slideThemes, total: Object.keys(slideThemes).length };
+};
+
 const printStylesText = () => {
   const categories = getMarkdownCategories();
   console.log("\n📎 Markdown Styles (100 styles in 10 categories)\n");
@@ -174,6 +179,18 @@ const printLlmText = () => {
   }
 };
 
+const printThemesText = () => {
+  const themeEntries = Object.entries(slideThemes);
+  console.log(`\n🎨 Slide Themes (${themeEntries.length} themes)\n`);
+  console.log("Usage: Set 'slideParams.theme' in your script\n");
+  for (const [name, theme] of themeEntries) {
+    const { bg, primary, accent } = theme.colors;
+    const { title, body, mono } = theme.fonts;
+    console.log(`  ${name.padEnd(10)} - bg: ${bg}, primary: ${primary}, accent: ${accent} | fonts: ${title}/${body}/${mono}`);
+  }
+  console.log("");
+};
+
 const printAllCategories = () => {
   console.log("\n📚 Available Info Categories\n");
   console.log("  Usage: mulmo tool info <category> [--format json|yaml]\n");
@@ -184,10 +201,11 @@ const printAllCategories = () => {
   console.log("    voices     - TTS providers and voice options");
   console.log("    images     - Image generation providers and models");
   console.log("    movies     - Movie generation providers and models");
-  console.log("    llm        - LLM providers and models\n");
+  console.log("    llm        - LLM providers and models");
+  console.log("    themes     - Slide themes and color palettes\n");
 };
 
-const validCategories: InfoCategory[] = ["styles", "bgm", "templates", "voices", "images", "movies", "llm"];
+const validCategories: InfoCategory[] = ["styles", "bgm", "templates", "voices", "images", "movies", "llm", "themes"];
 
 const isValidCategory = (category: string): category is InfoCategory => {
   return validCategories.includes(category as InfoCategory);
@@ -223,6 +241,7 @@ export const handler = (argv: InfoCliArgs) => {
     images: getImagesInfo,
     movies: getMoviesInfo,
     llm: getLlmInfo,
+    themes: getThemesInfo,
   };
 
   const textPrinters: Record<InfoCategory, () => void> = {
@@ -233,6 +252,7 @@ export const handler = (argv: InfoCliArgs) => {
     images: printImagesText,
     movies: printMoviesText,
     llm: printLlmText,
+    themes: printThemesText,
   };
 
   if (format === "text") {
