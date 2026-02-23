@@ -185,7 +185,8 @@ const printThemesText = () => {
   console.log("Usage: Set 'slideParams.theme' in your script\n");
   for (const [name, theme] of themeEntries) {
     const { bg, primary, accent } = theme.colors;
-    console.log(`  ${name.padEnd(10)} - bg: ${bg}, primary: ${primary}, accent: ${accent}`);
+    const { title, body, mono } = theme.fonts;
+    console.log(`  ${name.padEnd(10)} - bg: ${bg}, primary: ${primary}, accent: ${accent} | fonts: ${title}/${body}/${mono}`);
   }
   console.log("");
 };
