@@ -156,10 +156,16 @@ const convertBrandingToResolved = async (branding: SlideBranding, params: ImageP
       dataUrl,
       size: branding.backgroundImage.size ?? "cover",
       opacity: branding.backgroundImage.opacity ?? 1,
+      bgOpacity: branding.backgroundImage.bgOpacity,
     };
   }
 
   return resolved;
+};
+
+const resolveAndConvertBranding = async (params: ImageProcessorParams): Promise<ResolvedBranding | undefined> => {
+  const branding = resolveBranding(params);
+  return branding ? await convertBrandingToResolved(branding, params) : undefined;
 };
 
 const processSlide = async (params: ImageProcessorParams) => {
@@ -169,8 +175,7 @@ const processSlide = async (params: ImageProcessorParams) => {
   const theme = resolveTheme(params);
   const slide = resolveSlide(params, toFileUrl);
   const reference = (beat.image as MulmoSlideMedia).reference;
-  const branding = resolveBranding(params);
-  const resolvedBranding = branding ? await convertBrandingToResolved(branding, params) : undefined;
+  const resolvedBranding = await resolveAndConvertBranding(params);
   const html = generateSlideHTML(theme, slide, reference, resolvedBranding);
   await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;
@@ -183,8 +188,7 @@ const dumpHtml = async (params: ImageProcessorParams) => {
   const theme = resolveTheme(params);
   const slide = resolveSlide(params);
   const reference = (beat.image as MulmoSlideMedia).reference;
-  const branding = resolveBranding(params);
-  const resolvedBranding = branding ? await convertBrandingToResolved(branding, params) : undefined;
+  const resolvedBranding = await resolveAndConvertBranding(params);
   return generateSlideHTML(theme, slide, reference, resolvedBranding);
 };
 

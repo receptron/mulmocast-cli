@@ -5,7 +5,7 @@ import { renderSlideContent } from "./layouts/index.js";
 /** Pre-resolved branding data (all sources converted to data URLs) */
 export type ResolvedBranding = {
   logo?: { dataUrl: string; position: string; width: number };
-  backgroundImage?: { dataUrl: string; size: string; opacity: number };
+  backgroundImage?: { dataUrl: string; size: string; opacity: number; bgOpacity?: number };
 };
 
 /** Determine if a hex color is dark (luminance < 128) */
@@ -39,11 +39,23 @@ const logoPositionClasses: Record<string, string> = {
   "bottom-right": "bottom-5 right-6",
 };
 
-/** Render branding background image layer */
-const renderBrandingBackground = (branding: ResolvedBranding): string => {
+/**
+ * Render branding background layers.
+ * - Without bgOpacity: image overlaid on slide bg at given opacity
+ * - With bgOpacity: image at full opacity, then slide bg color as semi-transparent overlay
+ */
+const renderBrandingBackground = (branding: ResolvedBranding, bgHex: string): string => {
   if (!branding.backgroundImage) return "";
-  const { dataUrl, size, opacity } = branding.backgroundImage;
+  const { dataUrl, size, opacity, bgOpacity } = branding.backgroundImage;
   const bgSize = size === "fill" ? "100% 100%" : size;
+  if (bgOpacity !== undefined) {
+    const parts: string[] = [];
+    parts.push(
+      `<div class="absolute inset-0 z-0" style="background-image:url('${dataUrl}');background-size:${bgSize};background-position:center;background-repeat:no-repeat;opacity:${opacity}"></div>`,
+    );
+    parts.push(`<div class="absolute inset-0 z-0" style="background-color:#${bgHex};opacity:${bgOpacity}"></div>`);
+    return parts.join("\n");
+  }
   return `<div class="absolute inset-0 z-0" style="background-image:url('${dataUrl}');background-size:${bgSize};background-position:center;background-repeat:no-repeat;opacity:${opacity}"></div>`;
 };
 
@@ -52,7 +64,7 @@ const renderBrandingLogo = (branding: ResolvedBranding): string => {
   if (!branding.logo) return "";
   const { dataUrl, position, width } = branding.logo;
   const posClasses = logoPositionClasses[position] ?? logoPositionClasses["top-right"];
-  return `<img class="absolute ${posClasses} z-10" src="${dataUrl}" width="${width}" style="pointer-events:none">`;
+  return `<img class="absolute ${posClasses} z-10" src="${dataUrl}" width="${width}" alt="" style="pointer-events:none">`;
 };
 
 /** Generate a complete HTML document for a single slide */
@@ -62,14 +74,17 @@ export const generateSlideHTML = (theme: SlideTheme, slide: SlideLayout, referen
   const cdnScripts = buildCdnScripts(theme, slide);
 
   const slideStyle = slide.style;
-  const bgCls = slideStyle?.bgColor ? "" : "bg-d-bg";
-  const inlineStyle = slideStyle?.bgColor ? ` style="background-color:#${sanitizeHex(slideStyle.bgColor)}"` : "";
+  const hasBgOpacity = branding?.backgroundImage?.bgOpacity !== undefined;
+  const bgCls = hasBgOpacity || slideStyle?.bgColor ? "" : "bg-d-bg";
+  const bgColorStyle = slideStyle?.bgColor ? ` style="background-color:#${sanitizeHex(slideStyle.bgColor)}"` : "";
+  const inlineStyle = hasBgOpacity ? "" : bgColorStyle;
   const footer = slideStyle?.footer ? `<p class="absolute bottom-2 right-4 text-xs text-d-dim font-body">${escapeHtml(slideStyle.footer)}</p>` : "";
   const referenceHtml = reference
     ? `<div class="mt-auto px-4 pb-2"><p class="text-sm text-d-muted font-body opacity-80">${escapeHtml(reference)}</p></div>`
     : "";
 
-  const brandingBg = branding ? renderBrandingBackground(branding) : "";
+  const bgHex = sanitizeHex(slideStyle?.bgColor ?? theme.colors.bg);
+  const brandingBg = branding ? renderBrandingBackground(branding, bgHex) : "";
   const brandingLogo = branding ? renderBrandingLogo(branding) : "";
 
   return `<!DOCTYPE html>
@@ -87,9 +102,11 @@ ${cdnScripts}
 <body class="h-full">
 <div class="relative overflow-hidden ${bgCls} w-full h-full flex flex-col"${inlineStyle}>
 ${brandingBg}
+<div class="relative z-[1] flex flex-col flex-1">
 ${content}
 ${referenceHtml}
 ${footer}
+</div>
 ${brandingLogo}
 </div>
 </body>

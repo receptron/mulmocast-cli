@@ -25,12 +25,13 @@
       "logo": {
         "source": { "kind": "path", "path": "branding/logo.svg" },
         "position": "top-right",
-        "width": 120
+        "width": 160
       },
       "backgroundImage": {
         "source": { "kind": "path", "path": "branding/banner.jpg" },
         "size": "cover",
-        "opacity": 0.06
+        "opacity": 1,
+        "bgOpacity": 0.7
       }
     }
   },

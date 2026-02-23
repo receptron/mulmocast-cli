@@ -426,13 +426,14 @@ const slideBackgroundImageSourceSchema = z.object({
   source: slideMediaSourceSchema,
   size: z.enum(["cover", "contain", "fill", "auto"]).optional(),
   opacity: z.number().min(0).max(1).optional(),
+  bgOpacity: z.number().min(0).max(1).optional(),
 });
 
 export const slideBrandingLogoSchema = z
   .object({
     source: slideMediaSourceSchema,
     position: z.enum(["top-left", "top-right", "bottom-left", "bottom-right"]).default("top-right"),
-    width: z.number().default(120),
+    width: z.number().positive().default(120),
   })
   .strict();
 
