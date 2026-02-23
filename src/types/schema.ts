@@ -2,7 +2,7 @@ import { z } from "zod";
 import { htmlLLMProvider, provider2TTSAgent, provider2ImageAgent, provider2MovieAgent, defaultProviders, provider2SoundEffectAgent } from "./provider2agent.js";
 import { currentMulmoScriptVersion } from "./const.js";
 import { mulmoVideoFilterSchema } from "./schema_video_filter.js";
-import { mulmoSlideMediaSchema, slideThemeSchema } from "./slide.js";
+import { mulmoSlideMediaSchema, slideThemeSchema, slideBrandingSchema } from "./slide.js";
 
 // Re-export video filter schema
 export { mulmoVideoFilterSchema } from "./schema_video_filter.js";
@@ -357,6 +357,7 @@ export const textSlideParamsSchema = z
 export const mulmoSlideParamsSchema = z
   .object({
     theme: slideThemeSchema,
+    branding: slideBrandingSchema.optional(),
   })
   .strict();
 

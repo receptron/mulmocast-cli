@@ -2,6 +2,7 @@
 // This module is self-contained and can be extracted into a standalone package
 
 export { generateSlideHTML } from "./render.js";
+export type { ResolvedBranding } from "./render.js";
 export { renderSlideContent } from "./layouts/index.js";
 export { renderContentBlock, renderContentBlocks } from "./blocks.js";
 
@@ -15,6 +16,8 @@ export {
   chartBlockSchema,
   mermaidBlockSchema,
   accentColorKeySchema,
+  slideBrandingLogoSchema,
+  slideBrandingSchema,
 } from "./schema.js";
 
 // Types
@@ -43,4 +46,6 @@ export type {
   Card,
   CalloutBar,
   SlideStyle,
+  SlideBrandingLogo,
+  SlideBranding,
 } from "./schema.js";

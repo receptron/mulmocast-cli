@@ -2,6 +2,12 @@ import type { SlideTheme, SlideLayout } from "./schema.js";
 import { escapeHtml, buildTailwindConfig, sanitizeHex, detectBlockTypes } from "./utils.js";
 import { renderSlideContent } from "./layouts/index.js";
 
+/** Pre-resolved branding data (all sources converted to data URLs) */
+export type ResolvedBranding = {
+  logo?: { dataUrl: string; position: string; width: number };
+  backgroundImage?: { dataUrl: string; size: string; opacity: number };
+};
+
 /** Determine if a hex color is dark (luminance < 128) */
 const isDarkBg = (hex: string): boolean => {
   const r = parseInt(hex.slice(0, 2), 16);
@@ -25,8 +31,32 @@ const buildCdnScripts = (theme: SlideTheme, slide: SlideLayout): string => {
   return scripts.join("\n");
 };
 
+/** Map branding logo position to Tailwind CSS classes */
+const logoPositionClasses: Record<string, string> = {
+  "top-left": "top-5 left-6",
+  "top-right": "top-5 right-6",
+  "bottom-left": "bottom-5 left-6",
+  "bottom-right": "bottom-5 right-6",
+};
+
+/** Render branding background image layer */
+const renderBrandingBackground = (branding: ResolvedBranding): string => {
+  if (!branding.backgroundImage) return "";
+  const { dataUrl, size, opacity } = branding.backgroundImage;
+  const bgSize = size === "fill" ? "100% 100%" : size;
+  return `<div class="absolute inset-0 z-0" style="background-image:url('${dataUrl}');background-size:${bgSize};background-position:center;background-repeat:no-repeat;opacity:${opacity}"></div>`;
+};
+
+/** Render branding logo element */
+const renderBrandingLogo = (branding: ResolvedBranding): string => {
+  if (!branding.logo) return "";
+  const { dataUrl, position, width } = branding.logo;
+  const posClasses = logoPositionClasses[position] ?? logoPositionClasses["top-right"];
+  return `<img class="absolute ${posClasses} z-10" src="${dataUrl}" width="${width}" style="pointer-events:none">`;
+};
+
 /** Generate a complete HTML document for a single slide */
-export const generateSlideHTML = (theme: SlideTheme, slide: SlideLayout, reference?: string): string => {
+export const generateSlideHTML = (theme: SlideTheme, slide: SlideLayout, reference?: string, branding?: ResolvedBranding): string => {
   const content = renderSlideContent(slide);
   const twConfig = buildTailwindConfig(theme);
   const cdnScripts = buildCdnScripts(theme, slide);
@@ -38,6 +68,9 @@ export const generateSlideHTML = (theme: SlideTheme, slide: SlideLayout, referen
   const referenceHtml = reference
     ? `<div class="mt-auto px-4 pb-2"><p class="text-sm text-d-muted font-body opacity-80">${escapeHtml(reference)}</p></div>`
     : "";
+
+  const brandingBg = branding ? renderBrandingBackground(branding) : "";
+  const brandingLogo = branding ? renderBrandingLogo(branding) : "";
 
   return `<!DOCTYPE html>
 <html lang="en" class="h-full">
@@ -53,9 +86,11 @@ ${cdnScripts}
 </head>
 <body class="h-full">
 <div class="relative overflow-hidden ${bgCls} w-full h-full flex flex-col"${inlineStyle}>
+${brandingBg}
 ${content}
 ${referenceHtml}
 ${footer}
+${brandingLogo}
 </div>
 </body>
 </html>`;

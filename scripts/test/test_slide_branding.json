@@ -1,0 +1,106 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "title": "Slide Branding Test",
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "0F172A",
+        "bgCard": "1E293B",
+        "bgCardAlt": "334155",
+        "text": "FFFFFF",
+        "textMuted": "CBD5E1",
+        "textDim": "64748B",
+        "primary": "3B82F6",
+        "accent": "8B5CF6",
+        "success": "22C55E",
+        "warning": "F97316",
+        "danger": "EF4444",
+        "info": "14B8A6",
+        "highlight": "EC4899"
+      },
+      "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+    },
+    "branding": {
+      "logo": {
+        "source": { "kind": "url", "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/SVG_Logo.svg/200px-SVG_Logo.svg.png" },
+        "position": "top-right",
+        "width": 120
+      },
+      "backgroundImage": {
+        "source": { "kind": "url", "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/280px-PNG_transparency_demonstration_1.png" },
+        "size": "cover",
+        "opacity": 0.06
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "Title slide with global branding",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "title",
+          "title": "Acme Corp Annual Report",
+          "subtitle": "2026 Q1 Results",
+          "author": "John Doe, CEO"
+        }
+      }
+    },
+    {
+      "text": "Key metrics with global branding",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "stats",
+          "title": "Key Metrics",
+          "stats": [
+            { "value": "$12.5M", "label": "Revenue", "change": "+32%" },
+            { "value": "8,200", "label": "Customers", "change": "+18%" },
+            { "value": "99.95%", "label": "Uptime" },
+            { "value": "4.9", "label": "CSAT Score" }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Beat with per-beat branding override: logo at bottom-left",
+      "image": {
+        "type": "slide",
+        "branding": {
+          "logo": {
+            "source": { "kind": "url", "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/SVG_Logo.svg/200px-SVG_Logo.svg.png" },
+            "position": "bottom-left",
+            "width": 80
+          }
+        },
+        "slide": {
+          "layout": "columns",
+          "title": "Strategic Pillars",
+          "columns": [
+            {
+              "title": "Growth",
+              "content": [{ "type": "text", "value": "Expand into 3 new markets" }]
+            },
+            {
+              "title": "Innovation",
+              "content": [{ "type": "text", "value": "Launch AI-powered platform" }]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Beat with branding explicitly disabled",
+      "image": {
+        "type": "slide",
+        "branding": null,
+        "slide": {
+          "layout": "bigQuote",
+          "quote": "The best way to predict the future is to create it.",
+          "author": "Peter Drucker"
+        }
+      }
+    }
+  ]
+}

@@ -409,6 +409,41 @@ export const funnelSlideSchema = z.object({
 });
 
 // ═══════════════════════════════════════════════════════════
+// Branding — logo & background image overlay
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * Media source for branding assets (self-contained definition to avoid
+ * circular dependency with src/types/schema.ts).
+ */
+const slideMediaSourceSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("url"), url: z.url() }).strict(),
+  z.object({ kind: z.literal("base64"), data: z.string().min(1) }).strict(),
+  z.object({ kind: z.literal("path"), path: z.string().min(1) }).strict(),
+]);
+
+const slideBackgroundImageSourceSchema = z.object({
+  source: slideMediaSourceSchema,
+  size: z.enum(["cover", "contain", "fill", "auto"]).optional(),
+  opacity: z.number().min(0).max(1).optional(),
+});
+
+export const slideBrandingLogoSchema = z
+  .object({
+    source: slideMediaSourceSchema,
+    position: z.enum(["top-left", "top-right", "bottom-left", "bottom-right"]).default("top-right"),
+    width: z.number().default(120),
+  })
+  .strict();
+
+export const slideBrandingSchema = z
+  .object({
+    logo: slideBrandingLogoSchema.optional(),
+    backgroundImage: slideBackgroundImageSourceSchema.optional(),
+  })
+  .strict();
+
+// ═══════════════════════════════════════════════════════════
 // Slide Union & Media Schema
 // ═══════════════════════════════════════════════════════════
 
@@ -433,6 +468,7 @@ export const mulmoSlideMediaSchema = z
     theme: slideThemeSchema.optional(),
     slide: slideLayoutSchema,
     reference: z.string().optional(),
+    branding: slideBrandingSchema.nullable().optional(),
   })
   .strict();
 
@@ -481,4 +517,6 @@ export type TableCellValue = z.infer<typeof tableCellValueSchema>;
 export type TableSlide = z.infer<typeof tableSlideSchema>;
 export type FunnelStage = z.infer<typeof funnelStageSchema>;
 export type FunnelSlide = z.infer<typeof funnelSlideSchema>;
+export type SlideBrandingLogo = z.infer<typeof slideBrandingLogoSchema>;
+export type SlideBranding = z.infer<typeof slideBrandingSchema>;
 export type MulmoSlideMedia = z.infer<typeof mulmoSlideMediaSchema>;
