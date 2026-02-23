@@ -5,7 +5,7 @@ export const builder = (yargs: Argv) =>
     .positional("category", {
       describe: "Category to show info for",
       type: "string",
-      choices: ["styles", "bgm", "templates", "voices", "images", "movies", "llm"],
+      choices: ["styles", "bgm", "templates", "voices", "images", "movies", "llm", "themes"],
     })
     .option("format", {
       alias: "F",
