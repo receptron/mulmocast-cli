@@ -2,6 +2,12 @@ import type { SlideTheme, SlideLayout } from "./schema.js";
 import { escapeHtml, buildTailwindConfig, sanitizeHex, detectBlockTypes } from "./utils.js";
 import { renderSlideContent } from "./layouts/index.js";
 
+/** Pre-resolved branding data (all sources converted to data URLs) */
+export type ResolvedBranding = {
+  logo?: { dataUrl: string; position: string; width: number };
+  backgroundImage?: { dataUrl: string; size: string; opacity: number; bgOpacity?: number };
+};
+
 /** Determine if a hex color is dark (luminance < 128) */
 const isDarkBg = (hex: string): boolean => {
   const r = parseInt(hex.slice(0, 2), 16);
@@ -25,19 +31,61 @@ const buildCdnScripts = (theme: SlideTheme, slide: SlideLayout): string => {
   return scripts.join("\n");
 };
 
+/** Map branding logo position to Tailwind CSS classes */
+const logoPositionClasses: Record<string, string> = {
+  "top-left": "top-5 left-6",
+  "top-right": "top-5 right-6",
+  "bottom-left": "bottom-5 left-6",
+  "bottom-right": "bottom-5 right-6",
+};
+
+/**
+ * Render branding background layers.
+ * - Without bgOpacity: image overlaid on slide bg at given opacity
+ * - With bgOpacity: image at full opacity, then slide bg color as semi-transparent overlay
+ */
+const renderBrandingBackground = (branding: ResolvedBranding, bgHex: string): string => {
+  if (!branding.backgroundImage) return "";
+  const { dataUrl, size, opacity, bgOpacity } = branding.backgroundImage;
+  const bgSize = size === "fill" ? "100% 100%" : size;
+  if (bgOpacity !== undefined) {
+    const parts: string[] = [];
+    parts.push(
+      `<div class="absolute inset-0 z-0" style="background-image:url('${dataUrl}');background-size:${bgSize};background-position:center;background-repeat:no-repeat;opacity:${opacity}"></div>`,
+    );
+    parts.push(`<div class="absolute inset-0 z-0" style="background-color:#${bgHex};opacity:${bgOpacity}"></div>`);
+    return parts.join("\n");
+  }
+  return `<div class="absolute inset-0 z-0" style="background-image:url('${dataUrl}');background-size:${bgSize};background-position:center;background-repeat:no-repeat;opacity:${opacity}"></div>`;
+};
+
+/** Render branding logo element */
+const renderBrandingLogo = (branding: ResolvedBranding): string => {
+  if (!branding.logo) return "";
+  const { dataUrl, position, width } = branding.logo;
+  const posClasses = logoPositionClasses[position] ?? logoPositionClasses["top-right"];
+  return `<img class="absolute ${posClasses} z-10" src="${dataUrl}" width="${width}" alt="" style="pointer-events:none">`;
+};
+
 /** Generate a complete HTML document for a single slide */
-export const generateSlideHTML = (theme: SlideTheme, slide: SlideLayout, reference?: string): string => {
+export const generateSlideHTML = (theme: SlideTheme, slide: SlideLayout, reference?: string, branding?: ResolvedBranding): string => {
   const content = renderSlideContent(slide);
   const twConfig = buildTailwindConfig(theme);
   const cdnScripts = buildCdnScripts(theme, slide);
 
   const slideStyle = slide.style;
-  const bgCls = slideStyle?.bgColor ? "" : "bg-d-bg";
-  const inlineStyle = slideStyle?.bgColor ? ` style="background-color:#${sanitizeHex(slideStyle.bgColor)}"` : "";
+  const hasBgOpacity = branding?.backgroundImage?.bgOpacity !== undefined;
+  const bgCls = hasBgOpacity || slideStyle?.bgColor ? "" : "bg-d-bg";
+  const bgColorStyle = slideStyle?.bgColor ? ` style="background-color:#${sanitizeHex(slideStyle.bgColor)}"` : "";
+  const inlineStyle = hasBgOpacity ? "" : bgColorStyle;
   const footer = slideStyle?.footer ? `<p class="absolute bottom-2 right-4 text-xs text-d-dim font-body">${escapeHtml(slideStyle.footer)}</p>` : "";
   const referenceHtml = reference
     ? `<div class="mt-auto px-4 pb-2"><p class="text-sm text-d-muted font-body opacity-80">${escapeHtml(reference)}</p></div>`
     : "";
+
+  const bgHex = sanitizeHex(slideStyle?.bgColor ?? theme.colors.bg);
+  const brandingBg = branding ? renderBrandingBackground(branding, bgHex) : "";
+  const brandingLogo = branding ? renderBrandingLogo(branding) : "";
 
   return `<!DOCTYPE html>
 <html lang="en" class="h-full">
@@ -53,9 +101,13 @@ ${cdnScripts}
 </head>
 <body class="h-full">
 <div class="relative overflow-hidden ${bgCls} w-full h-full flex flex-col"${inlineStyle}>
+${brandingBg}
+<div class="relative z-[1] flex flex-col flex-1">
 ${content}
 ${referenceHtml}
 ${footer}
+</div>
+${brandingLogo}
 </div>
 </body>
 </html>`;

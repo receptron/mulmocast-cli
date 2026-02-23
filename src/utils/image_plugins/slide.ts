@@ -2,10 +2,12 @@ import nodePath from "node:path";
 import { pathToFileURL } from "node:url";
 import { ImageProcessorParams } from "../../types/index.js";
 import { generateSlideHTML } from "../../slide/index.js";
-import type { SlideLayout, SlideTheme, ContentBlock, MulmoSlideMedia } from "../../slide/index.js";
+import type { SlideLayout, SlideTheme, ContentBlock, MulmoSlideMedia, SlideBranding } from "../../slide/index.js";
+import type { ResolvedBranding } from "../../slide/render.js";
 import { renderHTMLToImage } from "../html_render.js";
 import { parrotingImagePath } from "./utils.js";
 import { pathToDataUrl } from "../../methods/mulmo_media_source.js";
+import { MulmoMediaSourceMethods } from "../../methods/mulmo_media_source.js";
 import { imageAction, imageFileTarget, unknownMediaType } from "../error_cause.js";
 
 export const imageType = "slide";
@@ -117,6 +119,55 @@ const resolveSlide = (params: ImageProcessorParams, converter: (filePath: string
   return slide;
 };
 
+/**
+ * Resolve branding from beat-level and global slideParams.
+ * - beat.image.branding === null → disabled (return undefined)
+ * - beat.image.branding defined → use it
+ * - otherwise → fall back to slideParams.branding
+ */
+const resolveBranding = (params: ImageProcessorParams): SlideBranding | undefined => {
+  const { beat, context } = params;
+  if (!beat.image || beat.image.type !== imageType) return undefined;
+  const beatBranding = (beat.image as MulmoSlideMedia).branding;
+  // null means explicitly disabled
+  if (beatBranding === null) return undefined;
+  return beatBranding ?? context.presentationStyle.slideParams?.branding;
+};
+
+/**
+ * Convert SlideBranding to ResolvedBranding (all sources → data URLs).
+ */
+const convertBrandingToResolved = async (branding: SlideBranding, params: ImageProcessorParams): Promise<ResolvedBranding> => {
+  const { context } = params;
+  const resolved: ResolvedBranding = {};
+
+  if (branding.logo) {
+    const dataUrl = await MulmoMediaSourceMethods.toDataUrl(branding.logo.source, context);
+    resolved.logo = {
+      dataUrl,
+      position: branding.logo.position,
+      width: branding.logo.width,
+    };
+  }
+
+  if (branding.backgroundImage) {
+    const dataUrl = await MulmoMediaSourceMethods.toDataUrl(branding.backgroundImage.source, context);
+    resolved.backgroundImage = {
+      dataUrl,
+      size: branding.backgroundImage.size ?? "cover",
+      opacity: branding.backgroundImage.opacity ?? 1,
+      bgOpacity: branding.backgroundImage.bgOpacity,
+    };
+  }
+
+  return resolved;
+};
+
+const resolveAndConvertBranding = async (params: ImageProcessorParams): Promise<ResolvedBranding | undefined> => {
+  const branding = resolveBranding(params);
+  return branding ? await convertBrandingToResolved(branding, params) : undefined;
+};
+
 const processSlide = async (params: ImageProcessorParams) => {
   const { beat, imagePath, canvasSize } = params;
   if (!beat.image || beat.image.type !== imageType) return;
@@ -124,7 +175,8 @@ const processSlide = async (params: ImageProcessorParams) => {
   const theme = resolveTheme(params);
   const slide = resolveSlide(params, toFileUrl);
   const reference = (beat.image as MulmoSlideMedia).reference;
-  const html = generateSlideHTML(theme, slide, reference);
+  const resolvedBranding = await resolveAndConvertBranding(params);
+  const html = generateSlideHTML(theme, slide, reference, resolvedBranding);
   await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;
 };
@@ -136,7 +188,8 @@ const dumpHtml = async (params: ImageProcessorParams) => {
   const theme = resolveTheme(params);
   const slide = resolveSlide(params);
   const reference = (beat.image as MulmoSlideMedia).reference;
-  return generateSlideHTML(theme, slide, reference);
+  const resolvedBranding = await resolveAndConvertBranding(params);
+  return generateSlideHTML(theme, slide, reference, resolvedBranding);
 };
 
 export const process = processSlide;
