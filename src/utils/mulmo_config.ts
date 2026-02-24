@@ -78,12 +78,20 @@ export const resolveConfigPaths = (config: PartialMulmoScript, configDirPath: st
   return resolved;
 };
 
+export type MulmoConfigResult = {
+  defaults: PartialMulmoScript;
+  override: PartialMulmoScript | null;
+};
+
 /**
  * Load mulmo.config.json from baseDirPath or home directory.
  * Resolves kind:"path" entries relative to the config file location.
- * Returns null if no config file is found.
+ * Returns { defaults, override } or null if no config file is found.
+ *
+ * - defaults: applied as low-priority base (script wins)
+ * - override: applied after script merge (wins over script)
  */
-export const loadMulmoConfig = (baseDirPath: string): PartialMulmoScript | null => {
+export const loadMulmoConfig = (baseDirPath: string): MulmoConfigResult | null => {
   const configPath = findConfigFile(baseDirPath);
   if (!configPath) {
     return null;
@@ -91,9 +99,14 @@ export const loadMulmoConfig = (baseDirPath: string): PartialMulmoScript | null 
 
   try {
     const content = readFileSync(configPath, "utf-8");
-    const config = JSON.parse(content) as PartialMulmoScript;
+    const raw = JSON.parse(content) as PartialMulmoScript;
     const configDirPath = path.dirname(configPath);
-    return resolveConfigPaths(config, configDirPath);
+
+    const { override: rawOverride, ...rest } = raw;
+    const defaults = resolveConfigPaths(rest, configDirPath);
+    const override = rawOverride ? resolveConfigPaths(rawOverride as PartialMulmoScript, configDirPath) : null;
+
+    return { defaults, override };
   } catch (error) {
     GraphAILogger.error(`Error loading ${configPath}: ${(error as Error).message}`);
     throw error;
@@ -101,8 +114,10 @@ export const loadMulmoConfig = (baseDirPath: string): PartialMulmoScript | null 
 };
 
 /**
- * Merge mulmo.config.json with a MulmoScript (script takes precedence).
+ * Merge mulmo.config.json with a MulmoScript.
+ * defaults < script < override
  */
-export const mergeConfigWithScript = (config: PartialMulmoScript, script: PartialMulmoScript): PartialMulmoScript => {
-  return mergeScripts(config, script);
+export const mergeConfigWithScript = (configResult: MulmoConfigResult, script: PartialMulmoScript): PartialMulmoScript => {
+  const withDefaults = mergeScripts(configResult.defaults, script);
+  return configResult.override ? mergeScripts(withDefaults, configResult.override) : withDefaults;
 };

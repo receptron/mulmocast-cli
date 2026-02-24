@@ -6,7 +6,7 @@ import { getScriptFromPromptTemplate } from "../utils/file.js";
 import { currentMulmoScriptVersion } from "../types/const.js";
 import { promptTemplates } from "../data/index.js";
 import type { MulmoScript } from "../types/type.js";
-import { loadMulmoConfig } from "../utils/mulmo_config.js";
+import { loadMulmoConfig, type MulmoConfigResult } from "../utils/mulmo_config.js";
 
 export type PartialMulmoScript = Record<string, unknown>;
 
@@ -112,8 +112,8 @@ export const completeScript = (data: PartialMulmoScript, options: CompleteScript
     throw new Error("Cannot specify both templateName and styleName. They are mutually exclusive.");
   }
 
-  // Load mulmo.config.json (lowest priority base)
-  const config = baseDirPath ? loadMulmoConfig(baseDirPath) : null;
+  // Load mulmo.config.json
+  const configResult: MulmoConfigResult | null = baseDirPath ? loadMulmoConfig(baseDirPath) : null;
 
   // Get base config from template or style
   const getBase = () => {
@@ -127,9 +127,11 @@ export const completeScript = (data: PartialMulmoScript, options: CompleteScript
   };
   const templateOrStyle = getBase();
 
-  // Merge chain: config < template/style < input data
-  const withConfig = config && templateOrStyle ? mergeScripts(config, templateOrStyle) : (templateOrStyle ?? config);
-  const merged = withConfig ? mergeScripts(withConfig, data) : data;
+  // Merge chain: config.defaults < template/style < input data < config.override
+  const defaults = configResult?.defaults;
+  const withDefaults = defaults && templateOrStyle ? mergeScripts(defaults, templateOrStyle) : (templateOrStyle ?? defaults);
+  const withData = withDefaults ? mergeScripts(withDefaults, data) : data;
+  const merged = configResult?.override ? mergeScripts(withData, configResult.override) : withData;
 
   // Add version if not present
   const withVersion = addMulmocastVersion(merged);

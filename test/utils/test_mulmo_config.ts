@@ -4,7 +4,7 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 
-import { findConfigFile, loadMulmoConfig, resolveConfigPaths } from "../../src/utils/mulmo_config.js";
+import { findConfigFile, loadMulmoConfig, resolveConfigPaths, mergeConfigWithScript } from "../../src/utils/mulmo_config.js";
 import { mergeScripts } from "../../src/tools/complete_script.js";
 
 const CONFIG_FILE_NAME = "mulmo.config.json";
@@ -106,15 +106,37 @@ describe("loadMulmoConfig", () => {
     }
   });
 
-  test("loads valid config", () => {
+  test("loads valid config without override", () => {
     const tmpDir = createTempDir();
     try {
       const config = { imageParams: { provider: "google" }, speechParams: { speakers: { Presenter: { provider: "gemini" } } } };
       writeConfig(tmpDir, config);
       const result = loadMulmoConfig(tmpDir);
       assert.ok(result);
-      assert.deepStrictEqual(result.imageParams, { provider: "google" });
-      assert.deepStrictEqual(result.speechParams, { speakers: { Presenter: { provider: "gemini" } } });
+      assert.deepStrictEqual(result.defaults.imageParams, { provider: "google" });
+      assert.deepStrictEqual(result.defaults.speechParams, { speakers: { Presenter: { provider: "gemini" } } });
+      assert.strictEqual(result.override, null);
+    } finally {
+      cleanup(tmpDir);
+    }
+  });
+
+  test("loads config with override", () => {
+    const tmpDir = createTempDir();
+    try {
+      const config = {
+        speechParams: { provider: "elevenlabs" },
+        override: {
+          speechParams: { provider: "elevenlabs", model: "eleven_multilingual_v2" },
+        },
+      };
+      writeConfig(tmpDir, config);
+      const result = loadMulmoConfig(tmpDir);
+      assert.ok(result);
+      assert.deepStrictEqual(result.defaults.speechParams, { provider: "elevenlabs" });
+      assert.strictEqual(result.defaults.override, undefined);
+      assert.ok(result.override);
+      assert.deepStrictEqual(result.override.speechParams, { provider: "elevenlabs", model: "eleven_multilingual_v2" });
     } finally {
       cleanup(tmpDir);
     }
@@ -136,7 +158,8 @@ describe("loadMulmoConfig", () => {
       writeConfig(tmpDir, {});
       const result = loadMulmoConfig(tmpDir);
       assert.ok(result);
-      assert.deepStrictEqual(result, {});
+      assert.deepStrictEqual(result.defaults, {});
+      assert.strictEqual(result.override, null);
     } finally {
       cleanup(tmpDir);
     }
@@ -292,5 +315,72 @@ describe("mergeScripts - config with script", () => {
     const merged = mergeScripts(config, script);
     assert.ok(merged.audioParams);
     assert.ok(merged.imageParams);
+  });
+});
+
+describe("mergeConfigWithScript - override", () => {
+  test("without override, script wins over defaults", () => {
+    const configResult = {
+      defaults: { speechParams: { provider: "gemini" } },
+      override: null,
+    };
+    const script = { speechParams: { provider: "openai" } };
+    const merged = mergeConfigWithScript(configResult, script);
+    const speechParams = merged.speechParams as Record<string, unknown>;
+    assert.strictEqual(speechParams.provider, "openai");
+  });
+
+  test("override wins over script", () => {
+    const configResult = {
+      defaults: {},
+      override: { speechParams: { provider: "elevenlabs", model: "eleven_multilingual_v2" } },
+    };
+    const script = { speechParams: { provider: "openai" } };
+    const merged = mergeConfigWithScript(configResult, script);
+    const speechParams = merged.speechParams as Record<string, unknown>;
+    assert.strictEqual(speechParams.provider, "elevenlabs");
+    assert.strictEqual(speechParams.model, "eleven_multilingual_v2");
+  });
+
+  test("defaults lose to script, override wins over script", () => {
+    const configResult = {
+      defaults: { imageParams: { provider: "google" }, speechParams: { provider: "gemini" } },
+      override: { speechParams: { provider: "elevenlabs" } },
+    };
+    const script = {
+      imageParams: { provider: "openai" },
+      speechParams: { provider: "openai", model: "tts-1" },
+    };
+    const merged = mergeConfigWithScript(configResult, script);
+    const imageParams = merged.imageParams as Record<string, unknown>;
+    const speechParams = merged.speechParams as Record<string, unknown>;
+    // imageParams: script wins over defaults (no override for imageParams)
+    assert.strictEqual(imageParams.provider, "openai");
+    // speechParams: override wins over script
+    assert.strictEqual(speechParams.provider, "elevenlabs");
+    // model from script is preserved (override does shallow merge within speechParams)
+    assert.strictEqual(speechParams.model, "tts-1");
+  });
+
+  test("override path resolution works", () => {
+    const tmpDir = createTempDir();
+    try {
+      const config = {
+        override: {
+          audioParams: {
+            bgm: { kind: "path", path: "brand/bgm.mp3" },
+          },
+        },
+      };
+      writeConfig(tmpDir, config);
+      const result = loadMulmoConfig(tmpDir);
+      assert.ok(result);
+      assert.ok(result.override);
+      const audioParams = result.override.audioParams as Record<string, unknown>;
+      const bgm = audioParams.bgm as Record<string, unknown>;
+      assert.strictEqual(bgm.path, path.resolve(tmpDir, "brand/bgm.mp3"));
+    } finally {
+      cleanup(tmpDir);
+    }
   });
 });

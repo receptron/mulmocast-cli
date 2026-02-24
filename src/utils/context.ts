@@ -157,7 +157,7 @@ export const initializeContextFromFiles = async (
     return null;
   }
 
-  // Load and merge mulmo.config.json (script takes precedence over config)
+  // Load and merge mulmo.config.json (defaults < script < override)
   const config = loadMulmoConfig(files.baseDirPath);
   const mulmoScript = config ? (mergeConfigWithScript(config, rawScript as Record<string, unknown>) as MulmoScript) : rawScript;
 
