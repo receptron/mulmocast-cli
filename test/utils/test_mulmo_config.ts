@@ -246,7 +246,7 @@ describe("resolveConfigPaths", () => {
     const resolved = resolveConfigPaths(config, "/some/dir");
     const audioParams = resolved.audioParams as Record<string, unknown>;
     const bgm = audioParams.bgm as Record<string, unknown>;
-    assert.strictEqual(bgm.path, "/absolute/path/bgm.mp3");
+    assert.strictEqual(bgm.path, path.normalize("/absolute/path/bgm.mp3"));
   });
 
   test("handles config with no path fields", () => {
