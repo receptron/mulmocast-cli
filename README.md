@@ -207,6 +207,51 @@ MulmoScript configuration (same as OpenAI):
 
 For detailed setup and region availability, see [Azure OpenAI Usage Guide](./docs/azure_openai_usage.md).
 
+### mulmo.config.json
+
+Create a `mulmo.config.json` file to set project-wide defaults. The CLI searches for it in **CWD** first, then **home directory (`~/`)**.
+
+```json
+{
+  "speechParams": {
+    "provider": "elevenlabs"
+  },
+  "imageParams": {
+    "provider": "google"
+  },
+  "audioParams": {
+    "bgm": { "kind": "path", "path": "assets/bgm.mp3" },
+    "bgmVolume": 0.15
+  }
+}
+```
+
+Top-level keys are applied as **defaults** (script values take precedence). Use the `override` key to **force** values over scripts — useful for enterprise branding or TTS provider enforcement:
+
+```json
+{
+  "speechParams": {
+    "provider": "elevenlabs"
+  },
+  "override": {
+    "speechParams": {
+      "provider": "elevenlabs",
+      "model": "eleven_multilingual_v2",
+      "speakers": {
+        "Presenter": { "provider": "elevenlabs", "voiceId": "Rachel" }
+      }
+    }
+  }
+}
+```
+
+Priority chain: `config (defaults)` < `template/style` < `script` < `config.override` < `presentationStyle (-p)`
+
+Verify the merged result with:
+```bash
+mulmo tool info merged --script <script.json>
+```
+
 ## Workflow
 
 1. Create a MulmoScript JSON file with `mulmo tool scripting`
