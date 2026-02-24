@@ -277,7 +277,7 @@ describe("mergeScripts - config with script", () => {
     assert.ok(merged.speechParams);
   });
 
-  test("deep merge preserves both sides for speechParams", () => {
+  test("speechParams shallow merge prefers script speakers", () => {
     const config = {
       speechParams: { speakers: { Presenter: { provider: "gemini" } } },
     };

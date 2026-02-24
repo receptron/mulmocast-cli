@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import { readFileSync } from "fs";
 import path from "path";
 import { getMarkdownStyleNames, getMarkdownCategories, getMarkdownStylesByCategory } from "../../../../data/markdownStyles.js";
 import { bgmAssets } from "../../../../data/bgmAssets.js";
@@ -7,6 +6,7 @@ import { templateDataSet } from "../../../../data/templateDataSet.js";
 import { slideThemes } from "../../../../data/slideThemes.js";
 import { provider2TTSAgent, provider2ImageAgent, provider2MovieAgent, provider2LLMAgent } from "../../../../types/provider2agent.js";
 import { findConfigFile, loadMulmoConfig, mergeConfigWithScript } from "../../../../utils/mulmo_config.js";
+import { readMulmoScriptFile } from "../../../../utils/file.js";
 import YAML from "yaml";
 
 type InfoCategory = "styles" | "bgm" | "templates" | "voices" | "images" | "movies" | "llm" | "themes" | "config" | "merged";
@@ -223,9 +223,12 @@ const printConfigText = () => {
 };
 
 const readScriptFile = (scriptPath: string): Record<string, unknown> => {
-  const resolved = path.resolve(scriptPath);
-  const content = readFileSync(resolved, "utf-8");
-  return JSON.parse(content) as Record<string, unknown>;
+  const result = readMulmoScriptFile<Record<string, unknown>>(scriptPath, `Error: File not found: ${scriptPath}`);
+  if (!result) {
+    console.error(`Error: Could not read script file: ${scriptPath}`);
+    process.exit(1);
+  }
+  return result.mulmoData;
 };
 
 const getMergedInfo = (scriptPath?: string) => {
