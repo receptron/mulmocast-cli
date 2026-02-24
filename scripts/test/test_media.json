@@ -273,6 +273,23 @@
         "type": "beat",
         "id": "pingpongmov"
       }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "This is a slide with table layout.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "table",
+          "title": "Feature Comparison",
+          "headers": ["Feature", "Free", "Pro"],
+          "rows": [
+            ["Audio", "OpenAI", "ElevenLabs"],
+            ["Images", "DALL-E", "Imagen 3"],
+            ["Video", "-", "Veo"]
+          ]
+        }
+      }
     }
   ]
 }
