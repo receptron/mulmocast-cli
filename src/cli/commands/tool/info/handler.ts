@@ -7,7 +7,7 @@ import { provider2TTSAgent, provider2ImageAgent, provider2MovieAgent, provider2L
 import { findConfigFile, loadMulmoConfig } from "../../../../utils/mulmo_config.js";
 import YAML from "yaml";
 
-type InfoCategory = "styles" | "bgm" | "templates" | "voices" | "images" | "movies" | "llm" | "themes" | "rc";
+type InfoCategory = "styles" | "bgm" | "templates" | "voices" | "images" | "movies" | "llm" | "themes" | "config";
 
 interface InfoCliArgs {
   category?: string;
@@ -192,7 +192,7 @@ const printThemesText = () => {
   console.log("");
 };
 
-const getRcInfo = () => {
+const getConfigInfo = () => {
   const baseDirPath = process.cwd();
   const configPath = findConfigFile(baseDirPath);
   if (!configPath) {
@@ -202,7 +202,7 @@ const getRcInfo = () => {
   return { configFile: configPath, config };
 };
 
-const printRcText = () => {
+const printConfigText = () => {
   const baseDirPath = process.cwd();
   const configPath = findConfigFile(baseDirPath);
   console.log("\n📄 mulmo.config.json\n");
@@ -231,10 +231,10 @@ const printAllCategories = () => {
   console.log("    movies     - Movie generation providers and models");
   console.log("    llm        - LLM providers and models");
   console.log("    themes     - Slide themes and color palettes");
-  console.log("    rc         - Active mulmo.config.json location and contents\n");
+  console.log("    config     - Active mulmo.config.json location and contents\n");
 };
 
-const validCategories: InfoCategory[] = ["styles", "bgm", "templates", "voices", "images", "movies", "llm", "themes", "rc"];
+const validCategories: InfoCategory[] = ["styles", "bgm", "templates", "voices", "images", "movies", "llm", "themes", "config"];
 
 const isValidCategory = (category: string): category is InfoCategory => {
   return validCategories.includes(category as InfoCategory);
@@ -271,7 +271,7 @@ export const handler = (argv: InfoCliArgs) => {
     movies: getMoviesInfo,
     llm: getLlmInfo,
     themes: getThemesInfo,
-    rc: getRcInfo,
+    config: getConfigInfo,
   };
 
   const textPrinters: Record<InfoCategory, () => void> = {
@@ -283,7 +283,7 @@ export const handler = (argv: InfoCliArgs) => {
     movies: printMoviesText,
     llm: printLlmText,
     themes: printThemesText,
-    rc: printRcText,
+    config: printConfigText,
   };
 
   if (format === "text") {
