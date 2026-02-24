@@ -4,9 +4,10 @@ import { bgmAssets } from "../../../../data/bgmAssets.js";
 import { templateDataSet } from "../../../../data/templateDataSet.js";
 import { slideThemes } from "../../../../data/slideThemes.js";
 import { provider2TTSAgent, provider2ImageAgent, provider2MovieAgent, provider2LLMAgent } from "../../../../types/provider2agent.js";
+import { findConfigFile, loadMulmoConfig } from "../../../../utils/mulmo_config.js";
 import YAML from "yaml";
 
-type InfoCategory = "styles" | "bgm" | "templates" | "voices" | "images" | "movies" | "llm" | "themes";
+type InfoCategory = "styles" | "bgm" | "templates" | "voices" | "images" | "movies" | "llm" | "themes" | "rc";
 
 interface InfoCliArgs {
   category?: string;
@@ -191,6 +192,33 @@ const printThemesText = () => {
   console.log("");
 };
 
+const getRcInfo = () => {
+  const baseDirPath = process.cwd();
+  const configPath = findConfigFile(baseDirPath);
+  if (!configPath) {
+    return { configFile: null, config: null };
+  }
+  const config = loadMulmoConfig(baseDirPath);
+  return { configFile: configPath, config };
+};
+
+const printRcText = () => {
+  const baseDirPath = process.cwd();
+  const configPath = findConfigFile(baseDirPath);
+  console.log("\n📄 mulmo.config.json\n");
+  if (!configPath) {
+    console.log("  No mulmo.config.json found.");
+    console.log("  Searched: CWD → ~\n");
+    return;
+  }
+  console.log(`  Active config: ${configPath}\n`);
+  const config = loadMulmoConfig(baseDirPath);
+  if (config) {
+    console.log(JSON.stringify(config, null, 2));
+  }
+  console.log("");
+};
+
 const printAllCategories = () => {
   console.log("\n📚 Available Info Categories\n");
   console.log("  Usage: mulmo tool info <category> [--format json|yaml]\n");
@@ -202,10 +230,11 @@ const printAllCategories = () => {
   console.log("    images     - Image generation providers and models");
   console.log("    movies     - Movie generation providers and models");
   console.log("    llm        - LLM providers and models");
-  console.log("    themes     - Slide themes and color palettes\n");
+  console.log("    themes     - Slide themes and color palettes");
+  console.log("    rc         - Active mulmo.config.json location and contents\n");
 };
 
-const validCategories: InfoCategory[] = ["styles", "bgm", "templates", "voices", "images", "movies", "llm", "themes"];
+const validCategories: InfoCategory[] = ["styles", "bgm", "templates", "voices", "images", "movies", "llm", "themes", "rc"];
 
 const isValidCategory = (category: string): category is InfoCategory => {
   return validCategories.includes(category as InfoCategory);
@@ -242,6 +271,7 @@ export const handler = (argv: InfoCliArgs) => {
     movies: getMoviesInfo,
     llm: getLlmInfo,
     themes: getThemesInfo,
+    rc: getRcInfo,
   };
 
   const textPrinters: Record<InfoCategory, () => void> = {
@@ -253,6 +283,7 @@ export const handler = (argv: InfoCliArgs) => {
     movies: printMoviesText,
     llm: printLlmText,
     themes: printThemesText,
+    rc: printRcText,
   };
 
   if (format === "text") {

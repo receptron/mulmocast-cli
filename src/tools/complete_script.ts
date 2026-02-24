@@ -6,8 +6,9 @@ import { getScriptFromPromptTemplate } from "../utils/file.js";
 import { currentMulmoScriptVersion } from "../types/const.js";
 import { promptTemplates } from "../data/index.js";
 import type { MulmoScript } from "../types/type.js";
+import { loadMulmoConfig } from "../utils/mulmo_config.js";
 
-type PartialMulmoScript = Record<string, unknown>;
+export type PartialMulmoScript = Record<string, unknown>;
 
 /**
  * Add $mulmocast version if not present
@@ -22,7 +23,7 @@ export const addMulmocastVersion = (data: PartialMulmoScript): PartialMulmoScrip
   };
 };
 
-const deepMergeKeys = ["speechParams", "imageParams", "movieParams", "audioParams"] as const;
+const deepMergeKeys = ["speechParams", "imageParams", "movieParams", "audioParams", "slideParams"] as const;
 
 /**
  * Merge base with override (override takes precedence)
@@ -78,6 +79,7 @@ export type CompleteScriptResult = ZodSafeParseResult<MulmoScript>;
 type CompleteScriptOptions = {
   templateName?: string;
   styleName?: string;
+  baseDirPath?: string;
 };
 
 /**
@@ -103,12 +105,15 @@ type CompleteScriptOptions = {
  * completeScript(data, { styleName: "./my-style.json" })
  */
 export const completeScript = (data: PartialMulmoScript, options: CompleteScriptOptions = {}): CompleteScriptResult => {
-  const { templateName, styleName } = options;
+  const { templateName, styleName, baseDirPath } = options;
 
   // template and style are mutually exclusive
   if (templateName && styleName) {
     throw new Error("Cannot specify both templateName and styleName. They are mutually exclusive.");
   }
+
+  // Load mulmo.config.json (lowest priority base)
+  const config = baseDirPath ? loadMulmoConfig(baseDirPath) : null;
 
   // Get base config from template or style
   const getBase = () => {
@@ -120,10 +125,11 @@ export const completeScript = (data: PartialMulmoScript, options: CompleteScript
     }
     return undefined;
   };
-  const base = getBase();
+  const templateOrStyle = getBase();
 
-  // Merge base with input data (input data has highest precedence)
-  const merged = base ? mergeScripts(base, data) : data;
+  // Merge chain: config < template/style < input data
+  const withConfig = config && templateOrStyle ? mergeScripts(config, templateOrStyle) : (templateOrStyle ?? config);
+  const merged = withConfig ? mergeScripts(withConfig, data) : data;
 
   // Add version if not present
   const withVersion = addMulmocastVersion(merged);

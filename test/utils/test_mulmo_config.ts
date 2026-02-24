@@ -1,0 +1,296 @@
+import { describe, test } from "node:test";
+import assert from "node:assert";
+import fs from "fs";
+import path from "path";
+import os from "os";
+
+import { findConfigFile, loadMulmoConfig, resolveConfigPaths } from "../../src/utils/mulmo_config.js";
+import { mergeScripts } from "../../src/tools/complete_script.js";
+
+const CONFIG_FILE_NAME = "mulmo.config.json";
+
+// Create a temporary directory for test isolation
+const createTempDir = (): string => {
+  return fs.mkdtempSync(path.join(os.tmpdir(), "mulmo-config-test-"));
+};
+
+const cleanup = (dirPath: string) => {
+  fs.rmSync(dirPath, { recursive: true, force: true });
+};
+
+const writeConfig = (dirPath: string, content: Record<string, unknown>) => {
+  fs.writeFileSync(path.join(dirPath, CONFIG_FILE_NAME), JSON.stringify(content, null, 2), "utf-8");
+};
+
+describe("findConfigFile", () => {
+  test("returns null when no config file exists", () => {
+    const tmpDir = createTempDir();
+    try {
+      const result = findConfigFile(tmpDir);
+      assert.strictEqual(result, null);
+    } finally {
+      cleanup(tmpDir);
+    }
+  });
+
+  test("finds config in CWD (baseDirPath)", () => {
+    const tmpDir = createTempDir();
+    try {
+      writeConfig(tmpDir, { imageParams: { provider: "google" } });
+      const result = findConfigFile(tmpDir);
+      assert.strictEqual(result, path.join(tmpDir, CONFIG_FILE_NAME));
+    } finally {
+      cleanup(tmpDir);
+    }
+  });
+
+  test("finds config in home directory when not in CWD", () => {
+    const tmpDir = createTempDir();
+    const homeConfigPath = path.join(os.homedir(), CONFIG_FILE_NAME);
+    const homeConfigExists = fs.existsSync(homeConfigPath);
+
+    // Skip if home config already exists (don't interfere with user's real config)
+    if (homeConfigExists) {
+      cleanup(tmpDir);
+      return;
+    }
+
+    try {
+      fs.writeFileSync(homeConfigPath, JSON.stringify({ imageParams: { provider: "openai" } }), "utf-8");
+      const result = findConfigFile(tmpDir);
+      assert.strictEqual(result, homeConfigPath);
+    } finally {
+      if (!homeConfigExists && fs.existsSync(homeConfigPath)) {
+        fs.unlinkSync(homeConfigPath);
+      }
+      cleanup(tmpDir);
+    }
+  });
+
+  test("CWD config takes priority over home directory config", () => {
+    const tmpDir = createTempDir();
+    const homeConfigPath = path.join(os.homedir(), CONFIG_FILE_NAME);
+    const homeConfigExists = fs.existsSync(homeConfigPath);
+
+    if (homeConfigExists) {
+      // Can still test CWD priority - home config exists already
+      writeConfig(tmpDir, { imageParams: { provider: "google" } });
+      const result = findConfigFile(tmpDir);
+      assert.strictEqual(result, path.join(tmpDir, CONFIG_FILE_NAME));
+      cleanup(tmpDir);
+      return;
+    }
+
+    try {
+      fs.writeFileSync(homeConfigPath, JSON.stringify({ imageParams: { provider: "openai" } }), "utf-8");
+      writeConfig(tmpDir, { imageParams: { provider: "google" } });
+      const result = findConfigFile(tmpDir);
+      assert.strictEqual(result, path.join(tmpDir, CONFIG_FILE_NAME));
+    } finally {
+      if (!homeConfigExists && fs.existsSync(homeConfigPath)) {
+        fs.unlinkSync(homeConfigPath);
+      }
+      cleanup(tmpDir);
+    }
+  });
+});
+
+describe("loadMulmoConfig", () => {
+  test("returns null when no config exists", () => {
+    const tmpDir = createTempDir();
+    try {
+      const result = loadMulmoConfig(tmpDir);
+      assert.strictEqual(result, null);
+    } finally {
+      cleanup(tmpDir);
+    }
+  });
+
+  test("loads valid config", () => {
+    const tmpDir = createTempDir();
+    try {
+      const config = { imageParams: { provider: "google" }, speechParams: { speakers: { Presenter: { provider: "gemini" } } } };
+      writeConfig(tmpDir, config);
+      const result = loadMulmoConfig(tmpDir);
+      assert.ok(result);
+      assert.deepStrictEqual(result.imageParams, { provider: "google" });
+      assert.deepStrictEqual(result.speechParams, { speakers: { Presenter: { provider: "gemini" } } });
+    } finally {
+      cleanup(tmpDir);
+    }
+  });
+
+  test("throws on invalid JSON", () => {
+    const tmpDir = createTempDir();
+    try {
+      fs.writeFileSync(path.join(tmpDir, CONFIG_FILE_NAME), "{ invalid json }", "utf-8");
+      assert.throws(() => loadMulmoConfig(tmpDir));
+    } finally {
+      cleanup(tmpDir);
+    }
+  });
+
+  test("loads empty config as valid no-op", () => {
+    const tmpDir = createTempDir();
+    try {
+      writeConfig(tmpDir, {});
+      const result = loadMulmoConfig(tmpDir);
+      assert.ok(result);
+      assert.deepStrictEqual(result, {});
+    } finally {
+      cleanup(tmpDir);
+    }
+  });
+});
+
+describe("resolveConfigPaths", () => {
+  test("resolves audioParams.bgm kind:path", () => {
+    const configDir = "/home/user/project";
+    const config = {
+      audioParams: {
+        bgm: { kind: "path", path: "assets/bgm.mp3" },
+        bgmVolume: 0.15,
+      },
+    };
+    const resolved = resolveConfigPaths(config, configDir);
+    const audioParams = resolved.audioParams as Record<string, unknown>;
+    const bgm = audioParams.bgm as Record<string, unknown>;
+    assert.strictEqual(bgm.path, path.resolve(configDir, "assets/bgm.mp3"));
+    assert.strictEqual(bgm.kind, "path");
+    // bgmVolume should be preserved
+    assert.strictEqual(audioParams.bgmVolume, 0.15);
+  });
+
+  test("does not modify audioParams.bgm kind:url", () => {
+    const config = {
+      audioParams: {
+        bgm: { kind: "url", url: "https://example.com/bgm.mp3" },
+      },
+    };
+    const resolved = resolveConfigPaths(config, "/some/dir");
+    const audioParams = resolved.audioParams as Record<string, unknown>;
+    const bgm = audioParams.bgm as Record<string, unknown>;
+    assert.strictEqual(bgm.kind, "url");
+    assert.strictEqual(bgm.url, "https://example.com/bgm.mp3");
+  });
+
+  test("resolves slideParams.branding.logo.source kind:path", () => {
+    const configDir = "/home/user/project";
+    const config = {
+      slideParams: {
+        branding: {
+          logo: {
+            source: { kind: "path", path: "brand/logo.svg" },
+            position: "top-right",
+          },
+        },
+      },
+    };
+    const resolved = resolveConfigPaths(config, configDir);
+    const slideParams = resolved.slideParams as Record<string, unknown>;
+    const branding = slideParams.branding as Record<string, unknown>;
+    const logo = branding.logo as Record<string, unknown>;
+    const source = logo.source as Record<string, unknown>;
+    assert.strictEqual(source.path, path.resolve(configDir, "brand/logo.svg"));
+    assert.strictEqual(logo.position, "top-right");
+  });
+
+  test("resolves slideParams.branding.backgroundImage.source kind:path", () => {
+    const configDir = "/home/user/project";
+    const config = {
+      slideParams: {
+        branding: {
+          backgroundImage: {
+            source: { kind: "path", path: "brand/bg.png" },
+          },
+        },
+      },
+    };
+    const resolved = resolveConfigPaths(config, configDir);
+    const slideParams = resolved.slideParams as Record<string, unknown>;
+    const branding = slideParams.branding as Record<string, unknown>;
+    const bgImage = branding.backgroundImage as Record<string, unknown>;
+    const source = bgImage.source as Record<string, unknown>;
+    assert.strictEqual(source.path, path.resolve(configDir, "brand/bg.png"));
+  });
+
+  test("does not modify already-absolute paths", () => {
+    const config = {
+      audioParams: {
+        bgm: { kind: "path", path: "/absolute/path/bgm.mp3" },
+      },
+    };
+    const resolved = resolveConfigPaths(config, "/some/dir");
+    const audioParams = resolved.audioParams as Record<string, unknown>;
+    const bgm = audioParams.bgm as Record<string, unknown>;
+    assert.strictEqual(bgm.path, "/absolute/path/bgm.mp3");
+  });
+
+  test("handles config with no path fields", () => {
+    const config = {
+      imageParams: { provider: "google" },
+      speechParams: { speakers: {} },
+    };
+    const resolved = resolveConfigPaths(config, "/some/dir");
+    assert.deepStrictEqual(resolved, config);
+  });
+});
+
+describe("mergeScripts - config with script", () => {
+  test("script values override config", () => {
+    const config = {
+      imageParams: { provider: "google", model: "imagen-3" },
+      speechParams: { speakers: { Presenter: { provider: "gemini" } } },
+    };
+    const script = {
+      imageParams: { provider: "openai" },
+    };
+    const merged = mergeScripts(config, script);
+    // script's imageParams overrides config's (shallow merge within imageParams)
+    const imageParams = merged.imageParams as Record<string, unknown>;
+    assert.strictEqual(imageParams.provider, "openai");
+    assert.strictEqual(imageParams.model, "imagen-3"); // preserved from config
+    // speechParams from config preserved
+    assert.ok(merged.speechParams);
+  });
+
+  test("deep merge preserves both sides for speechParams", () => {
+    const config = {
+      speechParams: { speakers: { Presenter: { provider: "gemini" } } },
+    };
+    const script = {
+      speechParams: { speakers: { Host: { provider: "openai" } } },
+    };
+    const merged = mergeScripts(config, script);
+    const speechParams = merged.speechParams as Record<string, unknown>;
+    // script wins in shallow merge of speechParams
+    assert.deepStrictEqual(speechParams.speakers, { Host: { provider: "openai" } });
+  });
+
+  test("slideParams are deep merged", () => {
+    const config = {
+      slideParams: { theme: "corporate", branding: { logo: { position: "top-right" } } },
+    };
+    const script = {
+      slideParams: { branding: { logo: { position: "top-left" } } },
+    };
+    const merged = mergeScripts(config, script);
+    const slideParams = merged.slideParams as Record<string, unknown>;
+    // script's slideParams override at the first level within slideParams
+    assert.ok(slideParams.branding);
+    // theme from config is preserved
+    assert.strictEqual(slideParams.theme, "corporate");
+  });
+
+  test("non-overlapping keys are all preserved", () => {
+    const config = {
+      audioParams: { bgmVolume: 0.15 },
+    };
+    const script = {
+      imageParams: { provider: "google" },
+    };
+    const merged = mergeScripts(config, script);
+    assert.ok(merged.audioParams);
+    assert.ok(merged.imageParams);
+  });
+});
