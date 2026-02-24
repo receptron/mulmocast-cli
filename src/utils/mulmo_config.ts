@@ -33,50 +33,35 @@ const resolveMediaSourcePath = (source: Record<string, unknown>, configDirPath: 
 };
 
 /**
+ * Immutably resolve a nested kind:"path" source at the given key path.
+ * e.g. ["audioParams", "bgm"] resolves config.audioParams.bgm
+ */
+const resolveNestedPath = (obj: Record<string, unknown>, keys: string[], configDirPath: string): Record<string, unknown> => {
+  const [head, ...tail] = keys;
+  const child = obj[head];
+  if (!child || typeof child !== "object") {
+    return obj;
+  }
+  const childObj = child as Record<string, unknown>;
+  const resolved = tail.length === 0 ? resolveMediaSourcePath(childObj, configDirPath) : resolveNestedPath(childObj, tail, configDirPath);
+  return resolved === child ? obj : { ...obj, [head]: resolved };
+};
+
+/** Key paths to kind:"path" sources that need resolution */
+const MEDIA_SOURCE_PATHS: string[][] = [
+  ["audioParams", "bgm"],
+  ["slideParams", "branding", "logo", "source"],
+  ["slideParams", "branding", "backgroundImage", "source"],
+];
+
+/**
  * Resolve all kind:"path" references in config relative to the config file directory.
- *
- * Targets:
- * - audioParams.bgm
- * - slideParams.branding.logo.source
- * - slideParams.branding.backgroundImage.source
  */
 export const resolveConfigPaths = (config: PartialMulmoScript, configDirPath: string): PartialMulmoScript => {
-  const resolved = { ...config };
-
-  // audioParams.bgm
-  const audioParams = resolved.audioParams as Record<string, unknown> | undefined;
-  if (audioParams?.bgm && typeof audioParams.bgm === "object") {
-    resolved.audioParams = {
-      ...audioParams,
-      bgm: resolveMediaSourcePath(audioParams.bgm as Record<string, unknown>, configDirPath),
-    };
-  }
-
-  // slideParams.branding.logo.source and slideParams.branding.backgroundImage.source
-  const slideParams = resolved.slideParams as Record<string, unknown> | undefined;
-  if (slideParams?.branding && typeof slideParams.branding === "object") {
-    const branding = { ...(slideParams.branding as Record<string, unknown>) };
-
-    const logoObj = branding.logo as Record<string, unknown> | undefined;
-    if (logoObj?.source && typeof logoObj.source === "object") {
-      branding.logo = {
-        ...logoObj,
-        source: resolveMediaSourcePath(logoObj.source as Record<string, unknown>, configDirPath),
-      };
-    }
-
-    const bgImageObj = branding.backgroundImage as Record<string, unknown> | undefined;
-    if (bgImageObj?.source && typeof bgImageObj.source === "object") {
-      branding.backgroundImage = {
-        ...bgImageObj,
-        source: resolveMediaSourcePath(bgImageObj.source as Record<string, unknown>, configDirPath),
-      };
-    }
-
-    resolved.slideParams = { ...slideParams, branding };
-  }
-
-  return resolved;
+  return MEDIA_SOURCE_PATHS.reduce<PartialMulmoScript>(
+    (acc, keys) => resolveNestedPath(acc as Record<string, unknown>, keys, configDirPath) as PartialMulmoScript,
+    config,
+  );
 };
 
 export type MulmoConfigResult = {
