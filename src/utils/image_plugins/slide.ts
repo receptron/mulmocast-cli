@@ -3,6 +3,7 @@ import { pathToFileURL } from "node:url";
 import { ImageProcessorParams } from "../../types/index.js";
 import { generateSlideHTML } from "../../slide/index.js";
 import type { SlideLayout, SlideTheme, ContentBlock, MulmoSlideMedia, SlideBranding } from "../../slide/index.js";
+import { slideThemes } from "../../data/slideThemes.js";
 import type { ResolvedBranding } from "../../slide/render.js";
 import { renderHTMLToImage } from "../html_render.js";
 import { parrotingImagePath } from "./utils.js";
@@ -100,10 +101,7 @@ const resolveTheme = (params: ImageProcessorParams): SlideTheme => {
     throw new Error("resolveTheme called on non-slide beat");
   }
   const defaultTheme = context.presentationStyle.slideParams?.theme;
-  const theme = beat.image.theme ?? defaultTheme;
-  if (!theme) {
-    throw new Error("Slide theme is required: set slideParams.theme or beat.image.theme");
-  }
+  const theme = beat.image.theme ?? defaultTheme ?? slideThemes.corporate;
   return theme;
 };
 
