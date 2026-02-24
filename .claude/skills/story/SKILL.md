@@ -213,6 +213,8 @@ For image-only beats without slide layout, use `imagePrompt` as a beat-level str
 
 ### Combine narrations + visuals into MulmoScript JSON
 
+> **Note**: The template below shows commonly used beat fields. If you need a field not listed here, run `npx mulmo tool schema` to verify it exists in the schema before adding it. The beat schema is strict — unrecognized fields will cause validation errors.
+
 ```json
 {
   "$mulmocast": { "version": "1.1" },
