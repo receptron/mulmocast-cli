@@ -3,6 +3,7 @@ import path from "path";
 import os from "os";
 import { GraphAILogger } from "graphai";
 import { mergeScripts, type PartialMulmoScript } from "../tools/complete_script.js";
+import { getFullPath } from "./file.js";
 
 const CONFIG_FILE_NAME = "mulmo.config.json";
 
@@ -25,8 +26,8 @@ export const findConfigFile = (baseDirPath: string): string | null => {
  * Resolve kind:"path" entries in config to absolute paths relative to config file location.
  */
 const resolveMediaSourcePath = (source: Record<string, unknown>, configDirPath: string): Record<string, unknown> => {
-  if (source.kind === "path" && typeof source.path === "string" && !path.isAbsolute(source.path)) {
-    return { ...source, path: path.resolve(configDirPath, source.path) };
+  if (source.kind === "path" && typeof source.path === "string") {
+    return { ...source, path: getFullPath(configDirPath, source.path) };
   }
   return source;
 };
