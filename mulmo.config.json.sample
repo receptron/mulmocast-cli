@@ -2,6 +2,13 @@
   "speechParams": {
     "provider": "elevenlabs"
   },
+  "audioParams": {
+    "bgm": {
+      "kind": "url",
+      "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/story001.mp3"
+    },
+    "bgmVolume": 0.15
+  },
   "imageParams": {
     "backgroundImage": {
       "source": { "kind": "path", "path": "branding/banner.jpg" },
