@@ -19,7 +19,16 @@ import {
 import { MulmoStudioContext, MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingualData, PublicAPIArgs, text2SpeechProviderSchema } from "../types/index.js";
 
 import { fileCacheAgentFilter } from "../utils/filters.js";
-import { getAudioArtifactFilePath, getAudioFilePath, getOutputStudioFilePath, resolveDirPath, defaultBGMPath, mkdir, writingMessage } from "../utils/file.js";
+import {
+  getAudioArtifactFilePath,
+  getAudioFilePath,
+  getGroupedAudioFilePath,
+  getOutputStudioFilePath,
+  resolveDirPath,
+  defaultBGMPath,
+  mkdir,
+  writingMessage,
+} from "../utils/file.js";
 import { localizedText, settings2GraphAIConfig } from "../utils/utils.js";
 import { text2hash } from "../utils/utils_node.js";
 import { provider2TTSAgent } from "../types/provider2agent.js";
@@ -62,7 +71,9 @@ export const getBeatAudioPathOrUrl = (text: string, context: MulmoStudioContext,
   ].join(":");
   GraphAILogger.log(`getBeatAudioPathOrUrl [${hash_string}]`);
   const audioFileName = `${context.studio.filename}_${text2hash(hash_string)}`;
-  const maybeAudioFile = getAudioFilePath(audioDirPath, context.studio.filename, audioFileName, lang);
+  const maybeAudioFile = context.fileDirs.grouped
+    ? getGroupedAudioFilePath(audioDirPath, audioFileName, lang)
+    : getAudioFilePath(audioDirPath, context.studio.filename, audioFileName, lang);
   return getAudioPathOrUrl(context, beat, maybeAudioFile);
 };
 
@@ -276,7 +287,7 @@ export const generateBeatAudio = async (index: number, context: MulmoStudioConte
     const fileName = MulmoStudioContextMethods.getFileName(context);
     const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
     const outDirPath = MulmoStudioContextMethods.getOutDirPath(context);
-    const audioSegmentDirPath = resolveDirPath(audioDirPath, fileName);
+    const audioSegmentDirPath = context.fileDirs.grouped ? audioDirPath : resolveDirPath(audioDirPath, fileName);
 
     mkdir(outDirPath);
     mkdir(audioSegmentDirPath);
@@ -316,8 +327,10 @@ export const audio = async (context: MulmoStudioContext, args?: PublicAPIArgs) =
     const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
     const outDirPath = MulmoStudioContextMethods.getOutDirPath(context);
     const audioArtifactFilePath = getAudioArtifactFilePath(context);
-    const audioSegmentDirPath = resolveDirPath(audioDirPath, fileName);
-    const audioCombinedFilePath = getAudioFilePath(audioDirPath, fileName, fileName, context.lang);
+    const audioSegmentDirPath = context.fileDirs.grouped ? audioDirPath : resolveDirPath(audioDirPath, fileName);
+    const audioCombinedFilePath = context.fileDirs.grouped
+      ? getGroupedAudioFilePath(audioDirPath, fileName, context.lang)
+      : getAudioFilePath(audioDirPath, fileName, fileName, context.lang);
     const outputStudioFilePath = getOutputStudioFilePath(outDirPath, fileName);
 
     mkdir(outDirPath);

@@ -74,8 +74,8 @@ export const mulmoViewerBundle = async (context: MulmoStudioContext, options: Mu
   const filename = context.studio.filename;
   mkdir(outDir);
 
-  // Bundle directory: output/<script_name>/
-  const bundleDir = path.resolve(outDir, filename);
+  // Bundle directory: when grouped, outDir is already output/<script_name>/
+  const bundleDir = context.fileDirs.grouped ? outDir : path.resolve(outDir, filename);
   mkdir(bundleDir);
 
   const zipper = skipZip ? undefined : new ZipBuilder(path.resolve(bundleDir, zipFileName));
