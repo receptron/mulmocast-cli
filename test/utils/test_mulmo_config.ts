@@ -4,7 +4,7 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 
-import { findConfigFile, loadMulmoConfig, resolveConfigPaths, mergeConfigWithScript } from "../../src/utils/mulmo_config.js";
+import { findConfigFile, loadMulmoConfig, mergeConfigWithScript } from "../../src/utils/mulmo_config.js";
 import { mergeScripts } from "../../src/tools/complete_script.js";
 
 const CONFIG_FILE_NAME = "mulmo.config.json";
@@ -164,300 +164,59 @@ describe("loadMulmoConfig", () => {
       cleanup(tmpDir);
     }
   });
-});
 
-describe("resolveConfigPaths", () => {
-  test("resolves audioParams.bgm kind:path", () => {
-    const configDir = "/home/user/project";
-    const config = {
-      audioParams: {
-        bgm: { kind: "path", path: "assets/bgm.mp3" },
-        bgmVolume: 0.15,
-      },
-    };
-    const resolved = resolveConfigPaths(config, configDir);
-    const audioParams = resolved.audioParams as Record<string, unknown>;
-    const bgm = audioParams.bgm as Record<string, unknown>;
-    assert.strictEqual(bgm.path, path.resolve(configDir, "assets/bgm.mp3"));
-    assert.strictEqual(bgm.kind, "path");
-    // bgmVolume should be preserved
-    assert.strictEqual(audioParams.bgmVolume, 0.15);
-  });
-
-  test("does not modify audioParams.bgm kind:url", () => {
-    const config = {
-      audioParams: {
-        bgm: { kind: "url", url: "https://example.com/bgm.mp3" },
-      },
-    };
-    const resolved = resolveConfigPaths(config, "/some/dir");
-    const audioParams = resolved.audioParams as Record<string, unknown>;
-    const bgm = audioParams.bgm as Record<string, unknown>;
-    assert.strictEqual(bgm.kind, "url");
-    assert.strictEqual(bgm.url, "https://example.com/bgm.mp3");
-  });
-
-  test("resolves slideParams.branding.logo.source kind:path", () => {
-    const configDir = "/home/user/project";
-    const config = {
-      slideParams: {
-        branding: {
-          logo: {
-            source: { kind: "path", path: "brand/logo.svg" },
-            position: "top-right",
+  test("preserves kind:path entries as-is without resolving to absolute", () => {
+    const tmpDir = createTempDir();
+    try {
+      const config = {
+        audioParams: {
+          bgm: { kind: "path", path: "assets/bgm.mp3" },
+        },
+        slideParams: {
+          branding: {
+            logo: {
+              source: { kind: "path", path: "brand/logo.svg" },
+            },
           },
         },
-      },
-    };
-    const resolved = resolveConfigPaths(config, configDir);
-    const slideParams = resolved.slideParams as Record<string, unknown>;
-    const branding = slideParams.branding as Record<string, unknown>;
-    const logo = branding.logo as Record<string, unknown>;
-    const source = logo.source as Record<string, unknown>;
-    assert.strictEqual(source.path, path.resolve(configDir, "brand/logo.svg"));
-    assert.strictEqual(logo.position, "top-right");
+      };
+      writeConfig(tmpDir, config);
+      const result = loadMulmoConfig(tmpDir);
+      assert.ok(result);
+      const audioParams = result.defaults.audioParams as Record<string, unknown>;
+      const bgm = audioParams.bgm as Record<string, unknown>;
+      assert.strictEqual(bgm.path, "assets/bgm.mp3");
+
+      const slideParams = result.defaults.slideParams as Record<string, unknown>;
+      const branding = slideParams.branding as Record<string, unknown>;
+      const logo = branding.logo as Record<string, unknown>;
+      const source = logo.source as Record<string, unknown>;
+      assert.strictEqual(source.path, "brand/logo.svg");
+    } finally {
+      cleanup(tmpDir);
+    }
   });
 
-  test("resolves slideParams.branding.backgroundImage.source kind:path", () => {
-    const configDir = "/home/user/project";
-    const config = {
-      slideParams: {
-        branding: {
-          backgroundImage: {
-            source: { kind: "path", path: "brand/bg.png" },
+  test("preserves kind:path in override without resolving", () => {
+    const tmpDir = createTempDir();
+    try {
+      const config = {
+        override: {
+          audioParams: {
+            bgm: { kind: "path", path: "brand/bgm.mp3" },
           },
         },
-      },
-    };
-    const resolved = resolveConfigPaths(config, configDir);
-    const slideParams = resolved.slideParams as Record<string, unknown>;
-    const branding = slideParams.branding as Record<string, unknown>;
-    const bgImage = branding.backgroundImage as Record<string, unknown>;
-    const source = bgImage.source as Record<string, unknown>;
-    assert.strictEqual(source.path, path.resolve(configDir, "brand/bg.png"));
-  });
-
-  test("does not modify already-absolute paths", () => {
-    const config = {
-      audioParams: {
-        bgm: { kind: "path", path: "/absolute/path/bgm.mp3" },
-      },
-    };
-    const resolved = resolveConfigPaths(config, "/some/dir");
-    const audioParams = resolved.audioParams as Record<string, unknown>;
-    const bgm = audioParams.bgm as Record<string, unknown>;
-    assert.strictEqual(bgm.path, path.normalize("/absolute/path/bgm.mp3"));
-  });
-
-  test("handles config with no path fields", () => {
-    const config = {
-      imageParams: { provider: "google" },
-      speechParams: { speakers: {} },
-    };
-    const resolved = resolveConfigPaths(config, "/some/dir");
-    assert.deepStrictEqual(resolved, config);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// resolveConfigPaths — resolveNestedPath recursive resolution tests
-//
-// resolveNestedPath is a private recursive function that walks a key path
-// (e.g. ["slideParams", "branding", "logo", "source"]) and resolves
-// kind:"path" entries at the leaf. These tests exercise it through
-// the public resolveConfigPaths API.
-// ---------------------------------------------------------------------------
-describe("resolveConfigPaths - resolveNestedPath recursive behavior", () => {
-  // --- Happy path: all three MEDIA_SOURCE_PATHS resolved in a single config ---
-  test("resolves all three media source paths simultaneously", () => {
-    const configDir = "/project";
-    const config = {
-      audioParams: {
-        bgm: { kind: "path", path: "music/bgm.mp3" },
-      },
-      slideParams: {
-        branding: {
-          logo: {
-            source: { kind: "path", path: "img/logo.png" },
-          },
-          backgroundImage: {
-            source: { kind: "path", path: "img/bg.jpg" },
-          },
-        },
-      },
-    };
-    const resolved = resolveConfigPaths(config, configDir);
-
-    // All three paths should be resolved to absolute
-    const bgm = (resolved.audioParams as Record<string, unknown>).bgm as Record<string, unknown>;
-    assert.strictEqual(bgm.path, path.resolve(configDir, "music/bgm.mp3"));
-
-    const branding = (resolved.slideParams as Record<string, unknown>).branding as Record<string, unknown>;
-    const logoSource = (branding.logo as Record<string, unknown>).source as Record<string, unknown>;
-    assert.strictEqual(logoSource.path, path.resolve(configDir, "img/logo.png"));
-
-    const bgSource = (branding.backgroundImage as Record<string, unknown>).source as Record<string, unknown>;
-    assert.strictEqual(bgSource.path, path.resolve(configDir, "img/bg.jpg"));
-  });
-
-  // --- No-op: intermediate key is missing (recursion stops early) ---
-  test("returns config unchanged when intermediate key does not exist", () => {
-    const config = {
-      imageParams: { provider: "google" },
-      // audioParams is missing entirely → bgm path should be skipped
-      // slideParams is missing entirely → branding paths should be skipped
-    };
-    const resolved = resolveConfigPaths(config, "/some/dir");
-    // Should be identical — no paths to resolve
-    assert.deepStrictEqual(resolved, config);
-  });
-
-  // --- No-op: intermediate key is a non-object value (e.g. string) ---
-  test("returns config unchanged when intermediate key is not an object", () => {
-    const config = {
-      audioParams: "not-an-object", // bgm traversal should stop here
-    };
-    const resolved = resolveConfigPaths(config as Record<string, unknown>, "/dir");
-    assert.deepStrictEqual(resolved, config);
-  });
-
-  // --- No-op: intermediate key is null ---
-  test("returns config unchanged when intermediate key is null", () => {
-    const config = {
-      slideParams: null, // branding traversal should stop here
-    };
-    const resolved = resolveConfigPaths(config as Record<string, unknown>, "/dir");
-    assert.deepStrictEqual(resolved, config);
-  });
-
-  // --- No-op: leaf is kind:"url" (resolveMediaSourcePath returns original) ---
-  test("does not modify leaf when kind is not 'path'", () => {
-    const config = {
-      slideParams: {
-        branding: {
-          logo: {
-            source: { kind: "url", url: "https://example.com/logo.svg" },
-          },
-        },
-      },
-    };
-    const resolved = resolveConfigPaths(config, "/dir");
-    const source = (((resolved.slideParams as Record<string, unknown>).branding as Record<string, unknown>).logo as Record<string, unknown>).source as Record<
-      string,
-      unknown
-    >;
-    assert.strictEqual(source.kind, "url");
-    assert.strictEqual(source.url, "https://example.com/logo.svg");
-  });
-
-  // --- Sibling preservation: properties next to the resolved path are kept ---
-  test("preserves sibling properties at every nesting level", () => {
-    const configDir = "/project";
-    const config = {
-      audioParams: {
-        bgm: { kind: "path", path: "bgm.mp3" },
-        bgmVolume: 0.2, // sibling of bgm
-        fadeIn: true, // sibling of bgm
-      },
-      slideParams: {
-        theme: "corporate", // sibling of branding
-        branding: {
-          companyName: "Acme", // sibling of logo
-          logo: {
-            source: { kind: "path", path: "logo.svg" },
-            position: "top-left", // sibling of source
-            size: 48, // sibling of source
-          },
-        },
-      },
-      imageParams: { provider: "google" }, // unrelated top-level key
-    };
-    const resolved = resolveConfigPaths(config, configDir);
-
-    // audioParams siblings preserved
-    const audioParams = resolved.audioParams as Record<string, unknown>;
-    assert.strictEqual(audioParams.bgmVolume, 0.2);
-    assert.strictEqual(audioParams.fadeIn, true);
-
-    // slideParams siblings preserved
-    const slideParams = resolved.slideParams as Record<string, unknown>;
-    assert.strictEqual(slideParams.theme, "corporate");
-
-    // branding siblings preserved
-    const branding = slideParams.branding as Record<string, unknown>;
-    assert.strictEqual(branding.companyName, "Acme");
-
-    // logo siblings preserved
-    const logo = branding.logo as Record<string, unknown>;
-    assert.strictEqual(logo.position, "top-left");
-    assert.strictEqual(logo.size, 48);
-
-    // unrelated top-level key preserved
-    assert.deepStrictEqual(resolved.imageParams, { provider: "google" });
-  });
-
-  // --- Immutability: original config object is not mutated ---
-  test("does not mutate the original config object", () => {
-    const configDir = "/project";
-    const originalSource = { kind: "path", path: "bgm.mp3" };
-    const originalBgm = { ...originalSource };
-    const config = {
-      audioParams: {
-        bgm: originalSource,
-      },
-    };
-
-    resolveConfigPaths(config, configDir);
-
-    // Original source object should remain unchanged
-    assert.strictEqual(originalSource.path, "bgm.mp3");
-    assert.deepStrictEqual(originalSource, originalBgm);
-  });
-
-  // --- Shared prefix: two paths under slideParams.branding are both resolved ---
-  test("resolves both logo and backgroundImage under shared branding prefix", () => {
-    const configDir = "/brand";
-    const config = {
-      slideParams: {
-        branding: {
-          logo: {
-            source: { kind: "path", path: "assets/logo.svg" },
-          },
-          backgroundImage: {
-            source: { kind: "path", path: "assets/bg.png" },
-          },
-        },
-      },
-    };
-    const resolved = resolveConfigPaths(config, configDir);
-    const branding = (resolved.slideParams as Record<string, unknown>).branding as Record<string, unknown>;
-
-    const logoPath = ((branding.logo as Record<string, unknown>).source as Record<string, unknown>).path;
-    const bgPath = ((branding.backgroundImage as Record<string, unknown>).source as Record<string, unknown>).path;
-
-    assert.strictEqual(logoPath, path.resolve(configDir, "assets/logo.svg"));
-    assert.strictEqual(bgPath, path.resolve(configDir, "assets/bg.png"));
-  });
-
-  // --- Empty config: no keys at all ---
-  test("handles empty config without error", () => {
-    const resolved = resolveConfigPaths({}, "/dir");
-    assert.deepStrictEqual(resolved, {});
-  });
-
-  // --- Deep path with only partial nesting (branding exists but logo does not) ---
-  test("stops gracefully when deep path is partially present", () => {
-    const config = {
-      slideParams: {
-        branding: {
-          // logo is missing, backgroundImage is missing
-          companyName: "Test",
-        },
-      },
-    };
-    const resolved = resolveConfigPaths(config, "/dir");
-    const branding = (resolved.slideParams as Record<string, unknown>).branding as Record<string, unknown>;
-    assert.strictEqual(branding.companyName, "Test");
+      };
+      writeConfig(tmpDir, config);
+      const result = loadMulmoConfig(tmpDir);
+      assert.ok(result);
+      assert.ok(result.override);
+      const audioParams = result.override.audioParams as Record<string, unknown>;
+      const bgm = audioParams.bgm as Record<string, unknown>;
+      assert.strictEqual(bgm.path, "brand/bgm.mp3");
+    } finally {
+      cleanup(tmpDir);
+    }
   });
 });
 
@@ -562,27 +321,5 @@ describe("mergeConfigWithScript - override", () => {
     assert.strictEqual(speechParams.provider, "elevenlabs");
     // model from script is preserved (override does shallow merge within speechParams)
     assert.strictEqual(speechParams.model, "tts-1");
-  });
-
-  test("override path resolution works", () => {
-    const tmpDir = createTempDir();
-    try {
-      const config = {
-        override: {
-          audioParams: {
-            bgm: { kind: "path", path: "brand/bgm.mp3" },
-          },
-        },
-      };
-      writeConfig(tmpDir, config);
-      const result = loadMulmoConfig(tmpDir);
-      assert.ok(result);
-      assert.ok(result.override);
-      const audioParams = result.override.audioParams as Record<string, unknown>;
-      const bgm = audioParams.bgm as Record<string, unknown>;
-      assert.strictEqual(bgm.path, path.resolve(tmpDir, "brand/bgm.mp3"));
-    } finally {
-      cleanup(tmpDir);
-    }
   });
 });

@@ -247,6 +247,8 @@ Top-level keys are applied as **defaults** (script values take precedence). Use 
 
 Priority chain: `config (defaults)` < `template/style` < `script` < `config.override` < `presentationStyle (-p)`
 
+> **Note**: `kind: "path"` entries in `mulmo.config.json` are resolved relative to the **script file directory**, not the config file location. This is consistent with all other path resolution in MulmoScript.
+
 Verify the merged result with:
 ```bash
 mulmo tool info merged --script <script.json>
