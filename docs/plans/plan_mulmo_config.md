@@ -71,7 +71,7 @@ mulmo.config.json < template/style < input data (highest)
 ### New files
 | File | Purpose |
 |------|---------|
-| `src/utils/mulmo_config.ts` | `findConfigFile()`, `loadMulmoConfig()`, `resolveConfigPaths()` |
+| `src/utils/mulmo_config.ts` | `findConfigFile()`, `loadMulmoConfig()`, `mergeConfigWithScript()` |
 | `test/utils/test_mulmo_config.ts` | Unit tests |
 
 ### Modified files

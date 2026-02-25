@@ -3,7 +3,6 @@ import path from "path";
 import os from "os";
 import { GraphAILogger } from "graphai";
 import { mergeScripts, type PartialMulmoScript } from "../tools/complete_script.js";
-import { getFullPath } from "./file.js";
 
 const CONFIG_FILE_NAME = "mulmo.config.json";
 
@@ -22,48 +21,6 @@ export const findConfigFile = (baseDirPath: string): string | null => {
   return null;
 };
 
-/**
- * Resolve kind:"path" entries in config to absolute paths relative to config file location.
- */
-const resolveMediaSourcePath = (source: Record<string, unknown>, configDirPath: string): Record<string, unknown> => {
-  if (source.kind === "path" && typeof source.path === "string") {
-    return { ...source, path: getFullPath(configDirPath, source.path) };
-  }
-  return source;
-};
-
-/**
- * Immutably resolve a nested kind:"path" source at the given key path.
- * e.g. ["audioParams", "bgm"] resolves config.audioParams.bgm
- */
-const resolveNestedPath = (obj: Record<string, unknown>, keys: string[], configDirPath: string): Record<string, unknown> => {
-  const [head, ...tail] = keys;
-  const child = obj[head];
-  if (!child || typeof child !== "object") {
-    return obj;
-  }
-  const childObj = child as Record<string, unknown>;
-  const resolved = tail.length === 0 ? resolveMediaSourcePath(childObj, configDirPath) : resolveNestedPath(childObj, tail, configDirPath);
-  return resolved === child ? obj : { ...obj, [head]: resolved };
-};
-
-/** Key paths to kind:"path" sources that need resolution */
-const MEDIA_SOURCE_PATHS: string[][] = [
-  ["audioParams", "bgm"],
-  ["slideParams", "branding", "logo", "source"],
-  ["slideParams", "branding", "backgroundImage", "source"],
-];
-
-/**
- * Resolve all kind:"path" references in config relative to the config file directory.
- */
-export const resolveConfigPaths = (config: PartialMulmoScript, configDirPath: string): PartialMulmoScript => {
-  return MEDIA_SOURCE_PATHS.reduce<PartialMulmoScript>(
-    (acc, keys) => resolveNestedPath(acc as Record<string, unknown>, keys, configDirPath) as PartialMulmoScript,
-    config,
-  );
-};
-
 export type MulmoConfigResult = {
   defaults: PartialMulmoScript;
   override: PartialMulmoScript | null;
@@ -71,11 +28,15 @@ export type MulmoConfigResult = {
 
 /**
  * Load mulmo.config.json from baseDirPath or home directory.
- * Resolves kind:"path" entries relative to the config file location.
  * Returns { defaults, override } or null if no config file is found.
  *
  * - defaults: applied as low-priority base (script wins)
  * - override: applied after script merge (wins over script)
+ *
+ * Note: kind:"path" entries are NOT resolved here.
+ * They remain as relative paths and are resolved at runtime
+ * relative to the script file directory (mulmoFileDirPath),
+ * consistent with all other path resolution in MulmoScript.
  */
 export const loadMulmoConfig = (baseDirPath: string): MulmoConfigResult | null => {
   const configPath = findConfigFile(baseDirPath);
@@ -86,11 +47,10 @@ export const loadMulmoConfig = (baseDirPath: string): MulmoConfigResult | null =
   try {
     const content = readFileSync(configPath, "utf-8");
     const raw = JSON.parse(content) as PartialMulmoScript;
-    const configDirPath = path.dirname(configPath);
 
     const { override: rawOverride, ...rest } = raw;
-    const defaults = resolveConfigPaths(rest, configDirPath);
-    const override = rawOverride ? resolveConfigPaths(rawOverride as PartialMulmoScript, configDirPath) : null;
+    const defaults = rest;
+    const override = rawOverride ? (rawOverride as PartialMulmoScript) : null;
 
     return { defaults, override };
   } catch (error) {
