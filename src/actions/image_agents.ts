@@ -1,8 +1,7 @@
-import path from "path";
 import { GraphAILogger } from "graphai";
 import { MulmoStudioContext, MulmoBeat, MulmoCanvasDimension, MulmoImageParams, MulmoMovieParams, Text2ImageAgentInfo } from "../types/index.js";
 import { MulmoPresentationStyleMethods, MulmoStudioContextMethods, MulmoBeatMethods, MulmoMediaSourceMethods } from "../methods/index.js";
-import { getBeatPngImagePath, getBeatMoviePaths, getAudioFilePath } from "../utils/file.js";
+import { getBeatPngImagePath, getBeatMoviePaths, getAudioFilePath, getGroupedAudioFilePath } from "../utils/file.js";
 import { imagePrompt, htmlImageSystemPrompt } from "../utils/prompt.js";
 import { renderHTMLToImage } from "../utils/html_render.js";
 import { beatId } from "../utils/utils.js";
@@ -122,7 +121,7 @@ export const imagePreprocessAgent = async (namedInputs: {
       const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
       const trimmedName = `${beatId(beat.id, index)}_trimmed`;
       returnValue.audioFile = context.fileDirs.grouped
-        ? path.resolve(audioDirPath, `${trimmedName}.mp3`)
+        ? getGroupedAudioFilePath(audioDirPath, trimmedName)
         : getAudioFilePath(audioDirPath, folderName, trimmedName);
     } else {
       // Audio file will be set from the beat's audio file when available

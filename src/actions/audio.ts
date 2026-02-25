@@ -1,4 +1,3 @@
-import path from "path";
 import dotenv from "dotenv";
 
 import { GraphAI, TaskManager, GraphAILogger } from "graphai";
@@ -20,7 +19,16 @@ import {
 import { MulmoStudioContext, MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingualData, PublicAPIArgs, text2SpeechProviderSchema } from "../types/index.js";
 
 import { fileCacheAgentFilter } from "../utils/filters.js";
-import { getAudioArtifactFilePath, getAudioFilePath, getOutputStudioFilePath, resolveDirPath, defaultBGMPath, mkdir, writingMessage } from "../utils/file.js";
+import {
+  getAudioArtifactFilePath,
+  getAudioFilePath,
+  getGroupedAudioFilePath,
+  getOutputStudioFilePath,
+  resolveDirPath,
+  defaultBGMPath,
+  mkdir,
+  writingMessage,
+} from "../utils/file.js";
 import { localizedText, settings2GraphAIConfig } from "../utils/utils.js";
 import { text2hash } from "../utils/utils_node.js";
 import { provider2TTSAgent } from "../types/provider2agent.js";
@@ -63,9 +71,8 @@ export const getBeatAudioPathOrUrl = (text: string, context: MulmoStudioContext,
   ].join(":");
   GraphAILogger.log(`getBeatAudioPathOrUrl [${hash_string}]`);
   const audioFileName = `${context.studio.filename}_${text2hash(hash_string)}`;
-  const langSuffix = lang ? `_${lang}` : "";
   const maybeAudioFile = context.fileDirs.grouped
-    ? path.resolve(audioDirPath, `${audioFileName}${langSuffix}.mp3`)
+    ? getGroupedAudioFilePath(audioDirPath, audioFileName, lang)
     : getAudioFilePath(audioDirPath, context.studio.filename, audioFileName, lang);
   return getAudioPathOrUrl(context, beat, maybeAudioFile);
 };
@@ -321,9 +328,8 @@ export const audio = async (context: MulmoStudioContext, args?: PublicAPIArgs) =
     const outDirPath = MulmoStudioContextMethods.getOutDirPath(context);
     const audioArtifactFilePath = getAudioArtifactFilePath(context);
     const audioSegmentDirPath = context.fileDirs.grouped ? audioDirPath : resolveDirPath(audioDirPath, fileName);
-    const langSuffix = context.lang ? `_${context.lang}` : "";
     const audioCombinedFilePath = context.fileDirs.grouped
-      ? path.resolve(audioDirPath, `${fileName}${langSuffix}.mp3`)
+      ? getGroupedAudioFilePath(audioDirPath, fileName, context.lang)
       : getAudioFilePath(audioDirPath, fileName, fileName, context.lang);
     const outputStudioFilePath = getOutputStudioFilePath(outDirPath, fileName);
 
