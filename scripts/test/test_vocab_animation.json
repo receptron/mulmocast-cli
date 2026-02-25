@@ -1,0 +1,254 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "Vocabulary: serendipity",
+  "canvasSize": { "width": 720, "height": 1280 },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "voiceId": "shimmer",
+        "displayName": {
+          "en": "Presenter"
+        }
+      }
+    }
+  },
+  "beats": [
+    {
+      "id": "audio_intro",
+      "speaker": "Presenter",
+      "text": "serendipity.",
+      "duration": 3,
+      "image": {
+        "type": "html_tailwind",
+        "html": "<div class='h-full bg-slate-900'></div>"
+      }
+    },
+    {
+      "id": "word_display",
+      "speaker": "Presenter",
+      "text": "serendipity.",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-indigo-950'>",
+          "  <p id='phonetic' class='text-lg text-indigo-300 font-mono mb-4' style='opacity:0'>/ˌser.ənˈdɪp.ɪ.ti/</p>",
+          "  <h1 id='word' class='text-5xl font-bold text-white tracking-wide' style='opacity:0'>serendipity</h1>",
+          "  <div id='underline' class='h-1 bg-gradient-to-r from-cyan-400 to-indigo-400 mt-6 rounded' style='width:0'></div>",
+          "</div>",
+          "<script>",
+          "function render(frame, totalFrames, fps) {",
+          "  var word = document.getElementById('word');",
+          "  word.style.opacity = interpolate(frame, [0, fps * 0.4], [0, 1]);",
+          "  word.style.transform = 'scale(' + interpolateWithEasing(frame, [0, fps * 0.4], [0.9, 1], Easing.easeOut) + ')';",
+          "  document.getElementById('phonetic').style.opacity = interpolate(frame, [fps * 0.3, fps * 0.7], [0, 1]);",
+          "  document.getElementById('underline').style.width = interpolateWithEasing(frame, [fps * 0.5, fps * 1.2], [0, 300], Easing.easeInOut) + 'px';",
+          "}",
+          "</script>"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "example_1",
+      "speaker": "Presenter",
+      "text": "The discovery of penicillin was a moment of serendipity.",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-start pt-12 bg-slate-900 px-8'>",
+          "  <h2 class='text-2xl font-bold text-indigo-300 mb-8'>Example Sentences</h2>",
+          "  <div id='s0' class='mb-6 p-5 bg-slate-800 rounded-xl border-l-4 border-cyan-400' style='opacity:0; transform: translateX(-30px)'>",
+          "    <p class='text-xl text-white leading-relaxed'>The discovery of penicillin was a moment of <span class='text-cyan-400 font-semibold'>serendipity</span>.</p>",
+          "  </div>",
+          "</div>",
+          "<script>",
+          "function render(frame, totalFrames, fps) {",
+          "  var el = document.getElementById('s0');",
+          "  el.style.opacity = interpolateWithEasing(frame, [0, 15], [0, 1], Easing.easeOut);",
+          "  el.style.transform = 'translateX(' + interpolateWithEasing(frame, [0, 15], [-30, 0], Easing.easeOut) + 'px)';",
+          "}",
+          "</script>"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "example_2",
+      "speaker": "Presenter",
+      "text": "She found the perfect dress by pure serendipity.",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-start pt-12 bg-slate-900 px-8'>",
+          "  <h2 class='text-2xl font-bold text-indigo-300 mb-8'>Example Sentences</h2>",
+          "  <div class='mb-6 p-5 bg-slate-800 rounded-xl border-l-4 border-cyan-400'>",
+          "    <p class='text-xl text-white leading-relaxed'>The discovery of penicillin was a moment of <span class='text-cyan-400 font-semibold'>serendipity</span>.</p>",
+          "  </div>",
+          "  <div id='s1' class='mb-6 p-5 bg-slate-800 rounded-xl border-l-4 border-indigo-400' style='opacity:0; transform: translateX(-30px)'>",
+          "    <p class='text-xl text-white leading-relaxed'>She found the perfect dress by pure <span class='text-indigo-400 font-semibold'>serendipity</span>.</p>",
+          "  </div>",
+          "</div>",
+          "<script>",
+          "function render(frame, totalFrames, fps) {",
+          "  var el = document.getElementById('s1');",
+          "  el.style.opacity = interpolateWithEasing(frame, [0, 15], [0, 1], Easing.easeOut);",
+          "  el.style.transform = 'translateX(' + interpolateWithEasing(frame, [0, 15], [-30, 0], Easing.easeOut) + 'px)';",
+          "}",
+          "</script>"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "example_3",
+      "speaker": "Presenter",
+      "text": "Serendipity led him to his future business partner at a coffee shop.",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-start pt-12 bg-slate-900 px-8'>",
+          "  <h2 class='text-2xl font-bold text-indigo-300 mb-8'>Example Sentences</h2>",
+          "  <div class='mb-6 p-5 bg-slate-800 rounded-xl border-l-4 border-cyan-400'>",
+          "    <p class='text-xl text-white leading-relaxed'>The discovery of penicillin was a moment of <span class='text-cyan-400 font-semibold'>serendipity</span>.</p>",
+          "  </div>",
+          "  <div class='mb-6 p-5 bg-slate-800 rounded-xl border-l-4 border-indigo-400'>",
+          "    <p class='text-xl text-white leading-relaxed'>She found the perfect dress by pure <span class='text-indigo-400 font-semibold'>serendipity</span>.</p>",
+          "  </div>",
+          "  <div id='s2' class='mb-6 p-5 bg-slate-800 rounded-xl border-l-4 border-purple-400' style='opacity:0; transform: translateX(-30px)'>",
+          "    <p class='text-xl text-white leading-relaxed'><span class='text-purple-400 font-semibold'>Serendipity</span> led him to his future business partner at a coffee shop.</p>",
+          "  </div>",
+          "</div>",
+          "<script>",
+          "function render(frame, totalFrames, fps) {",
+          "  var el = document.getElementById('s2');",
+          "  el.style.opacity = interpolateWithEasing(frame, [0, 15], [0, 1], Easing.easeOut);",
+          "  el.style.transform = 'translateX(' + interpolateWithEasing(frame, [0, 15], [-30, 0], Easing.easeOut) + 'px)';",
+          "}",
+          "</script>"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "explanation",
+      "speaker": "Presenter",
+      "text": "Serendipity means the occurrence of events by chance in a happy or beneficial way. It describes finding something good without looking for it.",
+      "duration": 12,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-start pt-12 bg-slate-900 px-8'>",
+          "  <h2 class='text-2xl font-bold text-indigo-300 mb-8'>Meaning</h2>",
+          "  <div id='en-block' class='mb-6 p-6 bg-slate-800 rounded-xl' style='opacity:0'>",
+          "    <p class='text-sm text-cyan-400 font-mono mb-2'>English</p>",
+          "    <p class='text-xl text-white leading-relaxed'>Serendipity means the occurrence of events by chance in a happy or beneficial way. It describes finding something good without looking for it.</p>",
+          "  </div>",
+          "  <div id='ja-block' class='p-6 bg-slate-800 rounded-xl' style='opacity:0'>",
+          "    <p class='text-sm text-indigo-400 font-mono mb-2'>日本語</p>",
+          "    <p class='text-xl text-slate-200 leading-relaxed'><span class='text-indigo-300 font-semibold'>セレンディピティ</span>とは、偶然の幸運な発見や出会いのこと。探していないのに、思いがけず良いものを見つけることを意味します。</p>",
+          "  </div>",
+          "</div>",
+          "<script>",
+          "function render(frame, totalFrames, fps) {",
+          "  var en = document.getElementById('en-block');",
+          "  en.style.opacity = interpolate(frame, [0, 15], [0, 1]);",
+          "  en.style.transform = 'translateY(' + interpolateWithEasing(frame, [0, 15], [15, 0], Easing.easeOut) + 'px)';",
+          "  var ja = document.getElementById('ja-block');",
+          "  ja.style.opacity = interpolate(frame, [280, 295], [0, 1]);",
+          "  ja.style.transform = 'translateY(' + interpolateWithEasing(frame, [280, 295], [15, 0], Easing.easeOut) + 'px)';",
+          "}",
+          "</script>"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "review_1",
+      "speaker": "Presenter",
+      "text": "The discovery of penicillin was a moment of serendipity.",
+      "duration": 7,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-center bg-slate-900 px-8'>",
+          "  <div class='mb-4 p-6 bg-slate-800 rounded-xl border-l-4 border-cyan-400'>",
+          "    <p class='text-2xl text-white leading-relaxed'>The discovery of penicillin was a moment of <span class='text-cyan-400 font-semibold'>serendipity</span>.</p>",
+          "  </div>",
+          "  <div id='tr1' class='p-5 bg-slate-800/50 rounded-xl ml-8' style='opacity:0'>",
+          "    <p class='text-lg text-slate-300 leading-relaxed'>ペニシリンの発見はまさに<span class='text-cyan-400 font-semibold'>セレンディピティ</span>の瞬間だった。</p>",
+          "  </div>",
+          "</div>",
+          "<script>",
+          "function render(frame, totalFrames, fps) {",
+          "  var tr = document.getElementById('tr1');",
+          "  tr.style.opacity = interpolate(frame, [120, 135], [0, 1]);",
+          "  tr.style.transform = 'translateY(' + interpolateWithEasing(frame, [120, 135], [10, 0], Easing.easeOut) + 'px)';",
+          "}",
+          "</script>"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "review_2",
+      "speaker": "Presenter",
+      "text": "She found the perfect dress by pure serendipity.",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-center bg-slate-900 px-8'>",
+          "  <div class='mb-4 p-6 bg-slate-800 rounded-xl border-l-4 border-indigo-400'>",
+          "    <p class='text-2xl text-white leading-relaxed'>She found the perfect dress by pure <span class='text-indigo-400 font-semibold'>serendipity</span>.</p>",
+          "  </div>",
+          "  <div id='tr2' class='p-5 bg-slate-800/50 rounded-xl ml-8' style='opacity:0'>",
+          "    <p class='text-lg text-slate-300 leading-relaxed'>彼女は全くの<span class='text-indigo-400 font-semibold'>偶然</span>で完璧なドレスを見つけた。</p>",
+          "  </div>",
+          "</div>",
+          "<script>",
+          "function render(frame, totalFrames, fps) {",
+          "  var tr = document.getElementById('tr2');",
+          "  tr.style.opacity = interpolate(frame, [93, 108], [0, 1]);",
+          "  tr.style.transform = 'translateY(' + interpolateWithEasing(frame, [93, 108], [10, 0], Easing.easeOut) + 'px)';",
+          "}",
+          "</script>"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "review_3",
+      "speaker": "Presenter",
+      "text": "Serendipity led him to his future business partner at a coffee shop.",
+      "duration": 8,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-center bg-slate-900 px-8'>",
+          "  <div class='mb-4 p-6 bg-slate-800 rounded-xl border-l-4 border-purple-400'>",
+          "    <p class='text-2xl text-white leading-relaxed'><span class='text-purple-400 font-semibold'>Serendipity</span> led him to his future business partner at a coffee shop.</p>",
+          "  </div>",
+          "  <div id='tr3' class='p-5 bg-slate-800/50 rounded-xl ml-8' style='opacity:0'>",
+          "    <p class='text-lg text-slate-300 leading-relaxed'><span class='text-purple-400 font-semibold'>セレンディピティ</span>が彼をカフェで未来のビジネスパートナーに導いた。</p>",
+          "  </div>",
+          "</div>",
+          "<script>",
+          "function render(frame, totalFrames, fps) {",
+          "  var tr = document.getElementById('tr3');",
+          "  tr.style.opacity = interpolate(frame, [150, 165], [0, 1]);",
+          "  tr.style.transform = 'translateY(' + interpolateWithEasing(frame, [150, 165], [10, 0], Easing.easeOut) + 'px)';",
+          "}",
+          "</script>"
+        ],
+        "animation": true
+      }
+    }
+  ]
+}
