@@ -87,7 +87,7 @@
   "homepage": "https://github.com/receptron/mulmocast-cli#readme",
   "dependencies": {
     "@google-cloud/text-to-speech": "^6.4.0",
-    "@google/genai": "^1.41.0",
+    "@google/genai": "^1.42.0",
     "@graphai/anthropic_agent": "^2.0.12",
     "@graphai/browserless_agent": "^2.0.2",
     "@graphai/gemini_agent": "^2.0.5",
