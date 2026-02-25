@@ -83,24 +83,6 @@ test("test getImageProjectDirPath without grouped", async () => {
   assert.strictEqual(result, "/out/images/hello");
 });
 
-test("test getAudioProjectDirPath with grouped", async () => {
-  const context = {
-    fileDirs: { audioDirPath: "/out/hello/audio", grouped: true },
-    studio: { filename: "hello" },
-  } as unknown as MulmoStudioContext;
-  const result = MulmoStudioContextMethods.getAudioProjectDirPath(context);
-  assert.strictEqual(result, "/out/hello/audio");
-});
-
-test("test getAudioProjectDirPath without grouped", async () => {
-  const context = {
-    fileDirs: { audioDirPath: "/out/audio", grouped: false },
-    studio: { filename: "hello" },
-  } as unknown as MulmoStudioContext;
-  const result = MulmoStudioContextMethods.getAudioProjectDirPath(context);
-  assert.strictEqual(result, "/out/audio/hello");
-});
-
 test("test createStudioData", async () => {
   const studio = createStudioData(
     {
