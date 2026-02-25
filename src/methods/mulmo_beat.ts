@@ -2,7 +2,15 @@ import { MulmoBeat } from "../types/index.js";
 
 import { findImagePlugin } from "../utils/image_plugins/index.js";
 
+/** Check if a beat has html_tailwind animation enabled (strict type check) */
+const isAnimatedHtmlTailwind = (beat: MulmoBeat): boolean => {
+  if (!beat.image || beat.image.type !== "html_tailwind") return false;
+  const animation = (beat.image as { animation?: unknown }).animation;
+  return animation === true || (typeof animation === "object" && animation !== null);
+};
+
 export const MulmoBeatMethods = {
+  isAnimatedHtmlTailwind,
   getHtmlPrompt(beat: MulmoBeat) {
     if (beat?.htmlPrompt?.data) {
       return beat.htmlPrompt.prompt + "\n\n[data]\n" + JSON.stringify(beat.htmlPrompt.data, null, 2);

@@ -74,16 +74,28 @@ export const FfmpegContextGenerateOutput = (context: FfmpegContext, output: stri
   });
 };
 
+/** Round up odd dimensions to even (required by libx264 yuv420p) */
+export const normalizeEvenDimensions = (width: number, height: number): { width: number; height: number } => {
+  return {
+    width: width % 2 === 0 ? width : width + 1,
+    height: height % 2 === 0 ? height : height + 1,
+  };
+};
+
 /**
  * Convert a sequence of PNG frames into a video file.
  * Expects files named frame_00000.png, frame_00001.png, etc. in framesDir.
  */
 export const framesToVideo = (framesDir: string, outputPath: string, fps: number, width: number, height: number): Promise<void> => {
+  const safe = normalizeEvenDimensions(width, height);
+  if (safe.width !== width || safe.height !== height) {
+    GraphAILogger.info(`framesToVideo: adjusted ${width}x${height} → ${safe.width}x${safe.height} (libx264 yuv420p requires even dimensions)`);
+  }
   return new Promise((resolve, reject) => {
     ffmpeg()
       .input(`${framesDir}/frame_%05d.png`)
       .inputOptions([`-framerate ${fps}`])
-      .outputOptions([`-c:v libx264`, `-pix_fmt yuv420p`, `-r ${fps}`, `-s ${width}x${height}`])
+      .outputOptions([`-c:v libx264`, `-pix_fmt yuv420p`, `-r ${fps}`, `-vf`, `scale=${safe.width}:${safe.height}`])
       .output(outputPath)
       .on("end", () => resolve())
       .on("error", (err: Error) => reject(err))

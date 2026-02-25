@@ -10,10 +10,12 @@ export const imageType = "html_tailwind";
 const getAnimationConfig = (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return null;
-  const animation = (beat.image as { animation?: true | { fps?: number } }).animation;
-  if (animation === undefined) return null;
+  const animation = (beat.image as { animation?: unknown }).animation;
   if (animation === true) return { fps: 30 };
-  return { fps: animation.fps ?? 30 };
+  if (typeof animation === "object" && animation !== null) {
+    return { fps: (animation as { fps?: number }).fps ?? 30 };
+  }
+  return null; // undefined, false, or any other value → no animation
 };
 
 const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {

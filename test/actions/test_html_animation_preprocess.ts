@@ -104,6 +104,34 @@ test("imagePreprocessAgent - animated html_tailwind + moviePrompt throws", async
   );
 });
 
+test("imagePreprocessAgent - animation: false treated as static", async () => {
+  const context = createMockContext();
+  context.studio.script.beats = [{ text: "Hello", duration: 3 }];
+  context.studio.beats = [{}];
+
+  const beat = createMockBeat({
+    text: "Hello",
+    duration: 3,
+    image: {
+      type: "html_tailwind",
+      html: "<div>Static</div>",
+      animation: false as unknown as true, // simulate unvalidated input
+    },
+  });
+
+  const result = await imagePreprocessAgent({
+    context,
+    beat,
+    index: 0,
+    imageRefs: {},
+  });
+
+  assert("movieFile" in result, "result should have movieFile field");
+  assert.strictEqual(result.movieFile, undefined, "movieFile should be undefined for animation: false");
+  assert("imageFromMovie" in result, "result should have imageFromMovie");
+  assert.strictEqual((result as { imageFromMovie: boolean }).imageFromMovie, false);
+});
+
 test("imagePreprocessAgent - animated html_tailwind with beat id uses id in path", async () => {
   const context = createMockContext();
   context.studio.script.beats = [{ text: "", duration: 2, id: "intro_animation" }];

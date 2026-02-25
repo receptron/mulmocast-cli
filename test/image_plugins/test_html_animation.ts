@@ -2,7 +2,9 @@ import test from "node:test";
 import assert from "node:assert";
 import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
 import { mulmoHtmlTailwindMediaSchema, htmlTailwindAnimationSchema } from "../../src/types/schema.js";
-import type { ImageProcessorParams } from "../../src/types/index.js";
+import { normalizeEvenDimensions } from "../../src/utils/ffmpeg_utils.js";
+import { MulmoBeatMethods } from "../../src/methods/index.js";
+import type { ImageProcessorParams, MulmoBeat } from "../../src/types/index.js";
 
 // === Schema tests ===
 
@@ -148,6 +150,92 @@ test("html_tailwind plugin - html dump works for animated beat", async () => {
 
   const html = await plugin.html(mockParams);
   assert.strictEqual(html, "<div id='title'>Hello</div>\n<script>function render(f){}</script>");
+});
+
+// === animation: false / invalid values should be treated as static ===
+
+test("htmlTailwindAnimationSchema - rejects false", () => {
+  const result = htmlTailwindAnimationSchema.safeParse(false);
+  assert(!result.success, "should reject false");
+});
+
+test("mulmoHtmlTailwindMediaSchema - animation: false is rejected by schema", () => {
+  const result = mulmoHtmlTailwindMediaSchema.safeParse({
+    type: "html_tailwind",
+    html: "<div>Hello</div>",
+    animation: false,
+  });
+  assert(!result.success, "should reject animation: false");
+});
+
+test("html_tailwind plugin - animation: false treated as static", () => {
+  const plugin = findImagePlugin("html_tailwind");
+  assert(plugin, "html_tailwind plugin should exist");
+
+  const mockParams: ImageProcessorParams = {
+    imagePath: "/test/path/0p.png",
+    beat: {
+      image: {
+        type: "html_tailwind",
+        html: "<div>Hello</div>",
+        animation: false as unknown as true, // simulate unvalidated input
+      },
+    },
+  };
+
+  const path = plugin.path(mockParams);
+  assert.strictEqual(path, "/test/path/0p.png", "should return png path for animation: false");
+});
+
+// === isAnimatedHtmlTailwind tests ===
+
+test("isAnimatedHtmlTailwind - true for animation: true", () => {
+  const beat: MulmoBeat = { text: "", image: { type: "html_tailwind", html: "<div></div>", animation: true } };
+  assert.strictEqual(MulmoBeatMethods.isAnimatedHtmlTailwind(beat), true);
+});
+
+test("isAnimatedHtmlTailwind - true for animation: { fps: 15 }", () => {
+  const beat: MulmoBeat = { text: "", image: { type: "html_tailwind", html: "<div></div>", animation: { fps: 15 } } };
+  assert.strictEqual(MulmoBeatMethods.isAnimatedHtmlTailwind(beat), true);
+});
+
+test("isAnimatedHtmlTailwind - false for undefined animation", () => {
+  const beat: MulmoBeat = { text: "", image: { type: "html_tailwind", html: "<div></div>" } };
+  assert.strictEqual(MulmoBeatMethods.isAnimatedHtmlTailwind(beat), false);
+});
+
+test("isAnimatedHtmlTailwind - false for animation: false (unvalidated)", () => {
+  const beat = { text: "", image: { type: "html_tailwind" as const, html: "<div></div>", animation: false as unknown as true } };
+  assert.strictEqual(MulmoBeatMethods.isAnimatedHtmlTailwind(beat), false);
+});
+
+test("isAnimatedHtmlTailwind - false for non-html_tailwind type", () => {
+  const beat: MulmoBeat = { text: "", image: { type: "markdown", markdown: "# Hello" } };
+  assert.strictEqual(MulmoBeatMethods.isAnimatedHtmlTailwind(beat), false);
+});
+
+test("isAnimatedHtmlTailwind - false for no image", () => {
+  const beat: MulmoBeat = { text: "Hello" };
+  assert.strictEqual(MulmoBeatMethods.isAnimatedHtmlTailwind(beat), false);
+});
+
+// === normalizeEvenDimensions tests ===
+
+test("normalizeEvenDimensions - even values unchanged", () => {
+  assert.deepStrictEqual(normalizeEvenDimensions(1280, 720), { width: 1280, height: 720 });
+  assert.deepStrictEqual(normalizeEvenDimensions(720, 1280), { width: 720, height: 1280 });
+});
+
+test("normalizeEvenDimensions - odd width rounded up", () => {
+  assert.deepStrictEqual(normalizeEvenDimensions(721, 720), { width: 722, height: 720 });
+});
+
+test("normalizeEvenDimensions - odd height rounded up", () => {
+  assert.deepStrictEqual(normalizeEvenDimensions(1280, 1), { width: 1280, height: 2 });
+});
+
+test("normalizeEvenDimensions - both odd rounded up", () => {
+  assert.deepStrictEqual(normalizeEvenDimensions(1281, 721), { width: 1282, height: 722 });
 });
 
 // === totalFrames calculation tests ===
