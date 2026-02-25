@@ -12,6 +12,7 @@ import type {
 } from "../types/type.js";
 import { mulmoStudioSchema, mulmoCaptionParamsSchema, mulmoPresentationStyleSchema } from "../types/schema.js";
 import { MulmoPresentationStyleMethods, MulmoScriptMethods, MulmoStudioMultiLingualMethod } from "../methods/index.js";
+import { loadMulmoConfig, mergeConfigWithScript } from "./mulmo_config.js";
 
 export const silentMp3 = "https://github.com/receptron/mulmocast-cli/raw/refs/heads/main/assets/audio/silent300.mp3";
 
@@ -151,10 +152,15 @@ export const initializeContextFromFiles = async (
 ) => {
   const { fileName, isHttpPath, fileOrUrl, mulmoFilePath, presentationStylePath, outputMultilingualFilePath } = files;
 
-  const mulmoScript = await fetchScript(isHttpPath, mulmoFilePath, fileOrUrl);
-  if (!mulmoScript) {
+  const rawScript = await fetchScript(isHttpPath, mulmoFilePath, fileOrUrl);
+  if (!rawScript) {
     return null;
   }
+
+  // Load and merge mulmo.config.json (defaults < script < override)
+  const config = loadMulmoConfig(files.baseDirPath);
+  const mulmoScript = config ? (mergeConfigWithScript(config, rawScript as Record<string, unknown>) as MulmoScript) : rawScript;
+
   // The index param is used when you want to process only a specific beat in an app, etc. This is to avoid parser errors.
   if (!isNull(index) && mulmoScript.beats[index]) {
     mulmoScript.beats = [mulmoScript.beats[index]];

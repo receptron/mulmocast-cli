@@ -1,0 +1,58 @@
+{
+  "speechParams": {
+    "provider": "elevenlabs"
+  },
+  "imageParams": {
+    "backgroundImage": {
+      "source": { "kind": "path", "path": "branding/banner.jpg" },
+      "size": "cover",
+      "opacity": 0.3
+    }
+  },
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "0F172A",
+        "bgCard": "1E293B",
+        "bgCardAlt": "334155",
+        "text": "FFFFFF",
+        "textMuted": "CBD5E1",
+        "textDim": "64748B",
+        "primary": "3B82F6",
+        "accent": "8B5CF6",
+        "success": "22C55E",
+        "warning": "F97316",
+        "danger": "EF4444",
+        "info": "14B8A6",
+        "highlight": "EC4899"
+      },
+      "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+    },
+    "branding": {
+      "logo": {
+        "source": { "kind": "path", "path": "branding/logo.svg" },
+        "position": "top-right",
+        "width": 160
+      },
+      "backgroundImage": {
+        "source": { "kind": "path", "path": "branding/banner.jpg" },
+        "size": "cover",
+        "opacity": 1,
+        "bgOpacity": 0.7
+      }
+    }
+  },
+  "override": {
+    "speechParams": {
+      "provider": "elevenlabs",
+      "model": "eleven_multilingual_v2",
+      "speakers": {
+        "Presenter": {
+          "provider": "elevenlabs",
+        "voiceId": "j210dv0vWm7fCknyQpbA",
+        "model": "eleven_multilingual_v2"
+        }
+      }
+    }
+  }
+}
