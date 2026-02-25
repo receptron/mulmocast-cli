@@ -3,6 +3,8 @@ import assert from "node:assert";
 
 import { getFileObject } from "../../src/cli/helpers.js";
 import { createStudioData } from "../../src/utils/context.js";
+import { MulmoStudioContextMethods } from "../../src/methods/mulmo_studio_context.js";
+import type { MulmoStudioContext } from "../../src/types/index.js";
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -25,7 +27,78 @@ test("test getFileObject", async () => {
     fileOrUrl: "hello.yaml",
     presentationStylePath: undefined,
     outputMultilingualFilePath: path.resolve(__dirname, "../../output/hello_lang.json"),
+    grouped: false,
   });
+});
+
+test("test getFileObject with grouped", async () => {
+  const ret = getFileObject({ file: "hello.yaml", grouped: true });
+  assert.deepStrictEqual(ret, {
+    baseDirPath: path.resolve(__dirname, "../../"),
+    mulmoFilePath: path.resolve(__dirname, "../../hello.yaml"),
+    mulmoFileDirPath: path.resolve(__dirname, "../../"),
+    outDirPath: path.resolve(__dirname, "../../output/hello"),
+    imageDirPath: path.resolve(__dirname, "../../output/hello/images"),
+    audioDirPath: path.resolve(__dirname, "../../output/hello/audio"),
+    outputStudioFilePath: path.resolve(__dirname, "../../output/hello/hello_studio.json"),
+    nodeModuleRootPath: undefined,
+    isHttpPath: false,
+    fileName: "hello",
+    fileOrUrl: "hello.yaml",
+    presentationStylePath: undefined,
+    outputMultilingualFilePath: path.resolve(__dirname, "../../output/hello/hello_lang.json"),
+    grouped: true,
+  });
+});
+
+test("test getFileObject with grouped and custom outdir", async () => {
+  const ret = getFileObject({ file: "scripts/test/test.json", outdir: "custom_out", grouped: true });
+  assert.strictEqual(ret.outDirPath, path.resolve(__dirname, "../../custom_out/test"));
+  assert.strictEqual(ret.imageDirPath, path.resolve(__dirname, "../../custom_out/test/images"));
+  assert.strictEqual(ret.audioDirPath, path.resolve(__dirname, "../../custom_out/test/audio"));
+  assert.strictEqual(ret.grouped, true);
+});
+
+test("test getFileObject without grouped defaults to false", async () => {
+  const ret = getFileObject({ file: "hello.yaml" });
+  assert.strictEqual(ret.grouped, false);
+  assert.strictEqual(ret.outDirPath, path.resolve(__dirname, "../../output"));
+});
+
+test("test getImageProjectDirPath with grouped", async () => {
+  const context = {
+    fileDirs: { imageDirPath: "/out/hello/images", audioDirPath: "/out/hello/audio", grouped: true },
+    studio: { filename: "hello" },
+  } as unknown as MulmoStudioContext;
+  const result = MulmoStudioContextMethods.getImageProjectDirPath(context);
+  assert.strictEqual(result, "/out/hello/images");
+});
+
+test("test getImageProjectDirPath without grouped", async () => {
+  const context = {
+    fileDirs: { imageDirPath: "/out/images", audioDirPath: "/out/audio", grouped: false },
+    studio: { filename: "hello" },
+  } as unknown as MulmoStudioContext;
+  const result = MulmoStudioContextMethods.getImageProjectDirPath(context);
+  assert.strictEqual(result, "/out/images/hello");
+});
+
+test("test getAudioProjectDirPath with grouped", async () => {
+  const context = {
+    fileDirs: { audioDirPath: "/out/hello/audio", grouped: true },
+    studio: { filename: "hello" },
+  } as unknown as MulmoStudioContext;
+  const result = MulmoStudioContextMethods.getAudioProjectDirPath(context);
+  assert.strictEqual(result, "/out/hello/audio");
+});
+
+test("test getAudioProjectDirPath without grouped", async () => {
+  const context = {
+    fileDirs: { audioDirPath: "/out/audio", grouped: false },
+    studio: { filename: "hello" },
+  } as unknown as MulmoStudioContext;
+  const result = MulmoStudioContextMethods.getAudioProjectDirPath(context);
+  assert.strictEqual(result, "/out/audio/hello");
 });
 
 test("test createStudioData", async () => {

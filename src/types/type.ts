@@ -194,6 +194,7 @@ export interface FileObject {
   outputMultilingualFilePath: string;
   presentationStylePath: string | undefined;
   fileName: string;
+  grouped: boolean;
 }
 
 export type InitOptions = {
@@ -205,6 +206,7 @@ export type InitOptions = {
   l?: string;
   c?: string;
   p?: string;
+  g?: boolean;
 };
 
 export type PublicAPIArgs = {

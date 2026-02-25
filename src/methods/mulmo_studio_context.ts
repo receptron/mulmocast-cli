@@ -58,7 +58,17 @@ export const MulmoStudioContextMethods = {
   },
   getImageProjectDirPath(context: MulmoStudioContext): string {
     const imageDirPath = MulmoStudioContextMethods.getImageDirPath(context);
+    if (context.fileDirs.grouped) {
+      return imageDirPath;
+    }
     return `${imageDirPath}/${context.studio.filename}`;
+  },
+  getAudioProjectDirPath(context: MulmoStudioContext): string {
+    const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
+    if (context.fileDirs.grouped) {
+      return audioDirPath;
+    }
+    return `${audioDirPath}/${context.studio.filename}`;
   },
   getOutDirPath(context: MulmoStudioContext): string {
     return context.fileDirs.outDirPath;

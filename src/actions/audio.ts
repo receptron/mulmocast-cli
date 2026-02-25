@@ -1,3 +1,4 @@
+import path from "path";
 import dotenv from "dotenv";
 
 import { GraphAI, TaskManager, GraphAILogger } from "graphai";
@@ -19,7 +20,7 @@ import {
 import { MulmoStudioContext, MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingualData, PublicAPIArgs, text2SpeechProviderSchema } from "../types/index.js";
 
 import { fileCacheAgentFilter } from "../utils/filters.js";
-import { getAudioArtifactFilePath, getAudioFilePath, getOutputStudioFilePath, resolveDirPath, defaultBGMPath, mkdir, writingMessage } from "../utils/file.js";
+import { getAudioArtifactFilePath, getOutputStudioFilePath, defaultBGMPath, mkdir, writingMessage } from "../utils/file.js";
 import { localizedText, settings2GraphAIConfig } from "../utils/utils.js";
 import { text2hash } from "../utils/utils_node.js";
 import { provider2TTSAgent } from "../types/provider2agent.js";
@@ -47,7 +48,7 @@ const getAudioPathOrUrl = (context: MulmoStudioContext, beat: MulmoBeat, maybeAu
 };
 
 export const getBeatAudioPathOrUrl = (text: string, context: MulmoStudioContext, beat: MulmoBeat, lang?: string) => {
-  const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
+  const audioProjectDirPath = MulmoStudioContextMethods.getAudioProjectDirPath(context);
   const { voiceId, provider, speechOptions, model } = MulmoStudioContextMethods.getAudioParam(context, beat, lang);
   const hash_string = [
     text,
@@ -62,7 +63,8 @@ export const getBeatAudioPathOrUrl = (text: string, context: MulmoStudioContext,
   ].join(":");
   GraphAILogger.log(`getBeatAudioPathOrUrl [${hash_string}]`);
   const audioFileName = `${context.studio.filename}_${text2hash(hash_string)}`;
-  const maybeAudioFile = getAudioFilePath(audioDirPath, context.studio.filename, audioFileName, lang);
+  const suffix = lang ? `_${lang}` : "";
+  const maybeAudioFile = path.resolve(audioProjectDirPath, `${audioFileName}${suffix}.mp3`);
   return getAudioPathOrUrl(context, beat, maybeAudioFile);
 };
 
@@ -273,13 +275,11 @@ const audioAgents = {
 export const generateBeatAudio = async (index: number, context: MulmoStudioContext, args?: PublicAPIArgs & { langs: string[] }) => {
   const { settings, callbacks, langs } = args ?? {};
   try {
-    const fileName = MulmoStudioContextMethods.getFileName(context);
-    const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
     const outDirPath = MulmoStudioContextMethods.getOutDirPath(context);
-    const audioSegmentDirPath = resolveDirPath(audioDirPath, fileName);
+    const audioProjectDirPath = MulmoStudioContextMethods.getAudioProjectDirPath(context);
 
     mkdir(outDirPath);
-    mkdir(audioSegmentDirPath);
+    mkdir(audioProjectDirPath);
 
     const config = settings2GraphAIConfig(settings);
     const taskManager = new TaskManager(getConcurrency(context));
@@ -313,15 +313,15 @@ export const audio = async (context: MulmoStudioContext, args?: PublicAPIArgs) =
   try {
     MulmoStudioContextMethods.setSessionState(context, "audio", true);
     const fileName = MulmoStudioContextMethods.getFileName(context);
-    const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
     const outDirPath = MulmoStudioContextMethods.getOutDirPath(context);
     const audioArtifactFilePath = getAudioArtifactFilePath(context);
-    const audioSegmentDirPath = resolveDirPath(audioDirPath, fileName);
-    const audioCombinedFilePath = getAudioFilePath(audioDirPath, fileName, fileName, context.lang);
+    const audioProjectDirPath = MulmoStudioContextMethods.getAudioProjectDirPath(context);
+    const suffix = context.lang ? `_${context.lang}` : "";
+    const audioCombinedFilePath = path.resolve(audioProjectDirPath, `${fileName}${suffix}.mp3`);
     const outputStudioFilePath = getOutputStudioFilePath(outDirPath, fileName);
 
     mkdir(outDirPath);
-    mkdir(audioSegmentDirPath);
+    mkdir(audioProjectDirPath);
 
     const config = settings2GraphAIConfig(settings, process.env);
     const taskManager = new TaskManager(getConcurrency(context));

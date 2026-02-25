@@ -51,10 +51,11 @@ export const getFileObject = (args: {
   presentationStyle?: string;
   file: string;
   nodeModuleRootPath?: string;
+  grouped?: boolean;
 }): FileObject => {
-  const { basedir, outdir, imagedir, audiodir, file, presentationStyle, nodeModuleRootPath } = args;
+  const { basedir, outdir, imagedir, audiodir, file, presentationStyle, nodeModuleRootPath, grouped = false } = args;
   const baseDirPath = getBaseDirPath(basedir);
-  const outDirPath = getFullPath(baseDirPath, outdir ?? outDirName);
+  const baseOutDirPath = getFullPath(baseDirPath, outdir ?? outDirName);
   const { fileOrUrl, fileName } = (() => {
     if (file === "__clipboard") {
       // We generate a new unique script file from clipboard text in the output directory
@@ -62,8 +63,8 @@ export const getFileObject = (args: {
       const clipboardText = clipboardy.readSync();
       const json = JSON.parse(clipboardText);
       const formattedText = JSON.stringify(json, null, 2);
-      const resolvedFilePath = resolveDirPath(outDirPath, `${generatedFileName}.json`);
-      mkdir(outDirPath);
+      const resolvedFilePath = resolveDirPath(baseOutDirPath, `${generatedFileName}.json`);
+      mkdir(baseOutDirPath);
       fs.writeFileSync(resolvedFilePath, formattedText, "utf8");
       return { fileOrUrl: resolvedFilePath, fileName: generatedFileName };
     }
@@ -71,6 +72,7 @@ export const getFileObject = (args: {
     const parsedFileName = path.parse(resolvedFileOrUrl).name;
     return { fileOrUrl: resolvedFileOrUrl, fileName: parsedFileName };
   })();
+  const outDirPath = grouped ? getFullPath(baseOutDirPath, fileName) : baseOutDirPath;
   const isHttpPath = isHttp(fileOrUrl);
   const mulmoFilePath = isHttpPath ? "" : getFullPath(baseDirPath, fileOrUrl);
   const mulmoFileDirPath = path.dirname(isHttpPath ? baseDirPath : mulmoFilePath);
@@ -93,6 +95,7 @@ export const getFileObject = (args: {
     presentationStylePath,
     fileName,
     nodeModuleRootPath,
+    grouped,
   };
 };
 
@@ -104,6 +107,7 @@ export const initializeContext = async (argv: CliArgs<InitOptions>, raiseError: 
     audiodir: argv.a,
     presentationStyle: argv.p,
     file: argv.file ?? "",
+    grouped: Boolean(argv.g),
   });
   setGraphAILogger(Boolean(argv.v), { files });
 
