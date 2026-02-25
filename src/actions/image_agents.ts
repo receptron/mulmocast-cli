@@ -1,7 +1,7 @@
 import { GraphAILogger } from "graphai";
 import { MulmoStudioContext, MulmoBeat, MulmoCanvasDimension, MulmoImageParams, MulmoMovieParams, Text2ImageAgentInfo } from "../types/index.js";
 import { MulmoPresentationStyleMethods, MulmoStudioContextMethods, MulmoBeatMethods, MulmoMediaSourceMethods } from "../methods/index.js";
-import { getBeatPngImagePath, getBeatMoviePaths, getAudioFilePath } from "../utils/file.js";
+import { getBeatPngImagePath, getBeatMoviePaths, getBeatAnimatedVideoPath, getAudioFilePath } from "../utils/file.js";
 import { imagePrompt, htmlImageSystemPrompt } from "../utils/prompt.js";
 import { renderHTMLToImage } from "../utils/html_render.js";
 import { beatId } from "../utils/utils.js";
@@ -138,6 +138,27 @@ export const imagePreprocessAgent = async (namedInputs: {
     const html = plugin.html ? await plugin.html({ beat, context, imagePath, ...htmlStyle(context, beat) }) : undefined;
 
     const isTypeMovie = beat.image.type === "movie";
+    const isAnimatedHtml = beat.image.type === "html_tailwind" && (beat.image as { animation?: unknown }).animation !== undefined;
+
+    // animation and moviePrompt cannot be used together
+    if (isAnimatedHtml && beat.moviePrompt) {
+      throw new Error("html_tailwind animation and moviePrompt cannot be used together on the same beat. Use either animation or moviePrompt, not both.");
+    }
+
+    if (isAnimatedHtml) {
+      const animatedVideoPath = getBeatAnimatedVideoPath(context, index);
+      // ImagePluginPreprocessAgentResponse
+      return {
+        ...returnValue,
+        imagePath, // for thumbnail extraction
+        movieFile: animatedVideoPath, // .mp4 path for the pipeline
+        imageFromMovie: true, // triggers extractImageFromMovie
+        referenceImageForMovie: pluginPath,
+        markdown,
+        html,
+      };
+    }
+
     // undefined prompt indicates that image generation is not needed
     // ImagePluginPreprocessAgentResponse
     return {
@@ -170,9 +191,14 @@ export const imagePluginAgent = async (namedInputs: { context: MulmoStudioContex
   const { imagePath } = getBeatPngImagePath(context, index);
 
   const plugin = MulmoBeatMethods.getPlugin(beat);
+
+  // For animated html_tailwind, use the .mp4 path so the plugin writes video there
+  const isAnimatedHtml = beat.image?.type === "html_tailwind" && (beat.image as { animation?: unknown }).animation !== undefined;
+  const effectiveImagePath = isAnimatedHtml ? getBeatAnimatedVideoPath(context, index) : imagePath;
+
   try {
     MulmoStudioContextMethods.setBeatSessionState(context, "image", index, beat.id, true);
-    const processorParams = { beat, context, imagePath, imageRefs, ...htmlStyle(context, beat) };
+    const processorParams = { beat, context, imagePath: effectiveImagePath, imageRefs, ...htmlStyle(context, beat) };
     await plugin.process(processorParams);
     MulmoStudioContextMethods.setBeatSessionState(context, "image", index, beat.id, false);
   } catch (error) {

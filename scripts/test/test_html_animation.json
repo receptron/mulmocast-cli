@@ -1,0 +1,104 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "HTML Animation Test",
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "voiceId": "shimmer",
+        "displayName": {
+          "en": "Presenter"
+        }
+      }
+    }
+  },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600'>",
+          "  <h1 id='title' class='text-6xl font-bold text-white'>Fade In Title</h1>",
+          "</div>",
+          "<script>",
+          "function render(frame, totalFrames, fps) {",
+          "  const title = document.getElementById('title');",
+          "  const opacity = interpolate(frame, [0, fps], [0, 1]);",
+          "  title.style.opacity = opacity;",
+          "  const scale = interpolateWithEasing(frame, [0, fps], [0.8, 1], Easing.easeOut);",
+          "  title.style.transform = 'scale(' + scale + ')';",
+          "}",
+          "</script>"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 3,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-gray-900 overflow-hidden'>",
+          "  <div id='box' class='w-40 h-40 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl'></div>",
+          "</div>",
+          "<script>",
+          "function render(frame, totalFrames, fps) {",
+          "  const box = document.getElementById('box');",
+          "  const rotation = interpolate(frame, [0, totalFrames], [0, 360]);",
+          "  const scale = 0.5 + 0.5 * Math.sin(frame / fps * Math.PI);",
+          "  box.style.transform = 'rotate(' + rotation + 'deg) scale(' + scale + ')';",
+          "}",
+          "</script>"
+        ],
+        "animation": { "fps": 30 }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full bg-white p-12'>",
+          "  <div id='bar1' class='h-8 bg-blue-500 rounded-r mb-4'></div>",
+          "  <div id='bar2' class='h-8 bg-green-500 rounded-r mb-4'></div>",
+          "  <div id='bar3' class='h-8 bg-red-500 rounded-r mb-4'></div>",
+          "  <p id='label' class='text-gray-600 text-lg mt-8'>Loading progress...</p>",
+          "</div>",
+          "<script>",
+          "function render(frame, totalFrames, fps) {",
+          "  const t = frame / totalFrames;",
+          "  document.getElementById('bar1').style.width = interpolate(frame, [0, totalFrames * 0.5], [0, 80]) + '%';",
+          "  document.getElementById('bar2').style.width = interpolate(frame, [fps * 0.3, totalFrames * 0.7], [0, 60]) + '%';",
+          "  document.getElementById('bar3').style.width = interpolate(frame, [fps * 0.6, totalFrames], [0, 90]) + '%';",
+          "  document.getElementById('label').textContent = 'Progress: ' + Math.round(t * 100) + '%';",
+          "}",
+          "</script>"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-slate-50'>",
+          "  <h2 class='text-3xl font-bold text-gray-800 mb-8'>Static Slide (No Animation)</h2>",
+          "  <p class='text-xl text-gray-500'>This beat uses html_tailwind without animation.</p>",
+          "</div>"
+        ]
+      }
+    }
+  ]
+}

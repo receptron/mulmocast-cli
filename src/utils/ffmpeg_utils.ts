@@ -74,6 +74,23 @@ export const FfmpegContextGenerateOutput = (context: FfmpegContext, output: stri
   });
 };
 
+/**
+ * Convert a sequence of PNG frames into a video file.
+ * Expects files named frame_00000.png, frame_00001.png, etc. in framesDir.
+ */
+export const framesToVideo = (framesDir: string, outputPath: string, fps: number, width: number, height: number): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    ffmpeg()
+      .input(`${framesDir}/frame_%05d.png`)
+      .inputOptions([`-framerate ${fps}`])
+      .outputOptions([`-c:v libx264`, `-pix_fmt yuv420p`, `-r ${fps}`, `-s ${width}x${height}`])
+      .output(outputPath)
+      .on("end", () => resolve())
+      .on("error", (err: Error) => reject(err))
+      .run();
+  });
+};
+
 export const ffmpegGetMediaDuration = (filePath: string) => {
   return new Promise<{ duration: number; hasAudio: boolean }>((resolve, reject) => {
     // Only check file existence for local paths, not URLs

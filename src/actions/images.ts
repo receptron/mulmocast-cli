@@ -211,7 +211,7 @@ export const beat_graph_data = {
         return await extractImageFromMovie(namedInputs.movieFile, namedInputs.imageFile);
       },
       inputs: {
-        onComplete: [":movieGenerator"], // to wait for movieGenerator to finish
+        onComplete: [":movieGenerator", ":imagePlugin"], // :imagePlugin for animated html_tailwind video generation
         imageFile: ":preprocessor.imagePath",
         movieFile: ":preprocessor.movieFile",
       },
@@ -239,7 +239,7 @@ export const beat_graph_data = {
         }
       },
       inputs: {
-        onComplete: [":movieGenerator", ":htmlImageGenerator", ":soundEffectGenerator"],
+        onComplete: [":movieGenerator", ":htmlImageGenerator", ":soundEffectGenerator", ":imagePlugin"], // :imagePlugin for animated html_tailwind video generation
         movieFile: ":preprocessor.movieFile",
         imageFile: ":preprocessor.imagePath",
         soundEffectFile: ":preprocessor.soundEffectFile",

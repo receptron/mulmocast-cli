@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Disable all CSS animations/transitions for deterministic frame-based rendering */
+    *, *::before, *::after {
+      animation-play-state: paused !important;
+      transition: none !important;
+    }
+    ${custom_style}
+  </style>
+</head>
+<body class="bg-white text-gray-800 h-full flex flex-col">
+  ${html_body}
+
+  <script>
+    // === MulmoCast Animation Helpers ===
+
+    /**
+     * Linear interpolation with clamping.
+     * Similar to Remotion's interpolate().
+     *
+     * @param {number} value - Current value (typically frame number)
+     * @param {[number, number]} inputRange - [start, end] of input
+     * @param {[number, number]} outputRange - [start, end] of output
+     * @returns {number} Interpolated and clamped value
+     */
+    function interpolate(value, inputRange, outputRange) {
+      const [inMin, inMax] = inputRange;
+      const [outMin, outMax] = outputRange;
+      const progress = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
+      return outMin + progress * (outMax - outMin);
+    }
+
+    /**
+     * Easing functions for non-linear interpolation.
+     */
+    const Easing = {
+      linear: (t) => t,
+      easeIn: (t) => t * t,
+      easeOut: (t) => 1 - (1 - t) * (1 - t),
+      easeInOut: (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2,
+    };
+
+    /**
+     * Interpolate with easing function.
+     *
+     * @param {number} value - Current value (typically frame number)
+     * @param {[number, number]} inputRange - [start, end] of input
+     * @param {[number, number]} outputRange - [start, end] of output
+     * @param {function} easing - Easing function from Easing object
+     * @returns {number} Interpolated value with easing applied
+     */
+    function interpolateWithEasing(value, inputRange, outputRange, easing) {
+      const [inMin, inMax] = inputRange;
+      const [outMin, outMax] = outputRange;
+      const progress = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
+      return outMin + easing(progress) * (outMax - outMin);
+    }
+
+    // === MulmoCast Frame State (updated by Puppeteer per frame) ===
+    window.__MULMO = {
+      frame: 0,
+      totalFrames: ${totalFrames},
+      fps: ${fps},
+    };
+
+    // Initial render (frame 0)
+    if (typeof render === 'function') {
+      const result = render(0, window.__MULMO.totalFrames, window.__MULMO.fps);
+      if (result && typeof result.then === 'function') {
+        result.catch(console.error);
+      }
+    }
+  </script>
+</body>
+</html>
