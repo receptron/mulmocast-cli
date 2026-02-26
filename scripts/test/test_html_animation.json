@@ -26,8 +26,9 @@
           "  <h1 id='title' class='text-5xl font-bold text-white mb-6' style='opacity:0'>MulmoCast Animation</h1>",
           "  <p id='subtitle' class='text-xl text-blue-300' style='opacity:0'>Frame-based HTML animation for deterministic video</p>",
           "  <div id='line' class='h-1 bg-gradient-to-r from-cyan-400 to-purple-500 mt-8 rounded' style='width:0'></div>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "function render(frame, totalFrames, fps) {",
           "  var title = document.getElementById('title');",
           "  title.style.opacity = interpolate(frame, [0, fps * 0.5], [0, 1]);",
@@ -36,8 +37,7 @@
           "  sub.style.opacity = interpolate(frame, [fps * 0.3, fps * 0.8], [0, 1]);",
           "  sub.style.transform = 'translateY(' + interpolateWithEasing(frame, [fps * 0.3, fps * 0.8], [20, 0], Easing.easeOut) + 'px)';",
           "  document.getElementById('line').style.width = interpolateWithEasing(frame, [fps * 0.5, fps * 1.5], [0, 400], Easing.easeInOut) + 'px';",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -304,16 +304,16 @@
         "html": [
           "<div class='h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600'>",
           "  <h1 id='title' class='text-6xl font-bold text-white'>Fade In Title</h1>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "function render(frame, totalFrames, fps) {",
           "  var title = document.getElementById('title');",
           "  var opacity = interpolate(frame, [0, fps], [0, 1]);",
           "  title.style.opacity = opacity;",
           "  var scale = interpolateWithEasing(frame, [0, fps], [0.8, 1], Easing.easeOut);",
           "  title.style.transform = 'scale(' + scale + ')';",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
