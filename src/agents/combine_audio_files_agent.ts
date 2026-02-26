@@ -10,6 +10,7 @@ import {
   ffmpegGetMediaDuration,
 } from "../utils/ffmpeg_utils.js";
 import { MulmoMediaSourceMethods } from "../methods/mulmo_media_source.js";
+import { MulmoBeatMethods } from "../methods/index.js";
 import { userAssert } from "../utils/utils.js";
 import { getAudioInputIdsError } from "../utils/error_cause.js";
 
@@ -21,6 +22,10 @@ const getMovieDuration = async (context: MulmoStudioContext, beat: MulmoBeat) =>
       const { duration, hasAudio } = await ffmpegGetMediaDuration(pathOrUrl);
       return { duration: duration / speed, hasAudio };
     }
+  }
+  // Animated html_tailwind beats with explicit duration act as movie-like for voice_over grouping
+  if (MulmoBeatMethods.isAnimatedHtmlTailwind(beat) && beat.duration) {
+    return { duration: beat.duration, hasAudio: false };
   }
   return { duration: 0, hasAudio: false };
 };
