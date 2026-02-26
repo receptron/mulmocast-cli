@@ -31,6 +31,9 @@
     function interpolate(value, inputRange, outputRange) {
       const [inMin, inMax] = inputRange;
       const [outMin, outMax] = outputRange;
+      if (inMax === inMin) {
+        return outMin;
+      }
       const progress = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
       return outMin + progress * (outMax - outMin);
     }
@@ -57,6 +60,9 @@
     function interpolateWithEasing(value, inputRange, outputRange, easing) {
       const [inMin, inMax] = inputRange;
       const [outMin, outMax] = outputRange;
+      if (inMax === inMin) {
+        return outMin;
+      }
       const progress = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
       return outMin + easing(progress) * (outMax - outMin);
     }
