@@ -7,6 +7,21 @@ import puppeteer from "puppeteer";
 
 const isCI = process.env.CI === "true";
 
+/** Scale the page content so it fits inside the viewport without overflow */
+const scaleContentToFit = async (page: puppeteer.Page, viewportWidth: number, viewportHeight: number): Promise<void> => {
+  await page.evaluate(
+    ({ targetWidth, targetHeight }) => {
+      const docElement = document.documentElement;
+      const scrollWidth = Math.max(docElement.scrollWidth, document.body.scrollWidth || 0);
+      const scrollHeight = Math.max(docElement.scrollHeight, document.body.scrollHeight || 0);
+      const scale = Math.min(targetWidth / (scrollWidth || targetWidth), targetHeight / (scrollHeight || targetHeight), 1);
+      docElement.style.overflow = "hidden";
+      (document.body as HTMLElement).style.zoom = String(scale);
+    },
+    { targetWidth: viewportWidth, targetHeight: viewportHeight },
+  );
+};
+
 /** Determine the appropriate waitUntil strategy based on HTML content */
 const resolveWaitUntil = (html: string): "networkidle0" | "load" | "domcontentloaded" => {
   const hasExternalImages = html.includes("<img") && /src=["']https?:\/\//.test(html);
@@ -91,17 +106,7 @@ export const renderHTMLToImage = async (
     }
 
     // Measure the size of the page and scale the page to the width and height
-    await page.evaluate(
-      ({ viewportWidth, viewportHeight }) => {
-        const docElement = document.documentElement;
-        const scrollWidth = Math.max(docElement.scrollWidth, document.body.scrollWidth || 0);
-        const scrollHeight = Math.max(docElement.scrollHeight, document.body.scrollHeight || 0);
-        const scale = Math.min(viewportWidth / (scrollWidth || viewportWidth), viewportHeight / (scrollHeight || viewportHeight), 1);
-        docElement.style.overflow = "hidden";
-        (document.body as HTMLElement).style.zoom = String(scale);
-      },
-      { viewportWidth: width, viewportHeight: height },
-    );
+    await scaleContentToFit(page, width, height);
 
     // Capture screenshot of the page (which contains the Markdown-rendered HTML)
     await page.screenshot({ path: outputPath as `${string}.png` | `${string}.jpeg` | `${string}.webp`, omitBackground });
@@ -140,31 +145,21 @@ export const renderHTMLToFrames = async (
     await page.addStyleTag({ content: "html{height:100%;margin:0;padding:0;overflow:hidden}" });
 
     // Scale content to fit viewport (same logic as renderHTMLToImage)
-    await page.evaluate(
-      ({ viewportWidth, viewportHeight }) => {
-        const docElement = document.documentElement;
-        const scrollWidth = Math.max(docElement.scrollWidth, document.body.scrollWidth || 0);
-        const scrollHeight = Math.max(docElement.scrollHeight, document.body.scrollHeight || 0);
-        const scale = Math.min(viewportWidth / (scrollWidth || viewportWidth), viewportHeight / (scrollHeight || viewportHeight), 1);
-        docElement.style.overflow = "hidden";
-        (document.body as HTMLElement).style.zoom = String(scale);
-      },
-      { viewportWidth: width, viewportHeight: height },
-    );
+    await scaleContentToFit(page, width, height);
 
     const framePaths: string[] = [];
 
     for (let frame = 0; frame < totalFrames; frame++) {
       // Update frame state and call render() — await in case it returns a Promise
       await page.evaluate(
-        async ({ f, total, fpsVal }) => {
-          const w = window as unknown as { __MULMO: { frame: number }; render?: (f: number, t: number, fps: number) => unknown };
-          w.__MULMO.frame = f;
-          if (typeof w.render === "function") {
-            await w.render(f, total, fpsVal);
+        async ({ frameIndex, totalFrameCount, framesPerSecond }) => {
+          const mulmoWindow = window as unknown as { __MULMO: { frame: number }; render?: (f: number, t: number, fps: number) => unknown };
+          mulmoWindow.__MULMO.frame = frameIndex;
+          if (typeof mulmoWindow.render === "function") {
+            await mulmoWindow.render(frameIndex, totalFrameCount, framesPerSecond);
           }
         },
-        { f: frame, total: totalFrames, fpsVal: fps },
+        { frameIndex: frame, totalFrameCount: totalFrames, framesPerSecond: fps },
       );
 
       const framePath = nodePath.join(outputDir, `frame_${String(frame).padStart(5, "0")}.png`);
