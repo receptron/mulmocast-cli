@@ -286,7 +286,7 @@ For beats showing statistics or research findings, add `"reference": "Source: ..
 Generate the movie directly — `yarn movie` automatically generates images and audio as well, so separate `yarn images` / `yarn audio` steps are unnecessary.
 
 ```bash
-yarn movie <filename>
+yarn movie --grouped <filename>
 ```
 
 ```text
