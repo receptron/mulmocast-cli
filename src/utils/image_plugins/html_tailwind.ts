@@ -8,19 +8,26 @@ import { parrotingImagePath } from "./utils.js";
 
 export const imageType = "html_tailwind";
 
+const DEFAULT_ANIMATION_FPS = 30;
+
+/** Join html field into a single string (handles both string and string[]) */
+const joinHtml = (html: string | string[]): string => {
+  return Array.isArray(html) ? html.join("\n") : html;
+};
+
 const buildUserScript = (script: string | string[] | undefined): string => {
   if (!script) return "";
   const code = Array.isArray(script) ? script.join("\n") : script;
   return `<script>\n${code}\n</script>`;
-};
+}
 
 const getAnimationConfig = (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return null;
   const animation = (beat.image as { animation?: unknown }).animation;
   if (!MulmoBeatMethods.isAnimationEnabled(animation)) return null;
-  if (animation === true) return { fps: 30 };
-  return { fps: (animation as { fps?: number }).fps ?? 30 };
+  if (MulmoBeatMethods.isAnimationObject(animation)) return { fps: animation.fps ?? DEFAULT_ANIMATION_FPS };
+  return { fps: DEFAULT_ANIMATION_FPS };
 };
 
 const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
@@ -41,7 +48,7 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
     throw new Error(`html_tailwind animation: totalFrames is ${totalFrames} (duration=${duration}, fps=${fps}). Increase duration or fps.`);
   }
 
-  const html = Array.isArray(beat.image.html) ? beat.image.html.join("\n") : beat.image.html;
+  const html = joinHtml(beat.image.html);
   const template = getHTMLFile("tailwind_animated");
   const script = "script" in beat.image ? (beat.image as { script?: string | string[] }).script : undefined;
   const htmlData = interpolate(template, {
@@ -73,7 +80,7 @@ const processHtmlTailwindStatic = async (params: ImageProcessorParams) => {
   const { beat, imagePath, canvasSize } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
-  const html = Array.isArray(beat.image.html) ? beat.image.html.join("\n") : beat.image.html;
+  const html = joinHtml(beat.image.html);
   const template = getHTMLFile("tailwind");
   const script = "script" in beat.image ? (beat.image as { script?: string | string[] }).script : undefined;
   const htmlData = interpolate(template, {
@@ -95,7 +102,7 @@ const processHtmlTailwind = async (params: ImageProcessorParams) => {
 const dumpHtml = async (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return;
-  return Array.isArray(beat.image.html) ? beat.image.html.join("\n") : beat.image.html;
+  return joinHtml(beat.image.html);
 };
 
 export const process = processHtmlTailwind;

@@ -94,8 +94,8 @@ export const framesToVideo = (framesDir: string, outputPath: string, fps: number
   return new Promise((resolve, reject) => {
     ffmpeg()
       .input(`${framesDir}/frame_%05d.png`)
-      .inputOptions([`-framerate ${fps}`])
-      .outputOptions([`-c:v libx264`, `-pix_fmt yuv420p`, `-r ${fps}`, `-vf`, `scale=${safe.width}:${safe.height}`])
+      .inputOptions(["-framerate", String(fps)])
+      .outputOptions(["-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", String(fps), "-vf", `scale=${safe.width}:${safe.height}`])
       .output(outputPath)
       .on("end", () => resolve())
       .on("error", (err: Error) => reject(err))

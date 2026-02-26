@@ -1,5 +1,5 @@
 ---
-generated_at: 2026-02-25T19:59:59.492Z
+generated_at: 2026-02-26T20:30:45.779Z
 ---
 
 # images
@@ -94,12 +94,14 @@ flowchart TD
   n_preprocessor -- movieAgentInfo.movieParams.vertexai_location --> n_movieGenerator
   n_imageFromMovie(imageFromMovie<br/>agent)
   n_movieGenerator --> n_imageFromMovie
+  n_imagePlugin --> n_imageFromMovie
   n_preprocessor -- imagePath --> n_imageFromMovie
   n_preprocessor -- movieFile --> n_imageFromMovie
   n_audioChecker(audioChecker<br/>agent)
   n_movieGenerator --> n_audioChecker
   n_htmlImageGenerator --> n_audioChecker
   n_soundEffectGenerator --> n_audioChecker
+  n_imagePlugin --> n_audioChecker
   n_preprocessor -- movieFile --> n_audioChecker
   n_preprocessor -- imagePath --> n_audioChecker
   n_preprocessor -- soundEffectFile --> n_audioChecker
@@ -254,12 +256,14 @@ flowchart TD
     n_map_preprocessor -- movieAgentInfo.movieParams.vertexai_location --> n_map_movieGenerator
     n_map_imageFromMovie(imageFromMovie<br/>agent)
     n_map_movieGenerator --> n_map_imageFromMovie
+    n_map_imagePlugin --> n_map_imageFromMovie
     n_map_preprocessor -- imagePath --> n_map_imageFromMovie
     n_map_preprocessor -- movieFile --> n_map_imageFromMovie
     n_map_audioChecker(audioChecker<br/>agent)
     n_map_movieGenerator --> n_map_audioChecker
     n_map_htmlImageGenerator --> n_map_audioChecker
     n_map_soundEffectGenerator --> n_map_audioChecker
+    n_map_imagePlugin --> n_map_audioChecker
     n_map_preprocessor -- movieFile --> n_map_audioChecker
     n_map_preprocessor -- imagePath --> n_map_audioChecker
     n_map_preprocessor -- soundEffectFile --> n_map_audioChecker
