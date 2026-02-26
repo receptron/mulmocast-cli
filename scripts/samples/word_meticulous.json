@@ -60,11 +60,7 @@
         "type": "textSlide",
         "slide": {
           "title": "Meticulous",
-          "bullets": [
-            "She is meticulous about her work.",
-            "He keeps meticulous records.",
-            "The chef is meticulous in presentation."
-          ]
+          "bullets": ["She is meticulous about her work.", "He keeps meticulous records.", "The chef is meticulous in presentation."]
         }
       }
     },
@@ -74,10 +70,7 @@
         "type": "textSlide",
         "slide": {
           "title": "Meticulous",
-          "bullets": [
-            "She is meticulous about her work.",
-            "彼女は仕事に細心の注意を払う。"
-          ]
+          "bullets": ["She is meticulous about her work.", "彼女は仕事に細心の注意を払う。"]
         }
       }
     },
@@ -87,10 +80,7 @@
         "type": "textSlide",
         "slide": {
           "title": "Meticulous",
-          "bullets": [
-            "He keeps meticulous records.",
-            "彼は几帳面に記録をつける。"
-          ]
+          "bullets": ["He keeps meticulous records.", "彼は几帳面に記録をつける。"]
         }
       }
     },
@@ -100,10 +90,7 @@
         "type": "textSlide",
         "slide": {
           "title": "Meticulous",
-          "bullets": [
-            "The chef is meticulous in presentation.",
-            "そのシェフは盛り付けに非常にこだわる。"
-          ]
+          "bullets": ["The chef is meticulous in presentation.", "そのシェフは盛り付けに非常にこだわる。"]
         }
       }
     }
