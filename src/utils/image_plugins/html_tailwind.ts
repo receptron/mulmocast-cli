@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import { ImageProcessorParams } from "../../types/index.js";
+import { MulmoBeatMethods } from "../../methods/mulmo_beat.js";
 import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate, renderHTMLToFrames } from "../html_render.js";
 import { framesToVideo } from "../ffmpeg_utils.js";
@@ -11,11 +12,9 @@ const getAnimationConfig = (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return null;
   const animation = (beat.image as { animation?: unknown }).animation;
+  if (!MulmoBeatMethods.isAnimationEnabled(animation)) return null;
   if (animation === true) return { fps: 30 };
-  if (typeof animation === "object" && animation !== null && !Array.isArray(animation)) {
-    return { fps: (animation as { fps?: number }).fps ?? 30 };
-  }
-  return null; // undefined, false, or any other value → no animation
+  return { fps: (animation as { fps?: number }).fps ?? 30 };
 };
 
 const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
