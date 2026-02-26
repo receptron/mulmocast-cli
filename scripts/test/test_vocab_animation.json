@@ -4,7 +4,10 @@
   },
   "lang": "en",
   "title": "Vocabulary: serendipity",
-  "canvasSize": { "width": 720, "height": 1280 },
+  "canvasSize": {
+    "width": 720,
+    "height": 1280
+  },
   "speechParams": {
     "speakers": {
       "Presenter": {
@@ -53,10 +56,9 @@
       }
     },
     {
-      "id": "example_1",
+      "id": "examples",
       "speaker": "Presenter",
       "text": "The discovery of penicillin was a moment of serendipity.",
-      "duration": 5,
       "image": {
         "type": "html_tailwind",
         "html": [
@@ -65,60 +67,7 @@
           "  <div id='s0' class='mb-6 p-5 bg-slate-800 rounded-xl border-l-4 border-cyan-400' style='opacity:0; transform: translateX(-30px)'>",
           "    <p class='text-3xl text-white leading-relaxed'>The discovery of penicillin was a moment of <span class='text-cyan-400 font-semibold'>serendipity</span>.</p>",
           "  </div>",
-          "</div>",
-          "<script>",
-          "function render(frame, totalFrames, fps) {",
-          "  var el = document.getElementById('s0');",
-          "  el.style.opacity = interpolateWithEasing(frame, [0, 15], [0, 1], Easing.easeOut);",
-          "  el.style.transform = 'translateX(' + interpolateWithEasing(frame, [0, 15], [-30, 0], Easing.easeOut) + 'px)';",
-          "}",
-          "</script>"
-        ],
-        "animation": true
-      }
-    },
-    {
-      "id": "example_2",
-      "speaker": "Presenter",
-      "text": "She found the perfect dress by pure serendipity.",
-      "duration": 4,
-      "image": {
-        "type": "html_tailwind",
-        "html": [
-          "<div class='h-full flex flex-col justify-start pt-12 bg-slate-900 px-8'>",
-          "  <h2 class='text-3xl font-bold text-indigo-300 mb-8'>Example Sentences</h2>",
-          "  <div class='mb-6 p-5 bg-slate-800 rounded-xl border-l-4 border-cyan-400'>",
-          "    <p class='text-3xl text-white leading-relaxed'>The discovery of penicillin was a moment of <span class='text-cyan-400 font-semibold'>serendipity</span>.</p>",
-          "  </div>",
           "  <div id='s1' class='mb-6 p-5 bg-slate-800 rounded-xl border-l-4 border-indigo-400' style='opacity:0; transform: translateX(-30px)'>",
-          "    <p class='text-3xl text-white leading-relaxed'>She found the perfect dress by pure <span class='text-indigo-400 font-semibold'>serendipity</span>.</p>",
-          "  </div>",
-          "</div>",
-          "<script>",
-          "function render(frame, totalFrames, fps) {",
-          "  var el = document.getElementById('s1');",
-          "  el.style.opacity = interpolateWithEasing(frame, [0, 15], [0, 1], Easing.easeOut);",
-          "  el.style.transform = 'translateX(' + interpolateWithEasing(frame, [0, 15], [-30, 0], Easing.easeOut) + 'px)';",
-          "}",
-          "</script>"
-        ],
-        "animation": true
-      }
-    },
-    {
-      "id": "example_3",
-      "speaker": "Presenter",
-      "text": "Serendipity led him to his future business partner at a coffee shop.",
-      "duration": 6,
-      "image": {
-        "type": "html_tailwind",
-        "html": [
-          "<div class='h-full flex flex-col justify-start pt-12 bg-slate-900 px-8'>",
-          "  <h2 class='text-3xl font-bold text-indigo-300 mb-8'>Example Sentences</h2>",
-          "  <div class='mb-6 p-5 bg-slate-800 rounded-xl border-l-4 border-cyan-400'>",
-          "    <p class='text-3xl text-white leading-relaxed'>The discovery of penicillin was a moment of <span class='text-cyan-400 font-semibold'>serendipity</span>.</p>",
-          "  </div>",
-          "  <div class='mb-6 p-5 bg-slate-800 rounded-xl border-l-4 border-indigo-400'>",
           "    <p class='text-3xl text-white leading-relaxed'>She found the perfect dress by pure <span class='text-indigo-400 font-semibold'>serendipity</span>.</p>",
           "  </div>",
           "  <div id='s2' class='mb-6 p-5 bg-slate-800 rounded-xl border-l-4 border-purple-400' style='opacity:0; transform: translateX(-30px)'>",
@@ -127,13 +76,36 @@
           "</div>",
           "<script>",
           "function render(frame, totalFrames, fps) {",
-          "  var el = document.getElementById('s2');",
-          "  el.style.opacity = interpolateWithEasing(frame, [0, 15], [0, 1], Easing.easeOut);",
-          "  el.style.transform = 'translateX(' + interpolateWithEasing(frame, [0, 15], [-30, 0], Easing.easeOut) + 'px)';",
+          "  var showAt = [30, 159, 264];",
+          "  for (var i = 0; i < 3; i++) {",
+          "    var el = document.getElementById('s' + i);",
+          "    var start = showAt[i];",
+          "    el.style.opacity = interpolateWithEasing(frame, [start, start + 15], [0, 1], Easing.easeOut);",
+          "    el.style.transform = 'translateX(' + interpolateWithEasing(frame, [start, start + 15], [-30, 0], Easing.easeOut) + 'px)';",
+          "  }",
           "}",
           "</script>"
         ],
         "animation": true
+      },
+      "duration": 13.1
+    },
+    {
+      "id": "example_vo2",
+      "speaker": "Presenter",
+      "text": "She found the perfect dress by pure serendipity.",
+      "image": {
+        "type": "voice_over",
+        "startAt": 4.3
+      }
+    },
+    {
+      "id": "example_vo3",
+      "speaker": "Presenter",
+      "text": "Serendipity led him to his future business partner at a coffee shop.",
+      "image": {
+        "type": "voice_over",
+        "startAt": 7.8
       }
     },
     {
