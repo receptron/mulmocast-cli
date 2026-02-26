@@ -240,6 +240,7 @@ export const mulmoHtmlTailwindMediaSchema = z
   .object({
     type: z.literal("html_tailwind"),
     html: stringOrStringArray,
+    script: stringOrStringArray.optional().describe("JavaScript code for the beat. Injected as a <script> tag after html. Use for render() function etc."),
     animation: htmlTailwindAnimationSchema
       .optional()
       .describe("Enable frame-based animation (Remotion-style). true for defaults (30fps), or { fps: N } for custom frame rate."),

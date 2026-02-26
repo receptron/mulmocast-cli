@@ -15,6 +15,12 @@ const joinHtml = (html: string | string[]): string => {
   return Array.isArray(html) ? html.join("\n") : html;
 };
 
+const buildUserScript = (script: string | string[] | undefined): string => {
+  if (!script) return "";
+  const code = Array.isArray(script) ? script.join("\n") : script;
+  return `<script>\n${code}\n</script>`;
+}
+
 const getAnimationConfig = (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return null;
@@ -44,8 +50,10 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
 
   const html = joinHtml(beat.image.html);
   const template = getHTMLFile("tailwind_animated");
+  const script = "script" in beat.image ? (beat.image as { script?: string | string[] }).script : undefined;
   const htmlData = interpolate(template, {
     html_body: html,
+    user_script: buildUserScript(script),
     totalFrames: String(totalFrames),
     fps: String(fps),
     custom_style: "",
@@ -74,8 +82,10 @@ const processHtmlTailwindStatic = async (params: ImageProcessorParams) => {
 
   const html = joinHtml(beat.image.html);
   const template = getHTMLFile("tailwind");
+  const script = "script" in beat.image ? (beat.image as { script?: string | string[] }).script : undefined;
   const htmlData = interpolate(template, {
     html_body: html,
+    user_script: buildUserScript(script),
   });
   await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;
