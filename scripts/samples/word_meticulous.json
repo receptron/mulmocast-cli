@@ -1,0 +1,111 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "title": "Word: Meticulous",
+  "canvasSize": {
+    "width": 1024,
+    "height": 1536
+  },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "voiceId": "shimmer",
+        "displayName": {
+          "en": "Presenter",
+          "ja": "語り手"
+        }
+      }
+    }
+  },
+  "audioParams": {
+    "bgmVolume": 0.0
+  },
+  "textSlideParams": {
+    "cssStyles": [
+      "body { padding: 40px; padding-top: 60px; font-family: Arial, sans-serif;color:#fff; font-size: 36px }",
+      "h1 { font-size: 100px; text-align: center; margin-top:300px }",
+      "ul { margin-left: 36px; list-style-type: none } ",
+      "pre { background: #eeeecc; font-size: 24px; padding:10px }",
+      "p { margin-left: 36px }",
+      "table { font-size: 36px; margin: auto; border: 1px solid gray; border-collapse: collapse }",
+      "th { border-bottom: 1px solid gray }",
+      "td, th { padding: 8px }",
+      "tr:nth-child(even) { background-color: #eee }"
+    ]
+  },
+  "lang": "en",
+  "beats": [
+    {
+      "text": "Meticulous",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": ""
+        }
+      }
+    },
+    {
+      "text": "Meticulous",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Meticulous"
+        }
+      }
+    },
+    {
+      "text": "She is meticulous about her work.\nHe keeps meticulous records.\nThe chef is meticulous in presentation.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Meticulous",
+          "bullets": [
+            "She is meticulous about her work.",
+            "He keeps meticulous records.",
+            "The chef is meticulous in presentation."
+          ]
+        }
+      }
+    },
+    {
+      "text": "She is meticulous about her work.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Meticulous",
+          "bullets": [
+            "She is meticulous about her work.",
+            "彼女は仕事に細心の注意を払う。"
+          ]
+        }
+      }
+    },
+    {
+      "text": "He keeps meticulous records.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Meticulous",
+          "bullets": [
+            "He keeps meticulous records.",
+            "彼は几帳面に記録をつける。"
+          ]
+        }
+      }
+    },
+    {
+      "text": "The chef is meticulous in presentation.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Meticulous",
+          "bullets": [
+            "The chef is meticulous in presentation.",
+            "そのシェフは盛り付けに非常にこだわる。"
+          ]
+        }
+      }
+    }
+  ]
+}
