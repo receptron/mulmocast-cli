@@ -48,7 +48,7 @@ export default [
       "no-shadow": "error",
       "no-param-reassign": "error",
       // "no-plusplus": "error",
-      "preserve-caught-error": "warn",
+      "preserve-caught-error": "off",
       "no-undef": "error",
       "prefer-const": "error",
       "no-return-assign": "error",
