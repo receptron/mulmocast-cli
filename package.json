@@ -24,7 +24,7 @@
     }
   },
   "resolutions": {
-    "minimatch": "^10.2.3"
+    "minimatch": "^10.2.4"
   },
   "bin": {
     "mulmo": "lib/cli/bin.js",
