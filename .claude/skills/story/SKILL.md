@@ -62,7 +62,7 @@ If using Playwright, collect image URLs with `browser_evaluate`:
 **Subject**: [one line]
 **Target audience**: [who]
 **Tone**: [professional / conversational / energetic / serious]
-**Orientation**: [landscape (1280×720) / portrait (720×1280)]
+**Orientation**: [landscape (1280×720) / portrait (1080×1920)]
 **Key insights** (3-5):
 1. ...
 
@@ -71,7 +71,7 @@ If using Playwright, collect image URLs with `browser_evaluate`:
 - [description]: [local path]
 ```
 
-Ask the user about orientation. Default to **landscape** (1280×720) for presentations and standard videos. Use **portrait** (720×1280) for short-form content (TikTok, Reels, Shorts, Stories).
+Ask the user about orientation. Default to **landscape** (1280×720) for presentations and standard videos. Use **portrait** (1080×1920) for short-form content (TikTok, Reels, Shorts, Stories).
 
 ### Theme-to-Content Matching
 
@@ -99,6 +99,8 @@ Ask the user about orientation. Default to **landscape** (1280×720) for present
 | Long (report, multi-chapter) | 15-25 beats | HOOK → (CHAPTER → BEATS) × N → CLOSE |
 
 When user asks for condensed/few slides, aim for 3-5 dense beats.
+
+**YouTube Shorts constraint**: When portrait orientation is selected for Shorts, limit to **3-5 beats** with short narrations (1-2 sentences each) to keep total duration **≤ 60 seconds**. Each beat typically produces ~8-12 seconds of audio.
 
 ### Present Beat Outline for approval
 
@@ -242,7 +244,7 @@ Select the BGM that best matches the tone from Phase 1's Topic Brief, and add it
 {
   "$mulmocast": { "version": "1.1" },
   "lang": "en",
-  "canvasSize": { "width": 1280, "height": 720 },  // portrait: { "width": 720, "height": 1280 }
+  "canvasSize": { "width": 1280, "height": 720 },  // portrait: { "width": 1080, "height": 1920 }
   "title": "Title",
   "description": "Brief description",
   "references": [{ "url": "...", "title": "...", "type": "article" }],
@@ -286,7 +288,7 @@ For beats showing statistics or research findings, add `"reference": "Source: ..
 Generate the movie directly — `yarn movie` automatically generates images and audio as well, so separate `yarn images` / `yarn audio` steps are unnecessary.
 
 ```bash
-yarn movie <filename>
+yarn movie --grouped <filename>
 ```
 
 ```text
