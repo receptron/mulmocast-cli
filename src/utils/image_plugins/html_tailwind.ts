@@ -12,7 +12,7 @@ const getAnimationConfig = (params: ImageProcessorParams) => {
   if (!beat.image || beat.image.type !== imageType) return null;
   const animation = (beat.image as { animation?: unknown }).animation;
   if (animation === true) return { fps: 30 };
-  if (typeof animation === "object" && animation !== null) {
+  if (typeof animation === "object" && animation !== null && !Array.isArray(animation)) {
     return { fps: (animation as { fps?: number }).fps ?? 30 };
   }
   return null; // undefined, false, or any other value → no animation

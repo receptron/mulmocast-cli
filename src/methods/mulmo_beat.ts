@@ -6,7 +6,7 @@ import { findImagePlugin } from "../utils/image_plugins/index.js";
 const isAnimatedHtmlTailwind = (beat: MulmoBeat): boolean => {
   if (!beat.image || beat.image.type !== "html_tailwind") return false;
   const animation = (beat.image as { animation?: unknown }).animation;
-  return animation === true || (typeof animation === "object" && animation !== null);
+  return animation === true || (typeof animation === "object" && animation !== null && !Array.isArray(animation));
 };
 
 export const MulmoBeatMethods = {
