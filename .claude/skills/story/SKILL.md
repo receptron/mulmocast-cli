@@ -62,6 +62,7 @@ If using Playwright, collect image URLs with `browser_evaluate`:
 **Subject**: [one line]
 **Target audience**: [who]
 **Tone**: [professional / conversational / energetic / serious]
+**Orientation**: [landscape (1280×720) / portrait (1080×1920)]
 **Key insights** (3-5):
 1. ...
 
@@ -69,6 +70,8 @@ If using Playwright, collect image URLs with `browser_evaluate`:
 **Collected images** (N found):
 - [description]: [local path]
 ```
+
+Ask the user about orientation. Default to **landscape** (1280×720) for presentations and standard videos. Use **portrait** (1080×1920) for short-form content (TikTok, Reels, Shorts, Stories).
 
 ### Theme-to-Content Matching
 
@@ -96,6 +99,8 @@ If using Playwright, collect image URLs with `browser_evaluate`:
 | Long (report, multi-chapter) | 15-25 beats | HOOK → (CHAPTER → BEATS) × N → CLOSE |
 
 When user asks for condensed/few slides, aim for 3-5 dense beats.
+
+**YouTube Shorts constraint**: When portrait orientation is selected for Shorts, limit to **3-5 beats** with short narrations (1-2 sentences each) to keep total duration **≤ 60 seconds**. Each beat typically produces ~8-12 seconds of audio.
 
 ### Present Beat Outline for approval
 
@@ -211,17 +216,43 @@ For image-only beats without slide layout, use `imagePrompt` as a beat-level str
 
 ## Phase 5: Assembly & Review
 
+### Select BGM
+
+Choose background music from the [mulmocast-media BGM catalog](https://github.com/receptron/mulmocast-media/tree/main/bgms) that matches the story mood:
+
+| BGM | Title | Mood | Best for |
+|-----|-------|------|----------|
+| `story001.mp3` | Whispered Melody | smooth, piano | Calm narratives, reflective stories |
+| `story002.mp3` | Rise and Shine | techno, inspiring, piano | Motivational, startup, tech innovation |
+| `story003.mp3` | Chasing the Sunset | piano, inspiring | Uplifting stories, journeys, aspirations |
+| `story004.mp3` | Whispering Keys | classical, ambient | Academic, research, thoughtful content |
+| `story005.mp3` | Whisper of Ivory | piano solo, classical | Elegant, formal, documentary |
+| `theme001.mp3` | Rise of the Flame | classical, emotional | Epic achievements, milestones, announcements |
+| `vibe001.mp3` | Let It Vibe! | rap, dance | Pop culture, entertainment, energetic |
+| `olympic001.mp3` | Olympic-style Theme | epic orchestral fanfare | Grand openings, celebrations, competitions |
+| `morning001.mp3` | Morning Dance | morning, piano solo | Lifestyle, daily routines, light topics |
+
+**URL pattern**: `https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/{name}`
+
+Select the BGM that best matches the tone from Phase 1's Topic Brief, and add it to `audioParams`.
+
 ### Combine narrations + visuals into MulmoScript JSON
+
+> **Note**: The template below shows commonly used beat fields. If you need a field not listed here, run `npx mulmo tool schema` to verify it exists in the schema before adding it. The beat schema is strict — unrecognized fields will cause validation errors.
 
 ```json
 {
   "$mulmocast": { "version": "1.1" },
   "lang": "en",
-  "canvasSize": { "width": 1280, "height": 720 },
+  "canvasSize": { "width": 1280, "height": 720 },  // portrait: { "width": 1080, "height": 1920 }
   "title": "Title",
   "description": "Brief description",
   "references": [{ "url": "...", "title": "...", "type": "article" }],
   "speechParams": { "speakers": { "Presenter": { "voiceId": "shimmer" } } },
+  "audioParams": {
+    "bgm": { "kind": "url", "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/story001.mp3" },
+    "bgmVolume": 0.15
+  },
   "slideParams": { "theme": { } },
   "imageParams": { "provider": "google", "images": { } },
   "beats": [
@@ -257,7 +288,7 @@ For beats showing statistics or research findings, add `"reference": "Source: ..
 Generate the movie directly — `yarn movie` automatically generates images and audio as well, so separate `yarn images` / `yarn audio` steps are unnecessary.
 
 ```bash
-yarn movie <filename>
+yarn movie --grouped <filename>
 ```
 
 ```text

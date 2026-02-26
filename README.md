@@ -59,7 +59,7 @@ Here is the "Hello World" in MulmoScript.
 ```JSON
 {
   "$mulmocast": {
-    "version": "1.0"
+    "version": "1.1"
   },
   "beats": [
     { "text": "Hello World" }
@@ -206,6 +206,53 @@ MulmoScript configuration (same as OpenAI):
 **Important**: Azure deployment names must match model names exactly (e.g., deployment name `gpt-image-1.5` for model `gpt-image-1.5`).
 
 For detailed setup and region availability, see [Azure OpenAI Usage Guide](./docs/azure_openai_usage.md).
+
+### mulmo.config.json
+
+Create a `mulmo.config.json` file to set project-wide defaults. The CLI searches for it in **CWD** first, then **home directory (`~/`)**.
+
+```json
+{
+  "speechParams": {
+    "provider": "elevenlabs"
+  },
+  "imageParams": {
+    "provider": "google"
+  },
+  "audioParams": {
+    "bgm": { "kind": "path", "path": "assets/bgm.mp3" },
+    "bgmVolume": 0.15
+  }
+}
+```
+
+Top-level keys are applied as **defaults** (script values take precedence). Use the `override` key to **force** values over scripts — useful for enterprise branding or TTS provider enforcement:
+
+```json
+{
+  "speechParams": {
+    "provider": "elevenlabs"
+  },
+  "override": {
+    "speechParams": {
+      "provider": "elevenlabs",
+      "model": "eleven_multilingual_v2",
+      "speakers": {
+        "Presenter": { "provider": "elevenlabs", "voiceId": "Rachel" }
+      }
+    }
+  }
+}
+```
+
+Priority chain: `config (defaults)` < `template/style` < `script` < `config.override` < `presentationStyle (-p)`
+
+> **Note**: `kind: "path"` entries in `mulmo.config.json` are resolved relative to the **script file directory**, not the config file location. This is consistent with all other path resolution in MulmoScript.
+
+Verify the merged result with:
+```bash
+mulmo tool info merged --script <script.json>
+```
 
 ## Workflow
 
@@ -454,8 +501,6 @@ https://github.com/receptron/mulmocast-cli/tree/main/scripts
 
 CLI Usage
 
-
-
 ```
 mulmo <command> [options]
 
@@ -466,6 +511,7 @@ Commands:
   mulmo movie <file>      Generate movie file
   mulmo pdf <file>        Generate PDF files
   mulmo markdown <file>   Generate markdown files
+  mulmo bundle <file>     Generate bundle files
   mulmo html <file>       Generate html files
   mulmo tool <command>    Generate Mulmo script and other tools
 
@@ -484,13 +530,19 @@ Positionals:
   file  Mulmo Script File                                    [string] [required]
 
 Options:
-      --version  Show version number                                   [boolean]
-  -v, --verbose  verbose log               [boolean] [required] [default: false]
-  -h, --help     Show help                                             [boolean]
-  -o, --outdir   output dir                                             [string]
-  -b, --basedir  base dir                                               [string]
-  -l, --lang     target language                  [string] [choices: "en", "ja"]
-  -f, --force    Force regenerate                     [boolean] [default: false]
+      --version            Show version number                         [boolean]
+  -v, --verbose            verbose log     [boolean] [required] [default: false]
+  -h, --help               Show help                                   [boolean]
+  -o, --outdir             output dir                                   [string]
+  -b, --basedir            base dir                                     [string]
+  -l, --lang               target language
+  [string] [choices: "en", "ja", "fr", "es", "de", "zh-CN", "zh-TW", "ko", "it",
+                                                               "pt", "ar", "hi"]
+  -f, --force              Force regenerate           [boolean] [default: false]
+  -g, --grouped            Output all files under output/<basename>/ directory
+                                                      [boolean] [default: false]
+      --backup             create backup media file   [boolean] [default: false]
+  -p, --presentationStyle  Presentation Style                           [string]
 ```
 
 ```
@@ -507,8 +559,13 @@ Options:
   -h, --help               Show help                                   [boolean]
   -o, --outdir             output dir                                   [string]
   -b, --basedir            base dir                                     [string]
-  -l, --lang               target language        [string] [choices: "en", "ja"]
+  -l, --lang               target language
+  [string] [choices: "en", "ja", "fr", "es", "de", "zh-CN", "zh-TW", "ko", "it",
+                                                               "pt", "ar", "hi"]
   -f, --force              Force regenerate           [boolean] [default: false]
+  -g, --grouped            Output all files under output/<basename>/ directory
+                                                      [boolean] [default: false]
+      --backup             create backup media file   [boolean] [default: false]
   -p, --presentationStyle  Presentation Style                           [string]
   -a, --audiodir           Audio output directory                       [string]
 ```
@@ -527,8 +584,13 @@ Options:
   -h, --help               Show help                                   [boolean]
   -o, --outdir             output dir                                   [string]
   -b, --basedir            base dir                                     [string]
-  -l, --lang               target language        [string] [choices: "en", "ja"]
+  -l, --lang               target language
+  [string] [choices: "en", "ja", "fr", "es", "de", "zh-CN", "zh-TW", "ko", "it",
+                                                               "pt", "ar", "hi"]
   -f, --force              Force regenerate           [boolean] [default: false]
+  -g, --grouped            Output all files under output/<basename>/ directory
+                                                      [boolean] [default: false]
+      --backup             create backup media file   [boolean] [default: false]
   -p, --presentationStyle  Presentation Style                           [string]
   -i, --imagedir           Image output directory                       [string]
 ```
@@ -547,12 +609,19 @@ Options:
   -h, --help               Show help                                   [boolean]
   -o, --outdir             output dir                                   [string]
   -b, --basedir            base dir                                     [string]
-  -l, --lang               target language        [string] [choices: "en", "ja"]
+  -l, --lang               target language
+  [string] [choices: "en", "ja", "fr", "es", "de", "zh-CN", "zh-TW", "ko", "it",
+                                                               "pt", "ar", "hi"]
   -f, --force              Force regenerate           [boolean] [default: false]
+  -g, --grouped            Output all files under output/<basename>/ directory
+                                                      [boolean] [default: false]
+      --backup             create backup media file   [boolean] [default: false]
   -p, --presentationStyle  Presentation Style                           [string]
   -a, --audiodir           Audio output directory                       [string]
   -i, --imagedir           Image output directory                       [string]
-  -c, --caption            Video captions         [string] [choices: "en", "ja"]
+  -c, --caption            Video captions
+  [string] [choices: "en", "ja", "fr", "es", "de", "zh-CN", "zh-TW", "ko", "it",
+                                                               "pt", "ar", "hi"]
 ```
 
 ```
@@ -569,9 +638,13 @@ Options:
   -h, --help               Show help                                   [boolean]
   -o, --outdir             output dir                                   [string]
   -b, --basedir            base dir                                     [string]
-  -l, --lang               target language        [string] [choices: "en", "ja"]
+  -l, --lang               target language
+  [string] [choices: "en", "ja", "fr", "es", "de", "zh-CN", "zh-TW", "ko", "it",
+                                                               "pt", "ar", "hi"]
   -f, --force              Force regenerate           [boolean] [default: false]
-      --dryRun             Dry run                    [boolean] [default: false]
+  -g, --grouped            Output all files under output/<basename>/ directory
+                                                      [boolean] [default: false]
+      --backup             create backup media file   [boolean] [default: false]
   -p, --presentationStyle  Presentation Style                           [string]
   -i, --imagedir           Image output directory                       [string]
       --pdf_mode           PDF mode
@@ -598,6 +671,9 @@ Options:
   [string] [choices: "en", "ja", "fr", "es", "de", "zh-CN", "zh-TW", "ko", "it",
                                                                "pt", "ar", "hi"]
   -f, --force              Force regenerate           [boolean] [default: false]
+  -g, --grouped            Output all files under output/<basename>/ directory
+                                                      [boolean] [default: false]
+      --backup             create backup media file   [boolean] [default: false]
   -p, --presentationStyle  Presentation Style                           [string]
       --image_width        Image width (e.g., 400px, 50%, auto)         [string]
 ```
@@ -620,6 +696,9 @@ Options:
   [string] [choices: "en", "ja", "fr", "es", "de", "zh-CN", "zh-TW", "ko", "it",
                                                                "pt", "ar", "hi"]
   -f, --force              Force regenerate           [boolean] [default: false]
+  -g, --grouped            Output all files under output/<basename>/ directory
+                                                      [boolean] [default: false]
+      --backup             create backup media file   [boolean] [default: false]
   -p, --presentationStyle  Presentation Style                           [string]
       --image_width        Image width (e.g., 400px, 50%, auto)         [string]
 ```
@@ -642,6 +721,8 @@ Options:
   [string] [choices: "en", "ja", "fr", "es", "de", "zh-CN", "zh-TW", "ko", "it",
                                                                "pt", "ar", "hi"]
   -f, --force              Force regenerate           [boolean] [default: false]
+  -g, --grouped            Output all files under output/<basename>/ directory
+                                                      [boolean] [default: false]
       --backup             create backup media file   [boolean] [default: false]
   -p, --presentationStyle  Presentation Style                           [string]
 ```
@@ -652,11 +733,16 @@ mulmo tool <command>
 Generate Mulmo script and other tools
 
 Commands:
-  mulmo tool scripting       Generate mulmocast script
-  mulmo tool complete <file> Complete partial MulmoScript with defaults
-  mulmo tool prompt          Dump prompt from template
-  mulmo tool schema          Dump mulmocast schema
-  mulmo tool info [category] Show available options (styles, bgm, voices, etc.)
+  mulmo tool scripting               Generate mulmocast script
+  mulmo tool prompt                  Dump prompt from template
+  mulmo tool schema                  Dump mulmocast schema
+  mulmo tool story_to_script <file>  Generate Mulmo script from story
+  mulmo tool whisper <file>          Process file with whisper
+  mulmo tool complete <file>         Complete MulmoScript with schema defaults
+                                     and optional style
+  mulmo tool info [category]         Show available options (styles, bgm,
+                                     templates, voices, images, movies, llm,
+                                     themes, config, merged)
 
 Options:
       --version  Show version number                                   [boolean]
@@ -681,15 +767,15 @@ Options:
   -i, --interactive  Generate script in interactive mode with user prompts
                                                                        [boolean]
   -t, --template     Template name to use
-        [string] [choices: "akira_comic", "business", "children_book", "coding",
-           "comic_strips", "drslump_comic", "ghibli_comic", "ghibli_image_only",
-           "ghibli_shorts", "ghost_comic", "onepiece_comic", "podcast_standard",
-               "portrait_movie", "realistic_movie", "sensei_and_taro", "shorts",
-                                       "text_and_image", "text_only", "trailer"]
+              [string] [choices: "akira_comic", "ani", "business", "characters",
+      "children_book", "coding", "comic_strips", "documentary", "drslump_comic",
+   "ghibli_comic", "ghibli_comic_strips", "ghost_comic", "html", "image_prompt",
+                  "leda", "onepiece_comic", "portrait_movie", "realistic_movie",
+                 "sensei_and_taro", "shorts", "sifi_story", "trailer", "vision"]
   -c, --cache        cache dir                                          [string]
   -s, --script       script filename                [string] [default: "script"]
       --llm          llm
-                     [string] [choices: "openai", "anthropic", "gemini", "groq"]
+             [string] [choices: "openai", "anthropic", "gemini", "groq", "mock"]
       --llm_model    llm model                                          [string]
 ```
 
@@ -708,12 +794,15 @@ Options:
   -o, --outdir           output dir                                     [string]
   -b, --basedir          base dir                                       [string]
   -t, --template         Template name to use
-       [string] [choices: "business", "children_book", "coding", "comic_strips",
-                         "ghibli_strips", "podcast_standard", "sensei_and_taro"]
+              [string] [choices: "akira_comic", "ani", "business", "characters",
+      "children_book", "coding", "comic_strips", "documentary", "drslump_comic",
+   "ghibli_comic", "ghibli_comic_strips", "ghost_comic", "html", "image_prompt",
+                  "leda", "onepiece_comic", "portrait_movie", "realistic_movie",
+                 "sensei_and_taro", "shorts", "sifi_story", "trailer", "vision"]
   -s, --script           script filename            [string] [default: "script"]
       --beats_per_scene  beats per scene                   [number] [default: 3]
       --llm              llm
-                     [string] [choices: "openAI", "anthropic", "gemini", "groq"]
+             [string] [choices: "openai", "anthropic", "gemini", "groq", "mock"]
       --llm_model        llm model                                      [string]
       --mode             story to script generation mode
               [string] [choices: "step_wise", "one_step"] [default: "step_wise"]
@@ -729,8 +818,11 @@ Options:
   -v, --verbose   verbose log              [boolean] [required] [default: false]
   -h, --help      Show help                                            [boolean]
   -t, --template  Template name to use
-       [string] [choices: "business", "children_book", "coding", "comic_strips",
-                         "ghibli_strips", "podcast_standard", "sensei_and_taro"]
+              [string] [choices: "akira_comic", "ani", "business", "characters",
+      "children_book", "coding", "comic_strips", "documentary", "drslump_comic",
+   "ghibli_comic", "ghibli_comic_strips", "ghost_comic", "html", "image_prompt",
+                  "leda", "onepiece_comic", "portrait_movie", "realistic_movie",
+                 "sensei_and_taro", "shorts", "sifi_story", "trailer", "vision"]
 ```
 
 ```
@@ -747,18 +839,23 @@ Options:
 ```
 mulmo tool complete <file>
 
-Complete partial MulmoScript with schema defaults and optional style/template
+Complete MulmoScript with schema defaults and optional style
 
 Positionals:
-  file  Input beats file path (JSON)                             [string] [required]
+  file  Input beats file path (JSON)                         [string] [required]
 
 Options:
-      --version   Show version number                                    [boolean]
-  -v, --verbose   verbose log                [boolean] [required] [default: false]
-  -h, --help      Show help                                              [boolean]
-  -o, --output    Output file path (default: <file>_completed.json)       [string]
-  -t, --template  Template name to apply                                  [string]
-  -s, --style     Style name or file path (.json)                         [string]
+      --version   Show version number                                  [boolean]
+  -v, --verbose   verbose log              [boolean] [required] [default: false]
+  -h, --help      Show help                                            [boolean]
+  -o, --output    Output file path (default: <file>_completed.json)     [string]
+  -t, --template  Template name to apply
+              [string] [choices: "akira_comic", "ani", "business", "characters",
+      "children_book", "coding", "comic_strips", "documentary", "drslump_comic",
+   "ghibli_comic", "ghibli_comic_strips", "ghost_comic", "html", "image_prompt",
+                  "leda", "onepiece_comic", "portrait_movie", "realistic_movie",
+                 "sensei_and_taro", "shorts", "sifi_story", "trailer", "vision"]
+  -s, --style     Style name or file path (.json)                       [string]
 
 Examples:
   # Complete minimal script with schema defaults
@@ -777,17 +874,21 @@ Examples:
 ```
 mulmo tool info [category]
 
-Show available options for MulmoScript configuration
+Show available options (styles, bgm, templates, voices, images, movies, llm,
+themes, config, merged)
 
 Positionals:
   category  Category to show info for
-    [string] [choices: "styles", "bgm", "templates", "voices", "images", "movies", "llm"]
+  [string] [choices: "styles", "bgm", "templates", "voices", "images", "movies",
+                                            "llm", "themes", "config", "merged"]
 
 Options:
       --version  Show version number                                   [boolean]
   -v, --verbose  verbose log               [boolean] [required] [default: false]
   -h, --help     Show help                                             [boolean]
-  -F, --format   Output format      [string] [choices: "text", "json", "yaml"]
+  -F, --format   Output format
+                    [string] [choices: "text", "json", "yaml"] [default: "text"]
+  -S, --script   Script file path (required for 'merged' category)      [string]
 
 Examples:
   # Show all available categories

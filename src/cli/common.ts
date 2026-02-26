@@ -28,6 +28,12 @@ export const commonOptions = (yargs: Argv) => {
       type: "boolean",
       default: false,
     })
+    .option("g", {
+      alias: "grouped",
+      describe: "Output all files under output/<basename>/ directory",
+      type: "boolean",
+      default: false,
+    })
     .option("backup", {
       describe: "create backup media file",
       type: "boolean",

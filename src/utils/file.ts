@@ -100,11 +100,17 @@ export const resolveDirPath = (dirPath: string, studioFileName: string) => {
   return path.resolve(dirPath, studioFileName);
 };
 // audio
+export const formatAudioFileName = (name: string, lang?: string): string => {
+  const suffix = lang ? `_${lang}` : "";
+  return `${name}${suffix}.mp3`;
+};
+
 export const getAudioFilePath = (audioDirPath: string, dirName: string, fileName: string, lang?: string) => {
-  if (lang) {
-    return path.resolve(audioDirPath, dirName, `${fileName}_${lang}.mp3`);
-  }
-  return path.resolve(audioDirPath, dirName, fileName + ".mp3");
+  return path.resolve(audioDirPath, dirName, formatAudioFileName(fileName, lang));
+};
+
+export const getGroupedAudioFilePath = (audioDirPath: string, fileName: string, lang?: string) => {
+  return path.resolve(audioDirPath, formatAudioFileName(fileName, lang));
 };
 
 export const getAudioArtifactFilePath = (context: MulmoStudioContext) => {

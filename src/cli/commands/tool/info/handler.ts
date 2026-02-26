@@ -1,16 +1,20 @@
 /* eslint-disable no-console */
+import path from "path";
 import { getMarkdownStyleNames, getMarkdownCategories, getMarkdownStylesByCategory } from "../../../../data/markdownStyles.js";
 import { bgmAssets } from "../../../../data/bgmAssets.js";
 import { templateDataSet } from "../../../../data/templateDataSet.js";
 import { slideThemes } from "../../../../data/slideThemes.js";
 import { provider2TTSAgent, provider2ImageAgent, provider2MovieAgent, provider2LLMAgent } from "../../../../types/provider2agent.js";
+import { findConfigFile, loadMulmoConfig, mergeConfigWithScript } from "../../../../utils/mulmo_config.js";
+import { readMulmoScriptFile } from "../../../../utils/file.js";
 import YAML from "yaml";
 
-type InfoCategory = "styles" | "bgm" | "templates" | "voices" | "images" | "movies" | "llm" | "themes";
+type InfoCategory = "styles" | "bgm" | "templates" | "voices" | "images" | "movies" | "llm" | "themes" | "config" | "merged";
 
 interface InfoCliArgs {
   category?: string;
   format: string;
+  script?: string;
 }
 
 const formatOutput = (data: unknown, format: string): string => {
@@ -191,6 +195,88 @@ const printThemesText = () => {
   console.log("");
 };
 
+const getConfigInfo = () => {
+  const baseDirPath = process.cwd();
+  const configPath = findConfigFile(baseDirPath);
+  if (!configPath) {
+    return { configFile: null, config: null };
+  }
+  const config = loadMulmoConfig(baseDirPath);
+  return { configFile: configPath, config };
+};
+
+const printConfigText = () => {
+  const baseDirPath = process.cwd();
+  const configPath = findConfigFile(baseDirPath);
+  console.log("\n📄 mulmo.config.json\n");
+  if (!configPath) {
+    console.log("  No mulmo.config.json found.");
+    console.log("  Searched: CWD → ~\n");
+    return;
+  }
+  console.log(`  Active config: ${configPath}\n`);
+  const config = loadMulmoConfig(baseDirPath);
+  if (config) {
+    console.log(JSON.stringify(config, null, 2));
+  }
+  console.log("");
+};
+
+const readScriptFile = (scriptPath: string): Record<string, unknown> => {
+  const result = readMulmoScriptFile<Record<string, unknown>>(scriptPath, `Error: File not found: ${scriptPath}`);
+  if (!result) {
+    console.error(`Error: Could not read script file: ${scriptPath}`);
+    process.exit(1);
+  }
+  return result.mulmoData;
+};
+
+const getMergedInfo = (scriptPath?: string) => {
+  if (!scriptPath) {
+    console.error("Error: --script <file> is required for 'merged' category");
+    process.exit(1);
+  }
+  const baseDirPath = process.cwd();
+  const configResult = loadMulmoConfig(baseDirPath);
+  const script = readScriptFile(scriptPath);
+
+  if (!configResult) {
+    return { configFile: null, merged: script };
+  }
+  const configPath = findConfigFile(baseDirPath);
+  const merged = mergeConfigWithScript(configResult, script);
+  return { configFile: configPath, defaults: configResult.defaults, override: configResult.override, merged };
+};
+
+const printMergedText = (scriptPath?: string) => {
+  if (!scriptPath) {
+    console.error("Error: --script <file> is required for 'merged' category");
+    console.error("Usage: mulmo tool info merged --script <script.json>");
+    process.exit(1);
+  }
+  const baseDirPath = process.cwd();
+  const configResult = loadMulmoConfig(baseDirPath);
+  const script = readScriptFile(scriptPath);
+
+  console.log("\n📋 Merged Script Result\n");
+  console.log(`  Script: ${path.resolve(scriptPath)}`);
+
+  if (!configResult) {
+    console.log("  Config: (none)\n");
+    console.log(JSON.stringify(script, null, 2));
+    console.log("");
+    return;
+  }
+
+  const configPath = findConfigFile(baseDirPath);
+  console.log(`  Config: ${configPath}`);
+  console.log(`  Override: ${configResult.override ? "yes" : "no"}\n`);
+
+  const merged = mergeConfigWithScript(configResult, script);
+  console.log(JSON.stringify(merged, null, 2));
+  console.log("");
+};
+
 const printAllCategories = () => {
   console.log("\n📚 Available Info Categories\n");
   console.log("  Usage: mulmo tool info <category> [--format json|yaml]\n");
@@ -202,17 +288,19 @@ const printAllCategories = () => {
   console.log("    images     - Image generation providers and models");
   console.log("    movies     - Movie generation providers and models");
   console.log("    llm        - LLM providers and models");
-  console.log("    themes     - Slide themes and color palettes\n");
+  console.log("    themes     - Slide themes and color palettes");
+  console.log("    config     - Active mulmo.config.json location and contents");
+  console.log("    merged     - Show script merged with mulmo.config.json (--script <file>)\n");
 };
 
-const validCategories: InfoCategory[] = ["styles", "bgm", "templates", "voices", "images", "movies", "llm", "themes"];
+const validCategories: InfoCategory[] = ["styles", "bgm", "templates", "voices", "images", "movies", "llm", "themes", "config", "merged"];
 
 const isValidCategory = (category: string): category is InfoCategory => {
   return validCategories.includes(category as InfoCategory);
 };
 
 export const handler = (argv: InfoCliArgs) => {
-  const { category, format = "text" } = argv;
+  const { category, format = "text", script: scriptPath } = argv;
 
   if (!category) {
     if (format === "text") {
@@ -242,6 +330,8 @@ export const handler = (argv: InfoCliArgs) => {
     movies: getMoviesInfo,
     llm: getLlmInfo,
     themes: getThemesInfo,
+    config: getConfigInfo,
+    merged: () => getMergedInfo(scriptPath),
   };
 
   const textPrinters: Record<InfoCategory, () => void> = {
@@ -253,6 +343,8 @@ export const handler = (argv: InfoCliArgs) => {
     movies: printMoviesText,
     llm: printLlmText,
     themes: printThemesText,
+    config: printConfigText,
+    merged: () => printMergedText(scriptPath),
   };
 
   if (format === "text") {

@@ -1,6 +1,6 @@
 {
   "name": "mulmocast",
-  "version": "2.2.6",
+  "version": "2.3.2",
   "description": "",
   "type": "module",
   "main": "lib/index.node.js",
@@ -24,7 +24,7 @@
     }
   },
   "resolutions": {
-    "minimatch": "^10.2.2"
+    "minimatch": "^10.2.4"
   },
   "bin": {
     "mulmo": "lib/cli/bin.js",
@@ -87,7 +87,7 @@
   "homepage": "https://github.com/receptron/mulmocast-cli#readme",
   "dependencies": {
     "@google-cloud/text-to-speech": "^6.4.0",
-    "@google/genai": "^1.41.0",
+    "@google/genai": "^1.42.0",
     "@graphai/anthropic_agent": "^2.0.12",
     "@graphai/browserless_agent": "^2.0.2",
     "@graphai/gemini_agent": "^2.0.5",
@@ -98,7 +98,7 @@
     "@graphai/vanilla": "^2.0.12",
     "@graphai/vanilla_node_agents": "^2.0.4",
     "@inquirer/input": "^5.0.8",
-    "@inquirer/select": "^5.0.7",
+    "@inquirer/select": "^5.1.0",
     "@modelcontextprotocol/sdk": "^1.27.1",
     "@mozilla/readability": "^0.6.0",
     "@tavily/core": "^0.5.11",
