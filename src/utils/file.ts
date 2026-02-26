@@ -137,6 +137,13 @@ export const getBeatPngImagePath = (context: MulmoStudioContext, index: number) 
   return { imagePath, htmlImageFile };
 };
 
+export const getBeatAnimatedVideoPath = (context: MulmoStudioContext, index: number) => {
+  const imageProjectDirPath = MulmoStudioContextMethods.getImageProjectDirPath(context);
+  const beat = context.studio.script.beats[index];
+  const filename = beat?.id ? `${beat.id}` : `${index}${imageSuffix}`;
+  return `${imageProjectDirPath}/${filename}_animated.mp4`;
+};
+
 export const getBeatMoviePaths = (context: MulmoStudioContext, index: number) => {
   const imageProjectDirPath = MulmoStudioContextMethods.getImageProjectDirPath(context);
   const beat = context.studio.script.beats[index]; // beat could be undefined only in a test case.

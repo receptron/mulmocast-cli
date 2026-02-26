@@ -229,10 +229,20 @@ export const mulmoMermaidMediaSchema = z
   })
   .strict();
 
+export const htmlTailwindAnimationSchema = z.union([
+  z.literal(true),
+  z.object({
+    fps: z.number().min(1).max(60).optional().default(30),
+  }),
+]);
+
 export const mulmoHtmlTailwindMediaSchema = z
   .object({
     type: z.literal("html_tailwind"),
     html: stringOrStringArray,
+    animation: htmlTailwindAnimationSchema
+      .optional()
+      .describe("Enable frame-based animation (Remotion-style). true for defaults (30fps), or { fps: N } for custom frame rate."),
   })
   .strict();
 
