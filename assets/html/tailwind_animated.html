@@ -185,8 +185,7 @@
           const cStart = (opts.start || 0) * fps;
           const cEnd = (opts.end || 0) * fps;
           const cProgress = Math.max(0, Math.min(1, cEnd === cStart ? 1 : (frame - cStart) / (cEnd - cStart)));
-          const cEasing = this._resolveEasing(opts.easing);
-          const cVal = entry.range[0] + cEasing(cProgress) * (entry.range[1] - entry.range[0]);
+          const cVal = entry.range[0] + easingFn(cProgress) * (entry.range[1] - entry.range[0]);
           const decimals = opts.decimals || 0;
           const display = (opts.prefix || '') + cVal.toFixed(decimals) + (opts.suffix || '');
           const cEl = document.querySelector(entry.selector);
