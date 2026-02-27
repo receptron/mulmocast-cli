@@ -207,13 +207,14 @@ export const beat_graph_data = {
     },
     imageFromMovie: {
       if: ":preprocessor.imageFromMovie",
-      agent: async (namedInputs: { movieFile: string; imageFile: string }) => {
-        return await extractImageFromMovie(namedInputs.movieFile, namedInputs.imageFile);
+      agent: async (namedInputs: { movieFile: string; imageFile: string; useLastFrame: boolean }) => {
+        return await extractImageFromMovie(namedInputs.movieFile, namedInputs.imageFile, namedInputs.useLastFrame);
       },
       inputs: {
         onComplete: [":movieGenerator", ":imagePlugin"], // :imagePlugin for animated html_tailwind video generation
         imageFile: ":preprocessor.imagePath",
         movieFile: ":preprocessor.movieFile",
+        useLastFrame: ":preprocessor.useLastFrame",
       },
       defaultValue: {},
     },
