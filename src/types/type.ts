@@ -148,6 +148,7 @@ export type ImageProcessorParams = {
   textSlideStyle: string;
   canvasSize: MulmoCanvasDimension;
   imageRefs?: Record<string, string>;
+  beatDuration?: number; // Computed duration: beat.duration ?? studioBeat.duration (audio-derived)
 };
 
 export type PDFMode = (typeof pdf_modes)[number];

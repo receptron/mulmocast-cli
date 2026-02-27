@@ -37,9 +37,9 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
   const animConfig = getAnimationConfig(params);
   if (!animConfig) return;
 
-  const duration = beat.duration;
+  const duration = params.beatDuration ?? beat.duration;
   if (duration === undefined) {
-    throw new Error("html_tailwind animation requires explicit beat.duration. Set duration in the beat definition.");
+    throw new Error("html_tailwind animation requires beat.duration or audio-derived duration. Set duration in the beat or ensure audio is generated first.");
   }
 
   const fps = animConfig.fps;

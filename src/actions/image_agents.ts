@@ -202,7 +202,9 @@ export const imagePluginAgent = async (namedInputs: { context: MulmoStudioContex
 
   try {
     MulmoStudioContextMethods.setBeatSessionState(context, "image", index, beat.id, true);
-    const processorParams = { beat, context, imagePath: effectiveImagePath, imageRefs, ...htmlStyle(context, beat) };
+    const studioBeat = context.studio.beats[index];
+    const beatDuration = beat.duration ?? studioBeat?.duration;
+    const processorParams = { beat, context, imagePath: effectiveImagePath, imageRefs, beatDuration, ...htmlStyle(context, beat) };
     await plugin.process(processorParams);
     MulmoStudioContextMethods.setBeatSessionState(context, "image", index, beat.id, false);
   } catch (error) {
