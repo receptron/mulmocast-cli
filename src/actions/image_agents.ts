@@ -53,6 +53,7 @@ type ImageHtmlPreprocessAgentResponse = {
 };
 type ImageOnlyMoviePreprocessAgentResponse = ImagePreprocessAgentResponseBase & {
   imageFromMovie: boolean;
+  useLastFrame?: boolean;
 };
 
 type ImagePluginPreprocessAgentResponse = ImagePreprocessAgentResponseBase & {
@@ -155,6 +156,7 @@ export const imagePreprocessAgent = async (namedInputs: {
         imagePath, // for thumbnail extraction
         movieFile: animatedVideoPath, // .mp4 path for the pipeline
         imageFromMovie: true, // triggers extractImageFromMovie
+        useLastFrame: true, // extract last frame for PDF/static (animation complete state)
         referenceImageForMovie: pluginPath,
         markdown,
         html,

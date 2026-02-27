@@ -131,9 +131,13 @@ export const ffmpegGetMediaDuration = (filePath: string) => {
   });
 };
 
-export const extractImageFromMovie = (movieFile: string, imagePath: string): Promise<object> => {
+export const extractImageFromMovie = (movieFile: string, imagePath: string, useLastFrame = false): Promise<object> => {
   return new Promise<object>((resolve, reject) => {
-    ffmpeg(movieFile)
+    const command = ffmpeg(movieFile);
+    if (useLastFrame) {
+      command.inputOptions(["-sseof", "-0.1"]);
+    }
+    command
       .outputOptions(["-frames:v 1"])
       .output(imagePath)
       .on("end", () => resolve({}))
