@@ -1,0 +1,403 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "ja",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "title": "MulmoCast — EVANGELION STYLE",
+  "description": "エヴァンゲリオンのビジュアルスタイルでMulmoCastを紹介するアニメーション動画",
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "voiceId": "onyx"
+      }
+    }
+  },
+  "audioParams": {
+    "bgm": { "kind": "url", "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/theme001.mp3" },
+    "bgmVolume": 0.1
+  },
+  "beats": [
+    {
+      "text": "警告。これより先は、従来のプレゼンテーションツールの常識が通用しない領域です。",
+      "speaker": "Presenter",
+      "duration": 3,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col'>",
+          "  <div id='topLine' class='w-full h-1 bg-red-600' style='opacity:0'></div>",
+          "  <div class='flex-1 flex flex-col items-center justify-center'>",
+          "    <div id='warning' class='font-sans text-red-600 text-8xl font-bold tracking-[0.3em]' style='opacity:0'>WARNING</div>",
+          "    <div id='warningJp' class='text-red-500 text-3xl mt-6 tracking-[0.5em]' style='opacity:0'>警 告</div>",
+          "    <div id='indicator' class='mt-8 w-3 h-3 rounded-full bg-red-600'></div>",
+          "  </div>",
+          "  <div id='bottomLine' class='w-full h-1 bg-red-600' style='opacity:0'></div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#topLine', { opacity: [0, 1] }, { start: 0, end: 0.15 });",
+          "animation.animate('#bottomLine', { opacity: [0, 1] }, { start: 0, end: 0.15 });",
+          "animation.animate('#warning', { opacity: [0, 1] }, { start: 0.2, end: 0.5 });",
+          "animation.animate('#warningJp', { opacity: [0, 1] }, { start: 0.6, end: 0.9 });",
+          "animation.blink('#indicator', { interval: 0.3 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "MulmoCast。AIネイティブ・マルチモーダル・プレゼンテーションプラットフォーム。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col items-center justify-center'>",
+          "  <div id='title' class='font-sans text-white text-8xl font-bold tracking-wider' style='opacity:0'>MulmoCast</div>",
+          "  <div id='line' class='mt-6 h-0.5 bg-red-600' style='opacity:0;width:0'></div>",
+          "  <div id='subtitle' class='text-gray-400 text-xl mt-6 tracking-[0.2em]' style='opacity:0'>AI-Native Multi-Modal Presentation Platform</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#title', { opacity: [0, 1], scale: [0.8, 1] }, { start: 0.3, end: 1.0, easing: 'easeOut' });",
+          "animation.animate('#line', { opacity: [0, 1], width: [0, 400, 'px'] }, { start: 1.0, end: 1.8, easing: 'easeOut' });",
+          "animation.animate('#subtitle', { opacity: [0, 1] }, { start: 1.5, end: 2.2 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "フォーマットの壁。手作業の限界。AI非対応の設計。既存ツールは、この三重の呪縛から逃れられない。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col items-start justify-center px-24'>",
+          "  <div id='header' class='text-red-600 text-4xl font-bold mb-12 tracking-wider' style='opacity:0'>既存ツールの限界</div>",
+          "  <div id='item0' class='flex items-center gap-6 mb-8' style='opacity:0'>",
+          "    <span class='font-sans text-red-600 text-3xl font-bold'>×</span>",
+          "    <span class='text-white text-2xl tracking-wide'>フォーマットの壁 —— スライド専用、動画には再作成が必要</span>",
+          "  </div>",
+          "  <div id='item1' class='flex items-center gap-6 mb-8' style='opacity:0'>",
+          "    <span class='font-sans text-red-600 text-3xl font-bold'>×</span>",
+          "    <span class='text-white text-2xl tracking-wide'>手作業のボトルネック —— 1枚ずつ手動レイアウト</span>",
+          "  </div>",
+          "  <div id='item2' class='flex items-center gap-6' style='opacity:0'>",
+          "    <span class='font-sans text-red-600 text-3xl font-bold'>×</span>",
+          "    <span class='text-white text-2xl tracking-wide'>AI非対応設計 —— LLMとの統合が困難</span>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#header', { opacity: [0, 1] }, { start: 0, end: 0.4 });",
+          "animation.stagger('#item{i}', 3, { opacity: [0, 1], translateX: [-30, 0] }, { start: 0.5, stagger: 0.5, duration: 0.4, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "すべてを、書き換える。MulmoCastは、コンテンツ制作の概念そのものを再定義する。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col items-center justify-center'>",
+          "  <div id='text' class='text-white text-6xl font-bold tracking-wider'></div>",
+          "  <div id='underline' class='mt-8 h-1 bg-red-600' style='opacity:0;width:0'></div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.typewriter('#text', 'すべてを、書き換える。', { start: 0.3, end: 2.5 });",
+          "animation.animate('#underline', { opacity: [0, 1], width: [0, 500, 'px'] }, { start: 2.5, end: 3.3, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "MulmoScript。それはAIが読み書きできる中間言語。ナレーション、画像、レイアウト、音声。すべてを一つのJSONに記述する。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col justify-center px-20'>",
+          "  <div id='label' class='font-sans text-red-600 text-sm tracking-[0.3em] mb-4' style='opacity:0'>SPECIFICATION</div>",
+          "  <div id='heading' class='text-white text-5xl font-bold mb-8' style='opacity:0'>MulmoScript</div>",
+          "  <div class='bg-gray-950 border border-gray-800 rounded p-8'>",
+          "    <pre id='code' class='text-green-400 text-lg leading-relaxed font-mono'></pre>",
+          "    <span id='cursor' class='text-green-400 text-lg font-mono'>|</span>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "var codeLines = ['{', '  \"$mulmocast\": { \"version\": \"1.1\" },', '  \"beats\": [', '    { \"text\": \"Hello World\" }', '  ]', '}'];",
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#label', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.animate('#heading', { opacity: [0, 1], translateX: [-20, 0] }, { start: 0.2, end: 0.6, easing: 'easeOut' });",
+          "animation.codeReveal('#code', codeLines, { start: 0.8, end: 3.5 });",
+          "animation.blink('#cursor', { interval: 0.35 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "たった一行のコマンド。それだけで、音声合成、画像生成、動画編集。すべてが自動で実行される。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col items-center justify-center'>",
+          "  <div class='font-sans text-gray-600 text-sm tracking-widest mb-4'>$ terminal</div>",
+          "  <div class='bg-gray-950 border border-gray-700 rounded-lg p-8 w-[700px]'>",
+          "    <div id='cmd' class='text-green-400 text-2xl font-bold font-mono'></div>",
+          "  </div>",
+          "  <div class='mt-8 flex gap-8'>",
+          "    <div id='s0' class='font-sans text-gray-400 text-lg' style='opacity:0'>Audio ✓</div>",
+          "    <div id='s1' class='font-sans text-gray-400 text-lg' style='opacity:0'>Images ✓</div>",
+          "    <div id='s2' class='font-sans text-gray-400 text-lg' style='opacity:0'>Video ✓</div>",
+          "  </div>",
+          "  <div id='done' class='font-sans mt-6 text-green-500 text-xl font-bold tracking-widest' style='opacity:0'>COMPLETE</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.typewriter('#cmd', 'mulmo movie my_script.json', { start: 0.3, end: 1.8 });",
+          "animation.stagger('#s{i}', 3, { opacity: [0, 1] }, { start: 2.0, stagger: 0.3, duration: 0.2 });",
+          "animation.animate('#done', { opacity: [0, 1] }, { start: 3.0, end: 3.3 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "一つのスクリプトから、六つの形式へ。動画、ポッドキャスト、スライドショー、PDF、マンガ、ショート動画。変換は一瞬。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col items-center justify-center'>",
+          "  <div class='font-sans text-gray-600 text-sm tracking-[0.3em] mb-2'>OUTPUT FORMATS</div>",
+          "  <div id='counter' class='font-sans text-red-600 text-9xl font-bold'></div>",
+          "  <div class='mt-10 grid grid-cols-3 gap-x-16 gap-y-6'>",
+          "    <div id='f0' class='text-white text-xl tracking-wider text-center' style='opacity:0'>Video</div>",
+          "    <div id='f1' class='text-white text-xl tracking-wider text-center' style='opacity:0'>Podcast</div>",
+          "    <div id='f2' class='text-white text-xl tracking-wider text-center' style='opacity:0'>Slideshow</div>",
+          "    <div id='f3' class='text-white text-xl tracking-wider text-center' style='opacity:0'>PDF</div>",
+          "    <div id='f4' class='text-white text-xl tracking-wider text-center' style='opacity:0'>Manga</div>",
+          "    <div id='f5' class='text-white text-xl tracking-wider text-center' style='opacity:0'>Shorts</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.counter('#counter', [0, 6], { start: 0.3, end: 2.5, decimals: 0 });",
+          "animation.stagger('#f{i}', 6, { opacity: [0, 1], translateY: [15, 0] }, { start: 0.5, stagger: 0.3, duration: 0.3, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "OpenAI、Google、ElevenLabs、Replicate。四つのAIプロバイダーが、それぞれの得意領域で最大の力を発揮する。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col justify-center px-20'>",
+          "  <div id='label' class='font-sans text-red-600 text-sm tracking-[0.3em] mb-8' style='opacity:0'>AI PROVIDERS — 4 SYSTEMS ACTIVE</div>",
+          "  <div class='grid grid-cols-2 gap-4'>",
+          "    <div id='p0' class='border border-gray-700 p-6' style='opacity:0'>",
+          "      <div class='font-sans text-white text-2xl font-bold'>OpenAI</div>",
+          "      <div class='text-gray-500 text-sm mt-2'>TTS / Image (DALL·E) / LLM</div>",
+          "    </div>",
+          "    <div id='p1' class='border border-gray-700 p-6' style='opacity:0'>",
+          "      <div class='font-sans text-white text-2xl font-bold'>Google</div>",
+          "      <div class='text-gray-500 text-sm mt-2'>Gemini TTS / Imagen / Vertex AI</div>",
+          "    </div>",
+          "    <div id='p2' class='border border-gray-700 p-6' style='opacity:0'>",
+          "      <div class='font-sans text-white text-2xl font-bold'>ElevenLabs</div>",
+          "      <div class='text-gray-500 text-sm mt-2'>高品質音声合成 / 多言語対応</div>",
+          "    </div>",
+          "    <div id='p3' class='border border-gray-700 p-6' style='opacity:0'>",
+          "      <div class='font-sans text-white text-2xl font-bold'>Replicate</div>",
+          "      <div class='text-gray-500 text-sm mt-2'>動画生成 / LipSync / 効果音</div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#label', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.stagger('#p{i}', 4, { opacity: [0, 1], translateY: [20, 0] }, { start: 0.3, stagger: 0.4, duration: 0.4, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "html_tailwindアニメーション。フレーム単位の決定論的レンダリング。MulmoAnimation DSLが、複雑な演出を数行のコードに変える。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col justify-center px-20'>",
+          "  <div id='label' class='font-sans text-red-600 text-sm tracking-[0.3em] mb-2' style='opacity:0'>RENDERING ENGINE</div>",
+          "  <div id='heading' class='font-sans text-white text-4xl font-bold mb-10' style='opacity:0'>html_tailwind Animation</div>",
+          "  <div class='flex gap-10 items-center justify-center'>",
+          "    <div id='box0' class='border border-gray-700 px-8 py-5 text-center' style='opacity:0'>",
+          "      <div class='font-sans text-gray-500 text-xs tracking-widest'>CAPTURE</div>",
+          "      <div class='font-sans text-white text-lg font-bold mt-1'>Puppeteer</div>",
+          "    </div>",
+          "    <div id='arrow0' class='font-sans text-red-600 text-2xl' style='opacity:0'>→</div>",
+          "    <div id='box1' class='border border-red-800 px-8 py-5 text-center' style='opacity:0'>",
+          "      <div class='font-sans text-gray-500 text-xs tracking-widest'>FRAMES</div>",
+          "      <div id='frameCount' class='font-sans text-red-500 text-4xl font-bold mt-1'></div>",
+          "    </div>",
+          "    <div id='arrow1' class='font-sans text-red-600 text-2xl' style='opacity:0'>→</div>",
+          "    <div id='box2' class='border border-gray-700 px-8 py-5 text-center' style='opacity:0'>",
+          "      <div class='font-sans text-gray-500 text-xs tracking-widest'>ENCODE</div>",
+          "      <div class='font-sans text-white text-lg font-bold mt-1'>FFmpeg</div>",
+          "    </div>",
+          "  </div>",
+          "  <div id='tagline' class='font-sans mt-10 text-gray-600 text-sm tracking-widest text-center' style='opacity:0'>Deterministic · Reproducible · Frame-perfect</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#label', { opacity: [0, 1] }, { start: 0, end: 0.2 });",
+          "animation.animate('#heading', { opacity: [0, 1] }, { start: 0.1, end: 0.5 });",
+          "animation.stagger('#box{i}', 3, { opacity: [0, 1], translateY: [15, 0] }, { start: 0.6, stagger: 0.3, duration: 0.3, easing: 'easeOut' });",
+          "animation.animate('#arrow0', { opacity: [0, 1] }, { start: 0.9, end: 1.1 });",
+          "animation.animate('#arrow1', { opacity: [0, 1] }, { start: 1.2, end: 1.4 });",
+          "animation.counter('#frameCount', [0, 90], { start: 1.0, end: 2.5, decimals: 0 });",
+          "animation.animate('#tagline', { opacity: [0, 1] }, { start: 2.5, end: 3.0 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "システム稼働率、99.9パーセント。対応フォーマット、6。AIプロバイダー、4。フレームレート、30FPS。全システム、正常。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col p-12'>",
+          "  <div class='flex justify-between items-center mb-8'>",
+          "    <div id='sysLabel' class='font-sans text-red-600 text-sm tracking-[0.3em]' style='opacity:0'>SYSTEM STATUS</div>",
+          "    <div id='indicator' class='w-3 h-3 rounded-full bg-green-500'></div>",
+          "  </div>",
+          "  <div class='grid grid-cols-2 gap-6 flex-1'>",
+          "    <div id='m0' class='border border-gray-800 p-6' style='opacity:0'>",
+          "      <div class='font-sans text-gray-500 text-xs tracking-widest'>UPTIME</div>",
+          "      <div class='flex items-end gap-2 mt-2'>",
+          "        <span id='c0' class='font-mono text-green-500 text-5xl font-bold'></span>",
+          "        <span class='font-sans text-gray-500 text-lg mb-1'>%</span>",
+          "      </div>",
+          "    </div>",
+          "    <div id='m1' class='border border-gray-800 p-6' style='opacity:0'>",
+          "      <div class='font-sans text-gray-500 text-xs tracking-widest'>OUTPUT FORMATS</div>",
+          "      <div id='c1' class='font-mono text-white text-5xl font-bold mt-2'></div>",
+          "    </div>",
+          "    <div id='m2' class='border border-gray-800 p-6' style='opacity:0'>",
+          "      <div class='font-sans text-gray-500 text-xs tracking-widest'>AI PROVIDERS</div>",
+          "      <div id='c2' class='font-mono text-white text-5xl font-bold mt-2'></div>",
+          "    </div>",
+          "    <div id='m3' class='border border-gray-800 p-6' style='opacity:0'>",
+          "      <div class='font-sans text-gray-500 text-xs tracking-widest'>FRAME RATE</div>",
+          "      <div class='flex items-end gap-2 mt-2'>",
+          "        <span id='c3' class='font-mono text-white text-5xl font-bold'></span>",
+          "        <span class='font-sans text-gray-500 text-lg mb-1'>FPS</span>",
+          "      </div>",
+          "    </div>",
+          "  </div>",
+          "  <div id='status' class='font-sans mt-6 text-green-500 text-sm tracking-[0.3em] text-center' style='opacity:0'>ALL SYSTEMS NOMINAL</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#sysLabel', { opacity: [0, 1] }, { start: 0, end: 0.2 });",
+          "animation.blink('#indicator', { interval: 0.5 });",
+          "animation.stagger('#m{i}', 4, { opacity: [0, 1] }, { start: 0.3, stagger: 0.4, duration: 0.3 });",
+          "animation.counter('#c0', [0, 99.9], { start: 0.5, end: 2.5, decimals: 1 });",
+          "animation.counter('#c1', [0, 6], { start: 0.9, end: 2.5, decimals: 0 });",
+          "animation.counter('#c2', [0, 4], { start: 1.3, end: 2.5, decimals: 0 });",
+          "animation.counter('#c3', [0, 30], { start: 1.7, end: 2.5, decimals: 0 });",
+          "animation.animate('#status', { opacity: [0, 1] }, { start: 3.5, end: 4.0 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "次回予告。MulmoCastが切り開く、AIコンテンツ制作の新時代。その全貌は、あなた自身の手で確かめてほしい。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col'>",
+          "  <div id='topBar' class='w-full h-1 bg-red-600' style='opacity:0'></div>",
+          "  <div class='flex-1 flex flex-col items-center justify-center px-20'>",
+          "    <div id='header' class='text-red-600 text-5xl font-bold tracking-[0.5em] mb-16' style='opacity:0'>次回予告</div>",
+          "    <div id='line0' class='text-white text-2xl tracking-wider mb-3' style='opacity:0'>MulmoCastが切り開く、</div>",
+          "    <div id='line1' class='text-white text-2xl tracking-wider mb-3' style='opacity:0'>AIコンテンツ制作の新時代。</div>",
+          "    <div id='line2' class='text-white text-2xl tracking-wider' style='opacity:0'>その全貌を、あなたの手で。</div>",
+          "    <div id='cmd' class='font-mono mt-16 text-gray-600 text-lg tracking-wider' style='opacity:0'>$ npm install -g mulmocast</div>",
+          "  </div>",
+          "  <div id='bottomBar' class='w-full h-1 bg-red-600' style='opacity:0'></div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#topBar', { opacity: [0, 1] }, { start: 0, end: 0.15 });",
+          "animation.animate('#bottomBar', { opacity: [0, 1] }, { start: 0, end: 0.15 });",
+          "animation.animate('#header', { opacity: [0, 1] }, { start: 0.2, end: 0.6 });",
+          "animation.stagger('#line{i}', 3, { opacity: [0, 1] }, { start: 1.0, stagger: 0.6, duration: 0.3 });",
+          "animation.animate('#cmd', { opacity: [0, 1] }, { start: 3.5, end: 4.0 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "MulmoCast、起動。",
+      "speaker": "Presenter",
+      "duration": 3,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col items-center justify-center'>",
+          "  <div id='name' class='font-sans text-white text-8xl font-bold tracking-wider' style='opacity:0'>MulmoCast</div>",
+          "  <div id='activate' class='text-red-600 text-3xl mt-6 tracking-[0.5em]' style='opacity:0'>起 動</div>",
+          "  <div id='line' class='mt-8 h-0.5 bg-red-600' style='opacity:0;width:0'></div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#name', { opacity: [0, 1], scale: [1.2, 1] }, { start: 0.2, end: 0.8, easing: 'easeOut' });",
+          "animation.animate('#activate', { opacity: [0, 1] }, { start: 1.0, end: 1.5 });",
+          "animation.animate('#line', { opacity: [0, 1], width: [0, 300, 'px'] }, { start: 1.5, end: 2.2, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    }
+  ]
+}

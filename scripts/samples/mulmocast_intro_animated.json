@@ -1,0 +1,762 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "ja",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "title": "MulmoCast — AI時代のマルチモーダルプレゼンテーション",
+  "description": "MulmoCastの機能とhtml_tailwindアニメーションDSLを紹介する20ビートプレゼンテーション",
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "voiceId": "shimmer",
+        "displayName": { "ja": "プレゼンター", "en": "Presenter" }
+      }
+    }
+  },
+  "audioParams": {
+    "bgm": { "kind": "url", "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/story002.mp3" },
+    "bgmVolume": 0.15
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "speaker": "Presenter",
+      "text": "MulmoCast。AIとヒトが共に創る、次世代プレゼンテーションプラットフォーム。",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950'>",
+          "  <div class='mb-4'>",
+          "    <svg id='logo' viewBox='0 0 60 60' width='80' height='80' style='opacity:0'>",
+          "      <rect x='5' y='5' width='50' height='50' rx='12' fill='none' stroke='#06b6d4' stroke-width='2.5'/>",
+          "      <polygon points='24,18 24,42 42,30' fill='#06b6d4'/>",
+          "    </svg>",
+          "  </div>",
+          "  <h1 id='title' class='text-6xl font-extrabold text-white tracking-tight' style='opacity:0'>MulmoCast</h1>",
+          "  <p id='sub' class='text-xl text-cyan-300 mt-4 font-light' style='opacity:0'>AI-Native Multi-Modal Presentation Platform</p>",
+          "  <div id='line' class='h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent mt-8 rounded' style='width:0'></div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#logo', { opacity: [0, 1], scale: [0.5, 1] }, { start: 0, end: 0.6, easing: 'easeOut' });",
+          "animation.animate('#title', { opacity: [0, 1], translateY: [40, 0] }, { start: 0.3, end: 0.8, easing: 'easeOut' });",
+          "animation.animate('#sub', { opacity: [0, 1], translateY: [20, 0] }, { start: 0.6, end: 1.1, easing: 'easeOut' });",
+          "animation.animate('#line', { width: [0, 500, 'px'] }, { start: 1.0, end: 2.0, easing: 'easeInOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "problem",
+      "speaker": "Presenter",
+      "text": "PowerPointもKeynoteも、人間が手作業でスライドを作る時代に生まれたツールです。AIの力を活かしきれない、フォーマットの壁、手作業のボトルネック。これが今のプレゼン制作の現実です。",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-center bg-slate-950 px-20'>",
+          "  <h2 id='heading' class='text-3xl font-bold text-red-400 mb-10' style='opacity:0'>従来ツールの限界</h2>",
+          "  <div id='item0' class='flex items-center gap-4 mb-5 p-4 bg-slate-900 rounded-lg border border-slate-800' style='opacity:0'>",
+          "    <span class='text-2xl'>🔒</span>",
+          "    <div><p class='text-lg text-white font-semibold'>フォーマットの壁</p><p class='text-sm text-slate-400'>スライド専用 — 動画・音声には再作成が必要</p></div>",
+          "  </div>",
+          "  <div id='item1' class='flex items-center gap-4 mb-5 p-4 bg-slate-900 rounded-lg border border-slate-800' style='opacity:0'>",
+          "    <span class='text-2xl'>⏱️</span>",
+          "    <div><p class='text-lg text-white font-semibold'>手作業のボトルネック</p><p class='text-sm text-slate-400'>1枚ずつ手動レイアウト、デザイン調整に何時間も</p></div>",
+          "  </div>",
+          "  <div id='item2' class='flex items-center gap-4 mb-5 p-4 bg-slate-900 rounded-lg border border-slate-800' style='opacity:0'>",
+          "    <span class='text-2xl'>🤖</span>",
+          "    <div><p class='text-lg text-white font-semibold'>AI非対応設計</p><p class='text-sm text-slate-400'>プレAI時代のGUI前提 — LLMとの統合が困難</p></div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1], translateX: [-30, 0] }, { start: 0, end: 0.4, easing: 'easeOut' });",
+          "animation.stagger('#item{i}', 3, { opacity: [0, 1], translateX: [-40, 0] }, { start: 0.5, stagger: 0.6, duration: 0.5, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "solution",
+      "speaker": "Presenter",
+      "text": "MulmoCastは、AI-nativeという思想でゼロから設計されました。AIが理解し、生成し、マルチモーダルに表現できる。そんな環境を提供します。",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-950 to-blue-950'>",
+          "  <p id='label' class='text-sm font-mono text-cyan-400 tracking-widest uppercase mb-4' style='opacity:0'>The Answer</p>",
+          "  <h1 id='name' class='text-6xl font-extrabold text-white mb-6' style='opacity:0'>MulmoCast</h1>",
+          "  <div id='badge' class='px-6 py-2 bg-cyan-500/20 border border-cyan-500/40 rounded-full mb-8' style='opacity:0'>",
+          "    <span class='text-cyan-300 font-semibold text-lg'>AI-Native Design</span>",
+          "  </div>",
+          "  <div class='flex gap-8'>",
+          "    <div id='p0' class='text-center' style='opacity:0'><p class='text-3xl mb-1'>🧠</p><p class='text-sm text-slate-300'>AIが理解</p></div>",
+          "    <div id='p1' class='text-center' style='opacity:0'><p class='text-3xl mb-1'>✨</p><p class='text-sm text-slate-300'>AIが生成</p></div>",
+          "    <div id='p2' class='text-center' style='opacity:0'><p class='text-3xl mb-1'>🎬</p><p class='text-sm text-slate-300'>マルチモーダル</p></div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#label', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.animate('#name', { opacity: [0, 1], scale: [0.8, 1] }, { start: 0.2, end: 0.7, easing: 'easeOut' });",
+          "animation.animate('#badge', { opacity: [0, 1], translateY: [10, 0] }, { start: 0.6, end: 1.0, easing: 'easeOut' });",
+          "animation.stagger('#p{i}', 3, { opacity: [0, 1], translateY: [20, 0] }, { start: 1.2, stagger: 0.3, duration: 0.4, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "concept",
+      "speaker": "Presenter",
+      "text": "中核にあるのがMulmoScript。JSON形式の中間言語で、ナレーション、画像、レイアウト、すべてを一つのスクリプトに記述します。AIが生成し、人間が編集する。まさに共創のためのフォーマットです。",
+      "duration": 7,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-slate-950 px-16'>",
+          "  <h2 id='heading' class='text-3xl font-bold text-white mb-6' style='opacity:0'>MulmoScript</h2>",
+          "  <p id='desc' class='text-lg text-cyan-300 mb-2 font-mono' style='opacity:0'>AI向け中間言語</p>",
+          "  <div class='bg-slate-900 border border-slate-700 rounded-xl p-8 w-full max-w-2xl mt-4'>",
+          "    <span id='tw' class='text-lg text-green-400 font-mono leading-relaxed'></span>",
+          "    <span id='cursor' class='text-lg text-green-400 font-mono'>|</span>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1], translateY: [20, 0] }, { start: 0, end: 0.4, easing: 'easeOut' });",
+          "animation.animate('#desc', { opacity: [0, 1] }, { start: 0.3, end: 0.6 });",
+          "animation.typewriter('#tw', 'ナレーション + 画像 + レイアウト + 音声 = MulmoScript', { start: 0.8, end: 4.0 });",
+          "animation.blink('#cursor', { interval: 0.4 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "hello_world",
+      "speaker": "Presenter",
+      "text": "MulmoScriptのHello World。たった数行のJSONで、プレゼンテーションの第一歩を踏み出せます。",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-center bg-slate-950 px-20'>",
+          "  <div class='flex items-center gap-3 mb-6'>",
+          "    <h2 id='heading' class='text-2xl font-bold text-white' style='opacity:0'>Hello World</h2>",
+          "    <span id='tag' class='px-3 py-1 text-xs bg-cyan-500/20 text-cyan-300 rounded-full font-mono' style='opacity:0'>MulmoScript</span>",
+          "  </div>",
+          "  <div class='bg-slate-900 border border-slate-700 rounded-xl p-6'>",
+          "    <pre id='code' class='text-base font-mono text-green-400 leading-relaxed'></pre>",
+          "    <span id='cursor' class='text-base font-mono text-green-400'>|</span>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const codeLines = [",
+          "  '{',",
+          "  '  \"$mulmocast\": { \"version\": \"1.1\" },',",
+          "  '  \"beats\": [',",
+          "  '    { \"text\": \"Hello World\" }',",
+          "  '  ]',",
+          "  '}'",
+          "];",
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.animate('#tag', { opacity: [0, 1] }, { start: 0.2, end: 0.5 });",
+          "animation.codeReveal('#code', codeLines, { start: 0.5, end: 3.5 });",
+          "animation.blink('#cursor', { interval: 0.35 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "multi_output",
+      "speaker": "Presenter",
+      "text": "一つのMulmoScriptから、動画、ポッドキャスト、スライドショー、PDF、漫画、スワイプアニメまで。6つのフォーマットに変換できます。",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-slate-950 px-16'>",
+          "  <h2 id='heading' class='text-2xl font-bold text-white mb-2' style='opacity:0'>1 Script → 6 Formats</h2>",
+          "  <p id='sub' class='text-sm text-slate-400 mb-8' style='opacity:0'>MulmoScript からワンストップで変換</p>",
+          "  <div class='grid grid-cols-3 gap-4 w-full max-w-2xl'>",
+          "    <div id='item0' class='flex flex-col items-center p-5 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "      <span class='text-3xl mb-2'>🎬</span><p class='text-white font-semibold'>Video</p>",
+          "    </div>",
+          "    <div id='item1' class='flex flex-col items-center p-5 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "      <span class='text-3xl mb-2'>🎙️</span><p class='text-white font-semibold'>Podcast</p>",
+          "    </div>",
+          "    <div id='item2' class='flex flex-col items-center p-5 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "      <span class='text-3xl mb-2'>📊</span><p class='text-white font-semibold'>Slideshow</p>",
+          "    </div>",
+          "    <div id='item3' class='flex flex-col items-center p-5 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "      <span class='text-3xl mb-2'>📄</span><p class='text-white font-semibold'>PDF</p>",
+          "    </div>",
+          "    <div id='item4' class='flex flex-col items-center p-5 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "      <span class='text-3xl mb-2'>📖</span><p class='text-white font-semibold'>Manga</p>",
+          "    </div>",
+          "    <div id='item5' class='flex flex-col items-center p-5 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "      <span class='text-3xl mb-2'>👆</span><p class='text-white font-semibold'>Swipe Anime</p>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1], translateY: [20, 0] }, { start: 0, end: 0.4, easing: 'easeOut' });",
+          "animation.animate('#sub', { opacity: [0, 1] }, { start: 0.2, end: 0.5 });",
+          "animation.stagger('#item{i}', 6, { opacity: [0, 1], scale: [0.8, 1] }, { start: 0.6, stagger: 0.3, duration: 0.4, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "workflow",
+      "speaker": "Presenter",
+      "text": "ワークフローはシンプル。スクリプトを作り、音声を生成し、画像を生成し、動画にまとめる。この4ステップです。",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-slate-950 px-16'>",
+          "  <h2 id='heading' class='text-2xl font-bold text-white mb-10' style='opacity:0'>Workflow</h2>",
+          "  <div class='flex items-center gap-3'>",
+          "    <div id='s0' class='flex flex-col items-center' style='opacity:0'>",
+          "      <div class='w-16 h-16 bg-cyan-500/20 border border-cyan-500/40 rounded-xl flex items-center justify-center text-2xl mb-2'>📝</div>",
+          "      <p class='text-sm text-white font-semibold'>Script</p>",
+          "    </div>",
+          "    <div id='a0' class='text-cyan-500 text-2xl' style='opacity:0'>→</div>",
+          "    <div id='s1' class='flex flex-col items-center' style='opacity:0'>",
+          "      <div class='w-16 h-16 bg-purple-500/20 border border-purple-500/40 rounded-xl flex items-center justify-center text-2xl mb-2'>🔊</div>",
+          "      <p class='text-sm text-white font-semibold'>Audio</p>",
+          "    </div>",
+          "    <div id='a1' class='text-cyan-500 text-2xl' style='opacity:0'>→</div>",
+          "    <div id='s2' class='flex flex-col items-center' style='opacity:0'>",
+          "      <div class='w-16 h-16 bg-green-500/20 border border-green-500/40 rounded-xl flex items-center justify-center text-2xl mb-2'>🖼️</div>",
+          "      <p class='text-sm text-white font-semibold'>Images</p>",
+          "    </div>",
+          "    <div id='a2' class='text-cyan-500 text-2xl' style='opacity:0'>→</div>",
+          "    <div id='s3' class='flex flex-col items-center' style='opacity:0'>",
+          "      <div class='w-16 h-16 bg-orange-500/20 border border-orange-500/40 rounded-xl flex items-center justify-center text-2xl mb-2'>🎬</div>",
+          "      <p class='text-sm text-white font-semibold'>Video</p>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.animate('#s0', { opacity: [0, 1], translateY: [20, 0] }, { start: 0.3, end: 0.6, easing: 'easeOut' });",
+          "animation.animate('#a0', { opacity: [0, 1] }, { start: 0.6, end: 0.8 });",
+          "animation.animate('#s1', { opacity: [0, 1], translateY: [20, 0] }, { start: 0.8, end: 1.1, easing: 'easeOut' });",
+          "animation.animate('#a1', { opacity: [0, 1] }, { start: 1.1, end: 1.3 });",
+          "animation.animate('#s2', { opacity: [0, 1], translateY: [20, 0] }, { start: 1.3, end: 1.6, easing: 'easeOut' });",
+          "animation.animate('#a2', { opacity: [0, 1] }, { start: 1.6, end: 1.8 });",
+          "animation.animate('#s3', { opacity: [0, 1], translateY: [20, 0] }, { start: 1.8, end: 2.1, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "one_cmd",
+      "speaker": "Presenter",
+      "text": "でも実は、mulmo movieの一言で全部やってくれます。音声も画像も自動生成。コマンド一発で完成です。",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-slate-950 px-16'>",
+          "  <h2 id='heading' class='text-2xl font-bold text-white mb-3' style='opacity:0'>ワンコマンドで完結</h2>",
+          "  <p id='sub' class='text-slate-400 mb-8' style='opacity:0'>音声・画像・動画、すべて自動生成</p>",
+          "  <div class='bg-slate-900 border border-slate-700 rounded-xl p-8 w-full max-w-xl'>",
+          "    <p class='text-sm text-slate-500 font-mono mb-2'>$ terminal</p>",
+          "    <span id='cmd' class='text-2xl text-green-400 font-mono font-bold'></span>",
+          "    <span id='cursor' class='text-2xl text-green-400 font-mono'>|</span>",
+          "  </div>",
+          "  <div id='done' class='mt-6 px-6 py-3 bg-green-500/20 border border-green-500/40 rounded-lg' style='opacity:0'>",
+          "    <span class='text-green-400 font-semibold text-lg'>✓ Video generated successfully</span>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.animate('#sub', { opacity: [0, 1] }, { start: 0.2, end: 0.5 });",
+          "animation.typewriter('#cmd', 'mulmo movie my_script.json', { start: 0.6, end: 2.0 });",
+          "animation.blink('#cursor', { interval: 0.4 });",
+          "animation.animate('#done', { opacity: [0, 1], translateY: [15, 0] }, { start: 2.8, end: 3.3, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "providers",
+      "speaker": "Presenter",
+      "text": "OpenAI、Google、ElevenLabs、Replicate。画像生成、音声合成、動画生成、それぞれ最適なAIプロバイダーを選べます。",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-center bg-slate-950 px-20'>",
+          "  <h2 id='heading' class='text-2xl font-bold text-white mb-8' style='opacity:0'>Multi-Provider AI</h2>",
+          "  <div class='grid grid-cols-2 gap-4'>",
+          "    <div id='item0' class='p-4 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "      <p class='text-lg font-bold text-white'>OpenAI</p>",
+          "      <p class='text-sm text-slate-400'>TTS / Image (DALL·E, gpt-image) / LLM</p>",
+          "    </div>",
+          "    <div id='item1' class='p-4 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "      <p class='text-lg font-bold text-white'>Google</p>",
+          "      <p class='text-sm text-slate-400'>Gemini TTS / Imagen / Vertex AI</p>",
+          "    </div>",
+          "    <div id='item2' class='p-4 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "      <p class='text-lg font-bold text-white'>ElevenLabs</p>",
+          "      <p class='text-sm text-slate-400'>高品質音声合成 / 多言語対応</p>",
+          "    </div>",
+          "    <div id='item3' class='p-4 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "      <p class='text-lg font-bold text-white'>Replicate</p>",
+          "      <p class='text-sm text-slate-400'>動画生成 / LipSync / 効果音</p>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1], translateX: [-20, 0] }, { start: 0, end: 0.4, easing: 'easeOut' });",
+          "animation.stagger('#item{i}', 4, { opacity: [0, 1], translateY: [20, 0] }, { start: 0.5, stagger: 0.5, duration: 0.4, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "animation_intro",
+      "speaker": "Presenter",
+      "text": "そしてバージョン2.4で追加された、html_tailwindアニメーション。HTMLとTailwind CSSで、フレームベースのアニメーションが作れます。",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950'>",
+          "  <p id='ver' class='text-sm font-mono text-purple-400 tracking-widest uppercase mb-3' style='opacity:0'>v2.4 New Feature</p>",
+          "  <h1 id='title' class='text-5xl font-extrabold text-white mb-4' style='opacity:0'>html_tailwind</h1>",
+          "  <h2 id='sub' class='text-2xl text-purple-300 font-light mb-6' style='opacity:0'>Animation</h2>",
+          "  <div id='line' class='h-1 bg-gradient-to-r from-purple-500 via-cyan-400 to-purple-500 rounded' style='width:0'></div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#ver', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.animate('#title', { opacity: [0, 1], translateY: [30, 0] }, { start: 0.2, end: 0.7, easing: 'easeOut' });",
+          "animation.animate('#sub', { opacity: [0, 1], translateY: [20, 0] }, { start: 0.5, end: 1.0, easing: 'easeOut' });",
+          "animation.animate('#line', { width: [0, 450, 'px'] }, { start: 1.0, end: 2.0, easing: 'easeInOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "frame_based",
+      "speaker": "Presenter",
+      "text": "フレームベースのレンダリングとは、各フレームをPuppeteerでスクリーンショットし、FFmpegで結合する手法です。CSSアニメーションに依存しない、完全に決定論的な動画生成を実現します。",
+      "duration": 7,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-slate-950 px-16'>",
+          "  <h2 id='heading' class='text-2xl font-bold text-white mb-8' style='opacity:0'>Frame-Based Rendering</h2>",
+          "  <div class='flex items-center gap-6 mb-8'>",
+          "    <div id='pup' class='flex flex-col items-center p-4 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "      <p class='text-3xl mb-2'>📸</p><p class='text-sm text-white font-semibold'>Puppeteer</p><p class='text-xs text-slate-400'>Screenshot</p>",
+          "    </div>",
+          "    <div id='arrow1' class='text-cyan-500 text-2xl' style='opacity:0'>→</div>",
+          "    <div class='flex flex-col items-center'>",
+          "      <p id='counter' class='text-4xl font-mono font-bold text-cyan-400'></p>",
+          "      <p id='frameLabel' class='text-xs text-slate-400 mt-1' style='opacity:0'>frames</p>",
+          "    </div>",
+          "    <div id='arrow2' class='text-cyan-500 text-2xl' style='opacity:0'>→</div>",
+          "    <div id='ffm' class='flex flex-col items-center p-4 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "      <p class='text-3xl mb-2'>🎞️</p><p class='text-sm text-white font-semibold'>FFmpeg</p><p class='text-xs text-slate-400'>Combine</p>",
+          "    </div>",
+          "  </div>",
+          "  <div id='badge' class='px-5 py-2 bg-green-500/20 border border-green-500/40 rounded-full' style='opacity:0'>",
+          "    <span class='text-green-400 font-mono text-sm'>Deterministic · Reproducible · Frame-perfect</span>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.animate('#pup', { opacity: [0, 1], translateY: [20, 0] }, { start: 0.3, end: 0.6, easing: 'easeOut' });",
+          "animation.animate('#arrow1', { opacity: [0, 1] }, { start: 0.6, end: 0.8 });",
+          "animation.counter('#counter', [0, 90], { start: 0.8, end: 3.0, suffix: '', decimals: 0 });",
+          "animation.animate('#frameLabel', { opacity: [0, 1] }, { start: 0.8, end: 1.0 });",
+          "animation.animate('#arrow2', { opacity: [0, 1] }, { start: 3.0, end: 3.2 });",
+          "animation.animate('#ffm', { opacity: [0, 1], translateY: [20, 0] }, { start: 3.2, end: 3.6, easing: 'easeOut' });",
+          "animation.animate('#badge', { opacity: [0, 1] }, { start: 4.0, end: 4.5 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "dsl_overview",
+      "speaker": "Presenter",
+      "text": "MulmoAnimation DSL。宣言的にアニメーションを定義できるヘルパークラスです。animate、stagger、typewriter、counter、codeReveal、blink。6つのメソッドで、複雑なアニメーションを簡潔に記述できます。",
+      "duration": 7,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-center bg-slate-950 px-20'>",
+          "  <h2 id='heading' class='text-2xl font-bold text-white mb-6' style='opacity:0'>MulmoAnimation DSL</h2>",
+          "  <div class='bg-slate-900 border border-slate-700 rounded-xl p-6'>",
+          "    <pre id='code' class='text-sm font-mono text-green-400 leading-relaxed'></pre>",
+          "    <span id='cursor' class='text-sm font-mono text-green-400'>|</span>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const codeLines = [",
+          "  'const animation = new MulmoAnimation();',",
+          "  '',",
+          "  '// Fade + Move',",
+          "  'animation.animate(sel, { opacity: [0,1] }, opts);',",
+          "  '',",
+          "  '// Stagger list items',",
+          "  'animation.stagger(sel, count, props, opts);',",
+          "  '',",
+          "  '// Typewriter / Counter / CodeReveal / Blink',",
+          "  'animation.typewriter(sel, text, opts);',",
+          "  'animation.counter(sel, [from, to], opts);',",
+          "  'animation.codeReveal(sel, lines, opts);',",
+          "  'animation.blink(sel, { interval: 0.5 });'",
+          "];",
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1], translateX: [-20, 0] }, { start: 0, end: 0.4, easing: 'easeOut' });",
+          "animation.codeReveal('#code', codeLines, { start: 0.5, end: 5.5 });",
+          "animation.blink('#cursor', { interval: 0.35 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "auto_render",
+      "speaker": "Presenter",
+      "text": "auto-render機能により、render関数のボイラープレートも不要です。animationという名前の変数を定義するだけで、テンプレートが自動的にrender関数を生成してくれます。",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-center bg-slate-950 px-20'>",
+          "  <h2 id='heading' class='text-2xl font-bold text-white mb-6' style='opacity:0'>Auto-Render</h2>",
+          "  <p id='desc' class='text-sm text-slate-400 mb-6' style='opacity:0'>render() 関数の定義は不要 — animation 変数を検出して自動生成</p>",
+          "  <div class='flex gap-4'>",
+          "    <div class='flex-1'>",
+          "      <p id='before_label' class='text-xs text-red-400 font-mono mb-2' style='opacity:0'>❌ Before (boilerplate)</p>",
+          "      <div class='bg-slate-900 border border-red-500/30 rounded-lg p-4'>",
+          "        <pre id='before' class='text-xs font-mono text-slate-500 leading-relaxed'></pre>",
+          "      </div>",
+          "    </div>",
+          "    <div class='flex-1'>",
+          "      <p id='after_label' class='text-xs text-green-400 font-mono mb-2' style='opacity:0'>✓ After (auto-render)</p>",
+          "      <div class='bg-slate-900 border border-green-500/30 rounded-lg p-4'>",
+          "        <pre id='after' class='text-xs font-mono text-green-400 leading-relaxed'></pre>",
+          "      </div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const beforeLines = [",
+          "  'const animation = new MulmoAnimation();',",
+          "  'animation.animate(...);',",
+          "  '',",
+          "  '// ← This was required:',",
+          "  'function render(frame, totalFrames, fps) {',",
+          "  '  animation.update(frame, fps);',",
+          "  '}'",
+          "];",
+          "const afterLines = [",
+          "  'const animation = new MulmoAnimation();',",
+          "  'animation.animate(...);',",
+          "  '',",
+          "  '// That\\'s it! No render() needed.',",
+          "  '// Auto-detected & auto-generated.'",
+          "];",
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.animate('#desc', { opacity: [0, 1] }, { start: 0.2, end: 0.5 });",
+          "animation.animate('#before_label', { opacity: [0, 1] }, { start: 0.5, end: 0.7 });",
+          "animation.codeReveal('#before', beforeLines, { start: 0.7, end: 2.5 });",
+          "animation.animate('#after_label', { opacity: [0, 1] }, { start: 2.5, end: 2.7 });",
+          "animation.codeReveal('#after', afterLines, { start: 2.7, end: 4.0 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "stagger_demo",
+      "speaker": "Presenter",
+      "text": "staggerアニメーション。連番要素に対して、時間差で同じアニメーションを適用できます。リストやカードの登場演出に最適です。",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-center bg-slate-950 px-20'>",
+          "  <h2 id='heading' class='text-2xl font-bold text-white mb-3' style='opacity:0'>Stagger Animation</h2>",
+          "  <p id='sub' class='text-sm text-slate-400 font-mono mb-6' style='opacity:0'>animation.stagger('#card{i}', 5, props, opts)</p>",
+          "  <div class='flex gap-3'>",
+          "    <div id='card0' class='flex-1 p-5 bg-gradient-to-b from-cyan-500/20 to-cyan-500/5 border border-cyan-500/30 rounded-xl text-center' style='opacity:0'>",
+          "      <p class='text-3xl mb-2'>📝</p><p class='text-sm text-white font-semibold'>Script</p>",
+          "    </div>",
+          "    <div id='card1' class='flex-1 p-5 bg-gradient-to-b from-purple-500/20 to-purple-500/5 border border-purple-500/30 rounded-xl text-center' style='opacity:0'>",
+          "      <p class='text-3xl mb-2'>🎨</p><p class='text-sm text-white font-semibold'>Design</p>",
+          "    </div>",
+          "    <div id='card2' class='flex-1 p-5 bg-gradient-to-b from-green-500/20 to-green-500/5 border border-green-500/30 rounded-xl text-center' style='opacity:0'>",
+          "      <p class='text-3xl mb-2'>🔊</p><p class='text-sm text-white font-semibold'>Audio</p>",
+          "    </div>",
+          "    <div id='card3' class='flex-1 p-5 bg-gradient-to-b from-orange-500/20 to-orange-500/5 border border-orange-500/30 rounded-xl text-center' style='opacity:0'>",
+          "      <p class='text-3xl mb-2'>🖼️</p><p class='text-sm text-white font-semibold'>Image</p>",
+          "    </div>",
+          "    <div id='card4' class='flex-1 p-5 bg-gradient-to-b from-red-500/20 to-red-500/5 border border-red-500/30 rounded-xl text-center' style='opacity:0'>",
+          "      <p class='text-3xl mb-2'>🎬</p><p class='text-sm text-white font-semibold'>Video</p>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.animate('#sub', { opacity: [0, 1] }, { start: 0.2, end: 0.5 });",
+          "animation.stagger('#card{i}', 5, { opacity: [0, 1], translateY: [30, 0], scale: [0.9, 1] }, { start: 0.6, stagger: 0.25, duration: 0.4, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "typewriter_demo",
+      "speaker": "Presenter",
+      "text": "typewriterで文字を一文字ずつ表示し、counterで数値をリアルタイムに変化させる。データの説得力が、アニメーションで一段上がります。",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-slate-950 px-16'>",
+          "  <h2 id='heading' class='text-2xl font-bold text-white mb-8' style='opacity:0'>Typewriter + Counter</h2>",
+          "  <div class='w-full max-w-xl mb-8'>",
+          "    <p class='text-xs text-slate-500 font-mono mb-2'>typewriter</p>",
+          "    <div class='bg-slate-900 border border-slate-700 rounded-lg p-4'>",
+          "      <span id='tw' class='text-lg text-cyan-300 font-mono'></span>",
+          "      <span id='twCursor' class='text-lg text-cyan-300 font-mono'>|</span>",
+          "    </div>",
+          "  </div>",
+          "  <div class='flex gap-8'>",
+          "    <div class='text-center'>",
+          "      <p id='c1' class='text-5xl font-bold text-cyan-400 font-mono'></p>",
+          "      <p class='text-xs text-slate-400 mt-1'>Output Formats</p>",
+          "    </div>",
+          "    <div class='text-center'>",
+          "      <p id='c2' class='text-5xl font-bold text-purple-400 font-mono'></p>",
+          "      <p class='text-xs text-slate-400 mt-1'>AI Providers</p>",
+          "    </div>",
+          "    <div class='text-center'>",
+          "      <p id='c3' class='text-5xl font-bold text-green-400 font-mono'></p>",
+          "      <p class='text-xs text-slate-400 mt-1'>FPS</p>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.typewriter('#tw', 'MulmoCast transforms ideas into multi-modal content.', { start: 0.4, end: 3.0 });",
+          "animation.blink('#twCursor', { interval: 0.4 });",
+          "animation.counter('#c1', [0, 6], { start: 1.0, end: 2.5, decimals: 0, easing: 'easeOut' });",
+          "animation.counter('#c2', [0, 5], { start: 1.5, end: 3.0, decimals: 0, suffix: '+', easing: 'easeOut' });",
+          "animation.counter('#c3', [0, 30], { start: 2.0, end: 3.5, decimals: 0, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "easing",
+      "speaker": "Presenter",
+      "text": "Easing関数で動きに個性を。linear、easeIn、easeOut、easeInOut。同じ距離を移動しても、印象はまったく変わります。",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-center bg-slate-950 px-20'>",
+          "  <h2 id='heading' class='text-2xl font-bold text-white mb-8' style='opacity:0'>Easing Functions</h2>",
+          "  <div class='space-y-4'>",
+          "    <div class='flex items-center gap-4'><span class='text-xs text-slate-400 font-mono w-24'>linear</span><div class='flex-1 bg-slate-900 rounded-full h-3 relative'><div id='b0' class='absolute top-0 left-0 w-3 h-3 bg-cyan-400 rounded-full'></div></div></div>",
+          "    <div class='flex items-center gap-4'><span class='text-xs text-slate-400 font-mono w-24'>easeIn</span><div class='flex-1 bg-slate-900 rounded-full h-3 relative'><div id='b1' class='absolute top-0 left-0 w-3 h-3 bg-purple-400 rounded-full'></div></div></div>",
+          "    <div class='flex items-center gap-4'><span class='text-xs text-slate-400 font-mono w-24'>easeOut</span><div class='flex-1 bg-slate-900 rounded-full h-3 relative'><div id='b2' class='absolute top-0 left-0 w-3 h-3 bg-green-400 rounded-full'></div></div></div>",
+          "    <div class='flex items-center gap-4'><span class='text-xs text-slate-400 font-mono w-24'>easeInOut</span><div class='flex-1 bg-slate-900 rounded-full h-3 relative'><div id='b3' class='absolute top-0 left-0 w-3 h-3 bg-orange-400 rounded-full'></div></div></div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "function render(frame, totalFrames, fps) {",
+          "  const maxLeft = 950;",
+          "  document.getElementById('heading').style.opacity = interpolate(frame, { input: { inMin: 0, inMax: fps * 0.3 }, output: { outMin: 0, outMax: 1 } });",
+          "  document.getElementById('b0').style.left = interpolate(frame, { input: { inMin: fps * 0.5, inMax: totalFrames * 0.8 }, output: { outMin: 0, outMax: maxLeft }, easing: Easing.linear }) + 'px';",
+          "  document.getElementById('b1').style.left = interpolate(frame, { input: { inMin: fps * 0.5, inMax: totalFrames * 0.8 }, output: { outMin: 0, outMax: maxLeft }, easing: Easing.easeIn }) + 'px';",
+          "  document.getElementById('b2').style.left = interpolate(frame, { input: { inMin: fps * 0.5, inMax: totalFrames * 0.8 }, output: { outMin: 0, outMax: maxLeft }, easing: Easing.easeOut }) + 'px';",
+          "  document.getElementById('b3').style.left = interpolate(frame, { input: { inMin: fps * 0.5, inMax: totalFrames * 0.8 }, output: { outMin: 0, outMax: maxLeft }, easing: Easing.easeInOut }) + 'px';",
+          "}"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "ecosystem",
+      "speaker": "Presenter",
+      "text": "MulmoCastはオープンソースです。GraphAIをオーケストレーションエンジンに、カスタムエージェントを組み合わせた拡張可能なアーキテクチャ。npmパッケージとして誰でもすぐに使えます。",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-center bg-slate-950 px-20'>",
+          "  <h2 id='heading' class='text-2xl font-bold text-white mb-8' style='opacity:0'>Open Source Ecosystem</h2>",
+          "  <div id='item0' class='flex items-center gap-4 mb-4 p-4 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "    <div class='w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center text-lg'>⚙️</div>",
+          "    <div><p class='text-white font-semibold'>GraphAI</p><p class='text-xs text-slate-400'>オーケストレーションエンジン — エージェント連携を宣言的に定義</p></div>",
+          "  </div>",
+          "  <div id='item1' class='flex items-center gap-4 mb-4 p-4 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "    <div class='w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-lg'>🧩</div>",
+          "    <div><p class='text-white font-semibold'>Custom Agents</p><p class='text-xs text-slate-400'>TTS・画像生成・動画生成の専用エージェント群</p></div>",
+          "  </div>",
+          "  <div id='item2' class='flex items-center gap-4 mb-4 p-4 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "    <div class='w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center text-lg'>📦</div>",
+          "    <div><p class='text-white font-semibold'>npm: mulmocast</p><p class='text-xs text-slate-400'>npm install -g mulmocast でグローバルインストール</p></div>",
+          "  </div>",
+          "  <div id='item3' class='flex items-center gap-4 p-4 bg-slate-900 border border-slate-700 rounded-xl' style='opacity:0'>",
+          "    <div class='w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center text-lg'>🔓</div>",
+          "    <div><p class='text-white font-semibold'>MIT License</p><p class='text-xs text-slate-400'>商用利用OK — フォーク・カスタマイズ自由</p></div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.stagger('#item{i}', 4, { opacity: [0, 1], translateX: [-30, 0] }, { start: 0.4, stagger: 0.5, duration: 0.4, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "stats",
+      "speaker": "Presenter",
+      "text": "npm package mulmocast。バージョン2.4.0。対応する出力フォーマットは6種類。AIプロバイダーは5社以上。そして、アニメーションは30fpsのなめらかさです。",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950'>",
+          "  <h2 id='heading' class='text-2xl font-bold text-white mb-10' style='opacity:0'>MulmoCast in Numbers</h2>",
+          "  <div class='flex gap-12'>",
+          "    <div class='text-center'>",
+          "      <p id='v' class='text-5xl font-extrabold text-cyan-400 font-mono mb-2'></p>",
+          "      <p id='vl' class='text-sm text-slate-400' style='opacity:0'>Version</p>",
+          "    </div>",
+          "    <div class='text-center'>",
+          "      <p id='f' class='text-5xl font-extrabold text-purple-400 font-mono mb-2'></p>",
+          "      <p id='fl' class='text-sm text-slate-400' style='opacity:0'>Output Formats</p>",
+          "    </div>",
+          "    <div class='text-center'>",
+          "      <p id='p' class='text-5xl font-extrabold text-green-400 font-mono mb-2'></p>",
+          "      <p id='pl' class='text-sm text-slate-400' style='opacity:0'>AI Providers</p>",
+          "    </div>",
+          "    <div class='text-center'>",
+          "      <p id='fps' class='text-5xl font-extrabold text-orange-400 font-mono mb-2'></p>",
+          "      <p id='fpsl' class='text-sm text-slate-400' style='opacity:0'>Animation FPS</p>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.counter('#v', [1.0, 2.4], { start: 0.3, end: 2.0, decimals: 1, easing: 'easeOut' });",
+          "animation.animate('#vl', { opacity: [0, 1] }, { start: 0.3, end: 0.5 });",
+          "animation.counter('#f', [0, 6], { start: 0.8, end: 2.5, decimals: 0, easing: 'easeOut' });",
+          "animation.animate('#fl', { opacity: [0, 1] }, { start: 0.8, end: 1.0 });",
+          "animation.counter('#p', [0, 5], { start: 1.3, end: 3.0, decimals: 0, suffix: '+', easing: 'easeOut' });",
+          "animation.animate('#pl', { opacity: [0, 1] }, { start: 1.3, end: 1.5 });",
+          "animation.counter('#fps', [0, 30], { start: 1.8, end: 3.5, decimals: 0, easing: 'easeOut' });",
+          "animation.animate('#fpsl', { opacity: [0, 1] }, { start: 1.8, end: 2.0 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "getting_started",
+      "speaker": "Presenter",
+      "text": "始め方は簡単。npm install mulmocast。スクリプトを書いて、mulmo movieを実行。3ステップで、あなたのプレゼンが動画になります。",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-center bg-slate-950 px-20'>",
+          "  <h2 id='heading' class='text-3xl font-bold text-white mb-8' style='opacity:0'>Get Started</h2>",
+          "  <div id='step0' class='flex items-center gap-4 mb-5' style='opacity:0'>",
+          "    <div class='w-10 h-10 bg-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-lg'>1</div>",
+          "    <div class='flex-1 bg-slate-900 border border-slate-700 rounded-lg p-4'><code class='text-green-400 font-mono text-lg'>npm install -g mulmocast</code></div>",
+          "  </div>",
+          "  <div id='step1' class='flex items-center gap-4 mb-5' style='opacity:0'>",
+          "    <div class='w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-lg'>2</div>",
+          "    <div class='flex-1 bg-slate-900 border border-slate-700 rounded-lg p-4'><code class='text-green-400 font-mono text-lg'>mulmo tool scripting -i -t html</code></div>",
+          "  </div>",
+          "  <div id='step2' class='flex items-center gap-4' style='opacity:0'>",
+          "    <div class='w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg'>3</div>",
+          "    <div class='flex-1 bg-slate-900 border border-slate-700 rounded-lg p-4'><code class='text-green-400 font-mono text-lg'>mulmo movie my_script.json</code></div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1], translateX: [-20, 0] }, { start: 0, end: 0.4, easing: 'easeOut' });",
+          "animation.stagger('#step{i}', 3, { opacity: [0, 1], translateX: [-40, 0] }, { start: 0.5, stagger: 0.7, duration: 0.5, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "close",
+      "speaker": "Presenter",
+      "text": "AIとヒトの共創で、プレゼンテーションを再定義する。MulmoCast。始めよう、新しい表現を。",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950'>",
+          "  <svg id='logo' viewBox='0 0 60 60' width='70' height='70' style='opacity:0'>",
+          "    <rect x='5' y='5' width='50' height='50' rx='12' fill='none' stroke='#06b6d4' stroke-width='2.5'/>",
+          "    <polygon points='24,18 24,42 42,30' fill='#06b6d4'/>",
+          "  </svg>",
+          "  <h1 id='title' class='text-5xl font-extrabold text-white mt-4 mb-4' style='opacity:0'>MulmoCast</h1>",
+          "  <p id='tagline' class='text-xl text-cyan-300 font-light mb-8' style='opacity:0'>始めよう、新しい表現を。</p>",
+          "  <div id='links' class='flex gap-6 text-sm' style='opacity:0'>",
+          "    <span class='text-slate-400 font-mono'>npm install -g mulmocast</span>",
+          "    <span class='text-slate-600'>|</span>",
+          "    <span class='text-slate-400 font-mono'>github.com/receptron/mulmocast-cli</span>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#logo', { opacity: [0, 1], scale: [0.5, 1] }, { start: 0, end: 0.6, easing: 'easeOut' });",
+          "animation.animate('#title', { opacity: [0, 1], translateY: [30, 0] }, { start: 0.3, end: 0.8, easing: 'easeOut' });",
+          "animation.animate('#tagline', { opacity: [0, 1], translateY: [15, 0] }, { start: 0.7, end: 1.2, easing: 'easeOut' });",
+          "animation.animate('#links', { opacity: [0, 1] }, { start: 1.5, end: 2.0 });"
+        ],
+        "animation": true
+      }
+    }
+  ]
+}
