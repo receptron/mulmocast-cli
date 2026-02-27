@@ -547,6 +547,83 @@
       }
     },
     {
+      "id": "demo_3d_card_flip",
+      "speaker": "Presenter",
+      "duration": 3,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-gradient-to-br from-slate-900 to-indigo-950'>",
+          "  <div style='perspective:1000px'>",
+          "    <div id='card' class='relative' style='width:340px;height:200px;transform-style:preserve-3d'>",
+          "      <div class='absolute inset-0 rounded-2xl flex flex-col items-center justify-center' style='backface-visibility:hidden;background:linear-gradient(135deg,#3b82f6,#06b6d4);box-shadow:0 20px 60px rgba(6,182,212,0.3)'>",
+          "        <p class='text-white text-3xl font-bold tracking-wide'>MulmoCast</p>",
+          "        <p class='text-blue-200 text-sm mt-2 tracking-wider'>FRONT SIDE</p>",
+          "      </div>",
+          "      <div class='absolute inset-0 rounded-2xl flex flex-col items-center justify-center' style='backface-visibility:hidden;transform:rotateY(180deg);background:linear-gradient(135deg,#8b5cf6,#ec4899);box-shadow:0 20px 60px rgba(139,92,246,0.3)'>",
+          "        <p class='text-white text-3xl font-bold tracking-wide'>AI-Native</p>",
+          "        <p class='text-purple-200 text-sm mt-2 tracking-wider'>BACK SIDE</p>",
+          "      </div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#card', { rotateY: [0, 180] }, { start: 0.5, end: 2.5, easing: 'easeInOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "demo_3d_title_reveal",
+      "speaker": "Presenter",
+      "duration": 3,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-black' style='perspective:800px'>",
+          "  <h1 id='title' class='text-7xl font-bold tracking-wider' style='opacity:0;font-family:Impact,sans-serif;color:white;text-shadow:0 0 40px rgba(6,182,212,0.5)'>CINEMATIC</h1>",
+          "  <div id='line' class='h-0.5 mt-6 rounded' style='width:0;background:linear-gradient(90deg,transparent,#06b6d4,transparent)'></div>",
+          "  <p id='sub' class='text-lg mt-6 tracking-[0.4em]' style='opacity:0;color:#64748b;font-family:monospace'>3D PERSPECTIVE REVEAL</p>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#title', { opacity: [0, 1], rotateX: [90, 0] }, { start: 0.2, end: 1.2, easing: 'easeOut' });",
+          "animation.animate('#line', { width: [0, 400, 'px'] }, { start: 1.0, end: 1.8, easing: 'easeOut' });",
+          "animation.animate('#sub', { opacity: [0, 1] }, { start: 1.5, end: 2.2, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "demo_split_reveal",
+      "speaker": "Presenter",
+      "duration": 3,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex bg-black overflow-hidden'>",
+          "  <div id='left' class='flex-1 flex items-center justify-center' style='background:linear-gradient(135deg,#1e3a5f,#0f172a);opacity:0'>",
+          "    <p class='text-6xl font-bold text-white' style='font-family:Georgia,serif'>Create</p>",
+          "  </div>",
+          "  <div id='divider' class='w-1' style='background:linear-gradient(to bottom,transparent,#06b6d4,transparent);opacity:0'></div>",
+          "  <div id='right' class='flex-1 flex items-center justify-center' style='background:linear-gradient(225deg,#4c1d95,#0f172a);opacity:0'>",
+          "    <p class='text-6xl font-bold text-white' style='font-family:Georgia,serif'>Inspire</p>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#left', { translateX: [-640, 0], opacity: [0, 1] }, { start: 0, end: 1.0, easing: 'easeOut' });",
+          "animation.animate('#right', { translateX: [640, 0], opacity: [0, 1] }, { start: 0.3, end: 1.3, easing: 'easeOut' });",
+          "animation.animate('#divider', { opacity: [0, 1] }, { start: 1.2, end: 1.8 });"
+        ],
+        "animation": true
+      }
+    },
+    {
       "speaker": "Presenter",
       "duration": 2,
       "image": {

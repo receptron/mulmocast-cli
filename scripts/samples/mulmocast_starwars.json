@@ -1,0 +1,410 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "ja",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "title": "MulmoCast — STAR WARS STYLE",
+  "description": "スターウォーズ風のビジュアルスタイルでMulmoCastを紹介するアニメーション動画",
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "voiceId": "onyx"
+      }
+    }
+  },
+  "audioParams": {
+    "bgm": { "kind": "url", "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/theme001.mp3" },
+    "bgmVolume": 0.12
+  },
+  "beats": [
+    {
+      "text": "遠い昔、はるか彼方のプレゼンテーション銀河系で。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Times New Roman','Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex items-center justify-center'>",
+          "  <div id='text' class='text-blue-400 text-2xl tracking-wider text-center leading-relaxed' style='opacity:0'>A long time ago in a presentation galaxy<br>far, far away....</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#text', { opacity: [0, 1] }, { start: 0.5, end: 1.5 });",
+          "animation.animate('#text', { opacity: [1, 0] }, { start: 2.8, end: 3.5 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "MulmoCast。AIの力で、コンテンツ制作に新たなる希望をもたらす。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Impact','Arial Black',sans-serif}@keyframes none{}</style>",
+          "<div class='h-full w-full bg-black flex flex-col items-center justify-center' style='perspective:400px'>",
+          "  <div id='logo' class='text-yellow-400 text-9xl font-bold tracking-wider text-center' style='opacity:0;text-shadow:0 0 30px rgba(250,204,21,0.4)'>MulmoCast</div>",
+          "  <div id='subtitle' class='text-yellow-500 text-xl tracking-[0.3em] mt-4 text-center' style='opacity:0'>EPISODE I — A NEW HOPE FOR CONTENT</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#logo', { opacity: [0, 1], scale: [2.0, 1] }, { start: 0.3, end: 1.5, easing: 'easeOut' });",
+          "animation.animate('#subtitle', { opacity: [0, 1] }, { start: 2.0, end: 2.8 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "銀河系のプレゼンテーションは、暗黒の時代を迎えていた。フォーマットの壁、手作業の苦行、AI非対応の旧式兵器。反乱軍は苦境に立たされていた。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Times New Roman','Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex items-center justify-center' style='perspective:500px'>",
+          "  <div id='crawl' class='text-yellow-400 text-xl leading-[2.2] text-center max-w-2xl' style='opacity:0'>",
+          "    銀河系のコンテンツ制作は危機に瀕していた。<br><br>",
+          "    フォーマットの壁が立ちはだかり、<br>",
+          "    手作業のボトルネックが生産性を蝕み、<br>",
+          "    AI統合の欠如が進化を阻んでいた。<br><br>",
+          "    しかし、希望の光が現れようとしていた……",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#crawl', { opacity: [0, 1], translateY: [80, 0] }, { start: 0.3, end: 1.5, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "MulmoScript。それはフォースのごとく、すべてを結びつける中間言語。ナレーション、映像、音声。すべてが一つのJSONに統合される。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Courier New','Monaco',monospace}</style>",
+          "<div class='h-full w-full bg-black flex flex-col justify-center px-20'>",
+          "  <div class='flex items-center gap-3 mb-2'>",
+          "    <div id='saber' class='h-1 rounded-full' style='background:linear-gradient(90deg,#60a5fa,#93c5fd);width:0;opacity:0'></div>",
+          "    <div id='label' class='text-blue-400 text-xs tracking-[0.3em]' style='opacity:0'>THE FORCE</div>",
+          "  </div>",
+          "  <div id='heading' class='text-yellow-400 text-5xl font-bold mb-8' style='font-family:Impact,sans-serif;opacity:0'>MulmoScript</div>",
+          "  <div class='p-6 rounded border' style='border-color:#1e3a5f;background:rgba(0,0,0,0.5)'>",
+          "    <pre id='code' class='text-blue-300 text-base leading-relaxed'></pre>",
+          "    <span id='cursor' class='text-blue-300'>|</span>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "var codeLines = ['{', '  \"$mulmocast\": { \"version\": \"1.1\" },', '  \"lang\": \"ja\",', '  \"beats\": [', '    { \"text\": \"May the Force be with you.\" }', '  ]', '}'];",
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#saber', { opacity: [0, 1], width: [0, 60, 'px'] }, { start: 0, end: 0.5, easing: 'easeOut' });",
+          "animation.animate('#label', { opacity: [0, 1] }, { start: 0.3, end: 0.6 });",
+          "animation.animate('#heading', { opacity: [0, 1], translateX: [-20, 0] }, { start: 0.5, end: 1.0, easing: 'easeOut' });",
+          "animation.codeReveal('#code', codeLines, { start: 1.2, end: 3.5 });",
+          "animation.blink('#cursor', { interval: 0.35 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "たった一行のコマンドで、全艦隊が出撃する。音声合成、画像生成、動画エンコード。すべてが自動で実行される。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Courier New','Monaco',monospace}</style>",
+          "<div class='h-full w-full bg-black flex flex-col items-center justify-center'>",
+          "  <div id='label' class='text-yellow-600 text-xs tracking-[0.3em] mb-6' style='opacity:0'>COMMAND BRIDGE</div>",
+          "  <div class='rounded border px-10 py-6 w-[700px]' style='border-color:#1e3a5f;background:rgba(0,0,30,0.6)'>",
+          "    <div class='flex items-center'>",
+          "      <span class='text-yellow-400'>$</span>",
+          "      <span id='cmd' class='ml-2 text-xl text-blue-300'></span>",
+          "    </div>",
+          "  </div>",
+          "  <div class='mt-8 flex gap-10'>",
+          "    <div id='s0' class='text-center' style='opacity:0'>",
+          "      <div class='text-2xl mb-1' style='color:#60a5fa'>✦</div>",
+          "      <div class='text-sm text-gray-400'>Audio</div>",
+          "    </div>",
+          "    <div id='s1' class='text-center' style='opacity:0'>",
+          "      <div class='text-2xl mb-1' style='color:#60a5fa'>✦</div>",
+          "      <div class='text-sm text-gray-400'>Images</div>",
+          "    </div>",
+          "    <div id='s2' class='text-center' style='opacity:0'>",
+          "      <div class='text-2xl mb-1' style='color:#60a5fa'>✦</div>",
+          "      <div class='text-sm text-gray-400'>Video</div>",
+          "    </div>",
+          "  </div>",
+          "  <div id='done' class='mt-6 text-yellow-400 text-lg font-bold tracking-widest' style='font-family:Impact,sans-serif;opacity:0'>MISSION COMPLETE</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#label', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.typewriter('#cmd', 'mulmo movie my_script.json', { start: 0.3, end: 1.8 });",
+          "animation.stagger('#s{i}', 3, { opacity: [0, 1], scale: [0.5, 1] }, { start: 2.0, stagger: 0.3, duration: 0.3, easing: 'easeOut' });",
+          "animation.animate('#done', { opacity: [0, 1] }, { start: 3.0, end: 3.3 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "六つの出力フォーマット。動画、ポッドキャスト、スライドショー、PDF、マンガ、ショート動画。一つのスクリプトから、銀河全域に展開せよ。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Impact','Arial Black',sans-serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col items-center justify-center'>",
+          "  <div class='text-yellow-700 text-xs tracking-[0.5em] mb-2' style='font-family:monospace'>OUTPUT FLEET</div>",
+          "  <div id='counter' class='text-yellow-400 text-9xl font-bold' style='text-shadow:0 0 20px rgba(250,204,21,0.3)'></div>",
+          "  <div class='mt-10 grid grid-cols-3 gap-x-16 gap-y-6'>",
+          "    <div id='f0' class='text-center' style='opacity:0'>",
+          "      <div class='text-lg text-gray-200' style='font-family:serif'>Video</div>",
+          "      <div class='text-xs text-blue-400' style='font-family:monospace'>X-Wing</div>",
+          "    </div>",
+          "    <div id='f1' class='text-center' style='opacity:0'>",
+          "      <div class='text-lg text-gray-200' style='font-family:serif'>Podcast</div>",
+          "      <div class='text-xs text-blue-400' style='font-family:monospace'>Y-Wing</div>",
+          "    </div>",
+          "    <div id='f2' class='text-center' style='opacity:0'>",
+          "      <div class='text-lg text-gray-200' style='font-family:serif'>Slideshow</div>",
+          "      <div class='text-xs text-blue-400' style='font-family:monospace'>A-Wing</div>",
+          "    </div>",
+          "    <div id='f3' class='text-center' style='opacity:0'>",
+          "      <div class='text-lg text-gray-200' style='font-family:serif'>PDF</div>",
+          "      <div class='text-xs text-blue-400' style='font-family:monospace'>B-Wing</div>",
+          "    </div>",
+          "    <div id='f4' class='text-center' style='opacity:0'>",
+          "      <div class='text-lg text-gray-200' style='font-family:serif'>Manga</div>",
+          "      <div class='text-xs text-blue-400' style='font-family:monospace'>U-Wing</div>",
+          "    </div>",
+          "    <div id='f5' class='text-center' style='opacity:0'>",
+          "      <div class='text-lg text-gray-200' style='font-family:serif'>Shorts</div>",
+          "      <div class='text-xs text-blue-400' style='font-family:monospace'>V-Wing</div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.counter('#counter', [0, 6], { start: 0.3, end: 2.5, decimals: 0 });",
+          "animation.stagger('#f{i}', 6, { opacity: [0, 1], translateY: [15, 0] }, { start: 0.5, stagger: 0.3, duration: 0.3, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "四つのAIプロバイダーが、ジェダイ評議会のごとく結集。OpenAI、Google、ElevenLabs、Replicate。それぞれの専門領域で、最大の力を発揮する。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Times New Roman','Hiragino Mincho ProN',serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col justify-center px-16'>",
+          "  <div id='label' class='text-yellow-600 text-xs tracking-[0.3em] mb-8' style='font-family:monospace;opacity:0'>JEDI COUNCIL — 4 MASTERS</div>",
+          "  <div class='grid grid-cols-2 gap-4'>",
+          "    <div id='j0' class='p-5 rounded' style='border:1px solid #1e3a5f;background:rgba(0,0,30,0.4);opacity:0'>",
+          "      <div class='flex items-center gap-3 mb-2'>",
+          "        <div class='w-2 h-2 rounded-full bg-blue-400'></div>",
+          "        <span class='text-yellow-400 text-xl font-bold' style='font-family:Impact,sans-serif'>OpenAI</span>",
+          "      </div>",
+          "      <div class='text-xs text-gray-500' style='font-family:monospace'>TTS / DALL·E / GPT</div>",
+          "    </div>",
+          "    <div id='j1' class='p-5 rounded' style='border:1px solid #1e3a5f;background:rgba(0,0,30,0.4);opacity:0'>",
+          "      <div class='flex items-center gap-3 mb-2'>",
+          "        <div class='w-2 h-2 rounded-full bg-blue-400'></div>",
+          "        <span class='text-yellow-400 text-xl font-bold' style='font-family:Impact,sans-serif'>Google</span>",
+          "      </div>",
+          "      <div class='text-xs text-gray-500' style='font-family:monospace'>Gemini / Imagen / Vertex AI</div>",
+          "    </div>",
+          "    <div id='j2' class='p-5 rounded' style='border:1px solid #1e3a5f;background:rgba(0,0,30,0.4);opacity:0'>",
+          "      <div class='flex items-center gap-3 mb-2'>",
+          "        <div class='w-2 h-2 rounded-full bg-blue-400'></div>",
+          "        <span class='text-yellow-400 text-xl font-bold' style='font-family:Impact,sans-serif'>ElevenLabs</span>",
+          "      </div>",
+          "      <div class='text-xs text-gray-500' style='font-family:monospace'>高品質音声合成 / 多言語対応</div>",
+          "    </div>",
+          "    <div id='j3' class='p-5 rounded' style='border:1px solid #1e3a5f;background:rgba(0,0,30,0.4);opacity:0'>",
+          "      <div class='flex items-center gap-3 mb-2'>",
+          "        <div class='w-2 h-2 rounded-full bg-blue-400'></div>",
+          "        <span class='text-yellow-400 text-xl font-bold' style='font-family:Impact,sans-serif'>Replicate</span>",
+          "      </div>",
+          "      <div class='text-xs text-gray-500' style='font-family:monospace'>動画生成 / LipSync / 効果音</div>",
+          "    </div>",
+          "  </div>",
+          "  <div id='council' class='mt-6 text-xs tracking-[0.2em] text-blue-400' style='font-family:monospace;opacity:0'>THE COUNCIL IS ASSEMBLED</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#label', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.stagger('#j{i}', 4, { opacity: [0, 1], translateY: [15, 0] }, { start: 0.4, stagger: 0.4, duration: 0.3, easing: 'easeOut' });",
+          "animation.animate('#council', { opacity: [0, 1] }, { start: 2.5, end: 3.0 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "html_tailwindアニメーション。フレーム単位の決定論的レンダリング。デス・スターの超兵器にも匹敵する精密さ。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Courier New','Monaco',monospace}</style>",
+          "<div class='h-full w-full bg-black flex flex-col justify-center px-16'>",
+          "  <div id='label' class='text-yellow-600 text-xs tracking-[0.3em] mb-2' style='opacity:0'>WEAPONS SYSTEM</div>",
+          "  <div id='heading' class='text-yellow-400 text-3xl font-bold mb-10' style='font-family:Impact,sans-serif;opacity:0'>Rendering Pipeline</div>",
+          "  <div class='flex items-center justify-center gap-6'>",
+          "    <div id='box0' class='px-8 py-5 text-center rounded' style='border:1px solid #1e3a5f;opacity:0'>",
+          "      <div class='text-xs tracking-widest text-gray-600'>CAPTURE</div>",
+          "      <div class='text-lg font-bold mt-1 text-gray-200'>Puppeteer</div>",
+          "    </div>",
+          "    <div id='arrow0' class='text-2xl text-yellow-400' style='opacity:0'>⟩</div>",
+          "    <div id='box1' class='px-8 py-5 text-center rounded' style='border:1px solid #eab308;opacity:0'>",
+          "      <div class='text-xs tracking-widest text-gray-600'>POWER</div>",
+          "      <div id='power' class='text-3xl font-bold mt-1 text-yellow-400'></div>",
+          "    </div>",
+          "    <div id='arrow1' class='text-2xl text-yellow-400' style='opacity:0'>⟩</div>",
+          "    <div id='box2' class='px-8 py-5 text-center rounded' style='border:1px solid #1e3a5f;opacity:0'>",
+          "      <div class='text-xs tracking-widest text-gray-600'>ENCODE</div>",
+          "      <div class='text-lg font-bold mt-1 text-gray-200'>FFmpeg</div>",
+          "    </div>",
+          "  </div>",
+          "  <div id='tagline' class='mt-8 text-xs tracking-[0.2em] text-center text-gray-600' style='opacity:0'>FULLY OPERATIONAL</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#label', { opacity: [0, 1] }, { start: 0, end: 0.2 });",
+          "animation.animate('#heading', { opacity: [0, 1] }, { start: 0.1, end: 0.5 });",
+          "animation.stagger('#box{i}', 3, { opacity: [0, 1], translateY: [10, 0] }, { start: 0.6, stagger: 0.3, duration: 0.25, easing: 'easeOut' });",
+          "animation.animate('#arrow0', { opacity: [0, 1] }, { start: 0.9, end: 1.1 });",
+          "animation.animate('#arrow1', { opacity: [0, 1] }, { start: 1.2, end: 1.4 });",
+          "animation.counter('#power', [0, 100], { start: 1.0, end: 2.5, decimals: 0, suffix: '%' });",
+          "animation.animate('#tagline', { opacity: [0, 1] }, { start: 2.5, end: 3.0 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "全システム正常稼働。稼働率99.9パーセント。出力フォーマット6。AIプロバイダー4。フレームレート30。帝国を倒す準備は整った。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Courier New','Monaco',monospace}</style>",
+          "<div class='h-full w-full bg-black flex flex-col p-12'>",
+          "  <div class='flex justify-between items-center mb-6'>",
+          "    <div id='sysLabel' class='text-yellow-600 text-xs tracking-[0.3em]' style='opacity:0'>REBEL BASE — SYSTEM STATUS</div>",
+          "    <div class='flex items-center gap-2'>",
+          "      <div id='indicator' class='w-2 h-2 rounded-full bg-blue-400'></div>",
+          "      <span class='text-xs text-gray-600'>ACTIVE</span>",
+          "    </div>",
+          "  </div>",
+          "  <div class='grid grid-cols-2 gap-4 flex-1'>",
+          "    <div id='m0' class='p-5 rounded' style='border:1px solid #1e3a5f;opacity:0'>",
+          "      <div class='text-xs tracking-widest text-gray-600'>SHIELD STRENGTH</div>",
+          "      <div class='flex items-end gap-1 mt-2'>",
+          "        <span id='c0' class='text-4xl font-bold text-blue-400'></span>",
+          "        <span class='text-sm mb-1 text-gray-600'>%</span>",
+          "      </div>",
+          "    </div>",
+          "    <div id='m1' class='p-5 rounded' style='border:1px solid #1e3a5f;opacity:0'>",
+          "      <div class='text-xs tracking-widest text-gray-600'>FLEET SIZE</div>",
+          "      <div id='c1' class='text-4xl font-bold mt-2 text-gray-200'></div>",
+          "    </div>",
+          "    <div id='m2' class='p-5 rounded' style='border:1px solid #1e3a5f;opacity:0'>",
+          "      <div class='text-xs tracking-widest text-gray-600'>JEDI MASTERS</div>",
+          "      <div id='c2' class='text-4xl font-bold mt-2 text-gray-200'></div>",
+          "    </div>",
+          "    <div id='m3' class='p-5 rounded' style='border:1px solid #1e3a5f;opacity:0'>",
+          "      <div class='text-xs tracking-widest text-gray-600'>HYPERDRIVE</div>",
+          "      <div class='flex items-end gap-1 mt-2'>",
+          "        <span id='c3' class='text-4xl font-bold text-gray-200'></span>",
+          "        <span class='text-sm mb-1 text-gray-600'>FPS</span>",
+          "      </div>",
+          "    </div>",
+          "  </div>",
+          "  <div id='status' class='mt-4 text-sm tracking-[0.3em] text-center text-yellow-400' style='font-family:Impact,sans-serif;opacity:0'>ALL SYSTEMS OPERATIONAL</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#sysLabel', { opacity: [0, 1] }, { start: 0, end: 0.2 });",
+          "animation.blink('#indicator', { interval: 0.5 });",
+          "animation.stagger('#m{i}', 4, { opacity: [0, 1] }, { start: 0.3, stagger: 0.4, duration: 0.25 });",
+          "animation.counter('#c0', [0, 99.9], { start: 0.5, end: 2.5, decimals: 1 });",
+          "animation.counter('#c1', [0, 6], { start: 0.9, end: 2.5, decimals: 0 });",
+          "animation.counter('#c2', [0, 4], { start: 1.3, end: 2.5, decimals: 0 });",
+          "animation.counter('#c3', [0, 30], { start: 1.7, end: 2.5, decimals: 0 });",
+          "animation.animate('#status', { opacity: [0, 1] }, { start: 3.5, end: 4.0 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "フォースと共にあらんことを。MulmoCastが切り開く、コンテンツ制作の新時代。その力を、あなた自身の手で解き放て。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Times New Roman','Hiragino Mincho ProN','Yu Mincho',serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col items-center justify-center'>",
+          "  <div id='saber' class='mb-8 h-1 rounded-full' style='background:linear-gradient(90deg,transparent,#60a5fa,#93c5fd,#60a5fa,transparent);width:0;opacity:0'></div>",
+          "  <div id='force' class='text-yellow-400 text-3xl tracking-[0.3em] mb-4' style='font-family:Impact,sans-serif;opacity:0'>MAY THE FORCE</div>",
+          "  <div id='with' class='text-yellow-400 text-3xl tracking-[0.3em] mb-12' style='font-family:Impact,sans-serif;opacity:0'>BE WITH YOU</div>",
+          "  <div id='cmd' class='text-blue-400 text-base tracking-wider' style='font-family:monospace;opacity:0'>$ npm install -g mulmocast</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#saber', { opacity: [0, 0.8], width: [0, 500, 'px'] }, { start: 0.2, end: 1.2, easing: 'easeOut' });",
+          "animation.animate('#force', { opacity: [0, 1] }, { start: 0.8, end: 1.3 });",
+          "animation.animate('#with', { opacity: [0, 1] }, { start: 1.3, end: 1.8 });",
+          "animation.animate('#cmd', { opacity: [0, 1] }, { start: 3.0, end: 3.5 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "MulmoCast、覚醒。",
+      "speaker": "Presenter",
+      "duration": 3,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Impact','Arial Black',sans-serif}</style>",
+          "<div class='h-full w-full bg-black flex flex-col items-center justify-center'>",
+          "  <div id='name' class='text-yellow-400 text-8xl font-bold tracking-wider' style='opacity:0;text-shadow:0 0 40px rgba(250,204,21,0.3)'>MulmoCast</div>",
+          "  <div id='line' class='mt-4 h-0.5 rounded-full' style='background:linear-gradient(90deg,transparent,#eab308,transparent);opacity:0;width:0'></div>",
+          "  <div id='awaken' class='text-yellow-500 text-2xl tracking-[0.5em] mt-6' style='font-family:\"Times New Roman\",\"Hiragino Mincho ProN\",serif;opacity:0'>覚 醒</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#name', { opacity: [0, 1], scale: [1.2, 1] }, { start: 0.2, end: 0.8, easing: 'easeOut' });",
+          "animation.animate('#line', { opacity: [0, 1], width: [0, 400, 'px'] }, { start: 1.0, end: 1.5, easing: 'easeOut' });",
+          "animation.animate('#awaken', { opacity: [0, 1] }, { start: 1.5, end: 2.0 });"
+        ],
+        "animation": true
+      }
+    }
+  ]
+}

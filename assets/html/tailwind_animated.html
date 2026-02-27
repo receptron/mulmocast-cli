@@ -55,7 +55,7 @@
 
     // === MulmoAnimation Helper Class ===
 
-    const TRANSFORM_PROPS = { translateX: 'px', translateY: 'px', scale: '', rotate: 'deg' };
+    const TRANSFORM_PROPS = { translateX: 'px', translateY: 'px', scale: '', rotate: 'deg', rotateX: 'deg', rotateY: 'deg', rotateZ: 'deg' };
     const SVG_PROPS = ['r', 'cx', 'cy', 'x', 'y', 'x1', 'y1', 'x2', 'y2', 'rx', 'ry',
                        'width', 'height', 'stroke-width', 'stroke-dashoffset', 'stroke-dasharray', 'opacity'];
 
@@ -176,7 +176,7 @@
 
         if (entry.kind === 'animate') {
           const startFrame = (opts.start || 0) * fps;
-          const endFrame = (opts.end || 0) * fps;
+          const endFrame = (opts.end === 'auto' ? window.__MULMO.totalFrames / fps : (opts.end || 0)) * fps;
           const progress = Math.max(0, Math.min(1, endFrame === startFrame ? 1 : (frame - startFrame) / (endFrame - startFrame)));
           const el = document.querySelector(entry.selector);
           this._applyProps(el, entry.props, progress, easingFn);
@@ -196,7 +196,7 @@
 
         } else if (entry.kind === 'typewriter') {
           const twStart = (opts.start || 0) * fps;
-          const twEnd = (opts.end || 0) * fps;
+          const twEnd = (opts.end === 'auto' ? window.__MULMO.totalFrames / fps : (opts.end || 0)) * fps;
           const twProgress = Math.max(0, Math.min(1, twEnd === twStart ? 1 : (frame - twStart) / (twEnd - twStart)));
           const charCount = Math.floor(twProgress * entry.text.length);
           const twEl = document.querySelector(entry.selector);
@@ -204,7 +204,7 @@
 
         } else if (entry.kind === 'counter') {
           const cStart = (opts.start || 0) * fps;
-          const cEnd = (opts.end || 0) * fps;
+          const cEnd = (opts.end === 'auto' ? window.__MULMO.totalFrames / fps : (opts.end || 0)) * fps;
           const cProgress = Math.max(0, Math.min(1, cEnd === cStart ? 1 : (frame - cStart) / (cEnd - cStart)));
           const cVal = entry.range[0] + easingFn(cProgress) * (entry.range[1] - entry.range[0]);
           const decimals = opts.decimals || 0;
@@ -214,7 +214,7 @@
 
         } else if (entry.kind === 'codeReveal') {
           const crStart = (opts.start || 0) * fps;
-          const crEnd = (opts.end || 0) * fps;
+          const crEnd = (opts.end === 'auto' ? window.__MULMO.totalFrames / fps : (opts.end || 0)) * fps;
           const crProgress = Math.max(0, Math.min(1, crEnd === crStart ? 1 : (frame - crStart) / (crEnd - crStart)));
           const lineCount = Math.floor(crProgress * entry.lines.length);
           const crEl = document.querySelector(entry.selector);

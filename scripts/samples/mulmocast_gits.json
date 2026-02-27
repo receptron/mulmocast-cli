@@ -1,0 +1,493 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "ja",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "title": "MulmoCast — GHOST IN THE SHELL STYLE",
+  "description": "攻殻機動隊風のビジュアルスタイルでMulmoCastを紹介するアニメーション動画",
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "voiceId": "onyx"
+      }
+    }
+  },
+  "audioParams": {
+    "bgm": { "kind": "url", "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/story002.mp3" },
+    "bgmVolume": 0.1
+  },
+  "beats": [
+    {
+      "text": "電脳空間、接続開始。全チャンネル、オープン。",
+      "speaker": "Presenter",
+      "duration": 3,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Courier New','Monaco',monospace}</style>",
+          "<div class='h-full w-full relative' style='background:#0a0e17'>",
+          "  <div id='scanline' class='absolute left-0 w-full h-0.5' style='background:#00FF41;opacity:0.6;top:0'></div>",
+          "  <div class='absolute inset-0 pointer-events-none' style='background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.03) 2px,rgba(0,255,65,0.03) 4px)'></div>",
+          "  <div class='h-full flex flex-col justify-center px-20'>",
+          "    <div id='l0' class='text-sm mb-2' style='color:#00FF41;opacity:0'>[SYS] Initializing neural network...</div>",
+          "    <div id='l1' class='text-sm mb-2' style='color:#00FF41;opacity:0'>[SYS] Loading MulmoCast kernel v2.4...</div>",
+          "    <div id='l2' class='text-sm mb-2' style='color:#00FF41;opacity:0'>[SYS] AI providers: 4 nodes detected</div>",
+          "    <div id='l3' class='text-sm mb-2' style='color:#00FF41;opacity:0'>[SYS] Establishing secure channels...</div>",
+          "    <div id='done' class='text-lg font-bold mt-4' style='color:#00FFFF;opacity:0'>CONNECTION ESTABLISHED</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#scanline', { translateY: [0, 720] }, { start: 0, end: 2.0 });",
+          "animation.stagger('#l{i}', 4, { opacity: [0, 1] }, { start: 0.3, stagger: 0.35, duration: 0.15 });",
+          "animation.animate('#done', { opacity: [0, 1] }, { start: 2.0, end: 2.3 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "MulmoCast。コンテンツ生成の電脳化、その最前線。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Courier New','Monaco',monospace}</style>",
+          "<div class='h-full w-full relative' style='background:#0a0e17'>",
+          "  <div class='absolute inset-0 pointer-events-none' style='background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.03) 2px,rgba(0,255,65,0.03) 4px)'></div>",
+          "  <div class='h-full flex flex-col items-center justify-center'>",
+          "    <div class='relative'>",
+          "      <div id='glitch1' class='absolute text-8xl font-bold tracking-wider' style='color:#00FF41;opacity:0;left:-3px;top:-2px'>MulmoCast</div>",
+          "      <div id='glitch2' class='absolute text-8xl font-bold tracking-wider' style='color:#00FFFF;opacity:0;left:3px;top:2px'>MulmoCast</div>",
+          "      <div id='title' class='text-8xl font-bold tracking-wider text-white' style='opacity:0'>MulmoCast</div>",
+          "    </div>",
+          "    <div id='line' class='mt-4 h-px' style='background:#00FFFF;opacity:0;width:0'></div>",
+          "    <div id='subtitle' class='mt-6 text-lg tracking-[0.3em]' style='color:#00FF41;opacity:0'>CONTENT GENERATION SYSTEM</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#glitch1', { opacity: [0, 0.4] }, { start: 0.2, end: 0.5 });",
+          "animation.animate('#glitch2', { opacity: [0, 0.3] }, { start: 0.3, end: 0.6 });",
+          "animation.animate('#title', { opacity: [0, 1], scale: [1.05, 1] }, { start: 0.3, end: 0.8, easing: 'easeOut' });",
+          "animation.animate('#line', { opacity: [0, 1], width: [0, 500, 'px'] }, { start: 1.0, end: 1.8, easing: 'easeOut' });",
+          "animation.animate('#subtitle', { opacity: [0, 1] }, { start: 1.5, end: 2.0 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "問おう。あなたのプレゼンテーションに、ゴーストは宿っているか。データの海に沈んだコンテンツに、魂を吹き込む技術がある。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif}</style>",
+          "<div class='h-full w-full relative' style='background:#0a0e17'>",
+          "  <div class='absolute inset-0 pointer-events-none' style='background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.03) 2px,rgba(0,255,65,0.03) 4px)'></div>",
+          "  <div class='h-full flex flex-col items-center justify-center px-24'>",
+          "    <div id='q' class='font-mono text-xs tracking-[0.5em] mb-12' style='color:#00FFFF;opacity:0'>QUESTION</div>",
+          "    <div id='text1' class='text-4xl font-bold tracking-wider mb-4' style='color:white;opacity:0'>あなたのプレゼンテーションに</div>",
+          "    <div class='flex items-center gap-4'>",
+          "      <div id='ghost' class='font-mono text-5xl font-bold' style='color:#00FF41;opacity:0'>GHOST</div>",
+          "      <div id='text2' class='text-4xl font-bold tracking-wider' style='color:white;opacity:0'>は宿っているか</div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#q', { opacity: [0, 1] }, { start: 0.2, end: 0.5 });",
+          "animation.animate('#text1', { opacity: [0, 1], translateY: [10, 0] }, { start: 0.5, end: 1.0, easing: 'easeOut' });",
+          "animation.animate('#ghost', { opacity: [0, 1], scale: [1.2, 1] }, { start: 1.0, end: 1.5, easing: 'easeOut' });",
+          "animation.animate('#text2', { opacity: [0, 1] }, { start: 1.3, end: 1.8 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "既存ツールの脆弱性を検出。フォーマット変換不可。自動生成非対応。マルチモーダル出力、未実装。すべてが、旧世代のアーキテクチャだ。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Courier New','Monaco','Hiragino Kaku Gothic ProN',monospace}</style>",
+          "<div class='h-full w-full relative' style='background:#0a0e17'>",
+          "  <div class='absolute inset-0 pointer-events-none' style='background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.03) 2px,rgba(0,255,65,0.03) 4px)'></div>",
+          "  <div class='h-full flex flex-col justify-center px-20'>",
+          "    <div id='alert' class='text-sm tracking-[0.3em] mb-8' style='color:#FF6B00;opacity:0'>⚠ VULNERABILITY DETECTED</div>",
+          "    <div id='v0' class='flex items-center gap-4 mb-6' style='opacity:0'>",
+          "      <span class='px-2 py-1 text-xs font-bold' style='background:#FF6B00;color:#0a0e17'>CRITICAL</span>",
+          "      <span style='color:#ccc'>フォーマット変換不可 — 単一出力に固定</span>",
+          "    </div>",
+          "    <div id='v1' class='flex items-center gap-4 mb-6' style='opacity:0'>",
+          "      <span class='px-2 py-1 text-xs font-bold' style='background:#FF6B00;color:#0a0e17'>CRITICAL</span>",
+          "      <span style='color:#ccc'>自動生成非対応 — 全工程が手動オペレーション</span>",
+          "    </div>",
+          "    <div id='v2' class='flex items-center gap-4 mb-6' style='opacity:0'>",
+          "      <span class='px-2 py-1 text-xs font-bold' style='background:#FF6B00;color:#0a0e17'>CRITICAL</span>",
+          "      <span style='color:#ccc'>マルチモーダル未実装 — AI統合アーキテクチャ欠如</span>",
+          "    </div>",
+          "    <div id='verdict' class='mt-6 text-base font-bold' style='color:#FF6B00;opacity:0'>STATUS: LEGACY ARCHITECTURE — 要・全面改修</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#alert', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.stagger('#v{i}', 3, { opacity: [0, 1], translateX: [-20, 0] }, { start: 0.5, stagger: 0.5, duration: 0.3, easing: 'easeOut' });",
+          "animation.animate('#verdict', { opacity: [0, 1] }, { start: 2.5, end: 3.0 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "MulmoScript。それは電脳空間におけるコンテンツの設計図。ナレーション、映像、音声、レイアウト。すべてを一つのプロトコルに統合する。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Courier New','Monaco',monospace}</style>",
+          "<div class='h-full w-full relative' style='background:#0a0e17'>",
+          "  <div class='absolute inset-0 pointer-events-none' style='background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.03) 2px,rgba(0,255,65,0.03) 4px)'></div>",
+          "  <div class='h-full flex flex-col justify-center px-20'>",
+          "    <div id='label' class='text-xs tracking-[0.3em] mb-2' style='color:#00FFFF;opacity:0'>PROTOCOL</div>",
+          "    <div id='heading' class='text-4xl font-bold mb-8' style='color:white;opacity:0'>MulmoScript</div>",
+          "    <div class='p-6 rounded' style='background:#0d1117;border:1px solid #1a3a4a'>",
+          "      <pre id='code' class='text-base leading-relaxed' style='color:#00FF41'></pre>",
+          "      <span id='cursor' style='color:#00FF41'>█</span>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "var codeLines = ['{', '  \"$mulmocast\": { \"version\": \"1.1\" },', '  \"lang\": \"ja\",', '  \"beats\": [', '    { \"text\": \"Hello, Net.\" }', '  ]', '}'];",
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#label', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.animate('#heading', { opacity: [0, 1], translateX: [-15, 0] }, { start: 0.2, end: 0.6, easing: 'easeOut' });",
+          "animation.codeReveal('#code', codeLines, { start: 0.8, end: 3.5 });",
+          "animation.blink('#cursor', { interval: 0.3 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "コマンドは一行。それだけで電脳が動き出す。音声合成、画像生成、動画エンコード。すべてが自律的に実行される。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Courier New','Monaco',monospace}</style>",
+          "<div class='h-full w-full relative' style='background:#0a0e17'>",
+          "  <div class='absolute inset-0 pointer-events-none' style='background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.03) 2px,rgba(0,255,65,0.03) 4px)'></div>",
+          "  <div class='h-full flex flex-col items-center justify-center'>",
+          "    <div class='w-[750px] rounded' style='background:#0d1117;border:1px solid #1a3a4a'>",
+          "      <div class='flex items-center gap-2 px-4 py-2' style='border-bottom:1px solid #1a3a4a'>",
+          "        <div class='w-2.5 h-2.5 rounded-full' style='background:#FF6B00'></div>",
+          "        <div class='w-2.5 h-2.5 rounded-full' style='background:#00FF41'></div>",
+          "        <div class='w-2.5 h-2.5 rounded-full' style='background:#00FFFF'></div>",
+          "        <span class='text-xs ml-2' style='color:#555'>mulmo@cyberspace</span>",
+          "      </div>",
+          "      <div class='p-6'>",
+          "        <div class='flex items-center'>",
+          "          <span style='color:#00FFFF'>$</span>",
+          "          <span id='cmd' class='ml-2' style='color:#00FF41'></span>",
+          "          <span id='cur' style='color:#00FF41'>█</span>",
+          "        </div>",
+          "        <div id='s0' class='mt-3 text-sm' style='color:#555;opacity:0'>[audio] Synthesizing speech... done</div>",
+          "        <div id='s1' class='mt-1 text-sm' style='color:#555;opacity:0'>[image] Generating visuals... done</div>",
+          "        <div id='s2' class='mt-1 text-sm' style='color:#555;opacity:0'>[video] Encoding frames... done</div>",
+          "        <div id='done' class='mt-3 text-base font-bold' style='color:#00FF41;opacity:0'>✓ Output: mulmocast_ja.mp4</div>",
+          "      </div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.typewriter('#cmd', 'mulmo movie my_script.json', { start: 0.3, end: 1.8 });",
+          "animation.blink('#cur', { interval: 0.3 });",
+          "animation.stagger('#s{i}', 3, { opacity: [0, 1] }, { start: 2.0, stagger: 0.3, duration: 0.15 });",
+          "animation.animate('#done', { opacity: [0, 1] }, { start: 3.0, end: 3.3 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "四つのAIノードがネットワークを形成。OpenAI、Google、ElevenLabs、Replicate。それぞれが独立し、それぞれが連携する。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Courier New','Monaco','Hiragino Kaku Gothic ProN',monospace}</style>",
+          "<div class='h-full w-full relative' style='background:#0a0e17'>",
+          "  <div class='absolute inset-0 pointer-events-none' style='background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.03) 2px,rgba(0,255,65,0.03) 4px)'></div>",
+          "  <div class='h-full flex flex-col justify-center px-16'>",
+          "    <div id='label' class='text-xs tracking-[0.3em] mb-8' style='color:#00FFFF;opacity:0'>NETWORK TOPOLOGY — 4 NODES ACTIVE</div>",
+          "    <div class='grid grid-cols-2 gap-4'>",
+          "      <div id='n0' class='p-5' style='border:1px solid #1a3a4a;opacity:0'>",
+          "        <div class='flex items-center gap-3 mb-2'>",
+          "          <div class='w-2 h-2 rounded-full' style='background:#00FF41'></div>",
+          "          <span class='text-xl font-bold' style='color:white'>OpenAI</span>",
+          "        </div>",
+          "        <div class='text-xs' style='color:#555'>TTS / DALL·E / GPT — NODE:001</div>",
+          "      </div>",
+          "      <div id='n1' class='p-5' style='border:1px solid #1a3a4a;opacity:0'>",
+          "        <div class='flex items-center gap-3 mb-2'>",
+          "          <div class='w-2 h-2 rounded-full' style='background:#00FF41'></div>",
+          "          <span class='text-xl font-bold' style='color:white'>Google</span>",
+          "        </div>",
+          "        <div class='text-xs' style='color:#555'>Gemini / Imagen / Vertex — NODE:002</div>",
+          "      </div>",
+          "      <div id='n2' class='p-5' style='border:1px solid #1a3a4a;opacity:0'>",
+          "        <div class='flex items-center gap-3 mb-2'>",
+          "          <div class='w-2 h-2 rounded-full' style='background:#00FF41'></div>",
+          "          <span class='text-xl font-bold' style='color:white'>ElevenLabs</span>",
+          "        </div>",
+          "        <div class='text-xs' style='color:#555'>高品質音声合成 / 多言語 — NODE:003</div>",
+          "      </div>",
+          "      <div id='n3' class='p-5' style='border:1px solid #1a3a4a;opacity:0'>",
+          "        <div class='flex items-center gap-3 mb-2'>",
+          "          <div class='w-2 h-2 rounded-full' style='background:#00FF41'></div>",
+          "          <span class='text-xl font-bold' style='color:white'>Replicate</span>",
+          "        </div>",
+          "        <div class='text-xs' style='color:#555'>動画生成 / LipSync — NODE:004</div>",
+          "      </div>",
+          "    </div>",
+          "    <div id='status' class='mt-6 text-xs tracking-[0.2em]' style='color:#00FF41;opacity:0'>ALL NODES SYNCHRONIZED — MESH NETWORK ACTIVE</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#label', { opacity: [0, 1] }, { start: 0, end: 0.3 });",
+          "animation.stagger('#n{i}', 4, { opacity: [0, 1], translateY: [15, 0] }, { start: 0.4, stagger: 0.4, duration: 0.3, easing: 'easeOut' });",
+          "animation.animate('#status', { opacity: [0, 1] }, { start: 2.5, end: 3.0 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "一つのソースコードから、六つの出力形式へ。動画、ポッドキャスト、スライドショー、PDF、マンガ、ショート動画。変換はリアルタイム。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Courier New','Monaco',monospace}</style>",
+          "<div class='h-full w-full relative' style='background:#0a0e17'>",
+          "  <div class='absolute inset-0 pointer-events-none' style='background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.03) 2px,rgba(0,255,65,0.03) 4px)'></div>",
+          "  <div class='h-full flex flex-col items-center justify-center'>",
+          "    <div class='text-xs tracking-[0.5em] mb-2' style='color:#555'>OUTPUT CHANNELS</div>",
+          "    <div id='counter' class='text-8xl font-bold' style='color:#00FFFF'></div>",
+          "    <div class='mt-10 grid grid-cols-3 gap-x-12 gap-y-4'>",
+          "      <div id='f0' class='text-center' style='opacity:0'>",
+          "        <div class='text-lg' style='color:white'>Video</div>",
+          "        <div class='text-xs' style='color:#00FF41'>MP4</div>",
+          "      </div>",
+          "      <div id='f1' class='text-center' style='opacity:0'>",
+          "        <div class='text-lg' style='color:white'>Podcast</div>",
+          "        <div class='text-xs' style='color:#00FF41'>MP3</div>",
+          "      </div>",
+          "      <div id='f2' class='text-center' style='opacity:0'>",
+          "        <div class='text-lg' style='color:white'>Slideshow</div>",
+          "        <div class='text-xs' style='color:#00FF41'>HTML</div>",
+          "      </div>",
+          "      <div id='f3' class='text-center' style='opacity:0'>",
+          "        <div class='text-lg' style='color:white'>PDF</div>",
+          "        <div class='text-xs' style='color:#00FF41'>PDF</div>",
+          "      </div>",
+          "      <div id='f4' class='text-center' style='opacity:0'>",
+          "        <div class='text-lg' style='color:white'>Manga</div>",
+          "        <div class='text-xs' style='color:#00FF41'>PNG</div>",
+          "      </div>",
+          "      <div id='f5' class='text-center' style='opacity:0'>",
+          "        <div class='text-lg' style='color:white'>Shorts</div>",
+          "        <div class='text-xs' style='color:#00FF41'>MP4</div>",
+          "      </div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.counter('#counter', [0, 6], { start: 0.3, end: 2.5, decimals: 0 });",
+          "animation.stagger('#f{i}', 6, { opacity: [0, 1], translateY: [10, 0] }, { start: 0.5, stagger: 0.3, duration: 0.25, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "フレーム単位の決定論的レンダリング。Puppeteerがキャプチャし、FFmpegがエンコードする。再現性100パーセントのパイプライン。",
+      "speaker": "Presenter",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Courier New','Monaco',monospace}</style>",
+          "<div class='h-full w-full relative' style='background:#0a0e17'>",
+          "  <div class='absolute inset-0 pointer-events-none' style='background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.03) 2px,rgba(0,255,65,0.03) 4px)'></div>",
+          "  <div class='h-full flex flex-col justify-center px-16'>",
+          "    <div id='label' class='text-xs tracking-[0.3em] mb-2' style='color:#00FFFF;opacity:0'>RENDERING PIPELINE</div>",
+          "    <div id='heading' class='text-3xl font-bold mb-10' style='color:white;opacity:0'>Deterministic Frame Rendering</div>",
+          "    <div class='flex items-center justify-center gap-6'>",
+          "      <div id='box0' class='px-8 py-5 text-center' style='border:1px solid #1a3a4a;opacity:0'>",
+          "        <div class='text-xs tracking-widest' style='color:#555'>CAPTURE</div>",
+          "        <div class='text-lg font-bold mt-1' style='color:white'>Puppeteer</div>",
+          "      </div>",
+          "      <div id='arrow0' class='text-2xl' style='color:#00FF41;opacity:0'>→</div>",
+          "      <div id='box1' class='px-8 py-5 text-center' style='border:1px solid #00FFFF;opacity:0'>",
+          "        <div class='text-xs tracking-widest' style='color:#555'>FRAMES</div>",
+          "        <div id='frameCount' class='text-3xl font-bold mt-1' style='color:#00FFFF'></div>",
+          "      </div>",
+          "      <div id='arrow1' class='text-2xl' style='color:#00FF41;opacity:0'>→</div>",
+          "      <div id='box2' class='px-8 py-5 text-center' style='border:1px solid #1a3a4a;opacity:0'>",
+          "        <div class='text-xs tracking-widest' style='color:#555'>ENCODE</div>",
+          "        <div class='text-lg font-bold mt-1' style='color:white'>FFmpeg</div>",
+          "      </div>",
+          "    </div>",
+          "    <div id='tagline' class='mt-8 text-xs tracking-[0.2em] text-center' style='color:#555;opacity:0'>REPRODUCIBLE · DETERMINISTIC · FRAME-PERFECT</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#label', { opacity: [0, 1] }, { start: 0, end: 0.2 });",
+          "animation.animate('#heading', { opacity: [0, 1] }, { start: 0.1, end: 0.5 });",
+          "animation.stagger('#box{i}', 3, { opacity: [0, 1], translateY: [10, 0] }, { start: 0.6, stagger: 0.3, duration: 0.25, easing: 'easeOut' });",
+          "animation.animate('#arrow0', { opacity: [0, 1] }, { start: 0.9, end: 1.1 });",
+          "animation.animate('#arrow1', { opacity: [0, 1] }, { start: 1.2, end: 1.4 });",
+          "animation.counter('#frameCount', [0, 90], { start: 1.0, end: 2.5, decimals: 0 });",
+          "animation.animate('#tagline', { opacity: [0, 1] }, { start: 2.5, end: 3.0 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "全ノード、グリーン。システム稼働率99.9パーセント。出力フォーマット6。AIプロバイダー4。フレームレート30。異常なし。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Courier New','Monaco',monospace}</style>",
+          "<div class='h-full w-full relative' style='background:#0a0e17'>",
+          "  <div class='absolute inset-0 pointer-events-none' style='background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.03) 2px,rgba(0,255,65,0.03) 4px)'></div>",
+          "  <div class='h-full flex flex-col p-12'>",
+          "    <div class='flex justify-between items-center mb-6'>",
+          "      <div id='sysLabel' class='text-xs tracking-[0.3em]' style='color:#00FFFF;opacity:0'>SYSTEM DIAGNOSTICS</div>",
+          "      <div class='flex items-center gap-2'>",
+          "        <div id='indicator' class='w-2 h-2 rounded-full' style='background:#00FF41'></div>",
+          "        <span class='text-xs' style='color:#555'>ONLINE</span>",
+          "      </div>",
+          "    </div>",
+          "    <div class='grid grid-cols-2 gap-4 flex-1'>",
+          "      <div id='m0' class='p-5' style='border:1px solid #1a3a4a;opacity:0'>",
+          "        <div class='text-xs tracking-widest' style='color:#555'>UPTIME</div>",
+          "        <div class='flex items-end gap-1 mt-2'>",
+          "          <span id='c0' class='text-4xl font-bold' style='color:#00FF41'></span>",
+          "          <span class='text-sm mb-1' style='color:#555'>%</span>",
+          "        </div>",
+          "      </div>",
+          "      <div id='m1' class='p-5' style='border:1px solid #1a3a4a;opacity:0'>",
+          "        <div class='text-xs tracking-widest' style='color:#555'>OUTPUT FORMATS</div>",
+          "        <div id='c1' class='text-4xl font-bold mt-2' style='color:white'></div>",
+          "      </div>",
+          "      <div id='m2' class='p-5' style='border:1px solid #1a3a4a;opacity:0'>",
+          "        <div class='text-xs tracking-widest' style='color:#555'>AI NODES</div>",
+          "        <div id='c2' class='text-4xl font-bold mt-2' style='color:white'></div>",
+          "      </div>",
+          "      <div id='m3' class='p-5' style='border:1px solid #1a3a4a;opacity:0'>",
+          "        <div class='text-xs tracking-widest' style='color:#555'>FRAME RATE</div>",
+          "        <div class='flex items-end gap-1 mt-2'>",
+          "          <span id='c3' class='text-4xl font-bold' style='color:white'></span>",
+          "          <span class='text-sm mb-1' style='color:#555'>FPS</span>",
+          "        </div>",
+          "      </div>",
+          "    </div>",
+          "    <div id='allGreen' class='mt-4 text-sm tracking-[0.3em] text-center' style='color:#00FF41;opacity:0'>ALL NODES GREEN — NO ANOMALIES DETECTED</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#sysLabel', { opacity: [0, 1] }, { start: 0, end: 0.2 });",
+          "animation.blink('#indicator', { interval: 0.5 });",
+          "animation.stagger('#m{i}', 4, { opacity: [0, 1] }, { start: 0.3, stagger: 0.4, duration: 0.25 });",
+          "animation.counter('#c0', [0, 99.9], { start: 0.5, end: 2.5, decimals: 1 });",
+          "animation.counter('#c1', [0, 6], { start: 0.9, end: 2.5, decimals: 0 });",
+          "animation.counter('#c2', [0, 4], { start: 1.3, end: 2.5, decimals: 0 });",
+          "animation.counter('#c3', [0, 30], { start: 1.7, end: 2.5, decimals: 0 });",
+          "animation.animate('#allGreen', { opacity: [0, 1] }, { start: 3.5, end: 4.0 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "電脳にダイブせよ。MulmoCastが開く、コンテンツ制作の新しい地平。その先に何があるかは、あなた自身の目で確かめろ。",
+      "speaker": "Presenter",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif}</style>",
+          "<div class='h-full w-full relative' style='background:#0a0e17'>",
+          "  <div class='absolute inset-0 pointer-events-none' style='background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.03) 2px,rgba(0,255,65,0.03) 4px)'></div>",
+          "  <div class='absolute inset-0 flex items-center justify-center'>",
+          "    <div id='ring' class='rounded-full' style='border:1px solid #00FFFF;opacity:0;width:0;height:0'></div>",
+          "  </div>",
+          "  <div class='h-full flex flex-col items-center justify-center relative'>",
+          "    <div id='dive' class='font-mono text-7xl font-bold tracking-[0.5em]' style='color:#00FFFF;opacity:0'>DIVE</div>",
+          "    <div id='text1' class='text-2xl tracking-wider mt-8' style='color:white;opacity:0'>電脳にダイブせよ</div>",
+          "    <div id='text2' class='text-lg mt-4 tracking-wider' style='color:#888;opacity:0'>コンテンツ制作の新しい地平へ</div>",
+          "    <div id='cmd' class='font-mono mt-12 text-base tracking-wider' style='color:#00FF41;opacity:0'>$ npm install -g mulmocast</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#ring', { opacity: [0, 0.3], width: [0, 600, 'px'], height: [0, 600, 'px'] }, { start: 0.2, end: 2.0, easing: 'easeOut' });",
+          "animation.animate('#dive', { opacity: [0, 1], scale: [1.3, 1] }, { start: 0.3, end: 0.8, easing: 'easeOut' });",
+          "animation.animate('#text1', { opacity: [0, 1] }, { start: 1.0, end: 1.5 });",
+          "animation.animate('#text2', { opacity: [0, 1] }, { start: 1.5, end: 2.0 });",
+          "animation.animate('#cmd', { opacity: [0, 1] }, { start: 3.0, end: 3.5 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "MulmoCast。スタンドアローン・コンプレックス。",
+      "speaker": "Presenter",
+      "duration": 3,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<style>body{font-family:'Courier New','Monaco',monospace}</style>",
+          "<div class='h-full w-full relative' style='background:#0a0e17'>",
+          "  <div class='absolute inset-0 pointer-events-none' style='background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.03) 2px,rgba(0,255,65,0.03) 4px)'></div>",
+          "  <div class='h-full flex flex-col items-center justify-center'>",
+          "    <div id='name' class='text-8xl font-bold tracking-wider' style='color:white;opacity:0'>MulmoCast</div>",
+          "    <div id='line' class='mt-4 h-px' style='background:#00FFFF;opacity:0;width:0'></div>",
+          "    <div id='sac' class='text-xl tracking-[0.4em] mt-6' style='color:#00FF41;opacity:0'>STAND ALONE COMPLEX</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#name', { opacity: [0, 1], scale: [1.1, 1] }, { start: 0.3, end: 0.8, easing: 'easeOut' });",
+          "animation.animate('#line', { opacity: [0, 1], width: [0, 400, 'px'] }, { start: 1.0, end: 1.5, easing: 'easeOut' });",
+          "animation.animate('#sac', { opacity: [0, 1] }, { start: 1.5, end: 2.0 });"
+        ],
+        "animation": true
+      }
+    }
+  ]
+}

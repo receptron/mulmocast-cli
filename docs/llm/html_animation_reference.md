@@ -47,7 +47,7 @@ Easing.easeInOut  // smooth acceleration/deceleration
 
 ### MulmoAnimation
 
-Declarative animation helper. Times (`start`, `end`) are in **seconds**.
+Declarative animation helper. Times (`start`, `end`) are in **seconds**. Use `end: 'auto'` to span the entire beat duration.
 
 ```javascript
 const animation = new MulmoAnimation();
@@ -55,6 +55,7 @@ const animation = new MulmoAnimation();
 // Property animation (CSS/transform/SVG)
 animation.animate(selector, props, { start, end, easing? })
 // props: { opacity: [from, to], translateY: [from, to], width: [from, to, '%'] }
+// end: seconds or 'auto' (= beat's total duration)
 
 // Stagger across numbered elements (selector uses {i} placeholder)
 animation.stagger(selector, count, props, { start, stagger, duration, easing? })
@@ -83,6 +84,7 @@ animation.blink(selector, { interval? })  // interval: half-cycle seconds (defau
 | `translateX`, `translateY` | CSS transform | px |
 | `scale` | CSS transform | (none) |
 | `rotate` | CSS transform | deg |
+| `rotateX`, `rotateY`, `rotateZ` | CSS transform (3D rotation) | deg |
 | `opacity` | style.opacity | (none) |
 | Other CSS (`width`, etc.) | style[prop] | px (override with `[from, to, '%']`) |
 | SVG attrs (`r`, `cx`, etc.) | setAttribute | (none) |
@@ -167,5 +169,6 @@ No `render()` needed — auto-render detects the `animation` variable and genera
 ## Constraints
 
 - `animation` and `moviePrompt` cannot be used together on the same beat
-- `duration` is required when `animation` is set
+- `duration` is required when `animation` is set (may be auto-calculated from audio)
+- `end: 'auto'` uses the beat's total duration (`totalFrames / fps`) as the end time — useful for full-beat animations like scrolling crawls
 - CSS animations/transitions are disabled in the template (deterministic frame rendering)

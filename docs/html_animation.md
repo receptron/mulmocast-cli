@@ -129,7 +129,7 @@ Easing.easeInOut // 前半加速・後半減速
 
 ### MulmoAnimation クラス
 
-宣言的にアニメーションを定義できるヘルパー。`start`/`end` は秒単位。
+宣言的にアニメーションを定義できるヘルパー。`start`/`end` は秒単位。`end: 'auto'` でビート全体の長さを使用。
 
 ```javascript
 const animation = new MulmoAnimation();
@@ -141,6 +141,9 @@ animation.animate('#title', { opacity: [0, 1], translateY: [30, 0] }, {
 
 // 幅などの CSS プロパティ（第3要素で単位指定）
 animation.animate('#bar', { width: [0, 80, '%'] }, { start: 0, end: 1.5 });
+
+// end: 'auto' — ビート全体の長さを end に使用
+animation.animate('#crawl', { translateY: [720, -1100] }, { start: 0, end: 'auto' });
 
 // 連番要素のスタガーアニメーション（セレクタに {i} プレースホルダ）
 animation.stagger('#item{i}', 4, { opacity: [0, 1], translateX: [-40, 0] }, {
@@ -175,6 +178,7 @@ function render(frame, totalFrames, fps) {
 | `translateX`, `translateY` | transform に結合 | px |
 | `scale` | transform に結合 | なし |
 | `rotate` | transform に結合 | deg |
+| `rotateX`, `rotateY`, `rotateZ` | transform に結合 (3D回転) | deg |
 | `opacity` | style.opacity | なし |
 | CSS (`width`, `height` 等) | style[prop] | px（`[v1, v2, '%']` で変更可） |
 | SVG (`r`, `cx`, `cy` 等) | setAttribute | なし |
@@ -242,5 +246,6 @@ function render(frame, totalFrames, fps) {
 ## 制約
 
 - `animation` と `moviePrompt` の併用不可（同一ビートで両方指定するとエラー）
-- `duration` は `animation` 使用時に**必須**（音声生成と画像生成が並列のため、事前にフレーム数を確定する必要がある）
+- `duration` は `animation` 使用時に**必須**（音声生成と画像生成が並列のため、事前にフレーム数を確定する必要がある）。ただし音声から自動計算される場合は省略可
+- `end: 'auto'` を指定すると、ビート全体の長さ（`totalFrames / fps`）が `end` として使用される。ビート全体にわたるアニメーション（スクロールなど）に便利
 - CSS animation / transition はテンプレートで無効化済み（`animation-play-state: paused`, `transition: none`）
