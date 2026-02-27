@@ -135,6 +135,7 @@ jobs:
         yarn run cli images scripts/test/test_order.json &
         yarn run cli images scripts/test/test_beats.json &
         yarn run cli images scripts/test/test_render_stress.json &
+        yarn run cli images scripts/test/test_html_animation.json &
         wait
     - name: Run movie tests batch 1 (parallel)
       run: |
