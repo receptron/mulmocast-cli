@@ -29,11 +29,11 @@
           "</div>"
         ],
         "script": [
-          "const a = new MulmoAnim();",
-          "a.animate('#title', { opacity: [0, 1], translateY: [30, 0] }, { start: 0, end: 0.5, easing: 'easeOut' });",
-          "a.animate('#subtitle', { opacity: [0, 1], translateY: [20, 0] }, { start: 0.3, end: 0.8, easing: 'easeOut' });",
-          "a.animate('#line', { width: [0, 400, 'px'] }, { start: 0.5, end: 1.5, easing: 'easeInOut' });",
-          "function render(frame, totalFrames, fps) { a.update(frame, fps); }"
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#title', { opacity: [0, 1], translateY: [30, 0] }, { start: 0, end: 0.5, easing: 'easeOut' });",
+          "animation.animate('#subtitle', { opacity: [0, 1], translateY: [20, 0] }, { start: 0.3, end: 0.8, easing: 'easeOut' });",
+          "animation.animate('#line', { width: [0, 400, 'px'] }, { start: 0.5, end: 1.5, easing: 'easeInOut' });",
+          "function render(frame, totalFrames, fps) { animation.update(frame, fps); }"
         ],
         "animation": true
       }
@@ -303,9 +303,9 @@
           "</div>"
         ],
         "script": [
-          "const a = new MulmoAnim();",
-          "a.animate('#title', { opacity: [0, 1], scale: [0.8, 1] }, { start: 0, end: 1, easing: 'easeOut' });",
-          "function render(frame, totalFrames, fps) { a.update(frame, fps); }"
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#title', { opacity: [0, 1], scale: [0.8, 1] }, { start: 0, end: 1, easing: 'easeOut' });",
+          "function render(frame, totalFrames, fps) { animation.update(frame, fps); }"
         ],
         "animation": true
       }
@@ -346,12 +346,12 @@
           "</div>"
         ],
         "script": [
-          "const a = new MulmoAnim();",
-          "a.animate('#bar1', { width: [0, 80, '%'] }, { start: 0, end: 1 });",
-          "a.animate('#bar2', { width: [0, 60, '%'] }, { start: 0.3, end: 1.4 });",
-          "a.animate('#bar3', { width: [0, 90, '%'] }, { start: 0.6, end: 2 });",
-          "a.counter('#label', [0, 100], { start: 0, end: 2, prefix: 'Progress: ', suffix: '%' });",
-          "function render(frame, totalFrames, fps) { a.update(frame, fps); }"
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#bar1', { width: [0, 80, '%'] }, { start: 0, end: 1 });",
+          "animation.animate('#bar2', { width: [0, 60, '%'] }, { start: 0.3, end: 1.4 });",
+          "animation.animate('#bar3', { width: [0, 90, '%'] }, { start: 0.6, end: 2 });",
+          "animation.counter('#label', [0, 100], { start: 0, end: 2, prefix: 'Progress: ', suffix: '%' });",
+          "function render(frame, totalFrames, fps) { animation.update(frame, fps); }"
         ],
         "animation": true
       }
@@ -438,10 +438,10 @@
           "</div>"
         ],
         "script": [
-          "const a = new MulmoAnim();",
-          "a.typewriter('#typewriter', 'MulmoCast transforms your ideas into multi-modal presentations. With frame-based animation, you can create smooth, deterministic visuals powered by HTML and Tailwind CSS.', { start: 0, end: 3.4 });",
+          "const animation = new MulmoAnimation();",
+          "animation.typewriter('#typewriter', 'MulmoCast transforms your ideas into multi-modal presentations. With frame-based animation, you can create smooth, deterministic visuals powered by HTML and Tailwind CSS.', { start: 0, end: 3.4 });",
           "function render(frame, totalFrames, fps) {",
-          "  a.update(frame, fps);",
+          "  animation.update(frame, fps);",
           "  document.getElementById('cursor').style.opacity = Math.sin(frame * 0.3) > 0 ? 1 : 0;",
           "}"
         ],
@@ -516,9 +516,9 @@
           "</div>"
         ],
         "script": [
-          "const a = new MulmoAnim();",
-          "a.stagger('#item{i}', 4, { opacity: [0, 1], translateX: [-40, 0] }, { start: 0, stagger: 0.4, duration: 0.5, easing: 'easeOut' });",
-          "function render(frame, totalFrames, fps) { a.update(frame, fps); }"
+          "const animation = new MulmoAnimation();",
+          "animation.stagger('#item{i}', 4, { opacity: [0, 1], translateX: [-40, 0] }, { start: 0, stagger: 0.4, duration: 0.5, easing: 'easeOut' });",
+          "function render(frame, totalFrames, fps) { animation.update(frame, fps); }"
         ],
         "animation": true
       }

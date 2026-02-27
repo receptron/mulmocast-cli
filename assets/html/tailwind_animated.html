@@ -67,13 +67,13 @@
       return outMin + easing(progress) * (outMax - outMin);
     }
 
-    // === MulmoAnim Helper Class ===
+    // === MulmoAnimation Helper Class ===
 
     const TRANSFORM_PROPS = { translateX: 'px', translateY: 'px', scale: '', rotate: 'deg' };
     const SVG_PROPS = ['r', 'cx', 'cy', 'x', 'y', 'x1', 'y1', 'x2', 'y2', 'rx', 'ry',
                        'width', 'height', 'stroke-width', 'stroke-dashoffset', 'stroke-dasharray', 'opacity'];
 
-    function MulmoAnim() {
+    function MulmoAnimation() {
       this._entries = [];
     }
 
@@ -83,7 +83,7 @@
      * @param {Object} props - { opacity: [0, 1], translateY: [30, 0], width: [0, 80, '%'] }
      * @param {Object} opts - { start, end, easing }  (start/end in seconds)
      */
-    MulmoAnim.prototype.animate = function(selector, props, opts) {
+    MulmoAnimation.prototype.animate = function(selector, props, opts) {
       this._entries.push({ kind: 'animate', selector, props, opts: opts || {} });
       return this;
     };
@@ -96,7 +96,7 @@
      * @param {Object} props - same as animate()
      * @param {Object} opts - { start, stagger, duration, easing }
      */
-    MulmoAnim.prototype.stagger = function(selector, count, props, opts) {
+    MulmoAnimation.prototype.stagger = function(selector, count, props, opts) {
       this._entries.push({ kind: 'stagger', selector, count, props, opts: opts || {} });
       return this;
     };
@@ -107,7 +107,7 @@
      * @param {string} text - full text to reveal
      * @param {Object} opts - { start, end }
      */
-    MulmoAnim.prototype.typewriter = function(selector, text, opts) {
+    MulmoAnimation.prototype.typewriter = function(selector, text, opts) {
       this._entries.push({ kind: 'typewriter', selector, text, opts: opts || {} });
       return this;
     };
@@ -118,20 +118,20 @@
      * @param {[number, number]} range - [from, to]
      * @param {Object} opts - { start, end, prefix, suffix, decimals }
      */
-    MulmoAnim.prototype.counter = function(selector, range, opts) {
+    MulmoAnimation.prototype.counter = function(selector, range, opts) {
       this._entries.push({ kind: 'counter', selector, range, opts: opts || {} });
       return this;
     };
 
     /** Resolve easing name string or function to an easing function */
-    MulmoAnim.prototype._resolveEasing = function(e) {
+    MulmoAnimation.prototype._resolveEasing = function(e) {
       if (!e) return Easing.linear;
       if (typeof e === 'function') return e;
       return Easing[e] || Easing.linear;
     };
 
     /** Apply props to element at a given progress (0-1) with easing */
-    MulmoAnim.prototype._applyProps = function(el, props, progress, easingFn) {
+    MulmoAnimation.prototype._applyProps = function(el, props, progress, easingFn) {
       if (!el) return;
       const transforms = [];
       const keys = Object.keys(props);
@@ -164,7 +164,7 @@
      * @param {number} frame - current frame number
      * @param {number} fps - frames per second
      */
-    MulmoAnim.prototype.update = function(frame, fps) {
+    MulmoAnimation.prototype.update = function(frame, fps) {
       for (let i = 0; i < this._entries.length; i++) {
         const entry = this._entries[i];
         const opts = entry.opts;

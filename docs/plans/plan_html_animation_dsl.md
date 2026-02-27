@@ -1,8 +1,8 @@
-# Plan: MulmoAnim ヘルパークラスの実装 (B案)
+# Plan: MulmoAnimation ヘルパークラスの実装 (B案)
 
 ## Context
 
-html_tailwind アニメーションの `render()` 関数が冗長で LLM がワンショット生成しにくい。ランタイムに `MulmoAnim` クラスを注入し、宣言的にアニメーション記述できるようにする (Issue #1240 B案)。
+html_tailwind アニメーションの `render()` 関数が冗長で LLM がワンショット生成しにくい。ランタイムに `MulmoAnimation` クラスを注入し、宣言的にアニメーション記述できるようにする (Issue #1240 B案)。
 
 ## 前提条件
 
@@ -10,7 +10,7 @@ PR #1238 (`refactor/html-animation-readability`) と PR #1239 (`feat/html-tailwi
 
 ## テンプレート再構成 (`tailwind_animated.html`)
 
-**問題**: `${user_script}` がヘルパーより前に実行されると `new MulmoAnim()` が失敗する
+**問題**: `${user_script}` がヘルパーより前に実行されると `new MulmoAnimation()` が失敗する
 
 **解決**: 3ブロック分割:
 
@@ -20,11 +20,11 @@ PR #1238 (`refactor/html-animation-readability`) と PR #1239 (`feat/html-tailwi
 
   <script>
     // interpolate, Easing, interpolateWithEasing（既存）
-    // MulmoAnim クラス（新規）
+    // MulmoAnimation クラス（新規）
     // window.__MULMO
   </script>
 
-  ${user_script}          ← ヘルパーの後 → MulmoAnim 使用可能
+  ${user_script}          ← ヘルパーの後 → MulmoAnimation 使用可能
 
   <script>
     // Initial render(0, ...) call
@@ -32,10 +32,10 @@ PR #1238 (`refactor/html-animation-readability`) と PR #1239 (`feat/html-tailwi
 </body>
 ```
 
-## MulmoAnim API (start/end は秒単位)
+## MulmoAnimation API (start/end は秒単位)
 
 ```javascript
-var a = new MulmoAnim();
+var a = new MulmoAnimation();
 a.animate('#title', { opacity: [0, 1], translateY: [30, 0] }, { start: 0, end: 0.5, easing: 'easeOut' });
 a.animate('#bar', { width: [0, 80, '%'] }, { start: 0, end: 1.5 });
 a.stagger('#item{i}', 4, { opacity: [0, 1], translateX: [-40, 0] }, { start: 0, stagger: 0.4, duration: 0.5, easing: 'easeOut' });
@@ -71,9 +71,9 @@ function render(frame, totalFrames, fps) { a.update(frame, fps); }
 
 | File | Change |
 |------|--------|
-| `assets/html/tailwind_animated.html` | 3分割 + MulmoAnim クラス注入 |
+| `assets/html/tailwind_animated.html` | 3分割 + MulmoAnimation クラス注入 |
 | `src/utils/image_plugins/html_tailwind.ts` | (マージ済み状態、追加変更なし見込み) |
-| `scripts/test/test_html_animation.json` | 5ビートを MulmoAnim 形式に変換 |
+| `scripts/test/test_html_animation.json` | 5ビートを MulmoAnimation 形式に変換 |
 
 ## 検証
 
