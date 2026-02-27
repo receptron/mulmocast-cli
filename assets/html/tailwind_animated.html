@@ -134,9 +134,7 @@
     MulmoAnimation.prototype._applyProps = function(el, props, progress, easingFn) {
       if (!el) return;
       const transforms = [];
-      const keys = Object.keys(props);
-      for (let k = 0; k < keys.length; k++) {
-        const prop = keys[k];
+      Object.keys(props).forEach((prop) => {
         const spec = props[prop];
         const from = spec[0], to = spec[1];
         const unit = (spec.length > 2) ? spec[2] : null;
@@ -153,7 +151,7 @@
           const cssUnit = unit || 'px';
           el.style[prop] = val + cssUnit;
         }
-      }
+      });
       if (transforms.length > 0) {
         el.style.transform = transforms.join(' ');
       }
@@ -165,8 +163,7 @@
      * @param {number} fps - frames per second
      */
     MulmoAnimation.prototype.update = function(frame, fps) {
-      for (let i = 0; i < this._entries.length; i++) {
-        const entry = this._entries[i];
+      this._entries.forEach((entry) => {
         const opts = entry.opts;
         const easingFn = this._resolveEasing(opts.easing);
 
@@ -209,7 +206,7 @@
           const cEl = document.querySelector(entry.selector);
           if (cEl) cEl.textContent = display;
         }
-      }
+      });
     };
 
     // === MulmoCast Frame State (updated by Puppeteer per frame) ===
