@@ -29,15 +29,11 @@
           "</div>"
         ],
         "script": [
-          "function render(frame, totalFrames, fps) {",
-          "  var title = document.getElementById('title');",
-          "  title.style.opacity = interpolate(frame, [0, fps * 0.5], [0, 1]);",
-          "  title.style.transform = 'translateY(' + interpolateWithEasing(frame, [0, fps * 0.5], [30, 0], Easing.easeOut) + 'px)';",
-          "  var sub = document.getElementById('subtitle');",
-          "  sub.style.opacity = interpolate(frame, [fps * 0.3, fps * 0.8], [0, 1]);",
-          "  sub.style.transform = 'translateY(' + interpolateWithEasing(frame, [fps * 0.3, fps * 0.8], [20, 0], Easing.easeOut) + 'px)';",
-          "  document.getElementById('line').style.width = interpolateWithEasing(frame, [fps * 0.5, fps * 1.5], [0, 400], Easing.easeInOut) + 'px';",
-          "}"
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#title', { opacity: [0, 1], translateY: [30, 0] }, { start: 0, end: 0.5, easing: 'easeOut' });",
+          "animation.animate('#subtitle', { opacity: [0, 1], translateY: [20, 0] }, { start: 0.3, end: 0.8, easing: 'easeOut' });",
+          "animation.animate('#line', { width: [0, 400, 'px'] }, { start: 0.5, end: 1.5, easing: 'easeInOut' });",
+          "function render(frame, totalFrames, fps) { animation.update(frame, fps); }"
         ],
         "animation": true
       }
@@ -60,8 +56,9 @@
           "    <p>Define a <code class='text-cyan-400'>render(frame, totalFrames, fps)</code> function in your HTML.</p>",
           "    <p>Each frame is captured by Puppeteer, then combined into video by FFmpeg.</p>",
           "  </div>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "var codeLines = [",
           "  '{',",
           "  '  \"image\": {',",
@@ -73,12 +70,11 @@
           "  '}'",
           "];",
           "function render(frame, totalFrames, fps) {",
-          "  document.getElementById('heading').style.opacity = interpolate(frame, [0, fps * 0.3], [0, 1]);",
-          "  var lineCount = Math.floor(interpolate(frame, [fps * 0.3, fps * 2.5], [0, codeLines.length]));",
+          "  document.getElementById('heading').style.opacity = interpolate(frame, { input: { inMin: 0, inMax: fps * 0.3 }, output: { outMin: 0, outMax: 1 } });",
+          "  var lineCount = Math.floor(interpolate(frame, { input: { inMin: fps * 0.3, inMax: fps * 2.5 }, output: { outMin: 0, outMax: codeLines.length } }));",
           "  document.getElementById('code').textContent = codeLines.slice(0, lineCount).join('\\n');",
-          "  document.getElementById('note').style.opacity = interpolate(frame, [fps * 2.5, fps * 3], [0, 1]);",
-          "}",
-          "</script>"
+          "  document.getElementById('note').style.opacity = interpolate(frame, { input: { inMin: fps * 2.5, inMax: fps * 3 }, output: { outMin: 0, outMax: 1 } });",
+          "}"
         ],
         "animation": true
       }
@@ -112,8 +108,9 @@
           "      <p class='text-2xl font-mono text-white mt-2'>30</p>",
           "    </div>",
           "  </div>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "var fnLines = [",
           "  'function render(frame, totalFrames, fps) {',",
           "  '  // Called once per frame by Puppeteer',",
@@ -123,16 +120,15 @@
           "  '}'",
           "];",
           "function render(frame, totalFrames, fps) {",
-          "  var lineCount = Math.floor(interpolate(frame, [0, fps * 1.0], [0, fnLines.length]));",
+          "  var lineCount = Math.floor(interpolate(frame, { input: { inMin: 0, inMax: fps * 1.0 }, output: { outMin: 0, outMax: fnLines.length } }));",
           "  document.getElementById('fn-code').textContent = fnLines.slice(0, lineCount).join('\\n');",
           "  for (var i = 0; i < 3; i++) {",
           "    var start = fps * 1.2 + i * fps * 0.4;",
-          "    document.getElementById('param' + i).style.opacity = interpolate(frame, [start, start + fps * 0.3], [0, 1]);",
-          "    document.getElementById('param' + i).style.transform = 'translateY(' + interpolateWithEasing(frame, [start, start + fps * 0.3], [15, 0], Easing.easeOut) + 'px)';",
+          "    document.getElementById('param' + i).style.opacity = interpolate(frame, { input: { inMin: start, inMax: start + fps * 0.3 }, output: { outMin: 0, outMax: 1 } });",
+          "    document.getElementById('param' + i).style.transform = 'translateY(' + interpolate(frame, { input: { inMin: start, inMax: start + fps * 0.3 }, output: { outMin: 15, outMax: 0 }, easing: Easing.easeOut }) + 'px)';",
           "  }",
-          "  document.getElementById('frame-val').textContent = Math.floor(interpolate(frame, [fps * 2.5, totalFrames], [0, totalFrames]));",
-          "}",
-          "</script>"
+          "  document.getElementById('frame-val').textContent = Math.floor(interpolate(frame, { input: { inMin: fps * 2.5, inMax: totalFrames }, output: { outMin: 0, outMax: totalFrames } }));",
+          "}"
         ],
         "animation": true
       }
@@ -147,7 +143,7 @@
           "<div class='h-full flex flex-col justify-start pt-12 bg-slate-900 px-16'>",
           "  <h2 class='text-3xl font-bold text-white mb-6'>Helper: interpolate()</h2>",
           "  <div class='bg-slate-800 rounded-xl p-4 mb-6'>",
-          "    <pre class='text-base font-mono text-green-400'>interpolate(frame, [startFrame, endFrame], [startValue, endValue])</pre>",
+          "    <pre class='text-base font-mono text-green-400'>interpolate(frame, { input: { inMin, inMax }, output: { outMin, outMax }, easing? })</pre>",
           "  </div>",
           "  <p class='text-slate-400 mb-6'>Linear interpolation with clamping. Maps frame range to value range.</p>",
           "  <div class='flex gap-8'>",
@@ -166,8 +162,9 @@
           "      </div>",
           "    </div>",
           "  </div>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "var demoCode = [",
           "  '// Fade in during first second',",
           "  'var opacity = interpolate(',",
@@ -182,15 +179,14 @@
           "];",
           "function render(frame, totalFrames, fps) {",
           "  var ball = document.getElementById('demo-ball');",
-          "  var opacity = interpolate(frame, [0, fps], [0, 1]);",
-          "  var x = interpolate(frame, [0, totalFrames], [10, 350]);",
+          "  var opacity = interpolate(frame, { input: { inMin: 0, inMax: fps }, output: { outMin: 0, outMax: 1 } });",
+          "  var x = interpolate(frame, { input: { inMin: 0, inMax: totalFrames }, output: { outMin: 10, outMax: 350 } });",
           "  ball.style.opacity = opacity;",
           "  ball.style.left = x + 'px';",
           "  document.getElementById('demo-label').textContent = 'frame=' + frame + '  opacity=' + opacity.toFixed(2) + '  x=' + Math.round(x);",
-          "  var codeLineCount = Math.floor(interpolate(frame, [fps * 0.5, fps * 2], [0, demoCode.length]));",
+          "  var codeLineCount = Math.floor(interpolate(frame, { input: { inMin: fps * 0.5, inMax: fps * 2 }, output: { outMin: 0, outMax: demoCode.length } }));",
           "  document.getElementById('demo-code').textContent = demoCode.slice(0, codeLineCount).join('\\n');",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -204,7 +200,7 @@
         "html": [
           "<div class='h-full flex flex-col justify-start pt-12 bg-slate-900 px-16'>",
           "  <h2 class='text-3xl font-bold text-white mb-2'>Easing Functions</h2>",
-          "  <p class='text-slate-400 mb-6'>interpolateWithEasing(frame, inputRange, outputRange, Easing.xxx)</p>",
+          "  <p class='text-slate-400 mb-6'>interpolate(frame, { ..., easing: Easing.xxx })</p>",
           "  <div class='flex gap-6'>",
           "    <div class='flex-1 text-center'>",
           "      <p class='text-cyan-400 font-mono mb-2'>Easing.linear</p>",
@@ -232,20 +228,20 @@
           "    </div>",
           "  </div>",
           "  <p id='easing-frame' class='text-sm font-mono text-slate-500 mt-4 text-center'></p>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "function render(frame, totalFrames, fps) {",
           "  var start = fps * 0.5;",
           "  var end = totalFrames - fps * 0.5;",
           "  var maxY = 160;",
-          "  document.getElementById('e-linear').style.bottom = (10 + interpolateWithEasing(frame, [start, end], [0, maxY], Easing.linear)) + 'px';",
-          "  document.getElementById('e-in').style.bottom = (10 + interpolateWithEasing(frame, [start, end], [0, maxY], Easing.easeIn)) + 'px';",
-          "  document.getElementById('e-out').style.bottom = (10 + interpolateWithEasing(frame, [start, end], [0, maxY], Easing.easeOut)) + 'px';",
-          "  document.getElementById('e-inout').style.bottom = (10 + interpolateWithEasing(frame, [start, end], [0, maxY], Easing.easeInOut)) + 'px';",
-          "  var t = interpolate(frame, [start, end], [0, 100]);",
+          "  document.getElementById('e-linear').style.bottom = (10 + interpolate(frame, { input: { inMin: start, inMax: end }, output: { outMin: 0, outMax: maxY }, easing: Easing.linear })) + 'px';",
+          "  document.getElementById('e-in').style.bottom = (10 + interpolate(frame, { input: { inMin: start, inMax: end }, output: { outMin: 0, outMax: maxY }, easing: Easing.easeIn })) + 'px';",
+          "  document.getElementById('e-out').style.bottom = (10 + interpolate(frame, { input: { inMin: start, inMax: end }, output: { outMin: 0, outMax: maxY }, easing: Easing.easeOut })) + 'px';",
+          "  document.getElementById('e-inout').style.bottom = (10 + interpolate(frame, { input: { inMin: start, inMax: end }, output: { outMin: 0, outMax: maxY }, easing: Easing.easeInOut })) + 'px';",
+          "  var t = interpolate(frame, { input: { inMin: start, inMax: end }, output: { outMin: 0, outMax: 100 } });",
           "  document.getElementById('easing-frame').textContent = 'frame ' + frame + ' / ' + totalFrames + '  |  progress: ' + t.toFixed(0) + '%';",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -279,18 +275,18 @@
           "    </div>",
           "  </div>",
           "  <p id='fps-info' class='text-sm font-mono text-slate-500 mt-4 text-center'></p>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "function render(frame, totalFrames, fps) {",
-          "  var x = interpolateWithEasing(frame, [0, totalFrames], [10, 700], Easing.easeInOut);",
+          "  var x = interpolate(frame, { input: { inMin: 0, inMax: totalFrames }, output: { outMin: 10, outMax: 700 }, easing: Easing.easeInOut });",
           "  document.getElementById('ball15').style.left = x + 'px';",
           "  var smoothFrame = frame * 2;",
           "  var smoothTotal = totalFrames * 2;",
-          "  var x2 = interpolateWithEasing(smoothFrame, [0, smoothTotal], [10, 700], Easing.easeInOut);",
+          "  var x2 = interpolate(smoothFrame, { input: { inMin: 0, inMax: smoothTotal }, output: { outMin: 10, outMax: 700 }, easing: Easing.easeInOut });",
           "  document.getElementById('ball30').style.left = x2 + 'px';",
           "  document.getElementById('fps-info').textContent = 'frame ' + frame + ' / ' + totalFrames + '  |  fps=' + fps + '  |  totalFrames = floor(' + (totalFrames/fps).toFixed(0) + 's * ' + fps + 'fps)';",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": { "fps": 15 }
       }
@@ -307,13 +303,9 @@
           "</div>"
         ],
         "script": [
-          "function render(frame, totalFrames, fps) {",
-          "  var title = document.getElementById('title');",
-          "  var opacity = interpolate(frame, [0, fps], [0, 1]);",
-          "  title.style.opacity = opacity;",
-          "  var scale = interpolateWithEasing(frame, [0, fps], [0.8, 1], Easing.easeOut);",
-          "  title.style.transform = 'scale(' + scale + ')';",
-          "}"
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#title', { opacity: [0, 1], scale: [0.8, 1] }, { start: 0, end: 1, easing: 'easeOut' });",
+          "function render(frame, totalFrames, fps) { animation.update(frame, fps); }"
         ],
         "animation": true
       }
@@ -326,20 +318,21 @@
         "html": [
           "<div class='h-full flex items-center justify-center bg-gray-900 overflow-hidden'>",
           "  <div id='box' class='w-40 h-40 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl'></div>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "function render(frame, totalFrames, fps) {",
           "  var box = document.getElementById('box');",
-          "  var rotation = interpolate(frame, [0, totalFrames], [0, 360]);",
+          "  var rotation = interpolate(frame, { input: { inMin: 0, inMax: totalFrames }, output: { outMin: 0, outMax: 360 } });",
           "  var scale = 0.5 + 0.5 * Math.sin(frame / fps * Math.PI);",
           "  box.style.transform = 'rotate(' + rotation + 'deg) scale(' + scale + ')';",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": { "fps": 30 }
       }
     },
     {
+      "id": "progress_bars",
       "speaker": "Presenter",
       "duration": 2,
       "image": {
@@ -350,16 +343,15 @@
           "  <div id='bar2' class='h-8 bg-green-500 rounded-r mb-4'></div>",
           "  <div id='bar3' class='h-8 bg-red-500 rounded-r mb-4'></div>",
           "  <p id='label' class='text-gray-600 text-lg mt-8'>Loading progress...</p>",
-          "</div>",
-          "<script>",
-          "function render(frame, totalFrames, fps) {",
-          "  var t = frame / totalFrames;",
-          "  document.getElementById('bar1').style.width = interpolate(frame, [0, totalFrames * 0.5], [0, 80]) + '%';",
-          "  document.getElementById('bar2').style.width = interpolate(frame, [fps * 0.3, totalFrames * 0.7], [0, 60]) + '%';",
-          "  document.getElementById('bar3').style.width = interpolate(frame, [fps * 0.6, totalFrames], [0, 90]) + '%';",
-          "  document.getElementById('label').textContent = 'Progress: ' + Math.round(t * 100) + '%';",
-          "}",
-          "</script>"
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#bar1', { width: [0, 80, '%'] }, { start: 0, end: 1 });",
+          "animation.animate('#bar2', { width: [0, 60, '%'] }, { start: 0.3, end: 1.4 });",
+          "animation.animate('#bar3', { width: [0, 90, '%'] }, { start: 0.6, end: 2 });",
+          "animation.counter('#label', [0, 100], { start: 0, end: 2, prefix: 'Progress: ', suffix: '%' });",
+          "function render(frame, totalFrames, fps) { animation.update(frame, fps); }"
         ],
         "animation": true
       }
@@ -377,24 +369,24 @@
           "    <circle id='circle3' cx='200' cy='200' r='0' fill='none' stroke='#f43f5e' stroke-width='3' />",
           "    <circle id='dot' cx='200' cy='200' r='8' fill='#fbbf24' />",
           "  </svg>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "function render(frame, totalFrames, fps) {",
           "  var c1 = document.getElementById('circle1');",
           "  var c2 = document.getElementById('circle2');",
           "  var c3 = document.getElementById('circle3');",
           "  var dot = document.getElementById('dot');",
-          "  c1.setAttribute('r', interpolate(frame, [0, totalFrames * 0.6], [0, 150]));",
-          "  c1.setAttribute('opacity', interpolate(frame, [totalFrames * 0.4, totalFrames], [1, 0.2]));",
-          "  c2.setAttribute('r', interpolate(frame, [fps * 0.3, totalFrames * 0.7], [0, 120]));",
-          "  c2.setAttribute('opacity', interpolate(frame, [totalFrames * 0.5, totalFrames], [1, 0.2]));",
-          "  c3.setAttribute('r', interpolate(frame, [fps * 0.6, totalFrames * 0.8], [0, 90]));",
-          "  var angle = interpolate(frame, [0, totalFrames], [0, Math.PI * 4]);",
-          "  var orbitR = interpolateWithEasing(frame, [0, totalFrames], [0, 160], Easing.easeOut);",
+          "  c1.setAttribute('r', interpolate(frame, { input: { inMin: 0, inMax: totalFrames * 0.6 }, output: { outMin: 0, outMax: 150 } }));",
+          "  c1.setAttribute('opacity', interpolate(frame, { input: { inMin: totalFrames * 0.4, inMax: totalFrames }, output: { outMin: 1, outMax: 0.2 } }));",
+          "  c2.setAttribute('r', interpolate(frame, { input: { inMin: fps * 0.3, inMax: totalFrames * 0.7 }, output: { outMin: 0, outMax: 120 } }));",
+          "  c2.setAttribute('opacity', interpolate(frame, { input: { inMin: totalFrames * 0.5, inMax: totalFrames }, output: { outMin: 1, outMax: 0.2 } }));",
+          "  c3.setAttribute('r', interpolate(frame, { input: { inMin: fps * 0.6, inMax: totalFrames * 0.8 }, output: { outMin: 0, outMax: 90 } }));",
+          "  var angle = interpolate(frame, { input: { inMin: 0, inMax: totalFrames }, output: { outMin: 0, outMax: Math.PI * 4 } });",
+          "  var orbitR = interpolate(frame, { input: { inMin: 0, inMax: totalFrames }, output: { outMin: 0, outMax: 160 }, easing: Easing.easeOut });",
           "  dot.setAttribute('cx', 200 + Math.cos(angle) * orbitR);",
           "  dot.setAttribute('cy', 200 + Math.sin(angle) * orbitR);",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -416,24 +408,25 @@
           "      </linearGradient>",
           "    </defs>",
           "  </svg>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "function render(frame, totalFrames, fps) {",
-          "  var phase = interpolate(frame, [0, totalFrames], [0, Math.PI * 6]);",
-          "  var amp = interpolateWithEasing(frame, [0, fps], [0, 60], Easing.easeOut);",
+          "  var phase = interpolate(frame, { input: { inMin: 0, inMax: totalFrames }, output: { outMin: 0, outMax: Math.PI * 6 } });",
+          "  var amp = interpolate(frame, { input: { inMin: 0, inMax: fps }, output: { outMin: 0, outMax: 60 }, easing: Easing.easeOut });",
           "  var points = [];",
           "  for (var x = 0; x <= 600; x += 4) {",
           "    var y = 100 + Math.sin(x * 0.02 + phase) * amp * Math.sin(x * 0.005 + phase * 0.3);",
           "    points.push((x === 0 ? 'M' : 'L') + x + ' ' + y);",
           "  }",
           "  document.getElementById('wave-path').setAttribute('d', points.join(' '));",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": { "fps": 30 }
       }
     },
     {
+      "id": "typewriter_demo",
       "speaker": "Presenter",
       "duration": 4,
       "image": {
@@ -442,15 +435,15 @@
           "<div class='h-full flex flex-col items-center justify-center bg-gray-900 px-16'>",
           "  <p id='typewriter' class='text-2xl font-mono text-green-400 leading-relaxed max-w-2xl'></p>",
           "  <span id='cursor' class='text-2xl font-mono text-green-400'>|</span>",
-          "</div>",
-          "<script>",
-          "var fullText = 'MulmoCast transforms your ideas into multi-modal presentations. With frame-based animation, you can create smooth, deterministic visuals powered by HTML and Tailwind CSS.';",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.typewriter('#typewriter', 'MulmoCast transforms your ideas into multi-modal presentations. With frame-based animation, you can create smooth, deterministic visuals powered by HTML and Tailwind CSS.', { start: 0, end: 3.4 });",
           "function render(frame, totalFrames, fps) {",
-          "  var charCount = Math.floor(interpolate(frame, [0, totalFrames * 0.85], [0, fullText.length]));",
-          "  document.getElementById('typewriter').textContent = fullText.substring(0, charCount);",
+          "  animation.update(frame, fps);",
           "  document.getElementById('cursor').style.opacity = Math.sin(frame * 0.3) > 0 ? 1 : 0;",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -463,8 +456,9 @@
         "html": [
           "<div class='h-full flex items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800'>",
           "  <svg id='pie-svg' class='h-full' viewBox='0 0 300 300'></svg>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "var data = [",
           "  { value: 35, color: '#3b82f6', label: 'Blue' },",
           "  { value: 25, color: '#10b981', label: 'Green' },",
@@ -475,7 +469,7 @@
           "  var svg = document.getElementById('pie-svg');",
           "  svg.innerHTML = '';",
           "  var cx = 150, cy = 150, r = 120;",
-          "  var progress = interpolateWithEasing(frame, [0, totalFrames * 0.7], [0, 1], Easing.easeInOut);",
+          "  var progress = interpolate(frame, { input: { inMin: 0, inMax: totalFrames * 0.7 }, output: { outMin: 0, outMax: 1 }, easing: Easing.easeInOut });",
           "  var totalAngle = progress * Math.PI * 2;",
           "  var startAngle = -Math.PI / 2;",
           "  var total = data.reduce(function(s, d) { return s + d.value; }, 0);",
@@ -494,13 +488,13 @@
           "    svg.appendChild(path);",
           "    startAngle = endAngle;",
           "  }",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
     },
     {
+      "id": "stagger_items",
       "speaker": "Presenter",
       "duration": 3,
       "image": {
@@ -519,21 +513,12 @@
           "  <div id='item3' class='w-full max-w-3xl p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500' style='opacity:0; transform: translateX(-40px)'>",
           "    <p class='text-lg font-semibold text-orange-800'>4. Integration Test</p>",
           "  </div>",
-          "</div>",
-          "<script>",
-          "function render(frame, totalFrames, fps) {",
-          "  var stagger = fps * 0.4;",
-          "  for (var i = 0; i < 4; i++) {",
-          "    var el = document.getElementById('item' + i);",
-          "    var start = i * stagger;",
-          "    var end = start + fps * 0.5;",
-          "    var opacity = interpolateWithEasing(frame, [start, end], [0, 1], Easing.easeOut);",
-          "    var tx = interpolateWithEasing(frame, [start, end], [-40, 0], Easing.easeOut);",
-          "    el.style.opacity = opacity;",
-          "    el.style.transform = 'translateX(' + tx + 'px)';",
-          "  }",
-          "}",
-          "</script>"
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.stagger('#item{i}', 4, { opacity: [0, 1], translateX: [-40, 0] }, { start: 0, stagger: 0.4, duration: 0.5, easing: 'easeOut' });",
+          "function render(frame, totalFrames, fps) { animation.update(frame, fps); }"
         ],
         "animation": true
       }
@@ -546,8 +531,9 @@
         "html": [
           "<div class='h-full flex items-center justify-center bg-indigo-950 overflow-hidden'>",
           "  <svg id='particle-svg' class='w-full h-full' viewBox='0 0 800 450'></svg>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "var particles = [];",
           "for (var i = 0; i < 40; i++) {",
           "  particles.push({",
@@ -566,17 +552,16 @@
           "    var t = Math.min(frame / fps, 2);",
           "    var px = p.x + p.vx * t * 60;",
           "    var py = p.y + p.vy * t * 60;",
-          "    var opacity = interpolate(frame, [totalFrames * 0.6, totalFrames], [1, 0]);",
+          "    var opacity = interpolate(frame, { input: { inMin: totalFrames * 0.6, inMax: totalFrames }, output: { outMin: 1, outMax: 0 } });",
           "    var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');",
           "    c.setAttribute('cx', px);",
           "    c.setAttribute('cy', py);",
-          "    c.setAttribute('r', p.size * interpolateWithEasing(frame, [0, fps * 0.5], [0, 1], Easing.easeOut));",
+          "    c.setAttribute('r', p.size * interpolate(frame, { input: { inMin: 0, inMax: fps * 0.5 }, output: { outMin: 0, outMax: 1 }, easing: Easing.easeOut }));",
           "    c.setAttribute('fill', 'hsl(' + p.hue + ', 80%, 65%)');",
           "    c.setAttribute('opacity', opacity);",
           "    svg.appendChild(c);",
           "  }",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": { "fps": 24 }
       }
