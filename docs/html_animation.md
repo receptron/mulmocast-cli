@@ -56,6 +56,7 @@ totalFrames = Math.floor(duration * fps)
   ${user_script}         ← beat.image.script（ヘルパーの後 → MulmoAnimation 使用可能）
 
   <script>
+    auto-render 検出     ← animation 変数があり render() 未定義なら自動生成
     render(0, ...)       ← 初期レンダリング
   </script>
 </body>
@@ -76,6 +77,21 @@ function render(frame, totalFrames, fps) {
 ```
 
 同期・非同期どちらでも可。
+
+### Auto-render
+
+`animation` という名前の `MulmoAnimation` インスタンスが存在し、`render()` 関数が定義されていない場合、
+テンプレートが自動的に `render()` を生成する。
+
+```javascript
+// この場合 render() は不要 — auto-render が自動生成
+const animation = new MulmoAnimation();
+animation.animate('#title', { opacity: [0, 1] }, { start: 0, end: 0.5 });
+// → 内部で自動的に: window.render = function(frame, totalFrames, fps) { animation.update(frame, fps); };
+```
+
+MulmoAnimation のみで完結するビートでは `function render(...)` のボイラープレートを省略できる。
+カスタムロジック（interpolate 直接操作、SVG パス生成など）が必要な場合は従来通り `render()` を定義する。
 
 ### interpolate()
 
@@ -139,7 +155,14 @@ animation.counter('#label', [0, 100], {
   start: 0, end: 2, prefix: 'Progress: ', suffix: '%', decimals: 0
 });
 
-// render() で毎フレーム更新
+// コード行送り（行単位のタイプライター）
+animation.codeReveal('#code', codeLines, { start: 0.3, end: 2.5 });
+
+// 点滅（カーソルなど周期的な表示/非表示）
+animation.blink('#cursor', { interval: 0.35 });
+// interval: on/off 半サイクルの秒数（デフォルト 0.5）
+
+// render() で毎フレーム更新（auto-render 使用時は省略可）
 function render(frame, totalFrames, fps) {
   animation.update(frame, fps);
 }
@@ -166,7 +189,7 @@ function render(frame, totalFrames, fps) {
 
 ## 完全な例
 
-### MulmoAnimation を使った宣言的パターン
+### MulmoAnimation を使った宣言的パターン（auto-render）
 
 ```json
 {
@@ -182,13 +205,14 @@ function render(frame, totalFrames, fps) {
     "script": [
       "const animation = new MulmoAnimation();",
       "animation.animate('#title', { opacity: [0, 1], translateY: [30, 0] }, { start: 0, end: 0.5, easing: 'easeOut' });",
-      "animation.animate('#line', { width: [0, 400, 'px'] }, { start: 0.5, end: 1.5, easing: 'easeInOut' });",
-      "function render(frame, totalFrames, fps) { animation.update(frame, fps); }"
+      "animation.animate('#line', { width: [0, 400, 'px'] }, { start: 0.5, end: 1.5, easing: 'easeInOut' });"
     ],
     "animation": true
   }
 }
 ```
+
+`render()` を定義していないが、`animation` 変数が `MulmoAnimation` インスタンスなので auto-render が機能する。
 
 ### interpolate を使った手動パターン
 

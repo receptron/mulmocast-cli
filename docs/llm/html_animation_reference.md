@@ -65,8 +65,15 @@ animation.typewriter(selector, text, { start, end })
 // Animated counter
 animation.counter(selector, [from, to], { start, end, prefix?, suffix?, decimals? })
 
-// Call in render():
-function render(frame, totalFrames, fps) { animation.update(frame, fps); }
+// Code reveal — show lines one by one (line-level typewriter)
+animation.codeReveal(selector, linesArray, { start, end })
+
+// Blink — periodic show/hide toggle (e.g. cursor)
+animation.blink(selector, { interval? })  // interval: half-cycle seconds (default 0.5)
+
+// Auto-render: if variable is named `animation`, render() is auto-generated.
+// No need to define render() manually:
+// (template auto-generates: window.render = function(f,t,fps) { animation.update(f,fps); })
 ```
 
 #### Property types
@@ -80,7 +87,7 @@ function render(frame, totalFrames, fps) { animation.update(frame, fps); }
 | Other CSS (`width`, etc.) | style[prop] | px (override with `[from, to, '%']`) |
 | SVG attrs (`r`, `cx`, etc.) | setAttribute | (none) |
 
-## Pattern: MulmoAnimation (recommended for most cases)
+## Pattern: MulmoAnimation with auto-render (recommended for most cases)
 
 ```json
 {
@@ -93,11 +100,12 @@ function render(frame, totalFrames, fps) { animation.update(frame, fps); }
   "script": [
     "const animation = new MulmoAnimation();",
     "animation.animate('#title', { opacity: [0, 1], translateY: [30, 0] }, { start: 0, end: 0.5, easing: 'easeOut' });",
-    "animation.animate('#sub', { opacity: [0, 1] }, { start: 0.3, end: 0.8 });",
-    "function render(frame, totalFrames, fps) { animation.update(frame, fps); }"
+    "animation.animate('#sub', { opacity: [0, 1] }, { start: 0.3, end: 0.8 });"
   ]
 }
 ```
+
+No `render()` needed — auto-render detects the `animation` variable and generates it automatically.
 
 ## Pattern: interpolate (for complex/custom logic)
 
@@ -132,8 +140,26 @@ function render(frame, totalFrames, fps) { animation.update(frame, fps); }
   ],
   "script": [
     "const animation = new MulmoAnimation();",
-    "animation.stagger('#item{i}', 3, { opacity: [0, 1], translateX: [-40, 0] }, { start: 0, stagger: 0.3, duration: 0.5, easing: 'easeOut' });",
-    "function render(frame, totalFrames, fps) { animation.update(frame, fps); }"
+    "animation.stagger('#item{i}', 3, { opacity: [0, 1], translateX: [-40, 0] }, { start: 0, stagger: 0.3, duration: 0.5, easing: 'easeOut' });"
+  ]
+}
+```
+
+## Pattern: Code reveal with cursor blink
+
+```json
+{
+  "html": [
+    "<div class='h-full flex flex-col items-center justify-center bg-gray-900 px-16'>",
+    "  <pre id='code' class='text-lg font-mono text-green-400'></pre>",
+    "  <span id='cursor' class='text-lg font-mono text-green-400'>|</span>",
+    "</div>"
+  ],
+  "script": [
+    "var codeLines = ['function hello() {', '  return \"world\";', '}'];",
+    "const animation = new MulmoAnimation();",
+    "animation.codeReveal('#code', codeLines, { start: 0.2, end: 2.5 });",
+    "animation.blink('#cursor', { interval: 0.35 });"
   ]
 }
 ```
