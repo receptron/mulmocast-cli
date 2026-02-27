@@ -7,7 +7,7 @@
 
 ### Current Flow
 
-```
+```text
 Audio Stage
   → TTS generates audio files
   → combine_audio_files_agent calculates duration from audio + padding
