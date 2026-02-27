@@ -109,6 +109,27 @@
       return this;
     };
 
+    /**
+     * Code reveal — show lines of code one by one (line-level typewriter).
+     * @param {string} selector - target element selector
+     * @param {string[]} lines - array of code lines
+     * @param {Object} opts - { start, end }
+     */
+    MulmoAnimation.prototype.codeReveal = function(selector, lines, opts) {
+      this._entries.push({ kind: 'codeReveal', selector, lines, opts: opts || {} });
+      return this;
+    };
+
+    /**
+     * Blink — periodic show/hide toggle (e.g. cursor blinking).
+     * @param {string} selector - target element selector
+     * @param {Object} opts - { interval } (half-cycle seconds, default 0.5)
+     */
+    MulmoAnimation.prototype.blink = function(selector, opts) {
+      this._entries.push({ kind: 'blink', selector, opts: opts || {} });
+      return this;
+    };
+
     /** Resolve easing name string or function to an easing function */
     MulmoAnimation.prototype._resolveEasing = function(e) {
       if (!e) return Easing.linear;
@@ -190,6 +211,22 @@
           const display = (opts.prefix || '') + cVal.toFixed(decimals) + (opts.suffix || '');
           const cEl = document.querySelector(entry.selector);
           if (cEl) cEl.textContent = display;
+
+        } else if (entry.kind === 'codeReveal') {
+          const crStart = (opts.start || 0) * fps;
+          const crEnd = (opts.end || 0) * fps;
+          const crProgress = Math.max(0, Math.min(1, crEnd === crStart ? 1 : (frame - crStart) / (crEnd - crStart)));
+          const lineCount = Math.floor(crProgress * entry.lines.length);
+          const crEl = document.querySelector(entry.selector);
+          if (crEl) crEl.textContent = entry.lines.slice(0, lineCount).join('\n');
+
+        } else if (entry.kind === 'blink') {
+          const interval_s = opts.interval || 0.5;
+          const blinkEl = document.querySelector(entry.selector);
+          if (blinkEl) {
+            const cycle = (frame / fps) / interval_s;
+            blinkEl.style.opacity = (Math.floor(cycle) % 2 === 0) ? 1 : 0;
+          }
         }
       });
     };
@@ -205,6 +242,11 @@
   ${user_script}
 
   <script>
+    // Auto-render: if MulmoAnimation is used but render() is not defined, generate it
+    if (typeof render !== 'function' && typeof animation !== 'undefined' && animation instanceof MulmoAnimation) {
+      window.render = function(frame, totalFrames, fps) { animation.update(frame, fps); };
+    }
+
     // Initial render (frame 0)
     if (typeof render === 'function') {
       const result = render(0, window.__MULMO.totalFrames, window.__MULMO.fps);
