@@ -1,0 +1,59 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "HTML Script Split Test",
+  "audioParams": {
+    "padding": 0,
+    "introPadding": 0,
+    "closingPadding": 0,
+    "outroPadding": 0
+  },
+  "beats": [
+    {
+      "id": "script_in_html",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-slate-900 gap-8'>",
+          "  <p class='text-2xl text-white font-mono'>Script embedded in HTML</p>",
+          "  <div id='box' class='w-32 h-32 bg-cyan-400 rounded-2xl'></div>",
+          "</div>",
+          "<script>",
+          "function render(frame, totalFrames, fps) {",
+          "  var box = document.getElementById('box');",
+          "  var scale = interpolateWithEasing(frame, [0, fps], [0.5, 1], Easing.easeOut);",
+          "  var rotation = interpolate(frame, [0, totalFrames], [0, 360]);",
+          "  box.style.transform = 'scale(' + scale + ') rotate(' + rotation + 'deg)';",
+          "}",
+          "</script>"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "script_separated",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-slate-900 gap-8'>",
+          "  <p class='text-2xl text-white font-mono'>Script in separate field</p>",
+          "  <div id='box' class='w-32 h-32 bg-purple-400 rounded-2xl'></div>",
+          "</div>"
+        ],
+        "script": [
+          "function render(frame, totalFrames, fps) {",
+          "  var box = document.getElementById('box');",
+          "  var scale = interpolateWithEasing(frame, [0, fps], [0.5, 1], Easing.easeOut);",
+          "  var rotation = interpolate(frame, [0, totalFrames], [0, 360]);",
+          "  box.style.transform = 'scale(' + scale + ') rotate(' + rotation + 'deg)';",
+          "}"
+        ],
+        "animation": true
+      }
+    }
+  ]
+}

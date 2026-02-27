@@ -60,8 +60,9 @@
           "    <p>Define a <code class='text-cyan-400'>render(frame, totalFrames, fps)</code> function in your HTML.</p>",
           "    <p>Each frame is captured by Puppeteer, then combined into video by FFmpeg.</p>",
           "  </div>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "var codeLines = [",
           "  '{',",
           "  '  \"image\": {',",
@@ -77,8 +78,7 @@
           "  var lineCount = Math.floor(interpolate(frame, [fps * 0.3, fps * 2.5], [0, codeLines.length]));",
           "  document.getElementById('code').textContent = codeLines.slice(0, lineCount).join('\\n');",
           "  document.getElementById('note').style.opacity = interpolate(frame, [fps * 2.5, fps * 3], [0, 1]);",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -112,8 +112,9 @@
           "      <p class='text-2xl font-mono text-white mt-2'>30</p>",
           "    </div>",
           "  </div>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "var fnLines = [",
           "  'function render(frame, totalFrames, fps) {',",
           "  '  // Called once per frame by Puppeteer',",
@@ -131,8 +132,7 @@
           "    document.getElementById('param' + i).style.transform = 'translateY(' + interpolateWithEasing(frame, [start, start + fps * 0.3], [15, 0], Easing.easeOut) + 'px)';",
           "  }",
           "  document.getElementById('frame-val').textContent = Math.floor(interpolate(frame, [fps * 2.5, totalFrames], [0, totalFrames]));",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -166,8 +166,9 @@
           "      </div>",
           "    </div>",
           "  </div>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "var demoCode = [",
           "  '// Fade in during first second',",
           "  'var opacity = interpolate(',",
@@ -189,8 +190,7 @@
           "  document.getElementById('demo-label').textContent = 'frame=' + frame + '  opacity=' + opacity.toFixed(2) + '  x=' + Math.round(x);",
           "  var codeLineCount = Math.floor(interpolate(frame, [fps * 0.5, fps * 2], [0, demoCode.length]));",
           "  document.getElementById('demo-code').textContent = demoCode.slice(0, codeLineCount).join('\\n');",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -232,8 +232,9 @@
           "    </div>",
           "  </div>",
           "  <p id='easing-frame' class='text-sm font-mono text-slate-500 mt-4 text-center'></p>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "function render(frame, totalFrames, fps) {",
           "  var start = fps * 0.5;",
           "  var end = totalFrames - fps * 0.5;",
@@ -244,8 +245,7 @@
           "  document.getElementById('e-inout').style.bottom = (10 + interpolateWithEasing(frame, [start, end], [0, maxY], Easing.easeInOut)) + 'px';",
           "  var t = interpolate(frame, [start, end], [0, 100]);",
           "  document.getElementById('easing-frame').textContent = 'frame ' + frame + ' / ' + totalFrames + '  |  progress: ' + t.toFixed(0) + '%';",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -279,8 +279,9 @@
           "    </div>",
           "  </div>",
           "  <p id='fps-info' class='text-sm font-mono text-slate-500 mt-4 text-center'></p>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "function render(frame, totalFrames, fps) {",
           "  var x = interpolateWithEasing(frame, [0, totalFrames], [10, 700], Easing.easeInOut);",
           "  document.getElementById('ball15').style.left = x + 'px';",
@@ -289,8 +290,7 @@
           "  var x2 = interpolateWithEasing(smoothFrame, [0, smoothTotal], [10, 700], Easing.easeInOut);",
           "  document.getElementById('ball30').style.left = x2 + 'px';",
           "  document.getElementById('fps-info').textContent = 'frame ' + frame + ' / ' + totalFrames + '  |  fps=' + fps + '  |  totalFrames = floor(' + (totalFrames/fps).toFixed(0) + 's * ' + fps + 'fps)';",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": { "fps": 15 }
       }
@@ -326,15 +326,15 @@
         "html": [
           "<div class='h-full flex items-center justify-center bg-gray-900 overflow-hidden'>",
           "  <div id='box' class='w-40 h-40 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl'></div>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "function render(frame, totalFrames, fps) {",
           "  var box = document.getElementById('box');",
           "  var rotation = interpolate(frame, [0, totalFrames], [0, 360]);",
           "  var scale = 0.5 + 0.5 * Math.sin(frame / fps * Math.PI);",
           "  box.style.transform = 'rotate(' + rotation + 'deg) scale(' + scale + ')';",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": { "fps": 30 }
       }
@@ -350,16 +350,16 @@
           "  <div id='bar2' class='h-8 bg-green-500 rounded-r mb-4'></div>",
           "  <div id='bar3' class='h-8 bg-red-500 rounded-r mb-4'></div>",
           "  <p id='label' class='text-gray-600 text-lg mt-8'>Loading progress...</p>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "function render(frame, totalFrames, fps) {",
           "  var t = frame / totalFrames;",
           "  document.getElementById('bar1').style.width = interpolate(frame, [0, totalFrames * 0.5], [0, 80]) + '%';",
           "  document.getElementById('bar2').style.width = interpolate(frame, [fps * 0.3, totalFrames * 0.7], [0, 60]) + '%';",
           "  document.getElementById('bar3').style.width = interpolate(frame, [fps * 0.6, totalFrames], [0, 90]) + '%';",
           "  document.getElementById('label').textContent = 'Progress: ' + Math.round(t * 100) + '%';",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -377,8 +377,9 @@
           "    <circle id='circle3' cx='200' cy='200' r='0' fill='none' stroke='#f43f5e' stroke-width='3' />",
           "    <circle id='dot' cx='200' cy='200' r='8' fill='#fbbf24' />",
           "  </svg>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "function render(frame, totalFrames, fps) {",
           "  var c1 = document.getElementById('circle1');",
           "  var c2 = document.getElementById('circle2');",
@@ -393,8 +394,7 @@
           "  var orbitR = interpolateWithEasing(frame, [0, totalFrames], [0, 160], Easing.easeOut);",
           "  dot.setAttribute('cx', 200 + Math.cos(angle) * orbitR);",
           "  dot.setAttribute('cy', 200 + Math.sin(angle) * orbitR);",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -416,8 +416,9 @@
           "      </linearGradient>",
           "    </defs>",
           "  </svg>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "function render(frame, totalFrames, fps) {",
           "  var phase = interpolate(frame, [0, totalFrames], [0, Math.PI * 6]);",
           "  var amp = interpolateWithEasing(frame, [0, fps], [0, 60], Easing.easeOut);",
@@ -427,8 +428,7 @@
           "    points.push((x === 0 ? 'M' : 'L') + x + ' ' + y);",
           "  }",
           "  document.getElementById('wave-path').setAttribute('d', points.join(' '));",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": { "fps": 30 }
       }
@@ -442,15 +442,15 @@
           "<div class='h-full flex flex-col items-center justify-center bg-gray-900 px-16'>",
           "  <p id='typewriter' class='text-2xl font-mono text-green-400 leading-relaxed max-w-2xl'></p>",
           "  <span id='cursor' class='text-2xl font-mono text-green-400'>|</span>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "var fullText = 'MulmoCast transforms your ideas into multi-modal presentations. With frame-based animation, you can create smooth, deterministic visuals powered by HTML and Tailwind CSS.';",
           "function render(frame, totalFrames, fps) {",
           "  var charCount = Math.floor(interpolate(frame, [0, totalFrames * 0.85], [0, fullText.length]));",
           "  document.getElementById('typewriter').textContent = fullText.substring(0, charCount);",
           "  document.getElementById('cursor').style.opacity = Math.sin(frame * 0.3) > 0 ? 1 : 0;",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -463,8 +463,9 @@
         "html": [
           "<div class='h-full flex items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800'>",
           "  <svg id='pie-svg' class='h-full' viewBox='0 0 300 300'></svg>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "var data = [",
           "  { value: 35, color: '#3b82f6', label: 'Blue' },",
           "  { value: 25, color: '#10b981', label: 'Green' },",
@@ -494,8 +495,7 @@
           "    svg.appendChild(path);",
           "    startAngle = endAngle;",
           "  }",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -519,8 +519,9 @@
           "  <div id='item3' class='w-full max-w-3xl p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500' style='opacity:0; transform: translateX(-40px)'>",
           "    <p class='text-lg font-semibold text-orange-800'>4. Integration Test</p>",
           "  </div>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "function render(frame, totalFrames, fps) {",
           "  var stagger = fps * 0.4;",
           "  for (var i = 0; i < 4; i++) {",
@@ -532,8 +533,7 @@
           "    el.style.opacity = opacity;",
           "    el.style.transform = 'translateX(' + tx + 'px)';",
           "  }",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -546,8 +546,9 @@
         "html": [
           "<div class='h-full flex items-center justify-center bg-indigo-950 overflow-hidden'>",
           "  <svg id='particle-svg' class='w-full h-full' viewBox='0 0 800 450'></svg>",
-          "</div>",
-          "<script>",
+          "</div>"
+        ],
+        "script": [
           "var particles = [];",
           "for (var i = 0; i < 40; i++) {",
           "  particles.push({",
@@ -575,8 +576,7 @@
           "    c.setAttribute('opacity', opacity);",
           "    svg.appendChild(c);",
           "  }",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": { "fps": 24 }
       }
