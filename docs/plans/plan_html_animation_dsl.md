@@ -19,7 +19,7 @@ PR #1238 (`refactor/html-animation-readability`) と PR #1239 (`feat/html-tailwi
   ${html_body}
 
   <script>
-    // interpolate, Easing, interpolateWithEasing（既存）
+    // interpolate, Easing（既存、オブジェクト引数に統一）
     // MulmoAnimation クラス（新規）
     // window.__MULMO
   </script>
@@ -32,16 +32,29 @@ PR #1238 (`refactor/html-animation-readability`) と PR #1239 (`feat/html-tailwi
 </body>
 ```
 
+## interpolate API（オブジェクト引数、easing 統合）
+
+`interpolateWithEasing` は廃止。`interpolate` にオブジェクト引数で統合。
+
+```javascript
+// 基本（linear）
+interpolate(frame, { input: { inMin: 0, inMax: fps }, output: { outMin: 0, outMax: 1 } })
+
+// easing 付き
+interpolate(frame, { input: { inMin: 0, inMax: fps }, output: { outMin: 0, outMax: 1 }, easing: 'easeOut' })
+interpolate(frame, { input: { inMin: 0, inMax: fps }, output: { outMin: 0, outMax: 1 }, easing: Easing.easeOut })
+```
+
 ## MulmoAnimation API (start/end は秒単位)
 
 ```javascript
-var a = new MulmoAnimation();
-a.animate('#title', { opacity: [0, 1], translateY: [30, 0] }, { start: 0, end: 0.5, easing: 'easeOut' });
-a.animate('#bar', { width: [0, 80, '%'] }, { start: 0, end: 1.5 });
-a.stagger('#item{i}', 4, { opacity: [0, 1], translateX: [-40, 0] }, { start: 0, stagger: 0.4, duration: 0.5, easing: 'easeOut' });
-a.typewriter('#text', 'Full text...', { start: 0, end: 3.4 });
-a.counter('#label', [0, 100], { start: 0, end: 2, prefix: 'Progress: ', suffix: '%' });
-function render(frame, totalFrames, fps) { a.update(frame, fps); }
+const animation = new MulmoAnimation();
+animation.animate('#title', { opacity: [0, 1], translateY: [30, 0] }, { start: 0, end: 0.5, easing: 'easeOut' });
+animation.animate('#bar', { width: [0, 80, '%'] }, { start: 0, end: 1.5 });
+animation.stagger('#item{i}', 4, { opacity: [0, 1], translateX: [-40, 0] }, { start: 0, stagger: 0.4, duration: 0.5, easing: 'easeOut' });
+animation.typewriter('#text', 'Full text...', { start: 0, end: 3.4 });
+animation.counter('#label', [0, 100], { start: 0, end: 2, prefix: 'Progress: ', suffix: '%' });
+function render(frame, totalFrames, fps) { animation.update(frame, fps); }
 ```
 
 ### プロパティ処理
@@ -65,15 +78,15 @@ function render(frame, totalFrames, fps) { a.update(frame, fps); }
 | typewriter | typewriter() + 生 JS カーソル点滅 |
 | stagger_items | stagger() x1 |
 
-残り11ビートは旧形式維持（SVG/particle/教育用デモ）。
+残り10ビートは旧形式の `interpolate` をオブジェクト引数に変換済み。`interpolateWithEasing` は全て `interpolate` + `easing` プロパティに統合。
 
 ## 変更ファイル
 
 | File | Change |
 |------|--------|
-| `assets/html/tailwind_animated.html` | 3分割 + MulmoAnimation クラス注入 |
+| `assets/html/tailwind_animated.html` | 3分割 + MulmoAnimation クラス注入 + interpolate オブジェクト引数化 |
 | `src/utils/image_plugins/html_tailwind.ts` | (マージ済み状態、追加変更なし見込み) |
-| `scripts/test/test_html_animation.json` | 5ビートを MulmoAnimation 形式に変換 |
+| `scripts/test/test_html_animation.json` | 5ビートを MulmoAnimation 形式に変換 + 全ビート interpolate オブジェクト引数化 |
 
 ## 検証
 

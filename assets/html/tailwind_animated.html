@@ -20,25 +20,6 @@
     // === MulmoCast Animation Helpers ===
 
     /**
-     * Linear interpolation with clamping.
-     * Similar to Remotion's interpolate().
-     *
-     * @param {number} value - Current value (typically frame number)
-     * @param {[number, number]} inputRange - [start, end] of input
-     * @param {[number, number]} outputRange - [start, end] of output
-     * @returns {number} Interpolated and clamped value
-     */
-    function interpolate(value, inputRange, outputRange) {
-      const [inMin, inMax] = inputRange;
-      const [outMin, outMax] = outputRange;
-      if (inMax === inMin) {
-        return outMin;
-      }
-      const progress = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
-      return outMin + progress * (outMax - outMin);
-    }
-
-    /**
      * Easing functions for non-linear interpolation.
      */
     const Easing = {
@@ -49,20 +30,25 @@
     };
 
     /**
-     * Interpolate with easing function.
+     * Interpolation with clamping and optional easing.
      *
      * @param {number} value - Current value (typically frame number)
-     * @param {[number, number]} inputRange - [start, end] of input
-     * @param {[number, number]} outputRange - [start, end] of output
-     * @param {function} easing - Easing function from Easing object
-     * @returns {number} Interpolated value with easing applied
+     * @param {Object} opts - { input: { inMin, inMax }, output: { outMin, outMax }, easing?: string | function }
+     * @returns {number} Interpolated and clamped value
+     *
+     * @example
+     *   interpolate(frame, { input: { inMin: 0, inMax: 30 }, output: { outMin: 0, outMax: 1 } })
+     *   interpolate(frame, { input: { inMin: 0, inMax: 30 }, output: { outMin: 0, outMax: 1 }, easing: 'easeOut' })
      */
-    function interpolateWithEasing(value, inputRange, outputRange, easing) {
-      const [inMin, inMax] = inputRange;
-      const [outMin, outMax] = outputRange;
+    function interpolate(value, opts) {
+      const { inMin, inMax } = opts.input;
+      const { outMin, outMax } = opts.output;
       if (inMax === inMin) {
         return outMin;
       }
+      const easing = !opts.easing ? Easing.linear
+        : typeof opts.easing === 'function' ? opts.easing
+        : Easing[opts.easing] || Easing.linear;
       const progress = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
       return outMin + easing(progress) * (outMax - outMin);
     }
