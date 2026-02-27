@@ -1,5 +1,5 @@
 ---
-generated_at: 2026-02-26T20:30:45.779Z
+generated_at: 2026-02-27T18:52:22.579Z
 ---
 
 # images
@@ -97,6 +97,7 @@ flowchart TD
   n_imagePlugin --> n_imageFromMovie
   n_preprocessor -- imagePath --> n_imageFromMovie
   n_preprocessor -- movieFile --> n_imageFromMovie
+  n_preprocessor -- useLastFrame --> n_imageFromMovie
   n_audioChecker(audioChecker<br/>agent)
   n_movieGenerator --> n_audioChecker
   n_htmlImageGenerator --> n_audioChecker
@@ -259,6 +260,7 @@ flowchart TD
     n_map_imagePlugin --> n_map_imageFromMovie
     n_map_preprocessor -- imagePath --> n_map_imageFromMovie
     n_map_preprocessor -- movieFile --> n_map_imageFromMovie
+    n_map_preprocessor -- useLastFrame --> n_map_imageFromMovie
     n_map_audioChecker(audioChecker<br/>agent)
     n_map_movieGenerator --> n_map_audioChecker
     n_map_htmlImageGenerator --> n_map_audioChecker
