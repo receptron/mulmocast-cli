@@ -19,7 +19,7 @@ const buildUserScript = (script: string | string[] | undefined): string => {
   if (!script) return "";
   const code = Array.isArray(script) ? script.join("\n") : script;
   return `<script>\n${code}\n</script>`;
-}
+};
 
 const getAnimationConfig = (params: ImageProcessorParams) => {
   const { beat } = params;

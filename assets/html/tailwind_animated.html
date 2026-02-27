@@ -15,7 +15,6 @@
 </head>
 <body class="bg-white text-gray-800 h-full flex flex-col">
   ${html_body}
-  ${user_script}
 
   <script>
     // === MulmoCast Animation Helpers ===
@@ -30,43 +29,182 @@
      * @returns {number} Interpolated and clamped value
      */
     function interpolate(value, inputRange, outputRange) {
-      const [inMin, inMax] = inputRange;
-      const [outMin, outMax] = outputRange;
+      var inMin = inputRange[0], inMax = inputRange[1];
+      var outMin = outputRange[0], outMax = outputRange[1];
       if (inMax === inMin) {
         return outMin;
       }
-      const progress = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
+      var progress = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
       return outMin + progress * (outMax - outMin);
     }
 
     /**
      * Easing functions for non-linear interpolation.
      */
-    const Easing = {
-      linear: (t) => t,
-      easeIn: (t) => t * t,
-      easeOut: (t) => 1 - (1 - t) * (1 - t),
-      easeInOut: (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2,
+    var Easing = {
+      linear: function(t) { return t; },
+      easeIn: function(t) { return t * t; },
+      easeOut: function(t) { return 1 - (1 - t) * (1 - t); },
+      easeInOut: function(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
     };
 
     /**
      * Interpolate with easing function.
-     *
-     * @param {number} value - Current value (typically frame number)
-     * @param {[number, number]} inputRange - [start, end] of input
-     * @param {[number, number]} outputRange - [start, end] of output
-     * @param {function} easing - Easing function from Easing object
-     * @returns {number} Interpolated value with easing applied
      */
     function interpolateWithEasing(value, inputRange, outputRange, easing) {
-      const [inMin, inMax] = inputRange;
-      const [outMin, outMax] = outputRange;
+      var inMin = inputRange[0], inMax = inputRange[1];
+      var outMin = outputRange[0], outMax = outputRange[1];
       if (inMax === inMin) {
         return outMin;
       }
-      const progress = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
+      var progress = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
       return outMin + easing(progress) * (outMax - outMin);
     }
+
+    // === MulmoAnim Helper Class ===
+
+    var TRANSFORM_PROPS = { translateX: 'px', translateY: 'px', scale: '', rotate: 'deg' };
+    var SVG_PROPS = ['r', 'cx', 'cy', 'x', 'y', 'x1', 'y1', 'x2', 'y2', 'rx', 'ry',
+                     'width', 'height', 'stroke-width', 'stroke-dashoffset', 'stroke-dasharray', 'opacity'];
+
+    function MulmoAnim() {
+      this._entries = [];
+    }
+
+    /**
+     * Register a property animation on a single element.
+     * @param {string} selector - CSS selector (e.g. '#title')
+     * @param {Object} props - { opacity: [0, 1], translateY: [30, 0], width: [0, 80, '%'] }
+     * @param {Object} opts - { start, end, easing }  (start/end in seconds)
+     */
+    MulmoAnim.prototype.animate = function(selector, props, opts) {
+      this._entries.push({ kind: 'animate', selector: selector, props: props, opts: opts || {} });
+      return this;
+    };
+
+    /**
+     * Stagger animation across numbered elements.
+     * Selector must contain {i} placeholder (e.g. '#item{i}').
+     * @param {string} selector - e.g. '#item{i}'
+     * @param {number} count - number of elements (0-indexed)
+     * @param {Object} props - same as animate()
+     * @param {Object} opts - { start, stagger, duration, easing }
+     */
+    MulmoAnim.prototype.stagger = function(selector, count, props, opts) {
+      this._entries.push({ kind: 'stagger', selector: selector, count: count, props: props, opts: opts || {} });
+      return this;
+    };
+
+    /**
+     * Typewriter effect — reveal text character by character.
+     * @param {string} selector - target element selector
+     * @param {string} text - full text to reveal
+     * @param {Object} opts - { start, end }
+     */
+    MulmoAnim.prototype.typewriter = function(selector, text, opts) {
+      this._entries.push({ kind: 'typewriter', selector: selector, text: text, opts: opts || {} });
+      return this;
+    };
+
+    /**
+     * Animated counter — interpolate a number and display with optional prefix/suffix.
+     * @param {string} selector - target element selector
+     * @param {[number, number]} range - [from, to]
+     * @param {Object} opts - { start, end, prefix, suffix, decimals }
+     */
+    MulmoAnim.prototype.counter = function(selector, range, opts) {
+      this._entries.push({ kind: 'counter', selector: selector, range: range, opts: opts || {} });
+      return this;
+    };
+
+    /** Resolve easing name string or function to an easing function */
+    MulmoAnim.prototype._resolveEasing = function(e) {
+      if (!e) return Easing.linear;
+      if (typeof e === 'function') return e;
+      return Easing[e] || Easing.linear;
+    };
+
+    /** Apply props to element at a given progress (0-1) with easing */
+    MulmoAnim.prototype._applyProps = function(el, props, progress, easingFn) {
+      if (!el) return;
+      var transforms = [];
+      var keys = Object.keys(props);
+      for (var k = 0; k < keys.length; k++) {
+        var prop = keys[k];
+        var spec = props[prop];
+        var from = spec[0], to = spec[1];
+        var unit = (spec.length > 2) ? spec[2] : null;
+        var val = from + easingFn(progress) * (to - from);
+
+        if (TRANSFORM_PROPS.hasOwnProperty(prop)) {
+          var tUnit = unit || TRANSFORM_PROPS[prop];
+          transforms.push(prop === 'scale' ? 'scale(' + val + ')' : prop + '(' + val + tUnit + ')');
+        } else if (el instanceof SVGElement && SVG_PROPS.indexOf(prop) !== -1) {
+          el.setAttribute(prop, val);
+        } else if (prop === 'opacity') {
+          el.style.opacity = val;
+        } else {
+          var cssUnit = unit || 'px';
+          el.style[prop] = val + cssUnit;
+        }
+      }
+      if (transforms.length > 0) {
+        el.style.transform = transforms.join(' ');
+      }
+    };
+
+    /**
+     * Update all registered animations for the given frame.
+     * @param {number} frame - current frame number
+     * @param {number} fps - frames per second
+     */
+    MulmoAnim.prototype.update = function(frame, fps) {
+      for (var i = 0; i < this._entries.length; i++) {
+        var entry = this._entries[i];
+        var opts = entry.opts;
+        var easingFn = this._resolveEasing(opts.easing);
+
+        if (entry.kind === 'animate') {
+          var startFrame = (opts.start || 0) * fps;
+          var endFrame = (opts.end || 0) * fps;
+          var progress = Math.max(0, Math.min(1, endFrame === startFrame ? 1 : (frame - startFrame) / (endFrame - startFrame)));
+          var el = document.querySelector(entry.selector);
+          this._applyProps(el, entry.props, progress, easingFn);
+
+        } else if (entry.kind === 'stagger') {
+          var baseStart = (opts.start || 0) * fps;
+          var staggerDelay = (opts.stagger || 0.2) * fps;
+          var dur = (opts.duration || 0.5) * fps;
+          for (var j = 0; j < entry.count; j++) {
+            var sel = entry.selector.replace(/\{i\}/g, j);
+            var sEl = document.querySelector(sel);
+            var sStart = baseStart + j * staggerDelay;
+            var sEnd = sStart + dur;
+            var sProgress = Math.max(0, Math.min(1, sEnd === sStart ? 1 : (frame - sStart) / (sEnd - sStart)));
+            this._applyProps(sEl, entry.props, sProgress, easingFn);
+          }
+
+        } else if (entry.kind === 'typewriter') {
+          var twStart = (opts.start || 0) * fps;
+          var twEnd = (opts.end || 0) * fps;
+          var twProgress = Math.max(0, Math.min(1, twEnd === twStart ? 1 : (frame - twStart) / (twEnd - twStart)));
+          var charCount = Math.floor(twProgress * entry.text.length);
+          var twEl = document.querySelector(entry.selector);
+          if (twEl) twEl.textContent = entry.text.substring(0, charCount);
+
+        } else if (entry.kind === 'counter') {
+          var cStart = (opts.start || 0) * fps;
+          var cEnd = (opts.end || 0) * fps;
+          var cProgress = Math.max(0, Math.min(1, cEnd === cStart ? 1 : (frame - cStart) / (cEnd - cStart)));
+          var cEasing = this._resolveEasing(opts.easing);
+          var cVal = entry.range[0] + cEasing(cProgress) * (entry.range[1] - entry.range[0]);
+          var decimals = opts.decimals || 0;
+          var display = (opts.prefix || '') + cVal.toFixed(decimals) + (opts.suffix || '');
+          var cEl = document.querySelector(entry.selector);
+          if (cEl) cEl.textContent = display;
+        }
+      }
+    };
 
     // === MulmoCast Frame State (updated by Puppeteer per frame) ===
     window.__MULMO = {
@@ -74,10 +212,14 @@
       totalFrames: ${totalFrames},
       fps: ${fps},
     };
+  </script>
 
+  ${user_script}
+
+  <script>
     // Initial render (frame 0)
     if (typeof render === 'function') {
-      const result = render(0, window.__MULMO.totalFrames, window.__MULMO.fps);
+      var result = render(0, window.__MULMO.totalFrames, window.__MULMO.fps);
       if (result && typeof result.then === 'function') {
         result.catch(console.error);
       }

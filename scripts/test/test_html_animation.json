@@ -29,15 +29,11 @@
           "</div>"
         ],
         "script": [
-          "function render(frame, totalFrames, fps) {",
-          "  var title = document.getElementById('title');",
-          "  title.style.opacity = interpolate(frame, [0, fps * 0.5], [0, 1]);",
-          "  title.style.transform = 'translateY(' + interpolateWithEasing(frame, [0, fps * 0.5], [30, 0], Easing.easeOut) + 'px)';",
-          "  var sub = document.getElementById('subtitle');",
-          "  sub.style.opacity = interpolate(frame, [fps * 0.3, fps * 0.8], [0, 1]);",
-          "  sub.style.transform = 'translateY(' + interpolateWithEasing(frame, [fps * 0.3, fps * 0.8], [20, 0], Easing.easeOut) + 'px)';",
-          "  document.getElementById('line').style.width = interpolateWithEasing(frame, [fps * 0.5, fps * 1.5], [0, 400], Easing.easeInOut) + 'px';",
-          "}"
+          "var a = new MulmoAnim();",
+          "a.animate('#title', { opacity: [0, 1], translateY: [30, 0] }, { start: 0, end: 0.5, easing: 'easeOut' });",
+          "a.animate('#subtitle', { opacity: [0, 1], translateY: [20, 0] }, { start: 0.3, end: 0.8, easing: 'easeOut' });",
+          "a.animate('#line', { width: [0, 400, 'px'] }, { start: 0.5, end: 1.5, easing: 'easeInOut' });",
+          "function render(frame, totalFrames, fps) { a.update(frame, fps); }"
         ],
         "animation": true
       }
@@ -307,13 +303,9 @@
           "</div>"
         ],
         "script": [
-          "function render(frame, totalFrames, fps) {",
-          "  var title = document.getElementById('title');",
-          "  var opacity = interpolate(frame, [0, fps], [0, 1]);",
-          "  title.style.opacity = opacity;",
-          "  var scale = interpolateWithEasing(frame, [0, fps], [0.8, 1], Easing.easeOut);",
-          "  title.style.transform = 'scale(' + scale + ')';",
-          "}"
+          "var a = new MulmoAnim();",
+          "a.animate('#title', { opacity: [0, 1], scale: [0.8, 1] }, { start: 0, end: 1, easing: 'easeOut' });",
+          "function render(frame, totalFrames, fps) { a.update(frame, fps); }"
         ],
         "animation": true
       }
@@ -340,6 +332,7 @@
       }
     },
     {
+      "id": "progress_bars",
       "speaker": "Presenter",
       "duration": 2,
       "image": {
@@ -350,16 +343,15 @@
           "  <div id='bar2' class='h-8 bg-green-500 rounded-r mb-4'></div>",
           "  <div id='bar3' class='h-8 bg-red-500 rounded-r mb-4'></div>",
           "  <p id='label' class='text-gray-600 text-lg mt-8'>Loading progress...</p>",
-          "</div>",
-          "<script>",
-          "function render(frame, totalFrames, fps) {",
-          "  var t = frame / totalFrames;",
-          "  document.getElementById('bar1').style.width = interpolate(frame, [0, totalFrames * 0.5], [0, 80]) + '%';",
-          "  document.getElementById('bar2').style.width = interpolate(frame, [fps * 0.3, totalFrames * 0.7], [0, 60]) + '%';",
-          "  document.getElementById('bar3').style.width = interpolate(frame, [fps * 0.6, totalFrames], [0, 90]) + '%';",
-          "  document.getElementById('label').textContent = 'Progress: ' + Math.round(t * 100) + '%';",
-          "}",
-          "</script>"
+          "</div>"
+        ],
+        "script": [
+          "var a = new MulmoAnim();",
+          "a.animate('#bar1', { width: [0, 80, '%'] }, { start: 0, end: 1 });",
+          "a.animate('#bar2', { width: [0, 60, '%'] }, { start: 0.3, end: 1.4 });",
+          "a.animate('#bar3', { width: [0, 90, '%'] }, { start: 0.6, end: 2 });",
+          "a.counter('#label', [0, 100], { start: 0, end: 2, prefix: 'Progress: ', suffix: '%' });",
+          "function render(frame, totalFrames, fps) { a.update(frame, fps); }"
         ],
         "animation": true
       }
@@ -434,6 +426,7 @@
       }
     },
     {
+      "id": "typewriter_demo",
       "speaker": "Presenter",
       "duration": 4,
       "image": {
@@ -442,15 +435,15 @@
           "<div class='h-full flex flex-col items-center justify-center bg-gray-900 px-16'>",
           "  <p id='typewriter' class='text-2xl font-mono text-green-400 leading-relaxed max-w-2xl'></p>",
           "  <span id='cursor' class='text-2xl font-mono text-green-400'>|</span>",
-          "</div>",
-          "<script>",
-          "var fullText = 'MulmoCast transforms your ideas into multi-modal presentations. With frame-based animation, you can create smooth, deterministic visuals powered by HTML and Tailwind CSS.';",
+          "</div>"
+        ],
+        "script": [
+          "var a = new MulmoAnim();",
+          "a.typewriter('#typewriter', 'MulmoCast transforms your ideas into multi-modal presentations. With frame-based animation, you can create smooth, deterministic visuals powered by HTML and Tailwind CSS.', { start: 0, end: 3.4 });",
           "function render(frame, totalFrames, fps) {",
-          "  var charCount = Math.floor(interpolate(frame, [0, totalFrames * 0.85], [0, fullText.length]));",
-          "  document.getElementById('typewriter').textContent = fullText.substring(0, charCount);",
+          "  a.update(frame, fps);",
           "  document.getElementById('cursor').style.opacity = Math.sin(frame * 0.3) > 0 ? 1 : 0;",
-          "}",
-          "</script>"
+          "}"
         ],
         "animation": true
       }
@@ -501,6 +494,7 @@
       }
     },
     {
+      "id": "stagger_items",
       "speaker": "Presenter",
       "duration": 3,
       "image": {
@@ -519,21 +513,12 @@
           "  <div id='item3' class='w-full max-w-3xl p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500' style='opacity:0; transform: translateX(-40px)'>",
           "    <p class='text-lg font-semibold text-orange-800'>4. Integration Test</p>",
           "  </div>",
-          "</div>",
-          "<script>",
-          "function render(frame, totalFrames, fps) {",
-          "  var stagger = fps * 0.4;",
-          "  for (var i = 0; i < 4; i++) {",
-          "    var el = document.getElementById('item' + i);",
-          "    var start = i * stagger;",
-          "    var end = start + fps * 0.5;",
-          "    var opacity = interpolateWithEasing(frame, [start, end], [0, 1], Easing.easeOut);",
-          "    var tx = interpolateWithEasing(frame, [start, end], [-40, 0], Easing.easeOut);",
-          "    el.style.opacity = opacity;",
-          "    el.style.transform = 'translateX(' + tx + 'px)';",
-          "  }",
-          "}",
-          "</script>"
+          "</div>"
+        ],
+        "script": [
+          "var a = new MulmoAnim();",
+          "a.stagger('#item{i}', 4, { opacity: [0, 1], translateX: [-40, 0] }, { start: 0, stagger: 0.4, duration: 0.5, easing: 'easeOut' });",
+          "function render(frame, totalFrames, fps) { a.update(frame, fps); }"
         ],
         "animation": true
       }
