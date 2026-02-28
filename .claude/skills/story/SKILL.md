@@ -210,6 +210,51 @@ For image-only beats without slide layout, use `imagePrompt` as a beat-level str
 { "text": "Narration", "imagePrompt": "Detailed prompt..." }
 ```
 
+### Animated beats (`html_tailwind` animation)
+
+For beats that benefit from motion — cinematic intros, opening crawls, data visualizations, 3D effects — use `html_tailwind` animation instead of static slides or imagePrompt.
+
+**Read** `docs/llm/html_animation_reference.md` for the full API reference (MulmoAnimation DSL, interpolate, Easing, property types).
+
+#### When to use animation
+
+| Content Type | Visual Mode |
+|-------------|-------------|
+| Data, charts, structured info | `slide` (default) |
+| Photographic / illustrative imagery | `imagePrompt` |
+| Cinematic intros, text crawls, transitions | `html_tailwind` animation |
+| Data dashboards with animated counters | `html_tailwind` animation |
+| 3D card flips, reveals, code walkthroughs | `html_tailwind` animation |
+
+#### Animated beat structure
+
+```json
+{
+  "duration": 3,
+  "image": {
+    "type": "html_tailwind",
+    "html": ["<div id='el' style='opacity:0'>...</div>"],
+    "script": [
+      "const animation = new MulmoAnimation();",
+      "animation.animate('#el', { opacity: [0, 1], translateY: [30, 0] }, { start: 0, end: 0.5, easing: 'easeOut' });"
+    ],
+    "animation": true
+  }
+}
+```
+
+Key rules:
+- `html`: HTML markup with Tailwind CSS (no `<script>` tags). Set initial styles inline (e.g., `style='opacity:0'`)
+- `script`: JavaScript code (no `<script>` tags). Use `MulmoAnimation` DSL or raw `render()` + `interpolate()`
+- `animation`: `true` (30fps) or `{ "fps": 15 }` for custom fps
+- `duration`: Required for animated beats (may be auto-calculated from audio)
+- Name the MulmoAnimation instance `animation` to enable auto-render (no manual `render()` needed)
+- Use `end: 'auto'` for animations that span the entire beat duration
+
+#### Mixing animated beats with slides
+
+Animated beats can be freely mixed with slide beats and imagePrompt beats in the same script. When mixing, ensure `slideParams.theme` is present for any slide beats.
+
 ### Present visual plan for approval
 
 ---
