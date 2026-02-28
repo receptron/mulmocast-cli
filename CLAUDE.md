@@ -68,6 +68,20 @@ When publishing, if the diff includes changes under `src/types/`, MUST publish `
 - `src/utils/` - Utilities for file handling, FFmpeg, image processing, etc.
 - `src/utils/image_plugins/` - Image type processors (markdown, textSlide, mermaid, slide, etc.)
 - `src/slide/` - Self-contained slide DSL module (schema, layouts, blocks, render)
+- `.claude/skills/` - Sample skills for educational content generation (see below)
+
+### Sample Skills (`.claude/skills/`)
+
+The following skills are included as examples of how to build MulmoScript generation workflows using Claude Code skills:
+
+| Skill | Description |
+|-------|-------------|
+| `vocab-chat` | Messenger-style vocabulary learning chat with voiceover |
+| `vocab-lesson` | Multi-section vocabulary lesson (word display, examples, review with translation) |
+| `conversation-chat` | Speech-bubble conversation practice with character illustration |
+| `stroke-order` | Animated stroke order for hiragana, katakana, kanji, and Latin characters |
+
+Each skill includes a `SKILL.md` with templates and helper scripts (timing calculators, generators).
 
 ### Methods Pattern (`src/methods/`)
 
