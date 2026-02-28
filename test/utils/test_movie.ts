@@ -61,7 +61,7 @@ test("test getVideoParts image", async () => {
   const { videoPart } = getVideoPart(1, false, 200, { width: 100, height: 300 }, { style: "aspectFit" }, 1.0);
   assert.equal(
     videoPart,
-    "[1:v]loop=loop=-1:size=1:start=0,trim=duration=200,fps=30,setpts=PTS-STARTPTS,scale=w=100:h=300:force_original_aspect_ratio=decrease,pad=100:300:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
+    "[1:v]loop=loop=-1:size=1:start=0,fps=30,trim=duration=200,setpts=PTS-STARTPTS,scale=w=100:h=300:force_original_aspect_ratio=decrease,pad=100:300:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
   );
 });
 
@@ -69,7 +69,7 @@ test("test getVideoParts movie", async () => {
   const { videoPart } = getVideoPart(1, true, 200, { width: 100, height: 300 }, { style: "aspectFit" }, 1.0);
   assert.equal(
     videoPart,
-    "[1:v]tpad=stop_mode=clone:stop_duration=400,trim=duration=200,fps=30,setpts=PTS-STARTPTS,scale=w=100:h=300:force_original_aspect_ratio=decrease,pad=100:300:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
+    "[1:v]tpad=stop_mode=clone:stop_duration=400,fps=30,trim=duration=200,setpts=PTS-STARTPTS,scale=w=100:h=300:force_original_aspect_ratio=decrease,pad=100:300:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
   );
 });
 
@@ -77,7 +77,7 @@ test("test getVideoParts aspectFill", async () => {
   const { videoPart } = getVideoPart(2, false, 150, { width: 1280, height: 720 }, { style: "aspectFill" }, 1.0);
   assert.equal(
     videoPart,
-    "[2:v]loop=loop=-1:size=1:start=0,trim=duration=150,fps=30,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=increase,crop=1280:720,setsar=1,format=yuv420p[v2]",
+    "[2:v]loop=loop=-1:size=1:start=0,fps=30,trim=duration=150,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=increase,crop=1280:720,setsar=1,format=yuv420p[v2]",
   );
 });
 
@@ -85,7 +85,7 @@ test("test getVideoParts with speed", async () => {
   const { videoPart } = getVideoPart(3, true, 100, { width: 1920, height: 1080 }, { style: "aspectFit" }, 2.0);
   assert.equal(
     videoPart,
-    "[3:v]tpad=stop_mode=clone:stop_duration=400,trim=duration=200,fps=30,setpts=0.5*PTS,scale=w=1920:h=1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v3]",
+    "[3:v]tpad=stop_mode=clone:stop_duration=400,fps=30,trim=duration=200,setpts=0.5*PTS,scale=w=1920:h=1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v3]",
   );
 });
 
