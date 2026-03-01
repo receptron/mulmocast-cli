@@ -23,6 +23,7 @@ import { convertVideoFilterToFFmpeg } from "../utils/video_filter.js";
 
 // const isMac = process.platform === "darwin";
 const videoCodec = "libx264"; // "h264_videotoolbox" (macOS only) is too noisy
+const VIDEO_FPS = 30;
 type VideoId = string | undefined;
 
 export const getVideoPart = (
@@ -33,6 +34,7 @@ export const getVideoPart = (
   fillOption: MulmoFillOption,
   speed: number,
   filters?: MulmoVideoFilter[],
+  frameCount?: number,
 ) => {
   const videoId = `v${inputIndex}`;
 
@@ -48,8 +50,20 @@ export const getVideoPart = (
     videoFilters.push("loop=loop=-1:size=1:start=0");
   }
 
-  // Common filters for all media types
-  videoFilters.push(`trim=duration=${originalDuration}`, "fps=30");
+  // Normalize framerate first so trim=end_frame counts frames at VIDEO_FPS,
+  // regardless of the input's native framerate.
+  videoFilters.push(`fps=${VIDEO_FPS}`);
+
+  // Use frame-exact trimming when frameCount is provided to prevent cumulative drift
+  // between video and audio tracks. trim=duration=X rounds up to next frame boundary,
+  // causing ~0.03s extra per beat that accumulates over many beats.
+  if (frameCount !== undefined && frameCount > 0) {
+    // Account for speed: setpts compresses timestamps, so we need more input frames
+    const inputFrameCount = Math.max(1, Math.round(frameCount * speed));
+    videoFilters.push(`trim=end_frame=${inputFrameCount}`);
+  } else {
+    videoFilters.push(`trim=duration=${originalDuration}`);
+  }
 
   // Apply speed if specified
   if (speed === 1.0) {
@@ -118,7 +132,7 @@ const getOutputOption = (audioId: string, videoId: string) => {
     "4M", // Reduced buffer size
     "-maxrate",
     "3M", // Reduced from 7M to 3M
-    "-r 30", // Set frame rate
+    `-r ${VIDEO_FPS}`, // Set frame rate
     "-pix_fmt yuv420p", // Set pixel format for better compatibility
     "-c:a aac", // Audio codec
     "-b:a 128k", // Audio bitrate
@@ -358,7 +372,7 @@ const getClampedTransitionDuration = (transitionDuration: number, prevBeatDurati
 };
 
 export const getTransitionFrameDurations = (context: MulmoStudioContext, index: number) => {
-  const minFrame = 1 / 30; // 30fpsを想定。最小1フレーム
+  const minFrame = 1 / VIDEO_FPS;
   const beats = context.studio.beats;
   const scriptBeats = context.studio.script.beats;
 
@@ -413,23 +427,29 @@ export const addSplitAndExtractFrames = (
   if (needFirst) {
     // Create static frame using nullsrc as base for proper framerate/timebase
     // Note: setpts must NOT be used here as it loses framerate metadata needed by xfade
-    ffmpegContext.filterComplex.push(`nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${firstDuration}:rate=30[${videoId}_first_null]`);
+    ffmpegContext.filterComplex.push(
+      `nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${firstDuration}:rate=${VIDEO_FPS}[${videoId}_first_null]`,
+    );
     ffmpegContext.filterComplex.push(`[${videoId}_first_src]select='eq(n,0)',scale=${canvasInfo.width}:${canvasInfo.height}[${videoId}_first_frame]`);
-    ffmpegContext.filterComplex.push(`[${videoId}_first_null][${videoId}_first_frame]overlay=format=auto,fps=30[${videoId}_first]`);
+    ffmpegContext.filterComplex.push(`[${videoId}_first_null][${videoId}_first_frame]overlay=format=auto,fps=${VIDEO_FPS}[${videoId}_first]`);
   }
   if (needLast) {
     if (isMovie) {
       // Movie beats: extract actual last frame
-      ffmpegContext.filterComplex.push(`nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${lastDuration}:rate=30[${videoId}_last_null]`);
+      ffmpegContext.filterComplex.push(
+        `nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${lastDuration}:rate=${VIDEO_FPS}[${videoId}_last_null]`,
+      );
       ffmpegContext.filterComplex.push(
         `[${videoId}_last_src]reverse,select='eq(n,0)',reverse,scale=${canvasInfo.width}:${canvasInfo.height}[${videoId}_last_frame]`,
       );
-      ffmpegContext.filterComplex.push(`[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=30[${videoId}_last]`);
+      ffmpegContext.filterComplex.push(`[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=${VIDEO_FPS}[${videoId}_last]`);
     } else {
       // Image beats: all frames are identical, so just select one
-      ffmpegContext.filterComplex.push(`nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${lastDuration}:rate=30[${videoId}_last_null]`);
+      ffmpegContext.filterComplex.push(
+        `nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${lastDuration}:rate=${VIDEO_FPS}[${videoId}_last_null]`,
+      );
       ffmpegContext.filterComplex.push(`[${videoId}_last_src]select='eq(n,0)',scale=${canvasInfo.width}:${canvasInfo.height}[${videoId}_last_frame]`);
-      ffmpegContext.filterComplex.push(`[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=30[${videoId}_last]`);
+      ffmpegContext.filterComplex.push(`[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=${VIDEO_FPS}[${videoId}_last]`);
     }
   }
 };
@@ -469,6 +489,7 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
   // Check which beats need _last (for any transition on next beat - they all need previous beat's last frame)
   const needsLastFrame: boolean[] = getNeedLastFrame(context);
 
+  let cumulativeFrames = 0;
   context.studio.beats.reduce((timestamp, studioBeat, index) => {
     const beat = context.studio.script.beats[index];
     if (beat.image?.type === "voice_over") {
@@ -481,6 +502,14 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
 
     // The movie duration is bigger in case of voice-over.
     const duration = Math.max(studioBeat.duration! + getExtraPadding(context, index), studioBeat.movieDuration ?? 0);
+
+    // Use cumulative frame tracking to prevent audio-video drift from frame quantization.
+    // trim=duration=X rounds up to the next frame boundary (~0.03s per beat at 30fps),
+    // causing cumulative drift. Instead, compute exact frame counts per beat.
+    const targetEndFrame = Math.round((timestamp + duration) * VIDEO_FPS);
+    const frameCount = targetEndFrame - cumulativeFrames;
+    cumulativeFrames = targetEndFrame;
+
     const inputIndex = FfmpegContextAddInput(ffmpegContext, sourceFile);
     const isMovie = !!(
       studioBeat.lipSyncFile ||
@@ -489,7 +518,7 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
     );
     const speed = beat.movieParams?.speed ?? 1.0;
     const filters = beat.movieParams?.filters;
-    const { videoId, videoPart } = getVideoPart(inputIndex, isMovie, duration, canvasInfo, getFillOption(context, beat), speed, filters);
+    const { videoId, videoPart } = getVideoPart(inputIndex, isMovie, duration, canvasInfo, getFillOption(context, beat), speed, filters, frameCount);
     ffmpegContext.filterComplex.push(videoPart);
 
     // for transition
