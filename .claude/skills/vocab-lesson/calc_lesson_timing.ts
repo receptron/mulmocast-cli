@@ -21,8 +21,20 @@
  */
 
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import path from "path";
+
+const log = (...args: unknown[]) => {
+  process.stdout.write(args.map(String).join(" ") + "\n");
+};
+const logError = (...args: unknown[]) => {
+  process.stderr.write(args.map(String).join(" ") + "\n");
+};
+const logWarn = (...args: unknown[]) => {
+  process.stderr.write(args.map(String).join(" ") + "\n");
+};
+
+const FFPROBE_PATH = execFileSync("/usr/bin/which", ["ffprobe"], { encoding: "utf-8" }).trim();
 
 const DEFAULT_JA_PADDING = 4.0;
 const DEFAULT_JA_GAP = 0.5;
@@ -48,12 +60,12 @@ function roundUp1(x: number): number {
 
 function getAudioDuration(filePath: string): number {
   try {
-    const result = execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${filePath}"`, {
+    const result = execFileSync(FFPROBE_PATH, ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", filePath], {
       encoding: "utf-8",
     });
     return parseFloat(result.trim());
   } catch {
-    console.error(`  WARNING: Failed to get duration for: ${filePath}`);
+    logError(`  WARNING: Failed to get duration for: ${filePath}`);
     return 0;
   }
 }
@@ -96,7 +108,7 @@ function parseArgs(args: string[]): Options {
 }
 
 function printUsage() {
-  console.log(`Usage: npx tsx .claude/skills/vocab-lesson/calc_lesson_timing.ts <script.json> [options]
+  log(`Usage: npx tsx .claude/skills/vocab-lesson/calc_lesson_timing.ts <script.json> [options]
 
 Options:
   --ja-padding <seconds>     Extra time after audio for Japanese display (default: ${DEFAULT_JA_PADDING})
@@ -145,29 +157,74 @@ function findJaFadeInBeats(beats: any[]): JaFadeInBeat[] {
 /**
  * Update the start/end values in anim.animate() call within the script array.
  */
-function updateAnimateTimingInScript(
-  scriptLines: string[],
-  targetId: string,
-  newStart: number,
-  newEnd: number,
-): boolean {
+function updateAnimateTimingInScript(scriptLines: string[], targetId: string, newStart: number, newEnd: number): boolean {
   const escapedId = targetId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const pattern = new RegExp(
-    `(anim\\.animate\\(\\s*'#${escapedId}'[^)]*start:\\s*)([\\d.]+)(,\\s*end:\\s*)([\\d.]+)`,
-  );
+  const pattern = new RegExp(`(anim\\.animate\\(\\s*'#${escapedId}'[^)]*start:\\s*)([\\d.]+)(,\\s*end:\\s*)([\\d.]+)`);
 
   for (let i = 0; i < scriptLines.length; i++) {
     const match = scriptLines[i].match(pattern);
     if (match) {
-      scriptLines[i] = scriptLines[i].replace(
-        pattern,
-        `$1${newStart.toFixed(1)}$3${newEnd.toFixed(1)}`,
-      );
+      scriptLines[i] = scriptLines[i].replace(pattern, `$1${newStart.toFixed(1)}$3${newEnd.toFixed(1)}`);
       return true;
     }
   }
 
   return false;
+}
+
+function resolveStudioPath(scriptPath: string, lang: string): string {
+  const basename = path.basename(scriptPath, ".json");
+  const withLang = path.join("output", `${basename}_${lang}_studio.json`);
+  if (existsSync(withLang)) return withLang;
+  const withoutLang = path.join("output", `${basename}_studio.json`);
+  if (existsSync(withoutLang)) return withoutLang;
+  logError(`Studio file not found: ${withLang}`);
+  logError(`Run 'yarn audio ${scriptPath}' first.`);
+  process.exit(1);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function collectAudioDurations(studio: any, scriptBeats: any[]): number[] {
+  log("=== Audio Durations ===");
+  const audioDurations: number[] = [];
+  for (let i = 0; i < studio.beats.length; i++) {
+    const studioBeat = studio.beats[i];
+    let duration = 0;
+    if (studioBeat.audioFile && existsSync(studioBeat.audioFile)) {
+      duration = getAudioDuration(studioBeat.audioFile);
+    } else if (studioBeat.audioDuration) {
+      duration = studioBeat.audioDuration;
+    }
+    audioDurations.push(duration);
+    const id = scriptBeats[i]?.id || `beat${i}`;
+    log(`  ${id}: ${duration.toFixed(3)}s`);
+  }
+  return audioDurations;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function processJaBeat(jaBeat: JaFadeInBeat, audioDurations: number[], script: any, options: Options): void {
+  const audioDuration = audioDurations[jaBeat.beatIdx];
+  const oldDuration = script.beats[jaBeat.beatIdx].duration;
+  const newDuration = roundUp1(audioDuration + options.jaPadding);
+  const jaFadeStart = roundUp1(audioDuration + options.jaGap);
+  const jaFadeEnd = roundUp1(jaFadeStart + options.fadeDuration);
+
+  log(`  ${jaBeat.beatId}:`);
+  log(`    audio     = ${audioDuration.toFixed(3)}s`);
+  log(`    duration  = ${oldDuration ?? "(none)"}s → ${newDuration}s`);
+  log(`    #${jaBeat.targetId} fade-in = ${jaFadeStart}s → ${jaFadeEnd}s`);
+
+  if (!options.dryRun) {
+    script.beats[jaBeat.beatIdx].duration = newDuration;
+    const scriptLines = script.beats[jaBeat.beatIdx].image.script;
+    if (Array.isArray(scriptLines)) {
+      const updated = updateAnimateTimingInScript(scriptLines, jaBeat.targetId, jaFadeStart, jaFadeEnd);
+      if (!updated) {
+        logWarn(`    WARNING: Could not update timing for #${jaBeat.targetId}`);
+      }
+    }
+  }
 }
 
 function main() {
@@ -179,98 +236,38 @@ function main() {
   }
 
   if (!existsSync(options.scriptPath)) {
-    console.error(`Script file not found: ${options.scriptPath}`);
+    logError(`Script file not found: ${options.scriptPath}`);
     process.exit(1);
   }
 
   const script = JSON.parse(readFileSync(options.scriptPath, "utf-8"));
-
-  // Derive studio JSON path
-  const basename = path.basename(options.scriptPath, ".json");
   const lang = script.lang || "en";
-  const studioPath = path.join("output", `${basename}_${lang}_studio.json`);
-
-  if (!existsSync(studioPath)) {
-    // Try without lang suffix
-    const studioPathAlt = path.join("output", `${basename}_studio.json`);
-    if (!existsSync(studioPathAlt)) {
-      console.error(`Studio file not found: ${studioPath}`);
-      console.error(`Run 'yarn audio ${options.scriptPath}' first.`);
-      process.exit(1);
-    }
-  }
-
-  const studioFile = existsSync(path.join("output", `${basename}_${lang}_studio.json`))
-    ? path.join("output", `${basename}_${lang}_studio.json`)
-    : path.join("output", `${basename}_studio.json`);
-
+  const studioFile = resolveStudioPath(options.scriptPath, lang);
   const studio = JSON.parse(readFileSync(studioFile, "utf-8"));
 
-  // Get audio durations for all beats
-  console.log("=== Audio Durations ===");
-  const audioDurations: number[] = [];
-  for (let i = 0; i < studio.beats.length; i++) {
-    const studioBeat = studio.beats[i];
-    let duration = 0;
+  const audioDurations = collectAudioDurations(studio, script.beats);
 
-    if (studioBeat.audioFile && existsSync(studioBeat.audioFile)) {
-      duration = getAudioDuration(studioBeat.audioFile);
-    } else if (studioBeat.audioDuration) {
-      duration = studioBeat.audioDuration;
-    }
-
-    audioDurations.push(duration);
-    const id = script.beats[i]?.id || `beat${i}`;
-    console.log(`  ${id}: ${duration.toFixed(3)}s`);
-  }
-
-  // Find beats with Japanese fade-in
   const jaBeats = findJaFadeInBeats(script.beats);
-
   if (jaBeats.length === 0) {
-    console.log("\nNo beats with Japanese fade-in animation found.");
+    log("\nNo beats with Japanese fade-in animation found.");
     process.exit(0);
   }
 
-  console.log(`\nFound ${jaBeats.length} beat(s) with Japanese fade-in`);
-  console.log(`  ja-padding: ${options.jaPadding}s, ja-gap: ${options.jaGap}s, fade: ${options.fadeDuration}s`);
+  log(`\nFound ${jaBeats.length} beat(s) with Japanese fade-in`);
+  log(`  ja-padding: ${options.jaPadding}s, ja-gap: ${options.jaGap}s, fade: ${options.fadeDuration}s`);
 
-  // Process each beat
-  console.log("\n=== Timing Updates ===");
+  log("\n=== Timing Updates ===");
   for (const jaBeat of jaBeats) {
-    const audioDuration = audioDurations[jaBeat.beatIdx];
-    const oldDuration = script.beats[jaBeat.beatIdx].duration;
-    const newDuration = roundUp1(audioDuration + options.jaPadding);
-    const jaFadeStart = roundUp1(audioDuration + options.jaGap);
-    const jaFadeEnd = roundUp1(jaFadeStart + options.fadeDuration);
-
-    console.log(`  ${jaBeat.beatId}:`);
-    console.log(`    audio     = ${audioDuration.toFixed(3)}s`);
-    console.log(`    duration  = ${oldDuration ?? "(none)"}s → ${newDuration}s`);
-    console.log(`    #${jaBeat.targetId} fade-in = ${jaFadeStart}s → ${jaFadeEnd}s`);
-
-    if (!options.dryRun) {
-      // Update duration
-      script.beats[jaBeat.beatIdx].duration = newDuration;
-
-      // Update fade-in timing in script
-      const scriptLines = script.beats[jaBeat.beatIdx].image.script;
-      if (Array.isArray(scriptLines)) {
-        const updated = updateAnimateTimingInScript(scriptLines, jaBeat.targetId, jaFadeStart, jaFadeEnd);
-        if (!updated) {
-          console.warn(`    WARNING: Could not update timing for #${jaBeat.targetId}`);
-        }
-      }
-    }
+    processJaBeat(jaBeat, audioDurations, script, options);
   }
 
   if (options.dryRun) {
-    console.log("\n(dry-run: file not modified)");
+    log("\n(dry-run: file not modified)");
     return;
   }
 
   writeFileSync(options.scriptPath, JSON.stringify(script, null, 2) + "\n");
-  console.log(`\nUpdated: ${options.scriptPath}`);
+  log(`\nUpdated: ${options.scriptPath}`);
 }
 
 main();

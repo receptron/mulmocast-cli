@@ -1,5 +1,4 @@
 #!/usr/bin/env npx tsx
-
 /**
  * KanjiVG Stroke Order MulmoScript Generator
  *
@@ -21,54 +20,175 @@
 import * as fs from "fs";
 import * as path from "path";
 
+const log = (...args: unknown[]) => {
+  process.stdout.write(args.map(String).join(" ") + "\n");
+};
+const logError = (...args: unknown[]) => {
+  process.stderr.write(args.map(String).join(" ") + "\n");
+};
+
 const KANJIVG_BASE_URL = "https://raw.githubusercontent.com/KanjiVG/kanjivg/master/kanji";
 
 const STROKE_COLOR = "#dc2626"; // red-600 — all strokes use the same color
-const GHOST_COLOR = "#9ca3af";  // gray-400
+const GHOST_COLOR = "#9ca3af"; // gray-400
 
 // Hiragana to romaji mapping
 const HIRAGANA_ROMAJI: Record<string, string> = {
-  あ: "a", い: "i", う: "u", え: "e", お: "o",
-  か: "ka", き: "ki", く: "ku", け: "ke", こ: "ko",
-  さ: "sa", し: "shi", す: "su", せ: "se", そ: "so",
-  た: "ta", ち: "chi", つ: "tsu", て: "te", と: "to",
-  な: "na", に: "ni", ぬ: "nu", ね: "ne", の: "no",
-  は: "ha", ひ: "hi", ふ: "fu", へ: "he", ほ: "ho",
-  ま: "ma", み: "mi", む: "mu", め: "me", も: "mo",
-  や: "ya", ゆ: "yu", よ: "yo",
-  ら: "ra", り: "ri", る: "ru", れ: "re", ろ: "ro",
-  わ: "wa", ゐ: "wi", ゑ: "we", を: "wo", ん: "n",
-  が: "ga", ぎ: "gi", ぐ: "gu", げ: "ge", ご: "go",
-  ざ: "za", じ: "ji", ず: "zu", ぜ: "ze", ぞ: "zo",
-  だ: "da", ぢ: "di", づ: "du", で: "de", ど: "do",
-  ば: "ba", び: "bi", ぶ: "bu", べ: "be", ぼ: "bo",
-  ぱ: "pa", ぴ: "pi", ぷ: "pu", ぺ: "pe", ぽ: "po",
+  あ: "a",
+  い: "i",
+  う: "u",
+  え: "e",
+  お: "o",
+  か: "ka",
+  き: "ki",
+  く: "ku",
+  け: "ke",
+  こ: "ko",
+  さ: "sa",
+  し: "shi",
+  す: "su",
+  せ: "se",
+  そ: "so",
+  た: "ta",
+  ち: "chi",
+  つ: "tsu",
+  て: "te",
+  と: "to",
+  な: "na",
+  に: "ni",
+  ぬ: "nu",
+  ね: "ne",
+  の: "no",
+  は: "ha",
+  ひ: "hi",
+  ふ: "fu",
+  へ: "he",
+  ほ: "ho",
+  ま: "ma",
+  み: "mi",
+  む: "mu",
+  め: "me",
+  も: "mo",
+  や: "ya",
+  ゆ: "yu",
+  よ: "yo",
+  ら: "ra",
+  り: "ri",
+  る: "ru",
+  れ: "re",
+  ろ: "ro",
+  わ: "wa",
+  ゐ: "wi",
+  ゑ: "we",
+  を: "wo",
+  ん: "n",
+  が: "ga",
+  ぎ: "gi",
+  ぐ: "gu",
+  げ: "ge",
+  ご: "go",
+  ざ: "za",
+  じ: "ji",
+  ず: "zu",
+  ぜ: "ze",
+  ぞ: "zo",
+  だ: "da",
+  ぢ: "di",
+  づ: "du",
+  で: "de",
+  ど: "do",
+  ば: "ba",
+  び: "bi",
+  ぶ: "bu",
+  べ: "be",
+  ぼ: "bo",
+  ぱ: "pa",
+  ぴ: "pi",
+  ぷ: "pu",
+  ぺ: "pe",
+  ぽ: "po",
 };
 
 // Katakana to romaji mapping
 const KATAKANA_ROMAJI: Record<string, string> = {
-  ア: "a", イ: "i", ウ: "u", エ: "e", オ: "o",
-  カ: "ka", キ: "ki", ク: "ku", ケ: "ke", コ: "ko",
-  サ: "sa", シ: "shi", ス: "su", セ: "se", ソ: "so",
-  タ: "ta", チ: "chi", ツ: "tsu", テ: "te", ト: "to",
-  ナ: "na", ニ: "ni", ヌ: "nu", ネ: "ne", ノ: "no",
-  ハ: "ha", ヒ: "hi", フ: "fu", ヘ: "he", ホ: "ho",
-  マ: "ma", ミ: "mi", ム: "mu", メ: "me", モ: "mo",
-  ヤ: "ya", ユ: "yu", ヨ: "yo",
-  ラ: "ra", リ: "ri", ル: "ru", レ: "re", ロ: "ro",
-  ワ: "wa", ヲ: "wo", ン: "n",
-  ガ: "ga", ギ: "gi", グ: "gu", ゲ: "ge", ゴ: "go",
-  ザ: "za", ジ: "ji", ズ: "zu", ゼ: "ze", ゾ: "zo",
-  ダ: "da", ヂ: "di", ヅ: "du", デ: "de", ド: "do",
-  バ: "ba", ビ: "bi", ブ: "bu", ベ: "be", ボ: "bo",
-  パ: "pa", ピ: "pi", プ: "pu", ペ: "pe", ポ: "po",
+  ア: "a",
+  イ: "i",
+  ウ: "u",
+  エ: "e",
+  オ: "o",
+  カ: "ka",
+  キ: "ki",
+  ク: "ku",
+  ケ: "ke",
+  コ: "ko",
+  サ: "sa",
+  シ: "shi",
+  ス: "su",
+  セ: "se",
+  ソ: "so",
+  タ: "ta",
+  チ: "chi",
+  ツ: "tsu",
+  テ: "te",
+  ト: "to",
+  ナ: "na",
+  ニ: "ni",
+  ヌ: "nu",
+  ネ: "ne",
+  ノ: "no",
+  ハ: "ha",
+  ヒ: "hi",
+  フ: "fu",
+  ヘ: "he",
+  ホ: "ho",
+  マ: "ma",
+  ミ: "mi",
+  ム: "mu",
+  メ: "me",
+  モ: "mo",
+  ヤ: "ya",
+  ユ: "yu",
+  ヨ: "yo",
+  ラ: "ra",
+  リ: "ri",
+  ル: "ru",
+  レ: "re",
+  ロ: "ro",
+  ワ: "wa",
+  ヲ: "wo",
+  ン: "n",
+  ガ: "ga",
+  ギ: "gi",
+  グ: "gu",
+  ゲ: "ge",
+  ゴ: "go",
+  ザ: "za",
+  ジ: "ji",
+  ズ: "zu",
+  ゼ: "ze",
+  ゾ: "zo",
+  ダ: "da",
+  ヂ: "di",
+  ヅ: "du",
+  デ: "de",
+  ド: "do",
+  バ: "ba",
+  ビ: "bi",
+  ブ: "bu",
+  ベ: "be",
+  ボ: "bo",
+  パ: "pa",
+  ピ: "pi",
+  プ: "pu",
+  ペ: "pe",
+  ポ: "po",
 };
 
 type CharType = "hiragana" | "katakana" | "kanji" | "latin";
 
 interface KanjiReading {
-  onyomi?: string;   // e.g., "カン" or "カン・ガン"
-  kunyomi?: string;  // e.g., "みず" or "やま"
+  onyomi?: string; // e.g., "カン" or "カン・ガン"
+  kunyomi?: string; // e.g., "みず" or "やま"
 }
 
 function getCharType(char: string): CharType {
@@ -137,21 +257,23 @@ async function fetchStrokes(char: string): Promise<string[]> {
   return strokes.map((s) => s[1]);
 }
 
-const EXTRA_DURATION = 1;          // extra seconds added to base duration
-const FIRST_STROKE_DELAY = 0.5;    // seconds — pause before first stroke starts
+const EXTRA_DURATION = 1; // extra seconds added to base duration
+const FIRST_STROKE_DELAY = 0.5; // seconds — pause before first stroke starts
 const FPS = 30;
+
+function calcBaseDuration(strokeCount: number): number {
+  if (strokeCount <= 1) return 4;
+  if (strokeCount <= 3) return 5;
+  if (strokeCount <= 5) return 6;
+  return Math.min(10, 3 + Math.ceil(strokeCount * 0.6));
+}
 
 function calcTiming(strokeCount: number): {
   duration: number;
   starts: number[];
   durs: number[];
 } {
-  // Duration lookup: 1→4s, 2-3→5s, 4-5→6s, 6+→formula
-  const baseDuration =
-    strokeCount <= 1 ? 4 :
-    strokeCount <= 3 ? 5 :
-    strokeCount <= 5 ? 6 :
-    Math.min(10, 3 + Math.ceil(strokeCount * 0.6));
+  const baseDuration = calcBaseDuration(strokeCount);
   const duration = baseDuration + EXTRA_DURATION;
   const totalFrames = duration * FPS;
   const startDelay = (strokeCount === 1 ? 15 : 12) + Math.round(FIRST_STROKE_DELAY * FPS);
@@ -169,12 +291,53 @@ function calcTiming(strokeCount: number): {
   return { duration, starts, durs };
 }
 
-function buildCharBeat(
-  char: string,
-  strokes: string[],
-  charType: CharType,
-  reading?: KanjiReading,
-): Record<string, unknown> {
+function buildLabelLines(char: string, charType: CharType, reading?: KanjiReading): string[] {
+  const romaji = getRomaji(char);
+  if (charType === "latin") {
+    return [`  <p class='text-5xl text-stone-800 font-bold mt-2'>${char}</p>`];
+  }
+  if (romaji) {
+    return [
+      "  <div class='flex items-baseline gap-3 mt-2'>",
+      `    <p class='text-5xl text-stone-800 font-bold'>${char}</p>`,
+      `    <p class='text-2xl text-stone-500'>${romaji}</p>`,
+      "  </div>",
+    ];
+  }
+  if (reading && (reading.onyomi || reading.kunyomi)) {
+    const readingParts: string[] = [];
+    if (reading.onyomi) {
+      readingParts.push(`    <p class='text-xl text-stone-600'>\u97F3 ${reading.onyomi}</p>`);
+    }
+    if (reading.kunyomi) {
+      readingParts.push(`    <p class='text-xl text-stone-500'>\u8A13 ${reading.kunyomi}</p>`);
+    }
+    return [
+      "  <div class='flex flex-col items-center mt-2'>",
+      `    <p class='text-5xl text-stone-800 font-bold'>${char}</p>`,
+      "    <div class='flex gap-4 mt-1'>",
+      ...readingParts,
+      "    </div>",
+      "  </div>",
+    ];
+  }
+  return [`  <p class='text-5xl text-stone-800 font-bold mt-2'>${char}</p>`];
+}
+
+function buildSpeechText(char: string, charType: CharType, reading?: KanjiReading): string {
+  if (charType === "latin") {
+    return `${char}.`;
+  }
+  if (reading && (reading.onyomi || reading.kunyomi)) {
+    const parts: string[] = [];
+    if (reading.onyomi) parts.push(`\u97F3\u8AAD\u307F\u3001${reading.onyomi}`);
+    if (reading.kunyomi) parts.push(`\u8A13\u8AAD\u307F\u3001${reading.kunyomi}`);
+    return parts.join("\u3002") + "\u3002";
+  }
+  return `${char}\u3002`;
+}
+
+function buildCharBeat(char: string, strokes: string[], charType: CharType, reading?: KanjiReading): Record<string, unknown> {
   const strokeCount = strokes.length;
   const { duration, starts, durs } = calcTiming(strokeCount);
 
@@ -188,9 +351,7 @@ function buildCharBeat(
 
   // Ghost paths
   for (const d of strokes) {
-    svgLines.push(
-      `    <path d='${d}' stroke='${GHOST_COLOR}' fill='none' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/>`,
-    );
+    svgLines.push(`    <path d='${d}' stroke='${GHOST_COLOR}' fill='none' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/>`);
   }
 
   // Animated paths
@@ -203,44 +364,9 @@ function buildCharBeat(
   svgLines.push("  </svg>");
 
   // Label
-  const romaji = getRomaji(char);
-  let labelLines: string[];
-  if (charType === "latin") {
-    labelLines = [`  <p class='text-5xl text-stone-800 font-bold mt-2'>${char}</p>`];
-  } else if (romaji) {
-    labelLines = [
-      "  <div class='flex items-baseline gap-3 mt-2'>",
-      `    <p class='text-5xl text-stone-800 font-bold'>${char}</p>`,
-      `    <p class='text-2xl text-stone-500'>${romaji}</p>`,
-      "  </div>",
-    ];
-  } else if (reading && (reading.onyomi || reading.kunyomi)) {
-    // Kanji with on/kun reading
-    const readingParts: string[] = [];
-    if (reading.onyomi) {
-      readingParts.push(`    <p class='text-xl text-stone-600'>音 ${reading.onyomi}</p>`);
-    }
-    if (reading.kunyomi) {
-      readingParts.push(`    <p class='text-xl text-stone-500'>訓 ${reading.kunyomi}</p>`);
-    }
-    labelLines = [
-      "  <div class='flex flex-col items-center mt-2'>",
-      `    <p class='text-5xl text-stone-800 font-bold'>${char}</p>`,
-      `    <div class='flex gap-4 mt-1'>`,
-      ...readingParts,
-      "    </div>",
-      "  </div>",
-    ];
-  } else {
-    labelLines = [`  <p class='text-5xl text-stone-800 font-bold mt-2'>${char}</p>`];
-  }
+  const labelLines = buildLabelLines(char, charType, reading);
 
-  const html = [
-    "<div class='h-full flex flex-col items-center justify-center bg-amber-50'>",
-    ...svgLines,
-    ...labelLines,
-    "</div>",
-  ];
+  const html = ["<div class='h-full flex flex-col items-center justify-center bg-amber-50'>", ...svgLines, ...labelLines, "</div>"];
 
   // Animation script
   let script: string[];
@@ -262,18 +388,7 @@ function buildCharBeat(
   }
 
   // Speech text: use readings if provided for kanji
-  let text: string;
-  if (charType === "latin") {
-    text = `${char}.`;
-  } else if (reading && (reading.onyomi || reading.kunyomi)) {
-    // Build speech: "音読み、カン。訓読み、みず。"
-    const parts: string[] = [];
-    if (reading.onyomi) parts.push(`音読み、${reading.onyomi}`);
-    if (reading.kunyomi) parts.push(`訓読み、${reading.kunyomi}`);
-    text = parts.join("。") + "。";
-  } else {
-    text = `${char}。`;
-  }
+  const text = buildSpeechText(char, charType, reading);
 
   return {
     id: getCharId(char),
@@ -360,17 +475,65 @@ function buildTitle(chars: string[], primaryType: CharType): string {
   }
 }
 
+function printUsage() {
+  logError("Usage: npx tsx generate_stroke_order.ts <characters> [output_path] [--readings on1/kun1,on2/kun2]");
+  logError("");
+  logError("Examples:");
+  logError("  npx tsx generate_stroke_order.ts \u3042\u3044\u3046\u3048\u304A");
+  logError("  npx tsx generate_stroke_order.ts abcdefg my-scripts/test_stroke_order_alphabet.json");
+  logError('  npx tsx generate_stroke_order.ts \u6F22\u5B57 output.json --readings "\u30AB\u30F3/-,\u30B8/\u3042\u3056"');
+  logError("");
+  logError("Readings format: onyomi/kunyomi per char, comma-separated. Use - for none.");
+}
+
+function generateOutputPath(chars: string[], primaryType: CharType, readings: (KanjiReading | undefined)[]): string {
+  const scriptsDir = process.env.MULMO_SCRIPTS_DIR ?? "my-scripts";
+  let slug: string;
+  switch (primaryType) {
+    case "latin":
+      slug = `alphabet_${chars[0]}_${chars[chars.length - 1]}`;
+      break;
+    case "hiragana":
+      slug = `hiragana_${chars.map((c) => HIRAGANA_ROMAJI[c] ?? getCodepoint(c)).join("_")}`;
+      break;
+    case "katakana":
+      slug = `katakana_${chars.map((c) => KATAKANA_ROMAJI[c] ?? getCodepoint(c)).join("_")}`;
+      break;
+    default:
+      slug = chars
+        .map((c, i) => {
+          const reading = readings[i];
+          if (reading?.onyomi) {
+            const firstOnyomi = reading.onyomi.split("\u30FB")[0];
+            return katakanaToRomaji(firstOnyomi);
+          }
+          return c;
+        })
+        .join("_");
+  }
+  if (slug.length > 60) {
+    slug = slug.substring(0, 60);
+  }
+  return `${scriptsDir}/test_stroke_order_${slug}.json`;
+}
+
+function parseReadings(readingsArg: string): (KanjiReading | undefined)[] {
+  const readings: (KanjiReading | undefined)[] = [];
+  const entries = readingsArg.split(",");
+  for (const entry of entries) {
+    const [on, kun] = entry.trim().split("/");
+    readings.push({
+      onyomi: on && on !== "-" ? on : undefined,
+      kunyomi: kun && kun !== "-" ? kun : undefined,
+    });
+  }
+  return readings;
+}
+
 async function main() {
   const args = process.argv.slice(2);
   if (args.length < 1) {
-    console.error("Usage: npx tsx generate_stroke_order.ts <characters> [output_path] [--readings on1/kun1,on2/kun2]");
-    console.error("");
-    console.error("Examples:");
-    console.error("  npx tsx generate_stroke_order.ts あいうえお");
-    console.error('  npx tsx generate_stroke_order.ts abcdefg my-scripts/test_stroke_order_alphabet.json');
-    console.error('  npx tsx generate_stroke_order.ts 漢字 output.json --readings "カン/-,ジ/あざ"');
-    console.error("");
-    console.error("Readings format: onyomi/kunyomi per char, comma-separated. Use - for none.");
+    printUsage();
     process.exit(1);
   }
 
@@ -385,18 +548,7 @@ async function main() {
   const inputChars = args[0];
   const chars = [...inputChars]; // Properly split into characters (handles Unicode)
 
-  // Parse readings: "カン/-,ジ/あざ" → KanjiReading[]
-  const readings: (KanjiReading | undefined)[] = [];
-  if (readingsArg) {
-    const entries = readingsArg.split(",");
-    for (const entry of entries) {
-      const [on, kun] = entry.trim().split("/");
-      readings.push({
-        onyomi: on && on !== "-" ? on : undefined,
-        kunyomi: kun && kun !== "-" ? kun : undefined,
-      });
-    }
-  }
+  const readings = readingsArg ? parseReadings(readingsArg) : [];
 
   const primaryType = detectPrimaryType(chars);
   const isJapanese = primaryType !== "latin";
@@ -408,41 +560,12 @@ async function main() {
     outputPath = undefined as unknown as string;
   }
   if (!outputPath) {
-    const scriptsDir = process.env.MULMO_SCRIPTS_DIR ?? "my-scripts";
-    let slug: string;
-    switch (primaryType) {
-      case "latin":
-        slug = `alphabet_${chars[0]}_${chars[chars.length - 1]}`;
-        break;
-      case "hiragana":
-        slug = `hiragana_${chars.map((c) => HIRAGANA_ROMAJI[c] ?? getCodepoint(c)).join("_")}`;
-        break;
-      case "katakana":
-        slug = `katakana_${chars.map((c) => KATAKANA_ROMAJI[c] ?? getCodepoint(c)).join("_")}`;
-        break;
-      default:
-        // Use onyomi romaji if readings provided, otherwise use characters directly
-        slug = chars
-          .map((c, i) => {
-            const reading = readings[i];
-            if (reading?.onyomi) {
-              const firstOnyomi = reading.onyomi.split("・")[0];
-              return katakanaToRomaji(firstOnyomi);
-            }
-            return c;
-          })
-          .join("_");
-    }
-    // Truncate slug if too long
-    if (slug.length > 60) {
-      slug = slug.substring(0, 60);
-    }
-    outputPath = `${scriptsDir}/test_stroke_order_${slug}.json`;
+    outputPath = generateOutputPath(chars, primaryType, readings);
   }
 
-  console.log(`Characters: ${chars.join(" ")} (${primaryType})`);
-  console.log(`Output: ${outputPath}`);
-  console.log("");
+  log(`Characters: ${chars.join(" ")} (${primaryType})`);
+  log(`Output: ${outputPath}`);
+  log("");
 
   // Fetch stroke data for all characters
   const strokeData: Map<string, string[]> = new Map();
@@ -451,14 +574,14 @@ async function main() {
     try {
       const strokes = await fetchStrokes(char);
       strokeData.set(char, strokes);
-      console.log(`${strokes.length} strokes`);
+      log(`${strokes.length} strokes`);
     } catch (e) {
-      console.error(`FAILED: ${(e as Error).message}`);
+      logError(`FAILED: ${(e as Error).message}`);
       process.exit(1);
     }
   }
 
-  console.log("");
+  log("");
 
   // Build MulmoScript
   const intro = buildIntro(chars, primaryType);
@@ -491,15 +614,15 @@ async function main() {
   }
   fs.writeFileSync(outputPath, JSON.stringify(mulmoScript, null, 2) + "\n");
 
-  console.log(`Generated: ${outputPath}`);
-  console.log(`Characters: ${chars.length}, Total beats: ${mulmoScript.beats.length}`);
-  console.log("");
-  console.log("Next steps:");
-  console.log(`  yarn audio ${outputPath}`);
-  console.log(`  yarn movie ${outputPath}`);
+  log(`Generated: ${outputPath}`);
+  log(`Characters: ${chars.length}, Total beats: ${mulmoScript.beats.length}`);
+  log("");
+  log("Next steps:");
+  log(`  yarn audio ${outputPath}`);
+  log(`  yarn movie ${outputPath}`);
 }
 
 main().catch((e) => {
-  console.error(e);
+  logError(e);
   process.exit(1);
 });

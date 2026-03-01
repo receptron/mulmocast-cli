@@ -28,8 +28,21 @@
  */
 
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import path from "path";
+
+const log = (...args: unknown[]) => {
+  process.stdout.write(args.map(String).join(" ") + "\n");
+};
+const logError = (...args: unknown[]) => {
+  process.stderr.write(args.map(String).join(" ") + "\n");
+};
+const logWarn = (...args: unknown[]) => {
+  process.stderr.write(args.map(String).join(" ") + "\n");
+};
+
+// Resolve ffprobe absolute path to satisfy sonarjs/no-os-command-from-path
+const FFPROBE_PATH = execFileSync("/usr/bin/which", ["ffprobe"], { encoding: "utf-8" }).trim();
 
 // Constants
 const FPS = 30; // frames per second
@@ -53,12 +66,12 @@ function roundUp1(x: number): number {
  */
 function getAudioDuration(filePath: string): number {
   try {
-    const result = execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${filePath}"`, {
+    const result = execFileSync(FFPROBE_PATH, ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", filePath], {
       encoding: "utf-8",
     });
     return parseFloat(result.trim());
   } catch {
-    console.error(`  WARNING: Failed to get duration for: ${filePath}`);
+    logError(`  WARNING: Failed to get duration for: ${filePath}`);
     return 0;
   }
 }
@@ -122,7 +135,7 @@ function getAudioPadding(script: any): AudioPadding {
 }
 
 function printUsage() {
-  console.log(`Usage: npx tsx .claude/skills/vocab-chat/calc_voiceover_timing.ts <script.json> [options]
+  log(`Usage: npx tsx .claude/skills/vocab-chat/calc_voiceover_timing.ts <script.json> [options]
 
 Options:
   --translation-delay <seconds>  Delay for translation text appearance (default: 0)
@@ -213,7 +226,7 @@ function getAllAudioDurations(studio: any, scriptBeats: any[]): number[] {
       continue;
     }
 
-    console.error(`  WARNING: No audio found for beat ${i} (${scriptBeats[i]?.id || "unknown"})`);
+    logError(`  WARNING: No audio found for beat ${i} (${scriptBeats[i]?.id || "unknown"})`);
     durations.push(0);
   }
 
@@ -252,7 +265,6 @@ function calculateGroupDuration(startAtValues: (number | null)[], groupDurations
   return roundUp1(lastStartAt + groupDurations[lastIdx] + gap);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function updateHtmlShowAt(htmlArray: string[], showAtFrames: number[], showAtJaFrames: number[] | null): void {
   for (let i = 0; i < htmlArray.length; i++) {
     // Update showAt array
@@ -263,10 +275,7 @@ function updateHtmlShowAt(htmlArray: string[], showAtFrames: number[], showAtJaF
       if (showAtJaFrames) {
         // Check if next line already has showAtJa
         if (i + 1 < htmlArray.length && /var showAtJa\s*=\s*\[/.test(htmlArray[i + 1])) {
-          htmlArray[i + 1] = htmlArray[i + 1].replace(
-            /var showAtJa\s*=\s*\[[\d\s,]*\]/,
-            `var showAtJa = [${showAtJaFrames.join(", ")}]`,
-          );
+          htmlArray[i + 1] = htmlArray[i + 1].replace(/var showAtJa\s*=\s*\[[\d\s,]*\]/, `var showAtJa = [${showAtJaFrames.join(", ")}]`);
         } else {
           // Insert showAtJa line after showAt
           htmlArray.splice(i + 1, 0, `  var showAtJa = [${showAtJaFrames.join(", ")}];`);
@@ -277,147 +286,152 @@ function updateHtmlShowAt(htmlArray: string[], showAtFrames: number[], showAtJaF
   }
 }
 
+function loadStudio(scriptPath: string): { script: Record<string, unknown>; studio: Record<string, unknown> } {
+  if (!existsSync(scriptPath)) {
+    logError(`Script file not found: ${scriptPath}`);
+    process.exit(1);
+  }
+  const script = JSON.parse(readFileSync(scriptPath, "utf-8"));
+  const basename = path.basename(scriptPath, ".json");
+  const studioPath = path.join("output", `${basename}_studio.json`);
+  if (!existsSync(studioPath)) {
+    logError(`Studio file not found: ${studioPath}`);
+    logError(`Run 'yarn audio ${scriptPath}' first.`);
+    process.exit(1);
+  }
+  const studio = JSON.parse(readFileSync(studioPath, "utf-8"));
+  return { script, studio };
+}
+
+function logGroupTiming(
+  groupIndices: number[],
+  startAtValues: (number | null)[],
+  totalDuration: number,
+  isFirstBeat: boolean,
+  isLastBeat: boolean,
+  firstShowAtDelay: number,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  script: any,
+): void {
+  log("\n=== Timing ===");
+  if (isFirstBeat || isLastBeat) {
+    const flags = [isFirstBeat ? "first" : "", isLastBeat ? "last" : ""].filter(Boolean).join("+");
+    log(`  position: ${flags} beat → firstShowAtDelay=${firstShowAtDelay}s`);
+    log(`  WARNING: voice_over group is at ${flags} position. Consider adding intro/closing beats to handle audio padding.`);
+  }
+  groupIndices.forEach((beatIdx, j) => {
+    const id = script.beats[beatIdx]?.id || `beat${beatIdx}`;
+    log(`  ${id}: startAt = ${startAtValues[j] !== null ? startAtValues[j]!.toFixed(1) : "(parent beat)"}`);
+  });
+  log(`  duration = ${totalDuration}s`);
+}
+
+function calculateTranslationFrames(showAtFrames: number[], translationDelay: number): number[] | null {
+  if (translationDelay <= 0) return null;
+  const delayFrames = Math.round(translationDelay * FPS);
+  const showAtJaFrames = showAtFrames.map((f) => f + delayFrames);
+  log(`  showAtJa = [${showAtJaFrames.join(", ")}]  (delay: ${translationDelay}s = ${delayFrames} frames)`);
+
+  for (let i = 0; i < showAtJaFrames.length - 1; i++) {
+    if (showAtJaFrames[i] >= showAtFrames[i + 1]) {
+      logWarn(`  WARNING: Translation for beat ${i + 1} (frame ${showAtJaFrames[i]}) overlaps with beat ${i + 2} (frame ${showAtFrames[i + 1]})`);
+    }
+  }
+  return showAtJaFrames;
+}
+
+function applyGroupChanges(
+  group: VoiceOverGroup,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  script: any,
+  startAtValues: (number | null)[],
+  totalDuration: number,
+  showAtFrames: number[],
+  showAtJaFrames: number[] | null,
+): void {
+  script.beats[group.parentIdx].duration = totalDuration;
+  group.voiceOverIndices.forEach((beatIdx, j) => {
+    script.beats[beatIdx].image.startAt = startAtValues[j + 1];
+  });
+  const html = script.beats[group.parentIdx].image?.html;
+  const scriptField = script.beats[group.parentIdx].image?.script;
+  if (Array.isArray(scriptField)) {
+    updateHtmlShowAt(scriptField, showAtFrames, showAtJaFrames);
+  } else if (Array.isArray(html)) {
+    updateHtmlShowAt(html, showAtFrames, showAtJaFrames);
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function processGroup(group: VoiceOverGroup, groupIndex: number, totalGroups: number, script: any, allDurations: number[], options: Options): void {
+  const groupIndices = [group.parentIdx, ...group.voiceOverIndices];
+  const groupDurations = groupIndices.map((idx) => allDurations[idx]);
+  const parentId = script.beats[group.parentIdx]?.id || `beat${group.parentIdx}`;
+  const totalBeatCount = script.beats.length;
+
+  const isFirstBeat = group.parentIdx === 0;
+  const lastGroupBeatIdx = group.voiceOverIndices[group.voiceOverIndices.length - 1];
+  const isLastBeat = lastGroupBeatIdx === totalBeatCount - 1;
+
+  if (totalGroups > 1) {
+    log(`\n--- Group ${groupIndex + 1}: ${parentId} (${groupIndices.length} beats) ---`);
+  }
+
+  const firstShowAtDelay = isFirstBeat ? FIRST_SHOW_AT_DELAY : 0;
+  const startAtValues = calculateGroupStartAt(groupDurations, options.gap);
+  const totalDuration = calculateGroupDuration(startAtValues, groupDurations, options.gap);
+
+  logGroupTiming(groupIndices, startAtValues, totalDuration, isFirstBeat, isLastBeat, firstShowAtDelay, script);
+
+  const showAtFrames = calculateGroupShowAtFrames(startAtValues, firstShowAtDelay);
+  log("\n=== Animation Frames ===");
+  log(`  showAt   = [${showAtFrames.join(", ")}]`);
+
+  const showAtJaFrames = calculateTranslationFrames(showAtFrames, options.translationDelay);
+
+  if (!options.dryRun) {
+    applyGroupChanges(group, script, startAtValues, totalDuration, showAtFrames, showAtJaFrames);
+  }
+}
+
 function main() {
   const options = parseArgs(process.argv.slice(2));
-
   if (!options.scriptPath) {
     printUsage();
     process.exit(1);
   }
 
-  // Read script JSON
-  if (!existsSync(options.scriptPath)) {
-    console.error(`Script file not found: ${options.scriptPath}`);
-    process.exit(1);
-  }
-  const script = JSON.parse(readFileSync(options.scriptPath, "utf-8"));
-
-  // Derive studio JSON path
-  const basename = path.basename(options.scriptPath, ".json");
-  const studioPath = path.join("output", `${basename}_studio.json`);
-
-  if (!existsSync(studioPath)) {
-    console.error(`Studio file not found: ${studioPath}`);
-    console.error(`Run 'yarn audio ${options.scriptPath}' first.`);
-    process.exit(1);
-  }
-
-  const studio = JSON.parse(readFileSync(studioPath, "utf-8"));
-
-  // Read audioParams from script (with MulmoCast defaults)
+  const { script, studio } = loadStudio(options.scriptPath);
   const audioPadding = getAudioPadding(script);
-  console.log(`=== Audio Padding (from script) ===`);
-  console.log(`  introPadding: ${audioPadding.introPadding}s, outroPadding: ${audioPadding.outroPadding}s`);
+  log(`=== Audio Padding (from script) ===`);
+  log(`  introPadding: ${audioPadding.introPadding}s, outroPadding: ${audioPadding.outroPadding}s`);
 
-  // Get all audio durations
-  console.log("\n=== Audio Durations ===");
+  log("\n=== Audio Durations ===");
   const allDurations = getAllAudioDurations(studio, script.beats);
   allDurations.forEach((d, i) => {
     const id = script.beats[i]?.id || `beat${i}`;
-    console.log(`  ${id}: ${d.toFixed(3)}s`);
+    log(`  ${id}: ${d.toFixed(3)}s`);
   });
 
-  // Find voice_over groups
   const groups = findVoiceOverGroups(script.beats);
-
   if (groups.length === 0) {
-    console.error("\nNo voice_over groups found. Expected at least one animated html_tailwind beat with `var showAt` followed by voice_over beats.");
+    logError("\nNo voice_over groups found. Expected at least one animated html_tailwind beat with `var showAt` followed by voice_over beats.");
     process.exit(1);
   }
 
-  console.log(`\nFound ${groups.length} voice_over group(s)`);
-  const totalBeatCount = script.beats.length;
+  log(`\nFound ${groups.length} voice_over group(s)`);
 
-  // Process each group
   for (let g = 0; g < groups.length; g++) {
-    const group = groups[g];
-    const groupIndices = [group.parentIdx, ...group.voiceOverIndices];
-    const groupDurations = groupIndices.map((idx) => allDurations[idx]);
-    const parentId = script.beats[group.parentIdx]?.id || `beat${group.parentIdx}`;
-
-    // Detect beat position for padding adjustment
-    const isFirstBeat = group.parentIdx === 0;
-    const lastGroupBeatIdx = group.voiceOverIndices[group.voiceOverIndices.length - 1];
-    const isLastBeat = lastGroupBeatIdx === totalBeatCount - 1;
-
-    if (groups.length > 1) {
-      console.log(`\n--- Group ${g + 1}: ${parentId} (${groupIndices.length} beats) ---`);
-    }
-
-    // firstShowAtDelay: visual offset for first beat (independent of audioParams)
-    const firstShowAtDelay = isFirstBeat ? FIRST_SHOW_AT_DELAY : 0;
-
-    // Calculate startAt values within the group
-    const startAtValues = calculateGroupStartAt(groupDurations, options.gap);
-
-    // Calculate total duration for this group
-    const totalDuration = calculateGroupDuration(startAtValues, groupDurations, options.gap);
-
-    console.log("\n=== Timing ===");
-    if (isFirstBeat || isLastBeat) {
-      const flags = [isFirstBeat ? "first" : "", isLastBeat ? "last" : ""].filter(Boolean).join("+");
-      console.log(`  position: ${flags} beat → firstShowAtDelay=${firstShowAtDelay}s`);
-      if (isFirstBeat || isLastBeat) {
-        console.log(`  WARNING: voice_over group is at ${flags} position. Consider adding intro/closing beats to handle audio padding.`);
-      }
-    }
-    groupIndices.forEach((beatIdx, j) => {
-      const id = script.beats[beatIdx]?.id || `beat${beatIdx}`;
-      console.log(`  ${id}: startAt = ${startAtValues[j] !== null ? startAtValues[j]!.toFixed(1) : "(parent beat)"}`);
-    });
-    console.log(`  duration = ${totalDuration}s`);
-
-    // Calculate showAt frames
-    const showAtFrames = calculateGroupShowAtFrames(startAtValues, firstShowAtDelay);
-
-    console.log("\n=== Animation Frames ===");
-    console.log(`  showAt   = [${showAtFrames.join(", ")}]`);
-
-    // Calculate translation showAt if needed
-    let showAtJaFrames: number[] | null = null;
-    if (options.translationDelay > 0) {
-      const delayFrames = Math.round(options.translationDelay * FPS);
-      showAtJaFrames = showAtFrames.map((f) => f + delayFrames);
-      console.log(`  showAtJa = [${showAtJaFrames.join(", ")}]  (delay: ${options.translationDelay}s = ${delayFrames} frames)`);
-
-      // Validate no overlap with next message
-      for (let i = 0; i < showAtJaFrames.length - 1; i++) {
-        if (showAtJaFrames[i] >= showAtFrames[i + 1]) {
-          console.warn(
-            `  WARNING: Translation for beat ${i + 1} (frame ${showAtJaFrames[i]}) overlaps with beat ${i + 2} (frame ${showAtFrames[i + 1]})`,
-          );
-        }
-      }
-    }
-
-    if (!options.dryRun) {
-      // 1. Set duration on parent beat
-      script.beats[group.parentIdx].duration = totalDuration;
-
-      // 2. Set startAt on voice_over beats
-      group.voiceOverIndices.forEach((beatIdx, j) => {
-        script.beats[beatIdx].image.startAt = startAtValues[j + 1];
-      });
-
-      // 3. Update showAt (and showAtJa) in parent's animation HTML or script
-      const html = script.beats[group.parentIdx].image?.html;
-      const scriptField = script.beats[group.parentIdx].image?.script;
-      if (Array.isArray(scriptField)) {
-        updateHtmlShowAt(scriptField, showAtFrames, showAtJaFrames);
-      } else if (Array.isArray(html)) {
-        updateHtmlShowAt(html, showAtFrames, showAtJaFrames);
-      }
-    }
+    processGroup(groups[g], g, groups.length, script, allDurations, options);
   }
 
   if (options.dryRun) {
-    console.log("\n(dry-run: file not modified)");
+    log("\n(dry-run: file not modified)");
     return;
   }
 
-  // Write back
   writeFileSync(options.scriptPath, JSON.stringify(script, null, 2) + "\n");
-  console.log(`\nUpdated: ${options.scriptPath}`);
+  log(`\nUpdated: ${options.scriptPath}`);
 }
 
 main();
