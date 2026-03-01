@@ -541,6 +541,10 @@ async function main() {
   const readingsIdx = args.indexOf("--readings");
   let readingsArg: string | undefined;
   if (readingsIdx >= 0) {
+    if (readingsIdx + 1 >= args.length || args[readingsIdx + 1].startsWith("--")) {
+      logError("Error: --readings requires a value (e.g., --readings 'カン/-,ジ/あざ')");
+      process.exit(1);
+    }
     readingsArg = args[readingsIdx + 1];
     args.splice(readingsIdx, 2);
   }

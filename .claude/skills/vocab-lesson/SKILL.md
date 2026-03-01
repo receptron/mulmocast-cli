@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 user-invocable: true
 ---
 
-# /vocab-animation — Vocabulary Learning Animation Script
+# /vocab-lesson — Vocabulary Learning Animation Script
 
 Create a multi-section vocabulary learning video using MulmoCast. The video presents a word through structured phases: intro, word display, example sentences (voice_over), meaning explanation, and review with translations.
 

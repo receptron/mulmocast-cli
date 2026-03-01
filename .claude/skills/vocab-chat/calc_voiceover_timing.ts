@@ -93,6 +93,15 @@ interface VoiceOverGroup {
   voiceOverIndices: number[];
 }
 
+function parseNumericArg(name: string, raw: string): number {
+  const val = parseFloat(raw);
+  if (Number.isNaN(val)) {
+    logError(`Error: ${name} requires a numeric value`);
+    process.exit(1);
+  }
+  return val;
+}
+
 function parseArgs(args: string[]): Options {
   const options: Options = {
     scriptPath: "",
@@ -104,10 +113,10 @@ function parseArgs(args: string[]): Options {
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
       case "--translation-delay":
-        options.translationDelay = parseFloat(args[++i]);
+        options.translationDelay = parseNumericArg("--translation-delay", args[++i]);
         break;
       case "--gap":
-        options.gap = parseFloat(args[++i]);
+        options.gap = parseNumericArg("--gap", args[++i]);
         break;
       case "--dry-run":
         options.dryRun = true;

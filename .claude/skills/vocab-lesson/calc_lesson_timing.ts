@@ -34,7 +34,22 @@ const logWarn = (...args: unknown[]) => {
   process.stderr.write(args.map(String).join(" ") + "\n");
 };
 
-const FFPROBE_PATH = execFileSync("/usr/bin/which", ["ffprobe"], { encoding: "utf-8" }).trim();
+function resolveFFprobe(): string {
+  try {
+    return execFileSync("/usr/bin/which", ["ffprobe"], { encoding: "utf-8" }).trim();
+  } catch {
+    logError("Error: ffprobe not found. Install FFmpeg first.");
+    process.exit(1);
+  }
+}
+
+let _ffprobePath: string | undefined;
+function getFFprobePath(): string {
+  if (!_ffprobePath) {
+    _ffprobePath = resolveFFprobe();
+  }
+  return _ffprobePath;
+}
 
 const DEFAULT_JA_PADDING = 4.0;
 const DEFAULT_JA_GAP = 0.5;
@@ -60,7 +75,7 @@ function roundUp1(x: number): number {
 
 function getAudioDuration(filePath: string): number {
   try {
-    const result = execFileSync(FFPROBE_PATH, ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", filePath], {
+    const result = execFileSync(getFFprobePath(), ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", filePath], {
       encoding: "utf-8",
     });
     return parseFloat(result.trim());
@@ -68,6 +83,15 @@ function getAudioDuration(filePath: string): number {
     logError(`  WARNING: Failed to get duration for: ${filePath}`);
     return 0;
   }
+}
+
+function parseNumericArg(name: string, raw: string): number {
+  const val = parseFloat(raw);
+  if (Number.isNaN(val)) {
+    logError(`Error: ${name} requires a numeric value`);
+    process.exit(1);
+  }
+  return val;
 }
 
 function parseArgs(args: string[]): Options {
@@ -82,13 +106,13 @@ function parseArgs(args: string[]): Options {
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
       case "--ja-padding":
-        options.jaPadding = parseFloat(args[++i]);
+        options.jaPadding = parseNumericArg("--ja-padding", args[++i]);
         break;
       case "--ja-gap":
-        options.jaGap = parseFloat(args[++i]);
+        options.jaGap = parseNumericArg("--ja-gap", args[++i]);
         break;
       case "--fade-duration":
-        options.fadeDuration = parseFloat(args[++i]);
+        options.fadeDuration = parseNumericArg("--fade-duration", args[++i]);
         break;
       case "--dry-run":
         options.dryRun = true;
