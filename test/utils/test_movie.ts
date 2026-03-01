@@ -89,6 +89,22 @@ test("test getVideoParts with speed", async () => {
   );
 });
 
+test("test getVideoParts with frameCount", async () => {
+  const { videoPart } = getVideoPart(4, false, 5, { width: 1280, height: 720 }, { style: "aspectFit" }, 1.0, undefined, 150);
+  assert.equal(
+    videoPart,
+    "[4:v]loop=loop=-1:size=1:start=0,fps=30,trim=end_frame=150,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v4]",
+  );
+});
+
+test("test getVideoParts with frameCount and speed", async () => {
+  const { videoPart } = getVideoPart(5, true, 5, { width: 1920, height: 1080 }, { style: "aspectFit" }, 2.0, undefined, 150);
+  assert.equal(
+    videoPart,
+    "[5:v]tpad=stop_mode=clone:stop_duration=20,fps=30,trim=end_frame=300,setpts=0.5*PTS,scale=w=1920:h=1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v5]",
+  );
+});
+
 test("test getAudioPart movie", async () => {
   const { audioPart } = getAudioPart(1, 100, 100, 0.2);
   assert.equal(audioPart, "[1:a]atrim=duration=100,adelay=100000|100000,volume=0.2,aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo[a1]");

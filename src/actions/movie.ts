@@ -57,9 +57,9 @@ export const getVideoPart = (
   // Use frame-exact trimming when frameCount is provided to prevent cumulative drift
   // between video and audio tracks. trim=duration=X rounds up to next frame boundary,
   // causing ~0.03s extra per beat that accumulates over many beats.
-  if (frameCount !== undefined) {
+  if (frameCount !== undefined && frameCount > 0) {
     // Account for speed: setpts compresses timestamps, so we need more input frames
-    const inputFrameCount = Math.round(frameCount * speed);
+    const inputFrameCount = Math.max(1, Math.round(frameCount * speed));
     videoFilters.push(`trim=end_frame=${inputFrameCount}`);
   } else {
     videoFilters.push(`trim=duration=${originalDuration}`);
@@ -132,7 +132,7 @@ const getOutputOption = (audioId: string, videoId: string) => {
     "4M", // Reduced buffer size
     "-maxrate",
     "3M", // Reduced from 7M to 3M
-    "-r 30", // Set frame rate
+    `-r ${VIDEO_FPS}`, // Set frame rate
     "-pix_fmt yuv420p", // Set pixel format for better compatibility
     "-c:a aac", // Audio codec
     "-b:a 128k", // Audio bitrate
@@ -372,7 +372,7 @@ const getClampedTransitionDuration = (transitionDuration: number, prevBeatDurati
 };
 
 export const getTransitionFrameDurations = (context: MulmoStudioContext, index: number) => {
-  const minFrame = 1 / 30; // 30fpsを想定。最小1フレーム
+  const minFrame = 1 / VIDEO_FPS;
   const beats = context.studio.beats;
   const scriptBeats = context.studio.script.beats;
 
@@ -427,23 +427,29 @@ export const addSplitAndExtractFrames = (
   if (needFirst) {
     // Create static frame using nullsrc as base for proper framerate/timebase
     // Note: setpts must NOT be used here as it loses framerate metadata needed by xfade
-    ffmpegContext.filterComplex.push(`nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${firstDuration}:rate=30[${videoId}_first_null]`);
+    ffmpegContext.filterComplex.push(
+      `nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${firstDuration}:rate=${VIDEO_FPS}[${videoId}_first_null]`,
+    );
     ffmpegContext.filterComplex.push(`[${videoId}_first_src]select='eq(n,0)',scale=${canvasInfo.width}:${canvasInfo.height}[${videoId}_first_frame]`);
-    ffmpegContext.filterComplex.push(`[${videoId}_first_null][${videoId}_first_frame]overlay=format=auto,fps=30[${videoId}_first]`);
+    ffmpegContext.filterComplex.push(`[${videoId}_first_null][${videoId}_first_frame]overlay=format=auto,fps=${VIDEO_FPS}[${videoId}_first]`);
   }
   if (needLast) {
     if (isMovie) {
       // Movie beats: extract actual last frame
-      ffmpegContext.filterComplex.push(`nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${lastDuration}:rate=30[${videoId}_last_null]`);
+      ffmpegContext.filterComplex.push(
+        `nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${lastDuration}:rate=${VIDEO_FPS}[${videoId}_last_null]`,
+      );
       ffmpegContext.filterComplex.push(
         `[${videoId}_last_src]reverse,select='eq(n,0)',reverse,scale=${canvasInfo.width}:${canvasInfo.height}[${videoId}_last_frame]`,
       );
-      ffmpegContext.filterComplex.push(`[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=30[${videoId}_last]`);
+      ffmpegContext.filterComplex.push(`[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=${VIDEO_FPS}[${videoId}_last]`);
     } else {
       // Image beats: all frames are identical, so just select one
-      ffmpegContext.filterComplex.push(`nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${lastDuration}:rate=30[${videoId}_last_null]`);
+      ffmpegContext.filterComplex.push(
+        `nullsrc=size=${canvasInfo.width}x${canvasInfo.height}:duration=${lastDuration}:rate=${VIDEO_FPS}[${videoId}_last_null]`,
+      );
       ffmpegContext.filterComplex.push(`[${videoId}_last_src]select='eq(n,0)',scale=${canvasInfo.width}:${canvasInfo.height}[${videoId}_last_frame]`);
-      ffmpegContext.filterComplex.push(`[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=30[${videoId}_last]`);
+      ffmpegContext.filterComplex.push(`[${videoId}_last_null][${videoId}_last_frame]overlay=format=auto,fps=${VIDEO_FPS}[${videoId}_last]`);
     }
   }
 };
