@@ -172,3 +172,49 @@ No `render()` needed — auto-render detects the `animation` variable and genera
 - `duration` is required when `animation` is set (may be auto-calculated from audio)
 - `end: 'auto'` uses the beat's total duration (`totalFrames / fps`) as the end time — useful for full-beat animations like scrolling crawls
 - CSS animations/transitions are disabled in the template (deterministic frame rendering)
+- All elements that will be animated should have initial styles set inline (e.g., `style='opacity:0'`)
+
+## Image Animation Patterns
+
+Embed real images inside animated beats. Sample: `scripts/samples/image_animation_showcase.json`
+
+### Critical Rules
+
+1. **Variable name must be `animation`** — auto-render checks `typeof animation !== 'undefined'`. Using `const a = ...` silently fails.
+2. **Wrap `<img>` in `<div>` for transforms** — animate the wrapper, not `<img>` directly (`object-fit:cover` conflicts with transforms).
+3. **Use `file://` absolute paths** — Puppeteer loads via `setContent` (origin `about:blank`), so relative paths won't resolve.
+
+### Pattern: Ken Burns (zoom + pan)
+
+```json
+"html": [
+  "<div class='h-full w-full overflow-hidden relative bg-black'>",
+  "  <div id='photo_wrap' style='position:absolute;inset:0;overflow:hidden'>",
+  "    <img src='file:///absolute/path/to/image.png' style='width:100%;height:100%;object-fit:cover' />",
+  "  </div>",
+  "</div>"
+],
+"script": [
+  "const animation = new MulmoAnimation();",
+  "animation.animate('#photo_wrap', { scale: [1.0, 1.2], translateX: [0, -30, 'px'] }, { start: 0, end: 'auto', easing: 'linear' });"
+]
+```
+
+### Pattern: Image Carousel (cross-fade)
+
+```json
+"html": [
+  "<div id='w0' style='position:absolute;inset:0'><img src='file:///path/img1.png' style='width:100%;height:100%;object-fit:cover' /></div>",
+  "<div id='w1' style='position:absolute;inset:0;opacity:0'><img src='file:///path/img2.png' style='width:100%;height:100%;object-fit:cover' /></div>"
+],
+"script": [
+  "const animation = new MulmoAnimation();",
+  "animation.animate('#w0', { scale: [1.0, 1.1] }, { start: 0, end: 2.0 });",
+  "animation.animate('#w0', { opacity: [1, 0] }, { start: 1.6, end: 2.2 });",
+  "animation.animate('#w1', { opacity: [0, 1] }, { start: 1.6, end: 2.2 });"
+]
+```
+
+### Other Patterns
+
+See `scripts/samples/image_animation_showcase.json` for complete examples of: text overlay, split reveal, zoom spotlight, parallax layers, HUD overlay, morphing grid.
