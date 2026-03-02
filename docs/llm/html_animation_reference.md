@@ -182,7 +182,7 @@ Embed real images inside animated beats. Sample: `scripts/samples/image_animatio
 
 1. **Variable name must be `animation`** — auto-render checks `typeof animation !== 'undefined'`. Using `const a = ...` silently fails.
 2. **Wrap `<img>` in `<div>` for transforms** — animate the wrapper, not `<img>` directly (`object-fit:cover` conflicts with transforms).
-3. **Use `file://` absolute paths** — Puppeteer loads via `setContent` (origin `about:blank`), so relative paths won't resolve.
+3. **Use relative paths from the script file** — relative `src` paths are automatically resolved to `file://` absolute paths at render time. Example: if the script is at `scripts/samples/foo.json`, use `../../output/images/bar.png`. Absolute `file://` paths also work but are not portable.
 
 ### Pattern: Ken Burns (zoom + pan)
 
@@ -190,7 +190,7 @@ Embed real images inside animated beats. Sample: `scripts/samples/image_animatio
 "html": [
   "<div class='h-full w-full overflow-hidden relative bg-black'>",
   "  <div id='photo_wrap' style='position:absolute;inset:0;overflow:hidden'>",
-  "    <img src='file:///absolute/path/to/image.png' style='width:100%;height:100%;object-fit:cover' />",
+  "    <img src='../../output/images/sample/photo.png' style='width:100%;height:100%;object-fit:cover' />",
   "  </div>",
   "</div>"
 ],
@@ -204,8 +204,8 @@ Embed real images inside animated beats. Sample: `scripts/samples/image_animatio
 
 ```json
 "html": [
-  "<div id='w0' style='position:absolute;inset:0'><img src='file:///path/img1.png' style='width:100%;height:100%;object-fit:cover' /></div>",
-  "<div id='w1' style='position:absolute;inset:0;opacity:0'><img src='file:///path/img2.png' style='width:100%;height:100%;object-fit:cover' /></div>"
+  "<div id='w0' style='position:absolute;inset:0'><img src='../../output/images/sample/img1.png' style='width:100%;height:100%;object-fit:cover' /></div>",
+  "<div id='w1' style='position:absolute;inset:0;opacity:0'><img src='../../output/images/sample/img2.png' style='width:100%;height:100%;object-fit:cover' /></div>"
 ],
 "script": [
   "const animation = new MulmoAnimation();",
