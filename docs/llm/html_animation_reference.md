@@ -7,7 +7,6 @@ The runtime template injects helper functions (`interpolate`, `Easing`, `MulmoAn
 
 ```json
 {
-  "duration": 3,
   "image": {
     "type": "html_tailwind",
     "html": ["<div id='el'>...</div>"],
@@ -20,7 +19,7 @@ The runtime template injects helper functions (`interpolate`, `Easing`, `MulmoAn
 - `html`: HTML markup only (no `<script>` tags)
 - `script`: JavaScript code (no `<script>` tags — automatically wrapped)
 - `animation`: `true` (30fps) or `{ "fps": 15 }` for custom fps
-- `duration`: Required (seconds). totalFrames = floor(duration * fps)
+- `duration`: **Do NOT set** — automatically calculated from audio length. Only set explicitly for silent beats or when you need a fixed duration.
 
 ## Available Runtime APIs
 
@@ -169,7 +168,7 @@ No `render()` needed — auto-render detects the `animation` variable and genera
 ## Constraints
 
 - `animation` and `moviePrompt` cannot be used together on the same beat
-- `duration` is required when `animation` is set (may be auto-calculated from audio)
+- Do NOT set `duration` on animated beats — it is auto-calculated from the audio. Setting it explicitly can cause audio/video desync. Only set `duration` for silent beats or fixed-length intros.
 - `end: 'auto'` uses the beat's total duration (`totalFrames / fps`) as the end time — useful for full-beat animations like scrolling crawls
 - CSS animations/transitions are disabled in the template (deterministic frame rendering)
 - All elements that will be animated should have initial styles set inline (e.g., `style='opacity:0'`)

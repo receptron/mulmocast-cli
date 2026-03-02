@@ -230,7 +230,6 @@ For beats that benefit from motion — cinematic intros, opening crawls, data vi
 
 ```json
 {
-  "duration": 3,
   "image": {
     "type": "html_tailwind",
     "html": ["<div id='el' style='opacity:0'>...</div>"],
@@ -247,7 +246,7 @@ Key rules:
 - `html`: HTML markup with Tailwind CSS (no `<script>` tags). Set initial styles inline (e.g., `style='opacity:0'`)
 - `script`: JavaScript code (no `<script>` tags). Use `MulmoAnimation` DSL or raw `render()` + `interpolate()`
 - `animation`: `true` (30fps) or `{ "fps": 15 }` for custom fps
-- `duration`: Required for animated beats (may be auto-calculated from audio)
+- **Do NOT set `duration`** — it is auto-calculated from the audio length. Setting it explicitly causes audio/video desync. Only set `duration` for silent beats or fixed-length intros.
 - Name the MulmoAnimation instance `animation` to enable auto-render (no manual `render()` needed)
 - Use `end: 'auto'` for animations that span the entire beat duration
 
