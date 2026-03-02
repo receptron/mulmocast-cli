@@ -124,7 +124,7 @@ To make this concrete, here is a short MulmoScript document with three beats —
 
 ```yaml
 $mulmocast:
-  version: "2.0"
+  version: "1.1"
 lang: en
 canvasSize:
   width: 1280
