@@ -1,0 +1,328 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "title": "Image Animation Showcase",
+  "speechParams": {
+    "speakers": {
+      "Presenter": { "voiceId": "shimmer" }
+    }
+  },
+  "audioParams": {
+    "bgm": { "kind": "url", "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/story002.mp3" },
+    "bgmVolume": 0.12
+  },
+  "beats": [
+    {
+      "id": "title",
+      "speaker": "Presenter",
+      "text": "Welcome to the Image Animation Showcase. Let's see how you can bring static images to life with MulmoCast animations.",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900'>",
+          "  <h1 id='t1' class='text-5xl font-bold text-white mb-4' style='opacity:0'>Image Animation</h1>",
+          "  <p id='t2' class='text-2xl text-indigo-300 mb-8' style='opacity:0'>Showcase</p>",
+          "  <div id='t3' class='h-1 bg-gradient-to-r from-cyan-400 to-purple-500 rounded' style='width:0'></div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#t1', { opacity: [0,1], translateY: [40,0] }, { start: 0, end: 0.6, easing: 'easeOut' });",
+          "animation.animate('#t2', { opacity: [0,1], translateY: [20,0] }, { start: 0.3, end: 0.8, easing: 'easeOut' });",
+          "animation.animate('#t3', { width: [0,300,'px'] }, { start: 0.6, end: 1.5, easing: 'easeInOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "ken_burns",
+      "speaker": "Presenter",
+      "text": "The Ken Burns effect. A subtle zoom and pan brings cinematic depth to any photograph.",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <div id='photo_wrap' style='position:absolute;inset:0;overflow:hidden'>",
+          "    <img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/imagen_4.png' style='width:100%;height:100%;object-fit:cover' />",
+          "  </div>",
+          "  <div id='caption' style='opacity:0;position:absolute;bottom:32px;left:32px;right:32px;background:rgba(0,0,0,0.6);border-radius:12px;padding:16px 24px'>",
+          "    <p style='color:white;font-size:20px;font-weight:600;margin:0'>Tokyo Street at Night</p>",
+          "    <p style='color:#94a3b8;font-size:14px;margin:4px 0 0'>Ken Burns: slow zoom + pan</p>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#photo_wrap', { scale: [1.0, 1.2], translateX: [0, -30, 'px'], translateY: [0, -20, 'px'] }, { start: 0, end: 'auto', easing: 'linear' });",
+          "animation.animate('#caption', { opacity: [0,1], translateY: [20,0] }, { start: 1.0, end: 1.8, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "slide_in_overlay",
+      "speaker": "Presenter",
+      "text": "Slide-in overlay. The image serves as a full background, while text panels slide in from the side.",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full relative bg-black'>",
+          "  <img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/gemini_3_pro_image_preview.png' style='position:absolute;inset:0;width:100%;height:100%;object-fit:cover' />",
+          "  <div style='position:absolute;inset:0;background:linear-gradient(to right, rgba(0,0,0,0.75), rgba(0,0,0,0.3), transparent)'></div>",
+          "  <div id='panel' style='opacity:0;position:absolute;left:0;top:0;bottom:0;width:45%;display:flex;flex-direction:column;justify-content:center;padding:0 48px'>",
+          "    <h2 id='h2' style='opacity:0;color:white;font-size:36px;font-weight:700;margin:0 0 16px'>Night Explorer</h2>",
+          "    <p id='p1' style='opacity:0;color:#e2e8f0;font-size:18px;margin:0 0 12px'>AI-generated imagery meets animated overlays.</p>",
+          "    <p id='p2' style='opacity:0;color:#e2e8f0;font-size:18px;margin:0'>Glassmorphism panels create depth over any photo.</p>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#panel', { opacity: [0,1], translateX: [-60,0,'px'] }, { start: 0.3, end: 1.0, easing: 'easeOut' });",
+          "animation.animate('#h2', { opacity: [0,1], translateY: [20,0] }, { start: 0.6, end: 1.2, easing: 'easeOut' });",
+          "animation.animate('#p1', { opacity: [0,1], translateY: [15,0] }, { start: 1.0, end: 1.5, easing: 'easeOut' });",
+          "animation.animate('#p2', { opacity: [0,1], translateY: [15,0] }, { start: 1.3, end: 1.8, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "split_reveal",
+      "speaker": "Presenter",
+      "text": "Split reveal. Two images appear side by side with a staggered entrance, perfect for comparisons.",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div style='height:100%;width:100%;display:flex;background:#0f172a'>",
+          "  <div id='s0' style='opacity:0;width:49%;height:100%;overflow:hidden;position:relative'>",
+          "    <img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/imagen_4.png' style='width:100%;height:100%;object-fit:cover' />",
+          "    <div style='position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);padding:24px'>",
+          "      <p style='color:white;font-weight:700;font-size:18px;margin:0'>Imagen 4</p>",
+          "    </div>",
+          "  </div>",
+          "  <div id='divider' style='opacity:0;width:2%;height:100%;display:flex;align-items:center;justify-content:center'>",
+          "    <div style='width:2px;height:80%;background:#22d3ee'></div>",
+          "  </div>",
+          "  <div id='s1' style='opacity:0;width:49%;height:100%;overflow:hidden;position:relative'>",
+          "    <img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/gemini_3_pro_image_preview.png' style='width:100%;height:100%;object-fit:cover' />",
+          "    <div style='position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);padding:24px'>",
+          "      <p style='color:white;font-weight:700;font-size:18px;margin:0'>Gemini 3 Pro</p>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.stagger('#s{i}', 2, { opacity: [0,1], translateX: [-40,0,'px'] }, { start: 0.3, stagger: 0.7, duration: 0.7, easing: 'easeOut' });",
+          "animation.animate('#divider', { opacity: [0,1] }, { start: 0.8, end: 1.2 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "zoom_spotlight",
+      "speaker": "Presenter",
+      "text": "Zoom spotlight. Start with the full image, then zoom into a region of interest while a callout appears.",
+      "duration": 7,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <div id='zoom_wrap' style='position:absolute;inset:0;overflow:hidden'>",
+          "    <img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/imagen_4_ultra.png' style='width:100%;height:100%;object-fit:cover' />",
+          "  </div>",
+          "  <div id='vignette' style='opacity:0;position:absolute;inset:0;background:radial-gradient(circle at 55% 45%, transparent 15%, rgba(0,0,0,0.7) 60%)'></div>",
+          "  <div id='ring' style='opacity:0;position:absolute;width:200px;height:200px;left:calc(55% - 100px);top:calc(45% - 100px);border:3px solid #22d3ee;border-radius:50%'></div>",
+          "  <div id='label' style='opacity:0;position:absolute;left:calc(55% + 110px);top:calc(45% - 16px);background:rgba(6,182,212,0.9);color:white;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:700'>",
+          "    Detail Region",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#zoom_wrap', { scale: [1.0, 1.0] }, { start: 0, end: 2.0 });",
+          "animation.animate('#zoom_wrap', { scale: [1.0, 2.0], translateX: [0, -80, 'px'], translateY: [0, -30, 'px'] }, { start: 2.0, end: 4.5, easing: 'easeInOut' });",
+          "animation.animate('#vignette', { opacity: [0, 1] }, { start: 3.0, end: 4.5 });",
+          "animation.animate('#ring', { opacity: [0,1], scale: [1.5,1.0] }, { start: 4.0, end: 4.8, easing: 'easeOut' });",
+          "animation.animate('#label', { opacity: [0,1], translateX: [20,0,'px'] }, { start: 4.5, end: 5.2, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "carousel",
+      "speaker": "Presenter",
+      "text": "Image carousel. Multiple images cross-fade in sequence, each with a subtle zoom. Great for a gallery.",
+      "duration": 8,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full relative bg-black overflow-hidden'>",
+          "  <div id='w0' style='position:absolute;inset:0'><img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/imagen_4.png' style='width:100%;height:100%;object-fit:cover' /></div>",
+          "  <div id='w1' style='position:absolute;inset:0;opacity:0'><img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/gemini_3_pro_image_preview.png' style='width:100%;height:100%;object-fit:cover' /></div>",
+          "  <div id='w2' style='position:absolute;inset:0;opacity:0'><img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/imagen_4_ultra.png' style='width:100%;height:100%;object-fit:cover' /></div>",
+          "  <div id='w3' style='position:absolute;inset:0;opacity:0'><img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/gemini_2_5_flash_image.png' style='width:100%;height:100%;object-fit:cover' /></div>",
+          "  <div id='counter' style='position:absolute;top:24px;right:32px;color:rgba(255,255,255,0.7);font-family:monospace;font-size:18px'>1 / 4</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#w0', { scale: [1.0, 1.1] }, { start: 0, end: 2.0, easing: 'linear' });",
+          "animation.animate('#w0', { opacity: [1, 0] }, { start: 1.6, end: 2.2 });",
+          "animation.animate('#w1', { opacity: [0, 1] }, { start: 1.6, end: 2.2 });",
+          "animation.animate('#w1', { scale: [1.05, 1.0] }, { start: 2.0, end: 4.0, easing: 'linear' });",
+          "animation.animate('#w1', { opacity: [1, 0] }, { start: 3.6, end: 4.2 });",
+          "animation.animate('#w2', { opacity: [0, 1] }, { start: 3.6, end: 4.2 });",
+          "animation.animate('#w2', { scale: [1.05, 1.0] }, { start: 4.0, end: 6.0, easing: 'linear' });",
+          "animation.animate('#w2', { opacity: [1, 0] }, { start: 5.6, end: 6.2 });",
+          "animation.animate('#w3', { opacity: [0, 1] }, { start: 5.6, end: 6.2 });",
+          "animation.animate('#w3', { scale: [1.05, 1.0] }, { start: 6.0, end: 'auto', easing: 'linear' });",
+          "animation.typewriter('#counter', '2 / 4', { start: 2.0, end: 2.01 });",
+          "animation.typewriter('#counter', '3 / 4', { start: 4.0, end: 4.01 });",
+          "animation.typewriter('#counter', '4 / 4', { start: 6.0, end: 6.01 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "parallax_layers",
+      "speaker": "Presenter",
+      "text": "Parallax scrolling. Multiple image layers move at different speeds, creating an illusion of depth.",
+      "duration": 7,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div style='height:100%;width:100%;position:relative;overflow:hidden;background:#0f172a'>",
+          "  <div id='bg_layer' style='position:absolute;inset:-5%;width:130%;height:110%'>",
+          "    <img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/imagen_4.png' style='width:100%;height:100%;object-fit:cover;filter:blur(3px) brightness(0.4)' />",
+          "  </div>",
+          "  <div id='mid_layer' style='opacity:0;position:absolute;width:48%;height:58%;top:22%;left:50%;overflow:hidden;border-radius:16px;box-shadow:0 25px 50px rgba(0,0,0,0.5)'>",
+          "    <img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/gemini_2_5_flash_image.png' style='width:100%;height:100%;object-fit:cover' />",
+          "  </div>",
+          "  <div id='front_layer' style='opacity:0;position:absolute;width:44%;height:54%;top:26%;left:4%;overflow:hidden;border-radius:16px;box-shadow:0 25px 50px rgba(0,0,0,0.5)'>",
+          "    <img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/gemini_3_pro_image_preview.png' style='width:100%;height:100%;object-fit:cover' />",
+          "  </div>",
+          "  <div id='par_title' style='opacity:0;position:absolute;top:32px;left:0;right:0;text-align:center'>",
+          "    <h2 style='color:white;font-size:30px;font-weight:700;margin:0'>Parallax Depth</h2>",
+          "    <p style='color:#94a3b8;font-size:16px;margin:4px 0 0'>Layers move at different speeds</p>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#bg_layer', { translateX: [0, -50, 'px'] }, { start: 0, end: 'auto', easing: 'linear' });",
+          "animation.animate('#mid_layer', { opacity: [0,1], translateX: [80,0,'px'] }, { start: 0.5, end: 1.5, easing: 'easeOut' });",
+          "animation.animate('#mid_layer', { translateX: [0, -30, 'px'] }, { start: 1.5, end: 'auto', easing: 'linear' });",
+          "animation.animate('#front_layer', { opacity: [0,1], translateX: [-80,0,'px'] }, { start: 1.0, end: 2.0, easing: 'easeOut' });",
+          "animation.animate('#front_layer', { translateX: [0, 20, 'px'] }, { start: 2.0, end: 'auto', easing: 'linear' });",
+          "animation.animate('#par_title', { opacity: [0,1], translateY: [-20,0] }, { start: 0.3, end: 1.0, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "hud_overlay",
+      "speaker": "Presenter",
+      "text": "HUD overlay on a real photo. Scanning brackets, data readouts, and targeting reticle turn any image into a sci-fi interface.",
+      "duration": 7,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div style='height:100%;width:100%;position:relative;overflow:hidden;background:black'>",
+          "  <img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/imagen_4_ultra.png' style='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.65) saturate(0.5)' />",
+          "  <div style='position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,255,200,0.06) 0%, transparent 30%, transparent 70%, rgba(0,255,200,0.08) 100%)'></div>",
+          "  <div id='scan' style='position:absolute;left:0;right:0;height:2px;top:0;background:linear-gradient(90deg, transparent, rgba(0,255,200,0.7), transparent)'></div>",
+          "  <div id='b0' style='opacity:0;position:absolute;top:25%;left:30%;width:50px;height:50px;border-top:2px solid #00ffc8;border-left:2px solid #00ffc8'></div>",
+          "  <div id='b1' style='opacity:0;position:absolute;top:25%;right:30%;width:50px;height:50px;border-top:2px solid #00ffc8;border-right:2px solid #00ffc8'></div>",
+          "  <div id='b2' style='opacity:0;position:absolute;bottom:30%;left:30%;width:50px;height:50px;border-bottom:2px solid #00ffc8;border-left:2px solid #00ffc8'></div>",
+          "  <div id='b3' style='opacity:0;position:absolute;bottom:30%;right:30%;width:50px;height:50px;border-bottom:2px solid #00ffc8;border-right:2px solid #00ffc8'></div>",
+          "  <div id='readout' style='opacity:0;position:absolute;top:24px;left:24px;font-family:monospace;font-size:13px;color:#86efac;line-height:1.8'>",
+          "    <div>SYS: ONLINE</div>",
+          "    <div>TGT: <span id='ct'>0</span> DETECTED</div>",
+          "    <div>CONF: <span id='conf'>0</span>%</div>",
+          "  </div>",
+          "  <div id='status' style='opacity:0;position:absolute;bottom:24px;right:24px;font-family:monospace;font-size:14px;color:#4ade80;border:1px solid rgba(74,222,128,0.5);padding:8px 16px;border-radius:4px'>",
+          "    ANALYSIS COMPLETE",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#scan', { translateY: [0, 720, 'px'] }, { start: 0, end: 2.0, easing: 'linear' });",
+          "animation.stagger('#b{i}', 4, { opacity: [0,1], scale: [1.6,1.0] }, { start: 1.5, stagger: 0.15, duration: 0.5, easing: 'easeOut' });",
+          "animation.animate('#readout', { opacity: [0,1] }, { start: 2.5, end: 3.0 });",
+          "animation.counter('#ct', [0, 3], { start: 2.5, end: 4.0, decimals: 0 });",
+          "animation.counter('#conf', [0, 97.4], { start: 3.0, end: 5.0, decimals: 1 });",
+          "animation.animate('#status', { opacity: [0,1] }, { start: 5.0, end: 5.5 });",
+          "animation.blink('#status', { start: 5.5, end: 'auto', interval: 0.8 });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "morphing_grid",
+      "speaker": "Presenter",
+      "text": "Morphing grid. Four images assemble into a grid with staggered scale effects.",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div style='height:100%;width:100%;background:#0f172a;padding:32px;display:flex;flex-direction:column;gap:16px'>",
+          "  <h2 id='heading' style='opacity:0;color:white;font-size:24px;font-weight:700;text-align:center;margin:0'>Model Comparison</h2>",
+          "  <div style='flex:1;display:grid;grid-template-columns:1fr 1fr;gap:16px'>",
+          "    <div id='g0' style='opacity:0;position:relative;overflow:hidden;border-radius:12px'>",
+          "      <img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/imagen_4.png' style='width:100%;height:100%;object-fit:cover' />",
+          "      <div style='position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:8px 12px'><p style='color:white;font-size:14px;font-weight:600;margin:0'>Imagen 4</p></div>",
+          "    </div>",
+          "    <div id='g1' style='opacity:0;position:relative;overflow:hidden;border-radius:12px'>",
+          "      <img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/gemini_3_pro_image_preview.png' style='width:100%;height:100%;object-fit:cover' />",
+          "      <div style='position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:8px 12px'><p style='color:white;font-size:14px;font-weight:600;margin:0'>Gemini 3 Pro</p></div>",
+          "    </div>",
+          "    <div id='g2' style='opacity:0;position:relative;overflow:hidden;border-radius:12px'>",
+          "      <img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/gemini_2_5_flash_image.png' style='width:100%;height:100%;object-fit:cover' />",
+          "      <div style='position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:8px 12px'><p style='color:white;font-size:14px;font-weight:600;margin:0'>Gemini 2.5 Flash</p></div>",
+          "    </div>",
+          "    <div id='g3' style='opacity:0;position:relative;overflow:hidden;border-radius:12px'>",
+          "      <img src='file:///Users/isamu/ss/llm/mulmocast-cli/output/images/test_genai/imagen_4_ultra.png' style='width:100%;height:100%;object-fit:cover' />",
+          "      <div style='position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:8px 12px'><p style='color:white;font-size:14px;font-weight:600;margin:0'>Imagen 4 Ultra</p></div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0,1], translateY: [-15,0] }, { start: 0, end: 0.5, easing: 'easeOut' });",
+          "animation.stagger('#g{i}', 4, { opacity: [0,1], scale: [0.8,1.0] }, { start: 0.3, stagger: 0.3, duration: 0.6, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "closing",
+      "speaker": "Presenter",
+      "text": "That's the Image Animation Showcase. Use these patterns to bring your images to life in MulmoCast presentations.",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900'>",
+          "  <h1 id='end' style='opacity:0;color:white;font-size:36px;font-weight:700;margin:0 0 16px'>Image + Animation</h1>",
+          "  <p id='sub2' style='opacity:0;color:#a5b4fc;font-size:18px;margin:0 0 24px;text-align:center;max-width:700px'>Ken Burns / Overlay / Split / Zoom / Carousel / Parallax / HUD / Grid</p>",
+          "  <div id='badge' style='opacity:0;background:rgba(99,102,241,0.2);border:1px solid rgba(129,140,248,0.5);border-radius:9999px;padding:8px 24px;color:#a5b4fc;font-family:monospace;font-size:14px'>mulmocast</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#end', { opacity: [0,1], translateY: [30,0] }, { start: 0, end: 0.6, easing: 'easeOut' });",
+          "animation.animate('#sub2', { opacity: [0,1], translateY: [20,0] }, { start: 0.3, end: 0.9, easing: 'easeOut' });",
+          "animation.animate('#badge', { opacity: [0,1], scale: [0.8,1.0] }, { start: 0.8, end: 1.3, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
+    }
+  ]
+}
