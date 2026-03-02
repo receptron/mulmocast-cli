@@ -8,7 +8,6 @@ Puppeteer で1フレームずつスクリーンショットを撮影し、FFmpeg
 
 ```json
 {
-  "duration": 3,
   "image": {
     "type": "html_tailwind",
     "html": ["<div id='title'>Hello</div>"],
@@ -25,7 +24,7 @@ Puppeteer で1フレームずつスクリーンショットを撮影し、FFmpeg
 | `html` | `string \| string[]` | HTML マークアップ（`<script>` を含めない） |
 | `script` | `string \| string[]` | JavaScript コード（`<script>` タグ不要、テンプレートが自動で `<script>` ラップ） |
 | `animation` | `true \| { fps: number }` | アニメーション有効化。省略時は静止画 |
-| `duration` | `number` | ビートの長さ（秒）。アニメーション時は**必須** |
+| `duration` | `number` | ビートの長さ（秒）。**原則不要**（音声から自動算出）。無音ビートや固定長が必要な場合のみ指定 |
 
 ### FPS 設定
 
@@ -246,6 +245,6 @@ function render(frame, totalFrames, fps) {
 ## 制約
 
 - `animation` と `moviePrompt` の併用不可（同一ビートで両方指定するとエラー）
-- `duration` は `animation` 使用時に**必須**（音声生成と画像生成が並列のため、事前にフレーム数を確定する必要がある）。ただし音声から自動計算される場合は省略可
+- `duration` は**原則不要**（音声の長さから自動算出される）。明示的に設定すると音声と映像がずれる原因になるため、無音ビートや固定長が必要な場合のみ指定すること
 - `end: 'auto'` を指定すると、ビート全体の長さ（`totalFrames / fps`）が `end` として使用される。ビート全体にわたるアニメーション（スクロールなど）に便利
 - CSS animation / transition はテンプレートで無効化済み（`animation-play-state: paused`, `transition: none`）
