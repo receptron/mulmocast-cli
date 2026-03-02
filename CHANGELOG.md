@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.6](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.6) (2026-03-02)
+
+- **Relative image paths in html_tailwind**: Relative `src` paths in html_tailwind beats are now automatically resolved to `file://` absolute paths based on the script file's directory, making scripts portable across environments
+
+📦 **npm**: [`mulmocast@2.4.6`](https://www.npmjs.com/package/mulmocast/v/2.4.6)
+
 ## [2.4.5](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.5) (2026-03-02)
 
 - **Gemini 3.1 Flash Image**: Added `gemini-3.1-flash-image-preview` model support for Google image generation
