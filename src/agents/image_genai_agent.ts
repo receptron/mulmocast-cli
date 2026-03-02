@@ -94,7 +94,7 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
         return new GoogleGenAI({ apiKey });
       })();
 
-  if (model === "gemini-2.5-flash-image" || model === "gemini-3-pro-image-preview") {
+  if (model === "gemini-2.5-flash-image" || model === "gemini-3.1-flash-image-preview" || model === "gemini-3-pro-image-preview") {
     const contentParams = (() => {
       const contents = getGeminiContents(prompt, referenceImages);
       return {
