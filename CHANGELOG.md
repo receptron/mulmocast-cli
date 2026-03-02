@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.4](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.4) (2026-03-02)
+
+- **Gemini 3.1 Pro**: Updated Gemini LLM model from `gemini-3-pro-preview` to `gemini-3.1-pro-preview`
+- **Learning skills**: Added 4 sample Claude Code skills for educational content (vocab-chat, vocab-lesson, conversation-chat, stroke-order)
+- **Changelog**: Added `CHANGELOG.md`, `CHANGELOG-1.x.md`, `CHANGELOG-0.x.md` covering all releases
+
+📦 **npm**: [`mulmocast@2.4.4`](https://www.npmjs.com/package/mulmocast/v/2.4.4)
+
 ## [2.4.3](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.3) (2026-03-01)
 
 - **Video-Audio Drift Fix**: Fixed cumulative audio-video desync caused by FFmpeg's `trim=duration` rounding up to frame boundaries (~0.03s per beat). Now uses frame-exact trimming with cumulative frame tracking (Bresenham-style) for precise synchronization.
