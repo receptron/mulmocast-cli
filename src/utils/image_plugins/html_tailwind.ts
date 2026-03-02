@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import nodePath from "node:path";
 import { ImageProcessorParams } from "../../types/index.js";
 import { MulmoBeatMethods } from "../../methods/mulmo_beat.js";
 import { getHTMLFile } from "../file.js";
@@ -7,6 +8,17 @@ import { framesToVideo } from "../ffmpeg_utils.js";
 import { parrotingImagePath } from "./utils.js";
 
 export const imageType = "html_tailwind";
+
+/**
+ * Resolve relative paths in src attributes to file:// absolute paths.
+ * Paths starting with http://, https://, file://, data:, or / are left unchanged.
+ */
+const resolveRelativeImagePaths = (html: string, baseDirPath: string): string => {
+  return html.replace(/(\bsrc\s*=\s*)(["'])((?!https?:\/\/|file:\/\/|data:|\/)[^"']+)\2/gi, (_, prefix, quote, relativePath) => {
+    const absolutePath = nodePath.resolve(baseDirPath, relativePath);
+    return `${prefix}${quote}file://${absolutePath}${quote}`;
+  });
+};
 
 const DEFAULT_ANIMATION_FPS = 30;
 
@@ -31,7 +43,7 @@ const getAnimationConfig = (params: ImageProcessorParams) => {
 };
 
 const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
-  const { beat, imagePath, canvasSize } = params;
+  const { beat, imagePath, canvasSize, context } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
   const animConfig = getAnimationConfig(params);
@@ -51,13 +63,14 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
   const html = joinHtml(beat.image.html);
   const template = getHTMLFile("tailwind_animated");
   const script = "script" in beat.image ? (beat.image as { script?: string | string[] }).script : undefined;
-  const htmlData = interpolate(template, {
+  const rawHtmlData = interpolate(template, {
     html_body: html,
     user_script: buildUserScript(script),
     totalFrames: String(totalFrames),
     fps: String(fps),
     custom_style: "",
   });
+  const htmlData = resolveRelativeImagePaths(rawHtmlData, context.fileDirs.mulmoFileDirPath);
 
   // imagePath is set to the .mp4 path by imagePluginAgent for animated beats
   const videoPath = imagePath;
@@ -77,16 +90,17 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
 };
 
 const processHtmlTailwindStatic = async (params: ImageProcessorParams) => {
-  const { beat, imagePath, canvasSize } = params;
+  const { beat, imagePath, canvasSize, context } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
   const html = joinHtml(beat.image.html);
   const template = getHTMLFile("tailwind");
   const script = "script" in beat.image ? (beat.image as { script?: string | string[] }).script : undefined;
-  const htmlData = interpolate(template, {
+  const rawHtmlData = interpolate(template, {
     html_body: html,
     user_script: buildUserScript(script),
   });
+  const htmlData = resolveRelativeImagePaths(rawHtmlData, context.fileDirs.mulmoFileDirPath);
   await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;
 };
