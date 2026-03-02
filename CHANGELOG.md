@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.5](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.5) (2026-03-02)
+
+- **Gemini 3.1 Flash Image**: Added `gemini-3.1-flash-image-preview` model support for Google image generation
+
+📦 **npm**: [`mulmocast@2.4.5`](https://www.npmjs.com/package/mulmocast/v/2.4.5)
+
 ## [2.4.4](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.4) (2026-03-02)
 
 - **Gemini 3.1 Pro**: Updated Gemini LLM model from `gemini-3-pro-preview` to `gemini-3.1-pro-preview`
