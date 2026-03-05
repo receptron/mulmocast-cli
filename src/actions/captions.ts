@@ -112,6 +112,7 @@ const generateBeatCaptions = async (beat: MulmoBeat, context: MulmoStudioContext
         width: `${canvasSize.width}`,
         height: `${canvasSize.height}`,
         styles: (mergedCaptionParams.styles ?? []).join(";\n"),
+        bottomOffset: `${mergedCaptionParams.bottomOffset ?? 0}`,
       });
       await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, false, true);
       return {

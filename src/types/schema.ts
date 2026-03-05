@@ -207,6 +207,7 @@ export const mulmoCaptionParamsSchema = z
     styles: z.array(z.string()).optional(), // css styles
     captionSplit: captionSplitSchema.optional(), // how to determine caption timing
     textSplit: textSplitSchema.optional(), // how to split text into segments (default: none)
+    bottomOffset: z.number().min(0).max(100).optional(), // bottom offset in percentage (e.g., 20 = 20% from bottom)
   })
   .strict();
 
