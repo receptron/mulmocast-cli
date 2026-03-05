@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.7](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.7) (2026-03-05)
+
+- **Caption bottomOffset**: Added `bottomOffset` option to `captionParams` to position captions higher (e.g., 20% from bottom) to avoid overlapping with YouTube player controls
+
+📦 **npm**: [`mulmocast@2.4.7`](https://www.npmjs.com/package/mulmocast/v/2.4.7)
+
 ## [2.4.6](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.6) (2026-03-02)
 
 - **Relative image paths in html_tailwind**: Relative `src` paths in html_tailwind beats are now automatically resolved to `file://` absolute paths based on the script file's directory, making scripts portable across environments
