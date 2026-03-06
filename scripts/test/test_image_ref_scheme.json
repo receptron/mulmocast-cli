@@ -1,0 +1,84 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "ja",
+  "canvasSize": { "width": 1080, "height": 1920 },
+  "title": "image: スキームテスト",
+  "speechParams": {
+    "speakers": {
+      "Presenter": { "voiceId": "shimmer" }
+    }
+  },
+  "audioParams": {
+    "bgm": {
+      "kind": "url",
+      "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/theme001.mp3"
+    },
+    "bgmVolume": 0.12
+  },
+  "imageParams": {
+    "provider": "google",
+    "model": "gemini-3.1-flash-image-preview",
+    "images": {
+      "bg_office": {
+        "type": "imagePrompt",
+        "prompt": "Empty modern tech office with abandoned desks and computer screens still glowing, dramatic morning sunlight, photorealistic, vertical composition 9:16"
+      },
+      "bg_city": {
+        "type": "imagePrompt",
+        "prompt": "Futuristic city skyline at sunset with neon lights reflecting on glass buildings, vibrant colors, photorealistic, vertical composition 9:16"
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "image:スキームのテストです。背景画像がimageParamsで生成した画像に置き換わります。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <div id='wrap' style='position:absolute;inset:0;overflow:hidden'>",
+          "    <img src='image:bg_office' style='width:100%;height:100%;object-fit:cover;filter:brightness(0.7)' />",
+          "  </div>",
+          "  <div style='position:absolute;top:50%;left:40px;right:40px;transform:translateY(-50%);text-align:center'>",
+          "    <div style='display:inline-block;background:rgba(239,68,68,0.85);padding:12px 32px;border-radius:12px'>",
+          "      <span style='color:white;font-size:80px;font-weight:900'>image: test</span>",
+          "    </div>",
+          "    <div style='color:white;font-size:48px;font-weight:900;margin-top:20px;text-shadow:0 4px 16px rgba(0,0,0,0.9)'>bg_office を参照</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#wrap', { scale: [1.0, 1.15] }, { start: 0, end: 'auto', easing: 'linear' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "text": "二枚目の背景です。別のimageRefsキーを参照しています。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <div id='wrap' style='position:absolute;inset:0;overflow:hidden'>",
+          "    <img src='image:bg_city' style='width:100%;height:100%;object-fit:cover;filter:brightness(0.6)' />",
+          "  </div>",
+          "  <div style='position:absolute;top:50%;left:40px;right:40px;transform:translateY(-50%);text-align:center'>",
+          "    <div style='display:inline-block;background:rgba(59,130,246,0.85);padding:12px 32px;border-radius:12px'>",
+          "      <span style='color:white;font-size:80px;font-weight:900'>image: test</span>",
+          "    </div>",
+          "    <div style='color:white;font-size:48px;font-weight:900;margin-top:20px;text-shadow:0 4px 16px rgba(0,0,0,0.9)'>bg_city を参照</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#wrap', { translateX: [0, -30] }, { start: 0, end: 'auto', easing: 'linear' });"
+        ],
+        "animation": true
+      }
+    }
+  ]
+}

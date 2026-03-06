@@ -10,11 +10,25 @@ import { parrotingImagePath } from "./utils.js";
 export const imageType = "html_tailwind";
 
 /**
- * Resolve relative paths in src attributes to file:// absolute paths.
- * Paths starting with http://, https://, file://, data:, or / are left unchanged.
+ * Resolve image:name references to file:// absolute paths using imageRefs.
+ * e.g., src="image:bg_office" → src="file:///abs/path/to/bg_office.png"
  */
-const resolveRelativeImagePaths = (html: string, baseDirPath: string): string => {
-  return html.replace(/(\bsrc\s*=\s*)(["'])((?!https?:\/\/|file:\/\/|data:|\/)[^"']+)\2/gi, (_, prefix, quote, relativePath) => {
+export const resolveImageRefs = (html: string, imageRefs: Record<string, string>): string => {
+  return html.replace(/(\bsrc\s*=\s*)(["'])image:([^"']+)\2/gi, (match, prefix, quote, name) => {
+    const resolvedPath = imageRefs[name];
+    if (!resolvedPath) {
+      return match;
+    }
+    return `${prefix}${quote}file://${resolvedPath}${quote}`;
+  });
+};
+
+/**
+ * Resolve relative paths in src attributes to file:// absolute paths.
+ * Paths starting with http://, https://, file://, data:, image:, or / are left unchanged.
+ */
+export const resolveRelativeImagePaths = (html: string, baseDirPath: string): string => {
+  return html.replace(/(\bsrc\s*=\s*)(["'])((?!https?:\/\/|file:\/\/|data:|image:|\/)[^"']+)\2/gi, (_, prefix, quote, relativePath) => {
     const absolutePath = nodePath.resolve(baseDirPath, relativePath);
     return `${prefix}${quote}file://${absolutePath}${quote}`;
   });
@@ -70,7 +84,8 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
     fps: String(fps),
     custom_style: "",
   });
-  const htmlData = resolveRelativeImagePaths(rawHtmlData, context.fileDirs.mulmoFileDirPath);
+  const resolvedRefs = resolveImageRefs(rawHtmlData, params.imageRefs ?? {});
+  const htmlData = resolveRelativeImagePaths(resolvedRefs, context.fileDirs.mulmoFileDirPath);
 
   // imagePath is set to the .mp4 path by imagePluginAgent for animated beats
   const videoPath = imagePath;
@@ -100,7 +115,8 @@ const processHtmlTailwindStatic = async (params: ImageProcessorParams) => {
     html_body: html,
     user_script: buildUserScript(script),
   });
-  const htmlData = resolveRelativeImagePaths(rawHtmlData, context.fileDirs.mulmoFileDirPath);
+  const resolvedRefs = resolveImageRefs(rawHtmlData, params.imageRefs ?? {});
+  const htmlData = resolveRelativeImagePaths(resolvedRefs, context.fileDirs.mulmoFileDirPath);
   await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;
 };
