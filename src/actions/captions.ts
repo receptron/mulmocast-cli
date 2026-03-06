@@ -59,13 +59,23 @@ const getSplitTexts = (
   return [text];
 };
 
-// Calculate timing ratios based on text length
-const calculateTimingRatios = (splitTexts: string[]): number[] => {
-  const totalLength = splitTexts.reduce((sum, t) => sum + t.length, 0);
+// HTML tags commonly used in caption texts
+const CAPTION_HTML_TAGS = "span|br|b|i|em|strong|u|s|div|p|a|sub|sup|mark";
+const captionTagRegex = new RegExp(`</?(?:${CAPTION_HTML_TAGS})(?:\\s[^>]*)?\\/?>`, "gi");
+
+// Strip known HTML tags to get plain text length (for timing calculation, not sanitization)
+export const stripHtmlTags = (text: string): string => {
+  return text.replace(captionTagRegex, "");
+};
+
+// Calculate timing ratios based on text length (HTML tags excluded)
+export const calculateTimingRatios = (splitTexts: string[]): number[] => {
+  const plainTexts = splitTexts.map(stripHtmlTags);
+  const totalLength = plainTexts.reduce((sum, t) => sum + t.length, 0);
   if (totalLength === 0) {
     return splitTexts.map(() => 1 / splitTexts.length);
   }
-  return splitTexts.map((t) => t.length / totalLength);
+  return plainTexts.map((t) => t.length / totalLength);
 };
 
 // Convert ratios to cumulative ratios: [0.3, 0.5, 0.2] -> [0, 0.3, 0.8, 1.0]
