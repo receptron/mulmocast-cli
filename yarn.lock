@@ -300,10 +300,20 @@
   dependencies:
     google-gax "^5.0.0"
 
-"@google/genai@^1.38.0", "@google/genai@^1.42.0":
+"@google/genai@^1.38.0":
   version "1.43.0"
   resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.43.0.tgz#96195dd10fd92e2339cce66ce91c6d2469948840"
   integrity sha512-hklCsJNdMlDM1IwcCVcGQFBg2izY0+t5BIGbRsxi2UnKi6AGKL7pqJqmBDNRbw0bYCs4y3NA7TB+fkKfP/Nrdw==
+  dependencies:
+    google-auth-library "^10.3.0"
+    p-retry "^4.6.2"
+    protobufjs "^7.5.4"
+    ws "^8.18.0"
+
+"@google/genai@^1.44.0":
+  version "1.44.0"
+  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.44.0.tgz#f533e69b3488f0ff3a29dbf7b5175c0f863671e2"
+  integrity sha512-kRt9ZtuXmz+tLlcNntN/VV4LRdpl6ZOu5B1KbfNgfR65db15O6sUQcwnwLka8sT/V6qysD93fWrgJHF2L7dA9A==
   dependencies:
     google-auth-library "^10.3.0"
     p-retry "^4.6.2"
@@ -1452,10 +1462,10 @@ depd@^2.0.0, depd@~2.0.0:
   resolved "https://registry.yarnpkg.com/depd/-/depd-2.0.0.tgz#b696163cc757560d09cf22cc8fad1571b79e76df"
   integrity sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==
 
-devtools-protocol@0.0.1566079:
-  version "0.0.1566079"
-  resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.1566079.tgz#28049eed025a25cf3aea964f6c6bd517796c44ac"
-  integrity sha512-MJfAEA1UfVhSs7fbSQOG4czavUp1ajfg6prlAN0+cmfa2zNjaIbvq8VneP7do1WAQQIvgNJWSMeP6UyI90gIlQ==
+devtools-protocol@0.0.1581282:
+  version "0.0.1581282"
+  resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.1581282.tgz#7f289b837e052ad04eb16e9575877801c2b3716c"
+  integrity sha512-nv7iKtNZQshSW2hKzYNr46nM/Cfh5SEvE2oV0/SEGgc9XupIY5ggf84Cz8eJIkBce7S3bmTAauFD6aysMpnqsQ==
 
 dfa@^1.2.0:
   version "1.2.0"
@@ -1650,19 +1660,19 @@ eslint-plugin-prettier@^5.5.5:
     prettier-linter-helpers "^1.0.1"
     synckit "^0.11.12"
 
-eslint-plugin-sonarjs@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-sonarjs/-/eslint-plugin-sonarjs-4.0.0.tgz#0c818975c32932a6d9d19952eb12ea3bb92db5c3"
-  integrity sha512-ihyH9HO52OeeWer/gWRndkW/ZhGqx9HDg+Iptu+ApSfiomT2LzhHgHCoyJrhh7DjCyKhjU3Hmmz1pzcXRf7B3g==
+eslint-plugin-sonarjs@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-sonarjs/-/eslint-plugin-sonarjs-4.0.1.tgz#9a3e34dc01a9d9a042fedbf4ae97cc379ed87395"
+  integrity sha512-lmqzFTrw0/zpHQMRmwdgdEEw50s3md0c8RE23JqNom9ovsGQxC/azZ9H00aGKVDkxIXywfcxwzyFJ9Sm3bp2ng==
   dependencies:
     "@eslint-community/regexpp" "4.12.2"
     builtin-modules "3.3.0"
     bytes "3.1.2"
     functional-red-black-tree "1.0.1"
-    globals "17.3.0"
+    globals "17.4.0"
     jsx-ast-utils-x "0.1.0"
     lodash.merge "4.6.2"
-    minimatch "10.2.1"
+    minimatch "10.2.4"
     scslre "0.3.0"
     semver "7.7.4"
     ts-api-utils "2.4.0"
@@ -2202,10 +2212,10 @@ glob@^10.0.0, glob@^10.3.7:
     package-json-from-dist "^1.0.0"
     path-scurry "^1.11.1"
 
-globals@17.3.0, globals@^17.3.0:
-  version "17.3.0"
-  resolved "https://registry.yarnpkg.com/globals/-/globals-17.3.0.tgz#8b96544c2fa91afada02747cc9731c002a96f3b9"
-  integrity sha512-yMqGUQVVCkD4tqjOJf3TnrvaaHDMYp4VlUSObbkIiuCPe/ofdMBFIAcBbCSRFWOnos6qRiTVStDwqPLUclaxIw==
+globals@17.4.0, globals@^17.4.0:
+  version "17.4.0"
+  resolved "https://registry.yarnpkg.com/globals/-/globals-17.4.0.tgz#33d7d297ed1536b388a0e2f4bcd0ff19c8ff91b5"
+  integrity sha512-hjrNztw/VajQwOLsMNT1cbJiH2muO3OROCHnbehc8eY5JyD2gqz4AcMHPqgaOR59DjgUjYAYLeH699g/eWi2jw==
 
 google-auth-library@^10.1.0, google-auth-library@^10.3.0:
   version "10.6.1"
@@ -2733,10 +2743,10 @@ macos-version@^6.0.0:
   dependencies:
     semver "^7.3.5"
 
-marked@^17.0.3:
-  version "17.0.3"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-17.0.3.tgz#0defa25b1ba288433aa847848475d11109e1b3fd"
-  integrity sha512-jt1v2ObpyOKR8p4XaUJVk3YWRJ5n+i4+rjQopxvV32rSndTJXvIzuUdWWIy/1pFQMkQmvTXawzDNqOH/CUmx6A==
+marked@^17.0.4:
+  version "17.0.4"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-17.0.4.tgz#38293b06b0605db39107803f3398938bbbed1b28"
+  integrity sha512-NOmVMM+KAokHMvjWmC5N/ZOvgmSWuqJB8FoYI019j4ogb/PeRMKoKIjReZ2w3376kkA8dSJIP8uD993Kxc0iRQ==
 
 math-intrinsics@^1.1.0:
   version "1.1.0"
@@ -2797,7 +2807,7 @@ mimic-function@^5.0.0:
   resolved "https://registry.yarnpkg.com/mimic-function/-/mimic-function-5.0.1.tgz#acbe2b3349f99b9deaca7fb70e48b83e94e67076"
   integrity sha512-VP79XUPxV2CigYP3jWwAUFSku2aKqBH7uTAapFWCBqutsbmDo96KY5o8uh6U+/YSIn5OxJnXp73beVkpqMIGhA==
 
-minimatch@10.2.1, minimatch@^10.2.1, minimatch@^10.2.2, minimatch@^10.2.4, minimatch@^5.1.0, minimatch@^9.0.4:
+minimatch@10.2.4, minimatch@^10.2.1, minimatch@^10.2.2, minimatch@^10.2.4, minimatch@^5.1.0, minimatch@^9.0.4:
   version "10.2.4"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-10.2.4.tgz#465b3accbd0218b8281f5301e27cedc697f96fde"
   integrity sha512-oRjTw/97aTBN0RHbYCdtF1MQfvusSIBQM0IZEgzl6426+8jSC0nF1a/GmnVLpfB9yyr6g6FTqWqiZVbxrtaCIg==
@@ -3246,30 +3256,30 @@ punycode@^2.1.0, punycode@^2.3.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.1.tgz#027422e2faec0b25e1549c3e1bd8309b9133b6e5"
   integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
 
-puppeteer-core@24.37.5:
-  version "24.37.5"
-  resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-24.37.5.tgz#b957f424717c13ff15765bc664a9b97808e5cbb4"
-  integrity sha512-ybL7iE78YPN4T6J+sPLO7r0lSByp/0NN6PvfBEql219cOnttoTFzCWKiBOjstXSqi/OKpwae623DWAsL7cn2MQ==
+puppeteer-core@24.38.0:
+  version "24.38.0"
+  resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-24.38.0.tgz#456393366c84b9159f7f43aa1fcab4dc90116e11"
+  integrity sha512-zB3S/tksIhgi2gZRndUe07AudBz5SXOB7hqG0kEa9/YXWrGwlVlYm3tZtwKgfRftBzbmLQl5iwHkQQl04n/mWw==
   dependencies:
     "@puppeteer/browsers" "2.13.0"
     chromium-bidi "14.0.0"
     debug "^4.4.3"
-    devtools-protocol "0.0.1566079"
-    typed-query-selector "^2.12.0"
+    devtools-protocol "0.0.1581282"
+    typed-query-selector "^2.12.1"
     webdriver-bidi-protocol "0.4.1"
     ws "^8.19.0"
 
-puppeteer@^24.32.0, puppeteer@^24.37.5:
-  version "24.37.5"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-24.37.5.tgz#c61932cdb2bc53d18970671be18d547216d295f0"
-  integrity sha512-3PAOIQLceyEmn1Fi76GkGO2EVxztv5OtdlB1m8hMUZL3f8KDHnlvXbvCXv+Ls7KzF1R0KdKBqLuT/Hhrok12hQ==
+puppeteer@^24.32.0, puppeteer@^24.38.0:
+  version "24.38.0"
+  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-24.38.0.tgz#abf7665c73e408598860a94fc268e4ebe0ea21b2"
+  integrity sha512-abnJOBVoL9PQTLKSbYGm9mjNFyIPaTVj77J/6cS370dIQtcZMpx8wyZoAuBzR71Aoon6yvI71NEVFUsl3JU82g==
   dependencies:
     "@puppeteer/browsers" "2.13.0"
     chromium-bidi "14.0.0"
     cosmiconfig "^9.0.0"
-    devtools-protocol "0.0.1566079"
-    puppeteer-core "24.37.5"
-    typed-query-selector "^2.12.0"
+    devtools-protocol "0.0.1581282"
+    puppeteer-core "24.38.0"
+    typed-query-selector "^2.12.1"
 
 qs@^6.14.0, qs@^6.14.1:
   version "6.15.0"
@@ -3885,7 +3895,7 @@ type-is@^2.0.1:
     media-typer "^1.1.0"
     mime-types "^3.0.0"
 
-typed-query-selector@^2.12.0:
+typed-query-selector@^2.12.1:
   version "2.12.1"
   resolved "https://registry.yarnpkg.com/typed-query-selector/-/typed-query-selector-2.12.1.tgz#04423bfb71b8f3aee3df1c29598ed6c7c8f55284"
   integrity sha512-uzR+FzI8qrUEIu96oaeBJmd9E7CFEiQ3goA5qCVgc4s5llSubcfGHq9yUstZx/k4s9dXHVKsE35YWoFyvEqEHA==
