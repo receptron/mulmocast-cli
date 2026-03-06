@@ -13,7 +13,7 @@ export const imageType = "html_tailwind";
  * Resolve image:name references to file:// absolute paths using imageRefs.
  * e.g., src="image:bg_office" → src="file:///abs/path/to/bg_office.png"
  */
-const resolveImageRefs = (html: string, imageRefs: Record<string, string>): string => {
+export const resolveImageRefs = (html: string, imageRefs: Record<string, string>): string => {
   return html.replace(/(\bsrc\s*=\s*)(["'])image:([^"']+)\2/gi, (match, prefix, quote, name) => {
     const resolvedPath = imageRefs[name];
     if (!resolvedPath) {
@@ -27,7 +27,7 @@ const resolveImageRefs = (html: string, imageRefs: Record<string, string>): stri
  * Resolve relative paths in src attributes to file:// absolute paths.
  * Paths starting with http://, https://, file://, data:, image:, or / are left unchanged.
  */
-const resolveRelativeImagePaths = (html: string, baseDirPath: string): string => {
+export const resolveRelativeImagePaths = (html: string, baseDirPath: string): string => {
   return html.replace(/(\bsrc\s*=\s*)(["'])((?!https?:\/\/|file:\/\/|data:|image:|\/)[^"']+)\2/gi, (_, prefix, quote, relativePath) => {
     const absolutePath = nodePath.resolve(baseDirPath, relativePath);
     return `${prefix}${quote}file://${absolutePath}${quote}`;
