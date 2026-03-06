@@ -39,6 +39,21 @@ test("stripHtmlTags: handles tags with complex attributes", () => {
   assert.strictEqual(result, "テスト重要です");
 });
 
+test("stripHtmlTags: preserves literal angle brackets in math expressions", () => {
+  const result = stripHtmlTags("2 < 3 > 1");
+  assert.strictEqual(result, "2 < 3 > 1");
+});
+
+test("stripHtmlTags: preserves comparison operators", () => {
+  const result = stripHtmlTags("x<10 and y>5");
+  assert.strictEqual(result, "x<10 and y>5");
+});
+
+test("stripHtmlTags: preserves generic syntax", () => {
+  const result = stripHtmlTags("vector<int> data");
+  assert.strictEqual(result, "vector<int> data");
+});
+
 // --- calculateTimingRatios ---
 
 test("calculateTimingRatios: plain text calculates by length", () => {

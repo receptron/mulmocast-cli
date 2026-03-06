@@ -59,10 +59,13 @@ const getSplitTexts = (
   return [text];
 };
 
-// Strip HTML tags to get plain text length
+// HTML tags commonly used in caption texts
+const CAPTION_HTML_TAGS = "span|br|b|i|em|strong|u|s|div|p|a|sub|sup|mark";
+const captionTagRegex = new RegExp(`</?(?:${CAPTION_HTML_TAGS})(?:\\s[^>]*)?\\/?>`, "gi");
+
+// Strip known HTML tags to get plain text length (for timing calculation, not sanitization)
 export const stripHtmlTags = (text: string): string => {
-  // eslint-disable-next-line sonarjs/slow-regex -- [^>]* with no nested quantifiers; not vulnerable to backtracking
-  return text.replace(/<[^>]*>/g, "");
+  return text.replace(captionTagRegex, "");
 };
 
 // Calculate timing ratios based on text length (HTML tags excluded)
