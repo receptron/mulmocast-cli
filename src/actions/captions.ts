@@ -59,13 +59,20 @@ const getSplitTexts = (
   return [text];
 };
 
-// Calculate timing ratios based on text length
-const calculateTimingRatios = (splitTexts: string[]): number[] => {
-  const totalLength = splitTexts.reduce((sum, t) => sum + t.length, 0);
+// Strip HTML tags to get plain text length
+export const stripHtmlTags = (text: string): string => {
+  // eslint-disable-next-line sonarjs/slow-regex -- [^>]* with no nested quantifiers; not vulnerable to backtracking
+  return text.replace(/<[^>]*>/g, "");
+};
+
+// Calculate timing ratios based on text length (HTML tags excluded)
+export const calculateTimingRatios = (splitTexts: string[]): number[] => {
+  const plainTexts = splitTexts.map(stripHtmlTags);
+  const totalLength = plainTexts.reduce((sum, t) => sum + t.length, 0);
   if (totalLength === 0) {
     return splitTexts.map(() => 1 / splitTexts.length);
   }
-  return splitTexts.map((t) => t.length / totalLength);
+  return plainTexts.map((t) => t.length / totalLength);
 };
 
 // Convert ratios to cumulative ratios: [0.3, 0.5, 0.2] -> [0, 0.3, 0.8, 1.0]
