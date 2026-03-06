@@ -19,10 +19,7 @@ test("resolveImageRefs: resolves image: scheme with single quotes", () => {
 });
 
 test("resolveImageRefs: resolves multiple image: refs in same html", () => {
-  const html = [
-    `<img src="image:bg_office" />`,
-    `<img src='image:bg_city' />`,
-  ].join("\n");
+  const html = [`<img src="image:bg_office" />`, `<img src='image:bg_city' />`].join("\n");
   const imageRefs = {
     bg_office: "/path/bg_office.png",
     bg_city: "/path/bg_city.png",
@@ -104,11 +101,7 @@ test("resolveRelativeImagePaths: leaves image: scheme unchanged", () => {
 });
 
 test("resolveRelativeImagePaths: handles multiple src attributes", () => {
-  const html = [
-    `<img src="photo1.png" />`,
-    `<img src="https://cdn.example.com/photo2.png" />`,
-    `<img src="subdir/photo3.png" />`,
-  ].join("\n");
+  const html = [`<img src="photo1.png" />`, `<img src="https://cdn.example.com/photo2.png" />`, `<img src="subdir/photo3.png" />`].join("\n");
   const result = resolveRelativeImagePaths(html, "/base");
   assert(result.includes(`src="file:///base/photo1.png"`));
   assert(result.includes(`src="https://cdn.example.com/photo2.png"`));
