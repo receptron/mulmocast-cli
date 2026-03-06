@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.8](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.8) (2026-03-07)
+
+- **image: URL scheme**: Added `image:` URL scheme to reference `imageParams.images` in html_tailwind beats (e.g., `src="image:logo"`)
+- **Caption HTML tag stripping**: Fixed caption timing calculation to properly strip HTML tags from text length estimation
+
+📦 **npm**: [`mulmocast@2.4.8`](https://www.npmjs.com/package/mulmocast/v/2.4.8)
+
 ## [2.4.7](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.7) (2026-03-05)
 
 - **Caption bottomOffset**: Added `bottomOffset` option to `captionParams` to position captions higher (e.g., 20% from bottom) to avoid overlapping with YouTube player controls
