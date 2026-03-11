@@ -2,7 +2,7 @@ import { MulmoBeat } from "../types/index.js";
 
 import { findImagePlugin } from "../utils/image_plugins/index.js";
 
-type AnimationConfig = { fps?: number };
+type AnimationConfig = { fps?: number; movie?: boolean };
 
 /** Type guard: checks if animation value is an object config like { fps: 30 } */
 const isAnimationObject = (animation: unknown): animation is AnimationConfig => {
@@ -12,6 +12,11 @@ const isAnimationObject = (animation: unknown): animation is AnimationConfig => 
 /** Check if a value is a valid animation config (true or non-array object) */
 const isAnimationEnabled = (animation: unknown): animation is true | AnimationConfig => {
   return animation === true || isAnimationObject(animation);
+};
+
+/** Check if movie mode (CDP screencast) is enabled */
+const isMovieMode = (animation: unknown): boolean => {
+  return isAnimationObject(animation) && animation.movie === true;
 };
 
 /** Check if a beat has html_tailwind animation enabled */
@@ -25,6 +30,7 @@ export const MulmoBeatMethods = {
   isAnimationEnabled,
   isAnimationObject,
   isAnimatedHtmlTailwind,
+  isMovieMode,
   getHtmlPrompt(beat: MulmoBeat) {
     if (beat?.htmlPrompt?.data) {
       return beat.htmlPrompt.prompt + "\n\n[data]\n" + JSON.stringify(beat.htmlPrompt.data, null, 2);

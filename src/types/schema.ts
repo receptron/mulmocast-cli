@@ -234,6 +234,7 @@ export const htmlTailwindAnimationSchema = z.union([
   z.literal(true),
   z.object({
     fps: z.number().min(1).max(60).optional().default(30),
+    movie: z.boolean().optional().describe("Use CDP screencast for real-time recording (experimental, faster). Default: false (frame-by-frame screenshot)."),
   }),
 ]);
 
