@@ -47,7 +47,9 @@ test("newPage creates independent pages on shared browser", async () => {
   await page1.setContent("<h1>Page 1</h1>");
   await page2.setContent("<h1>Page 2</h1>");
 
+  // eslint-disable-next-line no-undef
   const text1 = await page1.evaluate(() => document.body.textContent);
+  // eslint-disable-next-line no-undef
   const text2 = await page2.evaluate(() => document.body.textContent);
   assert.strictEqual(text1, "Page 1");
   assert.strictEqual(text2, "Page 2");
