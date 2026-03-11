@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import puppeteer from "puppeteer";
 import { GraphAILogger, sleep } from "graphai";
 import { MulmoStudioContext, MulmoCanvasDimension, PDFMode, PDFSize } from "../types/index.js";
 import { MulmoPresentationStyleMethods } from "../methods/index.js";
@@ -8,8 +7,7 @@ import { localizedText, isHttp } from "../utils/utils.js";
 import { getOutputPdfFilePath, writingMessage, getHTMLFile, mulmoCreditPath } from "../utils/file.js";
 import { interpolate } from "../utils/html_render.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
-
-const isCI = process.env.CI === "true";
+import { getBrowser, closeBrowser } from "../utils/browser_pool.js";
 
 type PDFOptions = {
   format?: "Letter" | "A4";
@@ -184,12 +182,9 @@ const generatePDF = async (context: MulmoStudioContext, pdfMode: PDFMode, pdfSiz
   const canvasSize = MulmoPresentationStyleMethods.getCanvasSize(context.presentationStyle);
   const pdfOptions = createPDFOptions(pdfSize, pdfMode, canvasSize);
 
-  const browser = await puppeteer.launch({
-    args: isCI ? ["--no-sandbox"] : [],
-  });
-
+  const browser = await getBrowser();
+  const page = await browser.newPage();
   try {
-    const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "domcontentloaded", timeout: PDF_CONTENT_TIMEOUT_MS });
     await sleep(1000);
     await page.pdf({
@@ -199,7 +194,7 @@ const generatePDF = async (context: MulmoStudioContext, pdfMode: PDFMode, pdfSiz
     });
     writingMessage(outputPdfPath);
   } finally {
-    await browser.close();
+    await page.close();
   }
 };
 
@@ -211,5 +206,7 @@ export const pdf = async (context: MulmoStudioContext, pdfMode: PDFMode, pdfSize
   } catch (error) {
     MulmoStudioContextMethods.setSessionState(context, "pdf", false, false);
     throw error;
+  } finally {
+    await closeBrowser();
   }
 };

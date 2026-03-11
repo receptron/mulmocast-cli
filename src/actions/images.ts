@@ -29,6 +29,7 @@ import { getOutputStudioFilePath, mkdir } from "../utils/file.js";
 import { fileCacheAgentFilter } from "../utils/filters.js";
 import { settings2GraphAIConfig } from "../utils/utils.js";
 import { audioCheckerError } from "../utils/error_cause.js";
+import { closeBrowser } from "../utils/browser_pool.js";
 import { extractImageFromMovie, ffmpegGetMediaDuration, trimMusic } from "../utils/ffmpeg_utils.js";
 
 import { getImageRefs } from "./image_references.js";
@@ -518,6 +519,8 @@ export const images = async (context: MulmoStudioContext, args?: PublicAPIArgs &
       });
     }
     throw error;
+  } finally {
+    await closeBrowser();
   }
 };
 

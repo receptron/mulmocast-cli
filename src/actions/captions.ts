@@ -1,3 +1,4 @@
+import { closeBrowser } from "../utils/browser_pool.js";
 import { MulmoStudioContext, MulmoBeat, PublicAPIArgs, mulmoCaptionParamsSchema } from "../types/index.js";
 import { GraphAI, GraphAILogger } from "graphai";
 import type { GraphData } from "graphai";
@@ -204,6 +205,8 @@ export const captions = async (context: MulmoStudioContext, args?: PublicAPIArgs
     } catch (error) {
       MulmoStudioContextMethods.setSessionState(context, "caption", false, false);
       throw error;
+    } finally {
+      await closeBrowser();
     }
   }
   return context;

@@ -4,8 +4,7 @@ import nodePath from "node:path";
 import crypto from "node:crypto";
 import { marked } from "marked";
 import puppeteer from "puppeteer";
-
-const isCI = process.env.CI === "true";
+import { getBrowser } from "./browser_pool.js";
 
 /** Scale the page content so it fits inside the viewport without overflow */
 const scaleContentToFit = async (page: puppeteer.Page, viewportWidth: number, viewportHeight: number): Promise<void> => {
@@ -66,13 +65,9 @@ export const renderHTMLToImage = async (
   isMermaid: boolean = false,
   omitBackground: boolean = false,
 ) => {
-  // Use Puppeteer to render HTML to an image
-  const browser = await puppeteer.launch({
-    args: isCI ? ["--no-sandbox", "--allow-file-access-from-files"] : ["--allow-file-access-from-files"],
-  });
+  const browser = await getBrowser();
+  const page = await browser.newPage();
   try {
-    const page = await browser.newPage();
-
     await loadHtmlIntoPage(page, html, 30000);
 
     // Adjust page settings if needed (like width, height, etc.)
@@ -111,7 +106,7 @@ export const renderHTMLToImage = async (
     // Capture screenshot of the page (which contains the Markdown-rendered HTML)
     await page.screenshot({ path: outputPath as `${string}.png` | `${string}.jpeg` | `${string}.webp`, omitBackground });
   } finally {
-    await browser.close();
+    await page.close();
   }
 };
 
@@ -133,12 +128,9 @@ export const renderHTMLToFrames = async (
   totalFrames: number,
   fps: number,
 ): Promise<string[]> => {
-  const browser = await puppeteer.launch({
-    args: isCI ? ["--no-sandbox", "--allow-file-access-from-files"] : ["--allow-file-access-from-files"],
-  });
+  const browser = await getBrowser();
+  const page = await browser.newPage();
   try {
-    const page = await browser.newPage();
-
     // Wait for Tailwind CSS CDN to load
     await loadHtmlIntoPage(page, html, 30000);
     await page.setViewport({ width, height });
@@ -169,7 +161,7 @@ export const renderHTMLToFrames = async (
 
     return framePaths;
   } finally {
-    await browser.close();
+    await page.close();
   }
 };
 
