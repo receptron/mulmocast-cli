@@ -111,7 +111,7 @@
     "marked": "^17.0.4",
     "mulmocast-vision": "^1.0.8",
     "ora": "^9.3.0",
-    "puppeteer": "^24.38.0",
+    "puppeteer": "^24.39.0",
     "replicate": "^1.4.0",
     "yaml": "^2.8.2",
     "yargs": "^18.0.0",
@@ -125,15 +125,15 @@
     "@types/jsdom": "^28.0.0",
     "@types/yargs": "^17.0.35",
     "cross-env": "^10.1.0",
-    "eslint": "^10.0.2",
+    "eslint": "^10.0.3",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
-    "eslint-plugin-sonarjs": "^4.0.1",
+    "eslint-plugin-sonarjs": "^4.0.2",
     "globals": "^17.4.0",
     "prettier": "^3.8.1",
     "tsx": "^4.21.0",
     "typescript": "6.0.0-beta",
-    "typescript-eslint": "^8.56.1"
+    "typescript-eslint": "^8.57.0"
   },
   "engines": {
     "node": ">=22.0.0"
