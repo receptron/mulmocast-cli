@@ -1,10 +1,8 @@
-import fs from "node:fs";
 import nodePath from "node:path";
 import { ImageProcessorParams } from "../../types/index.js";
 import { MulmoBeatMethods } from "../../methods/mulmo_beat.js";
 import { getHTMLFile } from "../file.js";
-import { renderHTMLToImage, interpolate, renderHTMLToFrames } from "../html_render.js";
-import { framesToVideo } from "../ffmpeg_utils.js";
+import { renderHTMLToImage, interpolate, renderHTMLToVideo } from "../html_render.js";
 import { parrotingImagePath } from "./utils.js";
 
 export const imageType = "html_tailwind";
@@ -90,16 +88,7 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
   // imagePath is set to the .mp4 path by imagePluginAgent for animated beats
   const videoPath = imagePath;
 
-  // Create frames directory next to the video file
-  const framesDir = videoPath.replace(/\.[^/.]+$/, "_frames");
-  fs.mkdirSync(framesDir, { recursive: true });
-
-  try {
-    await renderHTMLToFrames(htmlData, framesDir, canvasSize.width, canvasSize.height, totalFrames, fps);
-    await framesToVideo(framesDir, videoPath, fps, canvasSize.width, canvasSize.height);
-  } finally {
-    fs.rmSync(framesDir, { recursive: true, force: true });
-  }
+  await renderHTMLToVideo(htmlData, videoPath, canvasSize.width, canvasSize.height, totalFrames, fps);
 
   return videoPath;
 };
