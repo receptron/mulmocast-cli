@@ -173,6 +173,43 @@ export const renderHTMLToFrames = async (
   }
 };
 
+/**
+ * Record an animated HTML page as video using Puppeteer's screencast API.
+ * The animation plays in real-time via requestAnimationFrame, and
+ * page.screencast() captures frames directly to an mp4 file.
+ */
+export const renderHTMLToVideo = async (html: string, videoPath: string, width: number, height: number, totalFrames: number, fps: number): Promise<void> => {
+  const duration_ms = (totalFrames / fps) * 1000;
+  const browser = await puppeteer.launch({
+    args: isCI ? ["--no-sandbox", "--allow-file-access-from-files"] : ["--allow-file-access-from-files"],
+  });
+  try {
+    const page = await browser.newPage();
+    await loadHtmlIntoPage(page, html, 30000);
+    await page.setViewport({ width, height });
+    await page.addStyleTag({ content: "html{height:100%;margin:0;padding:0;overflow:hidden}" });
+    await scaleContentToFit(page, width, height);
+
+    const recorder = await page.screencast({
+      path: videoPath as `${string}.mp4`,
+      format: "mp4",
+      fps,
+    });
+
+    // Play animation in real-time and wait for completion
+    await page.evaluate(() => {
+      return (window as unknown as { playAnimation: () => Promise<void> }).playAnimation();
+    });
+
+    // Small buffer to ensure the last frame is captured
+    await new Promise((resolve) => setTimeout(resolve, Math.min(duration_ms * 0.1, 500)));
+
+    await recorder.stop();
+  } finally {
+    await browser.close();
+  }
+};
+
 export const renderMarkdownToImage = async (markdown: string, style: string, outputPath: string, width: number, height: number) => {
   const header = `<head><style>${style}</style></head>`;
   const body = await marked(markdown);

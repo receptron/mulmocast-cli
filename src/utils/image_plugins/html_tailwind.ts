@@ -3,7 +3,7 @@ import nodePath from "node:path";
 import { ImageProcessorParams } from "../../types/index.js";
 import { MulmoBeatMethods } from "../../methods/mulmo_beat.js";
 import { getHTMLFile } from "../file.js";
-import { renderHTMLToImage, interpolate, renderHTMLToFrames } from "../html_render.js";
+import { renderHTMLToImage, interpolate, renderHTMLToFrames, renderHTMLToVideo } from "../html_render.js";
 import { framesToVideo } from "../ffmpeg_utils.js";
 import { parrotingImagePath } from "./utils.js";
 
@@ -52,8 +52,9 @@ const getAnimationConfig = (params: ImageProcessorParams) => {
   if (!beat.image || beat.image.type !== imageType) return null;
   const animation = (beat.image as { animation?: unknown }).animation;
   if (!MulmoBeatMethods.isAnimationEnabled(animation)) return null;
-  if (MulmoBeatMethods.isAnimationObject(animation)) return { fps: animation.fps ?? DEFAULT_ANIMATION_FPS };
-  return { fps: DEFAULT_ANIMATION_FPS };
+  const fps = MulmoBeatMethods.isAnimationObject(animation) ? (animation.fps ?? DEFAULT_ANIMATION_FPS) : DEFAULT_ANIMATION_FPS;
+  const movie = MulmoBeatMethods.isMovieMode(animation);
+  return { fps, movie };
 };
 
 const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
@@ -90,15 +91,19 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
   // imagePath is set to the .mp4 path by imagePluginAgent for animated beats
   const videoPath = imagePath;
 
-  // Create frames directory next to the video file
-  const framesDir = videoPath.replace(/\.[^/.]+$/, "_frames");
-  fs.mkdirSync(framesDir, { recursive: true });
-
-  try {
-    await renderHTMLToFrames(htmlData, framesDir, canvasSize.width, canvasSize.height, totalFrames, fps);
-    await framesToVideo(framesDir, videoPath, fps, canvasSize.width, canvasSize.height);
-  } finally {
-    fs.rmSync(framesDir, { recursive: true, force: true });
+  if (animConfig.movie) {
+    // CDP screencast: real-time recording (experimental, faster)
+    await renderHTMLToVideo(htmlData, videoPath, canvasSize.width, canvasSize.height, totalFrames, fps);
+  } else {
+    // Frame-by-frame screenshot (deterministic, slower)
+    const framesDir = videoPath.replace(/\.[^/.]+$/, "_frames");
+    fs.mkdirSync(framesDir, { recursive: true });
+    try {
+      await renderHTMLToFrames(htmlData, framesDir, canvasSize.width, canvasSize.height, totalFrames, fps);
+      await framesToVideo(framesDir, videoPath, fps, canvasSize.width, canvasSize.height);
+    } finally {
+      fs.rmSync(framesDir, { recursive: true, force: true });
+    }
   }
 
   return videoPath;

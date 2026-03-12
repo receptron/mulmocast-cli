@@ -254,6 +254,40 @@
         result.catch(console.error);
       }
     }
+
+    /**
+     * Play animation in real-time using requestAnimationFrame.
+     * Returns a Promise that resolves when all frames have been rendered.
+     * Called by Puppeteer's page.evaluate() during screencast recording.
+     */
+    window.playAnimation = function() {
+      return new Promise(function(resolve) {
+        var mulmo = window.__MULMO;
+        var fps = mulmo.fps;
+        var totalFrames = mulmo.totalFrames;
+        var frameDuration = 1000 / fps;
+        var startTime = null;
+
+        function tick(timestamp) {
+          if (startTime === null) startTime = timestamp;
+          var elapsed = timestamp - startTime;
+          var frame = Math.min(Math.floor(elapsed / frameDuration), totalFrames - 1);
+
+          mulmo.frame = frame;
+          if (typeof render === 'function') {
+            render(frame, totalFrames, fps);
+          }
+
+          if (frame < totalFrames - 1) {
+            requestAnimationFrame(tick);
+          } else {
+            resolve();
+          }
+        }
+
+        requestAnimationFrame(tick);
+      });
+    };
   </script>
 </body>
 </html>
