@@ -3,6 +3,7 @@ import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import Replicate from "replicate";
 import { provider2LipSyncAgent } from "../types/provider2agent.js";
+import { ffmpegGetMediaDuration, trimVideoToBuffer } from "../utils/ffmpeg_utils.js";
 import {
   apiKeyMissingError,
   agentGenerationError,
@@ -99,7 +100,18 @@ export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, A
       }
 
       const arrayBuffer = await videoResponse.arrayBuffer();
-      return { buffer: Buffer.from(arrayBuffer) };
+      const videoBuffer = Buffer.from(arrayBuffer);
+
+      // Trim the lipSync output to match the audio duration to prevent
+      // frozen frames at the end of each beat (the lipSync model often
+      // outputs slightly longer video than the input audio).
+      const { duration: audioDuration } = await ffmpegGetMediaDuration(audioFile);
+      if (audioDuration > 0) {
+        GraphAILogger.info(`lipSync: trimming video to audio duration ${audioDuration}s`);
+        return { buffer: await trimVideoToBuffer(videoBuffer, audioDuration) };
+      }
+
+      return { buffer: videoBuffer };
     }
     return undefined;
   } catch (error) {

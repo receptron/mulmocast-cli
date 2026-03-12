@@ -183,6 +183,38 @@ export const trimMusic = (inputFile: string, startTime: number, duration: number
   });
 };
 
+export const trimVideoToBuffer = (inputBuffer: Buffer, duration: number): Promise<Buffer> => {
+  return new Promise<Buffer>((resolve, reject) => {
+    if (duration <= 0) {
+      reject(new Error(`Invalid duration: duration (${duration}) must be greater than 0`));
+      return;
+    }
+
+    const chunks: Buffer[] = [];
+    const inputStream = new Readable();
+    inputStream.push(inputBuffer);
+    inputStream.push(null);
+
+    ffmpeg(inputStream)
+      .duration(duration)
+      .outputOptions(["-c:v", "libx264", "-c:a", "aac", "-movflags", "frag_keyframe+empty_moov"])
+      .format("mp4")
+      .on("error", (err) => {
+        GraphAILogger.error("Error occurred while trimming video:", err);
+        reject(err);
+      })
+      .on("end", () => {
+        const buffer = Buffer.concat(chunks);
+        GraphAILogger.log(`Video trimmed to ${duration}s, buffer size: ${buffer.length} bytes`);
+        resolve(buffer);
+      })
+      .pipe()
+      .on("data", (chunk: Buffer) => {
+        chunks.push(chunk);
+      });
+  });
+};
+
 export const createSilentAudio = (filePath: string, durationSec: number): Promise<void> => {
   const filter = `anullsrc=r=44100:cl=stereo,atrim=duration=${durationSec},aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo[a]`;
 
