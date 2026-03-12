@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.9](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.9) (2026-03-12)
+
+- **CDP Screencast for animations**: Use Chrome DevTools Protocol screencast for html_tailwind animation recording, with toggle to switch between frame-by-frame and CDP screencast modes
+
+📦 **npm**: [`mulmocast@2.4.9`](https://www.npmjs.com/package/mulmocast/v/2.4.9)
+
 ## [2.4.8](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.8) (2026-03-07)
 
 - **image: URL scheme**: Added `image:` URL scheme to reference `imageParams.images` in html_tailwind beats (e.g., `src="image:logo"`)
