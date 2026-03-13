@@ -3,7 +3,7 @@ import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import Replicate from "replicate";
 import { provider2LipSyncAgent } from "../types/provider2agent.js";
-import { ffmpegGetMediaDuration, trimVideoToBuffer } from "../utils/ffmpeg_utils.js";
+import { ffmpegGetMediaDuration, getBufferDuration, adjustVideoDuration } from "../utils/ffmpeg_utils.js";
 import {
   apiKeyMissingError,
   agentGenerationError,
@@ -102,13 +102,16 @@ export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, A
       const arrayBuffer = await videoResponse.arrayBuffer();
       const videoBuffer = Buffer.from(arrayBuffer);
 
-      // Trim the lipSync output to match the audio duration to prevent
-      // frozen frames at the end of each beat (the lipSync model often
-      // outputs slightly longer video than the input audio).
+      // Adjust the lipSync output duration to exactly match the audio duration.
+      // The lipSync model (latentsync) outputs at 25fps and truncates to whole
+      // frames, so the output is typically 0.1-0.3s shorter than the audio.
+      // Without this fix, movie.js pads the gap with tpad=stop_mode=clone,
+      // causing visible frozen frames at beat transitions.
       const { duration: audioDuration } = await ffmpegGetMediaDuration(audioFile);
-      if (audioDuration > 0) {
-        GraphAILogger.info(`lipSync: trimming video to audio duration ${audioDuration}s`);
-        return { buffer: await trimVideoToBuffer(videoBuffer, audioDuration) };
+      const videoDuration = await getBufferDuration(videoBuffer);
+      if (audioDuration > 0 && Math.abs(videoDuration - audioDuration) > 0.01) {
+        GraphAILogger.info(`lipSync: adjusting video from ${videoDuration}s to ${audioDuration}s (speed: ${(videoDuration / audioDuration).toFixed(4)}x)`);
+        return { buffer: await adjustVideoDuration(videoBuffer, audioDuration) };
       }
 
       return { buffer: videoBuffer };

@@ -183,36 +183,64 @@ export const trimMusic = (inputFile: string, startTime: number, duration: number
   });
 };
 
-export const trimVideoToBuffer = (inputBuffer: Buffer, duration: number): Promise<Buffer> => {
-  return new Promise<Buffer>((resolve, reject) => {
-    if (duration <= 0) {
-      reject(new Error(`Invalid duration: duration (${duration}) must be greater than 0`));
-      return;
-    }
+export const getBufferDuration = async (buffer: Buffer): Promise<number> => {
+  const os = await import("node:os");
+  const path = await import("node:path");
+  const tmpFile = path.default.join(os.default.tmpdir(), `probe_${Date.now()}.mp4`);
+  fs.writeFileSync(tmpFile, buffer);
+  try {
+    const { duration } = await ffmpegGetMediaDuration(tmpFile);
+    return duration;
+  } finally {
+    if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
+  }
+};
 
-    const chunks: Buffer[] = [];
-    const inputStream = new Readable();
-    inputStream.push(inputBuffer);
-    inputStream.push(null);
+export const adjustVideoDuration = async (inputBuffer: Buffer, targetDuration: number): Promise<Buffer> => {
+  if (targetDuration <= 0) {
+    throw new Error(`Invalid duration: targetDuration (${targetDuration}) must be greater than 0`);
+  }
 
-    ffmpeg(inputStream)
-      .duration(duration)
-      .outputOptions(["-c:v", "libx264", "-c:a", "aac", "-movflags", "frag_keyframe+empty_moov"])
-      .format("mp4")
-      .on("error", (err) => {
-        GraphAILogger.error("Error occurred while trimming video:", err);
-        reject(err);
-      })
-      .on("end", () => {
-        const buffer = Buffer.concat(chunks);
-        GraphAILogger.log(`Video trimmed to ${duration}s, buffer size: ${buffer.length} bytes`);
-        resolve(buffer);
-      })
-      .pipe()
-      .on("data", (chunk: Buffer) => {
-        chunks.push(chunk);
-      });
-  });
+  const os = await import("node:os");
+  const path = await import("node:path");
+  const tmpDir = os.default.tmpdir();
+  const tmpInput = path.default.join(tmpDir, `lipsync_adjust_in_${Date.now()}.mp4`);
+  const tmpOutput = path.default.join(tmpDir, `lipsync_adjust_out_${Date.now()}.mp4`);
+
+  fs.writeFileSync(tmpInput, inputBuffer);
+
+  try {
+    const { duration: inputDuration } = await ffmpegGetMediaDuration(tmpInput);
+    // The lipSync model tends to freeze in the last ~0.2s of output.
+    // Strategy: trim the frozen tail, then stretch the remaining (moving)
+    // frames to fill the target duration via setpts.
+    const trimTail = 0.2;
+    const usableDuration = Math.max(inputDuration - trimTail, inputDuration * 0.9);
+    const stretchFactor = targetDuration / usableDuration;
+
+    await new Promise<void>((resolve, reject) => {
+      ffmpeg(tmpInput)
+        .inputOptions(["-t", String(usableDuration)])
+        .videoFilters(`setpts=${stretchFactor}*PTS`)
+        .outputOptions(["-c:v", "libx264", "-preset", "ultrafast", "-c:a", "aac"])
+        .output(tmpOutput)
+        .on("error", (err) => {
+          GraphAILogger.error("Error occurred while adjusting video duration:", err);
+          reject(err);
+        })
+        .on("end", () => {
+          GraphAILogger.log(`Video adjusted to ${targetDuration}s (was ${inputDuration}s, trimmed tail ${trimTail}s, stretch ${stretchFactor.toFixed(4)})`);
+          resolve();
+        })
+        .run();
+    });
+
+    const resultBuffer = fs.readFileSync(tmpOutput);
+    return resultBuffer;
+  } finally {
+    if (fs.existsSync(tmpInput)) fs.unlinkSync(tmpInput);
+    if (fs.existsSync(tmpOutput)) fs.unlinkSync(tmpOutput);
+  }
 };
 
 export const createSilentAudio = (filePath: string, durationSec: number): Promise<void> => {
