@@ -201,10 +201,10 @@
 
       /** Ensure cover target is positioned in the same container used for sizing */
       MulmoAnimation.prototype._prepareCoverContext = function(el, container) {
-        if (!el || !container) return;
+        if (!el || !container) return null;
         if (el.contains(container)) {
           container = el.parentElement;
-          if (!container) return;
+          if (!container) return null;
         }
         const computed = window.getComputedStyle(container);
         if (computed.position === 'static') {
@@ -217,6 +217,7 @@
             console.warn('MulmoAnimation: failed to move cover element into container', e);
           }
         }
+        return container;
       };
 
       /** Calculate cover-scaled dimensions from intrinsic media size */
@@ -316,8 +317,8 @@
           } else if (entry.kind === 'coverZoom') {
             const zEl = document.querySelector(entry.selector);
             if (!zEl) return;
-            const zContainer = this._resolveContainer(zEl, opts.containerSelector);
-            this._prepareCoverContext(zEl, zContainer);
+            const zContainer = this._prepareCoverContext(zEl, this._resolveContainer(zEl, opts.containerSelector));
+            if (!zContainer) return;
             const zStart = (opts.start || 0) * fps;
             const zEnd = opts.end === 'auto' ? autoEndFrame : (opts.end || 0) * fps;
             const zProgress = Math.max(0, Math.min(1, zEnd === zStart ? 1 : (frame - zStart) / (zEnd - zStart)));
@@ -336,8 +337,8 @@
           } else if (entry.kind === 'coverPan') {
             const pEl = document.querySelector(entry.selector);
             if (!pEl) return;
-            const pContainer = this._resolveContainer(pEl, opts.containerSelector);
-            this._prepareCoverContext(pEl, pContainer);
+            const pContainer = this._prepareCoverContext(pEl, this._resolveContainer(pEl, opts.containerSelector));
+            if (!pContainer) return;
             const pStart = (opts.start || 0) * fps;
             const pEnd = opts.end === 'auto' ? autoEndFrame : (opts.end || 0) * fps;
             const pProgress = Math.max(0, Math.min(1, pEnd === pStart ? 1 : (frame - pStart) / (pEnd - pStart)));
