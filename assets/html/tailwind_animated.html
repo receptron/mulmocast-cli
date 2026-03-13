@@ -134,7 +134,7 @@
      * Cover zoom for image/video elements.
      * Keeps media fully covering container while interpolating zoom.
      * @param {string} selector
-     * @param {Object} opts - { containerSelector?, zoomFrom, zoomTo, start, end, easing }
+     * @param {Object} opts - { containerSelector?, zoomFrom|from, zoomTo|to, start, end, easing }
      */
     MulmoAnimation.prototype.coverZoom = function(selector, opts) {
       this._entries.push({ kind: 'coverZoom', selector, opts: opts || {} });
@@ -145,7 +145,7 @@
      * Cover pan for image/video elements with automatic black-border prevention.
      * `distance` may be large; actual movement is clamped by available slack.
      * @param {string} selector
-     * @param {Object} opts - { containerSelector?, axis:'x'|'y', direction:1|-1, distance, zoom, start, end, easing }
+     * @param {Object} opts - { containerSelector?, axis:'x'|'y', direction:1|-1, distance, from, to, zoom, start, end, easing }
      */
     MulmoAnimation.prototype.coverPan = function(selector, opts) {
       this._entries.push({ kind: 'coverPan', selector, opts: opts || {} });
@@ -289,8 +289,12 @@
           const zStart = (opts.start || 0) * fps;
           const zEnd = (opts.end === 'auto' ? window.__MULMO.totalFrames / fps : (opts.end || 0)) * fps;
           const zProgress = Math.max(0, Math.min(1, zEnd === zStart ? 1 : (frame - zStart) / (zEnd - zStart)));
-          const zFrom = opts.zoomFrom === undefined ? 1 : Number(opts.zoomFrom);
-          const zTo = opts.zoomTo === undefined ? 1 : Number(opts.zoomTo);
+          const zFrom = opts.zoomFrom === undefined
+            ? (opts.from === undefined ? 1 : Number(opts.from))
+            : Number(opts.zoomFrom);
+          const zTo = opts.zoomTo === undefined
+            ? (opts.to === undefined ? 1 : Number(opts.to))
+            : Number(opts.zoomTo);
           const zCurrent = zFrom + easingFn(zProgress) * (zTo - zFrom);
           const zSize = this._coverSize(zEl, zContainer, zCurrent);
           if (!zSize) return;
@@ -313,10 +317,34 @@
           const viewport = pAxis === 'x' ? pSize.ww : pSize.wh;
           const imageSize = pAxis === 'x' ? pSize.iw : pSize.ih;
           const maxDistancePercent = Math.max(0, (((imageSize - viewport) / 2) / viewport) * 100);
-          const distancePercent = Math.min(pRequested, maxDistancePercent);
-          const from = 50;
-          const to = from + pDirection * distancePercent;
-          const current = from + easingFn(pProgress) * (to - from);
+          const minPos = 50 - maxDistancePercent;
+          const maxPos = 50 + maxDistancePercent;
+          const safeRange = maxPos - minPos;
+          const clampPercent = function(v) {
+            return Math.max(0, Math.min(100, v));
+          };
+          const mapToSafePos = function(v) {
+            return minPos + (safeRange * (clampPercent(v) / 100));
+          };
+
+          let from = 50;
+          let to = 50;
+          if (opts.from !== undefined || opts.to !== undefined) {
+            // from/to use normalized safe-range coordinates:
+            // 0 = one edge, 100 = the opposite edge, 50 = center.
+            const fromNorm = opts.from === undefined ? 50 : Number(opts.from);
+            const toNorm = opts.to === undefined ? fromNorm : Number(opts.to);
+            from = mapToSafePos(fromNorm);
+            to = mapToSafePos(toNorm);
+          } else {
+            const distancePercent = Math.min(pRequested, maxDistancePercent);
+            from = 50;
+            to = from + pDirection * distancePercent;
+          }
+
+          const clampedFrom = Math.max(minPos, Math.min(maxPos, from));
+          const clampedTo = Math.max(minPos, Math.min(maxPos, to));
+          const current = clampedFrom + easingFn(pProgress) * (clampedTo - clampedFrom);
           if (pAxis === 'x') {
             pEl.style.left = current + '%';
             pEl.style.top = '50%';

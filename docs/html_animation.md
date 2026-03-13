@@ -169,17 +169,20 @@ animation.coverZoom('#photo_img', {
   containerSelector: '#photo_wrap', // 省略時は親要素
   zoomFrom: 1.0,
   zoomTo: 1.5,
+  // from/to は zoomFrom/zoomTo のエイリアスとしても使用可
   start: 0,
   end: 'auto',
   easing: 'linear'
 });
 
 // Cover pan（distance は入力上限なし、実移動は黒縁回避で自動 clamp）
+// direction/distance の代わりに from/to も指定可能
+// from/to は安全可動域で正規化される（0=片端, 50=中心, 100=反対端）
 animation.coverPan('#photo_img', {
   containerSelector: '#photo_wrap', // 省略時は親要素
   axis: 'x',        // 'x' or 'y'
-  direction: 1,     // 1 or -1
-  distance: 100,    // 100% でも指定可（実際は安全範囲に clamp）
+  from: 40,         // 省略時 50
+  to: 60,           // 省略時 from
   zoom: 1.2,        // cover 後の拡大率
   start: 0,
   end: 'auto',
@@ -208,8 +211,8 @@ function render(frame, totalFrames, fps) {
 
 | API | 用途 | 補足 |
 |-----|------|------|
-| `coverZoom(selector, opts)` | 画面を埋めたままズーム | `zoomFrom/zoomTo` を補間 |
-| `coverPan(selector, opts)` | 画面を埋めたままパン | `distance` は入力上限なし。実移動は黒縁回避で自動 clamp |
+| `coverZoom(selector, opts)` | 画面を埋めたままズーム | `zoomFrom/zoomTo` を補間（`from/to` も可） |
+| `coverPan(selector, opts)` | 画面を埋めたままパン | `direction+distance` または `from/to`。`from/to` は安全可動域を 0..100 正規化（実移動は黒縁回避で自動 clamp） |
 
 ### MulmoAnimation と interpolate の使い分け
 

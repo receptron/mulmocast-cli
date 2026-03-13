@@ -3,10 +3,10 @@
     "version": "1.1"
   },
   "lang": "en",
-  "title": "html_tailwind coverZoom/coverPan test (portrait canvas)",
+  "title": "html_tailwind coverZoom/coverPan test",
   "canvasSize": {
-    "width": 1024,
-    "height": 1792
+    "width": 1792,
+    "height": 1024
   },
   "audioParams": {
     "padding": 0,
@@ -113,7 +113,7 @@
         ],
         "script": [
           "const animation = new MulmoAnimation();",
-          "animation.coverPan('#photo_img', { axis: 'x', from: 100, to: 0, zoom: 1.0, start: 0, end: 'auto', easing: 'linear' });"
+          "animation.coverPan('#photo_img', { axis: 'x', from: 100, to: 0, zoom: 1.2, start: 0, end: 'auto', easing: 'linear' });"
         ],
         "animation": true
       }
@@ -181,7 +181,7 @@
         ],
         "script": [
           "const animation = new MulmoAnimation();",
-          "animation.coverPan('#photo_img', { axis: 'y', from: 0, to: 100, zoom: 1.2, start: 0, end: 'auto', easing: 'linear' });"
+          "animation.coverPan('#photo_img', { axis: 'y', from: 0, to: 100, zoom: 1.0, start: 0, end: 'auto', easing: 'linear' });"
         ],
         "animation": true
       }

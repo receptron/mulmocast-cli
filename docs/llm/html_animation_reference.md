@@ -72,11 +72,14 @@ animation.codeReveal(selector, linesArray, { start, end })
 animation.blink(selector, { interval? })  // interval: half-cycle seconds (default 0.5)
 
 // Cover zoom — keep media fully covering its container while zooming
-animation.coverZoom(selector, { containerSelector?, zoomFrom, zoomTo, start, end, easing? })
+// from/to are aliases of zoomFrom/zoomTo
+animation.coverZoom(selector, { containerSelector?, zoomFrom|from, zoomTo|to, start, end, easing? })
 
 // Cover pan — keep media fully covering its container while panning
-// distance can be large; runtime clamps actual movement to avoid black borders
-animation.coverPan(selector, { containerSelector?, axis, direction, distance, zoom, start, end, easing? })
+// Use either direction+distance or from+to.
+// from/to are normalized in the safe movement range: 0=edge, 50=center, 100=opposite edge.
+// Runtime clamps actual movement to avoid black borders.
+animation.coverPan(selector, { containerSelector?, axis, direction, distance, from, to, zoom, start, end, easing? })
 
 // Auto-render: if variable is named `animation`, render() is auto-generated.
 // No need to define render() manually:
@@ -202,7 +205,7 @@ Embed real images inside animated beats. Sample: `scripts/samples/image_animatio
 ],
 "script": [
   "const animation = new MulmoAnimation();",
-  "animation.coverPan('#photo_img', { containerSelector: '#photo_wrap', axis: 'x', direction: 1, distance: 100, zoom: 1.2, start: 0, end: 'auto', easing: 'linear' });"
+  "animation.coverPan('#photo_img', { containerSelector: '#photo_wrap', axis: 'x', from: 40, to: 60, zoom: 1.2, start: 0, end: 'auto', easing: 'linear' });"
 ]
 ```
 
