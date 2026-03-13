@@ -26,6 +26,20 @@
           "kind": "path",
           "path": "images/qa_portrait.png"
         }
+      },
+      "localImage": {
+        "type": "image",
+        "source": {
+          "kind": "path",
+          "path": "../../assets/images/mulmocast_credit.png"
+        }
+      },
+      "remoteImage": {
+        "type": "image",
+        "source": {
+          "kind": "url",
+          "url": "https://raw.githubusercontent.com/receptron/mulmocast-cli/refs/heads/main/assets/images/mulmocast_credit.png"
+        }
       }
     }
   },
@@ -56,7 +70,7 @@
           "const animation = new MulmoAnimation();",
           "animation.animate('#title', { opacity: [0, 1], translateY: [40, 0] }, { start: 0, end: 1, easing: 'easeOut' });"
         ],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -75,7 +89,28 @@
           "const animation = new MulmoAnimation();",
           "animation.animate('#box', { opacity: [0, 1], scale: [0.3, 1], rotate: [0, 360] }, { start: 0, end: 1.5, easing: 'easeOut' });"
         ],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
+      }
+    },
+    {
+      "id": "image_rotate",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-gray-900'>",
+          "  <div id='wrap' style='width:300px;height:300px'>",
+          "    <img src='image:qaLandscape' style='width:100%;height:100%;object-fit:cover;border-radius:16px' />",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#wrap', { opacity: [0, 1], scale: [0.5, 1], rotate: [0, 360] }, { start: 0, end: 1.5, easing: 'easeOut' });"
+        ],
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -94,7 +129,7 @@
           "const animation = new MulmoAnimation();",
           "animation.animate('#bar', { width: [0, 80, '%'] }, { start: 0, end: 1.5, easing: 'easeInOut' });"
         ],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -113,7 +148,28 @@
           "const animation = new MulmoAnimation();",
           "animation.animate('#title', { opacity: [0, 1], rotateX: [90, 0] }, { start: 0, end: 1, easing: 'easeOut' });"
         ],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
+      }
+    },
+    {
+      "id": "image_3d_rotateX",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-black' style='perspective:800px'>",
+          "  <div id='wrap' style='width:400px;height:250px'>",
+          "    <img src='image:qaLandscape' style='width:100%;height:100%;object-fit:cover;border-radius:12px' />",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#wrap', { opacity: [0, 1], rotateX: [90, 0] }, { start: 0, end: 1, easing: 'easeOut' });"
+        ],
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -134,7 +190,28 @@
           "const animation = new MulmoAnimation();",
           "animation.animate('#card', { rotateY: [0, 180] }, { start: 0.2, end: 1.8, easing: 'easeInOut' });"
         ],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
+      }
+    },
+    {
+      "id": "image_3d_rotateY",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-indigo-950' style='perspective:1000px'>",
+          "  <div id='wrap' style='width:400px;height:250px'>",
+          "    <img src='image:qaPortrait' style='width:100%;height:100%;object-fit:cover;border-radius:12px' />",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#wrap', { rotateY: [0, 180] }, { start: 0.2, end: 1.8, easing: 'easeInOut' });"
+        ],
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -156,7 +233,7 @@
           "const animation = new MulmoAnimation();",
           "animation.stagger('#item{i}', 4, { opacity: [0, 1], translateX: [-30, 0] }, { start: 0, stagger: 0.2, duration: 0.3, easing: 'easeOut' });"
         ],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -173,7 +250,7 @@
           "</div>"
         ],
         "script": ["const animation = new MulmoAnimation();", "animation.counter('#counter', [0, 1000], { start: 0, end: 1.5, easing: 'easeOut' });"],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -193,7 +270,7 @@
           "const animation = new MulmoAnimation();",
           "animation.counter('#price', [0, 99.99], { start: 0, end: 1.5, prefix: '$', suffix: ' USD', decimals: 2, easing: 'easeOut' });"
         ],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -209,7 +286,7 @@
           "</div>"
         ],
         "script": ["const animation = new MulmoAnimation();", "animation.typewriter('#tw', 'Typewriter animation test.', { start: 0, end: 1.5 });"],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -228,7 +305,7 @@
           "const animation = new MulmoAnimation();",
           "animation.codeReveal('#code', ['const x = 1;', 'const y = 2;', 'return x + y;'], { start: 0, end: 1.5 });"
         ],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -245,7 +322,7 @@
           "</div>"
         ],
         "script": ["const animation = new MulmoAnimation();", "animation.blink('#cursor', { interval: 0.3 });"],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -267,7 +344,7 @@
           "  ball.style.transform = 'translateX(' + interpolate(frame, { input: { inMin: 0, inMax: totalFrames }, output: { outMin: -200, outMax: 200 } }) + 'px)';",
           "}"
         ],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -294,7 +371,7 @@
           "  document.getElementById('e3').style.transform = 'translateX(' + interpolate(frame, { input: { inMin: 0, inMax: totalFrames }, output: { outMin: 0, outMax: max }, easing: Easing.easeInOut }) + 'px)';",
           "}"
         ],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -318,7 +395,7 @@
           "  document.getElementById('c2').setAttribute('r', interpolate(frame, { input: { inMin: fps * 0.3, inMax: totalFrames * 0.8 }, output: { outMin: 0, outMax: 60 } }));",
           "}"
         ],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -343,7 +420,7 @@
           "animation.counter('#counter', [0, 500], { start: 0.2, end: 1.5, easing: 'easeOut' });",
           "animation.stagger('#r{i}', 3, { opacity: [0, 1], translateX: [-20, 0] }, { start: 0.5, stagger: 0.2, duration: 0.3, easing: 'easeOut' });"
         ],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -362,7 +439,7 @@
           "const animation = new MulmoAnimation();",
           "animation.animate('#dot', { opacity: [0, 1], translateX: [-100, 100] }, { start: 0, end: 0.8, easing: 'easeInOut' });"
         ],
-        "animation": true
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -381,7 +458,7 @@
           "const animation = new MulmoAnimation();",
           "animation.coverZoom('#photo_img', { zoomFrom: 1.0, zoomTo: 1.3, start: 0, end: 'auto', easing: 'easeInOut' });"
         ],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
       }
     },
     {
@@ -400,7 +477,101 @@
           "const animation = new MulmoAnimation();",
           "animation.coverPan('#photo_img', { direction: 'vertical', from: 0, to: 100, zoom: 1.2, start: 0, end: 'auto', easing: 'easeInOut' });"
         ],
-        "animation": { "fps": 15 }
+        "animation": { "fps": 30 }
+      }
+    },
+    {
+      "id": "flip_card",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-gradient-to-br from-slate-900 to-indigo-950'>",
+          "  <div style='perspective:1000px'>",
+          "    <div id='flip' class='relative' style='width:300px;height:180px;transform-style:preserve-3d'>",
+          "      <div class='absolute inset-0 rounded-2xl flex items-center justify-center' style='backface-visibility:hidden;background:linear-gradient(135deg,#3b82f6,#06b6d4)'>",
+          "        <p class='text-white text-3xl font-bold'>FRONT</p>",
+          "      </div>",
+          "      <div class='absolute inset-0 rounded-2xl flex items-center justify-center' style='backface-visibility:hidden;transform:rotateY(180deg);background:linear-gradient(135deg,#8b5cf6,#ec4899)'>",
+          "        <p class='text-white text-3xl font-bold'>BACK</p>",
+          "      </div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#flip', { rotateY: [0, 180] }, { start: 0.3, end: 1.7, easing: 'easeInOut' });"
+        ],
+        "animation": { "fps": 30 }
+      }
+    },
+    {
+      "id": "image_flip",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-gradient-to-br from-slate-900 to-indigo-950'>",
+          "  <div style='perspective:1000px'>",
+          "    <div id='flip' class='relative' style='width:400px;height:250px;transform-style:preserve-3d'>",
+          "      <div class='absolute inset-0 rounded-xl overflow-hidden' style='backface-visibility:hidden'>",
+          "        <img src='image:qaLandscape' style='width:100%;height:100%;object-fit:cover' />",
+          "      </div>",
+          "      <div class='absolute inset-0 rounded-xl overflow-hidden' style='backface-visibility:hidden;transform:rotateY(180deg)'>",
+          "        <img src='image:qaPortrait' style='width:100%;height:100%;object-fit:cover' />",
+          "      </div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#flip', { rotateY: [0, 180] }, { start: 0.3, end: 1.7, easing: 'easeInOut' });"
+        ],
+        "animation": { "fps": 30 }
+      }
+    },
+    {
+      "id": "local_image",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <img id='photo_img' src='image:localImage' style='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:none;max-height:none' />",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.coverZoom('#photo_img', { zoomFrom: 1.0, zoomTo: 1.2, start: 0, end: 'auto', easing: 'easeInOut' });"
+        ],
+        "animation": { "fps": 30 }
+      }
+    },
+    {
+      "id": "remote_image",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <img id='photo_img' src='image:remoteImage' style='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:none;max-height:none' />",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.coverPan('#photo_img', { direction: 'horizontal', from: 0, to: 100, zoom: 1.1, start: 0, end: 'auto', easing: 'easeInOut' });"
+        ],
+        "animation": { "fps": 30 }
       }
     },
     {
