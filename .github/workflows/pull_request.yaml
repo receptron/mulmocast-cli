@@ -136,6 +136,9 @@ jobs:
         yarn run cli images scripts/test/test_beats.json &
         yarn run cli images scripts/test/test_render_stress.json &
         yarn run cli images scripts/test/test_html_animation.json &
+        yarn run cli images scripts/test/test_animated.json &
+        yarn run cli images scripts/test/test_html_cover_pan_zoom_landscape_canvas.json &
+        yarn run cli images scripts/test/test_html_cover_pan_zoom_portrait_canvas.json &
         wait
     - name: Run movie tests batch 1 (parallel)
       run: |
@@ -149,6 +152,8 @@ jobs:
         yarn run cli movie scripts/test/test_hello_caption.json &
         yarn run cli movie scripts/test/test_hello_image.json &
         wait
+    - name: Run animated movie test
+      run: yarn run cli movie scripts/test/test_animated.json
     - name: Run movie test (vision)
       run: yarn run cli movie scripts/test/test_vision.json
     - name: Run pdf tests batch 1 (parallel)
