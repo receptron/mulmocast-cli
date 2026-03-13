@@ -159,13 +159,20 @@
         return Easing[e] || Easing.linear;
       };
 
+      /** Convert value to finite number, otherwise return fallback */
+      MulmoAnimation.prototype._toFiniteNumber = function(value, fallback) {
+        const n = Number(value);
+        return Number.isFinite(n) ? n : fallback;
+      };
+
       /** Apply props to element at a given progress (0-1) with easing */
       MulmoAnimation.prototype._applyProps = function(el, props, progress, easingFn) {
         if (!el) return;
         const transforms = [];
         Object.keys(props).forEach((prop) => {
           const spec = props[prop];
-          const from = spec[0], to = spec[1];
+          const from = this._toFiniteNumber(spec[0], 0);
+          const to = this._toFiniteNumber(spec[1], from);
           const unit = (spec.length > 2) ? spec[2] : null;
           const val = from + easingFn(progress) * (to - from);
 
@@ -293,11 +300,11 @@
             const zEnd = (opts.end === 'auto' ? window.__MULMO.totalFrames / fps : (opts.end || 0)) * fps;
             const zProgress = Math.max(0, Math.min(1, zEnd === zStart ? 1 : (frame - zStart) / (zEnd - zStart)));
             const zFrom = opts.zoomFrom === undefined
-              ? (opts.from === undefined ? 1 : Number(opts.from))
-              : Number(opts.zoomFrom);
+              ? (opts.from === undefined ? 1 : this._toFiniteNumber(opts.from, 1))
+              : this._toFiniteNumber(opts.zoomFrom, 1);
             const zTo = opts.zoomTo === undefined
-              ? (opts.to === undefined ? 1 : Number(opts.to))
-              : Number(opts.zoomTo);
+              ? (opts.to === undefined ? 1 : this._toFiniteNumber(opts.to, 1))
+              : this._toFiniteNumber(opts.zoomTo, zFrom);
             const zCurrent = zFrom + easingFn(zProgress) * (zTo - zFrom);
             const zSize = this._coverSize(zEl, zContainer, zCurrent);
             if (!zSize) return;
@@ -310,9 +317,9 @@
             const pEnd = (opts.end === 'auto' ? window.__MULMO.totalFrames / fps : (opts.end || 0)) * fps;
             const pProgress = Math.max(0, Math.min(1, pEnd === pStart ? 1 : (frame - pStart) / (pEnd - pStart)));
             const pAxis = opts.axis === 'y' ? 'y' : 'x';
-            const pDirection = Number(opts.direction) < 0 ? -1 : 1;
-            const pRequested = Math.abs(Number(opts.distance || 0));
-            const pZoom = Number(opts.zoom || 1);
+            const pDirection = this._toFiniteNumber(opts.direction, 1) < 0 ? -1 : 1;
+            const pRequested = Math.abs(this._toFiniteNumber(opts.distance, 0));
+            const pZoom = this._toFiniteNumber(opts.zoom, 1);
             const pSize = this._coverSize(pEl, pContainer, pZoom);
             if (!pSize) return;
             this._applyCoverBaseStyle(pEl, pSize.iw, pSize.ih);
@@ -335,8 +342,8 @@
             if (opts.from !== undefined || opts.to !== undefined) {
               // from/to use normalized safe-range coordinates:
               // 0 = one edge, 100 = the opposite edge, 50 = center.
-              const fromNorm = opts.from === undefined ? 50 : Number(opts.from);
-              const toNorm = opts.to === undefined ? fromNorm : Number(opts.to);
+              const fromNorm = opts.from === undefined ? 50 : this._toFiniteNumber(opts.from, 50);
+              const toNorm = opts.to === undefined ? fromNorm : this._toFiniteNumber(opts.to, fromNorm);
               from = mapToSafePos(fromNorm);
               to = mapToSafePos(toNorm);
             } else {

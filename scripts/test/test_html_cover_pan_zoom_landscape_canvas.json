@@ -68,6 +68,27 @@
       }
     },
     {
+      "id": "landscape_zoom_in_container_selector",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <div id='photo_outer' style='position:absolute;inset:0;overflow:hidden'>",
+          "    <div id='photo_inner' style='position:absolute;inset:0'>",
+          "      <img id='photo_img' src='image:qaLandscape' style='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:none;max-height:none' />",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.coverZoom('#photo_img', { zoomFrom: 1.0, zoomTo: 1.5, start: 0, end: 'auto', easing: 'linear', containerSelector: '#photo_outer' });"
+        ],
+        "animation": true
+      }
+    },
+    {
       "id": "landscape_zoom_out",
       "duration": 5,
       "image": {
