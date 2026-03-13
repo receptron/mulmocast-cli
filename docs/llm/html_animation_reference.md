@@ -31,17 +31,17 @@ Maps a frame number to a value range with clamping and optional easing.
 interpolate(frame, {
   input: { inMin: 0, inMax: fps },
   output: { outMin: 0, outMax: 1 },
-  easing: 'easeOut'  // optional: 'linear' | 'easeIn' | 'easeOut' | 'easeInOut' | Easing.xxx
-})
+  easing: "easeOut", // optional: 'linear' | 'easeIn' | 'easeOut' | 'easeInOut' | Easing.xxx
+});
 ```
 
 ### Easing
 
 ```javascript
-Easing.linear     // t => t
-Easing.easeIn     // t => t * t
-Easing.easeOut    // t => 1 - (1 - t) * (1 - t)
-Easing.easeInOut  // smooth acceleration/deceleration
+Easing.linear; // t => t
+Easing.easeIn; // t => t * t
+Easing.easeOut; // t => 1 - (1 - t) * (1 - t)
+Easing.easeInOut; // smooth acceleration/deceleration
 ```
 
 ### MulmoAnimation
@@ -71,6 +71,16 @@ animation.codeReveal(selector, linesArray, { start, end })
 // Blink — periodic show/hide toggle (e.g. cursor)
 animation.blink(selector, { interval? })  // interval: half-cycle seconds (default 0.5)
 
+// Cover zoom — keep media fully covering its container while zooming
+// from/to are aliases of zoomFrom/zoomTo
+animation.coverZoom(selector, { containerSelector?, zoomFrom|from, zoomTo|to, start, end, easing? })
+
+// Cover pan — keep media fully covering its container while panning
+// Use either direction+distance or from+to.
+// from/to are normalized in the safe movement range: 0=edge, 50=center, 100=opposite edge.
+// Runtime clamps actual movement to avoid black borders.
+animation.coverPan(selector, { containerSelector?, axis, direction, distance, from, to, zoom, start, end, easing? })
+
 // Auto-render: if variable is named `animation`, render() is auto-generated.
 // No need to define render() manually:
 // (template auto-generates: window.render = function(f,t,fps) { animation.update(f,fps); })
@@ -78,15 +88,15 @@ animation.blink(selector, { interval? })  // interval: half-cycle seconds (defau
 
 #### Property types
 
-| Property | Applied as | Default unit |
-|----------|-----------|-------------|
-| `translateX`, `translateY` | CSS transform | px |
-| `scale` | CSS transform | (none) |
-| `rotate` | CSS transform | deg |
-| `rotateX`, `rotateY`, `rotateZ` | CSS transform (3D rotation) | deg |
-| `opacity` | style.opacity | (none) |
-| Other CSS (`width`, etc.) | style[prop] | px (override with `[from, to, '%']`) |
-| SVG attrs (`r`, `cx`, etc.) | setAttribute | (none) |
+| Property                        | Applied as                  | Default unit                         |
+| ------------------------------- | --------------------------- | ------------------------------------ |
+| `translateX`, `translateY`      | CSS transform               | px                                   |
+| `scale`                         | CSS transform               | (none)                               |
+| `rotate`                        | CSS transform               | deg                                  |
+| `rotateX`, `rotateY`, `rotateZ` | CSS transform (3D rotation) | deg                                  |
+| `opacity`                       | style.opacity               | (none)                               |
+| Other CSS (`width`, etc.)       | style[prop]                 | px (override with `[from, to, '%']`) |
+| SVG attrs (`r`, `cx`, etc.)     | setAttribute                | (none)                               |
 
 ## Pattern: MulmoAnimation with auto-render (recommended for most cases)
 
@@ -180,7 +190,8 @@ Embed real images inside animated beats. Sample: `scripts/samples/image_animatio
 ### Critical Rules
 
 1. **Variable name must be `animation`** — auto-render checks `typeof animation !== 'undefined'`. Using `const a = ...` silently fails.
-2. **Wrap `<img>` in `<div>` for transforms** — animate the wrapper, not `<img>` directly (`object-fit:cover` conflicts with transforms).
+2. **Wrap `<img>` in `<div>` for transforms** — animate the wrapper by default (`object-fit:cover` conflicts with transforms).
+   Exception: `coverPan` / `coverZoom` intentionally target `<img>` directly (`#photo_img`) while preserving cover sizing.
 3. **Use relative paths from the script file** — relative `src` paths are automatically resolved to `file://` absolute paths at render time. Example: if the script is at `scripts/samples/foo.json`, use `../../output/images/bar.png`. Absolute `file://` paths also work but are not portable.
 
 ### Pattern: Ken Burns (zoom + pan)
@@ -189,13 +200,13 @@ Embed real images inside animated beats. Sample: `scripts/samples/image_animatio
 "html": [
   "<div class='h-full w-full overflow-hidden relative bg-black'>",
   "  <div id='photo_wrap' style='position:absolute;inset:0;overflow:hidden'>",
-  "    <img src='../../output/images/sample/photo.png' style='width:100%;height:100%;object-fit:cover' />",
+  "    <img id='photo_img' src='../../output/images/sample/photo.png' style='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:none;max-height:none' />",
   "  </div>",
   "</div>"
 ],
 "script": [
   "const animation = new MulmoAnimation();",
-  "animation.animate('#photo_wrap', { scale: [1.0, 1.2], translateX: [0, -30, 'px'] }, { start: 0, end: 'auto', easing: 'linear' });"
+  "animation.coverPan('#photo_img', { containerSelector: '#photo_wrap', axis: 'x', from: 40, to: 60, zoom: 1.2, start: 0, end: 'auto', easing: 'linear' });"
 ]
 ```
 
