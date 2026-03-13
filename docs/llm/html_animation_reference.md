@@ -31,17 +31,17 @@ Maps a frame number to a value range with clamping and optional easing.
 interpolate(frame, {
   input: { inMin: 0, inMax: fps },
   output: { outMin: 0, outMax: 1 },
-  easing: 'easeOut'  // optional: 'linear' | 'easeIn' | 'easeOut' | 'easeInOut' | Easing.xxx
-})
+  easing: "easeOut", // optional: 'linear' | 'easeIn' | 'easeOut' | 'easeInOut' | Easing.xxx
+});
 ```
 
 ### Easing
 
 ```javascript
-Easing.linear     // t => t
-Easing.easeIn     // t => t * t
-Easing.easeOut    // t => 1 - (1 - t) * (1 - t)
-Easing.easeInOut  // smooth acceleration/deceleration
+Easing.linear; // t => t
+Easing.easeIn; // t => t * t
+Easing.easeOut; // t => 1 - (1 - t) * (1 - t)
+Easing.easeInOut; // smooth acceleration/deceleration
 ```
 
 ### MulmoAnimation
@@ -88,15 +88,15 @@ animation.coverPan(selector, { containerSelector?, axis, direction, distance, fr
 
 #### Property types
 
-| Property | Applied as | Default unit |
-|----------|-----------|-------------|
-| `translateX`, `translateY` | CSS transform | px |
-| `scale` | CSS transform | (none) |
-| `rotate` | CSS transform | deg |
-| `rotateX`, `rotateY`, `rotateZ` | CSS transform (3D rotation) | deg |
-| `opacity` | style.opacity | (none) |
-| Other CSS (`width`, etc.) | style[prop] | px (override with `[from, to, '%']`) |
-| SVG attrs (`r`, `cx`, etc.) | setAttribute | (none) |
+| Property                        | Applied as                  | Default unit                         |
+| ------------------------------- | --------------------------- | ------------------------------------ |
+| `translateX`, `translateY`      | CSS transform               | px                                   |
+| `scale`                         | CSS transform               | (none)                               |
+| `rotate`                        | CSS transform               | deg                                  |
+| `rotateX`, `rotateY`, `rotateZ` | CSS transform (3D rotation) | deg                                  |
+| `opacity`                       | style.opacity               | (none)                               |
+| Other CSS (`width`, etc.)       | style[prop]                 | px (override with `[from, to, '%']`) |
+| SVG attrs (`r`, `cx`, etc.)     | setAttribute                | (none)                               |
 
 ## Pattern: MulmoAnimation with auto-render (recommended for most cases)
 
