@@ -190,7 +190,8 @@ Embed real images inside animated beats. Sample: `scripts/samples/image_animatio
 ### Critical Rules
 
 1. **Variable name must be `animation`** — auto-render checks `typeof animation !== 'undefined'`. Using `const a = ...` silently fails.
-2. **Wrap `<img>` in `<div>` for transforms** — animate the wrapper, not `<img>` directly (`object-fit:cover` conflicts with transforms).
+2. **Wrap `<img>` in `<div>` for transforms** — animate the wrapper by default (`object-fit:cover` conflicts with transforms).
+   Exception: `coverPan` / `coverZoom` intentionally target `<img>` directly (`#photo_img`) while preserving cover sizing.
 3. **Use relative paths from the script file** — relative `src` paths are automatically resolved to `file://` absolute paths at render time. Example: if the script is at `scripts/samples/foo.json`, use `../../output/images/bar.png`. Absolute `file://` paths also work but are not portable.
 
 ### Pattern: Ken Burns (zoom + pan)

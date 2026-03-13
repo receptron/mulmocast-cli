@@ -194,16 +194,19 @@
 
       /** Calculate cover-scaled dimensions from intrinsic media size */
       MulmoAnimation.prototype._coverSize = function(el, container, zoom) {
-        if (!el || !container || !el.naturalWidth || !el.naturalHeight) return null;
+        if (!el || !container) return null;
+        const intrinsicW = el.naturalWidth || el.videoWidth;
+        const intrinsicH = el.naturalHeight || el.videoHeight;
+        if (!intrinsicW || !intrinsicH) return null;
         const ww = container.clientWidth || container.offsetWidth;
         const wh = container.clientHeight || container.offsetHeight;
         if (!ww || !wh) return null;
-        const cover = Math.max(ww / el.naturalWidth, wh / el.naturalHeight);
+        const cover = Math.max(ww / intrinsicW, wh / intrinsicH);
         const s = cover * zoom;
         return {
           ww, wh,
-          iw: el.naturalWidth * s,
-          ih: el.naturalHeight * s,
+          iw: intrinsicW * s,
+          ih: intrinsicH * s,
         };
       };
 
@@ -238,8 +241,8 @@
 
           } else if (entry.kind === 'stagger') {
             const baseStart = (opts.start || 0) * fps;
-            const staggerDelay = (opts.stagger || 0.2) * fps;
-            const dur = (opts.duration || 0.5) * fps;
+            const staggerDelay = (opts.stagger ?? 0.2) * fps;
+            const dur = (opts.duration ?? 0.5) * fps;
             for (let j = 0; j < entry.count; j++) {
               const sel = entry.selector.replace(/\{i\}/g, j);
               const sEl = document.querySelector(sel);
@@ -388,31 +391,35 @@
        * Called by Puppeteer's page.evaluate() during screencast recording.
        */
       window.playAnimation = function () {
-        return new Promise(function (resolve) {
+        return new Promise(function (resolve, reject) {
           var mulmo = window.__MULMO;
           var fps = mulmo.fps;
           var totalFrames = mulmo.totalFrames;
           var frameDuration = 1000 / fps;
           var startTime = null;
 
-          function tick(timestamp) {
+          async function tick(timestamp) {
             if (startTime === null) startTime = timestamp;
             var elapsed = timestamp - startTime;
             var frame = Math.min(Math.floor(elapsed / frameDuration), totalFrames - 1);
 
             mulmo.frame = frame;
             if (typeof render === "function") {
-              render(frame, totalFrames, fps);
+              await Promise.resolve(render(frame, totalFrames, fps));
             }
 
             if (frame < totalFrames - 1) {
-              requestAnimationFrame(tick);
+              requestAnimationFrame(function (nextTimestamp) {
+                tick(nextTimestamp).catch(reject);
+              });
             } else {
               resolve();
             }
           }
 
-          requestAnimationFrame(tick);
+          requestAnimationFrame(function (timestamp) {
+            tick(timestamp).catch(reject);
+          });
         });
       };
     </script>
