@@ -164,6 +164,28 @@ animation.codeReveal('#code', codeLines, { start: 0.3, end: 2.5 });
 animation.blink('#cursor', { interval: 0.35 });
 // interval: on/off 半サイクルの秒数（デフォルト 0.5）
 
+// Cover zoom（メディアを常に画面いっぱいに維持しつつズーム）
+animation.coverZoom('#photo_img', {
+  containerSelector: '#photo_wrap', // 省略時は親要素
+  zoomFrom: 1.0,
+  zoomTo: 1.5,
+  start: 0,
+  end: 'auto',
+  easing: 'linear'
+});
+
+// Cover pan（distance は入力上限なし、実移動は黒縁回避で自動 clamp）
+animation.coverPan('#photo_img', {
+  containerSelector: '#photo_wrap', // 省略時は親要素
+  axis: 'x',        // 'x' or 'y'
+  direction: 1,     // 1 or -1
+  distance: 100,    // 100% でも指定可（実際は安全範囲に clamp）
+  zoom: 1.2,        // cover 後の拡大率
+  start: 0,
+  end: 'auto',
+  easing: 'linear'
+});
+
 // render() で毎フレーム更新（auto-render 使用時は省略可）
 function render(frame, totalFrames, fps) {
   animation.update(frame, fps);
@@ -181,6 +203,13 @@ function render(frame, totalFrames, fps) {
 | `opacity` | style.opacity | なし |
 | CSS (`width`, `height` 等) | style[prop] | px（`[v1, v2, '%']` で変更可） |
 | SVG (`r`, `cx`, `cy` 等) | setAttribute | なし |
+
+### Cover helpers
+
+| API | 用途 | 補足 |
+|-----|------|------|
+| `coverZoom(selector, opts)` | 画面を埋めたままズーム | `zoomFrom/zoomTo` を補間 |
+| `coverPan(selector, opts)` | 画面を埋めたままパン | `distance` は入力上限なし。実移動は黒縁回避で自動 clamp |
 
 ### MulmoAnimation と interpolate の使い分け
 

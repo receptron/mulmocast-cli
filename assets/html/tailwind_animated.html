@@ -130,6 +130,28 @@
       return this;
     };
 
+    /**
+     * Cover zoom for image/video elements.
+     * Keeps media fully covering container while interpolating zoom.
+     * @param {string} selector
+     * @param {Object} opts - { containerSelector?, zoomFrom, zoomTo, start, end, easing }
+     */
+    MulmoAnimation.prototype.coverZoom = function(selector, opts) {
+      this._entries.push({ kind: 'coverZoom', selector, opts: opts || {} });
+      return this;
+    };
+
+    /**
+     * Cover pan for image/video elements with automatic black-border prevention.
+     * `distance` may be large; actual movement is clamped by available slack.
+     * @param {string} selector
+     * @param {Object} opts - { containerSelector?, axis:'x'|'y', direction:1|-1, distance, zoom, start, end, easing }
+     */
+    MulmoAnimation.prototype.coverPan = function(selector, opts) {
+      this._entries.push({ kind: 'coverPan', selector, opts: opts || {} });
+      return this;
+    };
+
     /** Resolve easing name string or function to an easing function */
     MulmoAnimation.prototype._resolveEasing = function(e) {
       if (!e) return Easing.linear;
@@ -162,6 +184,39 @@
       if (transforms.length > 0) {
         el.style.transform = transforms.join(' ');
       }
+    };
+
+    /** Resolve container for cover-based helpers */
+    MulmoAnimation.prototype._resolveContainer = function(el, selector) {
+      if (selector) return document.querySelector(selector);
+      return el ? el.parentElement : null;
+    };
+
+    /** Calculate cover-scaled dimensions from intrinsic media size */
+    MulmoAnimation.prototype._coverSize = function(el, container, zoom) {
+      if (!el || !container || !el.naturalWidth || !el.naturalHeight) return null;
+      const ww = container.clientWidth || container.offsetWidth;
+      const wh = container.clientHeight || container.offsetHeight;
+      if (!ww || !wh) return null;
+      const cover = Math.max(ww / el.naturalWidth, wh / el.naturalHeight);
+      const s = cover * zoom;
+      return {
+        ww, wh,
+        iw: el.naturalWidth * s,
+        ih: el.naturalHeight * s,
+      };
+    };
+
+    /** Apply absolute-centered base style for cover helpers */
+    MulmoAnimation.prototype._applyCoverBaseStyle = function(el, iw, ih) {
+      el.style.position = 'absolute';
+      el.style.top = '50%';
+      el.style.left = '50%';
+      el.style.transform = 'translate(-50%,-50%)';
+      el.style.maxWidth = 'none';
+      el.style.maxHeight = 'none';
+      el.style.width = iw + 'px';
+      el.style.height = ih + 'px';
     };
 
     /**
@@ -226,6 +281,48 @@
           if (blinkEl) {
             const cycle = (frame / fps) / interval_s;
             blinkEl.style.opacity = (Math.floor(cycle) % 2 === 0) ? 1 : 0;
+          }
+        } else if (entry.kind === 'coverZoom') {
+          const zEl = document.querySelector(entry.selector);
+          if (!zEl) return;
+          const zContainer = this._resolveContainer(zEl, opts.containerSelector);
+          const zStart = (opts.start || 0) * fps;
+          const zEnd = (opts.end === 'auto' ? window.__MULMO.totalFrames / fps : (opts.end || 0)) * fps;
+          const zProgress = Math.max(0, Math.min(1, zEnd === zStart ? 1 : (frame - zStart) / (zEnd - zStart)));
+          const zFrom = opts.zoomFrom === undefined ? 1 : Number(opts.zoomFrom);
+          const zTo = opts.zoomTo === undefined ? 1 : Number(opts.zoomTo);
+          const zCurrent = zFrom + easingFn(zProgress) * (zTo - zFrom);
+          const zSize = this._coverSize(zEl, zContainer, zCurrent);
+          if (!zSize) return;
+          this._applyCoverBaseStyle(zEl, zSize.iw, zSize.ih);
+        } else if (entry.kind === 'coverPan') {
+          const pEl = document.querySelector(entry.selector);
+          if (!pEl) return;
+          const pContainer = this._resolveContainer(pEl, opts.containerSelector);
+          const pStart = (opts.start || 0) * fps;
+          const pEnd = (opts.end === 'auto' ? window.__MULMO.totalFrames / fps : (opts.end || 0)) * fps;
+          const pProgress = Math.max(0, Math.min(1, pEnd === pStart ? 1 : (frame - pStart) / (pEnd - pStart)));
+          const pAxis = opts.axis === 'y' ? 'y' : 'x';
+          const pDirection = Number(opts.direction) < 0 ? -1 : 1;
+          const pRequested = Math.abs(Number(opts.distance || 0));
+          const pZoom = Number(opts.zoom || 1);
+          const pSize = this._coverSize(pEl, pContainer, pZoom);
+          if (!pSize) return;
+          this._applyCoverBaseStyle(pEl, pSize.iw, pSize.ih);
+
+          const viewport = pAxis === 'x' ? pSize.ww : pSize.wh;
+          const imageSize = pAxis === 'x' ? pSize.iw : pSize.ih;
+          const maxDistancePercent = Math.max(0, (((imageSize - viewport) / 2) / viewport) * 100);
+          const distancePercent = Math.min(pRequested, maxDistancePercent);
+          const from = 50;
+          const to = from + pDirection * distancePercent;
+          const current = from + easingFn(pProgress) * (to - from);
+          if (pAxis === 'x') {
+            pEl.style.left = current + '%';
+            pEl.style.top = '50%';
+          } else {
+            pEl.style.top = current + '%';
+            pEl.style.left = '50%';
           }
         }
       });

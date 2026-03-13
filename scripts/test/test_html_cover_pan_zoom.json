@@ -1,0 +1,105 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "html_tailwind coverZoom/coverPan test",
+  "canvasSize": {
+    "width": 1792,
+    "height": 1024
+  },
+  "audioParams": {
+    "padding": 0,
+    "introPadding": 0,
+    "closingPadding": 0,
+    "outroPadding": 0
+  },
+  "imageParams": {
+    "images": {
+      "qaLandscape": {
+        "type": "image",
+        "source": {
+          "kind": "path",
+          "path": "images/qa_landscape.jpg"
+        }
+      },
+      "qaPortrait": {
+        "type": "image",
+        "source": {
+          "kind": "path",
+          "path": "images/qa_portrait.png"
+        }
+      }
+    }
+  },
+  "beats": [
+    {
+      "id": "cover_zoom_in",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <img id='photo_img' src='image:qaLandscape' style='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:none;max-height:none' />",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.coverZoom('#photo_img', { zoomFrom: 1.0, zoomTo: 1.5, start: 0, end: 'auto', easing: 'linear' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "cover_pan_right_distance_100",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <img id='photo_img' src='image:qaLandscape' style='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:none;max-height:none' />",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.coverPan('#photo_img', { axis: 'x', direction: 1, distance: 100, zoom: 1.2, start: 0, end: 'auto', easing: 'linear' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "cover_pan_up_zoom_1_2",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <img id='photo_img' src='image:qaPortrait' style='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:none;max-height:none' />",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.coverPan('#photo_img', { axis: 'y', direction: -1, distance: 100, zoom: 1.2, start: 0, end: 'auto', easing: 'linear' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "legacy_translate_pan_reference",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <img id='photo_img' src='image:qaLandscape' style='width:100%;height:100%;object-fit:cover' />",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#photo_img', { scale: [1.2, 1.2], translateX: [0, 20, '%'] }, { start: 0, end: 'auto', easing: 'linear' });"
+        ],
+        "animation": true
+      }
+    }
+  ]
+}

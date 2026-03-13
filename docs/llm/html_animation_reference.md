@@ -71,6 +71,13 @@ animation.codeReveal(selector, linesArray, { start, end })
 // Blink — periodic show/hide toggle (e.g. cursor)
 animation.blink(selector, { interval? })  // interval: half-cycle seconds (default 0.5)
 
+// Cover zoom — keep media fully covering its container while zooming
+animation.coverZoom(selector, { containerSelector?, zoomFrom, zoomTo, start, end, easing? })
+
+// Cover pan — keep media fully covering its container while panning
+// distance can be large; runtime clamps actual movement to avoid black borders
+animation.coverPan(selector, { containerSelector?, axis, direction, distance, zoom, start, end, easing? })
+
 // Auto-render: if variable is named `animation`, render() is auto-generated.
 // No need to define render() manually:
 // (template auto-generates: window.render = function(f,t,fps) { animation.update(f,fps); })
@@ -189,13 +196,13 @@ Embed real images inside animated beats. Sample: `scripts/samples/image_animatio
 "html": [
   "<div class='h-full w-full overflow-hidden relative bg-black'>",
   "  <div id='photo_wrap' style='position:absolute;inset:0;overflow:hidden'>",
-  "    <img src='../../output/images/sample/photo.png' style='width:100%;height:100%;object-fit:cover' />",
+  "    <img id='photo_img' src='../../output/images/sample/photo.png' style='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:none;max-height:none' />",
   "  </div>",
   "</div>"
 ],
 "script": [
   "const animation = new MulmoAnimation();",
-  "animation.animate('#photo_wrap', { scale: [1.0, 1.2], translateX: [0, -30, 'px'] }, { start: 0, end: 'auto', easing: 'linear' });"
+  "animation.coverPan('#photo_img', { containerSelector: '#photo_wrap', axis: 'x', direction: 1, distance: 100, zoom: 1.2, start: 0, end: 'auto', easing: 'linear' });"
 ]
 ```
 
