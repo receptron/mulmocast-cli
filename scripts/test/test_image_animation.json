@@ -1,0 +1,114 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "Image Animation Preset Test",
+  "canvasSize": {
+    "width": 1792,
+    "height": 1024
+  },
+  "audioParams": {
+    "padding": 0,
+    "introPadding": 0,
+    "closingPadding": 0,
+    "outroPadding": 0
+  },
+  "beats": [
+    {
+      "id": "ken_burns_zoom_in",
+      "duration": 3,
+      "image": {
+        "type": "image",
+        "source": { "kind": "path", "path": "images/qa_landscape.jpg" },
+        "animation": {
+          "effect": "ken_burns",
+          "zoomFrom": 1.0,
+          "zoomTo": 1.5,
+          "easing": "easeInOut"
+        }
+      }
+    },
+    {
+      "id": "ken_burns_zoom_out",
+      "duration": 3,
+      "image": {
+        "type": "image",
+        "source": { "kind": "path", "path": "images/qa_portrait.png" },
+        "animation": {
+          "effect": "ken_burns",
+          "zoomFrom": 1.5,
+          "zoomTo": 1.0,
+          "easing": "linear"
+        }
+      }
+    },
+    {
+      "id": "pan_horizontal",
+      "duration": 3,
+      "image": {
+        "type": "image",
+        "source": { "kind": "path", "path": "images/qa_landscape.jpg" },
+        "animation": {
+          "effect": "pan_horizontal",
+          "panFrom": 0,
+          "panTo": 100,
+          "zoom": 1.3,
+          "easing": "linear"
+        }
+      }
+    },
+    {
+      "id": "pan_vertical",
+      "duration": 3,
+      "image": {
+        "type": "image",
+        "source": { "kind": "path", "path": "images/qa_portrait.png" },
+        "animation": {
+          "effect": "pan_vertical",
+          "panFrom": 0,
+          "panTo": 100,
+          "easing": "easeOut"
+        }
+      }
+    },
+    {
+      "id": "rotate",
+      "duration": 3,
+      "image": {
+        "type": "image",
+        "source": { "kind": "path", "path": "images/qa_landscape.jpg" },
+        "animation": {
+          "effect": "rotate",
+          "degreesFrom": 0,
+          "degreesTo": 90,
+          "easing": "easeInOut"
+        }
+      }
+    },
+    {
+      "id": "flip",
+      "duration": 3,
+      "image": {
+        "type": "image",
+        "source": { "kind": "path", "path": "images/qa_landscape.jpg" },
+        "animation": {
+          "effect": "flip",
+          "easing": "easeInOut"
+        }
+      }
+    },
+    {
+      "id": "fade_in",
+      "duration": 3,
+      "image": {
+        "type": "image",
+        "source": { "kind": "path", "path": "images/qa_portrait.png" },
+        "animation": {
+          "effect": "fade_in",
+          "easing": "easeOut"
+        }
+      }
+    }
+  ]
+}

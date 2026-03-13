@@ -42,6 +42,7 @@ import {
   mulmoTextSlideMediaSchema,
   mulmoMarkdownMediaSchema,
   mulmoImageMediaSchema,
+  imageAnimationPresetSchema,
   mulmoChartMediaSchema,
   mediaSourceSchema,
   mediaSourceMermaidSchema,
@@ -116,6 +117,7 @@ export type MulmoImageAsset = z.infer<typeof mulmoImageAssetSchema>;
 export type MulmoTextSlideMedia = z.infer<typeof mulmoTextSlideMediaSchema>;
 export type MulmoMarkdownMedia = z.infer<typeof mulmoMarkdownMediaSchema>;
 export type MulmoImageMedia = z.infer<typeof mulmoImageMediaSchema>;
+export type ImageAnimationPreset = z.infer<typeof imageAnimationPresetSchema>;
 export type MulmoChartMedia = z.infer<typeof mulmoChartMediaSchema>;
 export type MulmoMermaidMedia = z.infer<typeof mulmoMermaidMediaSchema>;
 export type MulmoSessionState = z.infer<typeof mulmoSessionStateSchema>;

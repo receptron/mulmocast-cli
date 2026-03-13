@@ -19,11 +19,17 @@ const isMovieMode = (animation: unknown): boolean => {
   return isAnimationObject(animation) && animation.movie === true;
 };
 
-/** Check if a beat has html_tailwind animation enabled */
+/** Check if a beat has animation enabled (html_tailwind or image with preset) */
 const isAnimatedHtmlTailwind = (beat: MulmoBeat): boolean => {
-  if (!beat.image || beat.image.type !== "html_tailwind") return false;
-  const animation = (beat.image as { animation?: unknown }).animation;
-  return isAnimationEnabled(animation);
+  if (!beat.image) return false;
+  if (beat.image.type === "html_tailwind") {
+    const animation = (beat.image as { animation?: unknown }).animation;
+    return isAnimationEnabled(animation);
+  }
+  if (beat.image.type === "image") {
+    return "animation" in beat.image && beat.image.animation !== undefined;
+  }
+  return false;
 };
 
 export const MulmoBeatMethods = {

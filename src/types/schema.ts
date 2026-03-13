@@ -157,10 +157,28 @@ const mulmoPdfMediaSchema = z
   })
   .strict();
 
+const imageAnimationEffectSchema = z.enum(["ken_burns", "pan_horizontal", "pan_vertical", "rotate", "flip", "fade_in"]);
+
+export const imageAnimationPresetSchema = z
+  .object({
+    effect: imageAnimationEffectSchema,
+    fps: z.number().min(1).max(60).optional(),
+    zoomFrom: z.number().optional(),
+    zoomTo: z.number().optional(),
+    panFrom: z.number().optional(),
+    panTo: z.number().optional(),
+    zoom: z.number().optional(),
+    degreesFrom: z.number().optional(),
+    degreesTo: z.number().optional(),
+    easing: z.enum(["linear", "easeIn", "easeOut", "easeInOut"]).optional(),
+  })
+  .strict();
+
 export const mulmoImageMediaSchema = z
   .object({
     type: z.literal("image"),
     source: mediaSourceSchema,
+    animation: imageAnimationPresetSchema.optional(),
   })
   .strict();
 
