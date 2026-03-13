@@ -1,0 +1,421 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "Animated Patterns Test",
+  "references": [
+    {
+      "url": "https://www.mulmocast.com",
+      "title": "Mulmocast",
+      "type": "article"
+    }
+  ],
+  "imageParams": {
+    "images": {
+      "qaLandscape": {
+        "type": "image",
+        "source": {
+          "kind": "path",
+          "path": "images/qa_landscape.jpg"
+        }
+      },
+      "qaPortrait": {
+        "type": "image",
+        "source": {
+          "kind": "path",
+          "path": "images/qa_portrait.png"
+        }
+      }
+    }
+  },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "voiceId": "shimmer",
+        "displayName": {
+          "en": "Presenter"
+        }
+      }
+    }
+  },
+  "beats": [
+    {
+      "id": "animate_opacity_translate",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-slate-900'>",
+          "  <h1 id='title' class='text-5xl font-bold text-white' style='opacity:0'>animate: opacity + translateY</h1>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#title', { opacity: [0, 1], translateY: [40, 0] }, { start: 0, end: 1, easing: 'easeOut' });"
+        ],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "animate_scale_rotate",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-gray-900'>",
+          "  <div id='box' class='w-32 h-32 bg-cyan-500 rounded-xl' style='opacity:0'></div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#box', { opacity: [0, 1], scale: [0.3, 1], rotate: [0, 360] }, { start: 0, end: 1.5, easing: 'easeOut' });"
+        ],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "animate_width_percent",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-center bg-white px-12'>",
+          "  <div id='bar' class='h-8 bg-blue-500 rounded-r' style='width:0'></div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#bar', { width: [0, 80, '%'] }, { start: 0, end: 1.5, easing: 'easeInOut' });"
+        ],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "animate_3d_rotateX",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-black' style='perspective:800px'>",
+          "  <h1 id='title' class='text-5xl font-bold text-white' style='opacity:0'>3D rotateX</h1>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#title', { opacity: [0, 1], rotateX: [90, 0] }, { start: 0, end: 1, easing: 'easeOut' });"
+        ],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "animate_3d_rotateY",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-indigo-950' style='perspective:1000px'>",
+          "  <div id='card' class='w-64 h-40 rounded-xl flex items-center justify-center' style='background:linear-gradient(135deg,#3b82f6,#06b6d4);transform-style:preserve-3d'>",
+          "    <p class='text-white text-2xl font-bold'>rotateY flip</p>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#card', { rotateY: [0, 180] }, { start: 0.2, end: 1.8, easing: 'easeInOut' });"
+        ],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "stagger_items",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-white gap-4 px-12'>",
+          "  <div id='item0' class='w-full max-w-md p-3 bg-blue-100 rounded-lg' style='opacity:0'><p class='text-blue-800'>Item 0</p></div>",
+          "  <div id='item1' class='w-full max-w-md p-3 bg-green-100 rounded-lg' style='opacity:0'><p class='text-green-800'>Item 1</p></div>",
+          "  <div id='item2' class='w-full max-w-md p-3 bg-purple-100 rounded-lg' style='opacity:0'><p class='text-purple-800'>Item 2</p></div>",
+          "  <div id='item3' class='w-full max-w-md p-3 bg-orange-100 rounded-lg' style='opacity:0'><p class='text-orange-800'>Item 3</p></div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.stagger('#item{i}', 4, { opacity: [0, 1], translateX: [-30, 0] }, { start: 0, stagger: 0.2, duration: 0.3, easing: 'easeOut' });"
+        ],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "counter_basic",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-slate-900'>",
+          "  <p id='counter' class='text-7xl font-bold text-white'>0</p>",
+          "  <p class='text-slate-400 mt-2'>counter basic</p>",
+          "</div>"
+        ],
+        "script": ["const animation = new MulmoAnimation();", "animation.counter('#counter', [0, 1000], { start: 0, end: 1.5, easing: 'easeOut' });"],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "counter_prefix_suffix_decimals",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-gray-900'>",
+          "  <p id='price' class='text-5xl font-bold text-green-400'>$0.00</p>",
+          "  <p class='text-gray-400 mt-2'>counter with prefix, suffix, decimals</p>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.counter('#price', [0, 99.99], { start: 0, end: 1.5, prefix: '$', suffix: ' USD', decimals: 2, easing: 'easeOut' });"
+        ],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "typewriter_text",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-gray-900 px-16'>",
+          "  <p id='tw' class='text-2xl font-mono text-green-400'></p>",
+          "</div>"
+        ],
+        "script": ["const animation = new MulmoAnimation();", "animation.typewriter('#tw', 'Typewriter animation test.', { start: 0, end: 1.5 });"],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "codereveal_lines",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-slate-900 px-16'>",
+          "  <pre id='code' class='text-lg font-mono text-green-400'></pre>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.codeReveal('#code', ['const x = 1;', 'const y = 2;', 'return x + y;'], { start: 0, end: 1.5 });"
+        ],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "blink_cursor",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-gray-900'>",
+          "  <span class='text-2xl font-mono text-green-400'>$ command</span>",
+          "  <span id='cursor' class='text-2xl font-mono text-green-400'>|</span>",
+          "</div>"
+        ],
+        "script": ["const animation = new MulmoAnimation();", "animation.blink('#cursor', { interval: 0.3 });"],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "raw_render_interpolate",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-slate-800'>",
+          "  <div id='ball' class='w-12 h-12 bg-cyan-400 rounded-full' style='opacity:0'></div>",
+          "</div>"
+        ],
+        "script": [
+          "function render(frame, totalFrames, fps) {",
+          "  const ball = document.getElementById('ball');",
+          "  ball.style.opacity = interpolate(frame, { input: { inMin: 0, inMax: fps * 0.5 }, output: { outMin: 0, outMax: 1 } });",
+          "  ball.style.transform = 'translateX(' + interpolate(frame, { input: { inMin: 0, inMax: totalFrames }, output: { outMin: -200, outMax: 200 } }) + 'px)';",
+          "}"
+        ],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "raw_render_easing",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col justify-center bg-slate-900 gap-4 px-12'>",
+          "  <div class='flex items-center gap-4'><span class='text-white w-20 text-sm'>linear</span><div id='e0' class='w-8 h-8 bg-cyan-400 rounded-full'></div></div>",
+          "  <div class='flex items-center gap-4'><span class='text-white w-20 text-sm'>easeIn</span><div id='e1' class='w-8 h-8 bg-green-400 rounded-full'></div></div>",
+          "  <div class='flex items-center gap-4'><span class='text-white w-20 text-sm'>easeOut</span><div id='e2' class='w-8 h-8 bg-yellow-400 rounded-full'></div></div>",
+          "  <div class='flex items-center gap-4'><span class='text-white w-20 text-sm'>easeInOut</span><div id='e3' class='w-8 h-8 bg-rose-400 rounded-full'></div></div>",
+          "</div>"
+        ],
+        "script": [
+          "function render(frame, totalFrames, fps) {",
+          "  const max = 500;",
+          "  document.getElementById('e0').style.transform = 'translateX(' + interpolate(frame, { input: { inMin: 0, inMax: totalFrames }, output: { outMin: 0, outMax: max }, easing: Easing.linear }) + 'px)';",
+          "  document.getElementById('e1').style.transform = 'translateX(' + interpolate(frame, { input: { inMin: 0, inMax: totalFrames }, output: { outMin: 0, outMax: max }, easing: Easing.easeIn }) + 'px)';",
+          "  document.getElementById('e2').style.transform = 'translateX(' + interpolate(frame, { input: { inMin: 0, inMax: totalFrames }, output: { outMin: 0, outMax: max }, easing: Easing.easeOut }) + 'px)';",
+          "  document.getElementById('e3').style.transform = 'translateX(' + interpolate(frame, { input: { inMin: 0, inMax: totalFrames }, output: { outMin: 0, outMax: max }, easing: Easing.easeInOut }) + 'px)';",
+          "}"
+        ],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "svg_animation",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-slate-900'>",
+          "  <svg viewBox='0 0 200 200' class='w-64 h-64'>",
+          "    <circle id='c1' cx='100' cy='100' r='0' fill='none' stroke='#06b6d4' stroke-width='3' />",
+          "    <circle id='c2' cx='100' cy='100' r='0' fill='none' stroke='#8b5cf6' stroke-width='3' />",
+          "  </svg>",
+          "</div>"
+        ],
+        "script": [
+          "function render(frame, totalFrames, fps) {",
+          "  document.getElementById('c1').setAttribute('r', interpolate(frame, { input: { inMin: 0, inMax: totalFrames * 0.7 }, output: { outMin: 0, outMax: 80 } }));",
+          "  document.getElementById('c2').setAttribute('r', interpolate(frame, { input: { inMin: fps * 0.3, inMax: totalFrames * 0.8 }, output: { outMin: 0, outMax: 60 } }));",
+          "}"
+        ],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "combined_dsl",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex flex-col items-center justify-center bg-slate-900 px-12'>",
+          "  <h2 id='heading' class='text-3xl font-bold text-white mb-4' style='opacity:0'>Combined DSL</h2>",
+          "  <p id='counter' class='text-5xl font-bold text-cyan-400 mb-4'>0</p>",
+          "  <div id='r0' class='w-full max-w-sm p-2 bg-blue-900 rounded mb-2' style='opacity:0'><p class='text-white text-sm'>Row A</p></div>",
+          "  <div id='r1' class='w-full max-w-sm p-2 bg-blue-900 rounded mb-2' style='opacity:0'><p class='text-white text-sm'>Row B</p></div>",
+          "  <div id='r2' class='w-full max-w-sm p-2 bg-blue-900 rounded' style='opacity:0'><p class='text-white text-sm'>Row C</p></div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#heading', { opacity: [0, 1], translateY: [20, 0] }, { start: 0, end: 0.4, easing: 'easeOut' });",
+          "animation.counter('#counter', [0, 500], { start: 0.2, end: 1.5, easing: 'easeOut' });",
+          "animation.stagger('#r{i}', 3, { opacity: [0, 1], translateX: [-20, 0] }, { start: 0.5, stagger: 0.2, duration: 0.3, easing: 'easeOut' });"
+        ],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "fps_30",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-gray-900'>",
+          "  <div id='dot' class='w-10 h-10 bg-yellow-400 rounded-full' style='opacity:0'></div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#dot', { opacity: [0, 1], translateX: [-100, 100] }, { start: 0, end: 0.8, easing: 'easeInOut' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "cover_zoom",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <img id='photo_img' src='image:qaLandscape' style='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:none;max-height:none' />",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.coverZoom('#photo_img', { zoomFrom: 1.0, zoomTo: 1.3, start: 0, end: 'auto', easing: 'easeInOut' });"
+        ],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "cover_pan",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <img id='photo_img' src='image:qaPortrait' style='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:none;max-height:none' />",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.coverPan('#photo_img', { direction: 'vertical', from: 0, to: 100, zoom: 1.2, start: 0, end: 'auto', easing: 'easeInOut' });"
+        ],
+        "animation": { "fps": 15 }
+      }
+    },
+    {
+      "id": "static_no_animation",
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 1,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full flex items-center justify-center bg-slate-50'>",
+          "  <p class='text-2xl text-gray-700'>Static html_tailwind (no animation)</p>",
+          "</div>"
+        ]
+      }
+    }
+  ]
+}
