@@ -195,19 +195,27 @@
 
       /** Resolve container for cover-based helpers */
       MulmoAnimation.prototype._resolveContainer = function(el, selector) {
-        if (selector) return document.querySelector(selector);
+        if (selector) return document.querySelector(selector) || (el ? el.parentElement : null);
         return el ? el.parentElement : null;
       };
 
       /** Ensure cover target is positioned in the same container used for sizing */
       MulmoAnimation.prototype._prepareCoverContext = function(el, container) {
         if (!el || !container) return;
+        if (el.contains(container)) {
+          container = el.parentElement;
+          if (!container) return;
+        }
         const computed = window.getComputedStyle(container);
         if (computed.position === 'static') {
           container.style.position = 'relative';
         }
         if (el.parentElement !== container) {
-          container.appendChild(el);
+          try {
+            container.appendChild(el);
+          } catch (e) {
+            console.warn('MulmoAnimation: failed to move cover element into container', e);
+          }
         }
       };
 
@@ -316,10 +324,12 @@
             const zFrom = opts.zoomFrom === undefined
               ? (opts.from === undefined ? 1 : this._toFiniteNumber(opts.from, 1))
               : this._toFiniteNumber(opts.zoomFrom, 1);
+            const safeZFrom = Math.max(1e-6, zFrom);
             const zTo = opts.zoomTo === undefined
-              ? (opts.to === undefined ? 1 : this._toFiniteNumber(opts.to, 1))
-              : this._toFiniteNumber(opts.zoomTo, zFrom);
-            const zCurrent = zFrom + easingFn(zProgress) * (zTo - zFrom);
+              ? (opts.to === undefined ? safeZFrom : this._toFiniteNumber(opts.to, safeZFrom))
+              : this._toFiniteNumber(opts.zoomTo, safeZFrom);
+            const safeZTo = Math.max(1e-6, zTo);
+            const zCurrent = safeZFrom + easingFn(zProgress) * (safeZTo - safeZFrom);
             const zSize = this._coverSize(zEl, zContainer, zCurrent);
             if (!zSize) return;
             this._applyCoverBaseStyle(zEl, zSize.iw, zSize.ih);
@@ -334,7 +344,7 @@
             const pAxis = opts.axis === 'y' ? 'y' : 'x';
             const pDirection = this._toFiniteNumber(opts.direction, 1) < 0 ? -1 : 1;
             const pRequested = Math.abs(this._toFiniteNumber(opts.distance, 0));
-            const pZoom = this._toFiniteNumber(opts.zoom, 1);
+            const pZoom = Math.max(1e-6, this._toFiniteNumber(opts.zoom, 1));
             const pSize = this._coverSize(pEl, pContainer, pZoom);
             if (!pSize) return;
             this._applyCoverBaseStyle(pEl, pSize.iw, pSize.ih);
