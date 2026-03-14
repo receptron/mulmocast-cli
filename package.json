@@ -56,7 +56,7 @@
     "pdf": "npx tsx ./src/cli/bin.ts pdf",
     "test": "rm -f scratchpad/test*.* && npx tsx ./src/audio.ts scripts/test/test.json && npx tsx ./src/images.ts scripts/test/test.json && npx tsx ./src/movie.ts scripts/test/test.json",
     "ci_test": "cross-env NODE_ENV=test tsx --test --experimental-test-coverage ./test/*/test_*.ts",
-    "lint": "eslint src test",
+    "lint": "eslint src test assets/html/js",
     "build": "tsc",
     "build_test": "tsc && git checkout -- lib/*",
     "cli": "npx tsx ./src/cli/bin.ts",

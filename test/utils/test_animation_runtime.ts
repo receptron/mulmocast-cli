@@ -8,17 +8,23 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const jsDir = path.resolve(__dirname, "../../assets/html/js");
 
+const JS_FILES = ["animation_runtime.js", "data_attribute_registration.js", "auto_render.js"];
+
+const readJSFile = (filename: string) => fs.readFileSync(path.join(jsDir, filename), "utf-8");
+
 const loadRuntime = () => {
-  const code = fs.readFileSync(path.join(jsDir, "animation_runtime.js"), "utf-8");
+  const code = readJSFile("animation_runtime.js");
   const context = vm.createContext({
     window: { __MULMO: { totalFrames: 120, fps: 30 } },
     document: {
       querySelector: () => null,
+      querySelectorAll: () => [],
     },
     console,
     Number,
     Math,
     Object,
+    JSON,
     SVGElement: class SVGElement {},
   });
   // eslint-disable-next-line sonarjs/code-eval -- intentional: testing browser JS in Node.js via vm sandbox
@@ -194,6 +200,45 @@ describe("MulmoAnimation", () => {
     assert.equal(anim._toFiniteNumber(Infinity, 99), 99);
     assert.equal(anim._toFiniteNumber(undefined, 5), 5);
     assert.equal(anim._toFiniteNumber(null, 5), 0); // Number(null) === 0
+  });
+});
+
+describe("JS file syntax validation", () => {
+  JS_FILES.forEach((filename) => {
+    it(`${filename} parses without syntax errors`, () => {
+      const code = readJSFile(filename);
+      // Compile the script — throws SyntaxError if invalid
+      // eslint-disable-next-line sonarjs/code-eval -- intentional: validating browser JS syntax via vm
+      const script = new vm.Script(code, { filename });
+      assert.ok(script, "Script compiled successfully");
+    });
+  });
+
+  it("all 3 JS files load together in a single context", () => {
+    const context = vm.createContext({
+      window: { __MULMO: { totalFrames: 120, fps: 30 }, render: undefined, animation: undefined, playAnimation: undefined },
+      document: {
+        querySelector: () => null,
+        querySelectorAll: () => [],
+      },
+      console,
+      Number,
+      Math,
+      Object,
+      JSON,
+      SVGElement: class SVGElement {},
+      Promise,
+      requestAnimationFrame: () => 0,
+    });
+    JS_FILES.forEach((filename) => {
+      const code = readJSFile(filename);
+      // eslint-disable-next-line sonarjs/code-eval -- intentional: testing browser JS in Node.js via vm sandbox
+      vm.runInContext(code, context);
+    });
+    // After loading all files, MulmoAnimation and Easing should be available
+    assert.equal(typeof context.MulmoAnimation, "function");
+    assert.equal(typeof context.Easing, "object");
+    assert.equal(typeof context.interpolate, "function");
   });
 });
 
