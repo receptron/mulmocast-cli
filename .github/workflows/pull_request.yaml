@@ -52,6 +52,8 @@ jobs:
     - name: Install Chromium for Puppeteer
       run: npx puppeteer browsers install chrome
     - run: yarn run format
+    - name: Syntax check browser JS
+      run: node --check assets/html/js/*.js
     - run: yarn run lint
     - run: yarn run build
     - name: Build types package

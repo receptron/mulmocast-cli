@@ -2,7 +2,7 @@ import fs from "node:fs";
 import nodePath from "node:path";
 import { ImageProcessorParams } from "../../types/index.js";
 import { MulmoBeatMethods } from "../../methods/mulmo_beat.js";
-import { getHTMLFile } from "../file.js";
+import { getHTMLFile, getJSFile } from "../file.js";
 import { renderHTMLToImage, interpolate, renderHTMLToFrames, renderHTMLToVideo } from "../html_render.js";
 import { framesToVideo } from "../ffmpeg_utils.js";
 import { parrotingImagePath } from "./utils.js";
@@ -80,6 +80,9 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
   const script = "script" in beat.image ? (beat.image as { script?: string | string[] }).script : undefined;
   const rawHtmlData = interpolate(template, {
     html_body: html,
+    animation_runtime: getJSFile("animation_runtime"),
+    data_attribute_registration: getJSFile("data_attribute_registration"),
+    auto_render: getJSFile("auto_render"),
     user_script: buildUserScript(script),
     totalFrames: String(totalFrames),
     fps: String(fps),

@@ -7,7 +7,7 @@ import sonarjs from "eslint-plugin-sonarjs";
 
 export default [
   {
-    files: ["{src,test,samles}/**/*.{js,ts,yaml,yml}"],
+    files: ["{src,test}/**/*.{js,ts,yaml,yml}", "assets/html/js/**/*.js"],
   },
   {
     ignores: ["lib"],
@@ -65,6 +65,31 @@ export default [
     },
     plugins: {
       prettier: prettierPlugin,
+    },
+  },
+  // Browser JS runtime files — syntax + basic checks (no TypeScript rules)
+  // Top-level `var` is required for vm.runInContext compatibility in tests.
+  {
+    files: ["assets/html/js/**/*.js"],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
+      sourceType: "script",
+    },
+    rules: {
+      "no-undef": "off",
+      "no-var": "off",
+      "prefer-const": "off",
+      "no-console": "off",
+      "no-param-reassign": "off",
+      "no-prototype-builtins": "off",
+      "object-shorthand": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-this-alias": "off",
+      "sonarjs/no-nested-conditional": "off",
+      "sonarjs/cognitive-complexity": "off",
     },
   },
   eslintConfigPrettier,
