@@ -175,6 +175,67 @@ No `render()` needed — auto-render detects the `animation` variable and genera
 }
 ```
 
+## Data-attribute Declarative Animations (No JS Required)
+
+Declare animations using HTML `data-animation` attributes — no `script` field needed.
+
+### Example
+
+```json
+{
+  "html": [
+    "<div class='h-full w-full overflow-hidden relative bg-black'>",
+    "  <img src='image:bg' data-animation='coverZoom' data-zoom-from='1.0' data-zoom-to='1.4' data-container='#outer' style='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:none;max-height:none' />",
+    "  <div data-animation='animate' data-opacity='0,1' data-translate-y='30,0' data-start='0.3' style='position:absolute;bottom:100px;left:60px;color:white;font-size:72px;font-weight:900'>Title</div>",
+    "  <div data-animation='counter' data-from='0' data-to='7500' data-easing='easeOut' style='color:white;font-size:120px;font-weight:900'>0</div>",
+    "</div>"
+  ],
+  "animation": true
+}
+```
+
+### Supported data-animation values
+
+| Value | Key data-* attributes | Notes |
+|-------|----------------------|-------|
+| `animate` | `data-opacity="0,1"`, `data-translate-x`, `data-translate-y`, `data-scale`, `data-rotate`, `data-rotate-x/y/z`, `data-width="0,80,%"`, `data-height` | Values as `"from,to"` or `"from,to,unit"` |
+| `stagger` | Same as animate + `data-count`, `data-stagger`, `data-duration` | For numbered element sequences |
+| `counter` | `data-from`, `data-to`, `data-prefix`, `data-suffix`, `data-decimals` | Animated counter |
+| `typewriter` | `data-text` | Falls back to element's textContent |
+| `codeReveal` | `data-lines` (JSON array string) | Line-by-line reveal |
+| `blink` | `data-interval` | Default 0.5s half-cycle |
+| `coverZoom` | `data-zoom-from`, `data-zoom-to` (or `data-from`, `data-to`) | Cover-fit zoom |
+| `coverPan` | `data-axis`, `data-direction`, `data-distance`, `data-from`, `data-to`, `data-zoom` | Cover-fit pan |
+
+Common: `data-start` (seconds), `data-end` (seconds or omit for `auto`), `data-easing`, `data-container` (selector for coverZoom/coverPan container)
+
+### Coexistence with script
+
+Data-attribute animations **merge** with script-defined `animation` instances. Use `script` for complex logic and `data-animation` for simple elements in the same beat:
+
+```json
+{
+  "html": [
+    "<div id='title' style='opacity:0'>Script animates this</div>",
+    "<div data-animation='animate' data-opacity='0,1' data-start='1.0'>Data-attr animates this</div>"
+  ],
+  "script": [
+    "const animation = new MulmoAnimation();",
+    "animation.animate('#title', { opacity: [0, 1] }, { start: 0, end: 0.8 });"
+  ],
+  "animation": true
+}
+```
+
+### When to use data-attributes vs script
+
+| Scenario | Recommended |
+|----------|-------------|
+| Simple fade/zoom/pan with text overlay | `data-animation` only |
+| Multiple standard animations on a page | `data-animation` only |
+| Complex custom logic (SVG, particles) | `script` with `render()` |
+| Mix of standard + complex on same beat | `script` + `data-animation` (coexistence) |
+
 ## Constraints
 
 - `animation` and `moviePrompt` cannot be used together on the same beat

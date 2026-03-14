@@ -292,6 +292,83 @@ function render(frame, totalFrames, fps) {
 }
 ```
 
+## Data-attribute 宣言的アニメーション
+
+HTML の `data-animation` 属性でアニメーションを宣言できる。JavaScript（`script` フィールド）を書く必要がない。
+
+### 基本的な使い方
+
+```json
+{
+  "image": {
+    "type": "html_tailwind",
+    "html": [
+      "<div class='h-full w-full overflow-hidden relative bg-black'>",
+      "  <img src='image:bg' data-animation='coverZoom' data-zoom-from='1.0' data-zoom-to='1.4' />",
+      "  <div data-animation='animate' data-opacity='0,1' data-translate-y='30,0' data-start='0.3' style='color:white;font-size:72px'>Title</div>",
+      "  <div data-animation='counter' data-from='0' data-to='7500' data-easing='easeOut' style='color:white;font-size:120px'>0</div>",
+      "</div>"
+    ],
+    "animation": true
+  }
+}
+```
+
+`script` フィールドなし — data 属性だけでアニメーションが動く。
+
+### 対応する data-animation 値
+
+| data-animation | 主な data-\* 属性 | 説明 |
+|----------------|-------------------|------|
+| `animate` | `data-opacity`, `data-translate-x`, `data-translate-y`, `data-scale`, `data-rotate`, `data-rotate-x/y/z`, `data-width`, `data-height` | プロパティアニメーション。値は `"from,to"` 形式（例: `data-opacity="0,1"`）。単位指定は `"0,80,%"` |
+| `stagger` | animate と同じ + `data-count`, `data-stagger`, `data-duration` | 連番要素のスタガーアニメーション |
+| `counter` | `data-from`, `data-to`, `data-prefix`, `data-suffix`, `data-decimals` | カウンターアニメーション |
+| `typewriter` | `data-text` | タイプライターエフェクト。`data-text` 省略時は要素の textContent を使用 |
+| `codeReveal` | `data-lines` | コード行送り。`data-lines` は JSON 配列文字列 |
+| `blink` | `data-interval` | 点滅（デフォルト 0.5秒） |
+| `coverZoom` | `data-zoom-from`, `data-zoom-to`（または `data-from`, `data-to`） | 画面を埋めたままズーム |
+| `coverPan` | `data-axis`, `data-direction`, `data-distance`, `data-from`, `data-to`, `data-zoom` | 画面を埋めたままパン |
+
+### 共通属性
+
+| 属性 | 説明 |
+|------|------|
+| `data-start` | 開始時刻（秒） |
+| `data-end` | 終了時刻（秒）。省略時は `auto`（ビート全体） |
+| `data-easing` | `linear`, `easeIn`, `easeOut`, `easeInOut` |
+| `data-container` | coverZoom/coverPan のコンテナセレクタ |
+
+### script との共存
+
+`script` で `const animation = new MulmoAnimation()` を定義し、一部の要素に `data-animation` を指定すると、**data 属性のアニメーションが既存のインスタンスに追加される**。script で定義したアニメーションと data 属性のアニメーションが1つの `MulmoAnimation` インスタンスで共存する。
+
+```json
+{
+  "html": [
+    "<div class='h-full w-full relative bg-black'>",
+    "  <div id='title' style='opacity:0;color:white;font-size:72px'>Script handles this</div>",
+    "  <div data-animation='animate' data-opacity='0,1' data-start='1.0' style='color:yellow;font-size:48px'>Data-attr handles this</div>",
+    "</div>"
+  ],
+  "script": [
+    "const animation = new MulmoAnimation();",
+    "animation.animate('#title', { opacity: [0, 1], translateY: [30, 0] }, { start: 0, end: 0.8, easing: 'easeOut' });"
+  ],
+  "animation": true
+}
+```
+
+### 優先順位
+
+1. `script` で `render()` 関数を定義 → render() が使われる（data 属性は無視されない — `animation` インスタンスがあれば追加される）
+2. `script` で `animation` 変数を定義 + data 属性あり → data 属性が既存インスタンスに追加
+3. data 属性のみ → 新しい `MulmoAnimation` インスタンスが自動生成
+4. `script` も data 属性もなし → 静的レンダリング
+
+### ID の自動生成
+
+`data-animation` を持つ要素に `id` がない場合、自動的に `__mulmo_da_0`, `__mulmo_da_1`, ... が割り当てられる。明示的に `id` を指定するのが推奨。
+
 ## 制約
 
 - `animation` と `moviePrompt` の併用不可（同一ビートで両方指定するとエラー）
