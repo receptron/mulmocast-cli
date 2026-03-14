@@ -67,7 +67,8 @@ export default [
       prettier: prettierPlugin,
     },
   },
-  // Browser JS runtime files — syntax + basic checks only (no TypeScript, var allowed)
+  // Browser JS runtime files — syntax + basic checks (no TypeScript rules)
+  // Top-level `var` is required for vm.runInContext compatibility in tests.
   {
     files: ["assets/html/js/**/*.js"],
     languageOptions: {
@@ -78,20 +79,17 @@ export default [
     },
     rules: {
       "no-undef": "off",
-      "prefer-const": "off",
       "no-var": "off",
+      "prefer-const": "off",
       "no-console": "off",
       "no-param-reassign": "off",
       "no-prototype-builtins": "off",
-      "no-useless-assignment": "off",
       "object-shorthand": "off",
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-require-imports": "off",
       "@typescript-eslint/no-this-alias": "off",
       "sonarjs/no-nested-conditional": "off",
       "sonarjs/cognitive-complexity": "off",
-      "sonarjs/no-dead-store": "off",
-      "sonarjs/no-redundant-assignments": "off",
     },
   },
   eslintConfigPrettier,

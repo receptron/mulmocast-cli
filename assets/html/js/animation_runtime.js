@@ -1,6 +1,10 @@
 // === MulmoCast Animation Runtime ===
 // Extracted from tailwind_animated.html for maintainability and testability.
 // This file is loaded by the template at runtime via fs.readFileSync.
+//
+// NOTE: Top-level declarations use `var` intentionally — these files run in
+// browser global scope AND are tested via Node.js `vm.runInContext`, where
+// only `var` (not `const`/`let`) creates properties on the sandbox context.
 
 /**
  * Easing functions for non-linear interpolation.
@@ -21,24 +25,37 @@ var Easing = {
 };
 
 /**
+ * Parse a numeric value, returning fallback if not finite.
+ * Shared utility used by MulmoAnimation and data-attribute registration.
+ *
+ * @param {*} value - Value to parse
+ * @param {number} fallback - Default if value is not a finite number
+ * @returns {number}
+ */
+var toFiniteNumber = function (value, fallback) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : fallback;
+};
+
+/**
  * Interpolation with clamping and optional easing.
  *
  * @param {number} value - Current value (typically frame number)
  * @param {Object} opts - { input: { inMin, inMax }, output: { outMin, outMax }, easing?: string | function }
  * @returns {number} Interpolated and clamped value
  */
-function interpolate(value, opts) {
-  var inMin = opts.input.inMin;
-  var inMax = opts.input.inMax;
-  var outMin = opts.output.outMin;
-  var outMax = opts.output.outMax;
+var interpolate = function (value, opts) {
+  const inMin = opts.input.inMin;
+  const inMax = opts.input.inMax;
+  const outMin = opts.output.outMin;
+  const outMax = opts.output.outMax;
   if (inMax === inMin) {
     return outMin;
   }
-  var easing = !opts.easing ? Easing.linear : typeof opts.easing === "function" ? opts.easing : Easing[opts.easing] || Easing.linear;
-  var progress = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
+  const easing = !opts.easing ? Easing.linear : typeof opts.easing === "function" ? opts.easing : Easing[opts.easing] || Easing.linear;
+  const progress = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
   return outMin + easing(progress) * (outMax - outMin);
-}
+};
 
 // === MulmoAnimation Helper Class ===
 
@@ -63,9 +80,9 @@ var SVG_PROPS = [
   "opacity",
 ];
 
-function MulmoAnimation() {
+var MulmoAnimation = function () {
   this._entries = [];
-}
+};
 
 /**
  * Register a property animation on a single element.
@@ -132,31 +149,30 @@ MulmoAnimation.prototype._resolveEasing = function (e) {
 
 /** Convert value to finite number, otherwise return fallback */
 MulmoAnimation.prototype._toFiniteNumber = function (value, fallback) {
-  var n = Number(value);
-  return Number.isFinite(n) ? n : fallback;
+  return toFiniteNumber(value, fallback);
 };
 
 /** Apply props to element at a given progress (0-1) with easing */
 MulmoAnimation.prototype._applyProps = function (el, props, progress, easingFn) {
   if (!el) return;
-  var self = this;
-  var transforms = [];
+  const self = this;
+  const transforms = [];
   Object.keys(props).forEach(function (prop) {
-    var spec = props[prop];
-    var from = self._toFiniteNumber(spec[0], 0);
-    var to = self._toFiniteNumber(spec[1], from);
-    var unit = spec.length > 2 ? spec[2] : null;
-    var val = from + easingFn(progress) * (to - from);
+    const spec = props[prop];
+    const from = self._toFiniteNumber(spec[0], 0);
+    const to = self._toFiniteNumber(spec[1], from);
+    const unit = spec.length > 2 ? spec[2] : null;
+    const val = from + easingFn(progress) * (to - from);
 
     if (TRANSFORM_PROPS.hasOwnProperty(prop)) {
-      var tUnit = unit || TRANSFORM_PROPS[prop];
+      const tUnit = unit || TRANSFORM_PROPS[prop];
       transforms.push(prop === "scale" ? "scale(" + val + ")" : prop + "(" + val + tUnit + ")");
     } else if (el instanceof SVGElement && SVG_PROPS.indexOf(prop) !== -1) {
       el.setAttribute(prop, val);
     } else if (prop === "opacity") {
       el.style.opacity = val;
     } else {
-      var cssUnit = unit || "px";
+      const cssUnit = unit || "px";
       el.style[prop] = val + cssUnit;
     }
   });
@@ -178,7 +194,7 @@ MulmoAnimation.prototype._prepareCoverContext = function (el, container) {
     container = el.parentElement;
     if (!container) return null;
   }
-  var computed = window.getComputedStyle(container);
+  const computed = window.getComputedStyle(container);
   if (computed.position === "static") {
     container.style.position = "relative";
   }
@@ -195,14 +211,14 @@ MulmoAnimation.prototype._prepareCoverContext = function (el, container) {
 /** Calculate cover-scaled dimensions from intrinsic media size */
 MulmoAnimation.prototype._coverSize = function (el, container, zoom) {
   if (!el || !container) return null;
-  var intrinsicW = el.naturalWidth || el.videoWidth;
-  var intrinsicH = el.naturalHeight || el.videoHeight;
+  const intrinsicW = el.naturalWidth || el.videoWidth;
+  const intrinsicH = el.naturalHeight || el.videoHeight;
   if (!intrinsicW || !intrinsicH) return null;
-  var ww = container.clientWidth || container.offsetWidth;
-  var wh = container.clientHeight || container.offsetHeight;
+  const ww = container.clientWidth || container.offsetWidth;
+  const wh = container.clientHeight || container.offsetHeight;
   if (!ww || !wh) return null;
-  var cover = Math.max(ww / intrinsicW, wh / intrinsicH);
-  var s = cover * zoom;
+  const cover = Math.max(ww / intrinsicW, wh / intrinsicH);
+  const s = cover * zoom;
   return { ww: ww, wh: wh, iw: intrinsicW * s, ih: intrinsicH * s };
 };
 
@@ -224,126 +240,125 @@ MulmoAnimation.prototype._applyCoverBaseStyle = function (el, iw, ih) {
  * @param {number} fps - frames per second
  */
 MulmoAnimation.prototype.update = function (frame, fps) {
-  var self = this;
-  var autoEndFrame = Math.max(0, window.__MULMO.totalFrames - 1);
+  const self = this;
+  const autoEndFrame = Math.max(0, window.__MULMO.totalFrames - 1);
   this._entries.forEach(function (entry) {
-    var opts = entry.opts;
-    var easingFn = self._resolveEasing(opts.easing);
+    const opts = entry.opts;
+    const easingFn = self._resolveEasing(opts.easing);
 
     if (entry.kind === "animate") {
-      var startFrame = (opts.start || 0) * fps;
-      var endFrame = opts.end === "auto" ? autoEndFrame : (opts.end || 0) * fps;
-      var progress = Math.max(0, Math.min(1, endFrame === startFrame ? 1 : (frame - startFrame) / (endFrame - startFrame)));
-      var el = document.querySelector(entry.selector);
+      const startFrame = (opts.start || 0) * fps;
+      const endFrame = opts.end === "auto" ? autoEndFrame : (opts.end || 0) * fps;
+      const progress = Math.max(0, Math.min(1, endFrame === startFrame ? 1 : (frame - startFrame) / (endFrame - startFrame)));
+      const el = document.querySelector(entry.selector);
       self._applyProps(el, entry.props, progress, easingFn);
     } else if (entry.kind === "stagger") {
-      var baseStart = (opts.start || 0) * fps;
-      var staggerDelay = (opts.stagger !== undefined ? opts.stagger : 0.2) * fps;
-      var dur = (opts.duration !== undefined ? opts.duration : 0.5) * fps;
-      for (var j = 0; j < entry.count; j++) {
-        var sel = entry.selector.replace(/\{i\}/g, j);
-        var sEl = document.querySelector(sel);
-        var sStart = baseStart + j * staggerDelay;
-        var sEnd = sStart + dur;
-        var sProgress = Math.max(0, Math.min(1, sEnd === sStart ? 1 : (frame - sStart) / (sEnd - sStart)));
+      const baseStart = (opts.start || 0) * fps;
+      const staggerDelay = (opts.stagger !== undefined ? opts.stagger : 0.2) * fps;
+      const dur = (opts.duration !== undefined ? opts.duration : 0.5) * fps;
+      for (let j = 0; j < entry.count; j++) {
+        const sel = entry.selector.replace(/\{i\}/g, j);
+        const sEl = document.querySelector(sel);
+        const sStart = baseStart + j * staggerDelay;
+        const sEnd = sStart + dur;
+        const sProgress = Math.max(0, Math.min(1, sEnd === sStart ? 1 : (frame - sStart) / (sEnd - sStart)));
         self._applyProps(sEl, entry.props, sProgress, easingFn);
       }
     } else if (entry.kind === "typewriter") {
-      var twStart = (opts.start || 0) * fps;
-      var twEnd = opts.end === "auto" ? autoEndFrame : (opts.end || 0) * fps;
-      var twProgress = Math.max(0, Math.min(1, twEnd === twStart ? 1 : (frame - twStart) / (twEnd - twStart)));
-      var charCount = Math.floor(twProgress * entry.text.length);
-      var twEl = document.querySelector(entry.selector);
+      const twStart = (opts.start || 0) * fps;
+      const twEnd = opts.end === "auto" ? autoEndFrame : (opts.end || 0) * fps;
+      const twProgress = Math.max(0, Math.min(1, twEnd === twStart ? 1 : (frame - twStart) / (twEnd - twStart)));
+      const charCount = Math.floor(twProgress * entry.text.length);
+      const twEl = document.querySelector(entry.selector);
       if (twEl) twEl.textContent = entry.text.substring(0, charCount);
     } else if (entry.kind === "counter") {
-      var cStart = (opts.start || 0) * fps;
-      var cEnd = opts.end === "auto" ? autoEndFrame : (opts.end || 0) * fps;
-      var cProgress = Math.max(0, Math.min(1, cEnd === cStart ? 1 : (frame - cStart) / (cEnd - cStart)));
-      var cVal = entry.range[0] + easingFn(cProgress) * (entry.range[1] - entry.range[0]);
-      var decimals = opts.decimals || 0;
-      var display = (opts.prefix || "") + cVal.toFixed(decimals) + (opts.suffix || "");
-      var cEl = document.querySelector(entry.selector);
+      const cStart = (opts.start || 0) * fps;
+      const cEnd = opts.end === "auto" ? autoEndFrame : (opts.end || 0) * fps;
+      const cProgress = Math.max(0, Math.min(1, cEnd === cStart ? 1 : (frame - cStart) / (cEnd - cStart)));
+      const cVal = entry.range[0] + easingFn(cProgress) * (entry.range[1] - entry.range[0]);
+      const decimals = opts.decimals || 0;
+      const display = (opts.prefix || "") + cVal.toFixed(decimals) + (opts.suffix || "");
+      const cEl = document.querySelector(entry.selector);
       if (cEl) cEl.textContent = display;
     } else if (entry.kind === "codeReveal") {
-      var crStart = (opts.start || 0) * fps;
-      var crEnd = opts.end === "auto" ? autoEndFrame : (opts.end || 0) * fps;
-      var crProgress = Math.max(0, Math.min(1, crEnd === crStart ? 1 : (frame - crStart) / (crEnd - crStart)));
-      var lineCount = Math.floor(crProgress * entry.lines.length);
-      var crEl = document.querySelector(entry.selector);
+      const crStart = (opts.start || 0) * fps;
+      const crEnd = opts.end === "auto" ? autoEndFrame : (opts.end || 0) * fps;
+      const crProgress = Math.max(0, Math.min(1, crEnd === crStart ? 1 : (frame - crStart) / (crEnd - crStart)));
+      const lineCount = Math.floor(crProgress * entry.lines.length);
+      const crEl = document.querySelector(entry.selector);
       if (crEl) crEl.textContent = entry.lines.slice(0, lineCount).join("\n");
     } else if (entry.kind === "blink") {
-      var interval_s = opts.interval || 0.5;
-      var blinkEl = document.querySelector(entry.selector);
+      const interval_s = opts.interval || 0.5;
+      const blinkEl = document.querySelector(entry.selector);
       if (blinkEl) {
-        var cycle = frame / fps / interval_s;
+        const cycle = frame / fps / interval_s;
         blinkEl.style.opacity = Math.floor(cycle) % 2 === 0 ? 1 : 0;
       }
     } else if (entry.kind === "coverZoom") {
-      var zEl = document.querySelector(entry.selector);
+      const zEl = document.querySelector(entry.selector);
       if (!zEl) return;
-      var zContainer = self._prepareCoverContext(zEl, self._resolveContainer(zEl, opts.containerSelector));
+      const zContainer = self._prepareCoverContext(zEl, self._resolveContainer(zEl, opts.containerSelector));
       if (!zContainer) return;
-      var zStart = (opts.start || 0) * fps;
-      var zEnd = opts.end === "auto" ? autoEndFrame : (opts.end || 0) * fps;
-      var zProgress = Math.max(0, Math.min(1, zEnd === zStart ? 1 : (frame - zStart) / (zEnd - zStart)));
-      var zFrom = opts.zoomFrom === undefined ? (opts.from === undefined ? 1 : self._toFiniteNumber(opts.from, 1)) : self._toFiniteNumber(opts.zoomFrom, 1);
-      var safeZFrom = Math.max(1e-6, zFrom);
-      var zTo =
+      const zStart = (opts.start || 0) * fps;
+      const zEnd = opts.end === "auto" ? autoEndFrame : (opts.end || 0) * fps;
+      const zProgress = Math.max(0, Math.min(1, zEnd === zStart ? 1 : (frame - zStart) / (zEnd - zStart)));
+      const zFrom = opts.zoomFrom === undefined ? (opts.from === undefined ? 1 : self._toFiniteNumber(opts.from, 1)) : self._toFiniteNumber(opts.zoomFrom, 1);
+      const safeZFrom = Math.max(1e-6, zFrom);
+      const zTo =
         opts.zoomTo === undefined
           ? opts.to === undefined
             ? safeZFrom
             : self._toFiniteNumber(opts.to, safeZFrom)
           : self._toFiniteNumber(opts.zoomTo, safeZFrom);
-      var safeZTo = Math.max(1e-6, zTo);
-      var zCurrent = safeZFrom + easingFn(zProgress) * (safeZTo - safeZFrom);
-      var zSize = self._coverSize(zEl, zContainer, zCurrent);
+      const safeZTo = Math.max(1e-6, zTo);
+      const zCurrent = safeZFrom + easingFn(zProgress) * (safeZTo - safeZFrom);
+      const zSize = self._coverSize(zEl, zContainer, zCurrent);
       if (!zSize) return;
       self._applyCoverBaseStyle(zEl, zSize.iw, zSize.ih);
     } else if (entry.kind === "coverPan") {
-      var pEl = document.querySelector(entry.selector);
+      const pEl = document.querySelector(entry.selector);
       if (!pEl) return;
-      var pContainer = self._prepareCoverContext(pEl, self._resolveContainer(pEl, opts.containerSelector));
+      const pContainer = self._prepareCoverContext(pEl, self._resolveContainer(pEl, opts.containerSelector));
       if (!pContainer) return;
-      var pStart = (opts.start || 0) * fps;
-      var pEnd = opts.end === "auto" ? autoEndFrame : (opts.end || 0) * fps;
-      var pProgress = Math.max(0, Math.min(1, pEnd === pStart ? 1 : (frame - pStart) / (pEnd - pStart)));
-      var pAxis = opts.axis === "y" ? "y" : "x";
-      var pDirection = self._toFiniteNumber(opts.direction, 1) < 0 ? -1 : 1;
-      var pRequested = Math.abs(self._toFiniteNumber(opts.distance, 0));
-      var pZoom = Math.max(1e-6, self._toFiniteNumber(opts.zoom, 1));
-      var pSize = self._coverSize(pEl, pContainer, pZoom);
+      const pStart = (opts.start || 0) * fps;
+      const pEnd = opts.end === "auto" ? autoEndFrame : (opts.end || 0) * fps;
+      const pProgress = Math.max(0, Math.min(1, pEnd === pStart ? 1 : (frame - pStart) / (pEnd - pStart)));
+      const pAxis = opts.axis === "y" ? "y" : "x";
+      const pDirection = self._toFiniteNumber(opts.direction, 1) < 0 ? -1 : 1;
+      const pRequested = Math.abs(self._toFiniteNumber(opts.distance, 0));
+      const pZoom = Math.max(1e-6, self._toFiniteNumber(opts.zoom, 1));
+      const pSize = self._coverSize(pEl, pContainer, pZoom);
       if (!pSize) return;
       self._applyCoverBaseStyle(pEl, pSize.iw, pSize.ih);
 
-      var viewport = pAxis === "x" ? pSize.ww : pSize.wh;
-      var imageSize = pAxis === "x" ? pSize.iw : pSize.ih;
-      var maxDistancePercent = Math.max(0, ((imageSize - viewport) / 2 / viewport) * 100);
-      var minPos = 50 - maxDistancePercent;
-      var maxPos = 50 + maxDistancePercent;
-      var safeRange = maxPos - minPos;
-      var clampPercent = function (v) {
+      const viewport = pAxis === "x" ? pSize.ww : pSize.wh;
+      const imageSize = pAxis === "x" ? pSize.iw : pSize.ih;
+      const maxDistancePercent = Math.max(0, ((imageSize - viewport) / 2 / viewport) * 100);
+      const minPos = 50 - maxDistancePercent;
+      const maxPos = 50 + maxDistancePercent;
+      const safeRange = maxPos - minPos;
+      const clampPercent = function (v) {
         return Math.max(0, Math.min(100, v));
       };
-      var mapToSafePos = function (v) {
+      const mapToSafePos = function (v) {
         return minPos + safeRange * (clampPercent(v) / 100);
       };
 
-      var panFrom = 50;
-      var panTo = 50;
+      let panFrom, panTo;
       if (opts.from !== undefined || opts.to !== undefined) {
-        var fromNorm = opts.from === undefined ? 50 : self._toFiniteNumber(opts.from, 50);
-        var toNorm = opts.to === undefined ? fromNorm : self._toFiniteNumber(opts.to, fromNorm);
+        const fromNorm = opts.from === undefined ? 50 : self._toFiniteNumber(opts.from, 50);
+        const toNorm = opts.to === undefined ? fromNorm : self._toFiniteNumber(opts.to, fromNorm);
         panFrom = mapToSafePos(fromNorm);
         panTo = mapToSafePos(toNorm);
       } else {
-        var distancePercent = Math.min(pRequested, maxDistancePercent);
+        const distancePercent = Math.min(pRequested, maxDistancePercent);
         panFrom = 50;
         panTo = panFrom + pDirection * distancePercent;
       }
 
-      var clampedFrom = Math.max(minPos, Math.min(maxPos, panFrom));
-      var clampedTo = Math.max(minPos, Math.min(maxPos, panTo));
-      var current = clampedFrom + easingFn(pProgress) * (clampedTo - clampedFrom);
+      const clampedFrom = Math.max(minPos, Math.min(maxPos, panFrom));
+      const clampedTo = Math.max(minPos, Math.min(maxPos, panTo));
+      const current = clampedFrom + easingFn(pProgress) * (clampedTo - clampedFrom);
       if (pAxis === "x") {
         pEl.style.left = current + "%";
         pEl.style.top = "50%";

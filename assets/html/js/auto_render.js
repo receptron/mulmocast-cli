@@ -1,6 +1,8 @@
 // === Auto-render and playAnimation ===
 // Auto-render: if MulmoAnimation is used but render() is not defined, generate it.
 // Check both local var (from user_script) and window.animation (from data-attribute auto-registration).
+//
+// NOTE: Top-level declarations use `var` intentionally — see animation_runtime.js header comment.
 var _autoAnim =
   typeof animation !== "undefined" && animation instanceof MulmoAnimation ? animation : window.animation instanceof MulmoAnimation ? window.animation : null;
 if (typeof window.render !== "function" && typeof render === "function") {
@@ -13,9 +15,13 @@ if (typeof window.render !== "function" && typeof render === "function") {
 
 // Initial render (frame 0)
 if (typeof window.render === "function") {
-  var _initResult = window.render(0, window.__MULMO.totalFrames, window.__MULMO.fps);
-  if (_initResult && typeof _initResult.then === "function") {
-    _initResult.catch(console.error);
+  try {
+    var _initResult = window.render(0, window.__MULMO.totalFrames, window.__MULMO.fps);
+    if (_initResult && typeof _initResult.then === "function") {
+      _initResult.catch(console.error);
+    }
+  } catch (e) {
+    console.error("MulmoAnimation: initial render failed", e);
   }
 }
 
@@ -26,16 +32,16 @@ if (typeof window.render === "function") {
  */
 window.playAnimation = function () {
   return new Promise(function (resolve, reject) {
-    var mulmo = window.__MULMO;
-    var fps = mulmo.fps;
-    var totalFrames = mulmo.totalFrames;
-    var frameDuration = 1000 / fps;
-    var startTime = null;
+    const mulmo = window.__MULMO;
+    const fps = mulmo.fps;
+    const totalFrames = mulmo.totalFrames;
+    const frameDuration = 1000 / fps;
+    let startTime = null;
 
     async function tick(timestamp) {
       if (startTime === null) startTime = timestamp;
-      var elapsed = timestamp - startTime;
-      var frame = Math.min(Math.floor(elapsed / frameDuration), totalFrames - 1);
+      const elapsed = timestamp - startTime;
+      const frame = Math.min(Math.floor(elapsed / frameDuration), totalFrames - 1);
 
       mulmo.frame = frame;
       if (typeof window.render === "function") {
