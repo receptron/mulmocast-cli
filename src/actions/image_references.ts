@@ -43,7 +43,7 @@ export const generateReferenceImage = async (inputs: {
         },
         params: {
           model: imageAgentInfo.imageParams.model,
-          canvasSize: context.presentationStyle.canvasSize,
+          canvasSize: image.canvasSize ?? context.presentationStyle.canvasSize,
         },
       },
     },

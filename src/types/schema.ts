@@ -310,6 +310,7 @@ export const mulmoImagePromptMediaSchema = z
   .object({
     type: z.literal("imagePrompt"),
     prompt: z.string().min(1),
+    canvasSize: z.object({ width: z.number(), height: z.number() }).strict().optional(),
   })
   .strict();
 
