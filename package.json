@@ -24,7 +24,8 @@
     }
   },
   "resolutions": {
-    "minimatch": "^10.2.4"
+    "minimatch": "^10.2.4",
+    "yauzl": "^3.2.1"
   },
   "bin": {
     "mulmo": "lib/cli/bin.js",
@@ -109,9 +110,9 @@
     "graphai": "^2.0.16",
     "jsdom": "^28.1.0",
     "marked": "^17.0.4",
-    "mulmocast-vision": "^1.0.8",
+    "mulmocast-vision": "^1.0.9",
     "ora": "^9.3.0",
-    "puppeteer": "^24.39.0",
+    "puppeteer": "^24.39.1",
     "replicate": "^1.4.0",
     "yaml": "^2.8.2",
     "yargs": "^18.0.0",
