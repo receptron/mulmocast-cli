@@ -205,6 +205,11 @@ export const getHTMLFile = (filename: string) => {
   return fs.readFileSync(htmlPath, "utf-8");
 };
 
+export const getJSFile = (filename: string) => {
+  const jsPath = resolveAssetFile(`./assets/html/js/${filename}.js`, npmRoot);
+  return fs.readFileSync(jsPath, "utf-8");
+};
+
 // for cli
 export const getBaseDirPath = (basedir?: string) => {
   if (!basedir) {
