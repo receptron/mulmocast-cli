@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.5.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.5.0) (2026-03-15)
+
+- **Animation Runtime Extraction**: Extracted animation runtime JS from HTML template into separate, testable files (`animation_runtime.js`, `data_attribute_registration.js`, `auto_render.js`)
+- **Data-Attribute Declarative Animations**: New `[data-animation]` HTML attributes for declaring animations without writing script code
+- **Cover Pan/Zoom**: New `coverPan()` and `coverZoom()` animation helpers for Ken Burns-style photo effects
+- **Per-Image canvasSize**: `imagePrompt` reference images now support optional `canvasSize` for per-image aspect ratio override
+- **Browser JS Quality**: ESLint, Prettier, and CI syntax checks for `assets/html/js/` files; var→const/let modernization
+
+📦 **npm**: [`mulmocast@2.5.0`](https://www.npmjs.com/package/mulmocast/v/2.5.0)
+
 ## [2.4.9](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.9) (2026-03-12)
 
 - **CDP Screencast for animations**: Use Chrome DevTools Protocol screencast for html_tailwind animation recording, with toggle to switch between frame-by-frame and CDP screencast modes
