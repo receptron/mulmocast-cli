@@ -1,11 +1,9 @@
-import fs from "node:fs";
 import nodePath from "node:path";
 import { ImageProcessorParams } from "../../types/index.js";
 import { MulmoBeatMethods } from "../../methods/mulmo_beat.js";
 import { getHTMLFile } from "../file.js";
-import { renderHTMLToImage, interpolate, renderHTMLToFrames, renderHTMLToVideo } from "../html_render.js";
-import { framesToVideo } from "../ffmpeg_utils.js";
-import { parrotingImagePath } from "./utils.js";
+import { renderHTMLToImage, interpolate } from "../html_render.js";
+import { parrotingImagePath, DEFAULT_ANIMATION_FPS, renderAnimatedToVideo } from "./utils.js";
 
 export const imageType = "html_tailwind";
 
@@ -33,8 +31,6 @@ export const resolveRelativeImagePaths = (html: string, baseDirPath: string): st
     return `${prefix}${quote}file://${absolutePath}${quote}`;
   });
 };
-
-const DEFAULT_ANIMATION_FPS = 30;
 
 /** Join html field into a single string (handles both string and string[]) */
 const joinHtml = (html: string | string[]): string => {
@@ -69,44 +65,21 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
     throw new Error("html_tailwind animation requires beat.duration or audio-derived duration. Set duration in the beat or ensure audio is generated first.");
   }
 
-  const fps = animConfig.fps;
-  const totalFrames = Math.floor(duration * fps);
-  if (totalFrames <= 0) {
-    throw new Error(`html_tailwind animation: totalFrames is ${totalFrames} (duration=${duration}, fps=${fps}). Increase duration or fps.`);
-  }
-
   const html = joinHtml(beat.image.html);
-  const template = getHTMLFile("tailwind_animated");
   const script = "script" in beat.image ? (beat.image as { script?: string | string[] }).script : undefined;
-  const rawHtmlData = interpolate(template, {
-    html_body: html,
-    user_script: buildUserScript(script),
-    totalFrames: String(totalFrames),
-    fps: String(fps),
-    custom_style: "",
+  const rawHtmlBody = resolveImageRefs(html, params.imageRefs ?? {});
+  const htmlBody = resolveRelativeImagePaths(rawHtmlBody, context.fileDirs.mulmoFileDirPath);
+
+  return renderAnimatedToVideo({
+    htmlBody,
+    userScript: buildUserScript(script),
+    fps: animConfig.fps,
+    duration,
+    videoPath: imagePath,
+    canvasWidth: canvasSize.width,
+    canvasHeight: canvasSize.height,
+    movie: animConfig.movie,
   });
-  const resolvedRefs = resolveImageRefs(rawHtmlData, params.imageRefs ?? {});
-  const htmlData = resolveRelativeImagePaths(resolvedRefs, context.fileDirs.mulmoFileDirPath);
-
-  // imagePath is set to the .mp4 path by imagePluginAgent for animated beats
-  const videoPath = imagePath;
-
-  if (animConfig.movie) {
-    // CDP screencast: real-time recording (experimental, faster)
-    await renderHTMLToVideo(htmlData, videoPath, canvasSize.width, canvasSize.height, totalFrames, fps);
-  } else {
-    // Frame-by-frame screenshot (deterministic, slower)
-    const framesDir = videoPath.replace(/\.[^/.]+$/, "_frames");
-    fs.mkdirSync(framesDir, { recursive: true });
-    try {
-      await renderHTMLToFrames(htmlData, framesDir, canvasSize.width, canvasSize.height, totalFrames, fps);
-      await framesToVideo(framesDir, videoPath, fps, canvasSize.width, canvasSize.height);
-    } finally {
-      fs.rmSync(framesDir, { recursive: true, force: true });
-    }
-  }
-
-  return videoPath;
 };
 
 const processHtmlTailwindStatic = async (params: ImageProcessorParams) => {

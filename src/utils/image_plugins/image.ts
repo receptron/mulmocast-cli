@@ -1,14 +1,9 @@
-import fs from "node:fs";
 import { processSource, pathSource } from "./source.js";
 import { ImageProcessorParams, ImageAnimationPreset } from "../../types/index.js";
 import { MulmoMediaSourceMethods } from "../../methods/mulmo_media_source.js";
-import { getHTMLFile } from "../file.js";
-import { interpolate, renderHTMLToFrames } from "../html_render.js";
-import { framesToVideo } from "../ffmpeg_utils.js";
+import { DEFAULT_ANIMATION_FPS, renderAnimatedToVideo } from "./utils.js";
 
 export const imageType = "image";
-
-const DEFAULT_ANIMATION_FPS = 30;
 
 const generateHtmlBody = (imageDataUrl: string): string => {
   return [
@@ -69,34 +64,19 @@ const processImageAnimated = async (params: ImageProcessorParams) => {
   if (duration === undefined) {
     throw new Error("image animation requires beat.duration or audio-derived duration.");
   }
-  const totalFrames = Math.floor(duration * fps);
-  if (totalFrames <= 0) {
-    throw new Error(`image animation: totalFrames is ${totalFrames} (duration=${duration}, fps=${fps}).`);
-  }
 
   const imageDataUrl = await MulmoMediaSourceMethods.toDataUrl(beat.image.source, context);
-  const htmlBody = generateHtmlBody(imageDataUrl);
   const scriptCode = generateScript(preset);
 
-  const template = getHTMLFile("tailwind_animated");
-  const htmlData = interpolate(template, {
-    html_body: htmlBody,
-    user_script: `<script>\n${scriptCode}\n</script>`,
-    totalFrames: String(totalFrames),
-    fps: String(fps),
-    custom_style: "",
+  return renderAnimatedToVideo({
+    htmlBody: generateHtmlBody(imageDataUrl),
+    userScript: `<script>\n${scriptCode}\n</script>`,
+    fps,
+    duration,
+    videoPath: imagePath,
+    canvasWidth: canvasSize.width,
+    canvasHeight: canvasSize.height,
   });
-
-  const videoPath = imagePath;
-  const framesDir = videoPath.replace(/\.[^/.]+$/, "_frames");
-  fs.mkdirSync(framesDir, { recursive: true });
-  try {
-    await renderHTMLToFrames(htmlData, framesDir, canvasSize.width, canvasSize.height, totalFrames, fps);
-    await framesToVideo(framesDir, videoPath, fps, canvasSize.width, canvasSize.height);
-  } finally {
-    fs.rmSync(framesDir, { recursive: true, force: true });
-  }
-  return videoPath;
 };
 
 const processImage = async (params: ImageProcessorParams) => {
