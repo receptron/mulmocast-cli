@@ -7,7 +7,7 @@ import sonarjs from "eslint-plugin-sonarjs";
 
 export default [
   {
-    files: ["{src,test,samles}/**/*.{js,ts,yaml,yml}", "assets/html/js/**/*.js"],
+    files: ["{src,test}/**/*.{js,ts,yaml,yml}", "assets/html/js/**/*.js"],
   },
   {
     ignores: ["lib"],
