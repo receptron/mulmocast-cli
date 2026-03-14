@@ -1,8 +1,8 @@
 // === Auto-render and playAnimation ===
 // Auto-render: if MulmoAnimation is used but render() is not defined, generate it.
 // Check both local var (from user_script) and window.animation (from data-attribute auto-registration).
-var _autoAnim = (typeof animation !== "undefined" && animation instanceof MulmoAnimation) ? animation
-  : (window.animation instanceof MulmoAnimation) ? window.animation : null;
+var _autoAnim =
+  typeof animation !== "undefined" && animation instanceof MulmoAnimation ? animation : window.animation instanceof MulmoAnimation ? window.animation : null;
 if (typeof window.render !== "function" && typeof render === "function") {
   window.render = render;
 } else if (typeof window.render !== "function" && _autoAnim) {
