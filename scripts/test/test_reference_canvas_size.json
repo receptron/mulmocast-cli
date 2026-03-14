@@ -1,0 +1,83 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "ja",
+  "canvasSize": { "width": 1080, "height": 1920 },
+  "title": "imagePrompt per-image canvasSize test",
+  "speechParams": {
+    "provider": "kotodama",
+    "speakers": {
+      "Presenter": { "provider": "kotodama", "voiceId": "jikkyo_baby" }
+    }
+  },
+  "audioParams": {
+    "padding": 0,
+    "introPadding": 0,
+    "closingPadding": 0,
+    "outroPadding": 0
+  },
+  "imageParams": {
+    "provider": "google",
+    "model": "gemini-3.1-flash-image-preview",
+    "images": {
+      "bg_portrait": {
+        "type": "imagePrompt",
+        "prompt": "Beautiful Japanese garden with cherry blossoms and a stone lantern, photorealistic, bright daylight, high key lighting"
+      },
+      "bg_landscape": {
+        "type": "imagePrompt",
+        "prompt": "Beautiful Japanese garden with cherry blossoms and a stone lantern, photorealistic, bright daylight, high key lighting",
+        "canvasSize": { "width": 1920, "height": 1080 }
+      }
+    }
+  },
+  "beats": [
+    {
+      "id": "portrait_default",
+      "duration": 5,
+      "text": "デフォルトのcanvasSizeで生成した画像です。9:16のポートレート画像が生成されます。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <img id='photo_img' src='image:bg_portrait' style='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:none;max-height:none' />",
+          "  <div style='position:absolute;bottom:80px;left:40px;right:40px;text-align:center'>",
+          "    <div style='display:inline-block;background:rgba(239,68,68,0.85);padding:12px 32px;border-radius:12px'>",
+          "      <span style='color:white;font-size:48px;font-weight:900'>Default (9:16)</span>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.coverZoom('#photo_img', { zoomFrom: 1.0, zoomTo: 1.3, start: 0, end: 'auto', easing: 'linear' });"
+        ],
+        "animation": true
+      }
+    },
+    {
+      "id": "landscape_override",
+      "duration": 5,
+      "text": "canvasSizeをオーバーライドした画像です。16:9のランドスケープ画像が生成されます。パンアニメーションで横長がわかります。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <img id='photo_img' src='image:bg_landscape' style='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:none;max-height:none' />",
+          "  <div style='position:absolute;bottom:80px;left:40px;right:40px;text-align:center'>",
+          "    <div style='display:inline-block;background:rgba(59,130,246,0.85);padding:12px 32px;border-radius:12px'>",
+          "      <span style='color:white;font-size:48px;font-weight:900'>Override (16:9)</span>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.coverPan('#photo_img', { axis: 'x', direction: -1, distance: 100, zoom: 1.2, start: 0, end: 'auto', easing: 'linear' });"
+        ],
+        "animation": true
+      }
+    }
+  ]
+}
