@@ -423,10 +423,10 @@
       (function() {
         var els = document.querySelectorAll('[data-animation]');
         if (els.length === 0) return;
-        // Only create if user script didn't define animation
-        if (typeof animation !== 'undefined') return;
 
-        var _anim = new MulmoAnimation();
+        // Reuse existing animation instance from user script, or create new one
+        var _anim = (typeof animation !== 'undefined' && animation instanceof MulmoAnimation)
+          ? animation : new MulmoAnimation();
 
         function parseNum(v, fallback) {
           if (v === undefined || v === null) return fallback;

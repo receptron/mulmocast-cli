@@ -122,6 +122,28 @@
         ],
         "animation": true
       }
+    },
+    {
+      "id": "script_plus_data_attrs",
+      "duration": 4,
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <div id='bg_outer' style='position:absolute;inset:0;overflow:hidden'>",
+          "    <img id='bg_img' src='image:bgLandscape' data-animation='coverZoom' data-zoom-from='1.0' data-zoom-to='1.3' data-container='#bg_outer' style='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:none;max-height:none' />",
+          "  </div>",
+          "  <div style='position:absolute;inset:0;background:rgba(0,0,0,0.5)'></div>",
+          "  <div id='script_title' style='position:absolute;top:50%;left:60px;right:60px;transform:translateY(-50%);color:white;font-size:72px;font-weight:900;text-align:center;opacity:0'>Script + Data Coexistence</div>",
+          "  <div id='data_subtitle' data-animation='animate' data-opacity='0,1' data-translate-y='20,0' data-start='1.0' style='position:absolute;bottom:100px;left:60px;right:60px;text-align:center;color:#F59E0B;font-size:48px;font-weight:bold'>This text uses data-animation</div>",
+          "</div>"
+        ],
+        "script": [
+          "const animation = new MulmoAnimation();",
+          "animation.animate('#script_title', { opacity: [0, 1], translateY: [30, 0] }, { start: 0, end: 0.8, easing: 'easeOut' });"
+        ],
+        "animation": true
+      }
     }
   ]
 }
