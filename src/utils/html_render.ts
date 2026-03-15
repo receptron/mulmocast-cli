@@ -22,18 +22,25 @@ const waitForVideosReady = async (page: puppeteer.Page): Promise<void> => {
     const pending = videos.filter((v) => v.readyState < 3);
     if (pending.length === 0) return Promise.resolve();
 
+    /* eslint-disable sonarjs/no-nested-functions -- inside page.evaluate serialization boundary */
     return new Promise<void>((resolve) => {
       let remaining = pending.length;
       const timer = setTimeout(() => resolve(), timeout_ms);
-      const onReady = () => {
-        remaining--;
-        if (remaining <= 0) {
-          clearTimeout(timer);
-          resolve();
-        }
-      };
-      pending.forEach((v) => v.addEventListener("canplaythrough", onReady, { once: true }));
+      pending.forEach((v) =>
+        v.addEventListener(
+          "canplaythrough",
+          () => {
+            remaining--;
+            if (remaining <= 0) {
+              clearTimeout(timer);
+              resolve();
+            }
+          },
+          { once: true },
+        ),
+      );
     });
+    /* eslint-enable sonarjs/no-nested-functions */
   }, VIDEO_LOAD_TIMEOUT_MS);
 };
 
