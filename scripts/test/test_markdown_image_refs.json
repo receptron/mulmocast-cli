@@ -1,0 +1,59 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "canvasSize": { "width": 1920, "height": 1080 },
+  "title": "Markdown image:refs test",
+  "audioParams": {
+    "padding": 0,
+    "introPadding": 0,
+    "closingPadding": 0,
+    "outroPadding": 0
+  },
+  "imageParams": {
+    "images": {
+      "qaLandscape": {
+        "type": "image",
+        "source": {
+          "kind": "path",
+          "path": "images/qa_landscape.jpg"
+        }
+      },
+      "qaPortrait": {
+        "type": "image",
+        "source": {
+          "kind": "path",
+          "path": "images/qa_portrait.png"
+        }
+      }
+    }
+  },
+  "beats": [
+    {
+      "id": "markdown_text_image_ref",
+      "duration": 3,
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# Markdown image:refs test",
+          "",
+          "![Landscape photo](image:qaLandscape)",
+          "",
+          "This image is resolved from `imageParams.images` via the `image:` scheme."
+        ]
+      }
+    },
+    {
+      "id": "markdown_layout_image_ref",
+      "duration": 3,
+      "image": {
+        "type": "markdown",
+        "markdown": {
+          "row-2": [
+            ["# Landscape", "![Landscape](image:qaLandscape)"],
+            ["# Portrait", "![Portrait](image:qaPortrait)"]
+          ]
+        }
+      }
+    }
+  ]
+}
