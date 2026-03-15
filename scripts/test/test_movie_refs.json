@@ -38,7 +38,8 @@
           "    <div style='color:white;font-size:48px;font-weight:900;margin-top:20px;text-shadow:0 4px 16px rgba(0,0,0,0.9)'>sample_video を参照</div>",
           "  </div>",
           "</div>"
-        ]
+        ],
+        "animation": { "movie": true }
       }
     }
   ]
