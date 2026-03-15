@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.0) (2026-03-15)
+
+- **Swipe-style Declarative Animation Elements**: html_tailwind beatに`elements`配列を追加。Swipe言語仕様にインスパイアされた宣言的JSONでアニメーションを定義可能。7種のループアニメーション（wiggle, vibrate, bounce, pulse, blink, spin, shift）とトランジションアニメーションをサポート
+
+📦 **npm**: [`mulmocast@2.6.0`](https://www.npmjs.com/package/mulmocast/v/2.6.0)
+
 ## [2.5.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.5.0) (2026-03-15)
 
 - **Animation Runtime Extraction**: Extracted animation runtime JS from HTML template into separate, testable files (`animation_runtime.js`, `data_attribute_registration.js`, `auto_render.js`)
