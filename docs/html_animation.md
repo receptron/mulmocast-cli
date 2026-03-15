@@ -369,6 +369,229 @@ HTML の `data-animation` 属性でアニメーションを宣言できる。Jav
 
 `data-animation` を持つ要素に `id` がない場合、自動的に `__mulmo_da_0`, `__mulmo_da_1`, ... が割り当てられる。明示的に `id` を指定するのが推奨。
 
+## Swipe Elements（宣言的アニメーション）
+
+[Swipe 言語仕様](https://github.com/swipe-org/swipe/blob/master/SPECIFICATION.md)にインスパイアされた宣言的 JSON フォーマット。
+HTML/CSS/JS を直接書かずに、`elements` 配列でアニメーションを定義できる。
+
+### 基本構造
+
+```json
+{
+  "image": {
+    "type": "html_tailwind",
+    "elements": [
+      { "id": "bg", "w": "100%", "h": "100%", "bc": "#87CEEB" },
+      {
+        "id": "character",
+        "img": "https://example.com/char.png",
+        "pos": ["50%", "60%"],
+        "w": 400, "h": 250,
+        "opacity": 0,
+        "to": { "opacity": 1, "timing": [0, 0.2] },
+        "loop": { "style": "bounce", "delta": 10, "count": 0, "duration": 0.8 }
+      }
+    ],
+    "animation": { "fps": 24 }
+  }
+}
+```
+
+`elements` が指定されると、自動的に HTML と `render()` 関数が生成され、既存の html_tailwind パイプラインで処理される。
+`html` フィールドと `elements` フィールドは排他的。`html` を直接書く従来の方法もそのまま使える。
+
+### Element プロパティ
+
+#### 位置・サイズ
+
+| プロパティ | 型 | 説明 |
+|-----------|------|------|
+| `id` | `string` | 要素の識別子。省略時は自動生成 |
+| `x` | `number \| string` | 左端からの位置（px or %） |
+| `y` | `number \| string` | 上端からの位置（px or %） |
+| `w` | `number \| string` | 幅（px or %） |
+| `h` | `number \| string` | 高さ（px or %） |
+| `pos` | `[x, y]` | アンカーポイント基準の位置指定。要素の中心が指定座標に来る |
+
+`pos` を使うと要素は自動的に `transform: translate(-50%, -50%)` が適用され、中心基準で配置される。
+
+#### 見た目
+
+| プロパティ | 型 | 説明 |
+|-----------|------|------|
+| `bc` | `string` | 背景色・グラデーション（CSS の `background` に直接渡される） |
+| `opacity` | `number` | 不透明度 (0-1) |
+| `rotate` | `number` | 回転角度（度） |
+| `scale` | `number \| [x, y]` | 拡大縮小 |
+| `translate` | `[x, y]` | 移動（px） |
+| `cornerRadius` | `number` | 角丸（px） |
+| `borderWidth` | `number` | ボーダー幅（px） |
+| `borderColor` | `string` | ボーダー色 |
+| `clip` | `boolean` | `overflow: hidden` を適用 |
+| `shadow` | `object` | ドロップシャドウ |
+
+shadow オブジェクト:
+
+```json
+{
+  "color": "black",
+  "offset": [0, 5],
+  "opacity": 0.3,
+  "radius": 10
+}
+```
+
+#### コンテンツ
+
+| プロパティ | 型 | 説明 |
+|-----------|------|------|
+| `text` | `string` | テキスト表示 |
+| `fontSize` | `number \| string` | フォントサイズ |
+| `fontWeight` | `string` | フォントウェイト（例: `"bold"`, `"900"`） |
+| `textColor` | `string` | テキスト色 |
+| `textAlign` | `"center" \| "left" \| "right"` | テキスト配置 |
+| `lineHeight` | `number \| string` | 行間 |
+| `img` | `string` | 画像 URL（`image:name` 形式でも参照可） |
+| `imgFit` | `"contain" \| "cover" \| "fill"` | 画像フィット方法（デフォルト: `contain`） |
+
+#### 子要素
+
+```json
+{
+  "id": "bubble",
+  "pos": ["70%", "20%"],
+  "w": 300, "h": 100,
+  "bc": "white",
+  "cornerRadius": 20,
+  "elements": [
+    {
+      "id": "bubble-text",
+      "x": 20, "y": 15,
+      "text": "こんにちは！",
+      "fontSize": "18px"
+    }
+  ]
+}
+```
+
+要素は `elements` をネストでき、子要素は親要素の内部に配置される。
+
+### Transition Animation (`to`)
+
+要素の初期状態からターゲット状態へ遷移するアニメーション。
+
+```json
+{
+  "id": "title",
+  "opacity": 0,
+  "to": {
+    "opacity": 1,
+    "translate": [0, -30],
+    "scale": 1.2,
+    "rotate": 10,
+    "timing": [0.1, 0.4]
+  }
+}
+```
+
+| プロパティ | 型 | 説明 |
+|-----------|------|------|
+| `opacity` | `number` | 目標の不透明度 |
+| `rotate` | `number` | 目標の回転角度 |
+| `scale` | `number \| [x, y]` | 目標の拡大率 |
+| `translate` | `[x, y]` | 目標の移動量（px） |
+| `bc` | `string` | 目標の背景色 |
+| `timing` | `[start, end]` | beat 全体に対する比率 0.0-1.0。デフォルト `[0, 1]` |
+
+`timing: [0.1, 0.4]` は「beat の 10% 地点から 40% 地点にかけて」アニメーションする。
+
+### Loop Animation (`loop`)
+
+要素に繰り返しアニメーションを適用する。
+
+```json
+{
+  "id": "character",
+  "loop": {
+    "style": "bounce",
+    "delta": 15,
+    "count": 0,
+    "duration": 0.8
+  }
+}
+```
+
+共通プロパティ:
+
+| プロパティ | 型 | 説明 |
+|-----------|------|------|
+| `style` | `string` | アニメーションスタイル（下表参照） |
+| `count` | `number` | 繰り返し回数。`0` = 無限ループ |
+| `duration` | `number` | 1サイクルの秒数 |
+
+スタイル一覧:
+
+| style | 効果 | 固有パラメータ |
+|-------|------|---------------|
+| `wiggle` | 左右に揺れる | `delta`: 角度（デフォルト 15°） |
+| `vibrate` | 水平に振動する | `delta`: 距離（デフォルト 10px） |
+| `bounce` | 上下にバウンドする | `delta`: 高さ（デフォルト 20px） |
+| `pulse` | 拡大縮小の脈動 | `delta`: 振幅（デフォルト 0.1） |
+| `blink` | フェードで点滅する | — |
+| `spin` | 回転する | `clockwise`: 方向（デフォルト `true`） |
+| `shift` | 一方向に移動する | `direction`: `"n"` / `"s"` / `"e"` / `"w"`（デフォルト `"s"`） |
+
+### Transition + Loop の組み合わせ
+
+`to` と `loop` は同時に指定できる。
+
+```json
+{
+  "id": "macoro",
+  "img": "https://example.com/macoro.png",
+  "pos": ["50%", "65%"],
+  "w": 400,
+  "opacity": 0,
+  "to": {
+    "opacity": 1,
+    "translate": [0, -20],
+    "timing": [0, 0.2]
+  },
+  "loop": {
+    "style": "wiggle",
+    "delta": 5,
+    "count": 0,
+    "duration": 1
+  }
+}
+```
+
+この場合、キャラクターは最初の 20% でフェードイン＋上方移動し、その後ずっとゆらゆら揺れ続ける。
+
+### script との共存
+
+`elements` と `script` を同時に指定すると、elements から生成されたスクリプトの後にユーザーの `script` が実行される。
+
+```json
+{
+  "elements": [ ... ],
+  "script": ["// 追加のカスタムロジック"],
+  "animation": { "fps": 24 }
+}
+```
+
+### 表現例
+
+サンプルスクリプト `scripts/test/macoro_swipe_rich.json` で以下の表現パターンを実装済み:
+
+| シーン | 使用アニメーション |
+|--------|-------------------|
+| タイトル画面 | 雲 `shift` 移動、太陽 `pulse`、テキスト `to` フェードイン |
+| キャラ登場 | `bounce` 入場、花 `wiggle`、吹き出し `to` ポップアップ |
+| 驚き演出 | `vibrate` 震え、「！？」`to` 飛び出し、✨ `pulse` エフェクト |
+| 宝箱発見 | 夜空 ⭐ `blink`、💎 `spin` 回転、✦ `pulse` 光彩 |
+| エンディング | 夕焼け、👋 `wiggle`、❤ `pulse` 浮遊、🕊 `shift` 飛行 |
+
 ## 制約
 
 - `animation` と `moviePrompt` の併用不可（同一ビートで両方指定するとエラー）
