@@ -25,6 +25,20 @@ export const resolveImageRefs = (html: string, imageRefs: Record<string, string>
 };
 
 /**
+ * Resolve movie:name references to file:// absolute paths using movieRefs.
+ * e.g., src="movie:office_pan" → src="file:///abs/path/to/office_pan.mp4"
+ */
+export const resolveMovieRefs = (html: string, movieRefs: Record<string, string>): string => {
+  return html.replace(/(\bsrc\s*=\s*)(["'])movie:([^"']+)\2/gi, (match, prefix, quote, name) => {
+    const resolvedPath = movieRefs[name];
+    if (!resolvedPath) {
+      return match;
+    }
+    return `${prefix}${quote}file://${resolvedPath}${quote}`;
+  });
+};
+
+/**
  * Resolve relative paths in src attributes to file:// absolute paths.
  * Paths starting with http://, https://, file://, data:, image:, or / are left unchanged.
  */
@@ -113,8 +127,9 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
     fps: String(fps),
     custom_style: "",
   });
-  const resolvedRefs = resolveImageRefs(rawHtmlData, params.imageRefs ?? {});
-  const htmlData = resolveRelativeImagePaths(resolvedRefs, context.fileDirs.mulmoFileDirPath);
+  const resolvedImageRefs = resolveImageRefs(rawHtmlData, params.imageRefs ?? {});
+  const resolvedAllRefs = resolveMovieRefs(resolvedImageRefs, params.movieRefs ?? {});
+  const htmlData = resolveRelativeImagePaths(resolvedAllRefs, context.fileDirs.mulmoFileDirPath);
 
   // imagePath is set to the .mp4 path by imagePluginAgent for animated beats
   const videoPath = imagePath;
@@ -148,8 +163,9 @@ const processHtmlTailwindStatic = async (params: ImageProcessorParams) => {
     html_body: html,
     user_script: buildUserScript(script),
   });
-  const resolvedRefs = resolveImageRefs(rawHtmlData, params.imageRefs ?? {});
-  const htmlData = resolveRelativeImagePaths(resolvedRefs, context.fileDirs.mulmoFileDirPath);
+  const resolvedImageRefs = resolveImageRefs(rawHtmlData, params.imageRefs ?? {});
+  const resolvedAllRefs = resolveMovieRefs(resolvedImageRefs, params.movieRefs ?? {});
+  const htmlData = resolveRelativeImagePaths(resolvedAllRefs, context.fileDirs.mulmoFileDirPath);
   await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;
 };

@@ -53,6 +53,7 @@ import {
   mulmoGoogleMovieModelSchema,
   mulmoReplicateMovieModelSchema,
   mulmoImagePromptMediaSchema,
+  mulmoMovieMediaSchema,
   markdownLayoutSchema,
   row2Schema,
   grid2x2Schema,
@@ -116,6 +117,7 @@ export type MulmoImageAsset = z.infer<typeof mulmoImageAssetSchema>;
 export type MulmoTextSlideMedia = z.infer<typeof mulmoTextSlideMediaSchema>;
 export type MulmoMarkdownMedia = z.infer<typeof mulmoMarkdownMediaSchema>;
 export type MulmoImageMedia = z.infer<typeof mulmoImageMediaSchema>;
+export type MulmoMovieMedia = z.infer<typeof mulmoMovieMediaSchema>;
 export type MulmoChartMedia = z.infer<typeof mulmoChartMediaSchema>;
 export type MulmoMermaidMedia = z.infer<typeof mulmoMermaidMediaSchema>;
 export type MulmoSessionState = z.infer<typeof mulmoSessionStateSchema>;
@@ -148,6 +150,7 @@ export type ImageProcessorParams = {
   textSlideStyle: string;
   canvasSize: MulmoCanvasDimension;
   imageRefs?: Record<string, string>;
+  movieRefs?: Record<string, string>;
   beatDuration?: number; // Computed duration: beat.duration ?? studioBeat.duration (audio-derived)
 };
 
