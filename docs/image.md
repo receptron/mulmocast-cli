@@ -560,7 +560,7 @@ slideinは特殊な処理を行います：
   "type": "movie",
   "source": {
     "kind": "path",
-    "url": "../../test/pingpong.mov"
+    "path": "../../test/pingpong.mov"
   }
 }
 ```

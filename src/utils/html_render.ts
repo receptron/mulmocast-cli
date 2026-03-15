@@ -10,6 +10,7 @@ import { GraphAILogger } from "graphai";
 const isCI = process.env.CI === "true";
 
 const VIDEO_LOAD_TIMEOUT_MS = 15000;
+const VIDEO_SEEK_TIMEOUT_MS = 3000;
 
 /** Wait for all <video> elements on the page to be ready for playback */
 const waitForVideosReady = async (page: puppeteer.Page): Promise<void> => {
@@ -47,17 +48,36 @@ const waitForVideosReady = async (page: puppeteer.Page): Promise<void> => {
 /** Seek all <video> elements to the specified frame time and wait for seek to complete */
 const syncVideosToFrame = async (page: puppeteer.Page, frameIndex: number, fps: number): Promise<void> => {
   const time = frameIndex / fps;
-  // Set currentTime on all videos, then wait for all "seeked" events
-  await page.evaluate((seekTime) => {
-    const videos = Array.from(document.querySelectorAll("video"));
-    if (videos.length === 0) return;
-    videos.forEach((v) => {
-      v.pause();
-      v.currentTime = seekTime;
-    });
-    // eslint-disable-next-line sonarjs/no-nested-functions -- unavoidable inside page.evaluate serialization boundary
-    return Promise.all(videos.map((v) => new Promise<void>((r) => v.addEventListener("seeked", () => r(), { once: true }))));
-  }, time);
+  await page.evaluate(
+    (seekTime, seekTimeout) => {
+      const videos = Array.from(document.querySelectorAll("video"));
+      if (videos.length === 0) return;
+      videos.forEach((v) => {
+        v.pause();
+        v.currentTime = seekTime;
+      });
+      /* eslint-disable sonarjs/no-nested-functions -- unavoidable inside page.evaluate serialization boundary */
+      return Promise.all(
+        videos.map(
+          (v) =>
+            new Promise<void>((r) => {
+              const timer = setTimeout(() => r(), seekTimeout);
+              v.addEventListener(
+                "seeked",
+                () => {
+                  clearTimeout(timer);
+                  r();
+                },
+                { once: true },
+              );
+            }),
+        ),
+      );
+      /* eslint-enable sonarjs/no-nested-functions */
+    },
+    time,
+    VIDEO_SEEK_TIMEOUT_MS,
+  );
 };
 
 /** Scale the page content so it fits inside the viewport without overflow */
@@ -250,10 +270,14 @@ export const renderHTMLToVideo = async (html: string, videoPath: string, width: 
 
     // Reset all videos to start and begin playback
     await page.evaluate(() => {
-      document.querySelectorAll("video").forEach((v) => {
-        v.currentTime = 0;
-        v.play();
-      });
+      const videos = Array.from(document.querySelectorAll("video"));
+      return Promise.all(
+        videos.map((v) => {
+          v.muted = true;
+          v.currentTime = 0;
+          return v.play().catch(() => {});
+        }),
+      );
     });
 
     const recorder = await page.screencast({

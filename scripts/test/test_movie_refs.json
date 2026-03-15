@@ -29,7 +29,7 @@
         "html": [
           "<div class='h-full w-full overflow-hidden relative bg-black'>",
           "  <div style='position:absolute;inset:0;overflow:hidden'>",
-          "    <video src='movie:sample_video' autoplay muted loop style='width:100%;height:100%;object-fit:cover;filter:brightness(0.7)' />",
+          "    <video src='movie:sample_video' autoplay muted loop style='width:100%;height:100%;object-fit:cover;filter:brightness(0.7)'></video>",
           "  </div>",
           "  <div style='position:absolute;top:50%;left:40px;right:40px;transform:translateY(-50%);text-align:center'>",
           "    <div style='display:inline-block;background:rgba(59,130,246,0.85);padding:12px 32px;border-radius:12px'>",
