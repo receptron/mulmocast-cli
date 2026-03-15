@@ -31,17 +31,23 @@ const resolveWaitUntil = (html: string): "networkidle0" | "load" | "domcontentlo
   return "domcontentloaded";
 };
 
+/** Check if HTML contains external <script src="https://..."> tags */
+const hasExternalScripts = (html: string): boolean => {
+  return /<script\b[^>]*\bsrc\s*=\s*["']https?:\/\//i.test(html);
+};
+
 /**
  * Load HTML into a Puppeteer page.
- * When the HTML references file:// URLs, write it to a temp file
- * and navigate via page.goto (setContent uses about:blank origin
- * which blocks file:// loading).
+ * When the HTML references file:// URLs or external <script src> tags,
+ * write it to a temp file and navigate via page.goto.
+ * setContent uses about:blank origin which blocks both file:// loading
+ * and external script loading.
  */
 const loadHtmlIntoPage = async (page: puppeteer.Page, html: string, timeout_ms: number): Promise<void> => {
-  const waitUntil = resolveWaitUntil(html);
-  const hasFileUrls = /file:\/\//.test(html);
+  const waitUntil = hasExternalScripts(html) ? "networkidle0" : resolveWaitUntil(html);
+  const needsFileGoto = /file:\/\//.test(html) || hasExternalScripts(html);
 
-  if (hasFileUrls) {
+  if (needsFileGoto) {
     const tmpFile = nodePath.join(os.tmpdir(), `mulmocast_render_${crypto.randomUUID()}.html`);
     fs.writeFileSync(tmpFile, html);
     try {
