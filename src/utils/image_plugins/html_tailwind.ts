@@ -6,6 +6,7 @@ import { getHTMLFile, getJSFile } from "../file.js";
 import { renderHTMLToImage, interpolate, renderHTMLToFrames, renderHTMLToVideo } from "../html_render.js";
 import { framesToVideo } from "../ffmpeg_utils.js";
 import { parrotingImagePath } from "./utils.js";
+import { swipeElementsToHtml, swipeElementsToScript, type SwipeElement } from "../swipe_to_html.js";
 
 export const imageType = "html_tailwind";
 
@@ -47,6 +48,30 @@ const buildUserScript = (script: string | string[] | undefined): string => {
   return `<script>\n${code}\n</script>`;
 };
 
+/**
+ * Resolve HTML and script from beat image data.
+ * If `elements` (Swipe-style) is provided, convert to HTML + script.
+ * Otherwise, use raw `html` and `script` fields.
+ */
+const resolveHtmlAndScript = (imageData: {
+  html?: string | string[];
+  script?: string | string[];
+  elements?: SwipeElement[];
+}): { html: string; script: string | string[] | undefined } => {
+  if (imageData.elements && Array.isArray(imageData.elements) && imageData.elements.length > 0) {
+    const html = swipeElementsToHtml(imageData.elements);
+    const generatedScript = swipeElementsToScript(imageData.elements);
+    // Merge with user-provided script if any
+    const userScript = imageData.script ? joinHtml(imageData.script as string | string[]) : "";
+    const combinedScript = [generatedScript, userScript].filter(Boolean).join("\n");
+    return { html, script: combinedScript || undefined };
+  }
+  return {
+    html: joinHtml(imageData.html ?? ""),
+    script: imageData.script,
+  };
+};
+
 const getAnimationConfig = (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return null;
@@ -75,9 +100,9 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
     throw new Error(`html_tailwind animation: totalFrames is ${totalFrames} (duration=${duration}, fps=${fps}). Increase duration or fps.`);
   }
 
-  const html = joinHtml(beat.image.html);
+  const imageData = beat.image as { html?: string | string[]; script?: string | string[]; elements?: SwipeElement[] };
+  const { html, script } = resolveHtmlAndScript(imageData);
   const template = getHTMLFile("tailwind_animated");
-  const script = "script" in beat.image ? (beat.image as { script?: string | string[] }).script : undefined;
   const rawHtmlData = interpolate(template, {
     html_body: html,
     animation_runtime: getJSFile("animation_runtime"),
@@ -116,9 +141,9 @@ const processHtmlTailwindStatic = async (params: ImageProcessorParams) => {
   const { beat, imagePath, canvasSize, context } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
-  const html = joinHtml(beat.image.html);
+  const imageData = beat.image as { html?: string | string[]; script?: string | string[]; elements?: SwipeElement[] };
+  const { html, script } = resolveHtmlAndScript(imageData);
   const template = getHTMLFile("tailwind");
-  const script = "script" in beat.image ? (beat.image as { script?: string | string[] }).script : undefined;
   const rawHtmlData = interpolate(template, {
     html_body: html,
     user_script: buildUserScript(script),
@@ -140,7 +165,11 @@ const processHtmlTailwind = async (params: ImageProcessorParams) => {
 const dumpHtml = async (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return;
-  return joinHtml(beat.image.html);
+  const imageData = beat.image as { html?: string | string[]; elements?: SwipeElement[] };
+  if (imageData.elements && Array.isArray(imageData.elements) && imageData.elements.length > 0) {
+    return swipeElementsToHtml(imageData.elements);
+  }
+  return joinHtml(imageData.html ?? "");
 };
 
 export const process = processHtmlTailwind;
