@@ -83,6 +83,7 @@ Add the new entry at the top (below the header), and include it in the version b
 - `src/types/` - TypeScript schemas and type definitions (core: schema.ts)
 - `src/utils/` - Utilities for file handling, FFmpeg, image processing, etc.
 - `src/utils/image_plugins/` - Image type processors (markdown, textSlide, mermaid, slide, etc.)
+- `src/utils/swipe_to_html.ts` - Swipe-style declarative elements → HTML + render() converter
 - `src/slide/` - Self-contained slide DSL module (schema, layouts, blocks, render)
 - `.claude/skills/` - Sample skills for educational content generation (see below)
 
