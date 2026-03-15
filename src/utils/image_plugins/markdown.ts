@@ -5,6 +5,7 @@ import { parrotingImagePath } from "./utils.js";
 import { resolveCombinedStyle } from "./bg_image_util.js";
 import { type MulmoMarkdownLayout } from "../../types/type.js";
 import { generateLayoutHtml, layoutToMarkdown, toMarkdownString, parseMarkdown } from "./markdown_layout.js";
+import { resolveImageRefs } from "./html_tailwind.js";
 
 import { isObject } from "graphai";
 
@@ -75,7 +76,8 @@ const processMarkdown = async (params: ImageProcessorParams) => {
   const { beat, imagePath, canvasSize } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
-  const html = await generateHtml(params);
+  const rawHtml = await generateHtml(params);
+  const html = resolveImageRefs(rawHtml, params.imageRefs ?? {});
   const hasMermaid = containsMermaid(beat.image.markdown);
   await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height, hasMermaid);
 
