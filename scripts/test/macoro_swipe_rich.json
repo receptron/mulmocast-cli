@@ -1,0 +1,820 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "title": "マコロの冒険 - Swipeアニメーションショーケース",
+  "description": "Swipe風宣言的elementsによるリッチなアニメーションデモ",
+  "lang": "ja",
+  "speechParams": {
+    "provider": "gemini",
+    "speakers": {
+      "macoro": {
+        "provider": "gemini",
+        "voiceId": "Kore",
+        "displayName": {
+          "ja": "マコロ"
+        }
+      },
+      "narrator": {
+        "provider": "gemini",
+        "voiceId": "Charon",
+        "displayName": {
+          "ja": "ナレーター"
+        }
+      }
+    }
+  },
+  "beats": [
+    {
+      "speaker": "narrator",
+      "text": "マコロの冒険。ある晴れた日のこと。",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "elements": [
+          {
+            "id": "sky",
+            "w": "100%",
+            "h": "100%",
+            "bc": "linear-gradient(180deg, #87CEEB 0%, #E0F7FA 60%, #FFF9C4 100%)"
+          },
+          {
+            "id": "cloud1",
+            "text": "☁",
+            "fontSize": "80px",
+            "pos": ["20%", "20%"],
+            "opacity": 0.7,
+            "loop": {
+              "style": "shift",
+              "direction": "e",
+              "count": 0,
+              "duration": 20
+            }
+          },
+          {
+            "id": "cloud2",
+            "text": "☁",
+            "fontSize": "60px",
+            "pos": ["60%", "15%"],
+            "opacity": 0.5,
+            "loop": {
+              "style": "shift",
+              "direction": "e",
+              "count": 0,
+              "duration": 30
+            }
+          },
+          {
+            "id": "sun",
+            "text": "☀",
+            "fontSize": "60px",
+            "pos": ["85%", "12%"],
+            "loop": {
+              "style": "pulse",
+              "delta": 0.08,
+              "count": 0,
+              "duration": 3
+            }
+          },
+          {
+            "id": "ground",
+            "w": "100%",
+            "h": "30%",
+            "y": "70%",
+            "bc": "linear-gradient(180deg, #81C784 0%, #4CAF50 100%)",
+            "cornerRadius": 0
+          },
+          {
+            "id": "title",
+            "pos": ["50%", "45%"],
+            "w": "80%",
+            "opacity": 0,
+            "elements": [
+              {
+                "id": "title-text",
+                "text": "マコロの冒険",
+                "fontSize": "56px",
+                "fontWeight": "900",
+                "textColor": "white",
+                "shadow": {
+                  "offset": [3, 3],
+                  "opacity": 0.3,
+                  "radius": 8
+                },
+                "textAlign": "center"
+              }
+            ],
+            "to": {
+              "opacity": 1,
+              "scale": 1,
+              "timing": [0.1, 0.4]
+            }
+          },
+          {
+            "id": "subtitle",
+            "pos": ["50%", "58%"],
+            "w": "80%",
+            "opacity": 0,
+            "elements": [
+              {
+                "id": "subtitle-text",
+                "text": "〜 ある晴れた日のこと 〜",
+                "fontSize": "24px",
+                "textColor": "#5D4037"
+              }
+            ],
+            "to": {
+              "opacity": 1,
+              "timing": [0.4, 0.6]
+            }
+          }
+        ],
+        "animation": {
+          "fps": 24
+        }
+      }
+    },
+    {
+      "speaker": "macoro",
+      "text": "わあ！今日はいい天気だね！お散歩に行こう！",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "elements": [
+          {
+            "id": "sky",
+            "w": "100%",
+            "h": "100%",
+            "bc": "linear-gradient(180deg, #87CEEB 0%, #E0F7FA 60%, #C8E6C9 100%)"
+          },
+          {
+            "id": "cloud1",
+            "text": "☁",
+            "fontSize": "60px",
+            "pos": ["30%", "18%"],
+            "opacity": 0.6,
+            "loop": {
+              "style": "shift",
+              "direction": "e",
+              "count": 0,
+              "duration": 25
+            }
+          },
+          {
+            "id": "ground",
+            "w": "100%",
+            "h": "35%",
+            "y": "65%",
+            "bc": "linear-gradient(180deg, #81C784 0%, #66BB6A 50%, #4CAF50 100%)"
+          },
+          {
+            "id": "flower1",
+            "text": "🌸",
+            "fontSize": "28px",
+            "pos": ["15%", "78%"],
+            "loop": {
+              "style": "wiggle",
+              "delta": 10,
+              "count": 0,
+              "duration": 2
+            }
+          },
+          {
+            "id": "flower2",
+            "text": "🌼",
+            "fontSize": "24px",
+            "pos": ["75%", "82%"],
+            "loop": {
+              "style": "wiggle",
+              "delta": 8,
+              "count": 0,
+              "duration": 2.5
+            }
+          },
+          {
+            "id": "flower3",
+            "text": "🌷",
+            "fontSize": "22px",
+            "pos": ["90%", "76%"],
+            "loop": {
+              "style": "wiggle",
+              "delta": 12,
+              "count": 0,
+              "duration": 1.8
+            }
+          },
+          {
+            "id": "macoro",
+            "img": "https://raw.githubusercontent.com/receptron/mulmocast-media/main/characters/macoro.png",
+            "pos": ["50%", "60%"],
+            "w": 420,
+            "h": 260,
+            "imgFit": "contain",
+            "opacity": 0,
+            "translate": [0, 100],
+            "shadow": {
+              "offset": [0, 8],
+              "opacity": 0.25,
+              "radius": 15
+            },
+            "to": {
+              "opacity": 1,
+              "translate": [0, 0],
+              "timing": [0, 0.25]
+            },
+            "loop": {
+              "style": "bounce",
+              "delta": 12,
+              "count": 0,
+              "duration": 0.8
+            }
+          },
+          {
+            "id": "bubble",
+            "pos": ["75%", "25%"],
+            "w": 320,
+            "h": 100,
+            "bc": "white",
+            "cornerRadius": 20,
+            "opacity": 0,
+            "shadow": {
+              "offset": [0, 3],
+              "opacity": 0.1,
+              "radius": 8
+            },
+            "to": {
+              "opacity": 1,
+              "timing": [0.25, 0.35]
+            },
+            "elements": [
+              {
+                "id": "bubble-text",
+                "x": 20,
+                "y": 15,
+                "w": 280,
+                "text": "わあ！今日はいい天気だね！お散歩に行こう！",
+                "fontSize": "18px",
+                "fontWeight": "bold",
+                "textColor": "#444",
+                "lineHeight": "1.5"
+              }
+            ]
+          }
+        ],
+        "animation": {
+          "fps": 24
+        }
+      }
+    },
+    {
+      "speaker": "macoro",
+      "text": "えっ！？なにあれ！？すごいキラキラしてる！",
+      "duration": 5,
+      "image": {
+        "type": "html_tailwind",
+        "elements": [
+          {
+            "id": "bg",
+            "w": "100%",
+            "h": "100%",
+            "bc": "linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 50%, #90CAF9 100%)"
+          },
+          {
+            "id": "sparkle1",
+            "text": "✨",
+            "fontSize": "40px",
+            "pos": ["70%", "30%"],
+            "loop": {
+              "style": "pulse",
+              "delta": 0.3,
+              "count": 0,
+              "duration": 0.5
+            }
+          },
+          {
+            "id": "sparkle2",
+            "text": "✨",
+            "fontSize": "50px",
+            "pos": ["75%", "45%"],
+            "loop": {
+              "style": "pulse",
+              "delta": 0.25,
+              "count": 0,
+              "duration": 0.7
+            }
+          },
+          {
+            "id": "sparkle3",
+            "text": "✨",
+            "fontSize": "35px",
+            "pos": ["65%", "25%"],
+            "loop": {
+              "style": "blink",
+              "count": 0,
+              "duration": 0.8
+            }
+          },
+          {
+            "id": "sparkle4",
+            "text": "⭐",
+            "fontSize": "30px",
+            "pos": ["80%", "35%"],
+            "loop": {
+              "style": "spin",
+              "clockwise": true,
+              "count": 0,
+              "duration": 2
+            }
+          },
+          {
+            "id": "mystery-box",
+            "pos": ["72%", "55%"],
+            "w": 100,
+            "h": 100,
+            "bc": "linear-gradient(135deg, #FFD700, #FFA000)",
+            "cornerRadius": 15,
+            "borderWidth": 3,
+            "borderColor": "#FF6F00",
+            "shadow": {
+              "offset": [0, 5],
+              "opacity": 0.3,
+              "radius": 12
+            },
+            "opacity": 0,
+            "to": {
+              "opacity": 1,
+              "scale": 1,
+              "timing": [0, 0.2]
+            },
+            "loop": {
+              "style": "pulse",
+              "delta": 0.05,
+              "count": 0,
+              "duration": 1.5
+            },
+            "elements": [
+              {
+                "id": "box-mark",
+                "pos": ["50%", "50%"],
+                "text": "？",
+                "fontSize": "48px",
+                "fontWeight": "900",
+                "textColor": "white"
+              }
+            ]
+          },
+          {
+            "id": "macoro",
+            "img": "https://raw.githubusercontent.com/receptron/mulmocast-media/main/characters/macoro.png",
+            "pos": ["30%", "60%"],
+            "w": 380,
+            "h": 240,
+            "imgFit": "contain",
+            "shadow": {
+              "offset": [0, 6],
+              "opacity": 0.2,
+              "radius": 12
+            },
+            "loop": {
+              "style": "vibrate",
+              "delta": 5,
+              "count": 0,
+              "duration": 0.15
+            }
+          },
+          {
+            "id": "exclaim",
+            "pos": ["30%", "22%"],
+            "opacity": 0,
+            "to": {
+              "opacity": 1,
+              "translate": [0, -20],
+              "timing": [0.1, 0.25]
+            },
+            "elements": [
+              {
+                "id": "exclaim-text",
+                "text": "！？",
+                "fontSize": "64px",
+                "fontWeight": "900",
+                "textColor": "#F44336"
+              }
+            ]
+          },
+          {
+            "id": "bubble",
+            "pos": ["30%", "88%"],
+            "w": 400,
+            "h": 60,
+            "bc": "rgba(255,255,255,0.9)",
+            "cornerRadius": 30,
+            "opacity": 0,
+            "to": {
+              "opacity": 1,
+              "timing": [0.3, 0.4]
+            },
+            "elements": [
+              {
+                "id": "bubble-text",
+                "pos": ["50%", "50%"],
+                "text": "えっ！？なにあれ！？すごいキラキラしてる！",
+                "fontSize": "18px",
+                "fontWeight": "bold",
+                "textColor": "#333",
+                "textAlign": "center"
+              }
+            ]
+          }
+        ],
+        "animation": {
+          "fps": 24
+        }
+      }
+    },
+    {
+      "speaker": "macoro",
+      "text": "見て見て！お宝を見つけたよ！キラキラのクリスタルだ！",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "elements": [
+          {
+            "id": "bg",
+            "w": "100%",
+            "h": "100%",
+            "bc": "linear-gradient(180deg, #1A237E 0%, #283593 30%, #3F51B5 60%, #7986CB 100%)"
+          },
+          {
+            "id": "star1",
+            "text": "⭐",
+            "fontSize": "16px",
+            "pos": ["10%", "10%"],
+            "loop": {
+              "style": "blink",
+              "count": 0,
+              "duration": 1.5
+            }
+          },
+          {
+            "id": "star2",
+            "text": "⭐",
+            "fontSize": "12px",
+            "pos": ["25%", "5%"],
+            "loop": {
+              "style": "blink",
+              "count": 0,
+              "duration": 2
+            }
+          },
+          {
+            "id": "star3",
+            "text": "⭐",
+            "fontSize": "14px",
+            "pos": ["45%", "8%"],
+            "loop": {
+              "style": "blink",
+              "count": 0,
+              "duration": 1.2
+            }
+          },
+          {
+            "id": "star4",
+            "text": "⭐",
+            "fontSize": "10px",
+            "pos": ["80%", "12%"],
+            "loop": {
+              "style": "blink",
+              "count": 0,
+              "duration": 1.8
+            }
+          },
+          {
+            "id": "star5",
+            "text": "⭐",
+            "fontSize": "18px",
+            "pos": ["90%", "6%"],
+            "loop": {
+              "style": "blink",
+              "count": 0,
+              "duration": 2.5
+            }
+          },
+          {
+            "id": "crystal",
+            "text": "💎",
+            "fontSize": "120px",
+            "pos": ["50%", "40%"],
+            "opacity": 0,
+            "scale": 0.3,
+            "to": {
+              "opacity": 1,
+              "scale": 1,
+              "timing": [0.15, 0.4]
+            },
+            "loop": {
+              "style": "spin",
+              "clockwise": true,
+              "count": 0,
+              "duration": 4
+            }
+          },
+          {
+            "id": "glow1",
+            "text": "✦",
+            "fontSize": "30px",
+            "textColor": "#FFD54F",
+            "pos": ["40%", "30%"],
+            "opacity": 0,
+            "to": {
+              "opacity": 1,
+              "timing": [0.35, 0.5]
+            },
+            "loop": {
+              "style": "pulse",
+              "delta": 0.3,
+              "count": 0,
+              "duration": 0.6
+            }
+          },
+          {
+            "id": "glow2",
+            "text": "✦",
+            "fontSize": "24px",
+            "textColor": "#64FFDA",
+            "pos": ["60%", "35%"],
+            "opacity": 0,
+            "to": {
+              "opacity": 1,
+              "timing": [0.4, 0.55]
+            },
+            "loop": {
+              "style": "pulse",
+              "delta": 0.25,
+              "count": 0,
+              "duration": 0.8
+            }
+          },
+          {
+            "id": "glow3",
+            "text": "✦",
+            "fontSize": "20px",
+            "textColor": "#FF80AB",
+            "pos": ["55%", "50%"],
+            "opacity": 0,
+            "to": {
+              "opacity": 1,
+              "timing": [0.45, 0.6]
+            },
+            "loop": {
+              "style": "pulse",
+              "delta": 0.35,
+              "count": 0,
+              "duration": 0.5
+            }
+          },
+          {
+            "id": "macoro",
+            "img": "https://raw.githubusercontent.com/receptron/mulmocast-media/main/characters/macoro.png",
+            "pos": ["25%", "70%"],
+            "w": 320,
+            "h": 200,
+            "imgFit": "contain",
+            "shadow": {
+              "offset": [0, 5],
+              "opacity": 0.3,
+              "radius": 10
+            },
+            "opacity": 0,
+            "to": {
+              "opacity": 1,
+              "timing": [0, 0.15]
+            },
+            "loop": {
+              "style": "bounce",
+              "delta": 8,
+              "count": 0,
+              "duration": 0.6
+            }
+          },
+          {
+            "id": "dialog",
+            "pos": ["50%", "90%"],
+            "w": "80%",
+            "h": 60,
+            "bc": "rgba(0,0,0,0.6)",
+            "cornerRadius": 12,
+            "opacity": 0,
+            "to": {
+              "opacity": 1,
+              "timing": [0.3, 0.4]
+            },
+            "elements": [
+              {
+                "id": "dialog-text",
+                "pos": ["50%", "50%"],
+                "text": "見て見て！お宝を見つけたよ！キラキラのクリスタルだ！",
+                "fontSize": "20px",
+                "fontWeight": "bold",
+                "textColor": "white",
+                "textAlign": "center"
+              }
+            ]
+          }
+        ],
+        "animation": {
+          "fps": 24
+        }
+      }
+    },
+    {
+      "speaker": "macoro",
+      "text": "今日は楽しかったね！またね、バイバイ！",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "elements": [
+          {
+            "id": "sky",
+            "w": "100%",
+            "h": "100%",
+            "bc": "linear-gradient(180deg, #FF8A65 0%, #FFB74D 30%, #FFE082 60%, #FFF9C4 100%)"
+          },
+          {
+            "id": "sun",
+            "text": "🌅",
+            "fontSize": "100px",
+            "pos": ["50%", "50%"],
+            "opacity": 0.8,
+            "loop": {
+              "style": "pulse",
+              "delta": 0.05,
+              "count": 0,
+              "duration": 4
+            }
+          },
+          {
+            "id": "bird1",
+            "text": "🕊",
+            "fontSize": "24px",
+            "pos": ["30%", "25%"],
+            "loop": {
+              "style": "shift",
+              "direction": "e",
+              "count": 0,
+              "duration": 15
+            }
+          },
+          {
+            "id": "bird2",
+            "text": "🕊",
+            "fontSize": "18px",
+            "pos": ["45%", "20%"],
+            "loop": {
+              "style": "shift",
+              "direction": "e",
+              "count": 0,
+              "duration": 20
+            }
+          },
+          {
+            "id": "ground",
+            "w": "100%",
+            "h": "25%",
+            "y": "75%",
+            "bc": "linear-gradient(180deg, #66BB6A 0%, #388E3C 100%)"
+          },
+          {
+            "id": "macoro",
+            "img": "https://raw.githubusercontent.com/receptron/mulmocast-media/main/characters/macoro.png",
+            "pos": ["50%", "65%"],
+            "w": 400,
+            "h": 250,
+            "imgFit": "contain",
+            "shadow": {
+              "offset": [0, 8],
+              "opacity": 0.2,
+              "radius": 15
+            },
+            "loop": {
+              "style": "wiggle",
+              "delta": 5,
+              "count": 0,
+              "duration": 1
+            }
+          },
+          {
+            "id": "wave-hand",
+            "text": "👋",
+            "fontSize": "48px",
+            "pos": ["65%", "50%"],
+            "opacity": 0,
+            "to": {
+              "opacity": 1,
+              "timing": [0.2, 0.3]
+            },
+            "loop": {
+              "style": "wiggle",
+              "delta": 20,
+              "count": 0,
+              "duration": 0.4
+            }
+          },
+          {
+            "id": "heart1",
+            "text": "❤",
+            "fontSize": "24px",
+            "textColor": "#E91E63",
+            "pos": ["35%", "45%"],
+            "opacity": 0,
+            "to": {
+              "opacity": 0.8,
+              "translate": [0, -30],
+              "timing": [0.3, 0.5]
+            },
+            "loop": {
+              "style": "pulse",
+              "delta": 0.15,
+              "count": 0,
+              "duration": 1
+            }
+          },
+          {
+            "id": "heart2",
+            "text": "❤",
+            "fontSize": "18px",
+            "textColor": "#F06292",
+            "pos": ["55%", "42%"],
+            "opacity": 0,
+            "to": {
+              "opacity": 0.7,
+              "translate": [0, -25],
+              "timing": [0.4, 0.6]
+            },
+            "loop": {
+              "style": "pulse",
+              "delta": 0.2,
+              "count": 0,
+              "duration": 1.3
+            }
+          },
+          {
+            "id": "dialog",
+            "pos": ["50%", "88%"],
+            "w": "70%",
+            "h": 55,
+            "bc": "rgba(255,255,255,0.85)",
+            "cornerRadius": 28,
+            "opacity": 0,
+            "shadow": {
+              "offset": [0, 3],
+              "opacity": 0.1,
+              "radius": 6
+            },
+            "to": {
+              "opacity": 1,
+              "timing": [0.2, 0.3]
+            },
+            "elements": [
+              {
+                "id": "dialog-text",
+                "pos": ["50%", "50%"],
+                "text": "今日は楽しかったね！またね、バイバイ！",
+                "fontSize": "22px",
+                "fontWeight": "bold",
+                "textColor": "#BF360C",
+                "textAlign": "center"
+              }
+            ]
+          },
+          {
+            "id": "the-end",
+            "pos": ["50%", "15%"],
+            "opacity": 0,
+            "to": {
+              "opacity": 1,
+              "timing": [0.6, 0.8]
+            },
+            "elements": [
+              {
+                "id": "end-text",
+                "text": "THE END",
+                "fontSize": "36px",
+                "fontWeight": "900",
+                "textColor": "white",
+                "shadow": {
+                  "offset": [2, 2],
+                  "opacity": 0.4,
+                  "radius": 6
+                },
+                "textAlign": "center"
+              }
+            ]
+          }
+        ],
+        "animation": {
+          "fps": 24
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "title": "マコロ Swipeアニメ プロトタイプ",
+  "description": "Swipe風宣言的elementsによるアニメーションテスト",
+  "lang": "ja",
+  "speechParams": {
+    "provider": "openai",
+    "speakers": {
+      "macoro": {
+        "voiceId": "nova",
+        "displayName": { "ja": "マコロ" }
+      }
+    }
+  },
+  "beats": [
+    {
+      "speaker": "macoro",
+      "text": "こんにちは！ぼくマコロだよ！今日はみんなに会えてうれしいな！",
+      "duration": 6,
+      "image": {
+        "type": "html_tailwind",
+        "elements": [
+          {
+            "id": "bg",
+            "w": "100%",
+            "h": "100%",
+            "bc": "linear-gradient(135deg, #fce4ec 0%, #f8bbd0 30%, #e1bee7 60%, #bbdefb 100%)"
+          },
+          {
+            "id": "star1",
+            "text": "✦",
+            "fontSize": "36px",
+            "textColor": "gold",
+            "pos": ["15%", "15%"],
+            "opacity": 0.3,
+            "loop": { "style": "blink", "count": 0, "duration": 2 }
+          },
+          {
+            "id": "star2",
+            "text": "✦",
+            "fontSize": "28px",
+            "textColor": "gold",
+            "pos": ["80%", "20%"],
+            "opacity": 0.3,
+            "loop": { "style": "blink", "count": 0, "duration": 3 }
+          },
+          {
+            "id": "star3",
+            "text": "✦",
+            "fontSize": "22px",
+            "textColor": "gold",
+            "pos": ["60%", "10%"],
+            "opacity": 0.3,
+            "loop": { "style": "blink", "count": 0, "duration": 1.5 }
+          },
+          {
+            "id": "macoro",
+            "img": "https://raw.githubusercontent.com/receptron/mulmocast-media/main/characters/macoro.png",
+            "pos": ["50%", "65%"],
+            "w": 500,
+            "h": 300,
+            "imgFit": "contain",
+            "opacity": 0,
+            "shadow": { "color": "black", "offset": [0, 10], "opacity": 0.2, "radius": 20 },
+            "to": {
+              "opacity": 1,
+              "translate": [0, -20],
+              "timing": [0, 0.15]
+            },
+            "loop": { "style": "wiggle", "delta": 3, "count": 0, "duration": 0.5 }
+          },
+          {
+            "id": "bubble",
+            "pos": ["72%", "18%"],
+            "w": 350,
+            "h": 120,
+            "bc": "white",
+            "cornerRadius": 24,
+            "opacity": 0,
+            "shadow": { "color": "black", "offset": [0, 4], "opacity": 0.1, "radius": 10 },
+            "to": {
+              "opacity": 1,
+              "scale": 1,
+              "timing": [0.1, 0.2]
+            },
+            "elements": [
+              {
+                "id": "bubble-text",
+                "x": 24,
+                "y": 20,
+                "w": 300,
+                "text": "こんにちは！ぼくマコロだよ！今日はみんなに会えてうれしいな！",
+                "fontSize": "20px",
+                "fontWeight": "bold",
+                "textColor": "#555"
+              }
+            ]
+          }
+        ],
+        "animation": { "fps": 24 }
+      }
+    }
+  ]
+}

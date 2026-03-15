@@ -230,6 +230,79 @@ export const mulmoMermaidMediaSchema = z
   })
   .strict();
 
+// Swipe-inspired element animation schemas
+const swipePositionValue = z.union([z.number(), z.string()]);
+
+const swipeTransitionSchema = z
+  .object({
+    opacity: z.number().min(0).max(1).optional(),
+    rotate: z.number().optional(),
+    scale: z.union([z.number(), z.tuple([z.number(), z.number()])]).optional(),
+    translate: z.tuple([z.number(), z.number()]).optional(),
+    bc: z.string().optional(),
+    timing: z.tuple([z.number(), z.number()]).default([0, 1]).optional().describe("Animation timing [start, end] as ratio 0.0-1.0 of beat duration"),
+  })
+  .strict();
+
+const swipeLoopSchema = z
+  .object({
+    style: z.enum(["vibrate", "blink", "wiggle", "spin", "shift", "bounce", "pulse"]),
+    count: z.number().optional().describe("Number of loop iterations. 0 = infinite"),
+    delta: z.number().optional().describe("Distance for vibrate / angle for wiggle"),
+    duration: z.number().optional().describe("Duration of one cycle in seconds"),
+    direction: z.enum(["n", "s", "e", "w"]).optional().describe("Direction for shift animation"),
+    clockwise: z.boolean().optional().describe("Spin direction. Default: true"),
+  })
+  .strict();
+
+const swipeShadowSchema = z
+  .object({
+    color: z.string().optional().default("black"),
+    offset: z.tuple([z.number(), z.number()]).optional().default([1, 1]),
+    opacity: z.number().optional().default(0.5),
+    radius: z.number().optional().default(1),
+  })
+  .strict();
+
+export const swipeElementSchema: z.ZodType = z.lazy(() =>
+  z
+    .object({
+      id: z.string().optional(),
+      // Position & size
+      x: swipePositionValue.optional(),
+      y: swipePositionValue.optional(),
+      w: swipePositionValue.optional(),
+      h: swipePositionValue.optional(),
+      pos: z.tuple([swipePositionValue, swipePositionValue]).optional().describe("Position by anchor point [x, y]"),
+      // Visual
+      bc: z.string().optional().describe("Background color"),
+      opacity: z.number().min(0).max(1).optional(),
+      rotate: z.number().optional(),
+      scale: z.union([z.number(), z.tuple([z.number(), z.number()])]).optional(),
+      translate: z.tuple([z.number(), z.number()]).optional(),
+      cornerRadius: z.number().optional(),
+      borderWidth: z.number().optional(),
+      borderColor: z.string().optional(),
+      shadow: swipeShadowSchema.optional(),
+      clip: z.boolean().optional(),
+      // Content
+      text: z.string().optional(),
+      fontSize: z.union([z.number(), z.string()]).optional(),
+      fontWeight: z.string().optional(),
+      textColor: z.string().optional(),
+      textAlign: z.enum(["center", "left", "right"]).optional(),
+      lineHeight: z.union([z.number(), z.string()]).optional(),
+      img: z.string().optional().describe("Image URL or image:ref"),
+      imgFit: z.enum(["contain", "cover", "fill"]).optional().default("contain"),
+      // Animation
+      to: swipeTransitionSchema.optional().describe("Transition animation"),
+      loop: swipeLoopSchema.optional().describe("Loop animation"),
+      // Children
+      elements: z.array(z.lazy(() => swipeElementSchema)).optional(),
+    })
+    .strict(),
+);
+
 export const htmlTailwindAnimationSchema = z.union([
   z.literal(true),
   z.object({
@@ -241,8 +314,12 @@ export const htmlTailwindAnimationSchema = z.union([
 export const mulmoHtmlTailwindMediaSchema = z
   .object({
     type: z.literal("html_tailwind"),
-    html: stringOrStringArray,
+    html: stringOrStringArray.optional(),
     script: stringOrStringArray.optional().describe("JavaScript code for the beat. Injected as a <script> tag after html. Use for render() function etc."),
+    elements: z
+      .array(swipeElementSchema)
+      .optional()
+      .describe("Swipe-style declarative animation elements. Converted to HTML + render() automatically. Use this OR html, not both."),
     animation: htmlTailwindAnimationSchema
       .optional()
       .describe("Enable frame-based animation (Remotion-style). true for defaults (30fps), or { fps: N } for custom frame rate."),
