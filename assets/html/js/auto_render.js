@@ -32,7 +32,7 @@ if (typeof window.render === "function") {
  */
 window.renderFinal = function () {
   const mulmo = window.__MULMO;
-  const lastFrame = Math.max(0, mulmo.totalFrames - 1);
+  const lastFrame = Math.max(0, (mulmo.totalFrames || 0) - 1);
   mulmo.frame = lastFrame;
   if (typeof window.render === "function") {
     return window.render(lastFrame, mulmo.totalFrames, mulmo.fps);

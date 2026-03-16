@@ -164,7 +164,8 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
   const finalHtml = buildAnimatedHtml(params, FINAL_FRAME_TOTAL, fps);
   await renderHTMLToFinalFrame(finalHtml, finalFramePath, canvasSize.width, canvasSize.height);
 
-  return imagePath;
+  // Return video path when video was generated, otherwise return the static PNG path
+  return duration !== undefined ? imagePath : finalFramePath;
 };
 
 const processHtmlTailwindStatic = async (params: ImageProcessorParams) => {
