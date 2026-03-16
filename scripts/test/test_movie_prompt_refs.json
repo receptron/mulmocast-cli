@@ -1,0 +1,48 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "canvasSize": { "width": 1080, "height": 1920 },
+  "title": "moviePrompt reference test",
+  "speechParams": {
+    "provider": "kotodama",
+    "speakers": {
+      "Presenter": { "provider": "kotodama", "voiceId": "jikkyo_baby" }
+    }
+  },
+  "movieParams": {
+    "provider": "google"
+  },
+  "imageParams": {
+    "provider": "google",
+    "model": "gemini-3.1-flash-image-preview",
+    "images": {
+      "ocean_video": {
+        "type": "moviePrompt",
+        "prompt": "Gentle ocean waves on a sandy beach, sunny day, calm and peaceful"
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "This is a moviePrompt test. AI-generated video is embedded via the movie:name scheme.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <div style='position:absolute;inset:0;overflow:hidden'>",
+          "    <video src='movie:ocean_video' autoplay muted loop style='width:100%;height:100%;object-fit:cover;filter:brightness(0.7)'></video>",
+          "  </div>",
+          "  <div style='position:absolute;top:50%;left:40px;right:40px;transform:translateY(-50%);text-align:center'>",
+          "    <div style='display:inline-block;background:rgba(59,130,246,0.85);padding:12px 32px;border-radius:12px'>",
+          "      <span style='color:white;font-size:72px;font-weight:900'>moviePrompt test</span>",
+          "    </div>",
+          "    <div style='color:white;font-size:44px;font-weight:900;margin-top:20px;text-shadow:0 4px 16px rgba(0,0,0,0.9)'>AI-generated ocean waves</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "animation": { "movie": true }
+      }
+    }
+  ]
+}
