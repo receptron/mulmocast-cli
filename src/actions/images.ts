@@ -31,7 +31,7 @@ import { settings2GraphAIConfig } from "../utils/utils.js";
 import { audioCheckerError } from "../utils/error_cause.js";
 import { extractImageFromMovie, ffmpegGetMediaDuration, trimMusic } from "../utils/ffmpeg_utils.js";
 
-import { getMediaRefs } from "./image_references.js";
+import { getMediaRefs, resolveBeatLocalRefs } from "./image_references.js";
 import { imagePreprocessAgent, imagePluginAgent, htmlImageGeneratorAgent } from "./image_agents.js";
 
 const vanillaAgents = vanilla.default ?? vanilla;
@@ -81,14 +81,24 @@ export const beat_graph_data = {
     forceLipSync: { value: false },
     forceSoundEffect: { value: false },
     withBackup: { value: false },
-    preprocessor: {
-      agent: imagePreprocessAgent,
+    localRefs: {
+      agent: resolveBeatLocalRefs,
       inputs: {
         context: ":context",
         beat: ":beat",
         index: ":__mapIndex",
         imageRefs: ":imageRefs",
         movieRefs: ":movieRefs",
+      },
+    },
+    preprocessor: {
+      agent: imagePreprocessAgent,
+      inputs: {
+        context: ":context",
+        beat: ":beat",
+        index: ":__mapIndex",
+        imageRefs: ":localRefs.imageRefs",
+        movieRefs: ":localRefs.movieRefs",
       },
     },
     imagePlugin: {
@@ -99,8 +109,8 @@ export const beat_graph_data = {
         context: ":context",
         beat: ":beat",
         index: ":__mapIndex",
-        imageRefs: ":imageRefs",
-        movieRefs: ":movieRefs",
+        imageRefs: ":localRefs.imageRefs",
+        movieRefs: ":localRefs.movieRefs",
         onComplete: [":preprocessor"],
       },
     },

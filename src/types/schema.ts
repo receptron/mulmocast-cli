@@ -178,6 +178,14 @@ export const mulmoMovieMediaSchema = z
   })
   .strict();
 
+export const mulmoMoviePromptMediaSchema = z
+  .object({
+    type: z.literal("moviePrompt"),
+    prompt: z.string().min(1),
+    imageName: z.string().optional().describe("Reference an imageRefs key to use as image-to-video input"),
+  })
+  .strict();
+
 export const mulmoTextSlideMediaSchema = z
   .object({
     type: z.literal("textSlide"),
@@ -391,7 +399,12 @@ export const mulmoImagePromptMediaSchema = z
   })
   .strict();
 
-export const mulmoImageParamsImagesValueSchema = z.union([mulmoImageMediaSchema, mulmoImagePromptMediaSchema, mulmoMovieMediaSchema]);
+export const mulmoImageParamsImagesValueSchema = z.union([
+  mulmoImageMediaSchema,
+  mulmoImagePromptMediaSchema,
+  mulmoMovieMediaSchema,
+  mulmoMoviePromptMediaSchema,
+]);
 export const mulmoImageParamsImagesSchema = z.record(imageIdSchema, mulmoImageParamsImagesValueSchema);
 export const mulmoFillOptionSchema = z
   .object({
@@ -558,6 +571,9 @@ export const mulmoBeatSchema = z
     speechOptions: speechOptionsSchema.optional(),
     textSlideParams: textSlideParamsSchema.optional(),
     captionParams: mulmoCaptionParamsSchema.optional(),
+    images: mulmoImageParamsImagesSchema
+      .optional()
+      .describe("Beat-local media references. Same schema as imageParams.images. Merged with global refs (local takes precedence)."),
     imageNames: z.array(imageIdSchema).optional(), // list of image names to use for image generation. The default is all images in the imageParams.images.
     imagePrompt: z.string().optional(),
     moviePrompt: z.string().optional(),
