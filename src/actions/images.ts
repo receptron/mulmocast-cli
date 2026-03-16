@@ -31,7 +31,7 @@ import { settings2GraphAIConfig } from "../utils/utils.js";
 import { audioCheckerError } from "../utils/error_cause.js";
 import { extractImageFromMovie, ffmpegGetMediaDuration, trimMusic } from "../utils/ffmpeg_utils.js";
 
-import { getImageRefs } from "./image_references.js";
+import { getMediaRefs } from "./image_references.js";
 import { imagePreprocessAgent, imagePluginAgent, htmlImageGeneratorAgent } from "./image_agents.js";
 
 const vanillaAgents = vanilla.default ?? vanilla;
@@ -73,6 +73,7 @@ export const beat_graph_data = {
     context: {},
     htmlImageAgentInfo: {},
     imageRefs: {},
+    movieRefs: {},
     beat: {},
     __mapIndex: {},
     forceMovie: { value: false },
@@ -87,6 +88,7 @@ export const beat_graph_data = {
         beat: ":beat",
         index: ":__mapIndex",
         imageRefs: ":imageRefs",
+        movieRefs: ":movieRefs",
       },
     },
     imagePlugin: {
@@ -98,6 +100,7 @@ export const beat_graph_data = {
         beat: ":beat",
         index: ":__mapIndex",
         imageRefs: ":imageRefs",
+        movieRefs: ":movieRefs",
         onComplete: [":preprocessor"],
       },
     },
@@ -355,6 +358,7 @@ export const images_graph_data: GraphData = {
     htmlImageAgentInfo: {},
     outputStudioFilePath: {},
     imageRefs: {},
+    movieRefs: {},
     map: {
       agent: "mapAgent",
       inputs: {
@@ -362,6 +366,7 @@ export const images_graph_data: GraphData = {
         context: ":context",
         htmlImageAgentInfo: ":htmlImageAgentInfo",
         imageRefs: ":imageRefs",
+        movieRefs: ":movieRefs",
       },
       isResult: true,
       params: {
@@ -462,7 +467,7 @@ const prepareGenerateImages = async (context: MulmoStudioContext) => {
   const provider = MulmoPresentationStyleMethods.getText2ImageProvider(context.presentationStyle.imageParams?.provider);
   const htmlImageAgentInfo = MulmoPresentationStyleMethods.getHtmlImageAgentInfo(context.presentationStyle);
 
-  const imageRefs = await getImageRefs(context);
+  const { imageRefs, movieRefs } = await getMediaRefs(context);
 
   GraphAILogger.info(`text2image: provider=${provider} model=${context.presentationStyle.imageParams?.model}`);
   const injections: Record<string, string | MulmoImageParams | MulmoStudioContext | { agent: string } | Record<string, string> | undefined> = {
@@ -470,6 +475,7 @@ const prepareGenerateImages = async (context: MulmoStudioContext) => {
     htmlImageAgentInfo,
     outputStudioFilePath: getOutputStudioFilePath(outDirPath, fileName),
     imageRefs,
+    movieRefs,
   };
   return injections;
 };

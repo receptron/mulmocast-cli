@@ -171,7 +171,7 @@ const mulmoSvgMediaSchema = z
   })
   .strict();
 
-const mulmoMovieMediaSchema = z
+export const mulmoMovieMediaSchema = z
   .object({
     type: z.literal("movie"),
     source: mediaSourceSchema,
@@ -391,7 +391,7 @@ export const mulmoImagePromptMediaSchema = z
   })
   .strict();
 
-export const mulmoImageParamsImagesValueSchema = z.union([mulmoImageMediaSchema, mulmoImagePromptMediaSchema]);
+export const mulmoImageParamsImagesValueSchema = z.union([mulmoImageMediaSchema, mulmoImagePromptMediaSchema, mulmoMovieMediaSchema]);
 export const mulmoImageParamsImagesSchema = z.record(imageIdSchema, mulmoImageParamsImagesValueSchema);
 export const mulmoFillOptionSchema = z
   .object({

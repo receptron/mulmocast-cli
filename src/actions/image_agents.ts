@@ -190,8 +190,14 @@ export const imagePreprocessAgent = async (namedInputs: {
   return { ...returnValue, imagePath, referenceImageForMovie: imagePath, imageAgentInfo, prompt, referenceImages };
 };
 
-export const imagePluginAgent = async (namedInputs: { context: MulmoStudioContext; beat: MulmoBeat; index: number; imageRefs?: Record<string, string> }) => {
-  const { context, beat, index, imageRefs } = namedInputs;
+export const imagePluginAgent = async (namedInputs: {
+  context: MulmoStudioContext;
+  beat: MulmoBeat;
+  index: number;
+  imageRefs?: Record<string, string>;
+  movieRefs?: Record<string, string>;
+}) => {
+  const { context, beat, index, imageRefs, movieRefs } = namedInputs;
   const { imagePath } = getBeatPngImagePath(context, index);
 
   const plugin = MulmoBeatMethods.getPlugin(beat);
@@ -204,7 +210,7 @@ export const imagePluginAgent = async (namedInputs: { context: MulmoStudioContex
     MulmoStudioContextMethods.setBeatSessionState(context, "image", index, beat.id, true);
     const studioBeat = context.studio.beats[index];
     const beatDuration = beat.duration ?? studioBeat?.duration;
-    const processorParams = { beat, context, imagePath: effectiveImagePath, imageRefs, beatDuration, ...htmlStyle(context, beat) };
+    const processorParams = { beat, context, imagePath: effectiveImagePath, imageRefs, movieRefs, beatDuration, ...htmlStyle(context, beat) };
     await plugin.process(processorParams);
     MulmoStudioContextMethods.setBeatSessionState(context, "image", index, beat.id, false);
   } catch (error) {

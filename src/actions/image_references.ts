@@ -3,7 +3,7 @@ import { getReferenceImagePath } from "../utils/file.js";
 
 import { graphOption } from "./images.js";
 import { MulmoPresentationStyleMethods, MulmoMediaSourceMethods } from "../methods/index.js";
-import { MulmoStudioContext, MulmoStudioBeat, MulmoImagePromptMedia } from "../types/index.js";
+import { MulmoStudioContext, MulmoStudioBeat, MulmoImagePromptMedia, MulmoMovieMedia } from "../types/index.js";
 
 import { imageOpenaiAgent, mediaMockAgent, imageGenAIAgent, imageReplicateAgent } from "../agents/index.js";
 import { agentGenerationError, imageReferenceAction, imageFileTarget } from "../utils/error_cause.js";
@@ -62,12 +62,18 @@ export const generateReferenceImage = async (inputs: {
   }
 };
 
-export const getImageRefs = async (context: MulmoStudioContext) => {
+export type MediaRefs = {
+  imageRefs: Record<string, string>;
+  movieRefs: Record<string, string>;
+};
+
+export const getMediaRefs = async (context: MulmoStudioContext): Promise<MediaRefs> => {
   const images = context.presentationStyle.imageParams?.images;
   if (!images) {
-    return {};
+    return { imageRefs: {}, movieRefs: {} };
   }
   const imageRefs: Record<string, string> = {};
+  const movieRefs: Record<string, string> = {};
   await Promise.all(
     Object.keys(images)
       .sort()
@@ -77,8 +83,20 @@ export const getImageRefs = async (context: MulmoStudioContext) => {
           imageRefs[key] = await generateReferenceImage({ context, key, index, image, force: false });
         } else if (image.type === "image") {
           imageRefs[key] = await MulmoMediaSourceMethods.imageReference(image.source, context, key);
+        } else if (image.type === "movie") {
+          movieRefs[key] = await resolveMovieReference(image, context, key);
         }
       }),
   );
+  return { imageRefs, movieRefs };
+};
+
+const resolveMovieReference = async (movie: MulmoMovieMedia, context: MulmoStudioContext, key: string) => {
+  return MulmoMediaSourceMethods.imageReference(movie.source, context, key);
+};
+
+/** @deprecated Use getMediaRefs instead */
+export const getImageRefs = async (context: MulmoStudioContext) => {
+  const { imageRefs } = await getMediaRefs(context);
   return imageRefs;
 };

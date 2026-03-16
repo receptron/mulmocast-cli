@@ -5,7 +5,80 @@ import crypto from "node:crypto";
 import { marked } from "marked";
 import puppeteer from "puppeteer";
 
+import { GraphAILogger } from "graphai";
+
 const isCI = process.env.CI === "true";
+
+const VIDEO_LOAD_TIMEOUT_MS = 15000;
+const VIDEO_SEEK_TIMEOUT_MS = 3000;
+
+/** Wait for all <video> elements on the page to be ready for playback */
+const waitForVideosReady = async (page: puppeteer.Page): Promise<void> => {
+  const hasVideos = await page.evaluate(() => document.querySelectorAll("video").length > 0);
+  if (!hasVideos) return;
+
+  GraphAILogger.info("Waiting for video elements to load...");
+  await page.evaluate((timeout_ms) => {
+    const videos = Array.from(document.querySelectorAll("video"));
+    const pending = videos.filter((v) => v.readyState < 3);
+    if (pending.length === 0) return Promise.resolve();
+
+    /* eslint-disable sonarjs/no-nested-functions -- inside page.evaluate serialization boundary */
+    return new Promise<void>((resolve) => {
+      let remaining = pending.length;
+      const timer = setTimeout(() => resolve(), timeout_ms);
+      pending.forEach((v) =>
+        v.addEventListener(
+          "canplaythrough",
+          () => {
+            remaining--;
+            if (remaining <= 0) {
+              clearTimeout(timer);
+              resolve();
+            }
+          },
+          { once: true },
+        ),
+      );
+    });
+    /* eslint-enable sonarjs/no-nested-functions */
+  }, VIDEO_LOAD_TIMEOUT_MS);
+};
+
+/** Seek all <video> elements to the specified frame time and wait for seek to complete */
+const syncVideosToFrame = async (page: puppeteer.Page, frameIndex: number, fps: number): Promise<void> => {
+  const time = frameIndex / fps;
+  await page.evaluate(
+    (seekTime, seekTimeout) => {
+      const videos = Array.from(document.querySelectorAll("video"));
+      if (videos.length === 0) return;
+      videos.forEach((v) => {
+        v.pause();
+        v.currentTime = seekTime;
+      });
+      /* eslint-disable sonarjs/no-nested-functions -- unavoidable inside page.evaluate serialization boundary */
+      return Promise.all(
+        videos.map(
+          (v) =>
+            new Promise<void>((r) => {
+              const timer = setTimeout(() => r(), seekTimeout);
+              v.addEventListener(
+                "seeked",
+                () => {
+                  clearTimeout(timer);
+                  r();
+                },
+                { once: true },
+              );
+            }),
+        ),
+      );
+      /* eslint-enable sonarjs/no-nested-functions */
+    },
+    time,
+    VIDEO_SEEK_TIMEOUT_MS,
+  );
+};
 
 /** Scale the page content so it fits inside the viewport without overflow */
 const scaleContentToFit = async (page: puppeteer.Page, viewportWidth: number, viewportHeight: number): Promise<void> => {
@@ -146,11 +219,13 @@ export const renderHTMLToFrames = async (
 
     // Scale content to fit viewport (same logic as renderHTMLToImage)
     await scaleContentToFit(page, width, height);
+    await waitForVideosReady(page);
 
     const framePaths: string[] = [];
 
     for (let frame = 0; frame < totalFrames; frame++) {
       // Update frame state and call render() — await in case it returns a Promise
+      // Update frame state and call render()
       await page.evaluate(
         async ({ frameIndex, totalFrameCount, framesPerSecond }) => {
           const mulmoWindow = window as unknown as { __MULMO: { frame: number }; render?: (f: number, t: number, fps: number) => unknown };
@@ -161,6 +236,8 @@ export const renderHTMLToFrames = async (
         },
         { frameIndex: frame, totalFrameCount: totalFrames, framesPerSecond: fps },
       );
+      // Sync all <video> elements to the current frame time
+      await syncVideosToFrame(page, frame, fps);
 
       const framePath = nodePath.join(outputDir, `frame_${String(frame).padStart(5, "0")}.png`);
       await page.screenshot({ path: framePath as `${string}.png` });
@@ -189,6 +266,19 @@ export const renderHTMLToVideo = async (html: string, videoPath: string, width: 
     await page.setViewport({ width, height });
     await page.addStyleTag({ content: "html{height:100%;margin:0;padding:0;overflow:hidden}" });
     await scaleContentToFit(page, width, height);
+    await waitForVideosReady(page);
+
+    // Reset all videos to start and begin playback
+    await page.evaluate(() => {
+      const videos = Array.from(document.querySelectorAll("video"));
+      return Promise.all(
+        videos.map((v) => {
+          v.muted = true;
+          v.currentTime = 0;
+          return v.play().catch(() => {});
+        }),
+      );
+    });
 
     const recorder = await page.screencast({
       path: videoPath as `${string}.mp4`,
