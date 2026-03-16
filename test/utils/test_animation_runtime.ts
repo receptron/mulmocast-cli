@@ -242,6 +242,22 @@ describe("JS file syntax validation", () => {
   });
 });
 
+describe("MulmoAnimation.renderFinal", () => {
+  it("renders all animations at their final state", () => {
+    const mockStyle: Record<string, string | number> = {};
+    const mockEl = { style: mockStyle };
+    const ctx = loadRuntime();
+    ctx.document.querySelector = (sel: string) => (sel === "#el" ? mockEl : null);
+    const MulmoAnimation = ctx.MulmoAnimation;
+    const anim = new MulmoAnimation();
+    anim.animate("#el", { opacity: [0, 1] }, { start: 0, end: 2 });
+
+    // renderFinal should set opacity to 1 (end state)
+    anim.renderFinal(30);
+    assert.equal(mockStyle.opacity, 1);
+  });
+});
+
 describe("MulmoAnimation.update", () => {
   it("applies animate props to DOM element", () => {
     const mockStyle: Record<string, string | number> = {};

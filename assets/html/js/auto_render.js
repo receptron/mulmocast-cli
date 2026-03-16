@@ -26,6 +26,20 @@ if (typeof window.render === "function") {
 }
 
 /**
+ * Render the final frame of the animation (all content fully visible).
+ * Used by Puppeteer to capture a static image for PDF/thumbnail generation.
+ * Returns a Promise (or value) from the render function.
+ */
+window.renderFinal = function () {
+  const mulmo = window.__MULMO;
+  const lastFrame = Math.max(0, mulmo.totalFrames - 1);
+  mulmo.frame = lastFrame;
+  if (typeof window.render === "function") {
+    return window.render(lastFrame, mulmo.totalFrames, mulmo.fps);
+  }
+};
+
+/**
  * Play animation in real-time using requestAnimationFrame.
  * Returns a Promise that resolves when all frames have been rendered.
  * Called by Puppeteer's page.evaluate() during screencast recording.
