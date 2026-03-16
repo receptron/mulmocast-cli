@@ -1102,6 +1102,44 @@ html_tailwind で `movie:name` として参照:
 
 `movie:name` は `image:name` と同様に、ビルド時に `file://` 絶対パスに解決されます。
 
+### moviePrompt で AI 動画を生成
+
+`type: "moviePrompt"` を使うと、テキストプロンプトから動画を AI 生成できます。オプションの `imageName` で別の画像 ref を指定すると、その画像を元に Image-to-Video 生成を行います。
+
+```json
+  "imageParams": {
+    "images": {
+      "bg_office": {
+        "type": "imagePrompt",
+        "prompt": "Modern office with glass walls, bright daylight"
+      },
+      "office_pan": {
+        "type": "moviePrompt",
+        "prompt": "Slow camera pan across the office",
+        "imageName": "bg_office"
+      }
+    }
+  }
+```
+
+`imageName` を指定した場合、参照先の画像が先に生成され、その画像を元に動画が生成されます（2段階処理）。`imageName` を省略するとテキストのみから動画を生成します。
+
+生成された動画は `movie:name` で html_tailwind 内から参照できます:
+
+```json
+{
+  "image": {
+    "type": "html_tailwind",
+    "html": [
+      "<div class='h-full w-full'>",
+      "  <video src='movie:office_pan' autoplay muted style='width:100%;height:100%;object-fit:cover'></video>",
+      "</div>"
+    ],
+    "animation": { "movie": true }
+  }
+}
+```
+
 ## beat.imageNames による登場人物コントロール
 
 `beat.imageNames`は、**登場人物のコントロールに使うため**の機能です。`imageParams.images`で定義された登場人物の中から、そのbeatに登場する人物を選択的に指定できます。先生と生徒の会話であれば、先生だけが写る場面、生徒だけが写る場面を分けることが可能になります。
