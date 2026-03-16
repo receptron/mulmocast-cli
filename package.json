@@ -133,7 +133,7 @@
     "globals": "^17.4.0",
     "prettier": "^3.8.1",
     "tsx": "^4.21.0",
-    "typescript": "6.0.0-beta",
+    "typescript": "6.0.1-rc",
     "typescript-eslint": "^8.57.1"
   },
   "engines": {
