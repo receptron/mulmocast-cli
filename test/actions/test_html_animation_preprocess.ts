@@ -30,13 +30,15 @@ test("imagePreprocessAgent - animated html_tailwind sets movieFile to .mp4 path"
   assert("movieFile" in result, "result should have movieFile");
   assert(result.movieFile?.endsWith("_animated.mp4"), `movieFile should end with _animated.mp4, got: ${result.movieFile}`);
 
-  // imagePath should be .png (for thumbnail)
+  // imagePath should be .png (final frame rendered directly from HTML by the plugin)
   assert("imagePath" in result, "result should have imagePath");
   assert(result.imagePath?.endsWith(".png"), `imagePath should end with .png, got: ${result.imagePath}`);
 
-  // imageFromMovie should be true (triggers extractImageFromMovie)
-  assert("imageFromMovie" in result, "result should have imageFromMovie");
-  assert.strictEqual((result as { imageFromMovie: boolean }).imageFromMovie, true);
+  // imageFromMovie should NOT be set — the plugin generates the static PNG directly from HTML
+  assert(
+    !("imageFromMovie" in result) || !(result as { imageFromMovie?: boolean }).imageFromMovie,
+    "imageFromMovie should not be true for animated html_tailwind",
+  );
 });
 
 test("imagePreprocessAgent - static html_tailwind has no movieFile", async () => {
