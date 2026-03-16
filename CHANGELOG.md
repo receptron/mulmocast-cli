@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.3](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.3) (2026-03-17)
+
+- **Animated PDF final frame**: Animated `html_tailwind` beats now render a high-quality static image of the final frame directly from HTML for PDF/thumbnail use, fixing missing content in PDF output
+- **Beat-level local media references**: `beat.images` for defining image/movie references scoped to individual beats
+
+📦 **npm**: [`mulmocast@2.6.3`](https://www.npmjs.com/package/mulmocast/v/2.6.3)
+
 ## [2.6.2](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.2) (2026-03-16)
 
 - **Fix**: Beats with `moviePrompt` and empty `text` no longer cause the previous beat's video to be cut short (#1295)
