@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.2](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.2) (2026-03-16)
+
+- **Fix**: Beats with `moviePrompt` and empty `text` no longer cause the previous beat's video to be cut short (#1295)
+
+📦 **npm**: [`mulmocast@2.6.2`](https://www.npmjs.com/package/mulmocast/v/2.6.2)
+
 ## [2.6.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.1) (2026-03-16)
 
 - **Movie media references**: `movie` type in `imageParams.images` for video file references with `movie:name` resolution in html_tailwind and markdown plugins
