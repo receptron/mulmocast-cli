@@ -1,0 +1,211 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "canvasSize": { "width": 1080, "height": 1920 },
+  "title": "Beat-local media references test",
+  "speechParams": {
+    "provider": "openai",
+    "speakers": {
+      "Presenter": { "provider": "openai", "voiceId": "alloy" }
+    }
+  },
+  "imageParams": {
+    "provider": "google",
+    "model": "gemini-2.5-flash-image",
+    "images": {
+      "global_bg": {
+        "type": "image",
+        "source": {
+          "kind": "url",
+          "url": "https://raw.githubusercontent.com/receptron/mulmocast-cli/refs/heads/main/assets/images/mulmocast_credit.png"
+        }
+      },
+      "character": {
+        "type": "imagePrompt",
+        "prompt": "A friendly cartoon robot mascot with round blue body, big expressive eyes, small antenna on head, waving hand, white background, simple clean illustration style"
+      },
+      "global_movie": {
+        "type": "movie",
+        "source": {
+          "kind": "path",
+          "path": "../../test/assets/hello.mp4"
+        }
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "Beat1. Beat-local image referenced via image:name in html_tailwind.",
+      "speaker": "Presenter",
+      "images": {
+        "local_bg": {
+          "type": "image",
+          "source": {
+            "kind": "url",
+            "url": "https://raw.githubusercontent.com/receptron/mulmocast-cli/refs/heads/main/assets/images/mulmocast_credit.png"
+          }
+        }
+      },
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <div style='position:absolute;inset:0;overflow:hidden'>",
+          "    <img src='image:local_bg' style='width:100%;height:100%;object-fit:cover;filter:brightness(0.8)' />",
+          "  </div>",
+          "  <div style='position:absolute;top:50%;left:40px;right:40px;transform:translateY(-50%);text-align:center'>",
+          "    <div style='display:inline-block;background:rgba(59,130,246,0.85);padding:12px 32px;border-radius:12px'>",
+          "      <span style='color:white;font-size:72px;font-weight:900'>Beat 1</span>",
+          "    </div>",
+          "    <div style='color:white;font-size:44px;font-weight:900;margin-top:20px;text-shadow:0 4px 16px rgba(0,0,0,0.9)'>Local image → image:name</div>",
+          "  </div>",
+          "</div>"
+        ]
+      }
+    },
+    {
+      "text": "Beat2. Local key overrides the global one with the same name. This beat sees the local version of global_bg.",
+      "speaker": "Presenter",
+      "images": {
+        "global_bg": {
+          "type": "image",
+          "source": {
+            "kind": "path",
+            "path": "../../assets/images/mulmocast_credit.png"
+          }
+        }
+      },
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <div style='position:absolute;inset:0;overflow:hidden'>",
+          "    <img src='image:global_bg' style='width:100%;height:100%;object-fit:cover;filter:brightness(0.8)' />",
+          "  </div>",
+          "  <div style='position:absolute;top:50%;left:40px;right:40px;transform:translateY(-50%);text-align:center'>",
+          "    <div style='display:inline-block;background:rgba(239,68,68,0.85);padding:12px 32px;border-radius:12px'>",
+          "      <span style='color:white;font-size:72px;font-weight:900'>Beat 2</span>",
+          "    </div>",
+          "    <div style='color:white;font-size:44px;font-weight:900;margin-top:20px;text-shadow:0 4px 16px rgba(0,0,0,0.9)'>Local overrides global_bg</div>",
+          "  </div>",
+          "</div>"
+        ]
+      }
+    },
+    {
+      "text": "Beat3. No beat.images. Uses global refs only. Both image:global_bg and movie:global_movie work.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <div style='position:absolute;inset:0;overflow:hidden'>",
+          "    <video src='movie:global_movie' autoplay muted loop style='width:100%;height:100%;object-fit:cover;filter:brightness(0.7)'></video>",
+          "  </div>",
+          "  <div style='position:absolute;top:50%;left:40px;right:40px;transform:translateY(-50%);text-align:center'>",
+          "    <div style='display:inline-block;background:rgba(34,197,94,0.85);padding:12px 32px;border-radius:12px'>",
+          "      <span style='color:white;font-size:72px;font-weight:900'>Beat 3</span>",
+          "    </div>",
+          "    <div style='color:white;font-size:44px;font-weight:900;margin-top:20px;text-shadow:0 4px 16px rgba(0,0,0,0.9)'>Global refs only (no beat.images)</div>",
+          "  </div>",
+          "</div>",
+          ""
+        ],
+        "animation": { "movie": true }
+      }
+    },
+    {
+      "text": "Beat4. Beat-local movie ref used in html_tailwind via movie:name.",
+      "speaker": "Presenter",
+      "images": {
+        "local_movie": {
+          "type": "movie",
+          "source": {
+            "kind": "path",
+            "path": "../../test/assets/hello.mp4"
+          }
+        }
+      },
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <div style='position:absolute;inset:0;overflow:hidden'>",
+          "    <video src='movie:local_movie' autoplay muted loop style='width:100%;height:100%;object-fit:cover'></video>",
+          "  </div>",
+          "  <div style='position:absolute;top:50%;left:40px;right:40px;transform:translateY(-50%);text-align:center'>",
+          "    <div style='display:inline-block;background:rgba(168,85,247,0.85);padding:12px 32px;border-radius:12px'>",
+          "      <span style='color:white;font-size:72px;font-weight:900'>Beat 4</span>",
+          "    </div>",
+          "    <div style='color:white;font-size:44px;font-weight:900;margin-top:20px;text-shadow:0 4px 16px rgba(0,0,0,0.9)'>Local movie → movie:name</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "animation": { "movie": true }
+      }
+    },
+    {
+      "text": "Beat5. This beat generates a new image using the global character reference for consistency. The same robot appears in a different scene.",
+      "speaker": "Presenter",
+      "images": {
+        "generated": {
+          "type": "imagePrompt",
+          "prompt": "The friendly cartoon robot mascot exploring a futuristic neon city at night, cyberpunk style, BRIGHT WELL-LIT SCENE"
+        }
+      },
+      "imageNames": ["character"],
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full flex flex-col bg-gray-900'>",
+          "  <div style='flex:1;display:flex;align-items:center;justify-content:center;padding:40px'>",
+          "    <img src='image:generated' style='max-width:80%;max-height:100%;object-fit:contain;border-radius:24px;box-shadow:0 8px 32px rgba(0,0,0,0.5)' />",
+          "  </div>",
+          "  <div style='flex:1;display:flex;align-items:center;justify-content:center;padding:40px'>",
+          "    <div style='text-align:center'>",
+          "      <div style='display:inline-block;background:rgba(59,130,246,0.85);padding:8px 24px;border-radius:8px;margin-bottom:16px'>",
+          "        <span style='color:white;font-size:36px;font-weight:700'>Beat 5 — Global Ref → Image Gen</span>",
+          "      </div>",
+          "      <div style='color:white;font-size:40px;font-weight:900;line-height:1.4;margin-top:16px'>imageNames references global_bg</div>",
+          "      <div style='color:rgba(255,255,255,0.7);font-size:32px;margin-top:12px;line-height:1.4'>Beat-level imagePrompt generates a new image<br>using the global reference for consistency</div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ]
+      }
+    },
+    {
+      "text": "Beat6. This beat generates a video from the global character image. The moviePrompt uses the character as the starting frame for image-to-video generation.",
+      "speaker": "Presenter",
+      "images": {
+        "generated_movie": {
+          "type": "moviePrompt",
+          "prompt": "The robot mascot waves and dances happily, smooth animation",
+          "imageName": "character"
+        }
+      },
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full flex flex-col bg-gray-900'>",
+          "  <div style='flex:1;display:flex;align-items:center;justify-content:center;padding:40px'>",
+          "    <div style='max-width:80%;max-height:100%;border-radius:24px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.5)'>",
+          "      <video src='movie:generated_movie' autoplay muted loop style='width:100%;height:100%;object-fit:contain'></video>",
+          "    </div>",
+          "  </div>",
+          "  <div style='flex:1;display:flex;align-items:center;justify-content:center;padding:40px'>",
+          "    <div style='text-align:center'>",
+          "      <div style='display:inline-block;background:rgba(168,85,247,0.85);padding:8px 24px;border-radius:8px;margin-bottom:16px'>",
+          "        <span style='color:white;font-size:36px;font-weight:700'>Beat 6 — Global Ref → Movie Gen</span>",
+          "      </div>",
+          "      <div style='color:white;font-size:40px;font-weight:900;line-height:1.4;margin-top:16px'>moviePrompt.imageName = character</div>",
+          "      <div style='color:rgba(255,255,255,0.7);font-size:32px;margin-top:12px;line-height:1.4'>Image-to-video: global character image<br>becomes the starting frame for video</div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "animation": { "movie": true }
+      }
+    }
+  ]
+}
