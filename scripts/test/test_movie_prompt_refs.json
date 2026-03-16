@@ -1,0 +1,128 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "canvasSize": { "width": 1080, "height": 1920 },
+  "title": "moviePrompt reference test",
+  "speechParams": {
+    "provider": "kotodama",
+    "speakers": {
+      "Presenter": { "provider": "kotodama", "voiceId": "jikkyo_baby" }
+    }
+  },
+  "movieParams": {
+    "provider": "google"
+  },
+  "imageParams": {
+    "provider": "google",
+    "model": "gemini-3.1-flash-image-preview",
+    "images": {
+      "ocean_video": {
+        "type": "moviePrompt",
+        "prompt": "Gentle ocean waves on a sandy beach, sunny day, calm and peaceful"
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "Beat one. Full screen background with AI-generated ocean waves and text overlay.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full overflow-hidden relative bg-black'>",
+          "  <div style='position:absolute;inset:0;overflow:hidden'>",
+          "    <video src='movie:ocean_video' autoplay muted loop style='width:100%;height:100%;object-fit:cover;filter:brightness(0.7)'></video>",
+          "  </div>",
+          "  <div style='position:absolute;top:50%;left:40px;right:40px;transform:translateY(-50%);text-align:center'>",
+          "    <div style='display:inline-block;background:rgba(59,130,246,0.85);padding:12px 32px;border-radius:12px'>",
+          "      <span style='color:white;font-size:72px;font-weight:900'>Full Screen</span>",
+          "    </div>",
+          "    <div style='color:white;font-size:44px;font-weight:900;margin-top:20px;text-shadow:0 4px 16px rgba(0,0,0,0.9)'>AI-generated ocean waves</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "animation": { "movie": true }
+      }
+    },
+    {
+      "text": "Beat two. Top half shows AI video, bottom half has a text card with details.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full flex flex-col bg-gray-900'>",
+          "  <div style='flex:1;overflow:hidden;border-bottom:4px solid #3B82F6'>",
+          "    <video src='movie:ocean_video' autoplay muted loop style='width:100%;height:100%;object-fit:cover'></video>",
+          "  </div>",
+          "  <div style='flex:1;display:flex;align-items:center;justify-content:center;padding:40px'>",
+          "    <div style='text-align:center'>",
+          "      <div style='color:#F59E0B;font-size:64px;font-weight:900;margin-bottom:16px'>Top Half Video</div>",
+          "      <div style='color:white;font-size:44px;line-height:1.5'>The bottom half is a text card.<br>Video fills only the top area.</div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "animation": { "movie": true }
+      }
+    },
+    {
+      "text": "Beat three. Picture-in-picture layout with a small rounded video window in the top right corner.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full relative' style='background:linear-gradient(135deg,#1E293B 0%,#0F172A 100%)'>",
+          "  <div style='position:absolute;top:80px;right:40px;width:400px;height:300px;border-radius:24px;overflow:hidden;border:3px solid rgba(255,255,255,0.3);box-shadow:0 8px 32px rgba(0,0,0,0.5)'>",
+          "    <video src='movie:ocean_video' autoplay muted loop style='width:100%;height:100%;object-fit:cover'></video>",
+          "  </div>",
+          "  <div style='position:absolute;top:50%;left:40px;right:40px;transform:translateY(-50%);text-align:left'>",
+          "    <div style='color:#60A5FA;font-size:40px;font-weight:700;margin-bottom:12px'>PiP Style</div>",
+          "    <div style='color:white;font-size:72px;font-weight:900;line-height:1.2'>Small video<br>window overlay</div>",
+          "    <div style='color:rgba(255,255,255,0.6);font-size:36px;margin-top:20px'>Rounded corners + border + shadow</div>",
+          "  </div>",
+          "</div>"
+        ],
+        "animation": { "movie": true }
+      }
+    },
+    {
+      "text": "Beat four. Circular mask on the video, centered, like a profile or avatar display.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full flex flex-col items-center justify-center' style='background:linear-gradient(180deg,#312E81 0%,#1E1B4B 100%)'>",
+          "  <div style='width:500px;height:500px;border-radius:50%;overflow:hidden;border:6px solid #A78BFA;box-shadow:0 0 60px rgba(167,139,250,0.4)'>",
+          "    <video src='movie:ocean_video' autoplay muted loop style='width:100%;height:100%;object-fit:cover'></video>",
+          "  </div>",
+          "  <div style='color:white;font-size:64px;font-weight:900;margin-top:40px'>Circular Mask</div>",
+          "  <div style='color:#C4B5FD;font-size:40px;margin-top:12px'>Avatar / profile style</div>",
+          "</div>"
+        ],
+        "animation": { "movie": true }
+      }
+    },
+    {
+      "text": "Beat five. Side by side split layout, video on the left and text on the right.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full flex flex-row bg-black'>",
+          "  <div style='flex:1;overflow:hidden'>",
+          "    <video src='movie:ocean_video' autoplay muted loop style='width:100%;height:100%;object-fit:cover'></video>",
+          "  </div>",
+          "  <div style='flex:1;display:flex;align-items:center;justify-content:center;padding:32px;background:linear-gradient(180deg,#1E3A5F 0%,#0D1B2A 100%)'>",
+          "    <div style='text-align:center'>",
+          "      <div style='color:#38BDF8;font-size:56px;font-weight:900;margin-bottom:20px'>Split Layout</div>",
+          "      <div style='color:white;font-size:40px;line-height:1.5'>Left side: video<br>Right side: text</div>",
+          "      <div style='margin-top:24px;width:120px;height:4px;background:#38BDF8;border-radius:2px;margin-left:auto;margin-right:auto'></div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "animation": { "movie": true }
+      }
+    }
+  ]
+}

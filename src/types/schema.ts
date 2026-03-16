@@ -391,7 +391,20 @@ export const mulmoImagePromptMediaSchema = z
   })
   .strict();
 
-export const mulmoImageParamsImagesValueSchema = z.union([mulmoImageMediaSchema, mulmoImagePromptMediaSchema, mulmoMovieMediaSchema]);
+export const mulmoMoviePromptMediaSchema = z
+  .object({
+    type: z.literal("moviePrompt"),
+    prompt: z.string().min(1),
+    imageName: z.string().optional(),
+  })
+  .strict();
+
+export const mulmoImageParamsImagesValueSchema = z.union([
+  mulmoImageMediaSchema,
+  mulmoImagePromptMediaSchema,
+  mulmoMovieMediaSchema,
+  mulmoMoviePromptMediaSchema,
+]);
 export const mulmoImageParamsImagesSchema = z.record(imageIdSchema, mulmoImageParamsImagesValueSchema);
 export const mulmoFillOptionSchema = z
   .object({
