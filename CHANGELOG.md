@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.1) (2026-03-16)
+
+- **Movie media references**: `movie` type in `imageParams.images` for video file references with `movie:name` resolution in html_tailwind and markdown plugins
+- **Video rendering in Puppeteer**: `<video>` elements now work in HTML rendering — video load waiting, frame-sync seeking, and screencast playback
+- **Markdown image refs**: `image:name` references now supported in the markdown plugin
+
+📦 **npm**: [`mulmocast@2.6.1`](https://www.npmjs.com/package/mulmocast/v/2.6.1)
+
 ## [2.6.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.0) (2026-03-15)
 
 - **Swipe-style Declarative Animation Elements**: html_tailwind beatに`elements`配列を追加。Swipe言語仕様にインスパイアされた宣言的JSONでアニメーションを定義可能。7種のループアニメーション（wiggle, vibrate, bounce, pulse, blink, spin, shift）とトランジションアニメーションをサポート
