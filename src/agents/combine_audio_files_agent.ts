@@ -63,10 +63,11 @@ const getMediaDurationsOfAllBeats = (context: MulmoStudioContext): Promise<Media
       const beat = context.studio.script.beats[index];
       const { duration: movieDuration, hasAudio: hasMovieAudio } = await getMovieDuration(context, beat);
       const audioDuration = studioBeat.audioFile ? (await ffmpegGetMediaDuration(studioBeat.audioFile)).duration : 0;
+      const hasMoviePrompt = Boolean(beat.moviePrompt);
       return {
         movieDuration,
         audioDuration,
-        hasMedia: movieDuration + audioDuration > 0,
+        hasMedia: movieDuration + audioDuration > 0 || hasMoviePrompt,
         silenceDuration: 0,
         hasMovieAudio,
       };
