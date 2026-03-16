@@ -235,6 +235,16 @@ MulmoAnimation.prototype._applyCoverBaseStyle = function (el, iw, ih) {
 };
 
 /**
+ * Render all animations at their final state (last frame).
+ * Used for generating static images (PDF, thumbnails) from animated content.
+ * @param {number} fps - frames per second
+ */
+MulmoAnimation.prototype.renderFinal = function (fps) {
+  const lastFrame = Math.max(0, window.__MULMO.totalFrames - 1);
+  this.update(lastFrame, fps);
+};
+
+/**
  * Update all registered animations for the given frame.
  * @param {number} frame - current frame number
  * @param {number} fps - frames per second

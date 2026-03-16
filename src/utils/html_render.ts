@@ -300,6 +300,37 @@ export const renderHTMLToVideo = async (html: string, videoPath: string, width: 
   }
 };
 
+/**
+ * Render the final frame of an animated HTML page as a static image.
+ * Loads the animated HTML, calls window.renderFinal() to set all animations
+ * to their end state, then takes a screenshot. Used for PDF/thumbnail generation.
+ */
+export const renderHTMLToFinalFrame = async (html: string, outputPath: string, width: number, height: number): Promise<void> => {
+  const browser = await puppeteer.launch({
+    args: isCI ? ["--no-sandbox", "--allow-file-access-from-files"] : ["--allow-file-access-from-files"],
+  });
+  try {
+    const page = await browser.newPage();
+    await loadHtmlIntoPage(page, html, 30000);
+    await page.setViewport({ width, height });
+    await page.addStyleTag({ content: "html{height:100%;margin:0;padding:0;overflow:hidden}" });
+    await scaleContentToFit(page, width, height);
+    await waitForVideosReady(page);
+
+    // Render the final frame (all animations at end state)
+    await page.evaluate(async () => {
+      const w = window as unknown as { renderFinal?: () => unknown };
+      if (typeof w.renderFinal === "function") {
+        await Promise.resolve(w.renderFinal());
+      }
+    });
+
+    await page.screenshot({ path: outputPath as `${string}.png` | `${string}.jpeg` | `${string}.webp` });
+  } finally {
+    await browser.close();
+  }
+};
+
 export const renderMarkdownToImage = async (markdown: string, style: string, outputPath: string, width: number, height: number) => {
   const header = `<head><style>${style}</style></head>`;
   const body = await marked(markdown);
