@@ -7,6 +7,7 @@ import { renderHTMLToImage, interpolate, renderHTMLToFrames, renderHTMLToVideo }
 import { framesToVideo } from "../ffmpeg_utils.js";
 import { parrotingImagePath } from "./utils.js";
 import { swipeElementsToHtml, swipeElementsToScript, type SwipeElement } from "../swipe_to_html.js";
+import { threeDslToHtmlAndScript, type ThreeDslConfig } from "../three_to_html.js";
 
 export const imageType = "html_tailwind";
 
@@ -53,11 +54,15 @@ const buildUserScript = (script: string | string[] | undefined): string => {
  * If `elements` (Swipe-style) is provided, convert to HTML + script.
  * Otherwise, use raw `html` and `script` fields.
  */
-const resolveHtmlAndScript = (imageData: {
-  html?: string | string[];
-  script?: string | string[];
-  elements?: SwipeElement[];
-}): { html: string; script: string | string[] | undefined } => {
+const resolveHtmlAndScript = (
+  imageData: {
+    html?: string | string[];
+    script?: string | string[];
+    elements?: SwipeElement[];
+    three?: ThreeDslConfig;
+  },
+  baseDirPath: string,
+): { html: string; script: string | string[] | undefined } => {
   if (imageData.elements && Array.isArray(imageData.elements) && imageData.elements.length > 0) {
     const html = swipeElementsToHtml(imageData.elements);
     const generatedScript = swipeElementsToScript(imageData.elements);
@@ -65,6 +70,9 @@ const resolveHtmlAndScript = (imageData: {
     const userScript = imageData.script ? joinHtml(imageData.script as string | string[]) : "";
     const combinedScript = [generatedScript, userScript].filter(Boolean).join("\n");
     return { html, script: combinedScript || undefined };
+  }
+  if (imageData.three) {
+    return threeDslToHtmlAndScript(imageData.three, baseDirPath);
   }
   return {
     html: joinHtml(imageData.html ?? ""),
@@ -100,8 +108,8 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
     throw new Error(`html_tailwind animation: totalFrames is ${totalFrames} (duration=${duration}, fps=${fps}). Increase duration or fps.`);
   }
 
-  const imageData = beat.image as { html?: string | string[]; script?: string | string[]; elements?: SwipeElement[] };
-  const { html, script } = resolveHtmlAndScript(imageData);
+  const imageData = beat.image as { html?: string | string[]; script?: string | string[]; elements?: SwipeElement[]; three?: ThreeDslConfig };
+  const { html, script } = resolveHtmlAndScript(imageData, context.fileDirs.mulmoFileDirPath);
   const template = getHTMLFile("tailwind_animated");
   const rawHtmlData = interpolate(template, {
     html_body: html,
@@ -141,8 +149,8 @@ const processHtmlTailwindStatic = async (params: ImageProcessorParams) => {
   const { beat, imagePath, canvasSize, context } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
-  const imageData = beat.image as { html?: string | string[]; script?: string | string[]; elements?: SwipeElement[] };
-  const { html, script } = resolveHtmlAndScript(imageData);
+  const imageData = beat.image as { html?: string | string[]; script?: string | string[]; elements?: SwipeElement[]; three?: ThreeDslConfig };
+  const { html, script } = resolveHtmlAndScript(imageData, context.fileDirs.mulmoFileDirPath);
   const template = getHTMLFile("tailwind");
   const rawHtmlData = interpolate(template, {
     html_body: html,
@@ -165,9 +173,12 @@ const processHtmlTailwind = async (params: ImageProcessorParams) => {
 const dumpHtml = async (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return;
-  const imageData = beat.image as { html?: string | string[]; elements?: SwipeElement[] };
+  const imageData = beat.image as { html?: string | string[]; elements?: SwipeElement[]; three?: ThreeDslConfig };
   if (imageData.elements && Array.isArray(imageData.elements) && imageData.elements.length > 0) {
     return swipeElementsToHtml(imageData.elements);
+  }
+  if (imageData.three) {
+    return threeDslToHtmlAndScript(imageData.three, params.context.fileDirs.mulmoFileDirPath).html;
   }
   return joinHtml(imageData.html ?? "");
 };

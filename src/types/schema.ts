@@ -311,6 +311,68 @@ export const htmlTailwindAnimationSchema = z.union([
   }),
 ]);
 
+const threeModelSourceSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("url"), url: URLStringSchema }).strict(),
+  z.object({ kind: z.literal("path"), path: z.string().min(1) }).strict(),
+]);
+
+export const htmlTailwindThreeDslSchema = z
+  .object({
+    model: z.object({ source: threeModelSourceSchema }).strict(),
+    backgroundColor: z.string().optional(),
+    camera: z
+      .object({
+        fov: z.number().optional(),
+        near: z.number().optional(),
+        far: z.number().optional(),
+        position: z.tuple([z.number(), z.number(), z.number()]).optional(),
+        lookAt: z.tuple([z.number(), z.number(), z.number()]).optional(),
+      })
+      .strict()
+      .optional(),
+    grid: z
+      .object({
+        enabled: z.boolean().optional(),
+        size: z.number().optional(),
+        divisions: z.number().optional(),
+        colorCenter: z.number().optional(),
+        colorGrid: z.number().optional(),
+        y: z.number().optional(),
+      })
+      .strict()
+      .optional(),
+    normalize: z
+      .object({
+        targetSize: z.number().optional(),
+        yOffset: z.number().optional(),
+      })
+      .strict()
+      .optional(),
+    motion: z
+      .object({
+        xMin: z.number().optional(),
+        xMax: z.number().optional(),
+        moveEnd: z.number().optional(),
+        turnEnd: z.number().optional(),
+        faceRight: z.number().optional(),
+      })
+      .strict()
+      .optional(),
+    lighting: z
+      .object({
+        ambientIntensity: z.number().optional(),
+        keyIntensity: z.number().optional(),
+        rimIntensity: z.number().optional(),
+        keyColor: z.number().optional(),
+        rimColor: z.number().optional(),
+        keyPosition: z.tuple([z.number(), z.number(), z.number()]).optional(),
+        rimPosition: z.tuple([z.number(), z.number(), z.number()]).optional(),
+      })
+      .strict()
+      .optional(),
+  })
+  .strict();
+
 export const mulmoHtmlTailwindMediaSchema = z
   .object({
     type: z.literal("html_tailwind"),
@@ -320,6 +382,9 @@ export const mulmoHtmlTailwindMediaSchema = z
       .array(swipeElementSchema)
       .optional()
       .describe("Swipe-style declarative animation elements. Converted to HTML + render() automatically. Use this OR html, not both."),
+    three: htmlTailwindThreeDslSchema
+      .optional()
+      .describe("Three.js declarative config. Converted to HTML + module script automatically. Use this OR elements/html."),
     animation: htmlTailwindAnimationSchema
       .optional()
       .describe("Enable frame-based animation (Remotion-style). true for defaults (30fps), or { fps: N } for custom frame rate."),
