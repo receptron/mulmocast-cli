@@ -1,0 +1,142 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "title": "Plugin Feature Tests",
+  "lang": "en",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "imageParams": {
+    "images": {
+      "bg_gradient": {
+        "type": "image",
+        "source": { "kind": "url", "url": "https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1280&h=720&fit=crop" }
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "Chart with backgroundImage (URL string)",
+      "image": {
+        "type": "chart",
+        "title": "Revenue by Quarter",
+        "backgroundImage": "https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1280&h=720&fit=crop",
+        "chartData": {
+          "type": "bar",
+          "data": {
+            "labels": ["Q1", "Q2", "Q3", "Q4"],
+            "datasets": [{
+              "label": "Revenue ($M)",
+              "data": [120, 150, 180, 210],
+              "backgroundColor": "rgba(59, 130, 246, 0.8)"
+            }]
+          },
+          "options": {
+            "plugins": {
+              "legend": { "labels": { "color": "white" } },
+              "title": { "display": false }
+            },
+            "scales": {
+              "x": { "ticks": { "color": "white" }, "grid": { "color": "rgba(255,255,255,0.1)" } },
+              "y": { "ticks": { "color": "white" }, "grid": { "color": "rgba(255,255,255,0.1)" } }
+            }
+          }
+        }
+      }
+    },
+    {
+      "text": "Chart with backgroundImage (source object with opacity)",
+      "image": {
+        "type": "chart",
+        "title": "Market Share",
+        "backgroundImage": {
+          "source": { "kind": "url", "url": "https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1280&h=720&fit=crop" },
+          "size": "cover",
+          "opacity": 0.3
+        },
+        "chartData": {
+          "type": "doughnut",
+          "data": {
+            "labels": ["Product A", "Product B", "Product C", "Other"],
+            "datasets": [{
+              "data": [35, 25, 20, 20],
+              "backgroundColor": ["#3B82F6", "#10B981", "#F59E0B", "#94A3B8"]
+            }]
+          }
+        }
+      }
+    },
+    {
+      "text": "Chart with custom style",
+      "image": {
+        "type": "chart",
+        "title": "Growth Trend",
+        "style": "body { background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460); } h1 { color: #e94560; }",
+        "chartData": {
+          "type": "line",
+          "data": {
+            "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+            "datasets": [{
+              "label": "Users (K)",
+              "data": [10, 15, 25, 35, 50, 72],
+              "borderColor": "#e94560",
+              "backgroundColor": "rgba(233, 69, 96, 0.2)",
+              "fill": true,
+              "tension": 0.4
+            }]
+          },
+          "options": {
+            "plugins": { "legend": { "labels": { "color": "white" } } },
+            "scales": {
+              "x": { "ticks": { "color": "#ccc" }, "grid": { "color": "rgba(255,255,255,0.1)" } },
+              "y": { "ticks": { "color": "#ccc" }, "grid": { "color": "rgba(255,255,255,0.1)" } }
+            }
+          }
+        }
+      }
+    },
+    {
+      "text": "Mermaid with backgroundImage (image:name ref)",
+      "image": {
+        "type": "mermaid",
+        "title": "System Architecture",
+        "code": { "kind": "text", "text": "graph TD\n  A[Client] --> B[API Gateway]\n  B --> C[Auth Service]\n  B --> D[Data Service]\n  C --> E[(Database)]\n  D --> E" },
+        "backgroundImage": {
+          "source": { "kind": "url", "url": "https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1280&h=720&fit=crop" },
+          "size": "cover",
+          "opacity": 0.15
+        }
+      }
+    },
+    {
+      "text": "Chart with backgroundImage + style combined",
+      "image": {
+        "type": "chart",
+        "title": "",
+        "style": "h1 { display: none; }",
+        "backgroundImage": {
+          "source": { "kind": "url", "url": "https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1280&h=720&fit=crop" },
+          "size": "cover",
+          "opacity": 0.2
+        },
+        "chartData": {
+          "type": "radar",
+          "data": {
+            "labels": ["Speed", "Reliability", "Cost", "Security", "Scalability", "UX"],
+            "datasets": [
+              {
+                "label": "Product A",
+                "data": [85, 90, 60, 80, 75, 70],
+                "borderColor": "#3B82F6",
+                "backgroundColor": "rgba(59, 130, 246, 0.2)"
+              },
+              {
+                "label": "Product B",
+                "data": [70, 65, 90, 75, 85, 80],
+                "borderColor": "#10B981",
+                "backgroundColor": "rgba(16, 185, 129, 0.2)"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
