@@ -18,10 +18,13 @@ const isDarkBg = (hex: string): boolean => {
 
 /** Build CDN script tags for chart/mermaid when needed */
 const buildCdnScripts = (theme: SlideTheme, slide: SlideLayout): string => {
-  const { hasChart, hasMermaid } = detectBlockTypes(slide);
+  const { hasChart, hasMermaid, chartPlugins } = detectBlockTypes(slide);
   const scripts: string[] = [];
   if (hasChart) {
     scripts.push('<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>');
+    chartPlugins.forEach((cdn) => {
+      scripts.push(`<script src="${cdn}"></script>`);
+    });
   }
   if (hasMermaid) {
     const mermaidTheme = isDarkBg(theme.colors.bg) ? "dark" : "default";

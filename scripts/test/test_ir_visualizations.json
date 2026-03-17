@@ -1,0 +1,317 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "title": "IR Visualization Samples",
+  "description": "Sankey, Treemap, and Waterfall chart demos for financial presentations",
+  "lang": "en",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "beats": [
+    {
+      "text": "Sankey: Consolidated Balance Sheet",
+      "image": {
+        "type": "chart",
+        "title": "",
+        "chartData": {
+          "type": "sankey",
+          "data": {
+            "datasets": [
+              {
+                "data": [
+                  { "from": "cash", "to": "current_a", "flow": 3000 },
+                  { "from": "receivable", "to": "current_a", "flow": 2000 },
+                  { "from": "inventory", "to": "current_a", "flow": 1500 },
+                  { "from": "other_ca", "to": "current_a", "flow": 500 },
+                  { "from": "ppe", "to": "fixed_a", "flow": 4500 },
+                  { "from": "intangible", "to": "fixed_a", "flow": 1000 },
+                  { "from": "investments", "to": "fixed_a", "flow": 2000 },
+                  { "from": "other_fa", "to": "fixed_a", "flow": 500 },
+                  { "from": "current_a", "to": "total_a", "flow": 7000 },
+                  { "from": "fixed_a", "to": "total_a", "flow": 8000 },
+                  { "from": "total_a", "to": "liabilities", "flow": 10000 },
+                  { "from": "total_a", "to": "equity", "flow": 5000 },
+                  { "from": "liabilities", "to": "payable", "flow": 2000 },
+                  { "from": "liabilities", "to": "short_debt", "flow": 1500 },
+                  { "from": "liabilities", "to": "other_cl", "flow": 1000 },
+                  { "from": "liabilities", "to": "long_debt", "flow": 4000 },
+                  { "from": "liabilities", "to": "other_fl", "flow": 1500 },
+                  { "from": "equity", "to": "retained", "flow": 4000 },
+                  { "from": "equity", "to": "other_cap", "flow": 700 },
+                  { "from": "equity", "to": "other_eq", "flow": 300 }
+                ],
+                "priority": {
+                  "cash": 4,
+                  "receivable": 5,
+                  "inventory": 6,
+                  "other_ca": 7,
+                  "ppe": 0,
+                  "intangible": 1,
+                  "investments": 2,
+                  "other_fa": 3,
+                  "current_a": 1,
+                  "fixed_a": 0,
+                  "total_a": 0,
+                  "liabilities": 0,
+                  "equity": 1,
+                  "payable": 2,
+                  "short_debt": 3,
+                  "other_cl": 4,
+                  "long_debt": 0,
+                  "other_fl": 1,
+                  "retained": 5,
+                  "other_cap": 6,
+                  "other_eq": 7
+                },
+                "column": {
+                  "cash": 0,
+                  "receivable": 0,
+                  "inventory": 0,
+                  "other_ca": 0,
+                  "ppe": 0,
+                  "intangible": 0,
+                  "investments": 0,
+                  "other_fa": 0,
+                  "current_a": 1,
+                  "fixed_a": 1,
+                  "total_a": 2,
+                  "liabilities": 3,
+                  "equity": 3,
+                  "payable": 4,
+                  "short_debt": 4,
+                  "other_cl": 4,
+                  "long_debt": 4,
+                  "other_fl": 4,
+                  "retained": 4,
+                  "other_cap": 4,
+                  "other_eq": 4
+                },
+                "labels": {
+                  "cash": "Cash\n$3,000M",
+                  "receivable": "Receivables\n$2,000M",
+                  "inventory": "Inventory\n$1,500M",
+                  "other_ca": "Other Current\n$500M",
+                  "ppe": "PP&E\n$4,500M",
+                  "intangible": "Intangibles\n$1,000M",
+                  "investments": "Investments\n$2,000M",
+                  "other_fa": "Other Fixed\n$500M",
+                  "current_a": "Current Assets\n$7,000M",
+                  "fixed_a": "Fixed Assets\n$8,000M",
+                  "total_a": "Total Assets\n$15,000M",
+                  "liabilities": "Liabilities\n$10,000M",
+                  "equity": "Equity\n$5,000M",
+                  "payable": "Payables\n$2,000M",
+                  "short_debt": "Short-term Debt\n$1,500M",
+                  "other_cl": "Other Current Liab.\n$1,000M",
+                  "long_debt": "Long-term Debt\n$4,000M",
+                  "other_fl": "Other Fixed Liab.\n$1,500M",
+                  "retained": "Retained Earnings\n$4,000M",
+                  "other_cap": "Other Capital\n$700M",
+                  "other_eq": "Other Equity\n$300M"
+                },
+                "colorFrom": {
+                  "cash": "#555",
+                  "receivable": "#555",
+                  "inventory": "#555",
+                  "other_ca": "#555",
+                  "ppe": "#555",
+                  "intangible": "#555",
+                  "investments": "#555",
+                  "other_fa": "#555",
+                  "current_a": "#555",
+                  "fixed_a": "#555",
+                  "total_a": "#555",
+                  "liabilities": "#DC2626",
+                  "equity": "#16A34A"
+                },
+                "colorTo": {
+                  "current_a": "#555",
+                  "fixed_a": "#555",
+                  "total_a": "#555",
+                  "liabilities": "#DC2626",
+                  "equity": "#16A34A",
+                  "payable": "#DC2626",
+                  "short_debt": "#DC2626",
+                  "other_cl": "#DC2626",
+                  "long_debt": "#DC2626",
+                  "other_fl": "#DC2626",
+                  "retained": "#16A34A",
+                  "other_cap": "#16A34A",
+                  "other_eq": "#16A34A"
+                },
+                "colorMode": "gradient",
+                "color": "#333",
+                "borderWidth": 1,
+                "nodeWidth": 20,
+                "nodePadding": 48,
+                "size": "max"
+              }
+            ]
+          },
+          "options": {
+            "layout": {
+              "padding": { "top": 10, "left": 100, "right": 100, "bottom": 10 }
+            },
+            "plugins": {
+              "legend": { "display": false },
+              "title": { "display": true, "text": "Consolidated Balance Sheet FY2025 ($M)", "font": { "size": 18 } }
+            }
+          }
+        }
+      }
+    },
+    {
+      "text": "Treemap: Business Portfolio Composition",
+      "image": {
+        "type": "chart",
+        "title": "Business Portfolio (Treemap)",
+        "chartData": {
+          "type": "treemap",
+          "data": {
+            "datasets": [
+              {
+                "tree": [
+                  { "name": "Cloud SVC", "value": 420 },
+                  { "name": "Cloud Infra", "value": 180 },
+                  { "name": "Enterprise SW", "value": 350 },
+                  { "name": "Enterprise Spt", "value": 120 },
+                  { "name": "Consumer App", "value": 200 },
+                  { "name": "Consumer HW", "value": 80 },
+                  { "name": "Other", "value": 50 }
+                ],
+                "key": "value",
+                "labels": {
+                  "display": true,
+                  "align": "center",
+                  "position": "middle",
+                  "color": "white",
+                  "font": { "size": 14, "weight": "bold" }
+                },
+                "backgroundColor": ["#3B82F6", "#60A5FA", "#6366F1", "#818CF8", "#10B981", "#34D399", "#94A3B8"],
+                "borderColor": "white",
+                "borderWidth": 2,
+                "spacing": 1
+              }
+            ]
+          },
+          "options": {
+            "responsive": false,
+            "plugins": {
+              "legend": { "display": false },
+              "tooltip": { "enabled": false }
+            }
+          }
+        }
+      }
+    },
+    {
+      "text": "Waterfall: Operating Profit Bridge",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "waterfall",
+          "title": "FY2025 Operating Profit Bridge",
+          "subtitle": "YoY +$15M (+12.5%)",
+          "items": [
+            { "label": "FY2024\nOp. Profit", "value": 120, "isTotal": true },
+            { "label": "Revenue\nGrowth", "value": 35 },
+            { "label": "COGS\nImprovement", "value": 12 },
+            { "label": "Personnel\nCosts", "value": -18 },
+            { "label": "R&D\nInvestment", "value": -10 },
+            { "label": "FX\nImpact", "value": -4 },
+            { "label": "FY2025\nOp. Profit", "value": 135, "isTotal": true }
+          ],
+          "unit": "$M",
+          "callout": {
+            "text": "Revenue growth and COGS improvement drove profit growth, absorbing personnel and R&D investment increases",
+            "label": "Summary"
+          }
+        }
+      }
+    },
+    {
+      "text": "Stacked Bar: Regional Revenue Breakdown",
+      "image": {
+        "type": "chart",
+        "title": "Regional Revenue Breakdown (Stacked Bar)",
+        "chartData": {
+          "type": "bar",
+          "data": {
+            "labels": ["FY2021", "FY2022", "FY2023", "FY2024", "FY2025"],
+            "datasets": [
+              {
+                "label": "Japan",
+                "data": [400, 420, 450, 480, 530],
+                "backgroundColor": "#3B82F6"
+              },
+              {
+                "label": "Americas",
+                "data": [150, 180, 220, 260, 310],
+                "backgroundColor": "#10B981"
+              },
+              {
+                "label": "EMEA",
+                "data": [80, 100, 130, 160, 200],
+                "backgroundColor": "#F59E0B"
+              },
+              {
+                "label": "APAC",
+                "data": [50, 70, 90, 120, 160],
+                "backgroundColor": "#EF4444"
+              }
+            ]
+          },
+          "options": {
+            "scales": {
+              "x": { "stacked": true },
+              "y": { "stacked": true, "title": { "display": true, "text": "Revenue (億円)" } }
+            },
+            "plugins": {
+              "legend": { "position": "top" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "text": "Bubble: Business Unit Positioning",
+      "image": {
+        "type": "chart",
+        "title": "Business Unit Positioning (Growth vs Margin)",
+        "chartData": {
+          "type": "bubble",
+          "data": {
+            "datasets": [
+              {
+                "label": "Cloud Services",
+                "data": [{ "x": 25, "y": 35, "r": 20 }],
+                "backgroundColor": "rgba(59, 130, 246, 0.6)"
+              },
+              {
+                "label": "Enterprise SW",
+                "data": [{ "x": 8, "y": 28, "r": 18 }],
+                "backgroundColor": "rgba(16, 185, 129, 0.6)"
+              },
+              {
+                "label": "Consumer Apps",
+                "data": [{ "x": 15, "y": 12, "r": 12 }],
+                "backgroundColor": "rgba(245, 158, 11, 0.6)"
+              },
+              {
+                "label": "Hardware",
+                "data": [{ "x": -2, "y": 5, "r": 8 }],
+                "backgroundColor": "rgba(239, 68, 68, 0.6)"
+              }
+            ]
+          },
+          "options": {
+            "scales": {
+              "x": { "title": { "display": true, "text": "Revenue Growth (%)" } },
+              "y": { "title": { "display": true, "text": "Operating Margin (%)" } }
+            },
+            "plugins": {
+              "legend": { "position": "right" }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -390,6 +390,25 @@ export const tableSlideSchema = z.object({
   callout: calloutBarSchema.optional(),
 });
 
+// ─── waterfall ───
+export const waterfallItemSchema = z.object({
+  label: z.string(),
+  value: z.number(),
+  isTotal: z.boolean().optional(),
+  color: accentColorKeySchema.optional(),
+});
+
+export const waterfallSlideSchema = z.object({
+  layout: z.literal("waterfall"),
+  ...slideBaseFields,
+  title: z.string(),
+  stepLabel: z.string().optional(),
+  subtitle: z.string().optional(),
+  items: z.array(waterfallItemSchema),
+  unit: z.string().optional(),
+  callout: calloutBarSchema.optional(),
+});
+
 // ─── funnel ───
 export const funnelStageSchema = z.object({
   label: z.string(),
@@ -460,6 +479,7 @@ export const slideLayoutSchema = z.discriminatedUnion("layout", [
   matrixSlideSchema,
   tableSlideSchema,
   funnelSlideSchema,
+  waterfallSlideSchema,
 ]);
 
 /** Media schema registered in mulmoImageAssetSchema */
@@ -518,6 +538,8 @@ export type TableCellValue = z.infer<typeof tableCellValueSchema>;
 export type TableSlide = z.infer<typeof tableSlideSchema>;
 export type FunnelStage = z.infer<typeof funnelStageSchema>;
 export type FunnelSlide = z.infer<typeof funnelSlideSchema>;
+export type WaterfallItem = z.infer<typeof waterfallItemSchema>;
+export type WaterfallSlide = z.infer<typeof waterfallSlideSchema>;
 export type SlideBrandingLogo = z.infer<typeof slideBrandingLogoSchema>;
 export type SlideBranding = z.infer<typeof slideBrandingSchema>;
 export type MulmoSlideMedia = z.infer<typeof mulmoSlideMediaSchema>;
