@@ -2,11 +2,12 @@ import { ImageProcessorParams } from "../../types/index.js";
 import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../html_render.js";
 import { parrotingImagePath, generateUniqueId } from "./utils.js";
+import { resolveCombinedStyle } from "./bg_image_util.js";
 
 export const imageType = "chart";
 
 const processChart = async (params: ImageProcessorParams) => {
-  const { beat, imagePath, canvasSize, textSlideStyle } = params;
+  const { beat, imagePath, canvasSize } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
   const isCircular =
@@ -15,10 +16,11 @@ const processChart = async (params: ImageProcessorParams) => {
     beat.image.chartData.type === "polarArea" ||
     beat.image.chartData.type === "radar";
   const chart_width = isCircular ? Math.min(canvasSize.width, canvasSize.height) * 0.75 : canvasSize.width * 0.75;
+  const combinedStyle = await resolveCombinedStyle(params, beat.image.backgroundImage, beat.image.style);
   const template = getHTMLFile("chart");
   const htmlData = interpolate(template, {
     title: beat.image.title,
-    style: textSlideStyle,
+    style: combinedStyle,
     chart_width: chart_width.toString(),
     chart_data: JSON.stringify(beat.image.chartData),
   });

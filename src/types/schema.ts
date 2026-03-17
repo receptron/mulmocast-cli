@@ -224,6 +224,8 @@ export const mulmoChartMediaSchema = z
     type: z.literal("chart"),
     title: z.string(),
     chartData: z.record(z.string(), z.any()),
+    style: z.string().optional(),
+    backgroundImage: backgroundImageSchema,
   })
   .strict();
 
