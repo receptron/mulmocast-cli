@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Chart.js Bar Chart</title>
     <style>
-        ${style}
         html, body { height: 100%; margin: 0; }
         body { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        ${style}
         .chart-container {
             width: ${chart_width}px;
             height: 70vh;
@@ -27,9 +27,9 @@
     <script>
         function initChart() {
             if (!window.Chart) return false;
-            var ctx = document.getElementById('myChart');
+            const ctx = document.getElementById('myChart');
             if (!ctx) return false;
-            var chartData = ${chart_data};
+            const chartData = ${chart_data};
 
             // Disable animation for static image generation
             if (!chartData.options) chartData.options = {};
@@ -39,40 +39,38 @@
 
             // Treemap: convert backgroundColor array to scriptable function
             if (chartData.type === 'treemap') {
-                chartData.data.datasets.forEach(function(ds) {
+                chartData.data.datasets.forEach((ds) => {
                     if (Array.isArray(ds.backgroundColor)) {
-                        var colors = ds.backgroundColor;
-                        ds.backgroundColor = function(ctx) {
-                            return colors[ctx.dataIndex % colors.length];
-                        };
+                        const colors = ds.backgroundColor;
+                        ds.backgroundColor = (c) => colors[c.dataIndex % colors.length];
                     }
                 });
             }
 
             // Sankey: convert colorFrom/colorTo objects to lookup functions
             if (chartData.type === 'sankey') {
-                chartData.data.datasets.forEach(function(ds) {
+                chartData.data.datasets.forEach((ds) => {
                     if (ds.colorFrom && typeof ds.colorFrom === 'object') {
-                        var fromMap = ds.colorFrom;
-                        ds.colorFrom = function(c) { return fromMap[c.dataset.data[c.dataIndex].from] || '#999'; };
+                        const fromMap = ds.colorFrom;
+                        ds.colorFrom = (c) => fromMap[c.dataset.data[c.dataIndex].from] || '#999';
                     }
                     if (ds.colorTo && typeof ds.colorTo === 'object') {
-                        var toMap = ds.colorTo;
-                        ds.colorTo = function(c) { return toMap[c.dataset.data[c.dataIndex].to] || '#999'; };
+                        const toMap = ds.colorTo;
+                        ds.colorTo = (c) => toMap[c.dataset.data[c.dataIndex].to] || '#999';
                     }
                 });
             }
 
             try {
-                var chart = new Chart(ctx, chartData);
+                const chart = new Chart(ctx, chartData);
                 chart.resize();
                 chart.update();
             } catch (e) {
                 console.error('Chart init error:', e);
             }
 
-            requestAnimationFrame(function() {
-                requestAnimationFrame(function() {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
                     ctx.dataset.chartReady = "true";
                 });
             });
@@ -84,7 +82,7 @@
             setTimeout(waitForChart, 50);
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
             waitForChart();
         });
     </script>
