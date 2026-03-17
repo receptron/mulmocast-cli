@@ -206,7 +206,13 @@ export const resetSlideIdCounter = (): void => {
 // Content block type detection
 // ═══════════════════════════════════════════════════════════
 
-type BlockTypeFlags = { hasChart: boolean; hasMermaid: boolean };
+/** Chart.js plugin CDN URLs keyed by chart type */
+const CHART_PLUGIN_CDNS: Record<string, string> = {
+  sankey: "https://cdn.jsdelivr.net/npm/chartjs-chart-sankey",
+  treemap: "https://cdn.jsdelivr.net/npm/chartjs-chart-treemap@3",
+};
+
+type BlockTypeFlags = { hasChart: boolean; hasMermaid: boolean; chartPlugins: string[] };
 
 /** Collect all content block arrays from a slide layout */
 const collectContentArrays = (slide: SlideLayout): ContentBlock[][] => {
@@ -236,22 +242,35 @@ const collectContentArrays = (slide: SlideLayout): ContentBlock[][] => {
   return arrays;
 };
 
+/** Collect chart type from a chart block */
+const collectChartPlugin = (block: ContentBlock, plugins: Set<string>): void => {
+  if (block.type === "chart") {
+    const chartType = block.chartData?.type as string | undefined;
+    if (chartType && CHART_PLUGIN_CDNS[chartType]) {
+      plugins.add(CHART_PLUGIN_CDNS[chartType]);
+    }
+  }
+};
+
 /** Detect whether chart or mermaid content blocks exist in a slide */
 export const detectBlockTypes = (slide: SlideLayout): BlockTypeFlags => {
   const arrays = collectContentArrays(slide);
   let hasChart = false;
   let hasMermaid = false;
+  const plugins = new Set<string>();
   arrays.forEach((blocks) => {
     blocks.forEach((block) => {
       if (block.type === "chart") hasChart = true;
       if (block.type === "mermaid") hasMermaid = true;
+      collectChartPlugin(block, plugins);
       if (block.type === "section" && block.content) {
         block.content.forEach((inner) => {
           if (inner.type === "chart") hasChart = true;
           if (inner.type === "mermaid") hasMermaid = true;
+          collectChartPlugin(inner, plugins);
         });
       }
     });
   });
-  return { hasChart, hasMermaid };
+  return { hasChart, hasMermaid, chartPlugins: [...plugins] };
 };

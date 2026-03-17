@@ -6,13 +6,17 @@
     <title>Simple Chart.js Bar Chart</title>
     <style>
         ${style}
+        html, body { height: 100%; margin: 0; }
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .chart-container {
             width: ${chart_width}px;
-            margin: 0 auto;
+            height: 70vh;
+            position: relative;
         }
     </style>
     <!-- Include Chart.js from CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    ${chart_plugins}
 </head>
 <body>
     <h1>${title}</h1>
@@ -20,24 +24,55 @@
         <canvas id="myChart" data-chart-ready="false"></canvas>
     </div>
 
-    <!-- Plain JavaScript instead of TypeScript -->
     <script>
-        // Wait for DOM and Chart.js to be ready, then render.
         function initChart() {
             if (!window.Chart) return false;
-            const ctx = document.getElementById('myChart');
+            var ctx = document.getElementById('myChart');
             if (!ctx) return false;
-            const chartData = ${chart_data};
+            var chartData = ${chart_data};
 
             // Disable animation for static image generation
             if (!chartData.options) chartData.options = {};
             chartData.options.animation = false;
+            chartData.options.responsive = true;
+            chartData.options.maintainAspectRatio = false;
 
-            // Initialize the chart
+            // Treemap: convert backgroundColor array to scriptable function
+            if (chartData.type === 'treemap') {
+                chartData.data.datasets.forEach(function(ds) {
+                    if (Array.isArray(ds.backgroundColor)) {
+                        var colors = ds.backgroundColor;
+                        ds.backgroundColor = function(ctx) {
+                            return colors[ctx.dataIndex % colors.length];
+                        };
+                    }
+                });
+            }
 
-            new Chart(ctx, chartData);
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
+            // Sankey: convert colorFrom/colorTo objects to lookup functions
+            if (chartData.type === 'sankey') {
+                chartData.data.datasets.forEach(function(ds) {
+                    if (ds.colorFrom && typeof ds.colorFrom === 'object') {
+                        var fromMap = ds.colorFrom;
+                        ds.colorFrom = function(c) { return fromMap[c.dataset.data[c.dataIndex].from] || '#999'; };
+                    }
+                    if (ds.colorTo && typeof ds.colorTo === 'object') {
+                        var toMap = ds.colorTo;
+                        ds.colorTo = function(c) { return toMap[c.dataset.data[c.dataIndex].to] || '#999'; };
+                    }
+                });
+            }
+
+            try {
+                var chart = new Chart(ctx, chartData);
+                chart.resize();
+                chart.update();
+            } catch (e) {
+                console.error('Chart init error:', e);
+            }
+
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
                     ctx.dataset.chartReady = "true";
                 });
             });

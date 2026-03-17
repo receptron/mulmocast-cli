@@ -5,15 +5,25 @@ import { parrotingImagePath, generateUniqueId } from "./utils.js";
 
 export const imageType = "chart";
 
+/** Chart.js plugin CDN URLs keyed by chart type */
+const CHART_PLUGIN_CDNS: Record<string, string> = {
+  sankey: "https://cdn.jsdelivr.net/npm/chartjs-chart-sankey",
+  treemap: "https://cdn.jsdelivr.net/npm/chartjs-chart-treemap@3",
+};
+
+/** Resolve CDN script tags for Chart.js plugins based on chart type */
+const resolveChartPlugins = (chartType: string): string => {
+  const cdn = CHART_PLUGIN_CDNS[chartType];
+  if (!cdn) return "";
+  return `<script src="${cdn}"></script>`;
+};
+
 const processChart = async (params: ImageProcessorParams) => {
   const { beat, imagePath, canvasSize, textSlideStyle } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
-  const isCircular =
-    beat.image.chartData.type === "pie" ||
-    beat.image.chartData.type === "doughnut" ||
-    beat.image.chartData.type === "polarArea" ||
-    beat.image.chartData.type === "radar";
+  const chartType = beat.image.chartData.type as string;
+  const isCircular = chartType === "pie" || chartType === "doughnut" || chartType === "polarArea" || chartType === "radar";
   const chart_width = isCircular ? Math.min(canvasSize.width, canvasSize.height) * 0.75 : canvasSize.width * 0.75;
   const template = getHTMLFile("chart");
   const htmlData = interpolate(template, {
@@ -21,6 +31,7 @@ const processChart = async (params: ImageProcessorParams) => {
     style: textSlideStyle,
     chart_width: chart_width.toString(),
     chart_data: JSON.stringify(beat.image.chartData),
+    chart_plugins: resolveChartPlugins(chartType),
   });
   await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;

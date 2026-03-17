@@ -396,8 +396,9 @@ MulmoCast includes a powerful **Slide DSL** (`type: "slide"`) for creating struc
 
 ### Features
 
-- **11 Layouts**: title, columns, comparison, grid, bigQuote, stats, timeline, split, matrix, table, funnel
+- **12 Layouts**: title, columns, comparison, grid, bigQuote, stats, timeline, split, matrix, table, funnel, waterfall
 - **10 Content Block Types**: text, bullets, code, callout, metric, divider, image, imageRef, chart, mermaid
+- **Chart.js Plugins**: sankey (`chartjs-chart-sankey`) and treemap (`chartjs-chart-treemap`) auto-loaded by chart type
 - **13-Color Theme System**: Semantic color palette with dark/light support
 - **6 Preset Themes**: dark, pop, warm, creative, minimal, corporate
 
