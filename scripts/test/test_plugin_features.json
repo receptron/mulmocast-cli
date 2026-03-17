@@ -22,11 +22,13 @@
           "type": "bar",
           "data": {
             "labels": ["Q1", "Q2", "Q3", "Q4"],
-            "datasets": [{
-              "label": "Revenue ($M)",
-              "data": [120, 150, 180, 210],
-              "backgroundColor": "rgba(59, 130, 246, 0.8)"
-            }]
+            "datasets": [
+              {
+                "label": "Revenue ($M)",
+                "data": [120, 150, 180, 210],
+                "backgroundColor": "rgba(59, 130, 246, 0.8)"
+              }
+            ]
           },
           "options": {
             "plugins": {
@@ -55,10 +57,12 @@
           "type": "doughnut",
           "data": {
             "labels": ["Product A", "Product B", "Product C", "Other"],
-            "datasets": [{
-              "data": [35, 25, 20, 20],
-              "backgroundColor": ["#3B82F6", "#10B981", "#F59E0B", "#94A3B8"]
-            }]
+            "datasets": [
+              {
+                "data": [35, 25, 20, 20],
+                "backgroundColor": ["#3B82F6", "#10B981", "#F59E0B", "#94A3B8"]
+              }
+            ]
           }
         }
       }
@@ -73,14 +77,16 @@
           "type": "line",
           "data": {
             "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-            "datasets": [{
-              "label": "Users (K)",
-              "data": [10, 15, 25, 35, 50, 72],
-              "borderColor": "#e94560",
-              "backgroundColor": "rgba(233, 69, 96, 0.2)",
-              "fill": true,
-              "tension": 0.4
-            }]
+            "datasets": [
+              {
+                "label": "Users (K)",
+                "data": [10, 15, 25, 35, 50, 72],
+                "borderColor": "#e94560",
+                "backgroundColor": "rgba(233, 69, 96, 0.2)",
+                "fill": true,
+                "tension": 0.4
+              }
+            ]
           },
           "options": {
             "plugins": { "legend": { "labels": { "color": "white" } } },
@@ -97,7 +103,10 @@
       "image": {
         "type": "mermaid",
         "title": "System Architecture",
-        "code": { "kind": "text", "text": "graph TD\n  A[Client] --> B[API Gateway]\n  B --> C[Auth Service]\n  B --> D[Data Service]\n  C --> E[(Database)]\n  D --> E" },
+        "code": {
+          "kind": "text",
+          "text": "graph TD\n  A[Client] --> B[API Gateway]\n  B --> C[Auth Service]\n  B --> D[Data Service]\n  C --> E[(Database)]\n  D --> E"
+        },
         "backgroundImage": {
           "source": { "kind": "url", "url": "https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1280&h=720&fit=crop" },
           "size": "cover",
