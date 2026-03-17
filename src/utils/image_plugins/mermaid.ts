@@ -4,6 +4,7 @@ import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../html_render.js";
 import { parrotingImagePath, generateUniqueId } from "./utils.js";
 import { resolveCombinedStyle } from "./bg_image_util.js";
+import { resolveImageRefs, resolveMovieRefs, resolveRelativeImagePaths } from "./html_tailwind.js";
 
 export const imageType = "mermaid";
 
@@ -30,11 +31,14 @@ const processMermaid = async (params: ImageProcessorParams) => {
   const diagram_code = await MulmoMediaSourceMethods.getText(beat.image.code, context);
   if (diagram_code) {
     const combinedStyle = await resolveCombinedStyle(params, beat.image.backgroundImage, beat.image.style);
-    const htmlData = interpolate(template, {
+    const rawHtml = interpolate(template, {
       title: beat.image.title,
       style: combinedStyle,
       diagram_code: `${diagram_code}\n${beat.image.appendix?.join("\n") ?? ""}`,
     });
+    const resolvedImageRefs = resolveImageRefs(rawHtml, params.imageRefs ?? {});
+    const resolvedAllRefs = resolveMovieRefs(resolvedImageRefs, params.movieRefs ?? {});
+    const htmlData = resolveRelativeImagePaths(resolvedAllRefs, context.fileDirs.mulmoFileDirPath);
     await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, true);
   }
   return imagePath;
