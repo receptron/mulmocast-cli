@@ -181,7 +181,7 @@ const generateStandardVideo = async (
     config: {
       durationSeconds: isVeo3 ? undefined : duration,
       aspectRatio,
-      personGeneration: imagePath ? undefined : PersonGeneration.ALLOW_ALL,
+      personGeneration: imagePath || isVeo3 ? undefined : PersonGeneration.ALLOW_ALL,
     },
     image: imagePath ? loadImageAsBase64(imagePath) : undefined,
   };
