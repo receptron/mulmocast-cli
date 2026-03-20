@@ -157,6 +157,7 @@ export const provider2MovieAgent = {
       "minimax/hailuo-02": {
         durations: [6], // NOTE: 10 for only 720p
         start_image: "first_frame_image",
+        last_image: "end_image",
         price_per_sec: 0.08,
       },
       "minimax/hailuo-02-fast": {

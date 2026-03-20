@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from "fs";
 import { GraphAILogger, sleep } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
-import { GoogleGenAI, PersonGeneration } from "@google/genai";
+import { GoogleGenAI, PersonGeneration, VideoGenerationReferenceType } from "@google/genai";
 import type { GenerateVideosOperation, GenerateVideosResponse, Video as GenAIVideo } from "@google/genai";
 import {
   apiKeyMissingError,
@@ -14,8 +14,10 @@ import {
 } from "../utils/error_cause.js";
 import { getAspectRatio } from "../utils/utils.js";
 import { ASPECT_RATIOS } from "../types/const.js";
-import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, MovieAgentInputs } from "../types/agent.js";
+import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, MovieAgentInputs, MovieReferenceImage } from "../types/agent.js";
 import { getModelDuration, provider2MovieAgent } from "../types/provider2agent.js";
+
+type ImagePayload = { imageBytes: string; mimeType: string };
 
 type VideoPayload = {
   model: string;
@@ -26,8 +28,10 @@ type VideoPayload = {
     numberOfVideos?: number;
     durationSeconds?: number;
     personGeneration?: PersonGeneration;
+    lastFrame?: ImagePayload;
+    referenceImages?: Array<{ image: ImagePayload; referenceType: VideoGenerationReferenceType }>;
   };
-  image?: { imageBytes: string; mimeType: string };
+  image?: ImagePayload;
   video?: { uri: string };
 };
 
@@ -56,7 +60,7 @@ const getVideoFromResponse = (response: { operation: GenerateVideosOperation & {
   return video;
 };
 
-const loadImageAsBase64 = (imagePath: string): { imageBytes: string; mimeType: string } => {
+const loadImageAsBase64 = (imagePath: string): ImagePayload => {
   const buffer = readFileSync(imagePath);
   return {
     imageBytes: buffer.toString("base64"),
@@ -164,6 +168,8 @@ const generateStandardVideo = async (
   prompt: string,
   aspectRatio: string,
   imagePath: string | undefined,
+  lastFrameImagePath: string | undefined,
+  referenceImages: MovieReferenceImage[] | undefined,
   duration: number | undefined,
   movieFile: string,
   isVertexAI: boolean,
@@ -180,6 +186,19 @@ const generateStandardVideo = async (
     image: imagePath ? loadImageAsBase64(imagePath) : undefined,
   };
 
+  // Veo 3.1: lastFrame for image-to-video interpolation
+  if (lastFrameImagePath && imagePath) {
+    payload.config.lastFrame = loadImageAsBase64(lastFrameImagePath);
+  }
+
+  // Veo 3.1: referenceImages (mutually exclusive with image/lastFrame)
+  if (referenceImages && referenceImages.length > 0 && !imagePath) {
+    payload.config.referenceImages = referenceImages.map((ref) => ({
+      image: loadImageAsBase64(ref.imagePath),
+      referenceType: ref.referenceType as VideoGenerationReferenceType,
+    }));
+  }
+
   const operation = await ai.models.generateVideos(payload);
   const response = await pollUntilDone(ai, operation);
   const video = getVideoFromResponse(response);
@@ -192,7 +211,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
   params,
   config,
 }) => {
-  const { prompt, imagePath, movieFile } = namedInputs;
+  const { prompt, imagePath, lastFrameImagePath, referenceImages, movieFile } = namedInputs;
   const aspectRatio = getAspectRatio(params.canvasSize, ASPECT_RATIOS);
   const model = params.model ?? provider2MovieAgent.google.defaultModel;
 
@@ -229,7 +248,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
     }
 
     // Standard mode
-    return generateStandardVideo(ai, model, prompt, aspectRatio, imagePath, duration, movieFile, isVertexAI);
+    return generateStandardVideo(ai, model, prompt, aspectRatio, imagePath, lastFrameImagePath, referenceImages, duration, movieFile, isVertexAI);
   } catch (error) {
     GraphAILogger.info("Failed to generate movie:", (error as Error).message);
     if (hasCause(error) && error.cause) {

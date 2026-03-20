@@ -539,6 +539,11 @@ export const mulmoTransitionSchema = z.object({
   duration: z.number().min(0).max(2).optional().default(0.3), // transition duration in seconds
 });
 
+export const movieReferenceImageSchema = z.object({
+  imageName: imageIdSchema.describe("Reference an imageRefs key"),
+  referenceType: z.enum(["ASSET", "STYLE"]).describe("ASSET: scene/object/character, STYLE: aesthetics/lighting"),
+});
+
 export const mulmoMovieParamsSchema = z.object({
   provider: text2MovieProviderSchema.optional(),
   model: z.string().optional(),
@@ -547,6 +552,11 @@ export const mulmoMovieParamsSchema = z.object({
   filters: z.array(mulmoVideoFilterSchema).optional(), // for movie.ts
   vertexai_project: z.string().optional(), // Google Cloud Project ID for Vertex AI
   vertexai_location: z.string().optional(), // Vertex AI location (default: us-central1)
+  lastFrameImageName: imageIdSchema.optional().describe("Reference an imageRefs key for the last frame (image-to-video interpolation)"),
+  referenceImages: z
+    .array(movieReferenceImageSchema)
+    .optional()
+    .describe("Style/asset reference images (Veo 3.1). Mutually exclusive with imageName/lastFrameImageName"),
 });
 
 export const mulmoBeatSchema = z

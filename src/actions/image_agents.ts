@@ -31,6 +31,8 @@ type ImagePreprocessAgentReturnValue = {
   bgmFile?: string | null;
   audioFile?: string;
   movieAgentInfo?: { agent: string; movieParams: MulmoMovieParams };
+  lastFrameImagePath?: string;
+  movieReferenceImages?: { imagePath: string; referenceType: "ASSET" | "STYLE" }[];
 };
 
 type ImagePreprocessAgentResponseBase = ImagePreprocessAgentReturnValue & {
@@ -132,6 +134,23 @@ export const imagePreprocessAgent = async (namedInputs: {
   }
 
   returnValue.movieAgentInfo = MulmoPresentationStyleMethods.getMovieAgentInfo(context.presentationStyle, beat);
+
+  // Resolve movie reference images from imageRefs
+  const movieParams = beat.movieParams ?? context.presentationStyle.movieParams;
+  if (movieParams?.lastFrameImageName && imageRefs) {
+    const lastFramePath = imageRefs[movieParams.lastFrameImageName];
+    if (lastFramePath) {
+      returnValue.lastFrameImagePath = lastFramePath;
+    }
+  }
+  if (movieParams?.referenceImages && imageRefs) {
+    returnValue.movieReferenceImages = movieParams.referenceImages
+      .map((ref) => {
+        const refPath = imageRefs[ref.imageName];
+        return refPath ? { imagePath: refPath, referenceType: ref.referenceType } : undefined;
+      })
+      .filter((r): r is { imagePath: string; referenceType: "ASSET" | "STYLE" } => r !== undefined);
+  }
 
   if (beat.image) {
     const plugin = MulmoBeatMethods.getPlugin(beat);
