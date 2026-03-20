@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.4](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.4) (2026-03-20)
+
+- **Chart.js plugins**: Sankey (`chartjs-chart-sankey`) and Treemap (`chartjs-chart-treemap`) auto-loaded by chart type
+- **Waterfall slide layout**: Dedicated Slide DSL layout for profit bridge / YoY change analysis
+- **Chart backgroundImage/style**: `backgroundImage` and `style` fields added to chart plugin
+- **Mermaid image/movie refs**: `image:name` and `movie:name` references in mermaid backgrounds
+- **Movie reference images**: `firstFrameImageName`, `lastFrameImageName`, and `referenceImages` for Veo 3.1 and Replicate models
+- **Model capabilities**: `provider2agent.ts` defines per-model feature support with warnings for unsupported/exclusive options
+
+📦 **npm**: [`mulmocast@2.6.4`](https://www.npmjs.com/package/mulmocast/v/2.6.4)
+
 ## [2.6.3](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.3) (2026-03-17)
 
 - **Animated PDF final frame**: Animated `html_tailwind` beats now render a high-quality static image of the final frame directly from HTML for PDF/thumbnail use, fixing missing content in PDF output
