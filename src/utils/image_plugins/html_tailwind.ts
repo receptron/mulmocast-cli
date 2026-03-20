@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import nodePath from "node:path";
-import { ImageProcessorParams } from "../../types/index.js";
+import { GraphAILogger } from "graphai";
+import { ImageProcessorParams, MulmoCanvasDimension } from "../../types/index.js";
 import { MulmoBeatMethods } from "../../methods/mulmo_beat.js";
 import { getHTMLFile, getJSFile } from "../file.js";
 import { renderHTMLToImage, interpolate, renderHTMLToFrames, renderHTMLToVideo, renderHTMLToFinalFrame } from "../html_render.js";
@@ -96,6 +97,18 @@ const getAnimationConfig = (params: ImageProcessorParams) => {
   return { fps, movie };
 };
 
+/** Generate video using frame-by-frame screenshot + ffmpeg */
+const renderFrameByFrame = async (htmlData: string, videoPath: string, canvasSize: MulmoCanvasDimension, totalFrames: number, fps: number) => {
+  const framesDir = videoPath.replace(/\.[^/.]+$/, "_frames");
+  fs.mkdirSync(framesDir, { recursive: true });
+  try {
+    await renderHTMLToFrames(htmlData, framesDir, canvasSize.width, canvasSize.height, totalFrames, fps);
+    await framesToVideo(framesDir, videoPath, fps, canvasSize.width, canvasSize.height);
+  } finally {
+    fs.rmSync(framesDir, { recursive: true, force: true });
+  }
+};
+
 /** Large frame count to ensure all animations reach their end state when exact duration is unknown */
 const FINAL_FRAME_TOTAL = 9000;
 
@@ -132,40 +145,35 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
   const duration = params.beatDuration ?? beat.duration;
   const fps = animConfig.fps;
 
-  // Generate video if duration is available
   if (duration !== undefined) {
+    // Movie workflow: generate .mp4 video (duration is known from audio or beat config)
     const totalFrames = Math.floor(duration * fps);
     if (totalFrames <= 0) {
       throw new Error(`html_tailwind animation: totalFrames is ${totalFrames} (duration=${duration}, fps=${fps}). Increase duration or fps.`);
     }
 
     const htmlData = buildAnimatedHtml(params, totalFrames, fps);
-    // imagePath is set to the .mp4 path by imagePluginAgent for animated beats
     const videoPath = imagePath;
 
     if (animConfig.movie) {
       await renderHTMLToVideo(htmlData, videoPath, canvasSize.width, canvasSize.height, totalFrames, fps);
-    } else {
-      const framesDir = videoPath.replace(/\.[^/.]+$/, "_frames");
-      fs.mkdirSync(framesDir, { recursive: true });
-      try {
-        await renderHTMLToFrames(htmlData, framesDir, canvasSize.width, canvasSize.height, totalFrames, fps);
-        await framesToVideo(framesDir, videoPath, fps, canvasSize.width, canvasSize.height);
-      } finally {
-        fs.rmSync(framesDir, { recursive: true, force: true });
+      // Screencast can produce empty files; fall back to frame-by-frame rendering
+      if (!fs.existsSync(videoPath) || fs.statSync(videoPath).size === 0) {
+        GraphAILogger.info("renderHTMLToVideo produced empty file, falling back to frame-by-frame rendering");
+        await renderFrameByFrame(htmlData, videoPath, canvasSize, totalFrames, fps);
       }
+    } else {
+      await renderFrameByFrame(htmlData, videoPath, canvasSize, totalFrames, fps);
     }
+    return videoPath;
   }
 
-  // Generate a high-quality static image of the final frame for PDF/thumbnail use.
-  // Uses a large totalFrames so all animations are guaranteed to reach their end state,
-  // even when exact duration is unknown (e.g., PDF generation without audio).
+  // PDF/images workflow: generate final-frame PNG (duration unknown, no video needed).
+  // Uses a large totalFrames so all animations reach their end state.
   const finalFramePath = imagePath.replace(/_animated\.mp4$/, ".png");
   const finalHtml = buildAnimatedHtml(params, FINAL_FRAME_TOTAL, fps);
   await renderHTMLToFinalFrame(finalHtml, finalFramePath, canvasSize.width, canvasSize.height);
-
-  // Return video path when video was generated, otherwise return the static PNG path
-  return duration !== undefined ? imagePath : finalFramePath;
+  return finalFramePath;
 };
 
 const processHtmlTailwindStatic = async (params: ImageProcessorParams) => {
