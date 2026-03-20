@@ -62,9 +62,15 @@ async function generateMovie(
   if (lastFrameImagePath) {
     const lastImageParam = provider2MovieAgent.replicate.modelParams[model]?.last_image;
     if (lastImageParam) {
-      const buffer = readFileSync(lastFrameImagePath);
-      const base64Image = `data:image/png;base64,${buffer.toString("base64")}`;
-      (input as Record<string, unknown>)[lastImageParam] = base64Image;
+      if (!imagePath) {
+        GraphAILogger.warn(`movieReplicateAgent: model ${model} requires a first frame image to use lastFrame — ignoring lastFrameImageName`);
+      } else {
+        const buffer = readFileSync(lastFrameImagePath);
+        const base64Image = `data:image/png;base64,${buffer.toString("base64")}`;
+        (input as Record<string, unknown>)[lastImageParam] = base64Image;
+      }
+    } else {
+      GraphAILogger.warn(`movieReplicateAgent: model ${model} does not support lastFrame — ignoring lastFrameImageName`);
     }
   }
 

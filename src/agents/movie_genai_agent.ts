@@ -174,29 +174,43 @@ const generateStandardVideo = async (
   movieFile: string,
   isVertexAI: boolean,
 ): Promise<AgentBufferResult> => {
-  const isVeo3 = model === "veo-3.0-generate-001" || model === "veo-3.1-generate-preview";
+  const capabilities = provider2MovieAgent.google.modelParams[model];
   const payload: VideoPayload = {
     model,
     prompt,
     config: {
-      durationSeconds: isVeo3 ? undefined : duration,
+      durationSeconds: capabilities?.supportsPersonGeneration === false ? undefined : duration,
       aspectRatio,
-      personGeneration: imagePath || isVeo3 ? undefined : PersonGeneration.ALLOW_ALL,
+      personGeneration: imagePath || !capabilities?.supportsPersonGeneration ? undefined : PersonGeneration.ALLOW_ALL,
     },
     image: imagePath ? loadImageAsBase64(imagePath) : undefined,
   };
 
-  // Veo 3.1: lastFrame for image-to-video interpolation
-  if (lastFrameImagePath && imagePath) {
-    payload.config.lastFrame = loadImageAsBase64(lastFrameImagePath);
+  // Validate and apply lastFrame
+  if (lastFrameImagePath) {
+    if (!capabilities?.supportsLastFrame) {
+      GraphAILogger.warn(`movieGenAIAgent: model ${model} does not support lastFrame — ignoring lastFrameImageName`);
+    } else if (!imagePath) {
+      GraphAILogger.warn(`movieGenAIAgent: lastFrame requires a first frame image (imagePrompt or firstFrameImageName) — ignoring lastFrameImageName`);
+    } else {
+      payload.config.lastFrame = loadImageAsBase64(lastFrameImagePath);
+    }
   }
 
-  // Veo 3.1: referenceImages (mutually exclusive with image/lastFrame)
-  if (referenceImages && referenceImages.length > 0 && !imagePath) {
-    payload.config.referenceImages = referenceImages.map((ref) => ({
-      image: loadImageAsBase64(ref.imagePath),
-      referenceType: ref.referenceType as VideoGenerationReferenceType,
-    }));
+  // Validate and apply referenceImages (mutually exclusive with image/lastFrame)
+  if (referenceImages && referenceImages.length > 0) {
+    if (!capabilities?.supportsReferenceImages) {
+      GraphAILogger.warn(`movieGenAIAgent: model ${model} does not support referenceImages — ignoring`);
+    } else if (imagePath) {
+      GraphAILogger.warn(`movieGenAIAgent: referenceImages cannot be combined with first frame image — ignoring referenceImages`);
+    } else if (lastFrameImagePath) {
+      GraphAILogger.warn(`movieGenAIAgent: referenceImages cannot be combined with lastFrame — ignoring referenceImages`);
+    } else {
+      payload.config.referenceImages = referenceImages.map((ref) => ({
+        image: loadImageAsBase64(ref.imagePath),
+        referenceType: ref.referenceType as VideoGenerationReferenceType,
+      }));
+    }
   }
 
   const operation = await ai.models.generateVideos(payload);
