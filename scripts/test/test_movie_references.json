@@ -3,6 +3,10 @@
   "title": "Movie Reference Image Tests",
   "lang": "en",
   "canvasSize": { "width": 1280, "height": 720 },
+  "movieParams": {
+    "provider": "google",
+    "model": "veo-3.1-generate-preview"
+  },
   "imageParams": {
     "images": {
       "start_frame": {
@@ -29,24 +33,24 @@
   },
   "beats": [
     {
-      "text": "Pattern 1: moviePrompt only (text-to-video, no reference images)",
+      "text": "Pattern 1: moviePrompt only (text-to-video)",
       "moviePrompt": "A calm ocean wave rolling onto a sandy beach at sunset"
     },
     {
-      "text": "Pattern 2: moviePrompt with imageName (first frame, image-to-video)",
-      "moviePrompt": "Cherry blossom petals gently falling in a Japanese garden",
-      "imageNames": ["start_frame"]
+      "text": "Pattern 2: moviePrompt with imageName (first frame → image-to-video)",
+      "imagePrompt": "Cherry blossom petals gently falling in a Japanese garden",
+      "moviePrompt": "Cherry blossom petals gently falling in a Japanese garden"
     },
     {
-      "text": "Pattern 3: moviePrompt with imageName + lastFrameImageName (interpolation)",
+      "text": "Pattern 3: moviePrompt with first frame + lastFrame (interpolation)",
+      "imagePrompt": "A serene Japanese garden in bright daylight",
       "moviePrompt": "Time-lapse of a Japanese garden transitioning from day to sunset",
-      "imageNames": ["start_frame"],
       "movieParams": {
         "lastFrameImageName": "end_frame"
       }
     },
     {
-      "text": "Pattern 4: moviePrompt with referenceImages ASSET (subject reference)",
+      "text": "Pattern 4: moviePrompt with referenceImages ASSET (subject reference, no first frame)",
       "moviePrompt": "A red sports car driving through a futuristic city at night",
       "movieParams": {
         "referenceImages": [
