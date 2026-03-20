@@ -46,7 +46,9 @@ const joinHtml = (html: string | string[]): string => {
 const buildUserScript = (script: string | string[] | undefined): string => {
   if (!script) return "";
   const code = Array.isArray(script) ? script.join("\n") : script;
-  return `<script>\n${code}\n</script>`;
+  // If user script contains ESM import/export, emit module script so imports work.
+  const isModule = /^\s*(import|export)\s/m.test(code);
+  return isModule ? `<script type="module">\n${code}\n</script>` : `<script>\n${code}\n</script>`;
 };
 
 /**
@@ -103,7 +105,9 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
   }
 
   const fps = animConfig.fps;
-  const totalFrames = Math.floor(duration * fps);
+  // Avoid generating shorter-than-beat animations.
+  // floor() can lose up to almost 1 frame, which appears as a pause at beat end.
+  const totalFrames = Math.ceil(duration * fps);
   if (totalFrames <= 0) {
     throw new Error(`html_tailwind animation: totalFrames is ${totalFrames} (duration=${duration}, fps=${fps}). Increase duration or fps.`);
   }
