@@ -80,6 +80,26 @@ All `imageName` and `lastFrameImageName` values reference keys in `imageParams.i
 
 When both are specified, `referenceImages` is silently ignored and `first frame + lastFrame` takes precedence.
 
+## Duration and Video Extension (Veo 3.1)
+
+For videos **8 seconds or shorter**, all features are available:
+- `firstFrameImageName` + `lastFrameImageName` (interpolation)
+- `referenceImages` (style/asset)
+
+For videos **longer than 8 seconds**, Veo 3.1 uses video extension (generating an initial 8s clip, then extending iteratively). This has additional constraints:
+
+| Duration | firstFrame | lastFrame | referenceImages |
+|---|:---:|:---:|:---:|
+| ≤ 8s (standard) | ✅ | ✅ | ✅ |
+| > 8s (extension) initial | ✅ | ❌ \* | ❌ \*\* |
+| > 8s (extension) subsequent | N/A (uses previous video) | ❌ | ❌ |
+
+\* `lastFrame` requires `image` input, but using it means the video reaches the end state in the first 8s, then extends from there — likely not the intended behavior.
+
+\*\* `referenceImages` is mutually exclusive with `image` (first frame), and the initial iteration typically uses a first frame for best results.
+
+**Recommendation**: Use `lastFrame` and `referenceImages` only with videos ≤ 8 seconds. For longer videos, use `firstFrameImageName` only to set the starting point, and let the model extend naturally.
+
 ## Model Support Matrix
 
 ### Google Gemini (GenAI)
