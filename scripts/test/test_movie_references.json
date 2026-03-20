@@ -1,0 +1,77 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "title": "Movie Reference Image Tests",
+  "lang": "en",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "imageParams": {
+    "images": {
+      "start_frame": {
+        "type": "imagePrompt",
+        "prompt": "A serene Japanese garden with cherry blossoms in spring, bright daylight, photorealistic"
+      },
+      "end_frame": {
+        "type": "imagePrompt",
+        "prompt": "The same Japanese garden at sunset, golden hour lighting, warm tones, photorealistic"
+      },
+      "style_ref": {
+        "type": "imagePrompt",
+        "prompt": "Anime style illustration with vibrant colors, Studio Ghibli aesthetic"
+      },
+      "asset_car": {
+        "type": "imagePrompt",
+        "prompt": "A red sports car from the side, clean white background, product photography"
+      },
+      "asset_building": {
+        "type": "imagePrompt",
+        "prompt": "A modern glass office building, clean white background, architectural photography"
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "Pattern 1: moviePrompt only (text-to-video, no reference images)",
+      "moviePrompt": "A calm ocean wave rolling onto a sandy beach at sunset"
+    },
+    {
+      "text": "Pattern 2: moviePrompt with imageName (first frame, image-to-video)",
+      "moviePrompt": "Cherry blossom petals gently falling in a Japanese garden",
+      "imageNames": ["start_frame"]
+    },
+    {
+      "text": "Pattern 3: moviePrompt with imageName + lastFrameImageName (interpolation)",
+      "moviePrompt": "Time-lapse of a Japanese garden transitioning from day to sunset",
+      "imageNames": ["start_frame"],
+      "movieParams": {
+        "lastFrameImageName": "end_frame"
+      }
+    },
+    {
+      "text": "Pattern 4: moviePrompt with referenceImages ASSET (subject reference)",
+      "moviePrompt": "A red sports car driving through a futuristic city at night",
+      "movieParams": {
+        "referenceImages": [
+          { "imageName": "asset_car", "referenceType": "ASSET" }
+        ]
+      }
+    },
+    {
+      "text": "Pattern 5: moviePrompt with referenceImages STYLE (aesthetic reference)",
+      "moviePrompt": "A character walking through a magical forest with glowing mushrooms",
+      "movieParams": {
+        "referenceImages": [
+          { "imageName": "style_ref", "referenceType": "STYLE" }
+        ]
+      }
+    },
+    {
+      "text": "Pattern 6: moviePrompt with multiple ASSET referenceImages",
+      "moviePrompt": "A red sports car parked in front of a modern glass building",
+      "movieParams": {
+        "referenceImages": [
+          { "imageName": "asset_car", "referenceType": "ASSET" },
+          { "imageName": "asset_building", "referenceType": "ASSET" }
+        ]
+      }
+    }
+  ]
+}
