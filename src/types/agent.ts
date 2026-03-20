@@ -51,7 +51,13 @@ export type ReplicateImageAgentConfig = AgentConfig;
 
 // movie
 //   inputs
-export type MovieAgentInputs = AgentPromptInputs & { imagePath?: string; movieFile: string };
+export type MovieReferenceImage = { imagePath: string; referenceType: "ASSET" | "STYLE" };
+export type MovieAgentInputs = AgentPromptInputs & {
+  imagePath?: string;
+  lastFrameImagePath?: string;
+  referenceImages?: MovieReferenceImage[];
+  movieFile: string;
+};
 //   params
 export type GoogleMovieAgentParams = ImageAgentParams & {
   duration?: number;

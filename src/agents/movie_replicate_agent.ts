@@ -20,6 +20,7 @@ async function generateMovie(
   apiKey: string,
   prompt: string,
   imagePath: string | undefined,
+  lastFrameImagePath: string | undefined,
   aspectRatio: string,
   duration: number,
 ): Promise<Buffer | undefined> {
@@ -54,6 +55,22 @@ async function generateMovie(
       });
     } else {
       input.image = base64Image;
+    }
+  }
+
+  // Add last frame image if provided and model supports it
+  if (lastFrameImagePath) {
+    const lastImageParam = provider2MovieAgent.replicate.modelParams[model]?.last_image;
+    if (lastImageParam) {
+      if (!imagePath) {
+        GraphAILogger.warn(`movieReplicateAgent: model ${model} requires a first frame image to use lastFrame — ignoring lastFrameImageName`);
+      } else {
+        const buffer = readFileSync(lastFrameImagePath);
+        const base64Image = `data:image/png;base64,${buffer.toString("base64")}`;
+        (input as Record<string, unknown>)[lastImageParam] = base64Image;
+      }
+    } else {
+      GraphAILogger.warn(`movieReplicateAgent: model ${model} does not support lastFrame — ignoring lastFrameImageName`);
     }
   }
 
@@ -97,7 +114,7 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
   params,
   config,
 }) => {
-  const { prompt, imagePath } = namedInputs;
+  const { prompt, imagePath, lastFrameImagePath } = namedInputs;
   const aspectRatio = getAspectRatio(params.canvasSize);
   const model = params.model ?? provider2MovieAgent.replicate.defaultModel;
   if (!provider2MovieAgent.replicate.modelParams[model]) {
@@ -124,7 +141,7 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
   }
 
   try {
-    const buffer = await generateMovie(model, apiKey, prompt, imagePath, aspectRatio, duration);
+    const buffer = await generateMovie(model, apiKey, prompt, imagePath, lastFrameImagePath, aspectRatio, duration);
     if (buffer) {
       return { buffer };
     }

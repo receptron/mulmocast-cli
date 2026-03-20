@@ -157,6 +157,7 @@ export const provider2MovieAgent = {
       "minimax/hailuo-02": {
         durations: [6], // NOTE: 10 for only 720p
         start_image: "first_frame_image",
+        last_image: "end_image",
         price_per_sec: 0.08,
       },
       "minimax/hailuo-02-fast": {
@@ -190,14 +191,23 @@ export const provider2MovieAgent = {
     modelParams: {
       "veo-3.1-generate-preview": {
         durations: [4, 6, 8],
+        supportsLastFrame: true,
+        supportsReferenceImages: true,
+        supportsPersonGeneration: false,
       },
       "veo-3.0-generate-001": {
         durations: [4, 6, 8],
+        supportsLastFrame: false,
+        supportsReferenceImages: false,
+        supportsPersonGeneration: false,
       },
       "veo-2.0-generate-001": {
         durations: [5, 6, 7, 8],
+        supportsLastFrame: false, // Vertex AI only
+        supportsReferenceImages: false,
+        supportsPersonGeneration: true,
       },
-    },
+    } as Record<string, { durations: number[]; supportsLastFrame: boolean; supportsReferenceImages: boolean; supportsPersonGeneration: boolean }>,
   },
   mock: {
     agentName: "mediaMockAgent",

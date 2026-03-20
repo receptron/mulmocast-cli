@@ -198,6 +198,8 @@ export const beat_graph_data = {
         onComplete: [":imageGenerator", ":imagePlugin"], // to wait for imageGenerator to finish
         prompt: ":beat.moviePrompt",
         imagePath: ":preprocessor.referenceImageForMovie",
+        lastFrameImagePath: ":preprocessor.lastFrameImagePath",
+        referenceImages: ":preprocessor.movieReferenceImages",
         movieFile: ":preprocessor.movieFile", // for google genai agent
         cache: {
           force: [":context.force", ":forceMovie"],
