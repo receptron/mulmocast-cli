@@ -97,7 +97,7 @@ const scaleContentToFit = async (page: puppeteer.Page, viewportWidth: number, vi
 
 /** Determine the appropriate waitUntil strategy based on HTML content */
 const resolveWaitUntil = (html: string): "networkidle0" | "load" | "domcontentloaded" => {
-  const hasExternalResources = (html.includes("<img") && /src=["']https?:\/\//.test(html)) || /script src=["']https?:\/\//.test(html);
+  const hasExternalResources = html.includes("<img") && /src=["']https?:\/\//.test(html);
   const hasLocalImages = html.includes("<img") && /src=["']file:\/\//.test(html);
   if (hasExternalResources) return "networkidle0";
   if (hasLocalImages) return "load";
@@ -113,9 +113,8 @@ const resolveWaitUntil = (html: string): "networkidle0" | "load" | "domcontentlo
 const loadHtmlIntoPage = async (page: puppeteer.Page, html: string, timeout_ms: number): Promise<void> => {
   const waitUntil = resolveWaitUntil(html);
   const hasFileUrls = /file:\/\//.test(html);
-  const hasExternalScripts = /script src=["']https?:\/\//.test(html);
 
-  if (hasFileUrls || hasExternalScripts) {
+  if (hasFileUrls) {
     const tmpFile = nodePath.join(os.tmpdir(), `mulmocast_render_${crypto.randomUUID()}.html`);
     fs.writeFileSync(tmpFile, html);
     try {

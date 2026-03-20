@@ -3,7 +3,7 @@ import nodePath from "node:path";
 import { ImageProcessorParams, MulmoCanvasDimension } from "../../types/index.js";
 import { MulmoBeatMethods } from "../../methods/mulmo_beat.js";
 import { getHTMLFile, getJSFile } from "../file.js";
-import { renderHTMLToImage, interpolate, renderHTMLToFrames, renderHTMLToVideo, renderHTMLToFinalFrame } from "../html_render.js";
+import { renderHTMLToImage, interpolate, renderHTMLToFrames, renderHTMLToFinalFrame } from "../html_render.js";
 import { framesToVideo } from "../ffmpeg_utils.js";
 import { parrotingImagePath } from "./utils.js";
 import { swipeElementsToHtml, swipeElementsToScript, type SwipeElement } from "../swipe_to_html.js";
@@ -154,17 +154,11 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
     const htmlData = buildAnimatedHtml(params, totalFrames, fps);
     const videoPath = imagePath;
 
-    // Screencast (movie mode) requires page.setContent() which is incompatible
-    // with file:// URLs from image:name references. Fall back to frame-by-frame
-    // rendering when file:// URLs are present in the HTML.
-    const hasFileUrls = /file:\/\//.test(htmlData);
-    const useScreencast = animConfig.movie && !hasFileUrls;
-
-    if (useScreencast) {
-      await renderHTMLToVideo(htmlData, videoPath, canvasSize.width, canvasSize.height, totalFrames, fps);
-    } else {
-      await renderFrameByFrame(htmlData, videoPath, canvasSize, totalFrames, fps);
-    }
+    // NOTE: CDP screencast (animConfig.movie) is currently disabled due to
+    // Puppeteer/macOS regression producing 0-byte mp4 files.
+    // See: https://github.com/puppeteer/puppeteer/issues/14789
+    // Using frame-by-frame rendering for all animation modes until resolved.
+    await renderFrameByFrame(htmlData, videoPath, canvasSize, totalFrames, fps);
     return videoPath;
   }
 
