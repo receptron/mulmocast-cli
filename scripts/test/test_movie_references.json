@@ -76,6 +76,17 @@
           { "imageName": "asset_building", "referenceType": "ASSET" }
         ]
       }
+    },
+    {
+      "text": "Pattern 7: first frame + lastFrame + ASSET ref (NOTE: referenceImages is mutually exclusive with image/lastFrame in Veo 3.1, so this tests the validation — asset ref should be silently ignored when first frame is present)",
+      "imagePrompt": "A red sports car parked in a Japanese garden during cherry blossom season",
+      "moviePrompt": "The red sports car slowly drives through the garden as cherry blossom petals fall, transitioning from bright daylight to golden sunset",
+      "movieParams": {
+        "lastFrameImageName": "end_frame",
+        "referenceImages": [
+          { "imageName": "asset_car", "referenceType": "ASSET" }
+        ]
+      }
     }
   ]
 }
