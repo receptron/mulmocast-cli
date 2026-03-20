@@ -552,6 +552,7 @@ export const mulmoMovieParamsSchema = z.object({
   filters: z.array(mulmoVideoFilterSchema).optional(), // for movie.ts
   vertexai_project: z.string().optional(), // Google Cloud Project ID for Vertex AI
   vertexai_location: z.string().optional(), // Vertex AI location (default: us-central1)
+  firstFrameImageName: imageIdSchema.optional().describe("Reference an imageRefs key for the first frame (image-to-video input)"),
   lastFrameImageName: imageIdSchema.optional().describe("Reference an imageRefs key for the last frame (image-to-video interpolation)"),
   referenceImages: z
     .array(movieReferenceImageSchema)

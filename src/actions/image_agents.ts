@@ -31,6 +31,7 @@ type ImagePreprocessAgentReturnValue = {
   bgmFile?: string | null;
   audioFile?: string;
   movieAgentInfo?: { agent: string; movieParams: MulmoMovieParams };
+  firstFrameImagePath?: string;
   lastFrameImagePath?: string;
   movieReferenceImages?: { imagePath: string; referenceType: "ASSET" | "STYLE" }[];
 };
@@ -137,6 +138,12 @@ export const imagePreprocessAgent = async (namedInputs: {
 
   // Resolve movie reference images from imageRefs
   const movieParams = beat.movieParams ?? context.presentationStyle.movieParams;
+  if (movieParams?.firstFrameImageName && imageRefs) {
+    const firstFramePath = imageRefs[movieParams.firstFrameImageName];
+    if (firstFramePath) {
+      returnValue.firstFrameImagePath = firstFramePath;
+    }
+  }
   if (movieParams?.lastFrameImageName && imageRefs) {
     const lastFramePath = imageRefs[movieParams.lastFrameImageName];
     if (lastFramePath) {
@@ -198,7 +205,9 @@ export const imagePreprocessAgent = async (namedInputs: {
 
   if (beat.moviePrompt && !beat.imagePrompt) {
     // ImageOnlyMoviePreprocessAgentResponse
-    return { ...returnValue, imagePath, imageFromMovie: true }; // no image prompt, only movie prompt
+    // If firstFrameImageName is specified, use the resolved ref image as the movie's first frame
+    const base = { ...returnValue, imagePath, imageFromMovie: true };
+    return returnValue.firstFrameImagePath ? { ...base, referenceImageForMovie: returnValue.firstFrameImagePath } : base;
   }
 
   // referenceImages for "edit_image", openai agent.
@@ -206,7 +215,9 @@ export const imagePreprocessAgent = async (namedInputs: {
 
   const prompt = imagePrompt(beat, imageAgentInfo.imageParams.style);
   // ImageGenearalPreprocessAgentResponse
-  return { ...returnValue, imagePath, referenceImageForMovie: imagePath, imageAgentInfo, prompt, referenceImages };
+  // firstFrameImagePath (from movieParams.firstFrameImageName) takes precedence over generated image
+  const movieFirstFramePath = returnValue.firstFrameImagePath ?? imagePath;
+  return { ...returnValue, imagePath, referenceImageForMovie: movieFirstFramePath, imageAgentInfo, prompt, referenceImages };
 };
 
 export const imagePluginAgent = async (namedInputs: {

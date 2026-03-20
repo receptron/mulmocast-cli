@@ -53,18 +53,14 @@
       "text": "Pattern 4: moviePrompt with referenceImages ASSET (subject reference, no first frame)",
       "moviePrompt": "A red sports car driving through a futuristic city at night",
       "movieParams": {
-        "referenceImages": [
-          { "imageName": "asset_car", "referenceType": "ASSET" }
-        ]
+        "referenceImages": [{ "imageName": "asset_car", "referenceType": "ASSET" }]
       }
     },
     {
       "text": "Pattern 5: moviePrompt with referenceImages STYLE (aesthetic reference)",
       "moviePrompt": "A character walking through a magical forest with glowing mushrooms",
       "movieParams": {
-        "referenceImages": [
-          { "imageName": "style_ref", "referenceType": "STYLE" }
-        ]
+        "referenceImages": [{ "imageName": "style_ref", "referenceType": "STYLE" }]
       }
     },
     {
@@ -83,9 +79,22 @@
       "moviePrompt": "The red sports car slowly drives through the garden as cherry blossom petals fall, transitioning from bright daylight to golden sunset",
       "movieParams": {
         "lastFrameImageName": "end_frame",
-        "referenceImages": [
-          { "imageName": "asset_car", "referenceType": "ASSET" }
-        ]
+        "referenceImages": [{ "imageName": "asset_car", "referenceType": "ASSET" }]
+      }
+    },
+    {
+      "text": "Pattern 8: firstFrameImageName from imageRefs (no imagePrompt needed)",
+      "moviePrompt": "Cherry blossom petals swirling in wind through the garden",
+      "movieParams": {
+        "firstFrameImageName": "start_frame"
+      }
+    },
+    {
+      "text": "Pattern 9: firstFrameImageName + lastFrameImageName (both from imageRefs, no imagePrompt)",
+      "moviePrompt": "Smooth transition from bright spring daylight to warm golden sunset in the garden",
+      "movieParams": {
+        "firstFrameImageName": "start_frame",
+        "lastFrameImageName": "end_frame"
       }
     }
   ]

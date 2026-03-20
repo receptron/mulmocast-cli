@@ -6,8 +6,9 @@ MulmoCast supports passing reference images, first frame, and last frame to movi
 
 ### First Frame (Image-to-Video)
 
-Use `imagePrompt` to generate a first frame image, which is automatically passed to the movie agent:
+Two ways to specify a first frame:
 
+**Option A**: Generate via `imagePrompt` — the generated image becomes the first frame:
 ```json
 {
   "imagePrompt": "A serene Japanese garden in spring",
@@ -15,7 +16,17 @@ Use `imagePrompt` to generate a first frame image, which is automatically passed
 }
 ```
 
-The generated image becomes the first frame of the video.
+**Option B**: Reference an existing image via `firstFrameImageName` — no image generation needed:
+```json
+{
+  "moviePrompt": "Cherry blossom petals gently falling",
+  "movieParams": {
+    "firstFrameImageName": "start_frame"
+  }
+}
+```
+
+`firstFrameImageName` references a key in `imageParams.images`. If both `imagePrompt` and `firstFrameImageName` are set, `firstFrameImageName` takes precedence.
 
 ### Last Frame (Interpolation)
 
@@ -23,15 +34,15 @@ Specify `lastFrameImageName` in `movieParams` to set an end frame. The video wil
 
 ```json
 {
-  "imagePrompt": "A garden in bright daylight",
   "moviePrompt": "Time-lapse transitioning from day to sunset",
   "movieParams": {
+    "firstFrameImageName": "start_frame",
     "lastFrameImageName": "end_frame"
   }
 }
 ```
 
-> **Note**: `lastFrameImageName` requires a first frame image (`imagePrompt`).
+> **Note**: `lastFrameImageName` requires a first frame image (`imagePrompt` or `firstFrameImageName`).
 
 ### Reference Images (Style/Asset)
 
@@ -99,4 +110,16 @@ When both are specified, `referenceImages` is silently ignored and `first frame 
 
 ## Test Script
 
-See `scripts/test/test_movie_references.json` for 7 patterns covering all combinations.
+See `scripts/test/test_movie_references.json` for 9 patterns covering all combinations:
+
+| Pattern | First Frame | Last Frame | Ref Images | Description |
+|---|---|---|---|---|
+| 1 | — | — | — | Text-to-video |
+| 2 | imagePrompt | — | — | Image-to-video |
+| 3 | imagePrompt | ✅ | — | Interpolation |
+| 4 | — | — | ASSET | Subject reference |
+| 5 | — | — | STYLE | Style reference |
+| 6 | — | — | 2× ASSET | Multiple assets |
+| 7 | imagePrompt | ✅ | ASSET | All specified (ref ignored) |
+| 8 | firstFrameImageName | — | — | Ref image as first frame |
+| 9 | firstFrameImageName | ✅ | — | Ref first + last frame |
