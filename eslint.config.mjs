@@ -4,6 +4,7 @@ import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
 import prettierPlugin from "eslint-plugin-prettier";
 import sonarjs from "eslint-plugin-sonarjs";
+import importPlugin from "eslint-plugin-import";
 
 export default [
   {
@@ -56,6 +57,7 @@ export default [
       semi: ["error", "always"],
       "prettier/prettier": "error",
       "no-console": "error",
+      "import/no-cycle": "error",
       "sonarjs/no-ignored-exceptions": "error",
       "sonarjs/redundant-type-aliases": "off",
       "sonarjs/todo-tag": "off",
@@ -65,6 +67,7 @@ export default [
     },
     plugins: {
       prettier: prettierPlugin,
+      import: importPlugin,
     },
   },
   // Browser JS runtime files — syntax + basic checks (no TypeScript rules)
