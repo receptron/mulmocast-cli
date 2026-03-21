@@ -1,7 +1,7 @@
 import { GraphAI, GraphAILogger } from "graphai";
 import { getReferenceImagePath } from "../utils/file.js";
 
-import { graphOption } from "./images.js";
+import { graphOption } from "./graph_option.js";
 import { MulmoPresentationStyleMethods, MulmoMediaSourceMethods } from "../methods/index.js";
 import {
   MulmoStudioContext,

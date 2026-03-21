@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import fs from "fs";
-import { GraphAI, GraphAILogger, TaskManager } from "graphai";
-import type { GraphOptions, GraphData } from "graphai";
+import { GraphAI, GraphAILogger } from "graphai";
+import type { GraphData } from "graphai";
 import { AuthenticationError, RateLimitError } from "openai/index.js";
 
 import * as vanilla from "@graphai/vanilla";
@@ -26,13 +26,12 @@ import { MulmoPresentationStyleMethods, MulmoStudioContextMethods } from "../met
 import { agentIncorrectAPIKeyError, agentAPIRateLimitError, imageAction, imageFileTarget } from "../utils/error_cause.js";
 
 import { getOutputStudioFilePath, mkdir } from "../utils/file.js";
-import { fileCacheAgentFilter } from "../utils/filters.js";
-import { settings2GraphAIConfig } from "../utils/utils.js";
 import { audioCheckerError } from "../utils/error_cause.js";
 import { extractImageFromMovie, ffmpegGetMediaDuration, trimMusic } from "../utils/ffmpeg_utils.js";
 
 import { getMediaRefs, resolveBeatLocalRefs } from "./image_references.js";
 import { imagePreprocessAgent, imagePluginAgent, htmlImageGeneratorAgent } from "./image_agents.js";
+import { graphOption } from "./graph_option.js";
 
 const vanillaAgents = vanilla.default ?? vanilla;
 
@@ -454,21 +453,8 @@ export const images_graph_data: GraphData = {
   },
 };
 
-export const graphOption = async (context: MulmoStudioContext, settings?: Record<string, string>) => {
-  const options: GraphOptions = {
-    agentFilters: [
-      {
-        name: "fileCacheAgentFilter",
-        agent: fileCacheAgentFilter,
-        nodeIds: ["imageGenerator", "movieGenerator", "htmlImageAgent", "soundEffectGenerator", "lipSyncGenerator", "AudioTrimmer"],
-      },
-    ],
-    taskManager: new TaskManager(MulmoPresentationStyleMethods.getConcurrency(context.presentationStyle)),
-    config: settings2GraphAIConfig(settings, process.env),
-  };
-
-  return options;
-};
+// graphOption moved to graph_option.ts to break circular dependency with image_references.ts
+export { graphOption } from "./graph_option.js";
 
 const prepareGenerateImages = async (context: MulmoStudioContext) => {
   const fileName = MulmoStudioContextMethods.getFileName(context);
