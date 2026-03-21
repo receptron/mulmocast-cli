@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.5](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.5) (2026-03-22)
+
+- **imagePrompt reference images**: `referenceImageName` (reference another imageRefs key) and `referenceImage` (direct source) for image-to-image generation in `imageParams.images`
+
+📦 **npm**: [`mulmocast@2.6.5`](https://www.npmjs.com/package/mulmocast/v/2.6.5)
+
 ## [2.6.4](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.4) (2026-03-20)
 
 - **Chart.js plugins**: Sankey (`chartjs-chart-sankey`) and Treemap (`chartjs-chart-treemap`) auto-loaded by chart type
