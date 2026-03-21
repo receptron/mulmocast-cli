@@ -398,6 +398,8 @@ export const mulmoImagePromptMediaSchema = z
     type: z.literal("imagePrompt"),
     prompt: z.string().min(1),
     canvasSize: z.object({ width: z.number(), height: z.number() }).strict().optional(),
+    referenceImageName: imageIdSchema.optional().describe("Reference another imageRefs key as input for image generation"),
+    referenceImage: mediaSourceSchema.optional().describe("Direct source (path/url/base64) as reference image for generation"),
   })
   .strict();
 

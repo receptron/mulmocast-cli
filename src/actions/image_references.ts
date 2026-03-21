@@ -3,7 +3,15 @@ import { getReferenceImagePath } from "../utils/file.js";
 
 import { graphOption } from "./images.js";
 import { MulmoPresentationStyleMethods, MulmoMediaSourceMethods } from "../methods/index.js";
-import { MulmoStudioContext, MulmoStudioBeat, MulmoBeat, MulmoImagePromptMedia, MulmoMovieMedia, MulmoMoviePromptMedia } from "../types/index.js";
+import {
+  MulmoStudioContext,
+  MulmoStudioBeat,
+  MulmoBeat,
+  MulmoImagePromptMedia,
+  MulmoMoviePromptMedia,
+  MulmoMediaSource,
+  MulmoImageParamsImagesValue,
+} from "../types/index.js";
 
 import { imageOpenaiAgent, mediaMockAgent, imageGenAIAgent, imageReplicateAgent, movieGenAIAgent, movieReplicateAgent } from "../agents/index.js";
 import { agentGenerationError, imageReferenceAction, imageFileTarget, movieFileTarget } from "../utils/error_cause.js";
@@ -15,14 +23,16 @@ export const generateReferenceImage = async (inputs: {
   key: string;
   index: number;
   image: MulmoImagePromptMedia;
+  referenceImagePath?: string;
   force?: boolean;
 }) => {
-  const { context, key, index, image, force } = inputs;
+  const { context, key, index, image, referenceImagePath, force } = inputs;
   const imagePath = getReferenceImagePath(context, key, "png");
   // generate image
   const imageAgentInfo = MulmoPresentationStyleMethods.getImageAgentInfo(context.presentationStyle);
   const prompt = `${image.prompt}\n${imageAgentInfo.imageParams.style || ""}`;
   GraphAILogger.info(`Generating reference image for ${key}: ${prompt}`);
+  const referenceImages = referenceImagePath ? [referenceImagePath] : undefined;
   const image_graph_data = {
     version: 0.5,
     nodes: {
@@ -32,6 +42,7 @@ export const generateReferenceImage = async (inputs: {
         inputs: {
           media: "image",
           prompt,
+          referenceImages,
           cache: {
             force: [context.force, force ?? false],
             file: imagePath,
@@ -74,13 +85,16 @@ export const getMediaRefs = async (context: MulmoStudioContext): Promise<MediaRe
   }
   const imageRefs: Record<string, string> = {};
   const movieRefs: Record<string, string> = {};
+
+  // Stage 1: resolve non-referencing entries (image, imagePrompt without referenceImageName, movie)
   await Promise.all(
     Object.keys(images)
       .sort()
       .map(async (key, index) => {
         const image = images[key];
-        if (image.type === "imagePrompt") {
-          imageRefs[key] = await generateReferenceImage({ context, key, index, image, force: false });
+        if (image.type === "imagePrompt" && !image.referenceImageName) {
+          const refPath = image.referenceImage ? await MulmoMediaSourceMethods.imageReference(image.referenceImage, context, key) : undefined;
+          imageRefs[key] = await generateReferenceImage({ context, key, index, image, referenceImagePath: refPath, force: false });
         } else if (image.type === "image") {
           imageRefs[key] = await MulmoMediaSourceMethods.imageReference(image.source, context, key);
         } else if (image.type === "movie") {
@@ -88,11 +102,28 @@ export const getMediaRefs = async (context: MulmoStudioContext): Promise<MediaRe
         }
       }),
   );
+
+  // Stage 2: resolve imagePrompt with referenceImageName (depends on Stage 1 results)
+  await Promise.all(
+    Object.keys(images)
+      .sort()
+      .map(async (key, index) => {
+        const image = images[key];
+        if (image.type === "imagePrompt" && image.referenceImageName) {
+          const refPath = imageRefs[image.referenceImageName];
+          if (!refPath) {
+            GraphAILogger.warn(`imagePrompt "${key}": referenceImageName "${image.referenceImageName}" not found in imageRefs — generating without reference`);
+          }
+          imageRefs[key] = await generateReferenceImage({ context, key, index, image, referenceImagePath: refPath, force: false });
+        }
+      }),
+  );
+
   return { imageRefs, movieRefs };
 };
 
-const resolveMovieReference = async (movie: MulmoMovieMedia, context: MulmoStudioContext, key: string) => {
-  return MulmoMediaSourceMethods.imageReference(movie.source, context, key);
+const resolveMovieReference = async (media: { source: MulmoMediaSource }, context: MulmoStudioContext, key: string) => {
+  return MulmoMediaSourceMethods.imageReference(media.source, context, key);
 };
 
 const generateReferenceMovie = async (inputs: {
@@ -148,35 +179,60 @@ const generateReferenceMovie = async (inputs: {
 
 const resolveLocalRefs = async (
   context: MulmoStudioContext,
-  images: Record<string, { type: string; [k: string]: unknown }>,
+  images: Record<string, MulmoImageParamsImagesValue>,
   beatIndex: number,
   globalImageRefs: Record<string, string>,
 ) => {
   const localImageRefs: Record<string, string> = {};
   const localMovieRefs: Record<string, string> = {};
 
-  // Stage 1: image, imagePrompt, movie (parallel)
+  // Stage 1: image, imagePrompt (without referenceImageName), movie (parallel)
   await Promise.all(
     Object.keys(images)
       .sort()
       .map(async (key, i) => {
         const entry = images[key];
-        if (entry.type === "imagePrompt") {
+        if (entry.type === "imagePrompt" && !entry.referenceImageName) {
+          const refPath = entry.referenceImage ? await MulmoMediaSourceMethods.imageReference(entry.referenceImage, context, key) : undefined;
           localImageRefs[key] = await generateReferenceImage({
             context,
             key,
             index: beatIndex * 100 + i,
-            image: entry as MulmoImagePromptMedia,
+            image: entry,
+            referenceImagePath: refPath,
           });
         } else if (entry.type === "image") {
-          localImageRefs[key] = await MulmoMediaSourceMethods.imageReference((entry as MulmoMovieMedia).source, context, key);
+          localImageRefs[key] = await MulmoMediaSourceMethods.imageReference(entry.source, context, key);
         } else if (entry.type === "movie") {
-          localMovieRefs[key] = await resolveMovieReference(entry as MulmoMovieMedia, context, key);
+          localMovieRefs[key] = await resolveMovieReference(entry, context, key);
         }
       }),
   );
 
-  // Stage 2: moviePrompt (imageName references imageRefs only)
+  // Stage 2: imagePrompt with referenceImageName (depends on Stage 1)
+  const combinedImageRefsForImagePrompt = { ...globalImageRefs, ...localImageRefs };
+  await Promise.all(
+    Object.keys(images)
+      .sort()
+      .map(async (key, i) => {
+        const entry = images[key];
+        if (entry.type === "imagePrompt" && entry.referenceImageName) {
+          const refPath = combinedImageRefsForImagePrompt[entry.referenceImageName];
+          if (!refPath) {
+            GraphAILogger.warn(`imagePrompt "${key}": referenceImageName "${entry.referenceImageName}" not found — generating without reference`);
+          }
+          localImageRefs[key] = await generateReferenceImage({
+            context,
+            key,
+            index: beatIndex * 100 + i,
+            image: entry,
+            referenceImagePath: refPath,
+          });
+        }
+      }),
+  );
+
+  // Stage 3: moviePrompt (imageName references imageRefs only)
   const combinedImageRefs = { ...globalImageRefs, ...localImageRefs };
   await Promise.all(
     Object.keys(images)
@@ -184,13 +240,12 @@ const resolveLocalRefs = async (
       .map(async (key, i) => {
         const entry = images[key];
         if (entry.type === "moviePrompt") {
-          const mp = entry as MulmoMoviePromptMedia;
-          const refImagePath = mp.imageName ? combinedImageRefs[mp.imageName] : undefined;
+          const refImagePath = entry.imageName ? combinedImageRefs[entry.imageName] : undefined;
           localMovieRefs[key] = await generateReferenceMovie({
             context,
             key,
             index: beatIndex * 100 + i,
-            moviePrompt: mp,
+            moviePrompt: entry,
             imagePath: refImagePath,
           });
         }

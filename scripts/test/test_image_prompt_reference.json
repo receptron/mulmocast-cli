@@ -1,0 +1,55 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "title": "Image Prompt Reference Tests",
+  "lang": "en",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "imageParams": {
+    "images": {
+      "base_photo": {
+        "type": "image",
+        "source": { "kind": "url", "url": "https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1280&h=720&fit=crop" }
+      },
+      "from_prompt": {
+        "type": "imagePrompt",
+        "prompt": "A beautiful mountain landscape at sunset, photorealistic"
+      },
+      "stylized_by_name": {
+        "type": "imagePrompt",
+        "prompt": "Transform this image into a watercolor painting style",
+        "referenceImageName": "base_photo"
+      },
+      "stylized_by_source": {
+        "type": "imagePrompt",
+        "prompt": "Create an anime version of this gradient background",
+        "referenceImage": { "kind": "url", "url": "https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1280&h=720&fit=crop" }
+      },
+      "chained_ref": {
+        "type": "imagePrompt",
+        "prompt": "Add snow-capped peaks to this mountain scene",
+        "referenceImageName": "from_prompt"
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "Pattern 1: imagePrompt without reference (baseline)",
+      "imagePrompt": "A simple landscape",
+      "imageNames": ["from_prompt"]
+    },
+    {
+      "text": "Pattern 2: referenceImageName — reference another imageRefs key",
+      "imagePrompt": "A simple landscape",
+      "imageNames": ["stylized_by_name"]
+    },
+    {
+      "text": "Pattern 3: referenceImage — direct source",
+      "imagePrompt": "A simple landscape",
+      "imageNames": ["stylized_by_source"]
+    },
+    {
+      "text": "Pattern 4: chained reference — imagePrompt referencing another imagePrompt",
+      "imagePrompt": "A simple landscape",
+      "imageNames": ["chained_ref"]
+    }
+  ]
+}
