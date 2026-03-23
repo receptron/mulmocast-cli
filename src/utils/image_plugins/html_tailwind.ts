@@ -36,6 +36,17 @@ export const resolveRelativeImagePaths = (html: string, baseDirPath: string): st
   });
 };
 
+/**
+ * Resolve relative modelUrl assignment in user scripts to file:// absolute paths.
+ * e.g. const modelUrl = "models/a.glb" -> const modelUrl = "file:///abs/models/a.glb"
+ */
+export const resolveRelativeModelPathsInScript = (html: string, baseDirPath: string): string => {
+  return html.replace(/((?:const|let|var)\s+modelUrl\s*=\s*["'])((?!https?:\/\/|file:\/\/|data:|\/)[^"']+)(["'])/g, (_, prefix, relativePath, suffix) => {
+    const absolutePath = nodePath.resolve(baseDirPath, relativePath);
+    return `${prefix}file://${absolutePath}${suffix}`;
+  });
+};
+
 const DEFAULT_ANIMATION_FPS = 30;
 
 /** Join html field into a single string (handles both string and string[]) */
@@ -126,7 +137,8 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
     custom_style: "",
   });
   const resolvedRefs = resolveImageRefs(rawHtmlData, params.imageRefs ?? {});
-  const htmlData = resolveRelativeImagePaths(resolvedRefs, context.fileDirs.mulmoFileDirPath);
+  const resolvedImages = resolveRelativeImagePaths(resolvedRefs, context.fileDirs.mulmoFileDirPath);
+  const htmlData = resolveRelativeModelPathsInScript(resolvedImages, context.fileDirs.mulmoFileDirPath);
 
   // imagePath is set to the .mp4 path by imagePluginAgent for animated beats
   const videoPath = imagePath;
@@ -161,7 +173,8 @@ const processHtmlTailwindStatic = async (params: ImageProcessorParams) => {
     user_script: buildUserScript(script),
   });
   const resolvedRefs = resolveImageRefs(rawHtmlData, params.imageRefs ?? {});
-  const htmlData = resolveRelativeImagePaths(resolvedRefs, context.fileDirs.mulmoFileDirPath);
+  const resolvedImages = resolveRelativeImagePaths(resolvedRefs, context.fileDirs.mulmoFileDirPath);
+  const htmlData = resolveRelativeModelPathsInScript(resolvedImages, context.fileDirs.mulmoFileDirPath);
   await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;
 };
