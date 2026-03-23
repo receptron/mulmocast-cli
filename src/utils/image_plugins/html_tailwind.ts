@@ -43,8 +43,17 @@ export const resolveMovieRefs = (html: string, movieRefs: Record<string, string>
  * Paths starting with http://, https://, file://, data:, image:, or / are left unchanged.
  */
 export const resolveRelativeImagePaths = (html: string, baseDirPath: string): string => {
-  return html.replace(/(\bsrc\s*=\s*)(["'])((?!https?:\/\/|file:\/\/|data:|image:|\/)[^"']+)\2/gi, (_, prefix, quote, relativePath) => {
-    const absolutePath = nodePath.resolve(baseDirPath, relativePath);
+  return html.replace(/(\bsrc\s*=\s*)(["'])([^"']+)\2/gi, (_, prefix, quote, pathValue) => {
+    const isAbsoluteLike =
+      pathValue.startsWith("http://") ||
+      pathValue.startsWith("https://") ||
+      pathValue.startsWith("file://") ||
+      pathValue.startsWith("data:") ||
+      pathValue.startsWith("image:") ||
+      pathValue.startsWith("/");
+    if (isAbsoluteLike) return `${prefix}${quote}${pathValue}${quote}`;
+
+    const absolutePath = nodePath.resolve(baseDirPath, pathValue);
     return `${prefix}${quote}file://${absolutePath}${quote}`;
   });
 };
@@ -60,7 +69,10 @@ const buildUserScript = (script: string | string[] | undefined): string => {
   if (!script) return "";
   const code = Array.isArray(script) ? script.join("\n") : script;
   // If user script contains ESM import/export, emit module script so imports work.
-  const isModule = /^\s*(import|export)\s/m.test(code);
+  const isModule = code.split("\n").some((line) => {
+    const trimmed = line.trimStart();
+    return trimmed.startsWith("import ") || trimmed.startsWith("export ");
+  });
   return isModule ? `<script type="module">\n${code}\n</script>` : `<script>\n${code}\n</script>`;
 };
 
@@ -69,10 +81,37 @@ const buildUserScript = (script: string | string[] | undefined): string => {
  * e.g. const modelUrl = "models/a.glb" -> const modelUrl = "file:///abs/models/a.glb"
  */
 export const resolveRelativeModelPathsInScript = (html: string, baseDirPath: string): string => {
-  return html.replace(/((?:const|let|var)\s+modelUrl\s*=\s*["'])((?!https?:\/\/|file:\/\/|data:|\/)[^"']+)(["'])/g, (_, prefix, relativePath, suffix) => {
-    const absolutePath = nodePath.resolve(baseDirPath, relativePath);
-    return `${prefix}file://${absolutePath}${suffix}`;
-  });
+  const lines = html.split("\n");
+  return lines
+    .map((line) => {
+      const hasModelDeclaration = line.includes("modelUrl") && (line.includes("const ") || line.includes("let ") || line.includes("var "));
+      if (!hasModelDeclaration || !line.includes("=")) return line;
+
+      const eqIndex = line.indexOf("=");
+      const afterEq = line.slice(eqIndex + 1);
+      const singleQuoteIndex = afterEq.indexOf("'");
+      const doubleQuoteIndex = afterEq.indexOf('"');
+      const quoteIndex = singleQuoteIndex >= 0 && (doubleQuoteIndex < 0 || singleQuoteIndex < doubleQuoteIndex) ? singleQuoteIndex : doubleQuoteIndex;
+      if (quoteIndex < 0) return line;
+
+      const quoteChar = afterEq[quoteIndex];
+      const start = eqIndex + 1 + quoteIndex;
+      const end = line.indexOf(quoteChar, start + 1);
+      if (end < 0) return line;
+
+      const rawPath = line.slice(start + 1, end);
+      const isAbsoluteLike =
+        rawPath.startsWith("http://") ||
+        rawPath.startsWith("https://") ||
+        rawPath.startsWith("file://") ||
+        rawPath.startsWith("data:") ||
+        rawPath.startsWith("/");
+      if (isAbsoluteLike) return line;
+
+      const absolutePath = nodePath.resolve(baseDirPath, rawPath);
+      return `${line.slice(0, start + 1)}file://${absolutePath}${line.slice(end)}`;
+    })
+    .join("\n");
 };
 
 /**
