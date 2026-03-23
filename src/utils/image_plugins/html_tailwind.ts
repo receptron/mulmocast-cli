@@ -59,7 +59,20 @@ const joinHtml = (html: string | string[]): string => {
 const buildUserScript = (script: string | string[] | undefined): string => {
   if (!script) return "";
   const code = Array.isArray(script) ? script.join("\n") : script;
-  return `<script>\n${code}\n</script>`;
+  // If user script contains ESM import/export, emit module script so imports work.
+  const isModule = /^\s*(import|export)\s/m.test(code);
+  return isModule ? `<script type="module">\n${code}\n</script>` : `<script>\n${code}\n</script>`;
+};
+
+/**
+ * Resolve relative modelUrl assignment in user scripts to file:// absolute paths.
+ * e.g. const modelUrl = "models/a.glb" -> const modelUrl = "file:///abs/models/a.glb"
+ */
+export const resolveRelativeModelPathsInScript = (html: string, baseDirPath: string): string => {
+  return html.replace(/((?:const|let|var)\s+modelUrl\s*=\s*["'])((?!https?:\/\/|file:\/\/|data:|\/)[^"']+)(["'])/g, (_, prefix, relativePath, suffix) => {
+    const absolutePath = nodePath.resolve(baseDirPath, relativePath);
+    return `${prefix}file://${absolutePath}${suffix}`;
+  });
 };
 
 /**
@@ -119,7 +132,8 @@ const buildAnimatedHtml = (params: ImageProcessorParams, totalFrames: number, fp
   });
   const resolvedImageRefs = resolveImageRefs(rawHtmlData, params.imageRefs ?? {});
   const resolvedAllRefs = resolveMovieRefs(resolvedImageRefs, params.movieRefs ?? {});
-  return resolveRelativeImagePaths(resolvedAllRefs, context.fileDirs.mulmoFileDirPath);
+  const resolvedImages = resolveRelativeImagePaths(resolvedAllRefs, context.fileDirs.mulmoFileDirPath);
+  return resolveRelativeModelPathsInScript(resolvedImages, context.fileDirs.mulmoFileDirPath);
 };
 
 const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
@@ -181,7 +195,8 @@ const processHtmlTailwindStatic = async (params: ImageProcessorParams) => {
   });
   const resolvedImageRefs = resolveImageRefs(rawHtmlData, params.imageRefs ?? {});
   const resolvedAllRefs = resolveMovieRefs(resolvedImageRefs, params.movieRefs ?? {});
-  const htmlData = resolveRelativeImagePaths(resolvedAllRefs, context.fileDirs.mulmoFileDirPath);
+  const resolvedImages = resolveRelativeImagePaths(resolvedAllRefs, context.fileDirs.mulmoFileDirPath);
+  const htmlData = resolveRelativeModelPathsInScript(resolvedImages, context.fileDirs.mulmoFileDirPath);
   await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height);
   return imagePath;
 };
