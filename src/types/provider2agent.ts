@@ -105,6 +105,7 @@ export const provider2MovieAgent = {
       "pixverse/pixverse-v4.5",
       "wan-video/wan-2.2-i2v-fast",
       "wan-video/wan-2.2-t2v-fast",
+      "xai/grok-imagine-video",
     ],
     modelParams: {
       "bytedance/seedance-1-lite": {
@@ -180,6 +181,11 @@ export const provider2MovieAgent = {
         durations: [5],
         start_image: undefined,
         price_per_sec: 0.012,
+      },
+      "xai/grok-imagine-video": {
+        durations: [5, 8, 10, 15],
+        start_image: "image",
+        price_per_sec: 0.08,
       },
     } as Record<ReplicateModel, { durations: number[]; start_image: string | undefined; last_image?: string; price_per_sec: number }>,
   },

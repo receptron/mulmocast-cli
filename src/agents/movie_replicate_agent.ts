@@ -78,8 +78,9 @@ async function generateMovie(
     const output = await replicate.run(model, { input });
 
     // Download the generated video
-    if (output && typeof output === "object" && "url" in output) {
-      const videoUrl = (output.url as () => URL)();
+    // Some models return a FileOutput object with a url() method; others return a plain string URL.
+    const videoUrl = typeof output === "string" ? output : output && typeof output === "object" && "url" in output ? (output.url as () => URL)() : undefined;
+    if (videoUrl) {
       const videoResponse = await fetch(videoUrl);
 
       if (!videoResponse.ok) {
