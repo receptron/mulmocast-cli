@@ -1,0 +1,54 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "movieParams": {
+    "provider": "replicate",
+    "model": "kwaivgi/kling-v3-video"
+  },
+  "imageParams": {
+    "provider": "google"
+  },
+  "audioParams": {
+    "bgmVolume": 0
+  },
+  "captionParams": {
+    "lang": "en"
+  },
+  "lang": "en",
+  "beats": [
+    {
+      "text": "Testing kwaivgi/kling-v3-video — text-to-video and image-to-video varieties.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "kwaivgi/kling-v3-video test"
+        }
+      }
+    },
+    {
+      "id": "kling-v3-t2v-5s",
+      "text": "Text-to-video, 5 seconds: a red fox trots through a snowy forest at dawn, pawprints left behind",
+      "duration": 5,
+      "moviePrompt": "a red fox trots through a snowy forest at dawn, pawprints left behind, soft golden light filtering through pine trees"
+    },
+    {
+      "id": "kling-v3-t2v-10s",
+      "text": "Text-to-video, 10 seconds: bustling Tokyo crossing at night",
+      "duration": 10,
+      "moviePrompt": "aerial dolly shot over Shibuya crossing at night, neon lights reflecting on wet pavement, crowds of people crossing in all directions"
+    },
+    {
+      "id": "kling-v3-i2v-5s",
+      "text": "Image-to-video, 5 seconds: ocean waves animated from a still image",
+      "duration": 5,
+      "imagePrompt": "a calm tropical beach at sunset, crystal-clear turquoise water, golden sand, photorealistic",
+      "moviePrompt": "gentle waves lapping the shore, palm trees swaying softly in the breeze, camera slowly pushing forward"
+    },
+    {
+      "id": "kling-v3-i2v-10s",
+      "text": "Image-to-video, 10 seconds: city skyline coming to life",
+      "duration": 10,
+      "imagePrompt": "futuristic city skyline at dusk, glass skyscrapers with glowing windows, photorealistic",
+      "moviePrompt": "lights in the skyscraper windows flicker on one by one as night falls, slow upward pan along the tallest tower"
+    }
+  ]
+}

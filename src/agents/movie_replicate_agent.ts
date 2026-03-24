@@ -15,6 +15,12 @@ import {
 import type { AgentBufferResult, MovieAgentInputs, ReplicateMovieAgentParams, ReplicateMovieAgentConfig } from "../types/agent.js";
 import { provider2MovieAgent, getModelDuration } from "../types/provider2agent.js";
 
+function replicate_get_videoUrl(output: unknown): string | URL | undefined {
+  if (typeof output === "string") return output;
+  if (output && typeof output === "object" && "url" in output) return (output.url as () => URL)();
+  return undefined;
+}
+
 async function generateMovie(
   model: `${string}/${string}`,
   apiKey: string,
@@ -78,8 +84,9 @@ async function generateMovie(
     const output = await replicate.run(model, { input });
 
     // Download the generated video
-    if (output && typeof output === "object" && "url" in output) {
-      const videoUrl = (output.url as () => URL)();
+    // Some models return a FileOutput object with a url() method; others return a plain string URL.
+    const videoUrl = replicate_get_videoUrl(output);
+    if (videoUrl) {
       const videoResponse = await fetch(videoUrl);
 
       if (!videoResponse.ok) {
