@@ -107,6 +107,8 @@ export const provider2MovieAgent = {
       "wan-video/wan-2.2-t2v-fast",
       "xai/grok-imagine-video",
       "runwayml/gen-4.5",
+      "kwaivgi/kling-v3-omni-video",
+      "kwaivgi/kling-v3-video",
     ],
     modelParams: {
       "bytedance/seedance-1-lite": {
@@ -192,6 +194,18 @@ export const provider2MovieAgent = {
         durations: [5, 10],
         start_image: "image",
         price_per_sec: 0.25,
+      },
+      "kwaivgi/kling-v3-omni-video": {
+        durations: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        start_image: "start_image",
+        last_image: "end_image",
+        price_per_sec: 0.3,
+      },
+      "kwaivgi/kling-v3-video": {
+        durations: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        start_image: "start_image",
+        last_image: "end_image",
+        price_per_sec: 0.3,
       },
     } as Record<ReplicateModel, { durations: number[]; start_image: string | undefined; last_image?: string; price_per_sec: number }>,
   },
