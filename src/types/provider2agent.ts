@@ -106,6 +106,7 @@ export const provider2MovieAgent = {
       "wan-video/wan-2.2-i2v-fast",
       "wan-video/wan-2.2-t2v-fast",
       "xai/grok-imagine-video",
+      "runwayml/gen-4.5",
     ],
     modelParams: {
       "bytedance/seedance-1-lite": {
@@ -186,6 +187,11 @@ export const provider2MovieAgent = {
         durations: [5, 8, 10, 15],
         start_image: "image",
         price_per_sec: 0.08,
+      },
+      "runwayml/gen-4.5": {
+        durations: [5, 10],
+        start_image: "image",
+        price_per_sec: 0.25,
       },
     } as Record<ReplicateModel, { durations: number[]; start_image: string | undefined; last_image?: string; price_per_sec: number }>,
   },
