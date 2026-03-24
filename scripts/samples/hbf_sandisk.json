@@ -1,0 +1,440 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "ja",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "title": "AIメモリの次なる戦場：HBFが変えるAIインフラの未来",
+  "description": "HBM需要がDRAM価格を押し上げる構造的問題と、NVIDIAのICMSとメモリメーカーのHBFというAIメモリアーキテクチャをめぐる戦いを解説します。",
+  "references": [
+    {
+      "url": "https://documents.sandisk.com/content/dam/asset-library/en_us/assets/public/sandisk/collateral/company/Sandisk-HBF-Fact-Sheet.pdf",
+      "title": "SanDisk HBF Fact Sheet",
+      "type": "article"
+    },
+    {
+      "url": "https://developer.nvidia.com/blog/introducing-nvidia-bluefield-4-powered-inference-context-memory-storage-platform-for-the-next-frontier-of-ai/",
+      "title": "NVIDIA ICMS Blog",
+      "type": "article"
+    },
+    {
+      "url": "https://www.sandisk.com/en-za/company/newsroom/blogs/2025/scaling-beyond-the-wall-inside-sandisks-high-bandwidth-flash-for-ai",
+      "title": "SanDisk HBF Blog",
+      "type": "article"
+    }
+  ],
+  "speechParams": {
+    "speakers": {
+      "Presenter": { "voiceId": "shimmer" }
+    }
+  },
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "F8FAFC",
+        "bgCard": "FFFFFF",
+        "bgCardAlt": "F1F5F9",
+        "text": "0F172A",
+        "textMuted": "475569",
+        "textDim": "94A3B8",
+        "primary": "2563EB",
+        "accent": "7C3AED",
+        "success": "16A34A",
+        "warning": "EA580C",
+        "danger": "DC2626",
+        "info": "0891B2",
+        "highlight": "DB2777"
+      },
+      "fonts": { "title": "Georgia", "body": "Helvetica", "mono": "Menlo" }
+    }
+  },
+  "imageParams": {
+    "provider": "google",
+    "images": {
+      "hbf_arch": {
+        "type": "image",
+        "source": { "kind": "path", "path": "../../output/images/hbm_ai_memory/hbf2.png" }
+      },
+      "hbf_diagram": {
+        "type": "image",
+        "source": { "kind": "path", "path": "../../output/images/hbm_ai_memory/hbf.png" }
+      }
+    }
+  },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "最近、スマートフォンや家電の「メモリ価格が上昇中」というニュースを目にするようになりました。その裏には、AIデータセンター向けの特殊メモリ「HBM」をめぐる、熾烈な争奪戦が起きています。今日は、その構造的な問題と、解決策をめぐる新たな戦いを解説します。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "title",
+          "title": "AIメモリの次なる戦場",
+          "subtitle": "HBF（High Bandwidth Flash）が変えるAIインフラの未来",
+          "note": "Source: SanDisk / NVIDIA 2025"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "HBMはDRAMの一種です。製造ラインの基本は、一般向けのDRAMやスマートフォン向けのLPDDRと同じ。AIブームでHBMの需要が急増すると、製造ラインが逼迫し、DRAMやLPDDRの生産が滞ります。製造ライン増設には年単位の時間がかかるため、これがメモリビジネスが不況と好況を繰り返す根本的な理由にもなっています。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 48,
+            "valign": "top",
+            "content": [
+              {
+                "type": "mermaid",
+                "code": "graph TD\n  A[\"AI Datacenter: HBM Demand ↑\"] --> B[\"Manufacturing Line\\nBottleneck\"]\n  B --> C[\"DRAM Output ↓\"]\n  B --> D[\"LPDDR Output ↓\"]\n  C --> E[\"Price Surge / Supply Shortage\"]\n  D --> E",
+                "title": "メモリ不足の連鎖構造"
+              }
+            ]
+          },
+          "right": {
+            "ratio": 52,
+            "valign": "top",
+            "title": "HBMが引き起こす需給問題",
+            "content": [
+              {
+                "type": "bullets",
+                "items": [
+                  { "text": "HBMとDRAMは{danger:同じ製造ライン}を共有", "items": ["消費者向けDRAM・スマホ向けLPDDRも同じプロセス"] },
+                  { "text": "AI特需でHBMのラインが逼迫", "items": ["DRAMとLPDDRの生産量が減少→価格高騰"] },
+                  { "text": "ライン増設には{warning:年単位の時間}が必要", "items": ["これがメモリ業界の好況・不況サイクルの原因"] }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "問題はさらに深刻です。GPT-4のような長い文脈を扱うLLMでは、過去の会話内容を記憶する「KVキャッシュ」のサイズが膨大になり、GPUに搭載されたHBMの容量を超えてしまいます。結果として、AIの推論処理のボトルネックは、もはやGPUの計算能力ではなく、メモリの容量と帯域幅になっているのです。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 50,
+            "valign": "top",
+            "title": "ボトルネックの移動",
+            "content": [
+              {
+                "type": "section",
+                "label": "KVキャッシュとは",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  { "type": "text", "value": "LLMが過去の会話を記憶するための一時データ。コンテキスト（文脈）が長くなるほど{danger:急激に}増大する。" }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "問題の核心",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": ["長文脈LLMでKVキャッシュがHBM容量を超過", "推論のボトルネックは{danger:GPUではなくメモリ}に移動", "HBMの増量はコスト的に限界"]
+                  }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 50,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "chart",
+                "title": "コンテキスト長 vs KVキャッシュ容量（概念）",
+                "chartData": {
+                  "type": "line",
+                  "data": {
+                    "labels": ["4K", "32K", "128K", "1M tokens"],
+                    "datasets": [
+                      {
+                        "label": "KVキャッシュ容量 (GB)",
+                        "data": [8, 64, 256, 2048],
+                        "borderColor": "#DC2626",
+                        "backgroundColor": "rgba(220,38,38,0.15)",
+                        "tension": 0.4,
+                        "fill": true
+                      },
+                      {
+                        "label": "GPU HBM上限 (192GB)",
+                        "data": [192, 192, 192, 192],
+                        "borderColor": "#EA580C",
+                        "borderDash": [6, 4],
+                        "pointRadius": 0
+                      }
+                    ]
+                  },
+                  "options": {
+                    "plugins": { "legend": { "labels": { "color": "#F8FAFC" } } },
+                    "scales": {
+                      "x": { "ticks": { "color": "#CBD5E1" }, "grid": { "color": "#334155" } },
+                      "y": { "ticks": { "color": "#CBD5E1" }, "grid": { "color": "#334155" } }
+                    }
+                  }
+                }
+              },
+              { "type": "callout", "text": "128Kトークン超でHBMの上限を超過。1M tokenでは2TBが必要。", "style": "warning" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "NVIDIAがこの問題に提案した解決策が「ICMS（Inference Context Memory Storage）」です。GPU外部の大容量フラッシュメモリにKVキャッシュを外出しし、BlueField-4チップで高速転送する仕組みです。従来ストレージと比べ最大5倍の処理速度と電力効率を実現します。これはNVIDIAが「GPUベンダー」から「AIスーパーコンピュータの企業」に変貌するという戦略とも一致しています。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 55,
+            "valign": "top",
+            "title": "NVIDIAのICMSアプローチ",
+            "subtitle": "Inference Context Memory Storage",
+            "content": [
+              {
+                "type": "section",
+                "label": "仕組み",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "GPUの{primary:外部}に大容量フラッシュを配置",
+                      "BlueField-4チップでKVキャッシュを高速管理",
+                      "Spectrum-X EthernetとRDMAで低レイテンシ転送"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "戦略的意図",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "GPUベンダーから{accent:AIスーパーコンピュータ企業}へ",
+                      "エコシステム全体を垂直統合する戦略",
+                      "KVキャッシュは「一時データ」として最適化"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 45,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              { "type": "metric", "value": "5x", "label": "処理速度向上（従来比）", "color": "success" },
+              { "type": "metric", "value": "5x", "label": "電力効率向上（従来比）", "color": "success" },
+              {
+                "type": "callout",
+                "text": "「単にGPUを販売するだけでなく、AIスーパーコンピュータを販売する会社になる」",
+                "label": "NVIDIA戦略",
+                "style": "info"
+              }
+            ]
+          }
+        },
+        "reference": "Source: NVIDIA Developer Blog 2025"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "これに対し、SanDisk、SK hynix、Samsungなどのメモリメーカーが提案するのが「HBF（High Bandwidth Flash）」です。フラッシュメモリでありながら、HBMと同様にGPUに密結合する設計で、外部からのデータ転送を最小化しつつ、大容量を実現する新しいアーキテクチャです。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 50,
+            "dark": true,
+            "valign": "center",
+            "content": [{ "type": "imageRef", "ref": "hbf_arch", "alt": "HBFアーキテクチャ図", "fit": "contain" }]
+          },
+          "right": {
+            "ratio": 50,
+            "valign": "top",
+            "title": "HBFとは何か",
+            "subtitle": "High Bandwidth Flash",
+            "content": [
+              {
+                "type": "bullets",
+                "icon": "▸",
+                "items": [
+                  { "text": "HBMの{primary:フラッシュメモリ版}", "items": ["NAND型フラッシュを高速インターフェースで接続"] },
+                  { "text": "GPUに{primary:密結合}する設計", "items": ["HBMと同様のインターフェース", "外部転送を最小化し高速アクセスを実現"] },
+                  { "text": "SanDisk発、{info:SK hynix・Samsung}も参入", "items": ["業界全体で標準化へ向けた動き"] }
+                ]
+              }
+            ]
+          }
+        },
+        "reference": "Source: SanDisk HBF Fact Sheet 2025"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "HBFの第1世代は読み取り帯域幅1.6TB/sを達成し、容量はHBMの8〜16倍となる最大512GB。Meta社のLlama 3.1の4050億パラメータモデルを使ったシミュレーションでは、HBFとHBMの性能差はわずか2.2%。第2世代・第3世代では帯域幅2TB/s・3.2TB/s、容量1TB・1.5TBへの拡張も計画されています。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 55,
+            "valign": "top",
+            "labelBadge": true,
+            "label": "HBFスペック",
+            "accentColor": "primary",
+            "content": [
+              {
+                "type": "table",
+                "headers": ["世代", "帯域幅", "容量"],
+                "rows": [
+                  ["**Gen 1**", { "text": "1.6 TB/s", "color": "success", "bold": true }, { "text": "512 GB", "bold": true }],
+                  ["Gen 2", "2 TB/s+", "1 TB"],
+                  ["Gen 3", "3.2 TB/s+", "1.5 TB"]
+                ],
+                "striped": true
+              },
+              {
+                "type": "callout",
+                "text": "Llama 3.1（405Bパラメータ）シミュレーションで、HBMとの性能差は**わずか2.2%**",
+                "style": "info"
+              },
+              {
+                "type": "imageRef",
+                "ref": "hbf_diagram",
+                "alt": "HBFメモリ階層図",
+                "fit": "contain"
+              }
+            ]
+          },
+          "right": {
+            "ratio": 45,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              { "type": "metric", "value": "1.6 TB/s", "label": "読取り帯域幅（Gen1）", "color": "primary" },
+              { "type": "metric", "value": "8〜16x", "label": "HBM比 容量倍率", "color": "success" },
+              { "type": "metric", "value": "2.2%", "label": "HBMとの性能差", "color": "info" }
+            ]
+          }
+        },
+        "reference": "Source: SanDisk HBF Fact Sheet / TrendForce 2025"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "技術的な優劣よりも重要なのが、ビジネスモデルの違いです。ICMSに使われるフラッシュメモリは汎用品で、コモディティ化が避けられません。一方、GPUに密結合する特注品であるHBFは、差別化が可能で、高い利益率を維持できます。「誰がコモディティ化され、誰が利益を手にするか」——この構造的な違いが、今後の半導体ビジネスの行方を左右します。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "title": "ICMSとHBF：ビジネスモデルの戦い",
+          "left": {
+            "title": "NVIDIA ICMS",
+            "accentColor": "warning",
+            "content": [
+              {
+                "type": "bullets",
+                "items": [
+                  "GPUの外部に{warning:汎用}フラッシュを配置",
+                  "フラッシュは{danger:コモディティ品}、競争が激化",
+                  "メモリメーカーには{danger:低利益率}の懸念",
+                  "NVIDIAがエコシステム全体を制御",
+                  "顧客（NVIDIA）が主導権を持つ"
+                ]
+              }
+            ],
+            "footer": "汎用品競争 → 利益率低下"
+          },
+          "right": {
+            "title": "HBF（SanDisk / SK hynix 等）",
+            "accentColor": "success",
+            "content": [
+              {
+                "type": "bullets",
+                "items": [
+                  "GPUに密結合する{success:特注設計}",
+                  "高度な半導体技術が参入障壁になる",
+                  "{success:コモディティ化を回避}できる",
+                  "電力効率・性能で正面から競争",
+                  "メモリメーカーが{success:高利益率}を維持可能"
+                ]
+              }
+            ],
+            "footer": "差別化競争 → 高利益率維持"
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "2025年8月にはSanDiskとSK hynixが業界標準化に向けて協業を発表。Samsungも独自のHBFアーキテクチャを開発中です。HBFの第1世代サンプルは2026年後半、HBF搭載AIデバイスのサンプルは2027年初頭を目指しています。HBF技術諮問委員会も設立され、業界全体で標準化の動きが加速しています。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "timeline",
+          "title": "HBF業界の動き",
+          "items": [
+            {
+              "date": "2025年初頭",
+              "title": "SanDisk、HBFを発表",
+              "description": "AIインファレンス向けHigh Bandwidth Flashを公式発表",
+              "color": "primary",
+              "done": true
+            },
+            {
+              "date": "2025年7月",
+              "title": "HBF技術諮問委員会を設立",
+              "description": "業界標準化推進組織を結成。RISC-Vの共同創設者らが参加",
+              "color": "primary",
+              "done": true
+            },
+            {
+              "date": "2025年8月",
+              "title": "SanDisk × SK hynix 協業発表",
+              "description": "業界標準化に向けた2社の協業を正式発表",
+              "color": "primary",
+              "done": true
+            },
+            { "date": "2025年後半〜", "title": "Samsung参入", "description": "独自HBFアーキテクチャの開発・標準化への参加", "color": "info", "done": true },
+            { "date": "2026年後半", "title": "HBF Gen1 サンプル提供", "description": "SanDiskが最初の製品サンプルを出荷予定", "color": "warning" },
+            { "date": "2027年初頭", "title": "HBF搭載AIデバイス登場", "description": "HBF統合済みAI推論デバイスのサンプル提供予定", "color": "success" }
+          ]
+        },
+        "reference": "Source: SanDisk Press Releases / TrendForce 2025"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "力関係だけ見ればNVIDIAが優位です。しかし、HBFがAIデータセンターの電力あたり性能を大幅に改善するなら、NVIDIAも無視できません。コモディティ部品を売るか、高付加価値品を作るか——メモリ業界が挑む次の戦いは、AIの未来を形作る技術と利益をめぐる、目が離せない戦場です。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "bigQuote",
+          "quote": "コモディティを売るか、高付加価値を作るか。AIメモリをめぐる戦いは、次の半導体の利益を決める。",
+          "author": "HBF vs ICMS",
+          "role": "AIインフラの次なる戦場 — 2025〜2027"
+        }
+      }
+    }
+  ]
+}

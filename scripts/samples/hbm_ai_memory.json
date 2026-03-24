@@ -1,0 +1,604 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "title": "HBM: Savior or Mirage for AI Memory?",
+  "description": "Deep dive into High Bandwidth Memory — the 3D-stacked DRAM powering AI's compute revolution — and the supply crisis, yield failures, and inference shift that could undermine it.",
+  "references": [
+    {
+      "url": "https://x.com/nuttycld/status/2025431704379256854",
+      "title": "HBF: Savior or Mirage for AI Memory? (NuttyCLD on X)",
+      "type": "article"
+    }
+  ],
+  "speechParams": {
+    "speakers": {
+      "Analyst": { "voiceId": "echo" }
+    }
+  },
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "0F172A",
+        "bgCard": "1E293B",
+        "bgCardAlt": "334155",
+        "text": "F8FAFC",
+        "textMuted": "CBD5E1",
+        "textDim": "64748B",
+        "primary": "3B82F6",
+        "accent": "8B5CF6",
+        "success": "22C55E",
+        "warning": "F59E0B",
+        "danger": "EF4444",
+        "info": "14B8A6",
+        "highlight": "EC4899"
+      },
+      "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+    }
+  },
+  "imageParams": {
+    "provider": "google",
+    "images": {
+      "cover": {
+        "type": "image",
+        "source": { "kind": "path", "path": "output/images/hbm_ai_memory/cover.jpg" }
+      },
+      "hbm_stack": {
+        "type": "imagePrompt",
+        "prompt": "Technical cross-section illustration of High Bandwidth Memory (HBM) — vertical stack of 8 thin DRAM dies connected by Through-Silicon Vias (TSVs), mounted on a silicon interposer next to a GPU die, photorealistic semiconductor engineering visualization, dark deep-blue background, glowing blue copper interconnects, extreme macro scale, no text labels"
+      },
+      "data_center": {
+        "type": "imagePrompt",
+        "prompt": "Dramatic aerial perspective of a massive AI data center interior: rows of glowing blue NVIDIA GPU server racks receding to infinity, cool blue lighting, cables overhead, dark atmosphere, photorealistic, ultra-wide lens distortion"
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "Artificial intelligence has a hunger that no memory chip can satisfy. Every time a frontier model processes a single token, it sweeps across hundreds of gigabytes of weights and KV-cache — at trillions of operations per second. Conventional DDR5 is too slow, the bus too narrow. And now the supply chain itself is cracking under the pressure. This is the DRAM Famine.",
+      "speaker": "Analyst",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "dark": true,
+            "ratio": 45,
+            "valign": "center",
+            "content": [{ "type": "imageRef", "ref": "cover", "alt": "HBM AI Memory", "fit": "cover" }]
+          },
+          "right": {
+            "ratio": 55,
+            "valign": "top",
+            "title": "The DRAM Famine",
+            "subtitle": "HBM: Savior or Mirage for AI Memory?",
+            "content": [
+              { "type": "text", "value": "AI is devouring every DRAM wafer on Earth.", "bold": true, "fontSize": 20, "color": "primary" },
+              { "type": "divider", "color": "primary" },
+              {
+                "type": "bullets",
+                "icon": "▸",
+                "items": [
+                  "{danger:Memory wall}: GPU compute grew 60,000× in 20 yrs; DRAM bandwidth only 100×",
+                  "LLMs are {warning:memory-bandwidth-bound} at inference — not compute-bound",
+                  "DDR5 cannot feed modern AI accelerators at any scale"
+                ]
+              },
+              {
+                "type": "callout",
+                "text": "AI will consume 20% of all global DRAM wafer capacity in 2026",
+                "label": "TrendForce",
+                "color": "warning",
+                "style": "warning"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "High Bandwidth Memory was engineered to break the memory wall. Instead of placing chips on a separate circuit board connected by narrow traces, HBM stacks multiple DRAM dies vertically — connected by microscopic copper pillars called Through-Silicon Vias — then places them millimeters from the processor on a silicon interposer. The result: a 1,024-bit-wide bus delivering 1.2 terabytes per second. That is twenty times the bandwidth of DDR5.",
+      "speaker": "Analyst",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 45,
+            "dark": true,
+            "valign": "top",
+            "content": [
+              { "type": "imageRef", "ref": "hbm_stack", "alt": "HBM stacked die architecture", "fit": "contain" },
+              { "type": "callout", "text": "DRAM dies stacked via TSVs on silicon interposer, microns from GPU", "style": "info" }
+            ]
+          },
+          "right": {
+            "ratio": 55,
+            "valign": "top",
+            "title": "What Is HBM?",
+            "subtitle": "3D stacking breaks the memory wall",
+            "content": [
+              {
+                "type": "section",
+                "label": "Architecture",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "**3D-stacked** DRAM dies (4-Hi to 16-Hi configurations)",
+                      "**Through-Silicon Vias**: copper pillars through each die",
+                      "**Silicon interposer**: GPU + HBM placed microns apart",
+                      "**1,024-bit bus** per stack (vs 64-bit for DDR5)"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Generations",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "table",
+                    "headers": ["Gen", "Bandwidth", "Capacity"],
+                    "striped": true,
+                    "rows": [
+                      ["HBM3 (H100)", "819 GB/s", "24 GB"],
+                      ["HBM3e (H200/B200)", { "text": "1.2 TB/s", "color": "success", "bold": true }, "36 GB"],
+                      ["HBM4 (Rubin)", { "text": "2.0 TB/s", "color": "info", "bold": true }, "64 GB"]
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "Every GPU generation doubles the hunger. NVIDIA's H100 carried 80 gigabytes of HBM3. The H200 pushed to 141 gigabytes. The Blackwell B200 demands 192 gigabytes. The upcoming Rubin will need 288 gigabytes of HBM4 per chip. The brutal math: manufacturing one gigabyte of HBM consumes four times the silicon wafer area of standard DRAM. AI data centers are eating the world's semiconductor supply.",
+      "speaker": "Analyst",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 58,
+            "valign": "top",
+            "title": "AI's Insatiable Memory Appetite",
+            "subtitle": "Each GPU generation doubles HBM demand",
+            "content": [
+              {
+                "type": "table",
+                "headers": ["GPU", "HBM", "Bandwidth", "Arch"],
+                "striped": true,
+                "rowHeaders": true,
+                "rows": [
+                  ["H100 (2022)", "80 GB HBM3", "3.35 TB/s", "Hopper"],
+                  ["H200 (2024)", "141 GB HBM3e", "4.8 TB/s", "Hopper"],
+                  ["B200 (2025)", { "text": "192 GB HBM3e", "bold": true }, "~8 TB/s", "Blackwell"],
+                  ["R100 (2026+)", { "text": "288 GB HBM4", "color": "primary", "bold": true }, "~13 TB/s", "Rubin"]
+                ]
+              },
+              {
+                "type": "callout",
+                "text": "1 GB of HBM requires 4× the wafer area of standard DRAM",
+                "label": "Key Constraint",
+                "color": "warning",
+                "style": "warning"
+              }
+            ]
+          },
+          "right": {
+            "ratio": 42,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              { "type": "metric", "value": "4×", "label": "More wafer area per GB vs DDR5", "color": "danger" },
+              { "type": "metric", "value": "20%", "label": "Global DRAM wafer capacity consumed by AI, 2026E", "color": "warning" },
+              { "type": "metric", "value": ">70%", "label": "HBM demand growth YoY 2026E", "color": "primary" }
+            ]
+          }
+        },
+        "reference": "Source: NVIDIA product specs; TrendForce"
+      }
+    },
+    {
+      "text": "The supply sellout is total and global. SK Hynix announced its entire 2026 HBM, DRAM, and NAND production is fully booked — primarily by NVIDIA. Micron said publicly: we are sold out for 2026. Average DRAM prices surged 172 percent through 2025. DDR5 spot prices quadrupled from September 2025 levels. PC prices are expected to rise 15 to 20 percent in the first quarter of 2026. AI is literally eating your RAM.",
+      "speaker": "Analyst",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 58,
+            "valign": "top",
+            "title": "Total Supply Sellout",
+            "subtitle": "The DRAM crisis is spilling into consumer markets",
+            "content": [
+              {
+                "type": "section",
+                "label": "HBM",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "SK Hynix: {danger:entire 2026 production fully booked}",
+                      "Micron: \"{danger:sold out for 2026}\"",
+                      "All 2027 allocations now under negotiation"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Prices",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "Average DRAM prices: {danger:+172%} through 2025",
+                      "DDR5 spot prices: {danger:quadrupled} from Sep 2025",
+                      "HBM3E prices: {danger:+30%} in Q4 2025 alone",
+                      "Further {danger:+20% price hike} planned for 2026"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Ripple",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "PC prices: {warning:+15–20%} expected in Q1 2026",
+                      "Micron exited consumer 'Crucial' RAM brand",
+                      "Samsung halted new DDR5 module orders"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 42,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              { "type": "metric", "value": "+172%", "label": "Average DRAM price surge, 2025", "color": "danger" },
+              { "type": "metric", "value": "4×", "label": "DDR5 spot price increase since Sep 2025", "color": "danger" },
+              { "type": "metric", "value": "~$67B", "label": "SK Hynix FY2025 revenue (record)", "color": "success" }
+            ]
+          }
+        },
+        "reference": "Source: TrendForce; SK Hynix FY2025 financial results; CNBC"
+      }
+    },
+    {
+      "text": "Three companies control all HBM production on Earth — and it is currently closer to a monopoly of one. SK Hynix commands 62 percent market share, powered by a proprietary chip-stacking technology called MR-MUF that achieves 20 percent higher yields than competitors. In fiscal 2025, SK Hynix surpassed Samsung in annual profit for the first time in company history. Samsung, meanwhile, spent 18 months failing NVIDIA's rigorous HBM3E qualification tests — only finally passing in September 2025.",
+      "speaker": "Analyst",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 50,
+            "valign": "top",
+            "title": "An Oligopoly of Three",
+            "subtitle": "SK Hynix dominates; Samsung stumbles",
+            "content": [
+              {
+                "type": "chart",
+                "title": "HBM Market Share Q2 2025",
+                "chartData": {
+                  "type": "doughnut",
+                  "data": {
+                    "labels": ["SK Hynix (62%)", "Micron (21%)", "Samsung (17%)"],
+                    "datasets": [
+                      {
+                        "data": [62, 21, 17],
+                        "backgroundColor": ["#3B82F6", "#22C55E", "#F59E0B"],
+                        "borderWidth": 0
+                      }
+                    ]
+                  },
+                  "options": {
+                    "animation": false,
+                    "plugins": {
+                      "legend": { "position": "bottom", "labels": { "color": "#F8FAFC", "font": { "size": 13 } } }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "callout",
+                "text": "SK Hynix overtook Samsung in annual profit for the first time in history in 2025",
+                "label": "Historic First",
+                "color": "primary",
+                "style": "info"
+              }
+            ]
+          },
+          "right": {
+            "ratio": 50,
+            "valign": "top",
+            "content": [
+              {
+                "type": "section",
+                "label": "Hynix",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "**62%** market share — {success:dominant}",
+                      "**MR-MUF** bonding: {success:+20% yield advantage}",
+                      "Sole initial HBM3 supplier for H100",
+                      "FY2025: {success:97.1T KRW (~$67B)}, record"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Micron",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": ["**21%** share — {success:surpassed Samsung in 2025}", "HBM3E 8-Hi yield: {success:~75%}", "Sold out through 2026"]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Samsung",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "{danger:Fell to 3rd place} after HBM3E failures",
+                      "{danger:18 months} failing NVIDIA qualification",
+                      "TC-NCF bonding: heat & power problems",
+                      "Finally passed NVIDIA tests: {warning:Sep 2025}"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "reference": "Source: TrendForce Q2 2025; SK Hynix FY2025 financials"
+      }
+    },
+    {
+      "text": "The deeper you look, the more fragile the architecture appears. Manufacturing HBM requires stacking up to 16 dies — a process where each bonding step compounds failure risk multiplicatively. Overall HBM yield is roughly 65 percent; for 16-layer HBM4, it drops to 50 to 60 percent. Nearly half of all production is discarded before it ships. And there is a second bottleneck: silicon interposer packaging, done almost exclusively through TSMC's CoWoS process, is equally constrained. The entire supply chain runs through Korea and Taiwan.",
+      "speaker": "Analyst",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 58,
+            "valign": "top",
+            "title": "The Hidden Cracks",
+            "subtitle": "Yield math and packaging bottlenecks",
+            "content": [
+              {
+                "type": "section",
+                "label": "Yields",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "Each bonding step {danger:multiplies failure risk}",
+                      "8-Hi at 95%/step: {danger:66%} final yield",
+                      "16-Hi theoretical: {danger:~44%} floor",
+                      "Current HBM3E overall: {warning:~65%}",
+                      "HBM4 16-Hi: {danger:50–60%} — nearly half discarded"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Packaging",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "TSMC **CoWoS**: {danger:only viable} interposer at scale",
+                      "2025 output: {warning:~75K wafers/month}",
+                      "2026E: {warning:~120K/month} — still insufficient",
+                      "Packaging = as binding a bottleneck as HBM supply"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Geo Risk",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "SK Hynix: {danger:~90%} of HBM revenue from NVIDIA alone",
+                      "All three fabs: {danger:South Korea only}",
+                      "All interposer packaging: {danger:Taiwan only}",
+                      "Any disruption → global AI hardware halt"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 42,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              { "type": "metric", "value": "~65%", "label": "Current HBM overall yield", "color": "warning" },
+              { "type": "metric", "value": "50–60%", "label": "HBM4 16-Hi yield (nearly half wasted)", "color": "danger" },
+              { "type": "metric", "value": "5–8×", "label": "HBM cost per GB vs DDR5", "color": "danger" }
+            ]
+          }
+        },
+        "reference": "Source: WCCFTech; Nomad Semi; Next Platform; TSMC CoWoS data"
+      }
+    },
+    {
+      "text": "Here is the thesis-breaking risk. HBM was designed for training — an extreme memory-bandwidth-intensive workload where you sweep petabytes of activations across a GPU every second. But the AI industry is shifting toward inference: cheaper, faster, edge-deployed generation. Inference is more cost-sensitive than bandwidth-hungry. One projection shows HBM-based chips declining from 65 percent of accelerator shipments in 2022 to just 30 percent by 2027. If this shift accelerates, HBM could be overbuilt for a world that no longer needs it.",
+      "speaker": "Analyst",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "title": "The Inference Shift Risk",
+          "subtitle": "HBM was optimized for training — but AI is moving toward inference",
+          "left": {
+            "title": "Training (HBM's World)",
+            "accentColor": "primary",
+            "content": [
+              {
+                "type": "bullets",
+                "icon": "✓",
+                "items": [
+                  "Petabyte-scale weight sweeps per second",
+                  "Fully {success:bandwidth-bound}: more TB/s = faster results",
+                  "Centralized mega-clusters (100K+ GPUs)",
+                  "Cost absorbed by hyperscalers",
+                  "HBM3e / HBM4 justified at any price"
+                ]
+              },
+              { "type": "callout", "text": "This is the workload HBM was built for", "color": "primary", "style": "info" }
+            ],
+            "footer": "Current dominant use case"
+          },
+          "right": {
+            "title": "Inference (The Emerging World)",
+            "accentColor": "warning",
+            "content": [
+              {
+                "type": "bullets",
+                "icon": "▸",
+                "items": [
+                  "Latency-sensitive, {warning:not bandwidth-intensive}",
+                  "**Cost per token** is the key metric",
+                  "Edge: millions of low-cost nodes",
+                  "GDDR7, LPDDR, CXL may suffice",
+                  "HBM could be {danger:expensive overkill}"
+                ]
+              },
+              { "type": "callout", "text": "HBM-based chips: 65% of accelerators (2022) → projected 30% by 2027", "color": "warning", "style": "warning" }
+            ],
+            "footer": "The thesis-breaking scenario"
+          }
+        }
+      }
+    },
+    {
+      "text": "So — savior or mirage? For today's training clusters, HBM is an unambiguous engineering necessity. Nothing else can feed a Blackwell or Rubin GPU at scale. But the mirage critique is real: the supply chain cannot scale fast enough, cost per bit is extreme, yields are brutal, geopolitical concentration is an existential risk, and the workload shift toward inference may undermine the very demand that justifies the investment. The real question is not whether HBM works. It is whether the world AI is building actually needs it.",
+      "speaker": "Analyst",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 58,
+            "valign": "top",
+            "title": "Verdict: Savior for Now",
+            "subtitle": "Potential mirage for the inference-dominant future",
+            "content": [
+              {
+                "type": "section",
+                "label": "Savior ✓",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "{success:Engineering necessity} for frontier training workloads",
+                      "No substitute at B200 / R100 bandwidth requirements",
+                      "HBM market: {success:$34B (2025)} → {success:$54.6B (2026E)}"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Mirage ?",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "New fabs: {danger:3+ years and $10B+} to build",
+                      "HBM4 cost may {danger:exceed the GPU compute die}",
+                      "Inference shift favors {warning:cheaper memory architectures}",
+                      "Yield physics {danger:worsens at higher stack heights}",
+                      "{danger:Korea + Taiwan concentration}: existential supply risk"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Alternatives",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "**CXL**: cheap memory pooling for KV-cache overflow",
+                      "**HBF** (High Bandwidth Flash): 10–100× density, fraction of cost",
+                      "**PIM**: compute embedded inside memory stack"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 42,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "callout",
+                "text": "The real question: which world arrives first — training-dominated, or inference-dominant?",
+                "style": "info",
+                "color": "primary"
+              },
+              { "type": "metric", "value": "$54.6B", "label": "HBM market size 2026E", "color": "success", "change": "+58% YoY" },
+              { "type": "metric", "value": "30%", "label": "Projected HBM accelerator share by 2027", "color": "warning", "change": "from 65%" }
+            ]
+          }
+        },
+        "reference": "Source: Bank of America; Yole Group; NuttyCLD on X"
+      }
+    }
+  ]
+}

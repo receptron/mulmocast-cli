@@ -1,0 +1,683 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "ja",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "title": "2028年グローバル知能危機シナリオ",
+  "description": "AIの急速な普及が引き起こす可能性のある経済的連鎖崩壊のシナリオ分析（Citrini Research, 2026年2月）",
+  "references": [{ "url": "https://www.citriniresearch.com/p/2028gic", "title": "The 2028 Global Intelligence Crisis", "type": "article" }],
+  "speechParams": {
+    "speakers": {
+      "Presenter": { "voiceId": "shimmer" }
+    }
+  },
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "F8FAFC",
+        "bgCard": "FFFFFF",
+        "bgCardAlt": "F1F5F9",
+        "text": "0F172A",
+        "textMuted": "475569",
+        "textDim": "94A3B8",
+        "primary": "2563EB",
+        "accent": "7C3AED",
+        "success": "16A34A",
+        "warning": "EA580C",
+        "danger": "DC2626",
+        "info": "0891B2",
+        "highlight": "DB2777"
+      },
+      "fonts": { "title": "Georgia", "body": "Helvetica", "mono": "Menlo" }
+    }
+  },
+  "imageParams": { "provider": "google", "images": {} },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "これから描くのは、AIが急速に普及し続けた場合、2028年6月にどのような世界になっているか、という思考実験です。Citrini Researchが2026年2月に発表したこのシナリオは、ひとつの逆説的な問いを立てます。「もしAIへの強気論が正しかったとして、それは市場にとって良いことなのか?」これは予測ではありません。しかし、検討に値する可能性として提示されています。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "title",
+          "title": "2028年グローバル知能危機",
+          "subtitle": "AIの楽観論が正しければ、それは弱気材料になりうるか？",
+          "author": "Citrini Research シナリオ分析（2026年2月）",
+          "note": "これは予測ではなく、可能性としてのシナリオです"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "シナリオの核にあるのは、一つの自己強化ループです。AIが進化するほど企業は人を減らし、収入が減ると消費も落ち、収益が圧迫された企業はさらにAIに投資する。このサイクルには、自然に止まるブレーキがありません。著者たちはこれを「人間の知能が排除されていく螺旋」と呼んでいます。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 55,
+            "title": "悪循環のメカニズム",
+            "subtitle": "自己強化ループ",
+            "valign": "top",
+            "content": [
+              {
+                "type": "mermaid",
+                "code": "graph TD\n  A[AI能力向上] -->|人員削減| B[雇用の減少]\n  B -->|収入減| C[消費の低下]\n  C -->|収益悪化| D[企業の収益圧迫]\n  D -->|さらなるAI投資| A"
+              }
+            ]
+          },
+          "right": {
+            "ratio": 45,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "callout",
+                "text": "「AIの能力が増すほど、人間の労働の価値は下がる。消費が落ちれば企業はまたAIに頼る」",
+                "style": "quote"
+              },
+              {
+                "type": "text",
+                "value": "このループには外部からの介入なしに止まるメカニズムが存在しない",
+                "dim": true,
+                "align": "center"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "最初に影響を受けるのがソフトウェア産業です。AIによるコーディング支援が進むと、企業は外部SaaSを使わず自社でシステムを内製できるようになります。ServiceNowのような年間経常収益モデルが揺らぎ、ソフトウェア株のバリュエーションは急速に縮小していきます。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 57,
+            "valign": "top",
+            "content": [
+              {
+                "type": "text",
+                "value": "第1幕：SaaS・ソフトウェアの崩壊",
+                "bold": true,
+                "fontSize": 22,
+                "color": "primary"
+              },
+              {
+                "type": "section",
+                "label": "内製化",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [{ "text": "AIコーディング支援により外部SaaSを{danger:社内開発で代替}", "items": ["コーディングの障壁が消え、開発コストが急落"] }]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "収益モデル",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [{ "text": "ARR（年間経常収益）モデルが前提崩壊", "items": ["顧客が更新をやめると収益が一気に消える"] }]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "株価",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": ["SaaS株のマルチプルが急速に圧縮", "PEの出口戦略が機能不全に"]
+                  }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 43,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "metric",
+                "value": "ARR崩壊",
+                "label": "年間契約更新を前提としたビジネスモデルの終焉",
+                "color": "danger"
+              },
+              {
+                "type": "text",
+                "value": "顧客がAIで内製した瞬間\n収益がゼロになる構造",
+                "dim": true,
+                "align": "center"
+              },
+              {
+                "type": "callout",
+                "text": "後のシナリオでZendesk（仮名）の50億ドル債務ファシリティが崩壊",
+                "color": "warning",
+                "label": "後続影響"
+              }
+            ]
+          }
+        },
+        "reference": "Source: Citrini Research, The 2028 Global Intelligence Crisis"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "次に影響を受けるのが「仲介業者」です。AIエージェントが自動で最安値を比較するようになると、旅行予約プラットフォームは存在意義を失います。不動産の仲介手数料は3%から1%未満へ圧縮され、決済はスタブルコインが浸透してカードの手数料も迂回されます。コーディングの障壁が消えた世界では、競合も一夜にして増殖します。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "columns",
+          "title": "第2幕：仲介業者の消滅",
+          "subtitle": "AIエージェントが「摩擦」ビジネスを一掃する",
+          "columns": [
+            {
+              "title": "旅行・予約",
+              "accentColor": "primary",
+              "icon": "✈️",
+              "content": [
+                {
+                  "type": "bullets",
+                  "items": ["AIが5つのプラットフォームを自動比較・予約", "既存の予約サイトの存在意義が消える", "競合が瞬時に{danger:20〜30社}へ増殖"]
+                }
+              ]
+            },
+            {
+              "title": "不動産",
+              "accentColor": "primary",
+              "icon": "🏠",
+              "content": [
+                {
+                  "type": "bullets",
+                  "items": ["AIがMLS（物件情報）に直接アクセス", "仲介手数料が{danger:3% → 1%未満}に圧縮", "人間の仲介者の価値が急速に低下"]
+                }
+              ]
+            },
+            {
+              "title": "決済",
+              "accentColor": "primary",
+              "icon": "💳",
+              "content": [
+                {
+                  "type": "bullets",
+                  "items": ["スタブルコインが台頭し普及", "カード手数料{danger:2〜3%}を迂回", "カード決済ビジネスモデルが圧迫"]
+                }
+              ]
+            }
+          ]
+        },
+        "reference": "Source: Citrini Research, The 2028 Global Intelligence Crisis"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "2027年、週次の初期失業給付申請数が48万7千件に達します。2020年4月以来の最高水準です。特徴的なのは、打撃を受けるのがブルーカラーではなく、ホワイトカラーの専門職だという点です。インドのITサービスは「AIの限界費用がほぼ電気代だけ」という現実の前に競争力を失い、職を失った専門職はサービス業へ流れ込み、そこでの賃金も押し下げます。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 55,
+            "valign": "top",
+            "content": [
+              {
+                "type": "text",
+                "value": "第3幕：ホワイトカラーの大量失業",
+                "bold": true,
+                "fontSize": 22,
+                "color": "primary"
+              },
+              {
+                "type": "section",
+                "label": "対象層",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      { "text": "打撃を受けるのはブルーカラーではなく{danger:ホワイトカラー}", "items": ["エンジニア・アナリスト・コンサルタントなど専門職"] }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "インドIT",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [{ "text": "インドのITサービスが競争力を喪失", "items": ["AIコーディングの限界費用≒電気代のみ"] }]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "波及",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": ["専門職がサービス業・ギグワークへ流入", "流入先の賃金も同時に押し下げる"]
+                  }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 45,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "metric",
+                "value": "487,000件",
+                "label": "週次 初期失業給付申請数（2027年）",
+                "color": "danger"
+              },
+              {
+                "type": "metric",
+                "value": "2020年4月",
+                "label": "以来の最高水準",
+                "color": "warning"
+              },
+              {
+                "type": "callout",
+                "text": "これはAIによるコスト削減の「成果」として現れる数字でもある",
+                "style": "info"
+              }
+            ]
+          }
+        },
+        "reference": "Source: Citrini Research, The 2028 Global Intelligence Crisis"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "米国では、上位10%の高所得層が個人消費全体の50%以上を担っています。このため、ホワイトカラー層の雇用不安は、消費に対して不釣り合いに大きな影響を与えます。GDPに占める労働分配率は1974年の64%から2024年の56%へと低下しており、このシナリオではさらに46%まで落ちます。税収はCBOの基準見通しを12%下回ることになります。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 57,
+            "title": "消費の連鎖崩壊",
+            "subtitle": "高所得層の支出が全体を引き下げる",
+            "valign": "top",
+            "content": [
+              {
+                "type": "chart",
+                "chartData": {
+                  "type": "bar",
+                  "data": {
+                    "labels": ["1974年", "2024年", "2028年\n(シナリオ)"],
+                    "datasets": [
+                      {
+                        "label": "労働分配率（%）",
+                        "data": [64, 56, 46],
+                        "backgroundColor": ["#2563EB", "#2563EB", "#DC2626"],
+                        "borderRadius": 4
+                      }
+                    ]
+                  },
+                  "options": {
+                    "plugins": { "legend": { "display": false } },
+                    "scales": {
+                      "y": { "min": 30, "max": 75, "ticks": { "stepSize": 10 } }
+                    }
+                  }
+                },
+                "title": "GDP労働分配率の推移（%）"
+              }
+            ]
+          },
+          "right": {
+            "ratio": 43,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "metric",
+                "value": "50%超",
+                "label": "上位10%が担う個人消費の割合",
+                "color": "primary"
+              },
+              {
+                "type": "metric",
+                "value": "3〜4%減",
+                "label": "ホワイトカラー2%減少 → 裁量消費の減少",
+                "color": "danger"
+              },
+              {
+                "type": "metric",
+                "value": "−12%",
+                "label": "税収のCBO見通し比（シナリオ）",
+                "color": "danger"
+              }
+            ]
+          }
+        },
+        "reference": "Source: Citrini Research, The 2028 Global Intelligence Crisis"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "プライベートクレジット市場では、SaaS企業向けの融資が次々と不良化します。Zendesk（仮名）の50億ドルの債務ファシリティが、顧客の契約更新停止により崩壊したことが象徴的です。複雑なオフショア構造を通じてこうした債権を保有していた生命保険会社が資本増強を迫られ、Apollo、Brookfield、KKRといった大手の株価も急落します。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 55,
+            "valign": "top",
+            "content": [
+              {
+                "type": "text",
+                "value": "第4幕：プライベートクレジットの崩壊",
+                "bold": true,
+                "fontSize": 22,
+                "color": "primary"
+              },
+              {
+                "type": "section",
+                "label": "発火点",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [{ "text": "SaaS企業向け融資が不良化", "items": ["顧客が更新しなければARRが消え、返済能力を失う"] }]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "構造問題",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [{ "text": "バミューダ・ケイマン経由の複雑なオフショア構造", "items": ["実際の損失保有者が不透明", "生命保険会社が深く関与"] }]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "飛び火",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": ["Apollo・Brookfield・KKRの株価急落", "「恒久資本」とされた生保の年金資金が不安定化"]
+                  }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 45,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "metric",
+                "value": "$50億",
+                "label": "Zendesk（仮名）\nプライベートクレジット史上最大の不良化",
+                "color": "danger"
+              },
+              {
+                "type": "callout",
+                "text": "「誰が損失を抱えているか分からない」——2008年のサブプライムと同じ構造的不透明性",
+                "style": "warning"
+              }
+            ]
+          }
+        },
+        "reference": "Source: Citrini Research, The 2028 Global Intelligence Crisis"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "住宅ローン市場でも異変が起きます。FICOスコア780以上、頭金20%以上の「優良」借り手の住宅でも延滞が増加し、サンフランシスコは前年比11%、シアトルは9%、オースティンは8%の価格下落となります。2008年との本質的な違いは、融資実行時点の審査は正常だったという点です。「ローンを書いた後、世界が変わってしまった」——これが従来の政策ツールでは対応できない理由です。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 50,
+            "valign": "top",
+            "content": [
+              {
+                "type": "text",
+                "value": "第5幕：「優良」住宅ローンの不良化",
+                "bold": true,
+                "fontSize": 22,
+                "color": "primary"
+              },
+              {
+                "type": "callout",
+                "text": "2008年との違い：融資実行時は適正だった。「ローンを書いた後、世界が変わった」",
+                "style": "warning",
+                "label": "重要"
+              },
+              {
+                "type": "text",
+                "value": "FICO 780以上・頭金20%以上の優良借り手でも延滞が増加",
+                "bold": true
+              },
+              {
+                "type": "text",
+                "value": "高テック雇用地域を中心に価格下落が拡大。住宅ローン市場全体の規模は13兆ドル。",
+                "dim": true
+              }
+            ]
+          },
+          "right": {
+            "ratio": 50,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "metric",
+                "value": "−11%",
+                "label": "サンフランシスコ 前年比住宅価格",
+                "color": "danger"
+              },
+              {
+                "type": "metric",
+                "value": "−9%",
+                "label": "シアトル 前年比住宅価格",
+                "color": "danger"
+              },
+              {
+                "type": "metric",
+                "value": "−8%",
+                "label": "オースティン 前年比住宅価格",
+                "color": "danger"
+              },
+              {
+                "type": "metric",
+                "value": "$13兆",
+                "label": "住宅ローン市場の規模（米国）",
+                "color": "primary"
+              }
+            ]
+          }
+        },
+        "reference": "Source: Citrini Research, The 2028 Global Intelligence Crisis"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "S&P 500は2026年10月の約8,000ポイントをピークに、2028年6月には38%下落します。中央銀行による利下げや量的緩和は、景気循環の問題には有効ですが、技術的変化による構造的な所得減少には対処できません。「移行経済法」「AI繁栄共有法」といった政策案は議会で紛糾し、合意形成が遅れます。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 57,
+            "title": "市場の結果",
+            "subtitle": "S&P 500 シナリオ軌跡",
+            "valign": "top",
+            "content": [
+              {
+                "type": "chart",
+                "chartData": {
+                  "type": "line",
+                  "data": {
+                    "labels": ["2026年1月", "2026年10月\n(ピーク)", "2027年6月", "2028年6月"],
+                    "datasets": [
+                      {
+                        "label": "S&P 500（シナリオ）",
+                        "data": [5900, 8000, 6500, 4960],
+                        "borderColor": "#DC2626",
+                        "backgroundColor": "rgba(220,38,38,0.1)",
+                        "fill": true,
+                        "tension": 0.3
+                      }
+                    ]
+                  },
+                  "options": {
+                    "plugins": { "legend": { "display": false } },
+                    "scales": {
+                      "y": { "min": 3000, "ticks": { "stepSize": 1000 } }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "right": {
+            "ratio": 43,
+            "dark": true,
+            "valign": "top",
+            "content": [
+              {
+                "type": "metric",
+                "value": "−38%",
+                "label": "ピークからの下落（2028年6月）",
+                "color": "danger"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "text",
+                "value": "なぜ政策が効かないか",
+                "bold": true,
+                "color": "primary"
+              },
+              {
+                "type": "bullets",
+                "items": ["利下げ・QEは循環的不況に効く", "構造的な{danger:所得の消滅}には効かない", "政策提案は議会で紛糾"]
+              },
+              {
+                "type": "callout",
+                "text": "「移行経済法」「AI繁栄共有法」——合意形成が間に合わない",
+                "style": "info"
+              }
+            ]
+          }
+        },
+        "reference": "Source: Citrini Research, The 2028 Global Intelligence Crisis"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "このシナリオが現実になるかどうかは分かりません。著者たちも「予測ではない」と明記しています。ただ、レポートの最後の言葉は示唆的です。「カナリアはまだ生きている」——2026年2月の時点では、政策立案者が先手を打つ機会がまだある、ということです。AIが社会に与える影響を、循環的な変化ではなく構造的な変化として捉え直すこと——それがこのシナリオが問いかけるメッセージです。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 55,
+            "valign": "center",
+            "content": [
+              {
+                "type": "text",
+                "value": "カナリアはまだ生きている",
+                "bold": true,
+                "fontSize": 28,
+                "color": "primary",
+                "align": "center"
+              },
+              {
+                "type": "text",
+                "value": "— Citrini Research, 2026年2月",
+                "dim": true,
+                "align": "center"
+              },
+              {
+                "type": "divider",
+                "color": "primary"
+              },
+              {
+                "type": "bullets",
+                "icon": "▸",
+                "items": [
+                  "このシナリオは予測ではない",
+                  "AIへの楽観論が正しいほど、リスクも現実味を帯びる",
+                  "構造的変化を循環的変化と誤診しないことが重要",
+                  "政策介入の機会はまだある"
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 45,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "text",
+                "value": "このシナリオが問いかけること",
+                "bold": true,
+                "align": "center",
+                "color": "primary"
+              },
+              {
+                "type": "section",
+                "label": "投資家へ",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "SaaS・プライベートクレジット・住宅ローン市場の前提を再検討する"
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "政策立案者へ",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "AIによる変化は景気循環ではなく構造変化として対処する必要がある"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
