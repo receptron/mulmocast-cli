@@ -1,0 +1,578 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "title": "NVIDIA BlueField-4 & ICMS: The New AI Storage Tier",
+  "description": "How NVIDIA's BlueField-4 DPU and the Inference Context Memory Storage platform solve the KV cache bottleneck for agentic AI at scale.",
+  "references": [
+    {
+      "url": "https://developer.nvidia.com/blog/introducing-nvidia-bluefield-4-powered-inference-context-memory-storage-platform-for-the-next-frontier-of-ai/",
+      "title": "Introducing NVIDIA BlueField-4-Powered ICMS Platform",
+      "type": "article"
+    }
+  ],
+  "speechParams": {
+    "speakers": {
+      "Presenter": { "voiceId": "onyx" }
+    }
+  },
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "0F172A",
+        "bgCard": "1E293B",
+        "bgCardAlt": "334155",
+        "text": "F8FAFC",
+        "textMuted": "CBD5E1",
+        "textDim": "64748B",
+        "primary": "3B82F6",
+        "accent": "8B5CF6",
+        "success": "22C55E",
+        "warning": "F59E0B",
+        "danger": "EF4444",
+        "info": "14B8A6",
+        "highlight": "EC4899"
+      },
+      "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+    }
+  },
+  "imageParams": {
+    "provider": "google",
+    "images": {
+      "nvidiaDPU": {
+        "type": "imagePrompt",
+        "prompt": "NVIDIA BlueField-4 data processing unit DPU chip, ultra-realistic photorealistic rendering, dark background, blue glowing circuit traces, futuristic hardware close-up, professional product photography style"
+      },
+      "aiFactory": {
+        "type": "imagePrompt",
+        "prompt": "Massive modern AI data center with rows of server racks, blue LED lighting, dark atmospheric environment, high-tech infrastructure, cinematic wide angle photography"
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "AI is revolutionizing the entire computing stack — and now, storage. Jensen Huang said that at CES 2026, and he meant it literally. As AI agents grow to trillion-parameter models reasoning over millions of tokens, the data center has hit a structural wall — and the breaking point is memory.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "bigQuote",
+          "quote": "AI is revolutionizing the entire computing stack — and now, storage.",
+          "author": "Jensen Huang",
+          "role": "NVIDIA Founder & CEO · CES 2026"
+        }
+      }
+    },
+    {
+      "text": "Every inference run generates a Key-Value cache: a scratchpad of attention states that must be read and written at extreme speed. GPU HBM is fast enough, but there's never enough of it — KV cache is competing directly with model weights. Conventional storage is cheap and spacious, but it was designed for durable enterprise records, not ephemeral, recomputable context that's stale in seconds.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 55,
+            "valign": "top",
+            "content": [
+              {
+                "type": "text",
+                "value": "The KV Cache Has No Good Home",
+                "bold": true,
+                "fontSize": 24,
+                "color": "primary"
+              },
+              {
+                "type": "text",
+                "value": "Every inference run creates ephemeral attention state — too large for GPU memory, too transient for enterprise storage.",
+                "dim": true
+              },
+              {
+                "type": "section",
+                "label": "GPU HBM",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "{success:Fastest possible access speed}",
+                      { "text": "{danger:Critically scarce & expensive}", "items": ["KV cache displaces model weights", "Trillions of params leave no room"] }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Storage",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "{success:Cheap and petabyte-scale}",
+                      {
+                        "text": "{danger:Designed for durability, not inference}",
+                        "items": ["Redundancy & consistency overhead", "Wrong access patterns for KV workloads"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 45,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "mermaid",
+                "code": "graph TD\n    A[🤖 AI Inference Request] --> B[KV Cache Generated]\n    B --> C{Where does it live?}\n    C -->|Too scarce| D[GPU HBM\n❌ Displaces weights]\n    C -->|Wrong design| E[Enterprise Storage\n❌ Latency & overhead]\n    style D fill:#991b1b,color:#fff\n    style E fill:#991b1b,color:#fff",
+                "title": "The Bottleneck"
+              }
+            ]
+          }
+        },
+        "reference": "Source: NVIDIA Developer Blog, CES 2026"
+      }
+    },
+    {
+      "text": "NVIDIA's answer is a new storage tier called G3.5 — a flash-based intermediate layer that sits between GPU HBM and conventional storage. The key insight is that KV cache is ephemeral and recomputable. G3.5 strips away every enterprise storage overhead: no redundancy, no durability guarantees, no consistency protocols for long-lived records. Purpose-built for inference context means purpose-built for speed.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 52,
+            "labelBadge": true,
+            "label": "G3.5",
+            "accentColor": "primary",
+            "valign": "top",
+            "content": [
+              {
+                "type": "text",
+                "value": "A New Flash-Based Inference Memory Tier",
+                "bold": true,
+                "fontSize": 22,
+                "color": "primary"
+              },
+              {
+                "type": "bullets",
+                "icon": "▸",
+                "items": [
+                  {
+                    "text": "**Purpose-built for KV cache** — ephemeral & recomputable",
+                    "items": ["No durability mechanisms", "No redundancy overhead", "No enterprise consistency guarantees"]
+                  },
+                  "Positioned between GPU HBM and conventional storage",
+                  "Powered by {primary:BlueField-4} DPU with NVMe/NVMe-oF + KV extensions",
+                  "{success:Unlocks efficiency impossible with either existing tier}"
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 48,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "mermaid",
+                "code": "graph TD\n    A[⚡ GPU HBM\nFastest · Most expensive\nModel weights + active compute] --> B\n    B[🆕 G3.5 Flash — ICMS\nBlueField-4 powered\nPurpose-built for KV cache]\n    B --> C[💾 Enterprise Storage\nCheapest · Petabyte-scale\nDurable long-lived data]\n    style B fill:#1d4ed8,color:#fff,stroke:#3b82f6,stroke-width:2px",
+                "title": "Memory Hierarchy — G3.5 Fills the Gap"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "Powering this new tier is the BlueField-4 data processor. It packs 800 gigabits per second of connectivity, a 64-core NVIDIA Grace CPU, and ConnectX-9 SuperNICs into a single platform — delivering six times the compute of BlueField-3 and supporting AI factories four times larger. It speaks NVMe and NVMe-oF with KV extensions natively, with zero-trust hardware security at line rate.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 42,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "imageRef",
+                "ref": "nvidiaDPU",
+                "alt": "NVIDIA BlueField-4 DPU",
+                "fit": "contain"
+              },
+              {
+                "type": "callout",
+                "text": "\"The processor powering the OS of AI factories\"",
+                "style": "info"
+              }
+            ]
+          },
+          "right": {
+            "ratio": 58,
+            "valign": "top",
+            "content": [
+              {
+                "type": "text",
+                "value": "BlueField-4 Specifications",
+                "bold": true,
+                "fontSize": 24,
+                "color": "primary"
+              },
+              {
+                "type": "table",
+                "striped": true,
+                "rows": [
+                  ["Connectivity", { "text": "800 Gb/s", "color": "success", "bold": true }],
+                  ["Integrated CPU", "64-core NVIDIA Grace"],
+                  ["Networking", "ConnectX-9 SuperNICs"],
+                  ["Compute vs BF-3", { "text": "6× more compute", "color": "success", "bold": true }],
+                  ["Factory scale", { "text": "4× larger AI factories", "color": "success", "bold": true }],
+                  ["Storage protocol", "NVMe · NVMe-oF + KV extensions"],
+                  ["Security", "Zero-trust · hardware encryption at line rate"]
+                ]
+              }
+            ]
+          }
+        },
+        "reference": "Source: NVIDIA BlueField-4 Technical Blog, 2026"
+      }
+    },
+    {
+      "text": "The Inference Context Memory Storage platform built on BlueField-4 delivers five times higher tokens per second and five times greater power efficiency compared to traditional storage approaches. A single GPU pod can share petabyte-scale KV cache over RDMA-accelerated Spectrum-X Ethernet. Reliable KV block prestaging eliminates decoder stalls, keeping GPUs computing rather than waiting.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 55,
+            "valign": "top",
+            "content": [
+              {
+                "type": "text",
+                "value": "ICMS Platform Performance",
+                "bold": true,
+                "fontSize": 24,
+                "color": "primary"
+              },
+              {
+                "type": "section",
+                "label": "Throughput",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "Shared KV cache at {success:petabyte-scale} per GPU pod",
+                      "RDMA-accelerated via {primary:Spectrum-X Ethernet}",
+                      "KV block prestaging eliminates decoder stalls"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Efficiency",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": [
+                      "Eliminates {danger:GPU idle cycles} caused by KV cache misses",
+                      "Purpose-built ephemeral handling — no enterprise overhead",
+                      "Direct TCO impact at hyperscaler rack scale"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 45,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "metric",
+                "value": "5×",
+                "label": "Tokens per second vs traditional storage",
+                "color": "success"
+              },
+              {
+                "type": "metric",
+                "value": "5×",
+                "label": "Greater power efficiency",
+                "color": "success"
+              },
+              {
+                "type": "metric",
+                "value": "PB-scale",
+                "label": "Shared KV cache per GPU pod",
+                "color": "primary"
+              }
+            ]
+          }
+        },
+        "reference": "Source: NVIDIA Developer Blog, CES 2026"
+      }
+    },
+    {
+      "text": "The software stack coordinates four components. NVIDIA Dynamo orchestrates inference and manages KV block placement. DOCA provides the communication and storage interfaces as containerized microservices. Grove handles topology-aware workload placement across the cluster. And NIXL — the NVIDIA Inference Transfer Library — moves context fluidly across memory tiers. Together they make the G3.5 tier transparent to inference workloads.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "columns",
+          "title": "ICMS Software Architecture",
+          "subtitle": "Four components orchestrate KV cache across memory tiers",
+          "columns": [
+            {
+              "title": "Dynamo",
+              "accentColor": "primary",
+              "icon": "⚡",
+              "content": [
+                {
+                  "type": "text",
+                  "value": "Inference Orchestration",
+                  "bold": true,
+                  "color": "primary"
+                },
+                {
+                  "type": "bullets",
+                  "items": ["KV block scheduling & placement", "Inference workload coordination", "Memory tier policy management"]
+                }
+              ]
+            },
+            {
+              "title": "DOCA",
+              "accentColor": "primary",
+              "icon": "🔗",
+              "content": [
+                {
+                  "type": "text",
+                  "value": "KV Communication",
+                  "bold": true,
+                  "color": "primary"
+                },
+                {
+                  "type": "bullets",
+                  "items": ["Storage interfaces & KV APIs", "Containerized microservices", "Secure multi-tenant deployment"]
+                }
+              ]
+            },
+            {
+              "title": "Grove",
+              "accentColor": "primary",
+              "icon": "🗺️",
+              "content": [
+                {
+                  "type": "text",
+                  "value": "Workload Placement",
+                  "bold": true,
+                  "color": "primary"
+                },
+                {
+                  "type": "bullets",
+                  "items": ["Topology-aware scheduling", "Cluster-level KV routing", "Locality optimization"]
+                }
+              ]
+            },
+            {
+              "title": "NIXL",
+              "accentColor": "primary",
+              "icon": "🔄",
+              "content": [
+                {
+                  "type": "text",
+                  "value": "Context Transfer",
+                  "bold": true,
+                  "color": "primary"
+                },
+                {
+                  "type": "bullets",
+                  "items": ["Moves context across memory tiers", "HBM ↔ G3.5 ↔ Storage", "Transparent to inference layer"]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "The ecosystem response was immediate. At CES, fourteen major storage and infrastructure vendors announced support: Dell Technologies, HPE, IBM, Pure Storage, VAST Data, WEKA, DDN, Nutanix, and more. VAST Data went furthest, announcing a full redesign of its AI inference architecture for the agentic era — built ground-up on BlueField-4.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 48,
+            "valign": "top",
+            "content": [
+              {
+                "type": "text",
+                "value": "14 Partners at CES Announcement",
+                "bold": true,
+                "fontSize": 22,
+                "color": "primary"
+              },
+              {
+                "type": "section",
+                "label": "Storage",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": ["Pure Storage", "VAST Data", "WEKA", "DDN", "Cloudian", "Hitachi Vantara", "IBM"]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Infra",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": ["Dell Technologies", "HPE", "Supermicro", "AIC", "Nutanix"]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Security",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": ["Cisco", "Palo Alto Networks"]
+                  }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 52,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "imageRef",
+                "ref": "aiFactory",
+                "alt": "AI data center infrastructure",
+                "fit": "contain"
+              },
+              {
+                "type": "callout",
+                "label": "VAST Data",
+                "text": "Announced full redesign of AI inference architecture for the agentic era — built ground-up on BlueField-4",
+                "color": "success",
+                "style": "info"
+              }
+            ]
+          }
+        },
+        "reference": "Source: CES 2026, NVIDIA Partner Announcements"
+      }
+    },
+    {
+      "text": "BlueField-4 enters early availability as part of the NVIDIA Vera Rubin platform in early 2026, with general availability in the second half of the year. For teams already running BlueField applications, NVIDIA is maintaining backward compatibility — the transition is designed to be additive, not disruptive.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "timeline",
+          "title": "BlueField-4 & ICMS Availability",
+          "subtitle": "Rolling out on the NVIDIA Vera Rubin platform",
+          "items": [
+            {
+              "date": "Jan 2026",
+              "title": "CES Announcement",
+              "description": "BlueField-4 and ICMS platform unveiled. 14 storage & infrastructure partners announced.",
+              "color": "primary",
+              "done": true
+            },
+            {
+              "date": "Early 2026",
+              "title": "Early Availability",
+              "description": "BlueField-4 available as part of NVIDIA Vera Rubin platforms. Backward-compatible with existing BlueField applications.",
+              "color": "info",
+              "done": true
+            },
+            {
+              "date": "H2 2026",
+              "title": "General Availability",
+              "description": "Full GA release. ICMS platform and G3.5 storage tier broadly available for AI factory deployments.",
+              "color": "success"
+            },
+            {
+              "date": "Beyond",
+              "title": "Agentic AI Scale",
+              "description": "G3.5 established as a permanent tier in the AI data center hierarchy as multi-million-token context agents become standard.",
+              "color": "accent"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "BlueField-4 and ICMS mark something bigger than a product launch. NVIDIA now controls the full inference stack — from HBM inside the GPU, across the Spectrum-X network fabric, through the BlueField-4 DPU into flash storage, all orchestrated by Dynamo, DOCA, Grove, and NIXL. As agentic AI scales, this vertically integrated architecture becomes the foundation every AI factory will be built on.",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 52,
+            "valign": "top",
+            "content": [
+              {
+                "type": "text",
+                "value": "NVIDIA Owns the Full Inference Stack",
+                "bold": true,
+                "fontSize": 22,
+                "color": "primary"
+              },
+              {
+                "type": "bullets",
+                "icon": "▸",
+                "items": [
+                  { "text": "{success:Vertical integration} from HBM to flash to fabric", "items": ["Competitors can't substitute individual layers"] },
+                  {
+                    "text": "**Agentic AI** demands this architecture",
+                    "items": ["Million-token contexts require the G3.5 tier", "Long-horizon reasoning needs persistent KV cache"]
+                  },
+                  { "text": "{success:5× efficiency} directly impacts hyperscaler TCO", "items": ["Cost pressure at rack-scale and beyond"] },
+                  { "text": "G3.5 is a **permanent tier**, not a stopgap", "items": ["Standardizing the AI data center hierarchy"] }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 48,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "mermaid",
+                "code": "graph TD\n    A[🖥️ GPU — HBM\nModel Weights + Compute] --> B\n    B[🔵 BlueField-4 DPU\nG3.5 ICMS — KV Cache] --> C\n    A <-->|Spectrum-X RDMA| B\n    C[💾 Enterprise Storage\nDurable Data] \n    D[🧠 Dynamo + DOCA\n+ Grove + NIXL\nOrchestration Layer] --> A\n    D --> B\n    D --> C\n    style B fill:#1d4ed8,color:#fff,stroke:#3b82f6,stroke-width:2px\n    style D fill:#5b21b6,color:#fff",
+                "title": "NVIDIA Full-Stack Control"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
