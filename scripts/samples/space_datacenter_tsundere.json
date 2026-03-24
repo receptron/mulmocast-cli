@@ -1,0 +1,251 @@
+{
+  "$mulmocast": { "version": "1.1", "credit": "closing" },
+  "lang": "ja",
+  "title": "宇宙データセンター革命──30ヶ月後のゲームチェンジ",
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "0F172A",
+        "bgCard": "1E293B",
+        "bgCardAlt": "334155",
+        "text": "F8FAFC",
+        "textMuted": "CBD5E1",
+        "textDim": "64748B",
+        "primary": "3B82F6",
+        "accent": "8B5CF6",
+        "success": "22C55E",
+        "warning": "F59E0B",
+        "danger": "EF4444",
+        "info": "14B8A6",
+        "highlight": "EC4899"
+      },
+      "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+    }
+  },
+  "canvasSize": { "width": 1280, "height": 720 },
+  "speechParams": {
+    "speakers": {
+      "akari": {
+        "displayName": { "ja": "あかり" },
+        "voiceId": "nova",
+        "provider": "openai"
+      }
+    }
+  },
+  "beats": [
+    {
+      "speaker": "akari",
+      "text": "べ、別にあなたのために説明してあげるわけじゃないんだから！ただ、これを知らないと時代に取り残されるから、しょうがなく教えてあげるの。イーロン・マスクが30ヶ月で宇宙にデータセンターを作るって宣言したのよ。コンセプトじゃないわ。期限つきの、本気の話。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "title",
+          "title": "宇宙データセンター革命",
+          "subtitle": "30ヶ月後、ゲームは永遠に変わる",
+          "author": "Elon Musk × SpaceX × xAI × Starlink",
+          "style": { "decorations": true }
+        }
+      }
+    },
+    {
+      "speaker": "akari",
+      "text": "まったく、あなたって何も知らないのね。AIが直面している最大の壁、教えてあげる。電力よ。土地は有限。冷却コストは莫大。電力グリッドなんてAI時代に全然対応できてない。地球上の全てのAI企業が同じ過負荷インフラを奪い合ってるの。本当にバカらしい状況じゃない？",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "stats",
+          "title": "AIが超えられない壁",
+          "subtitle": "電力こそがAIの根本的な制約",
+          "stats": [
+            { "value": "有限", "label": "土地リソース", "color": "danger" },
+            { "value": "高騰", "label": "冷却コスト", "color": "warning" },
+            { "value": "限界", "label": "電力グリッド容量", "color": "danger" },
+            { "value": "奪い合い", "label": "全AI企業の現状", "color": "warning" }
+          ],
+          "callout": { "text": "「Power is the proxy, power is the primitive to AI.」── Gerstner", "color": "accent" }
+        }
+      }
+    },
+    {
+      "speaker": "akari",
+      "text": "でも……宇宙にはその問題がないの。大気もなければ、天気もない。夜もない。太陽光エネルギーが途切れることなく永遠に降り注ぐのよ。コストカーブを改善するんじゃなくて、完全に崩壊させるの。……ちょっとくらい感動してもいいんじゃない？ま、まあ、あなたには難しいか。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "title": "地球 vs 宇宙──エネルギーの真実",
+          "left": {
+            "title": "地球のデータセンター",
+            "accentColor": "danger",
+            "content": [
+              {
+                "type": "bullets",
+                "items": ["土地：有限で争奪戦", "冷却：莫大なコスト", "電力：グリッドが追いつかない", "夜：太陽光が途絶える", "天気：自然災害リスク"]
+              }
+            ],
+            "footer": "全てが制約だらけ"
+          },
+          "right": {
+            "title": "軌道上のデータセンター",
+            "accentColor": "success",
+            "content": [
+              { "type": "bullets", "items": ["土地：不要（宇宙は無限）", "冷却：問題なし", "電力：無限の太陽光", "夜：存在しない", "天気：影響ゼロ"] }
+            ],
+            "footer": "コストカーブを崩壊させる"
+          }
+        }
+      }
+    },
+    {
+      "speaker": "akari",
+      "text": "ガーストナーはこう言ったわ。「あなたは人類史上最大の二つのTAMを統合しようとしている。AIの全て、と宇宙の全てを」ってね。この言葉の意味、わかる？ひとりの人間が、二つの最大市場を一つに束ねようとしてるの。バカらしいと思う？……違うわ。これは……ちょっとだけすごいかも。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "bigQuote",
+          "quote": "「あなたは世界最大の二つのTAMを統合しようとしている。AIの全てと、宇宙の全てを。」",
+          "author": "Bill Gerstner",
+          "role": "AIと宇宙──二大市場の融合"
+        }
+      }
+    },
+    {
+      "speaker": "akari",
+      "text": "スターリンクは2000万人に直接つながる。xAIが知性を提供して、スペースXがインフラを作る。全部ひとりが構築してるのよ！ひとりで！ガーストナーも言ってた、「彼はN of one だ」って。……ま、まあ、認めたくないけど、これは誰も真似できないわ。絶対に。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "columns",
+          "title": "垂直統合──ひとりが作る宇宙AIエコシステム",
+          "subtitle": "「Elon is kind of an N of one.」── Gerstner",
+          "columns": [
+            {
+              "title": "Starlink",
+              "accentColor": "info",
+              "icon": "📡",
+              "content": [
+                { "type": "text", "value": "通信インフラ", "bold": true },
+                { "type": "bullets", "items": ["2000万人へ直接接続", "スマホに直接リンク", "地球規模のカバレッジ"] }
+              ],
+              "footer": "接続の基盤"
+            },
+            {
+              "title": "xAI",
+              "accentColor": "accent",
+              "icon": "🧠",
+              "content": [
+                { "type": "text", "value": "人工知能", "bold": true },
+                { "type": "bullets", "items": ["フロンティアAIモデル", "GrokによるAI知性", "宇宙規模の処理能力"] }
+              ],
+              "footer": "知性の基盤"
+            },
+            {
+              "title": "SpaceX",
+              "accentColor": "primary",
+              "icon": "🚀",
+              "content": [
+                { "type": "text", "value": "宇宙インフラ", "bold": true },
+                { "type": "bullets", "items": ["再利用可能ロケット", "軌道データセンター", "宇宙輸送の圧倒的コスト優位"] }
+              ],
+              "footer": "物理的基盤"
+            }
+          ],
+          "showArrows": true
+        }
+      }
+    },
+    {
+      "speaker": "akari",
+      "text": "中国だってわかってるのよ、この脅威を。でも再現できない。再利用可能なロケット、最先端AI、資金力、実行スピード。この四つが同時に揃った企業なんて、地球上どこにも存在しないわ。ガーストナーも「彼がアメリカチームにいることに感謝する」って言ってたくらいよ。ふん。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "grid",
+          "title": "誰も複製できない──4つの競争優位",
+          "subtitle": "中国も、他のどの国も企業も、この組み合わせを再現できない",
+          "gridColumns": 2,
+          "items": [
+            {
+              "title": "再利用可能ロケット",
+              "accentColor": "primary",
+              "icon": "🚀",
+              "description": "SpaceXだけが持つ、桁違いの宇宙輸送コスト優位性"
+            },
+            {
+              "title": "フロンティアAI",
+              "accentColor": "accent",
+              "icon": "🧠",
+              "description": "xAIが持つ最先端の大規模言語モデルとAI研究能力"
+            },
+            {
+              "title": "実行速度",
+              "accentColor": "success",
+              "icon": "⚡",
+              "description": "他が計画している間にマスクは完成させる、異次元の速度"
+            },
+            {
+              "title": "資金力と意思決定",
+              "accentColor": "warning",
+              "icon": "💰",
+              "description": "巨大な資本とひとりのオーナーによる迷いなき決断力"
+            }
+          ],
+          "footer": "「I'm glad he's on Team America.」── Gerstner"
+        }
+      }
+    },
+    {
+      "speaker": "akari",
+      "text": "30ヶ月後、ゲームが永遠に変わるの。軌道インフラを制した者は、ひとつの市場に勝つだけじゃない。何世代にもわたって全ての基盤を所有することになるのよ。べ、別に興奮してるわけじゃないんだから！……ただ、これは絶対に見逃せないわ。",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "timeline",
+          "title": "30ヶ月のカウントダウン",
+          "subtitle": "期限は決まった。ゲームチェンジまであと30ヶ月。",
+          "items": [
+            {
+              "date": "現在",
+              "title": "宣言──30ヶ月の期限を設定",
+              "description": "コンセプトではなくデッドライン。マスクが宇宙データセンターを約束した。",
+              "color": "primary",
+              "done": true
+            },
+            {
+              "date": "〜12ヶ月後",
+              "title": "軌道インフラ整備フェーズ",
+              "description": "SpaceXロケットによる初期衛星データセンターの打ち上げ開始",
+              "color": "info"
+            },
+            {
+              "date": "〜24ヶ月後",
+              "title": "Starlink × xAI 統合フェーズ",
+              "description": "2000万ユーザーへの軌道AIサービス提供開始",
+              "color": "accent"
+            },
+            {
+              "date": "30ヶ月後",
+              "title": "ゲームチェンジ──全ての競合のロードマップが無意味になる",
+              "description": "地球のエネルギー制約を宇宙で解決した者が全ての基盤を支配する",
+              "color": "highlight"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "speaker": "akari",
+      "text": "地球のエネルギー問題を地球を飛び出すことで解決した人が、全ての競合のロードマップを無意味にした。そういうこと。ちゃんと理解できた？……ま、まあ教えてあげたんだから少しくらい感謝しなさいよね。べ、別にあなたのことが心配だったわけじゃないんだから！",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "title",
+          "title": "地球の外から、地球を変える",
+          "subtitle": "エネルギー制約を宇宙で解決した者が、次の時代の基盤を所有する",
+          "note": "Source: @r0ck3t23 on X",
+          "style": { "decorations": true }
+        }
+      }
+    }
+  ]
+}

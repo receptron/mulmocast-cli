@@ -1,0 +1,470 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "ja",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "title": "Personal Brain OS：ファイルシステムが新しいデータベースや",
+  "description": "Muratcan Koylan の Personal Brain OS 記事を大阪弁でユーモラスに解説するプレゼンテーション",
+  "references": [
+    {
+      "url": "https://x.com/koylanai/status/2025286163641118915",
+      "title": "The File System Is the New Database: How I Built a Personal OS for AI Agents",
+      "type": "article"
+    }
+  ],
+  "speechParams": {
+    "speakers": {
+      "ナレーター": {
+        "voiceId": "nova",
+        "speechOptions": { "instruction": "Speak in Osaka dialect (関西弁・大阪弁). Use a lively, friendly, and humorous tone." }
+      }
+    }
+  },
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "FFF0F5",
+        "bgCard": "FFFFFF",
+        "bgCardAlt": "FDE8EF",
+        "text": "1A1A2E",
+        "textMuted": "4A4A6A",
+        "textDim": "9090B0",
+        "primary": "E91E63",
+        "accent": "7C3AED",
+        "success": "10B981",
+        "warning": "F59E0B",
+        "danger": "EF4444",
+        "info": "06B6D4",
+        "highlight": "F97316"
+      },
+      "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+    }
+  },
+  "imageParams": {
+    "provider": "google",
+    "images": {
+      "brain_os": {
+        "type": "imagePrompt",
+        "prompt": "A glowing digital brain connected to organized file folders and git repository visualization, pink and purple neon circuits, dark background, futuristic personal OS concept art, clean minimal aesthetic"
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "AIとの会話、毎回おんなじことゆうてへん？「私はこんな人間でして、今こんなプロジェクトやってまして…」。40分後にはモデルがあなたの声を忘れてプレスリリースみたいな文章書き出す。ほんまあかんやろ、これ。Muratcan Koylanさんはそれに嫌気がさして、自分専用のOSを作ることにしたんや。",
+      "speaker": "ナレーター",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "title",
+          "title": "毎回自己紹介するの、もうあかんやろ！",
+          "subtitle": "AIエージェントのための Personal Brain OS（大阪弁解説版）",
+          "author": "by Muratcan Koylan"
+        }
+      }
+    },
+    {
+      "text": "なんで毎回リセットされるかというとな、言語モデルには有限のコンテキストウィンドウがあって、そこに何でもかんでも突っ込んだら逆効果やねん。最初と最後は覚えてるけど真ん中がぼんやりする「U字型注意力」があるんや。いくらええ情報でも、設計が悪かったら埋もれてまう。プロンプトを磨くだけじゃあかん、情報の構造そのものを設計せなあかんのや。",
+      "speaker": "ナレーター",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 55,
+            "valign": "top",
+            "title": "なんでAIは忘れるんや？",
+            "content": [
+              {
+                "type": "chart",
+                "chartData": {
+                  "type": "line",
+                  "data": {
+                    "labels": ["先頭", "序盤", "中盤", "終盤", "末尾"],
+                    "datasets": [
+                      {
+                        "label": "注意力",
+                        "data": [9, 6, 3, 5, 8],
+                        "borderColor": "#E91E63",
+                        "backgroundColor": "rgba(233, 30, 99, 0.15)",
+                        "fill": true,
+                        "tension": 0.4,
+                        "pointBackgroundColor": "#E91E63",
+                        "pointRadius": 7
+                      }
+                    ]
+                  }
+                },
+                "title": "AIのU字型注意力（トークン位置別）"
+              }
+            ]
+          },
+          "right": {
+            "ratio": 45,
+            "dark": true,
+            "valign": "top",
+            "content": [
+              {
+                "type": "section",
+                "label": "問題",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": ["毎回おんなじ自己紹介", "コンテキストの無駄遣い", "中間の情報が{danger:埋もれる}"]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "解決",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "bullets",
+                    "items": ["プロンプトやなく{success:設計}が大事", "必要な時に必要なものだけ", "情報構造そのものを最適化"]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "そこで登場するのが Personal Brain OS や。Gitリポジトリひとつに収まった80本以上のファイル、DBもAPIもビルドステップも必要なし。CursorやClaude Codeで開けば、AIが勝手にあなたの声も目標も人脈も失敗歴も全部把握してくれる。クローンしてすぐ動く、ポータブルなあなただけのOSや。",
+      "speaker": "ナレーター",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 48,
+            "dark": true,
+            "valign": "center",
+            "content": [
+              {
+                "type": "imageRef",
+                "ref": "brain_os",
+                "alt": "Personal Brain OS concept",
+                "fit": "contain"
+              }
+            ]
+          },
+          "right": {
+            "ratio": 52,
+            "labelBadge": true,
+            "label": "Personal Brain OS",
+            "accentColor": "primary",
+            "valign": "top",
+            "content": [
+              {
+                "type": "text",
+                "value": "Gitリポジトリひとつで完結するAI専用OS",
+                "fontSize": 18,
+                "dim": true
+              },
+              {
+                "type": "bullets",
+                "icon": "▸",
+                "items": [
+                  "{success:80+} ファイル（Markdown / YAML / JSONL）",
+                  "DB・API・ビルドステップ {success:一切不要}",
+                  "Cursor / Claude Code で即起動",
+                  "Git で完全バージョン管理",
+                  "クローンして {success:どこでも即動作}"
+                ]
+              },
+              {
+                "type": "callout",
+                "text": "あなたの声・目標・人脈・失敗歴、全部AIが把握してる状態を作れる",
+                "style": "info"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "システムは11個の独立したモジュールに分かれとって、ブログ書くときはブランドファイルだけ、商談の準備では人脈ファイルだけを読み込む。さらに3レベルで段階的に開示する仕組みや。Level 1はルーティング、Level 2はモジュール指示書、Level 3が実データ。どんな情報も最大2ホップで届く設計になっとんねん。",
+      "speaker": "ナレーター",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 50,
+            "valign": "top",
+            "title": "プログレッシブ開示の3レベル",
+            "content": [
+              {
+                "type": "mermaid",
+                "code": "graph TD\n  A[Level 1: SKILL.md 常時ロード] --> B[Level 2: モジュール指示書]\n  B --> C[Level 3: 実データ 必要時のみ]\n  style A fill:#E91E63,color:#fff,stroke:#E91E63\n  style B fill:#7C3AED,color:#fff,stroke:#7C3AED\n  style C fill:#10B981,color:#fff,stroke:#10B981"
+              }
+            ]
+          },
+          "right": {
+            "ratio": 50,
+            "dark": true,
+            "valign": "top",
+            "content": [
+              {
+                "type": "section",
+                "label": "Lv1",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "**SKILL.md** — 常時読み込み。タスクを振り分けるルーター"
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Lv2",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "**CONTENT.md / NETWORK.md** など。タスク別の動作ルール（40〜100行）"
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "Lv3",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "**JSONL / YAML** の実データ。必要な時だけロード"
+                  }
+                ]
+              },
+              {
+                "type": "callout",
+                "text": "どの情報も最大 {primary:2ホップ} で到達できる設計",
+                "style": "info"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "ファイル形式にも理由があんねん。JSONLは追記専用でデータを上書きから守る、YAMLは階層データとコメントに強い、マークダウンはLLMがそのまま読める。でも一番大事なんは「記憶の質」や。事実だけやなく、経験・意思決定・失敗のログを残すことで、AIはあなたの判断基準そのものを学んでいく。",
+      "speaker": "ナレーター",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 52,
+            "valign": "top",
+            "title": "ファイルシステムが記憶装置",
+            "content": [
+              {
+                "type": "section",
+                "label": "JSONL",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "追記専用・1行＝1件。{success:上書き不可}の安全設計"
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "YAML",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "階層データ＋コメント対応。目標・価値観・人脈の設定ファイルに"
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "label": "MD",
+                "color": "primary",
+                "sidebar": true,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "LLMがネイティブに読める。声ガイド・リサーチ・テンプレートに"
+                  }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "ratio": 48,
+            "dark": true,
+            "valign": "top",
+            "title": "エピソード記憶の3種",
+            "content": [
+              {
+                "type": "metric",
+                "value": "11",
+                "label": "JSONL ログファイル数",
+                "color": "info"
+              },
+              {
+                "type": "metric",
+                "value": "6",
+                "label": "YAML 設定ファイル数",
+                "color": "primary"
+              },
+              {
+                "type": "metric",
+                "value": "50+",
+                "label": "Markdown ファイル数",
+                "color": "accent"
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "bullets",
+                "icon": "▸",
+                "items": [
+                  "{primary:experiences.jsonl} — 感情スコア付き体験ログ",
+                  "{warning:decisions.jsonl} — 判断・選択肢・結果",
+                  "{danger:failures.jsonl} — 失敗・根本原因・再発防止"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "「プロフェッショナルやけど親しみやすい感じで」って言うてもAIには伝わらへん。せやから数値で定義するんや。フォーマル度6、遊び心4、テクニカル度7。禁止ワード50個以上、禁止語頭もリストアップ。スキルシステムで、ブログ執筆コマンド一発打つだけで声ガイド・禁止パターン・テンプレートが自動ロード。毎回ゼロから説明せんでもええようになるんや。",
+      "speaker": "ナレーター",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "ratio": 45,
+            "dark": true,
+            "valign": "top",
+            "title": "声を数値で定義する",
+            "content": [
+              {
+                "type": "metric",
+                "value": "6/10",
+                "label": "フォーマル度（カジュアル寄り）",
+                "color": "primary"
+              },
+              {
+                "type": "metric",
+                "value": "4/10",
+                "label": "真面目度（遊び心あり）",
+                "color": "highlight"
+              },
+              {
+                "type": "metric",
+                "value": "7/10",
+                "label": "テクニカル度",
+                "color": "info"
+              },
+              {
+                "type": "metric",
+                "value": "50+",
+                "label": "禁止ワード数",
+                "color": "danger"
+              }
+            ]
+          },
+          "right": {
+            "ratio": 55,
+            "valign": "top",
+            "title": "/write-blog と打つだけで…",
+            "content": [
+              {
+                "type": "bullets",
+                "icon": "▸",
+                "items": [
+                  "{success:自動ロード} 声ガイド（how to write）",
+                  "{success:自動ロード} 禁止パターン（what NOT to write）",
+                  "{success:自動ロード} ブログテンプレート（7セクション構成）",
+                  "{success:自動ロード} ペルソナ・既存リサーチ"
+                ]
+              },
+              {
+                "type": "callout",
+                "text": "ワンコマンドでコンテキスト全組み立て完了。毎回ゼロから説明不要やで！",
+                "style": "info"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "もちろん最初からうまくいったわけやない。スキーマは15項目作ったら空欄だらけで混乱した。声ガイドを1200行書いたら後半は誰も読まへん。モジュール境界がズボラやとトークンが40%も増えた。そして一番痛かったのは、エージェントがJSONLを上書きして3ヶ月分のデータが消えた件や。Append-onlyは設計の好みやなく、命綱やったんやな。",
+      "speaker": "ナレーター",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "title": "失敗から学んだこと",
+          "left": {
+            "title": "やらかしたこと",
+            "accentColor": "danger",
+            "content": [
+              {
+                "type": "bullets",
+                "items": [
+                  "スキーマを{danger:15項目}→空欄だらけで混乱",
+                  "声ガイドを{danger:1200行}→後半誰も読まへん",
+                  "モジュール境界ズボラ→トークン{danger:+40%}増加",
+                  "エージェントがJSONL{danger:上書き}→3ヶ月消滅"
+                ]
+              }
+            ],
+            "footer": "痛い授業料やったで…"
+          },
+          "right": {
+            "title": "正解はこっちや",
+            "accentColor": "success",
+            "content": [
+              {
+                "type": "bullets",
+                "items": [
+                  "スキーマは{success:8〜10項目}に絞る",
+                  "重要ルールを{success:先頭100行}に集中させる",
+                  "モジュール境界＝{success:ロードの決断}と心得る",
+                  "{success:Append-only}は命綱（絶対守れ！）"
+                ]
+              }
+            ],
+            "footer": "シンプルなほどAIの動きがよくなる"
+          }
+        }
+      }
+    },
+    {
+      "text": "このシステムが示すのは、プロンプトを磨くだけでは本当の解決にならへんということや。本命はコンテキスト設計、「AIに何を、どう見せるか」という情報アーキテクチャや。ええメールを書くより、ええファイリングシステムを作る。そっちの方が毎回効いてくる。Gitリポジトリひとつで、どこのマシンでも、あなた専用のOSがすぐ動く。それがPersonal Brain OSの真骨頂や。",
+      "speaker": "ナレーター",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "bigQuote",
+          "quote": "プロンプトを磨くのはええことや。\nでも本命はコンテキスト設計や。\nええメールを書くより、ええファイリングシステムを作れ。\nそっちの方が毎回効いてくる。",
+          "author": "Muratcan Koylan",
+          "role": "Context Engineer at Sully.ai（大阪弁要約）"
+        }
+      }
+    }
+  ]
+}

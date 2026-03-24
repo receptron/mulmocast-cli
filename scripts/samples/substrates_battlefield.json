@@ -1,0 +1,367 @@
+{
+  "$mulmocast": {
+    "version": "1.1",
+    "credit": "closing"
+  },
+  "lang": "en",
+  "title": "The Era of Substrates — A Battlefield Without a Map",
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "0F172A",
+        "bgCard": "1E293B",
+        "bgCardAlt": "334155",
+        "text": "F8FAFC",
+        "textMuted": "CBD5E1",
+        "textDim": "64748B",
+        "primary": "3B82F6",
+        "accent": "8B5CF6",
+        "success": "22C55E",
+        "warning": "F59E0B",
+        "danger": "EF4444",
+        "info": "14B8A6",
+        "highlight": "EC4899"
+      },
+      "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
+    }
+  },
+  "canvasSize": {
+    "width": 1280,
+    "height": 720
+  },
+  "beats": [
+    {
+      "text": "Part 2 of The Era of Substrates series. A Battlefield Without a Map.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "title",
+          "title": "The Era of Substrates",
+          "subtitle": "Part 2: A Battlefield Without a Map",
+          "author": "@NuttyCLD",
+          "note": "Semiconductor Packaging's Three-Way War"
+        }
+      }
+    },
+    {
+      "text": "Glass substrates were supposed to be the inevitable next generation. But the reality is far more complex.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "bigQuote",
+          "quote": "Glass substrates are the inevitable next generation after organic. Low CTE, superior signal integrity, panel-level scalability. It's only a matter of time before the technically superior material replaces the incumbent.",
+          "author": "The Prevailing Assumption",
+          "role": "Part 2 begins by questioning this very conviction."
+        }
+      }
+    },
+    {
+      "text": "Three competing substrate technologies are battling for dominance: glass, organic, and silicon-based solutions.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "columns",
+          "title": "Three Camps, One Battlefield",
+          "subtitle": "Competing substrate technologies for next-gen AI chips",
+          "columns": [
+            {
+              "title": "Glass",
+              "accentColor": "primary",
+              "icon": "🔷",
+              "content": [
+                { "type": "bullets", "items": ["Low CTE matching", "Superior signal integrity", "Panel-level scalability", "Economics gap still too wide"] }
+              ]
+            },
+            {
+              "title": "Organic",
+              "accentColor": "success",
+              "icon": "🟢",
+              "content": [
+                {
+                  "type": "bullets",
+                  "items": ["25 years of production infra", "ABF at 95%+ market share", "Sub-5μm race underway", "Has NOT hit physical wall"]
+                }
+              ]
+            },
+            {
+              "title": "Silicon",
+              "accentColor": "accent",
+              "icon": "🟣",
+              "content": [
+                {
+                  "type": "bullets",
+                  "items": ["TSMC CoWoS dominance", "Chronic bottleneck = leverage", "CoPoS panel innovation", "CoWoP could kill substrates"]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "The glass camp has no clear leader despite massive investment.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "grid",
+          "title": "[Glass] A Battlefield Without a Leader",
+          "subtitle": "The armory is overflowing with weapons. But no leader has stepped forward.",
+          "gridColumns": 3,
+          "items": [
+            {
+              "title": "Intel",
+              "accentColor": "primary",
+              "icon": "🏭",
+              "content": [
+                {
+                  "type": "bullets",
+                  "items": [
+                    "Decade of work, $1B+ invested",
+                    "Holds ~50% of all patents",
+                    "Key engineer Gang Duan left for Samsung",
+                    "Flirting with IP licensing",
+                    "Commercial production unlikely before 2030"
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "Samsung",
+              "accentColor": "info",
+              "icon": "🔬",
+              "content": [
+                {
+                  "type": "bullets",
+                  "items": [
+                    "Most ambitious vertical integration",
+                    "SEMCO + Display + Foundry",
+                    "Recruited Gang Duan from Intel",
+                    "Prototypes failed customer specs (Nov 2025)",
+                    "Infrastructure impressive, quality is not"
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "Absolics (SKC)",
+              "accentColor": "warning",
+              "icon": "🏗️",
+              "content": [
+                {
+                  "type": "bullets",
+                  "items": [
+                    "$600M factory in Georgia",
+                    "$175M CHIPS Act support",
+                    "Missing: a major customer",
+                    "AMD closest but small volumes",
+                    "Mass production slipped to 2027"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Old physics doesn't die easily. The organic camp is fighting back hard.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "left": {
+            "title": "[Organic] Old Physics Doesn't Die",
+            "subtitle": "The incumbent fights back",
+            "accentColor": "success",
+            "dark": true,
+            "ratio": 45,
+            "content": [
+              {
+                "type": "callout",
+                "text": "We underestimate iterative incremental gains on old physics and overestimate our ability to tame new physics for large volume manufacturing.",
+                "label": "Raja Koduri",
+                "style": "quote"
+              }
+            ]
+          },
+          "right": {
+            "title": "Key Players",
+            "content": [
+              { "type": "text", "value": "Ajinomoto ABF", "bold": true, "color": "success" },
+              {
+                "type": "bullets",
+                "items": [
+                  "95%+ global market — de facto monopoly",
+                  "Current: ~10μm L/S, leading edge: 5-7μm",
+                  "Sub-5μm demos already on the table",
+                  "50% capacity expansion by 2030"
+                ]
+              },
+              { "type": "divider" },
+              { "type": "text", "value": "Intel EMIB", "bold": true, "color": "primary" },
+              {
+                "type": "bullets",
+                "items": ["Silicon bridges inside organic substrate", "Apple, Qualcomm, MediaTek eyeing it", "CoWoS bypass gaining traction"]
+              },
+              { "type": "divider" },
+              { "type": "text", "value": "Chipletz", "bold": true, "color": "accent" },
+              { "type": "bullets", "items": ["Smart Substrate — no silicon interposer", "SKC (Absolics parent) holds 12%"] }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "TSMC controls the bottleneck — and that bottleneck is a weapon, not a weakness.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "columns",
+          "title": "[Silicon] The One Who Grips the Bottleneck",
+          "subtitle": "TSMC's CoWoS shortage paradoxically maximizes pricing power and locks mega-customers in place",
+          "columns": [
+            {
+              "title": "Extension",
+              "accentColor": "primary",
+              "num": 1,
+              "content": [
+                { "type": "text", "value": "Scale CoWoS capacity", "bold": true },
+                { "type": "bullets", "items": ["AP8 & Chiayi AP7 fabs", "60-70% output increase by end of 2026", "Most reliable, intuitive card"] }
+              ]
+            },
+            {
+              "title": "Transformation",
+              "accentColor": "accent",
+              "num": 2,
+              "content": [
+                { "type": "text", "value": "CoPoS — Panel-on-Substrate", "bold": true },
+                {
+                  "type": "bullets",
+                  "items": ["310×310mm square panels", "VisEra pilot 2026, mass prod 2028", "NVIDIA as first customer", "Can absorb glass into TSMC ecosystem"]
+                }
+              ]
+            },
+            {
+              "title": "Deconstruction",
+              "accentColor": "danger",
+              "num": 3,
+              "content": [
+                { "type": "text", "value": "CoWoP — Chip-on-Wafer-on-PCB", "bold": true },
+                {
+                  "type": "bullets",
+                  "items": [
+                    "Eliminates substrate layer entirely",
+                    "Led by SPIL with NVIDIA",
+                    "Enormous practical barriers",
+                    "If it works: substrates cease to exist"
+                  ]
+                }
+              ]
+            }
+          ],
+          "showArrows": true,
+          "callout": {
+            "text": "TSMC has no reason to rush the resolution of this golden bottleneck.",
+            "color": "warning"
+          }
+        }
+      }
+    },
+    {
+      "text": "Six critical signals will determine which way the fog clears.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "table",
+          "title": "Signals to Read at the Crossroads",
+          "subtitle": "The signal that converts to \"achieved\" first determines which way the fog clears",
+          "headers": ["Camp", "Signal", "What It Means"],
+          "rows": [
+            [{ "text": "Glass", "color": "primary", "bold": true }, "Absolics's first PO (AMD)", "\"Experiment\" becomes \"industry\""],
+            [{ "text": "Glass", "color": "primary", "bold": true }, "Samsung qualification gate", "Second player verified = real industry"],
+            [{ "text": "Organic", "color": "success", "bold": true }, "ABF sub-5μm mass production", "Old guard holds; glass pushed to 2030s"],
+            [{ "text": "Organic", "color": "success", "bold": true }, "Intel EMIB goes mainstream", "Organic-based approach handles next-gen"],
+            [{ "text": "TSMC", "color": "accent", "bold": true }, "VisEra CoPoS panel pilot", "TSMC controls substrate choice"],
+            [{ "text": "TSMC", "color": "accent", "bold": true }, "CoWoP feasibility proven", "\"Substrate\" category ceases to exist"]
+          ],
+          "rowHeaders": false,
+          "striped": true
+        }
+      }
+    },
+    {
+      "text": "The glass substrate value chain has five layers with distinct players.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "grid",
+          "title": "Glass Substrate Value Chain",
+          "subtitle": "Key players across the five layers",
+          "gridColumns": 2,
+          "items": [
+            {
+              "title": "L0: Raw Materials",
+              "accentColor": "info",
+              "content": [
+                {
+                  "type": "bullets",
+                  "items": [
+                    "AGC, Corning, Schott, Hoya, PlanOptik",
+                    "Oligopoly — benefits from any glass expansion",
+                    "Ajinomoto monopoly on ABF (organic side)"
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "L1: Processing & Equipment",
+              "accentColor": "primary",
+              "content": [
+                {
+                  "type": "bullets",
+                  "items": ["TGV formation: SoulBrain, JWMT, Philoptics", "Display players: Samsung Display, BOE", "Large-area glass processing expertise"]
+                }
+              ]
+            },
+            {
+              "title": "L2: Substrate Manufacturing",
+              "accentColor": "accent",
+              "content": [
+                {
+                  "type": "bullets",
+                  "items": [
+                    "Glass: Absolics, Samsung SEMCO, DNP, JNTC",
+                    "Organic: Unimicron, Ibiden, Shinko, AT&S",
+                    "Organic makers running glass R&D as hedge"
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "L3–L4: Packaging & End Demand",
+              "accentColor": "warning",
+              "content": [
+                {
+                  "type": "bullets",
+                  "items": ["TSMC (CoWoS/CoPoS), Samsung, Intel Foundry", "NVIDIA, AMD, AWS, Google, Meta", "The apex predators decide the winner"]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "The fog won't last forever. When it lifts, the world divides into those who already claimed their ground, and those still searching for the path.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "bigQuote",
+          "quote": "The fog won't last forever. When it lifts, the world divides: those who already claimed their ground, and those still searching for the path.",
+          "author": "Nutty (@NuttyCLD)",
+          "role": "The Era of Substrates — Part 2"
+        }
+      }
+    }
+  ]
+}
