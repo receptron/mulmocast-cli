@@ -57,6 +57,16 @@
       "text": "Thank you for your attention. I hope this presentation has provided valuable insights into the world of artificial intelligence.",
       "moviePrompt": "A female presenter concluding their talk with a warm smile, gesturing towards the audience in a modern conference room",
       "enableLipSync": true
+    },
+    {
+      "id": "future_pixverse",
+      "text": "In the future, advancements in AI could revolutionize industries like healthcare, education, and transportation.",
+      "imagePrompt": "A female presenter is standing in front of a futuristic cityscape with AI-powered hospital and an autonomous vehicle.",
+      "moviePrompt": "A female presenter in a futuristic cityscape with AI-powered hospitals, autonomous vehicles, and interactive learning environments",
+      "enableLipSync": true,
+      "lipSyncParams": {
+        "model": "pixverse/lipsync"
+      }
     }
   ]
 }
