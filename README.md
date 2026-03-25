@@ -910,6 +910,20 @@ Examples:
 
 
 
+## Publishing Your Videos
+
+Once your video is generated, publish it to TikTok, YouTube Shorts, and Instagram Reels using [Upload-Post](https://upload-post.com):
+
+```bash
+curl -X POST https://api.upload-post.com/upload \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F "video=@output/video.mp4" \
+  -F "title=Your MulmoCast Video" \
+  -F "platforms=tiktok,youtube,instagram"
+```
+
+Upload-Post provides a single API to publish videos across all major platforms. [Get your API key here](https://upload-post.com).
+
 ## Contributing
 
 For developers interested in contributing to this project, please see [CONTRIBUTING.md](./CONTRIBUTING.md).
