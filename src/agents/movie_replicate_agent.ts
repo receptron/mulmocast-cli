@@ -27,6 +27,7 @@ async function generateMovie(
   prompt: string,
   imagePath: string | undefined,
   lastFrameImagePath: string | undefined,
+  referenceImages: { imagePath: string; referenceType: "ASSET" | "STYLE" }[] | undefined,
   aspectRatio: string,
   duration: number,
 ): Promise<Buffer | undefined> {
@@ -61,6 +62,21 @@ async function generateMovie(
       });
     } else {
       input.image = base64Image;
+    }
+  }
+
+  // Add reference images if provided and model supports it
+  const referenceImagesParam = provider2MovieAgent.replicate.modelParams[model]?.reference_images_param;
+  if (referenceImages && referenceImages.length > 0) {
+    if (!referenceImagesParam) {
+      GraphAILogger.warn(`movieReplicateAgent: model ${model} does not support referenceImages — ignoring`);
+    } else if (imagePath) {
+      GraphAILogger.warn(`movieReplicateAgent: referenceImages cannot be combined with first frame image — ignoring referenceImages`);
+    } else {
+      (input as Record<string, unknown>)[referenceImagesParam] = referenceImages.map((ref) => {
+        const buffer = readFileSync(ref.imagePath);
+        return `data:image/png;base64,${buffer.toString("base64")}`;
+      });
     }
   }
 
@@ -121,7 +137,7 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
   params,
   config,
 }) => {
-  const { prompt, imagePath, lastFrameImagePath } = namedInputs;
+  const { prompt, imagePath, lastFrameImagePath, referenceImages } = namedInputs;
   const aspectRatio = getAspectRatio(params.canvasSize);
   const model = params.model ?? provider2MovieAgent.replicate.defaultModel;
   if (!provider2MovieAgent.replicate.modelParams[model]) {
@@ -148,7 +164,7 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
   }
 
   try {
-    const buffer = await generateMovie(model, apiKey, prompt, imagePath, lastFrameImagePath, aspectRatio, duration);
+    const buffer = await generateMovie(model, apiKey, prompt, imagePath, lastFrameImagePath, referenceImages, aspectRatio, duration);
     if (buffer) {
       return { buffer };
     }
