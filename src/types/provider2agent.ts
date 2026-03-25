@@ -98,6 +98,8 @@ export const provider2MovieAgent = {
       "kwaivgi/kling-v2.1-master",
       "google/veo-2",
       "google/veo-3",
+      "google/veo-3.1",
+      "google/veo-3.1-fast",
       "google/veo-3-fast",
       "minimax/video-01",
       "minimax/hailuo-02",
@@ -147,6 +149,19 @@ export const provider2MovieAgent = {
         durations: [8],
         start_image: "image",
         price_per_sec: 0.75,
+      },
+      "google/veo-3.1": {
+        durations: [4, 6, 8],
+        start_image: "image",
+        last_image: "last_frame_image",
+        reference_images_param: "reference_images",
+        price_per_sec: 0.75,
+      },
+      "google/veo-3.1-fast": {
+        durations: [4, 6, 8],
+        start_image: "image",
+        last_image: "last_frame_image",
+        price_per_sec: 0.4,
       },
       "google/veo-3-fast": {
         durations: [8],

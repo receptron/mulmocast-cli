@@ -7,9 +7,9 @@
         "type": "imagePrompt",
         "prompt": "a young woman with short black hair wearing a red leather jacket and dark sunglasses, standing on a neon-lit Tokyo street at night, photo realistic"
       },
-      "tokyo_night": {
+      "black_cat": {
         "type": "imagePrompt",
-        "prompt": "cinematic neon-noir aesthetic, rain-slicked streets reflecting colorful lights, shallow depth of field, film grain, Tokyo at night"
+        "prompt": "small black cat"
       }
     }
   },
@@ -27,7 +27,20 @@
         "model": "veo-3.1-generate-preview",
         "referenceImages": [
           { "imageName": "character", "referenceType": "ASSET" },
-          { "imageName": "tokyo_night", "referenceType": "ASSET" }
+          { "imageName": "black_cat", "referenceType": "ASSET" }
+        ]
+      }
+    },
+    {
+      "id": "veo31_replicate_asset_reference",
+      "text": "google/veo-3.1 (replicate) with reference images",
+      "moviePrompt": "the woman walks through a crowded neon-lit Tokyo street at night, rain falling gently around her",
+      "movieParams": {
+        "provider": "replicate",
+        "model": "google/veo-3.1",
+        "referenceImages": [
+          { "imageName": "character", "referenceType": "ASSET" },
+          { "imageName": "black_cat", "referenceType": "ASSET" }
         ]
       }
     },
@@ -40,7 +53,7 @@
         "model": "kwaivgi/kling-v3-omni-video",
         "referenceImages": [
           { "imageName": "character", "referenceType": "ASSET" },
-          { "imageName": "tokyo_night", "referenceType": "ASSET" }
+          { "imageName": "black_cat", "referenceType": "ASSET" }
         ]
       }
     }
