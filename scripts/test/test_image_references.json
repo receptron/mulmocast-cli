@@ -7,7 +7,7 @@
         "type": "imagePrompt",
         "prompt": "a young woman with short black hair wearing a red leather jacket and dark sunglasses, standing on a neon-lit Tokyo street at night, photo realistic"
       },
-      "style_ref": {
+      "tokyo_night": {
         "type": "imagePrompt",
         "prompt": "cinematic neon-noir aesthetic, rain-slicked streets reflecting colorful lights, shallow depth of field, film grain, Tokyo at night"
       }
@@ -20,28 +20,6 @@
   "lang": "en",
   "beats": [
     {
-      "id": "veo31_asset_reference",
-      "text": "veo-3.1 with character ASSET reference image",
-      "moviePrompt": "the woman walks through a crowded neon-lit Tokyo street at night, rain falling gently around her",
-      "movieParams": {
-        "model": "veo-3.1-generate-preview",
-        "referenceImages": [
-          { "imageName": "character", "referenceType": "ASSET" }
-        ]
-      }
-    },
-    {
-      "id": "veo31_style_reference",
-      "text": "veo-3.1 with neon-noir STYLE reference image",
-      "moviePrompt": "a cat walks across a wet rooftop overlooking the Tokyo skyline at night",
-      "movieParams": {
-        "model": "veo-3.1-generate-preview",
-        "referenceImages": [
-          { "imageName": "style_ref", "referenceType": "STYLE" }
-        ]
-      }
-    },
-    {
       "id": "veo31_asset_and_style",
       "text": "veo-3.1 with both ASSET and STYLE reference images",
       "moviePrompt": "the woman runs through narrow alleyways, neon signs blurring in the rain",
@@ -49,19 +27,7 @@
         "model": "veo-3.1-generate-preview",
         "referenceImages": [
           { "imageName": "character", "referenceType": "ASSET" },
-          { "imageName": "style_ref", "referenceType": "STYLE" }
-        ]
-      }
-    },
-    {
-      "id": "kling_v3_asset_reference",
-      "text": "kling-v3-video with character ASSET reference image",
-      "moviePrompt": "the woman walks through a crowded neon-lit Tokyo street at night, rain falling gently around her",
-      "movieParams": {
-        "provider": "replicate",
-        "model": "kwaivgi/kling-v3-video",
-        "referenceImages": [
-          { "imageName": "character", "referenceType": "ASSET" }
+          { "imageName": "tokyo_night", "referenceType": "ASSET" }
         ]
       }
     },
@@ -73,7 +39,8 @@
         "provider": "replicate",
         "model": "kwaivgi/kling-v3-omni-video",
         "referenceImages": [
-          { "imageName": "character", "referenceType": "ASSET" }
+          { "imageName": "character", "referenceType": "ASSET" },
+          { "imageName": "tokyo_night", "referenceType": "ASSET" }
         ]
       }
     }
