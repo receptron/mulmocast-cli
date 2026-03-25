@@ -263,7 +263,7 @@ export const provider2LipSyncAgent = {
     agentName: "lipSyncReplicateAgent",
     defaultModel: "bytedance/omni-human" as ReplicateModel,
     keyName: "REPLICATE_API_TOKEN",
-    models: ["bytedance/latentsync", "tmappdev/lipsync", "bytedance/omni-human"] as ReplicateModel[],
+    models: ["bytedance/latentsync", "tmappdev/lipsync", "bytedance/omni-human", "pixverse/lipsync"] as ReplicateModel[],
     modelParams: {
       "bytedance/latentsync": {
         identifier: "bytedance/latentsync:637ce1919f807ca20da3a448ddc2743535d2853649574cd52a933120e9b9e293",
@@ -281,14 +281,20 @@ export const provider2LipSyncAgent = {
         audio: "audio",
         price_per_sec: 0.14,
       },
+      "pixverse/lipsync": {
+        identifier: "pixverse/lipsync:3ca6d73f4fb9e1d77a4b6e14f8998ee18926e4dc462838e31fa2bb5e662c1e2c",
+        video: "video",
+        audio: "audio",
+      },
       /* NOTE: This model does not work with large base64 urls.
       "sync/lipsync-2": {
         video: "video",
         audio: "audio",
       },
       */
-      /* NOTE: This model does not work well for some unknown reason.
+      /* NOTE: This model does not work with base64 data URIs (error 1201).
       "kwaivgi/kling-lip-sync": {
+        identifier: "kwaivgi/kling-lip-sync:8311467f07043d4b3feb44584d2586bfa2fc70203eca612ed26f84d0b55df3ce",
         video: "video_url",
         audio: "audio_file",
       },

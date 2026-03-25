@@ -1,0 +1,62 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lipSyncParams": {
+    "provider": "replicate",
+    "model": "bytedance/latentsync"
+  },
+  "audioParams": {
+    "bgmVolume": 0.01,
+    "introPadding": 0,
+    "padding": 0.0
+  },
+  "imageParams": {
+    "images": {
+      "presenter": {
+        "type": "imagePrompt",
+        "prompt": "A professional female presenter standing in front of a modern presentation screen, speaking confidently, photo realistic, front-facing, neutral expression, well-lit"
+      }
+    }
+  },
+  "lang": "en",
+  "beats": [
+    {
+      "id": "latentsync",
+      "text": "Artificial intelligence is transforming the world around us, enabling machines to learn, adapt, and solve complex problems in ways we never imagined possible.",
+      "imageNames": ["presenter"],
+      "moviePrompt": "A professional female presenter speaking in front of a modern presentation screen",
+      "enableLipSync": true,
+      "lipSyncParams": {
+        "model": "bytedance/latentsync"
+      }
+    },
+    {
+      "id": "tmappdev_lipsync",
+      "text": "Artificial intelligence is transforming the world around us, enabling machines to learn, adapt, and solve complex problems in ways we never imagined possible.",
+      "imageNames": ["presenter"],
+      "moviePrompt": "A professional female presenter speaking in front of a modern presentation screen",
+      "enableLipSync": true,
+      "lipSyncParams": {
+        "model": "tmappdev/lipsync"
+      }
+    },
+    {
+      "id": "omni_human",
+      "text": "Artificial intelligence is transforming the world around us.",
+      "imageNames": ["presenter"],
+      "enableLipSync": true,
+      "lipSyncParams": {
+        "model": "bytedance/omni-human"
+      }
+    },
+    {
+      "id": "pixverse_lipsync",
+      "text": "Artificial intelligence is transforming the world around us, enabling machines to learn, adapt, and solve complex problems in ways we never imagined possible.",
+      "imageNames": ["presenter"],
+      "moviePrompt": "A professional female presenter speaking in front of a modern presentation screen",
+      "enableLipSync": true,
+      "lipSyncParams": {
+        "model": "pixverse/lipsync"
+      }
+    }
+  ]
+}
