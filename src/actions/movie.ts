@@ -35,6 +35,7 @@ export const getVideoPart = (
   speed: number,
   filters?: MulmoVideoFilter[],
   frameCount?: number,
+  isLipSync?: boolean,
 ) => {
   const videoId = `v${inputIndex}`;
 
@@ -43,9 +44,14 @@ export const getVideoPart = (
   // Handle different media types
   const originalDuration = duration * speed;
   if (isMovie) {
-    // For videos, extend with last frame if shorter than required duration
-    // tpad will extend the video by cloning the last frame, then trim will ensure exact duration
-    videoFilters.push(`tpad=stop_mode=clone:stop_duration=${originalDuration * 2}`); // Use 2x duration to ensure coverage
+    if (!isLipSync) {
+      // For regular videos, extend with last frame if shorter than required duration.
+      // tpad will extend the video by cloning the last frame, then trim will ensure exact duration.
+      // NOTE: We skip tpad for lipSync videos because the lipSync agent already adjusts
+      // the output duration to match the audio. Applying tpad would clone the last frame
+      // and create visible freezes at beat transitions.
+      videoFilters.push(`tpad=stop_mode=clone:stop_duration=${originalDuration * 2}`); // Use 2x duration to ensure coverage
+    }
   } else {
     videoFilters.push("loop=loop=-1:size=1:start=0");
   }
@@ -518,7 +524,8 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
     );
     const speed = beat.movieParams?.speed ?? 1.0;
     const filters = beat.movieParams?.filters;
-    const { videoId, videoPart } = getVideoPart(inputIndex, isMovie, duration, canvasInfo, getFillOption(context, beat), speed, filters, frameCount);
+    const isLipSync = !!studioBeat.lipSyncFile;
+    const { videoId, videoPart } = getVideoPart(inputIndex, isMovie, duration, canvasInfo, getFillOption(context, beat), speed, filters, frameCount, isLipSync);
     ffmpegContext.filterComplex.push(videoPart);
 
     // for transition
