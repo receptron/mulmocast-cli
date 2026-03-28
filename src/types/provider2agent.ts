@@ -108,6 +108,7 @@ export const provider2MovieAgent = {
       "wan-video/wan-2.2-i2v-fast",
       "wan-video/wan-2.2-t2v-fast",
       "xai/grok-imagine-video",
+      "xai/grok-imagine-r2v",
       "runwayml/gen-4.5",
       "kwaivgi/kling-v3-omni-video",
       "kwaivgi/kling-v3-video",
@@ -201,8 +202,14 @@ export const provider2MovieAgent = {
         price_per_sec: 0.012,
       },
       "xai/grok-imagine-video": {
-        durations: [5, 8, 10, 15],
+        durations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         start_image: "image",
+        price_per_sec: 0.08,
+      },
+      "xai/grok-imagine-r2v": {
+        durations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        start_image: undefined,
+        reference_images_param: "reference_images",
         price_per_sec: 0.08,
       },
       "runwayml/gen-4.5": {
