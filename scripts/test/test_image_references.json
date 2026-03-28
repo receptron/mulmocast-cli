@@ -56,6 +56,19 @@
           { "imageName": "black_cat", "referenceType": "ASSET" }
         ]
       }
+    },
+    {
+      "id": "grok_r2v_reference",
+      "text": "xai/grok-imagine-r2v with character and cat reference images",
+      "moviePrompt": "the woman walks through a crowded neon-lit Tokyo street at night, rain falling gently around her, the black cat weaving between her feet",
+      "movieParams": {
+        "provider": "replicate",
+        "model": "xai/grok-imagine-r2v",
+        "referenceImages": [
+          { "imageName": "character", "referenceType": "ASSET" },
+          { "imageName": "black_cat", "referenceType": "ASSET" }
+        ]
+      }
     }
   ]
 }
