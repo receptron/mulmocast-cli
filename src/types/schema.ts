@@ -493,10 +493,10 @@ export const audioParamsSchema = z
     bgmVolume: z.number().optional().default(0.2).describe("Volume of the background music"),
     audioVolume: z.number().optional().default(1.0).describe("Volume of the audio"),
     suppressSpeech: z.boolean().optional().default(false).describe("Suppress speech generation"),
-    movieVolume: z.number().optional().describe("Default movie audio volume for all beats"),
-    ttsVolume: z.number().optional().describe("TTS narration volume in movie audio mixing"),
+    movieVolume: z.number().min(0).max(1).optional().describe("Default movie audio volume for all beats"),
+    ttsVolume: z.number().min(0).max(2).optional().describe("TTS narration volume in movie audio mixing"),
     ducking: z.boolean().optional().describe("Auto-reduce movie audio when TTS is playing"),
-    duckingRatio: z.number().optional().describe("Movie volume ratio when ducking is active (default 0.3)"),
+    duckingRatio: z.number().min(0).max(1).optional().describe("Movie volume ratio when ducking is active (default 0.3)"),
   })
   .strict();
 

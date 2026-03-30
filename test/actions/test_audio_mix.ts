@@ -48,6 +48,11 @@ test("isExplicitMixMode: returns false when ducking is false", () => {
   assert.strictEqual(isExplicitMixMode(context), false);
 });
 
+test("isExplicitMixMode: returns false when ducking is true but suppressSpeech is true", () => {
+  const context = createContextWithAudioParams({ ducking: true, suppressSpeech: true });
+  assert.strictEqual(isExplicitMixMode(context), false);
+});
+
 // --- mixAudiosFromMovieBeats: legacy mode ---
 
 test("mixAudiosFromMovieBeats: legacy mode - no movie audio returns artifactAudioId", () => {
