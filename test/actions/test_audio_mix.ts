@@ -75,6 +75,18 @@ test("mixAudiosFromMovieBeats: legacy mode - uses amix without normalize=0", () 
   assert.ok(!filterStr.includes("alimiter"), "should NOT include alimiter");
 });
 
+test("mixAudiosFromMovieBeats: legacy mode - filterComplex matches pre-PR format exactly", () => {
+  const context = createContextWithAudioParams();
+  const ffmpegContext = FfmpegContextInit();
+  mixAudiosFromMovieBeats(ffmpegContext, "0:a", ["a1", "a2", "a3"], context);
+
+  // This is the exact filterComplex that the pre-PR code would produce
+  assert.deepStrictEqual(ffmpegContext.filterComplex, [
+    "[0:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo[mainaudio]",
+    "[mainaudio][a1][a2][a3]amix=inputs=4:duration=first:dropout_transition=2[composite]",
+  ]);
+});
+
 // --- mixAudiosFromMovieBeats: manual mode ---
 
 test("mixAudiosFromMovieBeats: manual mode - uses normalize=0 and alimiter", () => {
