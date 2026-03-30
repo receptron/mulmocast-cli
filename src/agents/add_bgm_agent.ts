@@ -40,7 +40,7 @@ const addBGMAgent: AgentFunction<{ musicFile: string }, string, { voiceFile: str
     `[${voiceInputIndex}:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo, volume=${context.presentationStyle.audioParams.audioVolume}, adelay=${introPadding * 1000}|${introPadding * 1000}[voice]`,
   );
   const audioParams = context.presentationStyle.audioParams;
-  const useExplicitMix = audioParams.movieVolume !== undefined || audioParams.ttsVolume !== undefined || audioParams.ducking === true;
+  const useExplicitMix = audioParams.ttsVolume !== undefined;
   const amixNormalize = useExplicitMix ? ":normalize=0" : "";
   ffmpegContext.filterComplex.push(`[music][voice]amix=inputs=2:duration=longest${amixNormalize}[mixed]`);
   ffmpegContext.filterComplex.push(`[mixed]atrim=start=0:end=${totalDuration}[trimmed]`);

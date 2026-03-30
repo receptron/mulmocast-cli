@@ -472,7 +472,7 @@ export const mulmoSlideParamsSchema = z
 export const beatAudioParamsSchema = z
   .object({
     padding: z.number().optional().describe("Padding between beats"), // seconds
-    movieVolume: z.number().optional().default(1.0).describe("Audio volume of the imported or generated movie"),
+    movieVolume: z.number().min(0).max(1).optional().describe("Audio volume of the imported or generated movie"),
   })
   .strict();
 
