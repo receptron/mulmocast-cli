@@ -309,6 +309,17 @@ export const getNeedLastFrame = (context: MulmoStudioContext) => {
   });
 };
 
+export const resolveMovieVolume = (beat: MulmoBeat, context: MulmoStudioContext): number => {
+  const baseMovieVolume = beat.audioParams?.movieVolume ?? context.presentationStyle.audioParams.movieVolume ?? 1.0;
+  const isDuckingEnabled = context.presentationStyle.audioParams.ducking === true;
+  const hasTtsText = !!beat.text;
+  if (isDuckingEnabled && hasTtsText) {
+    const duckingRatio = context.presentationStyle.audioParams.duckingRatio ?? DEFAULT_DUCKING_RATIO;
+    return baseMovieVolume * duckingRatio;
+  }
+  return baseMovieVolume;
+};
+
 export const isExplicitMixMode = (context: MulmoStudioContext): boolean => {
   const audioParams = context.presentationStyle.audioParams;
   return audioParams.movieVolume !== undefined || audioParams.ttsVolume !== undefined || audioParams.ducking === true;
@@ -571,11 +582,7 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
     }
 
     // NOTE: We don't support audio if the speed is not 1.0.
-    const baseMovieVolume = beat.audioParams?.movieVolume ?? context.presentationStyle.audioParams.movieVolume ?? 1.0;
-    const hasTtsText = !!beat.text;
-    const isDuckingEnabled = context.presentationStyle.audioParams.ducking === true;
-    const duckingRatio = context.presentationStyle.audioParams.duckingRatio ?? DEFAULT_DUCKING_RATIO;
-    const movieVolume = isDuckingEnabled && hasTtsText ? baseMovieVolume * duckingRatio : baseMovieVolume;
+    const movieVolume = resolveMovieVolume(beat, context);
     if (studioBeat.hasMovieAudio && movieVolume > 0.0 && speed === 1.0) {
       // TODO: Handle a special case where it has lipSyncFile AND hasMovieAudio is on (the source file has an audio, such as sound effect).
       const { audioId, audioPart } = getAudioPart(inputIndex, duration, timestamp, movieVolume);
