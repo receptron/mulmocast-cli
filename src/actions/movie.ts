@@ -24,6 +24,7 @@ import { convertVideoFilterToFFmpeg } from "../utils/video_filter.js";
 // const isMac = process.platform === "darwin";
 const videoCodec = "libx264"; // "h264_videotoolbox" (macOS only) is too noisy
 const VIDEO_FPS = 30;
+const DUCKING_RATIO = 0.3; // When ducking is enabled, movie audio volume is multiplied by this ratio during TTS beats
 type VideoId = string | undefined;
 
 export const getVideoPart = (
@@ -308,15 +309,46 @@ export const getNeedLastFrame = (context: MulmoStudioContext) => {
   });
 };
 
-const mixAudiosFromMovieBeats = (ffmpegContext: FfmpegContext, artifactAudioId: string, audioIdsFromMovieBeats: string[]) => {
+export const isExplicitMixMode = (context: MulmoStudioContext): boolean => {
+  const audioParams = context.presentationStyle.audioParams;
+  return audioParams.movieVolume !== undefined || audioParams.ttsVolume !== undefined || audioParams.ducking === true;
+};
+
+export const mixAudiosFromMovieBeats = (
+  ffmpegContext: FfmpegContext,
+  artifactAudioId: string,
+  audioIdsFromMovieBeats: string[],
+  context: MulmoStudioContext,
+) => {
   if (audioIdsFromMovieBeats.length > 0) {
     const mainAudioId = "mainaudio";
     const compositeAudioId = "composite";
     const audioIds = audioIdsFromMovieBeats.map((id) => `[${id}]`).join("");
-    FfmpegContextPushFormattedAudio(ffmpegContext, `[${artifactAudioId}]`, `[${mainAudioId}]`);
-    ffmpegContext.filterComplex.push(
-      `[${mainAudioId}]${audioIds}amix=inputs=${audioIdsFromMovieBeats.length + 1}:duration=first:dropout_transition=2[${compositeAudioId}]`,
-    );
+    const useExplicitMix = isExplicitMixMode(context);
+
+    if (useExplicitMix) {
+      // Explicit mode: normalize=0 with volume control + limiter
+      // Ducking is handled at beat level (movieVolume is already adjusted per beat in createVideo)
+      const ttsVolume = context.presentationStyle.audioParams.ttsVolume ?? 1.0;
+      const ttsVolId = "tts_vol";
+      const mixedId = "mixed";
+
+      FfmpegContextPushFormattedAudio(ffmpegContext, `[${artifactAudioId}]`, `[${mainAudioId}]`);
+      ffmpegContext.filterComplex.push(`[${mainAudioId}]volume=${ttsVolume}[${ttsVolId}]`);
+
+      ffmpegContext.filterComplex.push(
+        `[${ttsVolId}]${audioIds}amix=inputs=${audioIdsFromMovieBeats.length + 1}:duration=first:dropout_transition=2:normalize=0[${mixedId}]`,
+      );
+
+      // Limiter as failsafe
+      ffmpegContext.filterComplex.push(`[${mixedId}]alimiter=limit=0.95:attack=5:release=50[${compositeAudioId}]`);
+    } else {
+      // Legacy mode: normalize=1 (current behavior, fully backward compatible)
+      FfmpegContextPushFormattedAudio(ffmpegContext, `[${artifactAudioId}]`, `[${mainAudioId}]`);
+      ffmpegContext.filterComplex.push(
+        `[${mainAudioId}]${audioIds}amix=inputs=${audioIdsFromMovieBeats.length + 1}:duration=first:dropout_transition=2[${compositeAudioId}]`,
+      );
+    }
     return `[${compositeAudioId}]`; // notice that we need to use [mainaudio] instead of mainaudio
   }
   return artifactAudioId;
@@ -539,7 +571,10 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
     }
 
     // NOTE: We don't support audio if the speed is not 1.0.
-    const movieVolume = beat.audioParams?.movieVolume ?? 1.0;
+    const baseMovieVolume = beat.audioParams?.movieVolume ?? context.presentationStyle.audioParams.movieVolume ?? 1.0;
+    const hasTtsText = !!beat.text;
+    const isDuckingEnabled = context.presentationStyle.audioParams.ducking === true;
+    const movieVolume = isDuckingEnabled && hasTtsText ? baseMovieVolume * DUCKING_RATIO : baseMovieVolume;
     if (studioBeat.hasMovieAudio && movieVolume > 0.0 && speed === 1.0) {
       // TODO: Handle a special case where it has lipSyncFile AND hasMovieAudio is on (the source file has an audio, such as sound effect).
       const { audioId, audioPart } = getAudioPart(inputIndex, duration, timestamp, movieVolume);
@@ -567,7 +602,7 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
   GraphAILogger.log("filterComplex:", ffmpegContext.filterComplex.join("\n"));
 
   const audioIndex = FfmpegContextAddInput(ffmpegContext, audioArtifactFilePath); // Add audio input
-  const ffmpegContextAudioId = mixAudiosFromMovieBeats(ffmpegContext, `${audioIndex}:a`, audioIdsFromMovieBeats);
+  const ffmpegContextAudioId = mixAudiosFromMovieBeats(ffmpegContext, `${audioIndex}:a`, audioIdsFromMovieBeats, context);
 
   await FfmpegContextGenerateOutput(ffmpegContext, outputVideoPath, getOutputOption(ffmpegContextAudioId, mixedVideoId));
   const endTime = performance.now();

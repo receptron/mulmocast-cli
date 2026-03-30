@@ -473,6 +473,7 @@ export const beatAudioParamsSchema = z
   .object({
     padding: z.number().optional().describe("Padding between beats"), // seconds
     movieVolume: z.number().optional().default(1.0).describe("Audio volume of the imported or generated movie"),
+    ttsVolume: z.number().optional().describe("TTS volume override for this beat in movie audio mixing"),
   })
   .strict();
 
@@ -493,6 +494,9 @@ export const audioParamsSchema = z
     bgmVolume: z.number().optional().default(0.2).describe("Volume of the background music"),
     audioVolume: z.number().optional().default(1.0).describe("Volume of the audio"),
     suppressSpeech: z.boolean().optional().default(false).describe("Suppress speech generation"),
+    movieVolume: z.number().optional().describe("Default movie audio volume for all beats"),
+    ttsVolume: z.number().optional().describe("TTS narration volume in movie audio mixing"),
+    ducking: z.boolean().optional().describe("Auto-reduce movie audio when TTS is playing"),
   })
   .strict();
 

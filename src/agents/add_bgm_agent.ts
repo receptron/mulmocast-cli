@@ -39,7 +39,10 @@ const addBGMAgent: AgentFunction<{ musicFile: string }, string, { voiceFile: str
   ffmpegContext.filterComplex.push(
     `[${voiceInputIndex}:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo, volume=${context.presentationStyle.audioParams.audioVolume}, adelay=${introPadding * 1000}|${introPadding * 1000}[voice]`,
   );
-  ffmpegContext.filterComplex.push(`[music][voice]amix=inputs=2:duration=longest[mixed]`);
+  const audioParams = context.presentationStyle.audioParams;
+  const useExplicitMix = audioParams.movieVolume !== undefined || audioParams.ttsVolume !== undefined || audioParams.ducking === true;
+  const amixNormalize = useExplicitMix ? ":normalize=0" : "";
+  ffmpegContext.filterComplex.push(`[music][voice]amix=inputs=2:duration=longest${amixNormalize}[mixed]`);
   ffmpegContext.filterComplex.push(`[mixed]atrim=start=0:end=${totalDuration}[trimmed]`);
   ffmpegContext.filterComplex.push(`[trimmed]afade=t=out:st=${totalDuration - outroPadding}:d=${outroPadding}[faded]`);
   try {
