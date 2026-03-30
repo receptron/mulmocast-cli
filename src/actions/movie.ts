@@ -24,7 +24,7 @@ import { convertVideoFilterToFFmpeg } from "../utils/video_filter.js";
 // const isMac = process.platform === "darwin";
 const videoCodec = "libx264"; // "h264_videotoolbox" (macOS only) is too noisy
 const VIDEO_FPS = 30;
-const DUCKING_RATIO = 0.3; // When ducking is enabled, movie audio volume is multiplied by this ratio during TTS beats
+const DEFAULT_DUCKING_RATIO = 0.3;
 type VideoId = string | undefined;
 
 export const getVideoPart = (
@@ -574,7 +574,8 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
     const baseMovieVolume = beat.audioParams?.movieVolume ?? context.presentationStyle.audioParams.movieVolume ?? 1.0;
     const hasTtsText = !!beat.text;
     const isDuckingEnabled = context.presentationStyle.audioParams.ducking === true;
-    const movieVolume = isDuckingEnabled && hasTtsText ? baseMovieVolume * DUCKING_RATIO : baseMovieVolume;
+    const duckingRatio = context.presentationStyle.audioParams.duckingRatio ?? DEFAULT_DUCKING_RATIO;
+    const movieVolume = isDuckingEnabled && hasTtsText ? baseMovieVolume * duckingRatio : baseMovieVolume;
     if (studioBeat.hasMovieAudio && movieVolume > 0.0 && speed === 1.0) {
       // TODO: Handle a special case where it has lipSyncFile AND hasMovieAudio is on (the source file has an audio, such as sound effect).
       const { audioId, audioPart } = getAudioPart(inputIndex, duration, timestamp, movieVolume);
