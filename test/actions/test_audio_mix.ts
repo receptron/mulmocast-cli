@@ -159,3 +159,9 @@ test("resolveMovieVolume: ducking with beat-level movieVolume override", () => {
   const result = resolveMovieVolume(beat, context);
   assert.strictEqual(result, 0.8 * 0.3);
 });
+
+test("resolveMovieVolume: ducking + suppressSpeech - no ducking applied", () => {
+  const context = createContextWithAudioParams({ ducking: true, suppressSpeech: true });
+  const result = resolveMovieVolume(beatWithText, context);
+  assert.strictEqual(result, 1.0, "should return full volume because speech is suppressed");
+});

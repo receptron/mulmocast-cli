@@ -312,8 +312,8 @@ export const getNeedLastFrame = (context: MulmoStudioContext) => {
 export const resolveMovieVolume = (beat: MulmoBeat, context: MulmoStudioContext): number => {
   const baseMovieVolume = beat.audioParams?.movieVolume ?? context.presentationStyle.audioParams.movieVolume ?? 1.0;
   const isDuckingEnabled = context.presentationStyle.audioParams.ducking === true;
-  const hasTtsText = !!beat.text;
-  if (isDuckingEnabled && hasTtsText) {
+  const hasSpeech = !!beat.text && !context.presentationStyle.audioParams.suppressSpeech;
+  if (isDuckingEnabled && hasSpeech) {
     const duckingRatio = context.presentationStyle.audioParams.duckingRatio ?? DEFAULT_DUCKING_RATIO;
     return baseMovieVolume * duckingRatio;
   }

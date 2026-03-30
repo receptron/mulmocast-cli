@@ -473,7 +473,6 @@ export const beatAudioParamsSchema = z
   .object({
     padding: z.number().optional().describe("Padding between beats"), // seconds
     movieVolume: z.number().optional().default(1.0).describe("Audio volume of the imported or generated movie"),
-    ttsVolume: z.number().optional().describe("TTS volume override for this beat in movie audio mixing"),
   })
   .strict();
 
