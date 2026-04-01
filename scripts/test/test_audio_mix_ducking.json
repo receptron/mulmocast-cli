@@ -18,7 +18,7 @@
   },
   "audioParams": {
     "bgmVolume": 0,
-    "ducking": true
+    "ducking": { "ratio": 0.3 }
   },
   "beats": [
     {

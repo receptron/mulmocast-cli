@@ -311,18 +311,18 @@ export const getNeedLastFrame = (context: MulmoStudioContext) => {
 
 export const resolveMovieVolume = (beat: MulmoBeat, context: MulmoStudioContext): number => {
   const baseMovieVolume = beat.audioParams?.movieVolume ?? context.presentationStyle.audioParams.movieVolume ?? 1.0;
-  const isDuckingEnabled = context.presentationStyle.audioParams.ducking === true;
+  const ducking = context.presentationStyle.audioParams.ducking;
   const hasSpeech = !!beat.text && !context.presentationStyle.audioParams.suppressSpeech;
-  if (isDuckingEnabled && hasSpeech) {
-    const duckingRatio = context.presentationStyle.audioParams.duckingRatio ?? DEFAULT_DUCKING_RATIO;
-    return baseMovieVolume * duckingRatio;
+  if (ducking && hasSpeech) {
+    const ratio = ducking.ratio ?? DEFAULT_DUCKING_RATIO;
+    return baseMovieVolume * ratio;
   }
   return baseMovieVolume;
 };
 
 export const isExplicitMixMode = (context: MulmoStudioContext): boolean => {
   const audioParams = context.presentationStyle.audioParams;
-  const isDuckingEffective = audioParams.ducking === true && !audioParams.suppressSpeech;
+  const isDuckingEffective = audioParams.ducking !== undefined && !audioParams.suppressSpeech;
   return audioParams.movieVolume !== undefined || audioParams.ttsVolume !== undefined || isDuckingEffective;
 };
 

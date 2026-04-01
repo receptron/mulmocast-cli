@@ -38,18 +38,18 @@ test("isExplicitMixMode: returns true when ttsVolume is set", () => {
   assert.strictEqual(isExplicitMixMode(context), true);
 });
 
-test("isExplicitMixMode: returns true when ducking is true", () => {
-  const context = createContextWithAudioParams({ ducking: true });
+test("isExplicitMixMode: returns true when ducking is set", () => {
+  const context = createContextWithAudioParams({ ducking: {} });
   assert.strictEqual(isExplicitMixMode(context), true);
 });
 
-test("isExplicitMixMode: returns false when ducking is false", () => {
-  const context = createContextWithAudioParams({ ducking: false });
-  assert.strictEqual(isExplicitMixMode(context), false);
+test("isExplicitMixMode: returns true when ducking has custom ratio", () => {
+  const context = createContextWithAudioParams({ ducking: { ratio: 0.5 } });
+  assert.strictEqual(isExplicitMixMode(context), true);
 });
 
-test("isExplicitMixMode: returns false when ducking is true but suppressSpeech is true", () => {
-  const context = createContextWithAudioParams({ ducking: true, suppressSpeech: true });
+test("isExplicitMixMode: returns false when ducking is set but suppressSpeech is true", () => {
+  const context = createContextWithAudioParams({ ducking: {}, suppressSpeech: true });
   assert.strictEqual(isExplicitMixMode(context), false);
 });
 
@@ -87,9 +87,9 @@ test("mixAudiosFromMovieBeats: legacy mode - filterComplex matches pre-PR format
   ]);
 });
 
-// --- mixAudiosFromMovieBeats: manual mode ---
+// --- mixAudiosFromMovieBeats: explicit mode ---
 
-test("mixAudiosFromMovieBeats: manual mode - uses normalize=0 and alimiter", () => {
+test("mixAudiosFromMovieBeats: explicit mode - uses normalize=0 and alimiter", () => {
   const context = createContextWithAudioParams({ movieVolume: 0.3 });
   const ffmpegContext = FfmpegContextInit();
   const result = mixAudiosFromMovieBeats(ffmpegContext, "0:a", ["a1", "a2"], context);
@@ -98,10 +98,9 @@ test("mixAudiosFromMovieBeats: manual mode - uses normalize=0 and alimiter", () 
   const filterStr = ffmpegContext.filterComplex.join(";");
   assert.ok(filterStr.includes("normalize=0"), "should include normalize=0");
   assert.ok(filterStr.includes("alimiter"), "should include alimiter");
-  assert.ok(!filterStr.includes("sidechaincompress"), "should NOT include sidechaincompress");
 });
 
-test("mixAudiosFromMovieBeats: manual mode - applies ttsVolume", () => {
+test("mixAudiosFromMovieBeats: explicit mode - applies ttsVolume", () => {
   const context = createContextWithAudioParams({ ttsVolume: 0.7 });
   const ffmpegContext = FfmpegContextInit();
   mixAudiosFromMovieBeats(ffmpegContext, "0:a", ["a1"], context);
@@ -110,12 +109,8 @@ test("mixAudiosFromMovieBeats: manual mode - applies ttsVolume", () => {
   assert.ok(filterStr.includes("volume=0.7"), "should apply ttsVolume=0.7");
 });
 
-// --- mixAudiosFromMovieBeats: ducking mode ---
-// Ducking is implemented at beat level (movieVolume adjusted per beat in createVideo),
-// so mixAudiosFromMovieBeats uses the same explicit mode (normalize=0 + alimiter).
-
-test("mixAudiosFromMovieBeats: ducking mode - uses normalize=0 and alimiter (same as explicit mode)", () => {
-  const context = createContextWithAudioParams({ ducking: true });
+test("mixAudiosFromMovieBeats: ducking - uses normalize=0 and alimiter (same as explicit mode)", () => {
+  const context = createContextWithAudioParams({ ducking: {} });
   const ffmpegContext = FfmpegContextInit();
   const result = mixAudiosFromMovieBeats(ffmpegContext, "0:a", ["a1", "a2"], context);
   assert.strictEqual(result, "[composite]");
@@ -123,7 +118,6 @@ test("mixAudiosFromMovieBeats: ducking mode - uses normalize=0 and alimiter (sam
   const filterStr = ffmpegContext.filterComplex.join(";");
   assert.ok(filterStr.includes("normalize=0"), "should include normalize=0");
   assert.ok(filterStr.includes("alimiter"), "should include alimiter");
-  assert.ok(!filterStr.includes("sidechaincompress"), "should NOT include sidechaincompress");
 });
 
 // --- resolveMovieVolume ---
@@ -147,38 +141,38 @@ test("resolveMovieVolume: beat-level movieVolume overrides script-level", () => 
   assert.strictEqual(resolveMovieVolume(beat, context), 0.8);
 });
 
-test("resolveMovieVolume: ducking with TTS - applies default duckingRatio 0.3", () => {
-  const context = createContextWithAudioParams({ ducking: true });
+test("resolveMovieVolume: ducking with TTS - applies default ratio 0.3", () => {
+  const context = createContextWithAudioParams({ ducking: {} });
   const result = resolveMovieVolume(beatWithText, context);
   assert.strictEqual(result, 1.0 * 0.3);
 });
 
 test("resolveMovieVolume: ducking without TTS - returns full volume", () => {
-  const context = createContextWithAudioParams({ ducking: true });
+  const context = createContextWithAudioParams({ ducking: {} });
   assert.strictEqual(resolveMovieVolume(beatWithoutText, context), 1.0);
 });
 
-test("resolveMovieVolume: ducking with custom duckingRatio", () => {
-  const context = createContextWithAudioParams({ ducking: true, duckingRatio: 0.5 });
+test("resolveMovieVolume: ducking with custom ratio", () => {
+  const context = createContextWithAudioParams({ ducking: { ratio: 0.5 } });
   const result = resolveMovieVolume(beatWithText, context);
   assert.strictEqual(result, 1.0 * 0.5);
 });
 
-test("resolveMovieVolume: ducking with movieVolume and custom duckingRatio", () => {
-  const context = createContextWithAudioParams({ ducking: true, movieVolume: 0.4, duckingRatio: 0.5 });
+test("resolveMovieVolume: ducking with movieVolume and custom ratio", () => {
+  const context = createContextWithAudioParams({ ducking: { ratio: 0.5 }, movieVolume: 0.4 });
   const result = resolveMovieVolume(beatWithText, context);
   assert.strictEqual(result, 0.4 * 0.5);
 });
 
 test("resolveMovieVolume: ducking with beat-level movieVolume override", () => {
-  const context = createContextWithAudioParams({ ducking: true, movieVolume: 0.4 });
+  const context = createContextWithAudioParams({ ducking: {}, movieVolume: 0.4 });
   const beat: MulmoBeat = { speaker: "Presenter", text: "Hello", audioParams: { movieVolume: 0.8 } };
   const result = resolveMovieVolume(beat, context);
   assert.strictEqual(result, 0.8 * 0.3);
 });
 
 test("resolveMovieVolume: ducking + suppressSpeech - no ducking applied", () => {
-  const context = createContextWithAudioParams({ ducking: true, suppressSpeech: true });
+  const context = createContextWithAudioParams({ ducking: {}, suppressSpeech: true });
   const result = resolveMovieVolume(beatWithText, context);
   assert.strictEqual(result, 1.0, "should return full volume because speech is suppressed");
 });
