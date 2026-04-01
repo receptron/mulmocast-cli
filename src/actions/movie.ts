@@ -322,9 +322,11 @@ export const resolveMovieVolume = (beat: MulmoBeat, context: MulmoStudioContext)
 
 export const isExplicitMixMode = (context: MulmoStudioContext): boolean => {
   const audioParams = context.presentationStyle.audioParams;
-  const isDuckingEffective = audioParams.ducking !== undefined && !audioParams.suppressSpeech;
+  const duckingRequested = audioParams.ducking !== undefined;
+  const speechSuppressed = audioParams.suppressSpeech === true;
+  const duckingAffectsMixMode = duckingRequested && !speechSuppressed;
   const hasBeatLevelMovieVolume = context.studio.script.beats.some((beat) => beat.audioParams?.movieVolume !== undefined);
-  return hasBeatLevelMovieVolume || audioParams.movieVolume !== undefined || audioParams.ttsVolume !== undefined || isDuckingEffective;
+  return hasBeatLevelMovieVolume || audioParams.movieVolume !== undefined || audioParams.ttsVolume !== undefined || duckingAffectsMixMode;
 };
 
 export const mixAudiosFromMovieBeats = (
