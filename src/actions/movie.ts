@@ -339,17 +339,14 @@ export const mixAudiosFromMovieBeats = (
     const useExplicitMix = isExplicitMixMode(context);
 
     if (useExplicitMix) {
-      // Explicit mode: normalize=0 with volume control + limiter
+      // Explicit mode: normalize=0 + limiter.
+      // ttsVolume is applied in addBGMAgent to avoid changing BGM level.
       // Ducking is handled at beat level (movieVolume is already adjusted per beat in createVideo)
-      const ttsVolume = context.presentationStyle.audioParams.ttsVolume ?? 1.0;
-      const ttsVolId = "tts_vol";
       const mixedId = "mixed";
 
       FfmpegContextPushFormattedAudio(ffmpegContext, `[${artifactAudioId}]`, `[${mainAudioId}]`);
-      ffmpegContext.filterComplex.push(`[${mainAudioId}]volume=${ttsVolume}[${ttsVolId}]`);
-
       ffmpegContext.filterComplex.push(
-        `[${ttsVolId}]${audioIds}amix=inputs=${audioIdsFromMovieBeats.length + 1}:duration=first:dropout_transition=2:normalize=0[${mixedId}]`,
+        `[${mainAudioId}]${audioIds}amix=inputs=${audioIdsFromMovieBeats.length + 1}:duration=first:dropout_transition=2:normalize=0[${mixedId}]`,
       );
 
       // Limiter as failsafe

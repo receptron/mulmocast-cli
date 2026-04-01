@@ -100,13 +100,14 @@ test("mixAudiosFromMovieBeats: explicit mode - uses normalize=0 and alimiter", (
   assert.ok(filterStr.includes("alimiter"), "should include alimiter");
 });
 
-test("mixAudiosFromMovieBeats: explicit mode - applies ttsVolume", () => {
+test("mixAudiosFromMovieBeats: explicit mode - does not apply ttsVolume to artifact audio", () => {
   const context = createContextWithAudioParams({ ttsVolume: 0.7 });
   const ffmpegContext = FfmpegContextInit();
   mixAudiosFromMovieBeats(ffmpegContext, "0:a", ["a1"], context);
 
   const filterStr = ffmpegContext.filterComplex.join(";");
-  assert.ok(filterStr.includes("volume=0.7"), "should apply ttsVolume=0.7");
+  assert.ok(!filterStr.includes("volume=0.7"), "should not apply ttsVolume in movie-stage mixing");
+  assert.ok(filterStr.includes("normalize=0"), "should keep explicit mode normalize=0");
 });
 
 test("mixAudiosFromMovieBeats: ducking - uses normalize=0 and alimiter (same as explicit mode)", () => {
