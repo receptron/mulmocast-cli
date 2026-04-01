@@ -53,6 +53,12 @@ test("isExplicitMixMode: returns false when ducking is set but suppressSpeech is
   assert.strictEqual(isExplicitMixMode(context), false);
 });
 
+test("isExplicitMixMode: returns true when only beat-level movieVolume is set", () => {
+  const context = createContextWithAudioParams();
+  context.studio.script.beats = [{ speaker: "Presenter", audioParams: { movieVolume: 0.5 } }];
+  assert.strictEqual(isExplicitMixMode(context), true);
+});
+
 // --- mixAudiosFromMovieBeats: legacy mode ---
 
 test("mixAudiosFromMovieBeats: legacy mode - no movie audio returns artifactAudioId", () => {
@@ -94,6 +100,17 @@ test("mixAudiosFromMovieBeats: explicit mode - uses normalize=0 and alimiter", (
   const ffmpegContext = FfmpegContextInit();
   const result = mixAudiosFromMovieBeats(ffmpegContext, "0:a", ["a1", "a2"], context);
   assert.strictEqual(result, "[composite]");
+
+  const filterStr = ffmpegContext.filterComplex.join(";");
+  assert.ok(filterStr.includes("normalize=0"), "should include normalize=0");
+  assert.ok(filterStr.includes("alimiter"), "should include alimiter");
+});
+
+test("mixAudiosFromMovieBeats: explicit mode - beat-level movieVolume triggers normalize=0", () => {
+  const context = createContextWithAudioParams();
+  context.studio.script.beats = [{ speaker: "Presenter", audioParams: { movieVolume: 0.5 } }];
+  const ffmpegContext = FfmpegContextInit();
+  mixAudiosFromMovieBeats(ffmpegContext, "0:a", ["a1", "a2"], context);
 
   const filterStr = ffmpegContext.filterComplex.join(";");
   assert.ok(filterStr.includes("normalize=0"), "should include normalize=0");
