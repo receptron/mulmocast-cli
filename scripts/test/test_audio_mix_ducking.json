@@ -1,0 +1,91 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "title": "Audio Mix Ducking Test (fixtures)",
+  "lang": "en",
+  "canvasSize": {
+    "width": 320,
+    "height": 180
+  },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "provider": "openai",
+        "voiceId": "shimmer"
+      }
+    }
+  },
+  "audioParams": {
+    "bgmVolume": 0,
+    "ducking": { "ratio": 0.3 }
+  },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "Low tone with narration.",
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "path",
+          "path": "fixtures/movie_tone_low.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "duration": 3.0,
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "path",
+          "path": "fixtures/movie_tone_low.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Mid tone with narration.",
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "path",
+          "path": "fixtures/movie_tone_mid.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "duration": 3.0,
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "path",
+          "path": "fixtures/movie_tone_mid.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "High tone with narration.",
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "path",
+          "path": "fixtures/movie_tone_high.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "duration": 3.0,
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "path",
+          "path": "fixtures/movie_tone_high.mov"
+        }
+      }
+    }
+  ]
+}

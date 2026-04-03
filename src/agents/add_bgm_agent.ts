@@ -6,6 +6,24 @@ import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 import { isFile } from "../utils/file.js";
 import { agentGenerationError, agentFileNotExistError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 
+export const resolveAddBgmMixParams = (audioParams: MulmoStudioContext["presentationStyle"]["audioParams"]) => {
+  const useExplicitMix = audioParams.ttsVolume !== undefined;
+  const ttsVolume = audioParams.ttsVolume ?? 1.0;
+  return {
+    useExplicitMix,
+    voiceVolume: audioParams.audioVolume * ttsVolume,
+  };
+};
+
+export const resolveAddBgmFilterConfig = (useExplicitMix: boolean) => {
+  const amixNormalize = useExplicitMix ? ":normalize=0" : "";
+  return {
+    amixNormalize,
+    mixedOutputId: useExplicitMix ? "mixed_limited" : "mixed",
+    limiterFilter: useExplicitMix ? "[mixed]alimiter=limit=0.95:attack=5:release=50[mixed_limited]" : undefined,
+  };
+};
+
 const addBGMAgent: AgentFunction<{ musicFile: string }, string, { voiceFile: string; outputFile: string; context: MulmoStudioContext }> = async ({
   namedInputs,
   params,
@@ -33,14 +51,21 @@ const addBGMAgent: AgentFunction<{ musicFile: string }, string, { voiceFile: str
   const ffmpegContext = FfmpegContextInit();
   const musicInputIndex = FfmpegContextAddInput(ffmpegContext, musicFile, ["-stream_loop", "-1"]);
   const voiceInputIndex = FfmpegContextAddInput(ffmpegContext, voiceFile);
+  const audioParams = context.presentationStyle.audioParams;
+  const { useExplicitMix, voiceVolume } = resolveAddBgmMixParams(audioParams);
+
   ffmpegContext.filterComplex.push(
-    `[${musicInputIndex}:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo, volume=${context.presentationStyle.audioParams.bgmVolume}[music]`,
+    `[${musicInputIndex}:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo, volume=${audioParams.bgmVolume}[music]`,
   );
   ffmpegContext.filterComplex.push(
-    `[${voiceInputIndex}:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo, volume=${context.presentationStyle.audioParams.audioVolume}, adelay=${introPadding * 1000}|${introPadding * 1000}[voice]`,
+    `[${voiceInputIndex}:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo, volume=${voiceVolume}, adelay=${introPadding * 1000}|${introPadding * 1000}[voice]`,
   );
-  ffmpegContext.filterComplex.push(`[music][voice]amix=inputs=2:duration=longest[mixed]`);
-  ffmpegContext.filterComplex.push(`[mixed]atrim=start=0:end=${totalDuration}[trimmed]`);
+  const { amixNormalize, mixedOutputId, limiterFilter } = resolveAddBgmFilterConfig(useExplicitMix);
+  ffmpegContext.filterComplex.push(`[music][voice]amix=inputs=2:duration=longest${amixNormalize}[mixed]`);
+  if (limiterFilter) {
+    ffmpegContext.filterComplex.push(limiterFilter);
+  }
+  ffmpegContext.filterComplex.push(`[${mixedOutputId}]atrim=start=0:end=${totalDuration}[trimmed]`);
   ffmpegContext.filterComplex.push(`[trimmed]afade=t=out:st=${totalDuration - outroPadding}:d=${outroPadding}[faded]`);
   try {
     await FfmpegContextGenerateOutput(ffmpegContext, outputFile, ["-map", "[faded]"]);

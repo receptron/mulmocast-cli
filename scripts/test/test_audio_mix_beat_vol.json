@@ -1,0 +1,100 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "title": "Audio Mix Beat Volume Test (fixtures)",
+  "lang": "en",
+  "canvasSize": {
+    "width": 320,
+    "height": 180
+  },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "provider": "openai",
+        "voiceId": "shimmer"
+      }
+    }
+  },
+  "audioParams": {
+    "bgmVolume": 0,
+    "movieVolume": 0.5
+  },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "Low tone, beat movieVolume 0.1.",
+      "audioParams": {
+        "movieVolume": 0.1
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "path",
+          "path": "fixtures/movie_tone_low.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Low tone, script default 0.5.",
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "path",
+          "path": "fixtures/movie_tone_low.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Mid tone, beat movieVolume 1.0.",
+      "audioParams": {
+        "movieVolume": 1.0
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "path",
+          "path": "fixtures/movie_tone_mid.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "Mid tone, script default 0.5.",
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "path",
+          "path": "fixtures/movie_tone_mid.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "High tone, beat movieVolume 0.0, should be silent.",
+      "audioParams": {
+        "movieVolume": 0.0
+      },
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "path",
+          "path": "fixtures/movie_tone_high.mov"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "High tone, script default 0.5.",
+      "image": {
+        "type": "movie",
+        "source": {
+          "kind": "path",
+          "path": "fixtures/movie_tone_high.mov"
+        }
+      }
+    }
+  ]
+}
