@@ -100,6 +100,7 @@ export const provider2MovieAgent = {
       "google/veo-3",
       "google/veo-3.1",
       "google/veo-3.1-fast",
+      "google/veo-3.1-lite",
       "google/veo-3-fast",
       "minimax/video-01",
       "minimax/hailuo-02",
@@ -163,6 +164,12 @@ export const provider2MovieAgent = {
         start_image: "image",
         last_image: "last_frame_image",
         price_per_sec: 0.4,
+      },
+      "google/veo-3.1-lite": {
+        durations: [4, 6, 8],
+        start_image: "image",
+        last_image: "last_frame",
+        price_per_sec: 0.05,
       },
       "google/veo-3-fast": {
         durations: [8],
@@ -239,28 +246,41 @@ export const provider2MovieAgent = {
   google: {
     agentName: "movieGenAIAgent",
     defaultModel: "veo-2.0-generate-001",
-    models: ["veo-2.0-generate-001", "veo-3.0-generate-001", "veo-3.1-generate-preview"],
+    models: ["veo-2.0-generate-001", "veo-3.0-generate-001", "veo-3.1-generate-preview", "veo-3.1-lite-generate-preview"],
     keyName: "GEMINI_API_KEY",
     modelParams: {
+      "veo-3.1-lite-generate-preview": {
+        durations: [4, 6, 8],
+        supportsDuration: true,
+        supportsLastFrame: true,
+        supportsReferenceImages: false,
+        supportsPersonGeneration: false,
+      },
       "veo-3.1-generate-preview": {
         durations: [4, 6, 8],
+        supportsDuration: true,
         supportsLastFrame: true,
         supportsReferenceImages: true,
         supportsPersonGeneration: false,
       },
       "veo-3.0-generate-001": {
-        durations: [4, 6, 8],
+        durations: [8],
+        supportsDuration: false, // Veo 3.0 always generates 8s
         supportsLastFrame: false,
         supportsReferenceImages: false,
         supportsPersonGeneration: false,
       },
       "veo-2.0-generate-001": {
-        durations: [5, 6, 7, 8],
+        durations: [5, 6, 8],
+        supportsDuration: true,
         supportsLastFrame: false, // Vertex AI only
         supportsReferenceImages: false,
         supportsPersonGeneration: true,
       },
-    } as Record<string, { durations: number[]; supportsLastFrame: boolean; supportsReferenceImages: boolean; supportsPersonGeneration: boolean }>,
+    } as Record<
+      string,
+      { durations: number[]; supportsDuration: boolean; supportsLastFrame: boolean; supportsReferenceImages: boolean; supportsPersonGeneration: boolean }
+    >,
   },
   mock: {
     agentName: "mediaMockAgent",

@@ -179,7 +179,7 @@ const generateStandardVideo = async (
     model,
     prompt,
     config: {
-      durationSeconds: capabilities?.supportsPersonGeneration === false ? undefined : duration,
+      durationSeconds: capabilities?.supportsDuration === false ? undefined : duration,
       aspectRatio,
       personGeneration: imagePath || !capabilities?.supportsPersonGeneration ? undefined : PersonGeneration.ALLOW_ALL,
     },
