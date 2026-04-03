@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.6](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.6) (2026-04-03)
+
+- **Audio mixing controls**: `movieVolume`, `ttsVolume`, `ducking` parameters for controlling movie audio / TTS narration balance. Auto-reduce movie audio during narration with ducking
+- **Replicate new models**: Grok Imagine Video/R2V, RunwayML Gen 4.5, Kling v3 Omni/Video, Veo 3.1/3.1-fast on Replicate
+- **Veo 3.1 Lite**: `google/veo-3.1-lite` support (Replicate $0.05/sec, GenAI `veo-3.1-lite-generate-preview`). Supports lastFrame interpolation
+- **Replicate reference images**: `reference_images` parameter support for Veo 3.1, Grok Imagine R2V, Kling v3 on Replicate
+- **Duration spec fixes**: Corrected Veo 2.0 (removed 7s) and Veo 3.0 (8s only). Added `supportsDuration` capability
+- **Fix**: Avoid slow-regex patterns in html_tailwind path handling
+- **Circular dependency fix**: Extracted `graphOption` to break images.ts ↔ image_references.ts cycle
+- **ESLint no-cycle**: Added `eslint-plugin-import` with `import/no-cycle` rule
+- **Three.js samples**: Three.js animation samples with relative modelUrl resolution
+
+📦 **npm**: [`mulmocast@2.6.6`](https://www.npmjs.com/package/mulmocast/v/2.6.6)
+
 ## [2.6.5](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.5) (2026-03-22)
 
 - **imagePrompt reference images**: `referenceImageName` (reference another imageRefs key) and `referenceImage` (direct source) for image-to-image generation in `imageParams.images`
