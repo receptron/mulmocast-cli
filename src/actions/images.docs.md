@@ -1,5 +1,5 @@
 ---
-generated_at: 2026-03-16T01:30:38.340Z
+generated_at: 2026-04-03T06:11:32.037Z
 ---
 
 # images
@@ -26,18 +26,24 @@ flowchart TD
   n_forceLipSync(forceLipSync)
   n_forceSoundEffect(forceSoundEffect)
   n_withBackup(withBackup)
+  n_localRefs(localRefs<br/>resolveBeatLocalRefs)
+  n_context --> n_localRefs
+  n_beat --> n_localRefs
+  n___mapIndex --> n_localRefs
+  n_imageRefs --> n_localRefs
+  n_movieRefs --> n_localRefs
   n_preprocessor(preprocessor<br/>imagePreprocessAgent)
   n_context --> n_preprocessor
   n_beat --> n_preprocessor
   n___mapIndex --> n_preprocessor
-  n_imageRefs --> n_preprocessor
-  n_movieRefs --> n_preprocessor
+  n_localRefs -- imageRefs --> n_preprocessor
+  n_localRefs -- movieRefs --> n_preprocessor
   n_imagePlugin(imagePlugin<br/>imagePluginAgent)
   n_context --> n_imagePlugin
   n_beat --> n_imagePlugin
   n___mapIndex --> n_imagePlugin
-  n_imageRefs --> n_imagePlugin
-  n_movieRefs --> n_imagePlugin
+  n_localRefs -- imageRefs --> n_imagePlugin
+  n_localRefs -- movieRefs --> n_imagePlugin
   n_preprocessor --> n_imagePlugin
   n_htmlImageAgent(htmlImageAgent<br/>:htmlImageAgentInfo.agent)
   n_preprocessor -- htmlPrompt --> n_htmlImageAgent
@@ -81,6 +87,8 @@ flowchart TD
   n_imagePlugin --> n_movieGenerator
   n_beat -- moviePrompt --> n_movieGenerator
   n_preprocessor -- referenceImageForMovie --> n_movieGenerator
+  n_preprocessor -- lastFrameImagePath --> n_movieGenerator
+  n_preprocessor -- movieReferenceImages --> n_movieGenerator
   n_preprocessor -- movieFile --> n_movieGenerator
   n_context -- force --> n_movieGenerator
   n_forceMovie --> n_movieGenerator
@@ -169,7 +177,7 @@ flowchart TD
   n_preprocessor -- markdown --> n_output
   n_preprocessor -- html --> n_output
   class n_context,n_htmlImageAgentInfo,n_imageRefs,n_movieRefs,n_beat,n___mapIndex,n_forceMovie,n_forceImage,n_forceLipSync,n_forceSoundEffect,n_withBackup staticNode
-  class n_preprocessor,n_imagePlugin,n_htmlImageAgent,n_htmlReader,n_htmlImageGenerator,n_imageGenerator,n_movieGenerator,n_imageFromMovie,n_audioChecker,n_soundEffectGenerator,n_AudioTrimmer,n_lipSyncGenerator,n_output computedNode
+  class n_localRefs,n_preprocessor,n_imagePlugin,n_htmlImageAgent,n_htmlReader,n_htmlImageGenerator,n_imageGenerator,n_movieGenerator,n_imageFromMovie,n_audioChecker,n_soundEffectGenerator,n_AudioTrimmer,n_lipSyncGenerator,n_output computedNode
 ```
 
 ### images_graph_data
@@ -193,18 +201,24 @@ flowchart TD
     n_map_forceLipSync(forceLipSync)
     n_map_forceSoundEffect(forceSoundEffect)
     n_map_withBackup(withBackup)
+    n_map_localRefs(localRefs<br/>resolveBeatLocalRefs)
+    n_map_context --> n_map_localRefs
+    n_map_beat --> n_map_localRefs
+    n_map___mapIndex --> n_map_localRefs
+    n_map_imageRefs --> n_map_localRefs
+    n_map_movieRefs --> n_map_localRefs
     n_map_preprocessor(preprocessor<br/>imagePreprocessAgent)
     n_map_context --> n_map_preprocessor
     n_map_beat --> n_map_preprocessor
     n_map___mapIndex --> n_map_preprocessor
-    n_map_imageRefs --> n_map_preprocessor
-    n_map_movieRefs --> n_map_preprocessor
+    n_map_localRefs -- imageRefs --> n_map_preprocessor
+    n_map_localRefs -- movieRefs --> n_map_preprocessor
     n_map_imagePlugin(imagePlugin<br/>imagePluginAgent)
     n_map_context --> n_map_imagePlugin
     n_map_beat --> n_map_imagePlugin
     n_map___mapIndex --> n_map_imagePlugin
-    n_map_imageRefs --> n_map_imagePlugin
-    n_map_movieRefs --> n_map_imagePlugin
+    n_map_localRefs -- imageRefs --> n_map_imagePlugin
+    n_map_localRefs -- movieRefs --> n_map_imagePlugin
     n_map_preprocessor --> n_map_imagePlugin
     n_map_htmlImageAgent(htmlImageAgent<br/>:htmlImageAgentInfo.agent)
     n_map_preprocessor -- htmlPrompt --> n_map_htmlImageAgent
@@ -248,6 +262,8 @@ flowchart TD
     n_map_imagePlugin --> n_map_movieGenerator
     n_map_beat -- moviePrompt --> n_map_movieGenerator
     n_map_preprocessor -- referenceImageForMovie --> n_map_movieGenerator
+    n_map_preprocessor -- lastFrameImagePath --> n_map_movieGenerator
+    n_map_preprocessor -- movieReferenceImages --> n_map_movieGenerator
     n_map_preprocessor -- movieFile --> n_map_movieGenerator
     n_map_context -- force --> n_map_movieGenerator
     n_map_forceMovie --> n_map_movieGenerator
@@ -348,7 +364,7 @@ flowchart TD
   n_outputStudioFilePath --> n_writeOutput
   n_mergeResult -- studio.toJSON() --> n_writeOutput
   class n_context,n_htmlImageAgentInfo,n_outputStudioFilePath,n_imageRefs,n_movieRefs,n_map_context,n_map_htmlImageAgentInfo,n_map_imageRefs,n_map_movieRefs,n_map_beat,n_map___mapIndex,n_map_forceMovie,n_map_forceImage,n_map_forceLipSync,n_map_forceSoundEffect,n_map_withBackup staticNode
-  class n_map_preprocessor,n_map_imagePlugin,n_map_htmlImageAgent,n_map_htmlReader,n_map_htmlImageGenerator,n_map_imageGenerator,n_map_movieGenerator,n_map_imageFromMovie,n_map_audioChecker,n_map_soundEffectGenerator,n_map_AudioTrimmer,n_map_lipSyncGenerator,n_map_output,n_mergeResult,n_writeOutput computedNode
+  class n_map_localRefs,n_map_preprocessor,n_map_imagePlugin,n_map_htmlImageAgent,n_map_htmlReader,n_map_htmlImageGenerator,n_map_imageGenerator,n_map_movieGenerator,n_map_imageFromMovie,n_map_audioChecker,n_map_soundEffectGenerator,n_map_AudioTrimmer,n_map_lipSyncGenerator,n_map_output,n_mergeResult,n_writeOutput computedNode
   class n_map nestedGraph
 ```
 
