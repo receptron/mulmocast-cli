@@ -1,0 +1,39 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "title": "Veo 3.1 Lite Test",
+  "lang": "en",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "beats": [
+    {
+      "id": "google_genai_lite",
+      "text": "Google GenAI veo-3.1-lite-generate-preview text-to-video",
+      "duration": 4,
+      "moviePrompt": "A calm ocean wave rolling onto a sandy beach at golden hour",
+      "movieParams": {
+        "provider": "google",
+        "model": "veo-3.1-lite-generate-preview"
+      }
+    },
+    {
+      "id": "replicate_lite",
+      "text": "Replicate google/veo-3.1-lite text-to-video",
+      "duration": 4,
+      "moviePrompt": "A calm ocean wave rolling onto a sandy beach at golden hour",
+      "movieParams": {
+        "provider": "replicate",
+        "model": "google/veo-3.1-lite"
+      }
+    },
+    {
+      "id": "replicate_lite_i2v",
+      "text": "Replicate google/veo-3.1-lite image-to-video",
+      "duration": 4,
+      "imagePrompt": "A beautiful ocean sunset with golden reflections on the water",
+      "moviePrompt": "The camera slowly pans across the ocean as waves gently roll in",
+      "movieParams": {
+        "provider": "replicate",
+        "model": "google/veo-3.1-lite"
+      }
+    }
+  ]
+}
