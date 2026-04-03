@@ -295,10 +295,20 @@
   dependencies:
     google-gax "^5.0.0"
 
-"@google/genai@^1.38.0", "@google/genai@^1.46.0":
+"@google/genai@^1.38.0":
   version "1.46.0"
   resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.46.0.tgz#f1ffd47c222dd8a20918677c5ec5a3b9ef60e118"
   integrity sha512-ewPMN5JkKfgU5/kdco9ZhXBHDPhVqZpMQqIFQhwsHLf8kyZfx1cNpw1pHo1eV6PGEW7EhIBFi3aYZraFndAXqg==
+  dependencies:
+    google-auth-library "^10.3.0"
+    p-retry "^4.6.2"
+    protobufjs "^7.5.4"
+    ws "^8.18.0"
+
+"@google/genai@^1.48.0":
+  version "1.48.0"
+  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.48.0.tgz#569c16fc92d450123ce0b99e35590f9d3f0a4c16"
+  integrity sha512-plonYK4ML2PrxsRD9SeqmFt76eREWkQdPCglOA6aYDzL1AAbE+7PUnT54SvpWGfws13L0AZEqGSpL7+1IPnTxQ==
   dependencies:
     google-auth-library "^10.3.0"
     p-retry "^4.6.2"
