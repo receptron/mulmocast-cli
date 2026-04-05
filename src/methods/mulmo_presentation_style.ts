@@ -157,6 +157,17 @@ export const MulmoPresentationStyleMethods = {
     return agentInfo;
   },
   getConcurrency(presentationStyle: MulmoPresentationStyle) {
+    const imageConcurrency = presentationStyle.imageParams?.concurrency;
+    const movieConcurrency = presentationStyle.movieParams?.concurrency;
+
+    // User-specified concurrency takes precedence.
+    // Use the smaller of imageParams/movieParams since they share the same graph.
+    if (imageConcurrency !== undefined || movieConcurrency !== undefined) {
+      const values = [imageConcurrency, movieConcurrency].filter((v): v is number => v !== undefined);
+      return Math.min(...values);
+    }
+
+    // Fallback: provider-based auto-detection
     const imageAgentInfo = MulmoPresentationStyleMethods.getImageAgentInfo(presentationStyle);
     if (imageAgentInfo.imageParams.provider === "openai") {
       // NOTE: Here are the rate limits of OpenAI's text2image API (1token = 32x32 patch).

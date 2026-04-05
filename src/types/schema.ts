@@ -453,6 +453,7 @@ export const mulmoImageParamsSchema = mulmoBeatImageParamsSchema
   .extend({
     images: mulmoImageParamsImagesSchema.optional(),
     backgroundImage: backgroundImageSchema,
+    concurrency: z.number().int().positive().optional().describe("Max concurrent image generation requests"),
   })
   .strict();
 
@@ -501,6 +502,7 @@ export const audioParamsSchema = z
       })
       .optional()
       .describe("Auto-reduce movie audio when TTS is playing"),
+    concurrency: z.number().int().positive().optional().describe("Max concurrent TTS generation requests"),
   })
   .strict();
 
@@ -568,6 +570,7 @@ export const mulmoMovieParamsSchema = z.object({
     .array(movieReferenceImageSchema)
     .optional()
     .describe("Style/asset reference images (Veo 3.1). Mutually exclusive with imageName/lastFrameImageName"),
+  concurrency: z.number().int().positive().optional().describe("Max concurrent movie generation requests"),
 });
 
 export const mulmoBeatSchema = z
