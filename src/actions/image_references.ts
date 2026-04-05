@@ -1,7 +1,7 @@
 import { GraphAI, GraphAILogger } from "graphai";
 import { getReferenceImagePath } from "../utils/file.js";
 
-import { graphOption } from "./graph_option.js";
+import { imageGraphOption } from "./graph_option.js";
 import { MulmoPresentationStyleMethods, MulmoMediaSourceMethods } from "../methods/index.js";
 import {
   MulmoStudioContext,
@@ -61,7 +61,7 @@ export const generateReferenceImage = async (inputs: {
   };
 
   try {
-    const options = await graphOption(context);
+    const options = await imageGraphOption(context);
     const graph = new GraphAI(image_graph_data, { imageGenAIAgent, imageOpenaiAgent, mediaMockAgent, imageReplicateAgent }, options);
     await graph.run<{ output: MulmoStudioBeat[] }>();
     return imagePath;
@@ -165,7 +165,7 @@ const generateReferenceMovie = async (inputs: {
   };
 
   try {
-    const options = await graphOption(context);
+    const options = await imageGraphOption(context);
     const graph = new GraphAI(movie_graph_data, { movieGenAIAgent, movieReplicateAgent, mediaMockAgent }, options);
     await graph.run<{ output: MulmoStudioBeat[] }>();
     return moviePath;
