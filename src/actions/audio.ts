@@ -260,6 +260,13 @@ const agentFilters = [
 ];
 
 const getConcurrency = (context: MulmoStudioContext) => {
+  // User-specified concurrency takes precedence
+  const userConcurrency = context.presentationStyle.audioParams.concurrency;
+  if (userConcurrency !== undefined) {
+    return userConcurrency;
+  }
+
+  // Fallback: provider-based auto-detection
   // Check if any speaker uses elevenlabs or kotodama (providers that require concurrency = 1)
   const hasLimitedConcurrencyProvider = Object.values(context.presentationStyle.speechParams.speakers).some((speaker) => {
     const provider = text2SpeechProviderSchema.parse(speaker.provider) as keyof typeof provider2TTSAgent;
