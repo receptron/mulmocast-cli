@@ -156,10 +156,6 @@ export const MulmoPresentationStyleMethods = {
     const agentInfo = provider2LipSyncAgent[lipSyncProvider];
     return agentInfo;
   },
-  /** @deprecated Use getImageConcurrency instead */
-  getConcurrency(presentationStyle: MulmoPresentationStyle) {
-    return MulmoPresentationStyleMethods.getImageConcurrency(presentationStyle);
-  },
   /** Concurrency for image/movie generation graph (uses min of imageParams/movieParams) */
   getImageConcurrency(presentationStyle: MulmoPresentationStyle) {
     const imageConcurrency = presentationStyle.imageParams?.concurrency;
