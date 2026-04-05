@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 
 import { GraphAI, TaskManager, GraphAILogger } from "graphai";
-import type { GraphData } from "graphai";
+import type { GraphData, CallbackFunction } from "graphai";
 import * as agents from "@graphai/vanilla";
 import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 
@@ -16,7 +16,7 @@ import {
   mediaMockAgent,
 } from "../agents/index.js";
 
-import { MulmoStudioContext, MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingualData, PublicAPIArgs, text2SpeechProviderSchema } from "../types/index.js";
+import { MulmoStudioContext, MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingualData, PublicAPIArgs } from "../types/index.js";
 
 import { fileCacheAgentFilter } from "../utils/filters.js";
 import {
@@ -36,6 +36,7 @@ import { invalidAudioSourceError } from "../utils/error_cause.js";
 
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 import { MulmoMediaSourceMethods } from "../methods/mulmo_media_source.js";
+import { MulmoPresentationStyleMethods } from "../methods/mulmo_presentation_style.js";
 
 dotenv.config({ quiet: true });
 
@@ -260,19 +261,16 @@ const agentFilters = [
 ];
 
 const getConcurrency = (context: MulmoStudioContext) => {
-  // User-specified concurrency takes precedence
-  const userConcurrency = context.presentationStyle.audioParams.concurrency;
-  if (userConcurrency !== undefined) {
-    return userConcurrency;
-  }
+  return MulmoPresentationStyleMethods.getAudioConcurrency(context.presentationStyle);
+};
 
-  // Fallback: provider-based auto-detection
-  // Check if any speaker uses elevenlabs or kotodama (providers that require concurrency = 1)
-  const hasLimitedConcurrencyProvider = Object.values(context.presentationStyle.speechParams.speakers).some((speaker) => {
-    const provider = text2SpeechProviderSchema.parse(speaker.provider) as keyof typeof provider2TTSAgent;
-    return provider2TTSAgent[provider].hasLimitedConcurrency;
-  });
-  return hasLimitedConcurrencyProvider ? 1 : 8;
+/** Create a GraphAI instance for audio processing with shared config */
+const createAudioGraph = (graphData: GraphData, context: MulmoStudioContext, settings?: Record<string, string>, callbacks?: CallbackFunction[]) => {
+  const config = settings2GraphAIConfig(settings, process.env);
+  const taskManager = new TaskManager(getConcurrency(context));
+  const graph = new GraphAI(graphData, audioAgents, { agentFilters, taskManager, config });
+  callbacks?.forEach((callback) => graph.registerCallback(callback));
+  return graph;
 };
 
 const audioAgents = {
@@ -299,9 +297,7 @@ export const generateBeatAudio = async (index: number, context: MulmoStudioConte
     mkdir(outDirPath);
     mkdir(audioSegmentDirPath);
 
-    const config = settings2GraphAIConfig(settings);
-    const taskManager = new TaskManager(getConcurrency(context));
-    const graph = new GraphAI(langs ? graph_tts_map : graph_tts, audioAgents, { agentFilters, taskManager, config });
+    const graph = createAudioGraph(langs ? graph_tts_map : graph_tts, context, settings, callbacks);
     graph.injectValue("__mapIndex", index);
     graph.injectValue("beat", context.studio.script.beats[index]);
     graph.injectValue("studioBeat", context.studio.beats[index]);
@@ -312,11 +308,6 @@ export const generateBeatAudio = async (index: number, context: MulmoStudioConte
       graph.injectValue("langs", langs);
     } else {
       graph.injectValue("lang", context.lang);
-    }
-    if (callbacks) {
-      callbacks.forEach((callback) => {
-        graph.registerCallback(callback);
-      });
     }
     await graph.run();
   } catch (error) {
@@ -343,9 +334,7 @@ export const audio = async (context: MulmoStudioContext, args?: PublicAPIArgs) =
     mkdir(outDirPath);
     mkdir(audioSegmentDirPath);
 
-    const config = settings2GraphAIConfig(settings, process.env);
-    const taskManager = new TaskManager(getConcurrency(context));
-    const graph = new GraphAI(audio_graph_data, audioAgents, { agentFilters, taskManager, config });
+    const graph = createAudioGraph(audio_graph_data, context, settings, callbacks);
     graph.injectValue("context", context);
     graph.injectValue("audioArtifactFilePath", audioArtifactFilePath);
     graph.injectValue("audioCombinedFilePath", audioCombinedFilePath);
@@ -354,12 +343,6 @@ export const audio = async (context: MulmoStudioContext, args?: PublicAPIArgs) =
       "musicFile",
       MulmoMediaSourceMethods.resolve(context.presentationStyle.audioParams.bgm, context) ?? process.env.PATH_BGM ?? defaultBGMPath(),
     );
-
-    if (callbacks) {
-      callbacks.forEach((callback) => {
-        graph.registerCallback(callback);
-      });
-    }
     const result = await graph.run();
     writingMessage(audioCombinedFilePath);
     MulmoStudioContextMethods.setSessionState(context, "audio", false, true);

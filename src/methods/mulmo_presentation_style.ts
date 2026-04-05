@@ -156,7 +156,8 @@ export const MulmoPresentationStyleMethods = {
     const agentInfo = provider2LipSyncAgent[lipSyncProvider];
     return agentInfo;
   },
-  getConcurrency(presentationStyle: MulmoPresentationStyle) {
+  /** Concurrency for image/movie generation graph (uses min of imageParams/movieParams) */
+  getImageConcurrency(presentationStyle: MulmoPresentationStyle) {
     const imageConcurrency = presentationStyle.imageParams?.concurrency;
     const movieConcurrency = presentationStyle.movieParams?.concurrency;
 
@@ -178,6 +179,21 @@ export const MulmoPresentationStyleMethods = {
       }
     }
     return 4;
+  },
+  /** Concurrency for audio/TTS generation graph */
+  getAudioConcurrency(presentationStyle: MulmoPresentationStyle) {
+    // User-specified concurrency takes precedence
+    const userConcurrency = presentationStyle.audioParams?.concurrency;
+    if (userConcurrency !== undefined) {
+      return userConcurrency;
+    }
+
+    // Fallback: provider-based auto-detection
+    const hasLimitedConcurrencyProvider = Object.values(presentationStyle.speechParams.speakers).some((speaker) => {
+      const provider = text2SpeechProviderSchema.parse(speaker.provider) as keyof typeof provider2TTSAgent;
+      return provider2TTSAgent[provider].hasLimitedConcurrency;
+    });
+    return hasLimitedConcurrencyProvider ? 1 : 8;
   },
   getHtmlImageAgentInfo(presentationStyle: MulmoPresentationStyle): Text2HtmlAgentInfo {
     const provider = text2HtmlImageProviderSchema.parse(presentationStyle.htmlImageParams?.provider) as keyof typeof provider2LLMAgent;

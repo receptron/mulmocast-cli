@@ -14,7 +14,7 @@ export const graphOption = async (context: MulmoStudioContext, settings?: Record
         nodeIds: ["imageGenerator", "movieGenerator", "htmlImageAgent", "soundEffectGenerator", "lipSyncGenerator", "AudioTrimmer"],
       },
     ],
-    taskManager: new TaskManager(MulmoPresentationStyleMethods.getConcurrency(context.presentationStyle)),
+    taskManager: new TaskManager(MulmoPresentationStyleMethods.getImageConcurrency(context.presentationStyle)),
     config: settings2GraphAIConfig(settings, process.env),
   };
 
