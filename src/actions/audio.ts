@@ -16,7 +16,7 @@ import {
   mediaMockAgent,
 } from "../agents/index.js";
 
-import { MulmoStudioContext, MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingualData, PublicAPIArgs, text2SpeechProviderSchema } from "../types/index.js";
+import { MulmoStudioContext, MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingualData, PublicAPIArgs } from "../types/index.js";
 
 import { fileCacheAgentFilter } from "../utils/filters.js";
 import {
@@ -36,6 +36,7 @@ import { invalidAudioSourceError } from "../utils/error_cause.js";
 
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 import { MulmoMediaSourceMethods } from "../methods/mulmo_media_source.js";
+import { MulmoPresentationStyleMethods } from "../methods/mulmo_presentation_style.js";
 
 dotenv.config({ quiet: true });
 
@@ -260,19 +261,7 @@ const agentFilters = [
 ];
 
 const getConcurrency = (context: MulmoStudioContext) => {
-  // User-specified concurrency takes precedence
-  const userConcurrency = context.presentationStyle.audioParams.concurrency;
-  if (userConcurrency !== undefined) {
-    return userConcurrency;
-  }
-
-  // Fallback: provider-based auto-detection
-  // Check if any speaker uses elevenlabs or kotodama (providers that require concurrency = 1)
-  const hasLimitedConcurrencyProvider = Object.values(context.presentationStyle.speechParams.speakers).some((speaker) => {
-    const provider = text2SpeechProviderSchema.parse(speaker.provider) as keyof typeof provider2TTSAgent;
-    return provider2TTSAgent[provider].hasLimitedConcurrency;
-  });
-  return hasLimitedConcurrencyProvider ? 1 : 8;
+  return MulmoPresentationStyleMethods.getAudioConcurrency(context.presentationStyle);
 };
 
 /** Create a GraphAI instance for audio processing with shared config */
