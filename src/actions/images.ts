@@ -31,7 +31,7 @@ import { extractImageFromMovie, ffmpegGetMediaDuration, trimMusic } from "../uti
 
 import { getMediaRefs, resolveBeatLocalRefs } from "./image_references.js";
 import { imagePreprocessAgent, imagePluginAgent, htmlImageGeneratorAgent } from "./image_agents.js";
-import { graphOption } from "./graph_option.js";
+import { imageGraphOption } from "./graph_option.js";
 
 const vanillaAgents = vanilla.default ?? vanilla;
 
@@ -453,8 +453,7 @@ export const images_graph_data: GraphData = {
   },
 };
 
-// graphOption moved to graph_option.ts to break circular dependency with image_references.ts
-export { graphOption } from "./graph_option.js";
+export { imageGraphOption } from "./graph_option.js";
 
 const prepareGenerateImages = async (context: MulmoStudioContext) => {
   const fileName = MulmoStudioContextMethods.getFileName(context);
@@ -489,7 +488,7 @@ const generateImages = async (context: MulmoStudioContext, args?: PublicAPIArgs 
     ...defaultAgents,
     ...optionImageAgents,
   };
-  const graph = new GraphAI(images_graph_data, graphaiAgent, await graphOption(context, settings));
+  const graph = new GraphAI(images_graph_data, graphaiAgent, await imageGraphOption(context, settings));
   Object.keys(injections).forEach((key: string) => {
     graph.injectValue(key, injections[key]);
   });
@@ -540,7 +539,7 @@ export const generateBeatImage = async (inputs: {
   try {
     const { index, context, args } = inputs;
     const { settings, callbacks, forceMovie, forceImage, forceLipSync, forceSoundEffect, withBackup } = args ?? {};
-    const options = await graphOption(context, settings);
+    const options = await imageGraphOption(context, settings);
     const injections = await prepareGenerateImages(context);
     const graph = new GraphAI(beat_graph_data, defaultAgents, options);
     Object.keys(injections).forEach((key: string) => {
