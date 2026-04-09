@@ -24,8 +24,8 @@
     }
   },
   "resolutions": {
-    "minimatch": "^10.2.4",
-    "yauzl": "^3.2.1"
+    "minimatch": "^10.2.5",
+    "yauzl": "^3.3.0"
   },
   "bin": {
     "mulmo": "lib/cli/bin.js",
