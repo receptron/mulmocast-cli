@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.7](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.7) (2026-04-13)
+
+- **Configurable concurrency**: `concurrency` parameter for `imageParams`, `movieParams`, and `audioParams` to prevent rate limit errors (e.g., Veo 3 multi-beat generation)
+- **Default background color**: Added default background for slides/charts
+- **Refactor**: Unified graph option creation (`imageGraphOption` / `audioGraphOption`), extracted `createGraphOption` helper
+- **Package updates**: Multiple dependency updates
+
+📦 **npm**: [`mulmocast@2.6.7`](https://www.npmjs.com/package/mulmocast/v/2.6.7)
+
 ## [2.6.6](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.6) (2026-04-03)
 
 - **Audio mixing controls**: `movieVolume`, `ttsVolume`, `ducking` parameters for controlling movie audio / TTS narration balance. Auto-reduce movie audio during narration with ducking
