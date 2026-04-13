@@ -93,6 +93,8 @@ export const provider2MovieAgent = {
     models: [
       "bytedance/seedance-1-lite",
       "bytedance/seedance-1-pro",
+      "bytedance/seedance-2.0",
+      "bytedance/seedance-2.0-fast",
       "kwaivgi/kling-v1.6-pro",
       "kwaivgi/kling-v2.1",
       "kwaivgi/kling-v2.1-master",
@@ -126,6 +128,18 @@ export const provider2MovieAgent = {
         start_image: "image",
         last_image: "last_frame_image",
         price_per_sec: 0.15,
+      },
+      "bytedance/seedance-2.0": {
+        durations: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        start_image: "image",
+        last_image: "last_frame_image",
+        price_per_sec: 0.14,
+      },
+      "bytedance/seedance-2.0-fast": {
+        durations: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        start_image: "image",
+        last_image: "last_frame_image",
+        price_per_sec: 0.081,
       },
       "kwaivgi/kling-v1.6-pro": {
         durations: [5, 10],
@@ -252,7 +266,7 @@ export const provider2MovieAgent = {
       "veo-3.1-lite-generate-preview": {
         durations: [4, 6, 8],
         supportsDuration: true,
-        supportsLastFrame: true,
+        supportsLastFrame: false,
         supportsReferenceImages: false,
         supportsPersonGeneration: false,
       },

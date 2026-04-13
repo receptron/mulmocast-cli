@@ -1,0 +1,61 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "movieParams": {
+    "provider": "replicate",
+    "model": "bytedance/seedance-2.0"
+  },
+  "audioParams": {
+    "bgmVolume": 0
+  },
+  "captionParams": {
+    "lang": "en"
+  },
+  "lang": "en",
+  "beats": [
+    {
+      "text": "Comparing the bytedance seedance series with a fast-cut dance prompt",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "PROMPT: high-energy dance montage, quick cuts synced to the beat, neon-lit urban street"
+        }
+      }
+    },
+    {
+      "id": "seedance-1-lite",
+      "text": "bytedance/seedance-1-lite",
+      "duration": 5,
+      "moviePrompt": "A high-energy 5-second dance video, photorealistic, vibrant lighting. Fast-paced montage with quick cuts synchronized to the beat: energetic dancer performing sharp hip-hop moves in an urban street at night, neon lights reflecting on wet pavement, quick close-ups on footwork and hand gestures, dynamic full-body shots with camera orbiting smoothly, realistic body physics and fabric movement, original choreography, no copyrighted elements.",
+      "movieParams": {
+        "model": "bytedance/seedance-1-lite"
+      }
+    },
+    {
+      "id": "seedance-1-pro",
+      "text": "bytedance/seedance-1-pro",
+      "duration": 5,
+      "moviePrompt": "A high-energy 5-second dance video, photorealistic, vibrant lighting. Fast-paced montage with quick cuts synchronized to the beat: energetic dancer performing sharp hip-hop moves in an urban street at night, neon lights reflecting on wet pavement, quick close-ups on footwork and hand gestures, dynamic full-body shots with camera orbiting smoothly, realistic body physics and fabric movement, original choreography, no copyrighted elements.",
+      "movieParams": {
+        "model": "bytedance/seedance-1-pro"
+      }
+    },
+    {
+      "id": "seedance-2.0",
+      "text": "bytedance/seedance-2.0",
+      "duration": 10,
+      "moviePrompt": "A high-energy 10-second dance video, photorealistic, vibrant lighting. Fast-paced montage with quick cuts synchronized to the beat: energetic dancer performing sharp hip-hop moves in an urban street at night, neon lights reflecting on wet pavement, quick close-ups on footwork and hand gestures, dynamic full-body shots with camera orbiting smoothly, realistic body physics and fabric movement, original choreography, no copyrighted elements.",
+      "movieParams": {
+        "model": "bytedance/seedance-2.0"
+      }
+    },
+    {
+      "id": "seedance-2.0-fast",
+      "text": "bytedance/seedance-2.0-fast",
+      "duration": 8,
+      "moviePrompt": "A high-energy 8-second dance video, photorealistic, vibrant lighting. Fast-paced montage with quick cuts synchronized to the beat: energetic dancer performing sharp hip-hop moves in an urban street at night, neon lights reflecting on wet pavement, quick close-ups on footwork and hand gestures, dynamic full-body shots with camera orbiting smoothly, realistic body physics and fabric movement, original choreography, no copyrighted elements.",
+      "movieParams": {
+        "model": "bytedance/seedance-2.0-fast"
+      }
+    }
+  ]
+}
