@@ -266,7 +266,7 @@ export const provider2MovieAgent = {
       "veo-3.1-lite-generate-preview": {
         durations: [4, 6, 8],
         supportsDuration: true,
-        supportsLastFrame: false,
+        supportsLastFrame: true,
         supportsReferenceImages: false,
         supportsPersonGeneration: false,
       },

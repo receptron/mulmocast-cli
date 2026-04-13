@@ -25,7 +25,7 @@
       "id": "seedance-2.0",
       "text": "bytedance/seedance-2.0",
       "duration": 5,
-      "moviePrompt": "A high-energy 10-second dance video, photorealistic, vibrant lighting. Fast-paced montage with quick cuts synchronized to the beat: energetic dancer performing sharp hip-hop moves in an urban street at night, neon lights reflecting on wet pavement, quick close-ups on footwork and hand gestures, dynamic full-body shots with camera orbiting smoothly, realistic body physics and fabric movement, original choreography, no copyrighted elements.",
+      "moviePrompt": "A high-energy 5-second dance video, photorealistic, vibrant lighting. Fast-paced montage with quick cuts synchronized to the beat: energetic dancer performing sharp hip-hop moves in an urban street at night, neon lights reflecting on wet pavement, quick close-ups on footwork and hand gestures, dynamic full-body shots with camera orbiting smoothly, realistic body physics and fabric movement, original choreography, no copyrighted elements.",
       "movieParams": {
         "model": "bytedance/seedance-2.0"
       }
@@ -34,7 +34,7 @@
       "id": "seedance-2.0-fast",
       "text": "bytedance/seedance-2.0-fast",
       "duration": 5,
-      "moviePrompt": "A high-energy 8-second dance video, photorealistic, vibrant lighting. Fast-paced montage with quick cuts synchronized to the beat: energetic dancer performing sharp hip-hop moves in an urban street at night, neon lights reflecting on wet pavement, quick close-ups on footwork and hand gestures, dynamic full-body shots with camera orbiting smoothly, realistic body physics and fabric movement, original choreography, no copyrighted elements.",
+      "moviePrompt": "A high-energy 5-second dance video, photorealistic, vibrant lighting. Fast-paced montage with quick cuts synchronized to the beat: energetic dancer performing sharp hip-hop moves in an urban street at night, neon lights reflecting on wet pavement, quick close-ups on footwork and hand gestures, dynamic full-body shots with camera orbiting smoothly, realistic body physics and fabric movement, original choreography, no copyrighted elements.",
       "movieParams": {
         "model": "bytedance/seedance-2.0-fast"
       }
