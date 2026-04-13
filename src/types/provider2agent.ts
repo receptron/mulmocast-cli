@@ -133,13 +133,13 @@ export const provider2MovieAgent = {
         durations: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         start_image: "image",
         last_image: "last_frame_image",
-        price_per_sec: 0.14,
+        price_per_sec: 0.29,
       },
       "bytedance/seedance-2.0-fast": {
         durations: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         start_image: "image",
         last_image: "last_frame_image",
-        price_per_sec: 0.081,
+        price_per_sec: 0.22,
       },
       "kwaivgi/kling-v1.6-pro": {
         durations: [5, 10],
