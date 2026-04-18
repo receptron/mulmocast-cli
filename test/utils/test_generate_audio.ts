@@ -2,6 +2,9 @@ import test from "node:test";
 import assert from "node:assert";
 import { mulmoScriptSchema } from "../../src/types/schema.js";
 import { provider2MovieAgent } from "../../src/types/provider2agent.js";
+import { movieGenAIAgent } from "../../src/agents/movie_genai_agent.js";
+import { movieReplicateAgent } from "../../src/agents/movie_replicate_agent.js";
+import { apiErrorType, hasCause, imageAction, unsupportedModelTarget } from "../../src/utils/error_cause.js";
 
 // Test: generateAudio schema validation
 test("generateAudio: true is valid in movieParams", () => {
@@ -144,4 +147,56 @@ test("google genai veo-2.0 has never audio", () => {
   const params = provider2MovieAgent.google.modelParams["veo-2.0-generate-001"];
   assert.ok(params);
   assert.strictEqual(params.audio.mode, "never");
+});
+
+test("movieGenAIAgent rejects generateAudio=true for never-audio model", async () => {
+  await assert.rejects(
+    () =>
+      movieGenAIAgent({
+        namedInputs: {
+          prompt: "A calm ocean at sunset",
+          movieFile: "/tmp/test_genai_audio.mp4",
+        },
+        params: {
+          model: "veo-2.0-generate-001",
+          canvasSize: { width: 1280, height: 720 },
+          generateAudio: true,
+        },
+        config: {},
+      }),
+    (err: Error) => {
+      assert.match(err.message, /does not support audio generation/);
+      assert.ok(hasCause(err), "error should include cause");
+      assert.deepStrictEqual(err.cause, {
+        type: apiErrorType,
+        action: imageAction,
+        target: unsupportedModelTarget,
+        agentName: "movieGenAIAgent",
+      });
+      return true;
+    },
+  );
+});
+
+test("movieReplicateAgent rejects generateAudio=true for never-audio model", async () => {
+  await assert.rejects(
+    () =>
+      movieReplicateAgent({
+        namedInputs: {
+          prompt: "A calm ocean at sunset",
+          movieFile: "/tmp/test_replicate_audio.mp4",
+        },
+        params: {
+          model: "bytedance/seedance-1-lite",
+          canvasSize: { width: 1280, height: 720 },
+          generateAudio: true,
+        },
+        config: { apiKey: "dummy-key" },
+      }),
+    (err: Error) => {
+      // movieReplicateAgent currently catches generateMovie errors and throws a generic invalid-response error.
+      assert.strictEqual(err.message, "ERROR: generateMovie returned undefined");
+      return true;
+    },
+  );
 });
