@@ -116,17 +116,20 @@ For videos **longer than 8 seconds**, Veo 3.1 uses video extension (generating a
 
 ### Replicate
 
-| Model | first frame | lastFrame | Param Name |
-|---|:---:|:---:|---|
-| **seedance-1-lite/pro** | ✅ | ✅ | `last_frame_image` |
-| **pixverse-v4.5** | ✅ | ✅ | `last_frame_image` |
-| **hailuo-02** | ✅ | ✅ | `end_image` |
-| **kling-v1.6/2.1/2.1-master** | ✅ | ❌ | — |
-| **veo-2/3 (Replicate)** | ✅ | ❌ | — |
-| **minimax/video-01** | ✅ | ❌ | — |
-| **wan-video/wan-2.2** | ✅ | ❌ | — |
+| Model | first frame | lastFrame | generateAudio | Param Name |
+|---|:---:|:---:|:---:|---|
+| **seedance-1-lite/pro** | ✅ | ✅ | ❌ | `last_frame_image` |
+| **seedance-2.0/2.0-fast** | ✅ | ✅ | ❌ | `last_frame_image` |
+| **pixverse-v4.5** | ✅ | ✅ | ❌ | `last_frame_image` |
+| **hailuo-02** | ✅ | ✅ | ❌ | `end_image` |
+| **kling-v1.6/2.1/2.1-master** | ✅ | ❌ | ❌ | — |
+| **kling-v3-video/v3-omni-video** | ✅ | ✅ | optional | `end_image` |
+| **veo-2 (Replicate)** | ✅ | ❌ | ❌ | — |
+| **veo-3/3.1 (Replicate)** | ✅ | varies | always | — |
+| **minimax/video-01** | ✅ | ❌ | ❌ | — |
+| **wan-video/wan-2.2** | ✅ | ❌ | ❌ | — |
 
-> **Note**: `referenceImages` is only supported by Veo 3.1 (Google GenAI). Replicate models do not support it.
+> **Note**: `referenceImages` is only supported by Veo 3.1 (Google GenAI) and Kling v3 (Replicate).
 
 ## Test Script
 

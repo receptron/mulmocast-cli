@@ -30,6 +30,7 @@ async function generateMovie(
   referenceImages: { imagePath: string; referenceType: "ASSET" | "STYLE" }[] | undefined,
   aspectRatio: string,
   duration: number,
+  generateAudio: boolean | undefined,
 ): Promise<Buffer | undefined> {
   const replicate = new Replicate({
     auth: apiKey,
@@ -93,6 +94,20 @@ async function generateMovie(
       }
     } else {
       GraphAILogger.warn(`movieReplicateAgent: model ${model} does not support lastFrame — ignoring lastFrameImageName`);
+    }
+  }
+
+  // Add generate_audio if the model supports it
+  const audioCapability = provider2MovieAgent.replicate.modelParams[model]?.audio_capability ?? "never";
+  const generateAudioParam = provider2MovieAgent.replicate.modelParams[model]?.generate_audio_param;
+
+  if (generateAudio !== undefined) {
+    if (audioCapability === "optional" && generateAudioParam) {
+      (input as Record<string, unknown>)[generateAudioParam] = generateAudio;
+    } else if (audioCapability === "never" && generateAudio === true) {
+      GraphAILogger.warn(`movieReplicateAgent: model ${model} does not support audio generation`);
+    } else if (audioCapability === "always" && generateAudio === false) {
+      GraphAILogger.warn(`movieReplicateAgent: model ${model} always generates audio`);
     }
   }
 
@@ -164,7 +179,7 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
   }
 
   try {
-    const buffer = await generateMovie(model, apiKey, prompt, imagePath, lastFrameImagePath, referenceImages, aspectRatio, duration);
+    const buffer = await generateMovie(model, apiKey, prompt, imagePath, lastFrameImagePath, referenceImages, aspectRatio, duration, params.generateAudio);
     if (buffer) {
       return { buffer };
     }
