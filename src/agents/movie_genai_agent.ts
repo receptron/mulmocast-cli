@@ -10,6 +10,7 @@ import {
   imageAction,
   movieFileTarget,
   videoDurationTarget,
+  unsupportedModelTarget,
   hasCause,
 } from "../utils/error_cause.js";
 import { getAspectRatio } from "../utils/utils.js";
@@ -244,9 +245,11 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
     if (params.generateAudio !== undefined) {
       const audio = provider2MovieAgent.google.modelParams[model]?.audio ?? { mode: "never" as const };
       if (audio.mode === "never" && params.generateAudio === true) {
-        GraphAILogger.warn(`movieGenAIAgent: model ${model} does not support audio generation`);
+        throw new Error(`Model ${model} does not support audio generation`, {
+          cause: agentGenerationError("movieGenAIAgent", imageAction, unsupportedModelTarget),
+        });
       } else if (audio.mode === "always" && params.generateAudio === false) {
-        GraphAILogger.warn(`movieGenAIAgent: model ${model} always generates audio — cannot disable`);
+        GraphAILogger.warn(`movieGenAIAgent: model ${model} always generates audio — ignoring generateAudio=false`);
       }
     }
 

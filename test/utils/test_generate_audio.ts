@@ -122,16 +122,16 @@ test("pixverse-v4.5 has optional audio with sound_effect_switch param", () => {
   }
 });
 
-test("seedance-1-lite has no audio capability", () => {
+test("seedance-1-lite has never audio", () => {
   const params = provider2MovieAgent.replicate.modelParams["bytedance/seedance-1-lite"];
   assert.ok(params);
-  assert.strictEqual(params.audio, undefined);
+  assert.strictEqual(params.audio.mode, "never");
 });
 
-test("veo-2 (replicate) has no audio capability", () => {
+test("veo-2 (replicate) has never audio", () => {
   const params = provider2MovieAgent.replicate.modelParams["google/veo-2"];
   assert.ok(params);
-  assert.strictEqual(params.audio, undefined);
+  assert.strictEqual(params.audio.mode, "never");
 });
 
 test("google genai veo-3.1 has always audio", () => {

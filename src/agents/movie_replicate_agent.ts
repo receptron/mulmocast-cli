@@ -98,15 +98,17 @@ async function generateMovie(
   }
 
   // Add generate_audio if the model supports it
-  const audio = provider2MovieAgent.replicate.modelParams[model]?.audio ?? { mode: "never" as const };
+  const audio = provider2MovieAgent.replicate.modelParams[model].audio;
 
   if (generateAudio !== undefined) {
     if (audio.mode === "optional") {
       (input as Record<string, unknown>)[audio.param] = generateAudio;
     } else if (audio.mode === "never" && generateAudio === true) {
-      GraphAILogger.warn(`movieReplicateAgent: model ${model} does not support audio generation`);
+      throw new Error(`Model ${model} does not support audio generation`, {
+        cause: agentGenerationError("movieReplicateAgent", imageAction, unsupportedModelTarget),
+      });
     } else if (audio.mode === "always" && generateAudio === false) {
-      GraphAILogger.warn(`movieReplicateAgent: model ${model} always generates audio`);
+      GraphAILogger.warn(`movieReplicateAgent: model ${model} always generates audio — ignoring generateAudio=false`);
     }
   }
 

@@ -90,7 +90,7 @@ type ReplicateMovieModelParams = {
   start_image: string | undefined;
   last_image?: string;
   reference_images_param?: string;
-  audio?: MovieAudioSpec;
+  audio: MovieAudioSpec;
   price_per_sec: number;
 };
 type GoogleMovieModelParams = {
@@ -138,12 +138,14 @@ export const provider2MovieAgent = {
         durations: [5, 10],
         start_image: "image",
         last_image: "last_frame_image",
+        audio: { mode: "never" },
         price_per_sec: 0.036, // in USD
       },
       "bytedance/seedance-1-pro": {
         durations: [5, 10],
         start_image: "image",
         last_image: "last_frame_image",
+        audio: { mode: "never" },
         price_per_sec: 0.15,
       },
       "bytedance/seedance-2.0": {
@@ -163,21 +165,25 @@ export const provider2MovieAgent = {
       "kwaivgi/kling-v1.6-pro": {
         durations: [5, 10],
         start_image: "start_image",
+        audio: { mode: "never" },
         price_per_sec: 0.095,
       },
       "kwaivgi/kling-v2.1": {
         durations: [5, 10],
         start_image: "start_image",
+        audio: { mode: "never" },
         price_per_sec: 0.05,
       },
       "kwaivgi/kling-v2.1-master": {
         durations: [5, 10],
         start_image: "start_image",
+        audio: { mode: "never" },
         price_per_sec: 0.28,
       },
       "google/veo-2": {
         durations: [5, 6, 7, 8],
         start_image: "image",
+        audio: { mode: "never" },
         price_per_sec: 0.5,
       },
       "google/veo-3": {
@@ -205,6 +211,7 @@ export const provider2MovieAgent = {
         durations: [4, 6, 8],
         start_image: "image",
         last_image: "last_frame",
+        audio: { mode: "never" },
         price_per_sec: 0.05,
       },
       "google/veo-3-fast": {
@@ -216,17 +223,20 @@ export const provider2MovieAgent = {
       "minimax/video-01": {
         durations: [6],
         start_image: "first_frame_image",
+        audio: { mode: "never" },
         price_per_sec: 0.5,
       },
       "minimax/hailuo-02": {
         durations: [6], // NOTE: 10 for only 720p
         start_image: "first_frame_image",
         last_image: "end_image",
+        audio: { mode: "never" },
         price_per_sec: 0.08,
       },
       "minimax/hailuo-02-fast": {
         durations: [6, 10], // NOTE: 512P
         start_image: "first_frame_image",
+        audio: { mode: "never" },
         price_per_sec: 0.0166,
       },
       "pixverse/pixverse-v4.5": {
@@ -239,27 +249,32 @@ export const provider2MovieAgent = {
       "wan-video/wan-2.2-i2v-fast": {
         durations: [5],
         start_image: "image",
+        audio: { mode: "never" },
         price_per_sec: 0.012,
       },
       "wan-video/wan-2.2-t2v-fast": {
         durations: [5],
         start_image: undefined,
+        audio: { mode: "never" },
         price_per_sec: 0.012,
       },
       "xai/grok-imagine-video": {
         durations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         start_image: "image",
+        audio: { mode: "never" },
         price_per_sec: 0.08,
       },
       "xai/grok-imagine-r2v": {
         durations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         start_image: undefined,
         reference_images_param: "reference_images",
+        audio: { mode: "never" },
         price_per_sec: 0.08,
       },
       "runwayml/gen-4.5": {
         durations: [5, 10],
         start_image: "image",
+        audio: { mode: "never" },
         price_per_sec: 0.25,
       },
       "kwaivgi/kling-v3-omni-video": {
