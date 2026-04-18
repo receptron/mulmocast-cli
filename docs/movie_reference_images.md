@@ -128,9 +128,10 @@ For videos **longer than 8 seconds**, Veo 3.1 uses video extension (generating a
 | **veo-3/3.1/3.1-fast/3-fast** | ✅ | varies | optional | — |
 | **veo-3.1-lite** | ✅ | ✅ | ❌ | `last_frame` |
 | **minimax/video-01** | ✅ | ❌ | ❌ | — |
+| **xai/grok-imagine-r2v** | ❌ | ❌ | ❌ | — |
 | **wan-video/wan-2.2** | ✅ | ❌ | ❌ | — |
 
-> **Note**: `referenceImages` is only supported by Veo 3.1 (Google GenAI) and Kling v3 (Replicate).
+> **Note**: `referenceImages` is supported by Veo 3.1 (Google GenAI), Kling v3, and Grok R2V (Replicate).
 
 ## Test Script
 
