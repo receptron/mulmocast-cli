@@ -1,0 +1,28 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "title": "generateAudio Test",
+  "lang": "en",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "movieParams": {
+    "provider": "replicate",
+    "model": "kwaivgi/kling-v3-video"
+  },
+  "beats": [
+    {
+      "text": "Audio ON (generateAudio: true)",
+      "moviePrompt": "A cat meowing and walking across a wooden floor, indoor scene",
+      "movieParams": {
+        "generateAudio": true
+      },
+      "duration": 3
+    },
+    {
+      "text": "Audio OFF (generateAudio: false)",
+      "moviePrompt": "A cat meowing and walking across a wooden floor, indoor scene",
+      "movieParams": {
+        "generateAudio": false
+      },
+      "duration": 3
+    }
+  ]
+}
