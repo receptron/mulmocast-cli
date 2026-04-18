@@ -3,6 +3,10 @@
   "title": "generateAudio Test",
   "lang": "en",
   "canvasSize": { "width": 1280, "height": 720 },
+  "audioParams": {
+    "bgmVolume": 0,
+    "suppressSpeech": true
+  },
   "movieParams": {
     "provider": "replicate",
     "model": "kwaivgi/kling-v3-video",
