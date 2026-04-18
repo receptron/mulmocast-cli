@@ -181,7 +181,7 @@ export const provider2MovieAgent = {
       "google/veo-3": {
         durations: [8],
         start_image: "image",
-        audio: { mode: "always" },
+        audio: { mode: "optional", param: "generate_audio" },
         price_per_sec: 0.75,
       },
       "google/veo-3.1": {
@@ -189,27 +189,26 @@ export const provider2MovieAgent = {
         start_image: "image",
         last_image: "last_frame_image",
         reference_images_param: "reference_images",
-        audio: { mode: "always" },
+        audio: { mode: "optional", param: "generate_audio" },
         price_per_sec: 0.75,
       },
       "google/veo-3.1-fast": {
         durations: [4, 6, 8],
         start_image: "image",
         last_image: "last_frame_image",
-        audio: { mode: "always" },
+        audio: { mode: "optional", param: "generate_audio" },
         price_per_sec: 0.4,
       },
       "google/veo-3.1-lite": {
         durations: [4, 6, 8],
         start_image: "image",
         last_image: "last_frame",
-        audio: { mode: "always" },
         price_per_sec: 0.05,
       },
       "google/veo-3-fast": {
         durations: [8],
         start_image: "image",
-        audio: { mode: "always" },
+        audio: { mode: "optional", param: "generate_audio" },
         price_per_sec: 0.4,
       },
       "minimax/video-01": {
