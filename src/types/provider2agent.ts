@@ -150,12 +150,14 @@ export const provider2MovieAgent = {
         durations: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         start_image: "image",
         last_image: "last_frame_image",
+        audio: { mode: "optional", param: "generate_audio" },
         price_per_sec: 0.29,
       },
       "bytedance/seedance-2.0-fast": {
         durations: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         start_image: "image",
         last_image: "last_frame_image",
+        audio: { mode: "optional", param: "generate_audio" },
         price_per_sec: 0.22,
       },
       "kwaivgi/kling-v1.6-pro": {
@@ -231,6 +233,7 @@ export const provider2MovieAgent = {
         durations: [5, 8],
         start_image: "image",
         last_image: "last_frame_image",
+        audio: { mode: "optional", param: "sound_effect_switch" },
         price_per_sec: 0.12,
       },
       "wan-video/wan-2.2-i2v-fast": {
