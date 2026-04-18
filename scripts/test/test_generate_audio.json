@@ -5,7 +5,8 @@
   "canvasSize": { "width": 1280, "height": 720 },
   "movieParams": {
     "provider": "replicate",
-    "model": "kwaivgi/kling-v3-video"
+    "model": "kwaivgi/kling-v3-video",
+    "concurrency": 1
   },
   "beats": [
     {
