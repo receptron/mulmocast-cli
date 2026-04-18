@@ -155,7 +155,7 @@ test("movieGenAIAgent rejects generateAudio=true for never-audio model", async (
       movieGenAIAgent({
         namedInputs: {
           prompt: "A calm ocean at sunset",
-          movieFile: "/tmp/test_genai_audio.mp4",
+          movieFile: "output/test/test_genai_audio.mp4",
         },
         params: {
           model: "veo-2.0-generate-001",
@@ -184,7 +184,7 @@ test("movieReplicateAgent rejects generateAudio=true for never-audio model", asy
       movieReplicateAgent({
         namedInputs: {
           prompt: "A calm ocean at sunset",
-          movieFile: "/tmp/test_replicate_audio.mp4",
+          movieFile: "output/test/test_replicate_audio.mp4",
         },
         params: {
           model: "bytedance/seedance-1-lite",
