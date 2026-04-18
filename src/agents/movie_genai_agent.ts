@@ -242,10 +242,10 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
 
     // Check generateAudio compatibility (Google API has no toggle)
     if (params.generateAudio !== undefined) {
-      const audioCapability = provider2MovieAgent.google.modelParams[model]?.audioCapability ?? "never";
-      if (audioCapability === "never" && params.generateAudio === true) {
+      const audio = provider2MovieAgent.google.modelParams[model]?.audio ?? { mode: "never" as const };
+      if (audio.mode === "never" && params.generateAudio === true) {
         GraphAILogger.warn(`movieGenAIAgent: model ${model} does not support audio generation`);
-      } else if (audioCapability === "always" && params.generateAudio === false) {
+      } else if (audio.mode === "always" && params.generateAudio === false) {
         GraphAILogger.warn(`movieGenAIAgent: model ${model} always generates audio — cannot disable`);
       }
     }

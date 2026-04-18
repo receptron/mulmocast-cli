@@ -84,6 +84,23 @@ export const provider2ImageAgent = {
 };
 
 export type ReplicateModel = `${string}/${string}`;
+type MovieAudioSpec = { mode: "never" } | { mode: "always" } | { mode: "optional"; param: string };
+type ReplicateMovieModelParams = {
+  durations: number[];
+  start_image: string | undefined;
+  last_image?: string;
+  reference_images_param?: string;
+  audio?: MovieAudioSpec;
+  price_per_sec: number;
+};
+type GoogleMovieModelParams = {
+  durations: number[];
+  supportsDuration: boolean;
+  supportsLastFrame: boolean;
+  supportsReferenceImages: boolean;
+  supportsPersonGeneration: boolean;
+  audio: MovieAudioSpec;
+};
 
 export const provider2MovieAgent = {
   replicate: {
@@ -164,7 +181,7 @@ export const provider2MovieAgent = {
       "google/veo-3": {
         durations: [8],
         start_image: "image",
-        audio_capability: "always",
+        audio: { mode: "always" },
         price_per_sec: 0.75,
       },
       "google/veo-3.1": {
@@ -172,27 +189,27 @@ export const provider2MovieAgent = {
         start_image: "image",
         last_image: "last_frame_image",
         reference_images_param: "reference_images",
-        audio_capability: "always",
+        audio: { mode: "always" },
         price_per_sec: 0.75,
       },
       "google/veo-3.1-fast": {
         durations: [4, 6, 8],
         start_image: "image",
         last_image: "last_frame_image",
-        audio_capability: "always",
+        audio: { mode: "always" },
         price_per_sec: 0.4,
       },
       "google/veo-3.1-lite": {
         durations: [4, 6, 8],
         start_image: "image",
         last_image: "last_frame",
-        audio_capability: "always",
+        audio: { mode: "always" },
         price_per_sec: 0.05,
       },
       "google/veo-3-fast": {
         durations: [8],
         start_image: "image",
-        audio_capability: "always",
+        audio: { mode: "always" },
         price_per_sec: 0.4,
       },
       "minimax/video-01": {
@@ -248,8 +265,7 @@ export const provider2MovieAgent = {
         start_image: "start_image",
         last_image: "end_image",
         reference_images_param: "reference_images",
-        generate_audio_param: "generate_audio",
-        audio_capability: "optional",
+        audio: { mode: "optional", param: "generate_audio" },
         price_per_sec: 0.3,
       },
       "kwaivgi/kling-v3-video": {
@@ -257,22 +273,10 @@ export const provider2MovieAgent = {
         start_image: "start_image",
         last_image: "end_image",
         reference_images_param: "reference_images",
-        generate_audio_param: "generate_audio",
-        audio_capability: "optional",
+        audio: { mode: "optional", param: "generate_audio" },
         price_per_sec: 0.3,
       },
-    } as Record<
-      ReplicateModel,
-      {
-        durations: number[];
-        start_image: string | undefined;
-        last_image?: string;
-        reference_images_param?: string;
-        generate_audio_param?: string;
-        audio_capability?: "always" | "optional" | "never";
-        price_per_sec: number;
-      }
-    >,
+    } as Record<ReplicateModel, ReplicateMovieModelParams>,
   },
   google: {
     agentName: "movieGenAIAgent",
@@ -286,7 +290,7 @@ export const provider2MovieAgent = {
         supportsLastFrame: true,
         supportsReferenceImages: false,
         supportsPersonGeneration: false,
-        audioCapability: "always",
+        audio: { mode: "always" },
       },
       "veo-3.1-generate-preview": {
         durations: [4, 6, 8],
@@ -294,7 +298,7 @@ export const provider2MovieAgent = {
         supportsLastFrame: true,
         supportsReferenceImages: true,
         supportsPersonGeneration: false,
-        audioCapability: "always",
+        audio: { mode: "always" },
       },
       "veo-3.0-generate-001": {
         durations: [8],
@@ -302,7 +306,7 @@ export const provider2MovieAgent = {
         supportsLastFrame: false,
         supportsReferenceImages: false,
         supportsPersonGeneration: false,
-        audioCapability: "always",
+        audio: { mode: "always" },
       },
       "veo-2.0-generate-001": {
         durations: [5, 6, 8],
@@ -310,19 +314,9 @@ export const provider2MovieAgent = {
         supportsLastFrame: false, // Vertex AI only
         supportsReferenceImages: false,
         supportsPersonGeneration: true,
-        audioCapability: "never",
+        audio: { mode: "never" },
       },
-    } as Record<
-      string,
-      {
-        durations: number[];
-        supportsDuration: boolean;
-        supportsLastFrame: boolean;
-        supportsReferenceImages: boolean;
-        supportsPersonGeneration: boolean;
-        audioCapability: "always" | "optional" | "never";
-      }
-    >,
+    } as Record<string, GoogleMovieModelParams>,
   },
   mock: {
     agentName: "mediaMockAgent",
