@@ -6,6 +6,7 @@ import {
   apiKeyMissingError,
   agentGenerationError,
   agentInvalidResponseError,
+  hasCause,
   imageAction,
   movieFileTarget,
   videoDurationTarget,
@@ -185,6 +186,9 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
       return { buffer };
     }
   } catch (error) {
+    if (hasCause(error)) {
+      throw error;
+    }
     GraphAILogger.info("Failed to generate movie:", (error as Error).message);
   }
   throw new Error("ERROR: generateMovie returned undefined", {

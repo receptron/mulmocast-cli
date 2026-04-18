@@ -194,8 +194,14 @@ test("movieReplicateAgent rejects generateAudio=true for never-audio model", asy
         config: { apiKey: "dummy-key" },
       }),
     (err: Error) => {
-      // movieReplicateAgent currently catches generateMovie errors and throws a generic invalid-response error.
-      assert.strictEqual(err.message, "ERROR: generateMovie returned undefined");
+      assert.match(err.message, /does not support audio generation/);
+      assert.ok(hasCause(err), "error should include cause");
+      assert.deepStrictEqual(err.cause, {
+        type: apiErrorType,
+        action: imageAction,
+        target: unsupportedModelTarget,
+        agentName: "movieReplicateAgent",
+      });
       return true;
     },
   );
