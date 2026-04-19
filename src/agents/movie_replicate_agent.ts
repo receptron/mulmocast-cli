@@ -14,7 +14,7 @@ import {
 } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, MovieAgentInputs, ReplicateMovieAgentParams, ReplicateMovieAgentConfig } from "../types/agent.js";
-import { provider2MovieAgent, getModelDuration } from "../types/provider2agent.js";
+import { provider2MovieAgent, getModelDuration, AUDIO_MODE_OPTIONAL, AUDIO_MODE_NEVER, AUDIO_MODE_ALWAYS } from "../types/provider2agent.js";
 
 function replicate_get_videoUrl(output: unknown): string | URL | undefined {
   if (typeof output === "string") return output;
@@ -102,13 +102,13 @@ async function generateMovie(
   const audio = provider2MovieAgent.replicate.modelParams[model].audio;
 
   if (generateAudio !== undefined) {
-    if (audio.mode === "optional") {
+    if (audio.mode === AUDIO_MODE_OPTIONAL) {
       (input as Record<string, unknown>)[audio.param] = generateAudio;
-    } else if (audio.mode === "never" && generateAudio === true) {
+    } else if (audio.mode === AUDIO_MODE_NEVER && generateAudio === true) {
       throw new Error(`Model ${model} does not support audio generation`, {
         cause: agentGenerationError("movieReplicateAgent", imageAction, unsupportedModelTarget),
       });
-    } else if (audio.mode === "always" && generateAudio === false) {
+    } else if (audio.mode === AUDIO_MODE_ALWAYS && generateAudio === false) {
       GraphAILogger.warn(`movieReplicateAgent: model ${model} always generates audio — ignoring generateAudio=false`);
     }
   }

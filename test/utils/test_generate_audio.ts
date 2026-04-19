@@ -1,7 +1,8 @@
 import test from "node:test";
 import assert from "node:assert";
 import { mulmoScriptSchema } from "../../src/types/schema.js";
-import { provider2MovieAgent } from "../../src/types/provider2agent.js";
+import { provider2MovieAgent, AUDIO_MODE_NEVER, AUDIO_MODE_ALWAYS, AUDIO_MODE_OPTIONAL } from "../../src/types/provider2agent.js";
+import { currentMulmoScriptVersion } from "../../src/types/const.js";
 import { movieGenAIAgent } from "../../src/agents/movie_genai_agent.js";
 import { movieReplicateAgent } from "../../src/agents/movie_replicate_agent.js";
 import { apiErrorType, hasCause, imageAction, unsupportedModelTarget } from "../../src/utils/error_cause.js";
@@ -9,15 +10,9 @@ import { apiErrorType, hasCause, imageAction, unsupportedModelTarget } from "../
 // Test: generateAudio schema validation
 test("generateAudio: true is valid in movieParams", () => {
   const script = {
-    $mulmocast: { version: "1.1" },
+    $mulmocast: { version: currentMulmoScriptVersion },
     lang: "en",
-    beats: [
-      {
-        text: "test",
-        moviePrompt: "A cat walking",
-        movieParams: { generateAudio: true },
-      },
-    ],
+    beats: [{ text: "test", moviePrompt: "A cat walking", movieParams: { generateAudio: true } }],
   };
   const result = mulmoScriptSchema.safeParse(script);
   assert.ok(result.success, `Schema validation failed: ${result.error?.message}`);
@@ -26,15 +21,9 @@ test("generateAudio: true is valid in movieParams", () => {
 
 test("generateAudio: false is valid in movieParams", () => {
   const script = {
-    $mulmocast: { version: "1.1" },
+    $mulmocast: { version: currentMulmoScriptVersion },
     lang: "en",
-    beats: [
-      {
-        text: "test",
-        moviePrompt: "A cat walking",
-        movieParams: { generateAudio: false },
-      },
-    ],
+    beats: [{ text: "test", moviePrompt: "A cat walking", movieParams: { generateAudio: false } }],
   };
   const result = mulmoScriptSchema.safeParse(script);
   assert.ok(result.success, `Schema validation failed: ${result.error?.message}`);
@@ -43,15 +32,9 @@ test("generateAudio: false is valid in movieParams", () => {
 
 test("generateAudio omitted is valid (defaults to undefined)", () => {
   const script = {
-    $mulmocast: { version: "1.1" },
+    $mulmocast: { version: currentMulmoScriptVersion },
     lang: "en",
-    beats: [
-      {
-        text: "test",
-        moviePrompt: "A cat walking",
-        movieParams: { model: "kwaivgi/kling-v3-video" },
-      },
-    ],
+    beats: [{ text: "test", moviePrompt: "A cat walking", movieParams: { model: "kwaivgi/kling-v3-video" } }],
   };
   const result = mulmoScriptSchema.safeParse(script);
   assert.ok(result.success, `Schema validation failed: ${result.error?.message}`);
@@ -60,95 +43,51 @@ test("generateAudio omitted is valid (defaults to undefined)", () => {
 
 test("generateAudio: string is invalid", () => {
   const script = {
-    $mulmocast: { version: "1.1" },
+    $mulmocast: { version: currentMulmoScriptVersion },
     lang: "en",
-    beats: [
-      {
-        text: "test",
-        moviePrompt: "A cat walking",
-        movieParams: { generateAudio: "yes" },
-      },
-    ],
+    beats: [{ text: "test", moviePrompt: "A cat walking", movieParams: { generateAudio: "yes" } }],
   };
   const result = mulmoScriptSchema.safeParse(script);
   assert.ok(!result.success);
 });
 
-// Test: provider2agent audio metadata
-test("kling-v3-video has optional audio with generate_audio param", () => {
-  const params = provider2MovieAgent.replicate.modelParams["kwaivgi/kling-v3-video"];
-  assert.ok(params);
-  assert.ok(params.audio);
-  assert.strictEqual(params.audio.mode, "optional");
-  if (params.audio.mode === "optional") {
-    assert.strictEqual(params.audio.param, "generate_audio");
-  }
-});
+// Test: provider2agent audio metadata (table-driven)
+const replicateAudioTests: { model: string; mode: string; param?: string }[] = [
+  { model: "kwaivgi/kling-v3-video", mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
+  { model: "kwaivgi/kling-v3-omni-video", mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
+  { model: "google/veo-3", mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
+  { model: "bytedance/seedance-2.0", mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
+  { model: "pixverse/pixverse-v4.5", mode: AUDIO_MODE_OPTIONAL, param: "sound_effect_switch" },
+  { model: "bytedance/seedance-1-lite", mode: AUDIO_MODE_NEVER },
+  { model: "google/veo-2", mode: AUDIO_MODE_NEVER },
+];
 
-test("kling-v3-omni-video has optional audio with generate_audio param", () => {
-  const params = provider2MovieAgent.replicate.modelParams["kwaivgi/kling-v3-omni-video"];
-  assert.ok(params);
-  assert.ok(params.audio);
-  assert.strictEqual(params.audio.mode, "optional");
-  if (params.audio.mode === "optional") {
-    assert.strictEqual(params.audio.param, "generate_audio");
-  }
-});
+for (const { model, mode, param } of replicateAudioTests) {
+  const label = param ? `mode=${mode} param=${param}` : `mode=${mode}`;
+  test(`replicate ${model} has audio ${label}`, () => {
+    const params = provider2MovieAgent.replicate.modelParams[model];
+    assert.ok(params, `Model ${model} not found in modelParams`);
+    assert.strictEqual(params.audio.mode, mode);
+    if (params.audio.mode === AUDIO_MODE_OPTIONAL) {
+      assert.strictEqual(params.audio.param, param);
+    }
+  });
+}
 
-test("veo-3 (replicate) has optional audio with generate_audio param", () => {
-  const params = provider2MovieAgent.replicate.modelParams["google/veo-3"];
-  assert.ok(params);
-  assert.ok(params.audio);
-  assert.strictEqual(params.audio.mode, "optional");
-  if (params.audio.mode === "optional") {
-    assert.strictEqual(params.audio.param, "generate_audio");
-  }
-});
+const googleAudioTests: { model: string; mode: string }[] = [
+  { model: "veo-3.1-generate-preview", mode: AUDIO_MODE_ALWAYS },
+  { model: "veo-2.0-generate-001", mode: AUDIO_MODE_NEVER },
+];
 
-test("seedance-2.0 has optional audio with generate_audio param", () => {
-  const params = provider2MovieAgent.replicate.modelParams["bytedance/seedance-2.0"];
-  assert.ok(params);
-  assert.ok(params.audio);
-  assert.strictEqual(params.audio.mode, "optional");
-  if (params.audio.mode === "optional") {
-    assert.strictEqual(params.audio.param, "generate_audio");
-  }
-});
+for (const { model, mode } of googleAudioTests) {
+  test(`google genai ${model} has audio mode=${mode}`, () => {
+    const params = provider2MovieAgent.google.modelParams[model];
+    assert.ok(params, `Model ${model} not found in modelParams`);
+    assert.strictEqual(params.audio.mode, mode);
+  });
+}
 
-test("pixverse-v4.5 has optional audio with sound_effect_switch param", () => {
-  const params = provider2MovieAgent.replicate.modelParams["pixverse/pixverse-v4.5"];
-  assert.ok(params);
-  assert.ok(params.audio);
-  assert.strictEqual(params.audio.mode, "optional");
-  if (params.audio.mode === "optional") {
-    assert.strictEqual(params.audio.param, "sound_effect_switch");
-  }
-});
-
-test("seedance-1-lite has never audio", () => {
-  const params = provider2MovieAgent.replicate.modelParams["bytedance/seedance-1-lite"];
-  assert.ok(params);
-  assert.strictEqual(params.audio.mode, "never");
-});
-
-test("veo-2 (replicate) has never audio", () => {
-  const params = provider2MovieAgent.replicate.modelParams["google/veo-2"];
-  assert.ok(params);
-  assert.strictEqual(params.audio.mode, "never");
-});
-
-test("google genai veo-3.1 has always audio", () => {
-  const params = provider2MovieAgent.google.modelParams["veo-3.1-generate-preview"];
-  assert.ok(params);
-  assert.strictEqual(params.audio.mode, "always");
-});
-
-test("google genai veo-2.0 has never audio", () => {
-  const params = provider2MovieAgent.google.modelParams["veo-2.0-generate-001"];
-  assert.ok(params);
-  assert.strictEqual(params.audio.mode, "never");
-});
-
+// Test: agent rejection for unsupported generateAudio
 test("movieGenAIAgent rejects generateAudio=true for never-audio model", async () => {
   await assert.rejects(
     () =>

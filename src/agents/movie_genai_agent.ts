@@ -16,7 +16,7 @@ import {
 import { getAspectRatio } from "../utils/utils.js";
 import { ASPECT_RATIOS } from "../types/const.js";
 import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, MovieAgentInputs, MovieReferenceImage } from "../types/agent.js";
-import { getModelDuration, provider2MovieAgent } from "../types/provider2agent.js";
+import { getModelDuration, provider2MovieAgent, AUDIO_MODE_NEVER, AUDIO_MODE_ALWAYS } from "../types/provider2agent.js";
 
 type ImagePayload = { imageBytes: string; mimeType: string };
 
@@ -243,12 +243,12 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
 
     // Check generateAudio compatibility (Google API has no toggle)
     if (params.generateAudio !== undefined) {
-      const audio = provider2MovieAgent.google.modelParams[model]?.audio ?? { mode: "never" as const };
-      if (audio.mode === "never" && params.generateAudio === true) {
+      const audio = provider2MovieAgent.google.modelParams[model]?.audio ?? { mode: AUDIO_MODE_NEVER };
+      if (audio.mode === AUDIO_MODE_NEVER && params.generateAudio === true) {
         throw new Error(`Model ${model} does not support audio generation`, {
           cause: agentGenerationError("movieGenAIAgent", imageAction, unsupportedModelTarget),
         });
-      } else if (audio.mode === "always" && params.generateAudio === false) {
+      } else if (audio.mode === AUDIO_MODE_ALWAYS && params.generateAudio === false) {
         GraphAILogger.warn(`movieGenAIAgent: model ${model} always generates audio — ignoring generateAudio=false`);
       }
     }
