@@ -215,6 +215,7 @@ export const beat_graph_data = {
           canvasSize: ":context.presentationStyle.canvasSize",
           vertexai_project: ":preprocessor.movieAgentInfo.movieParams.vertexai_project",
           vertexai_location: ":preprocessor.movieAgentInfo.movieParams.vertexai_location",
+          generateAudio: ":preprocessor.movieAgentInfo.movieParams.generateAudio",
         },
       },
       defaultValue: {},

@@ -6,6 +6,7 @@ import {
   apiKeyMissingError,
   agentGenerationError,
   agentInvalidResponseError,
+  hasCause,
   imageAction,
   movieFileTarget,
   videoDurationTarget,
@@ -13,7 +14,7 @@ import {
 } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, MovieAgentInputs, ReplicateMovieAgentParams, ReplicateMovieAgentConfig } from "../types/agent.js";
-import { provider2MovieAgent, getModelDuration } from "../types/provider2agent.js";
+import { provider2MovieAgent, getModelDuration, AUDIO_MODE_OPTIONAL, AUDIO_MODE_NEVER, AUDIO_MODE_ALWAYS } from "../types/provider2agent.js";
 
 function replicate_get_videoUrl(output: unknown): string | URL | undefined {
   if (typeof output === "string") return output;
@@ -30,6 +31,7 @@ async function generateMovie(
   referenceImages: { imagePath: string; referenceType: "ASSET" | "STYLE" }[] | undefined,
   aspectRatio: string,
   duration: number,
+  generateAudio: boolean | undefined,
 ): Promise<Buffer | undefined> {
   const replicate = new Replicate({
     auth: apiKey,
@@ -93,6 +95,21 @@ async function generateMovie(
       }
     } else {
       GraphAILogger.warn(`movieReplicateAgent: model ${model} does not support lastFrame — ignoring lastFrameImageName`);
+    }
+  }
+
+  // Add generate_audio if the model supports it
+  const audio = provider2MovieAgent.replicate.modelParams[model].audio;
+
+  if (generateAudio !== undefined) {
+    if (audio.mode === AUDIO_MODE_OPTIONAL) {
+      (input as Record<string, unknown>)[audio.param] = generateAudio;
+    } else if (audio.mode === AUDIO_MODE_NEVER && generateAudio === true) {
+      throw new Error(`Model ${model} does not support audio generation`, {
+        cause: agentGenerationError("movieReplicateAgent", imageAction, unsupportedModelTarget),
+      });
+    } else if (audio.mode === AUDIO_MODE_ALWAYS && generateAudio === false) {
+      GraphAILogger.warn(`movieReplicateAgent: model ${model} always generates audio — ignoring generateAudio=false`);
     }
   }
 
@@ -164,11 +181,14 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
   }
 
   try {
-    const buffer = await generateMovie(model, apiKey, prompt, imagePath, lastFrameImagePath, referenceImages, aspectRatio, duration);
+    const buffer = await generateMovie(model, apiKey, prompt, imagePath, lastFrameImagePath, referenceImages, aspectRatio, duration, params.generateAudio);
     if (buffer) {
       return { buffer };
     }
   } catch (error) {
+    if (hasCause(error)) {
+      throw error;
+    }
     GraphAILogger.info("Failed to generate movie:", (error as Error).message);
   }
   throw new Error("ERROR: generateMovie returned undefined", {
