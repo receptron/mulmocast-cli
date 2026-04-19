@@ -84,6 +84,26 @@ export const provider2ImageAgent = {
 };
 
 export type ReplicateModel = `${string}/${string}`;
+export const AUDIO_MODE_NEVER = "never" as const;
+export const AUDIO_MODE_ALWAYS = "always" as const;
+export const AUDIO_MODE_OPTIONAL = "optional" as const;
+type MovieAudioSpec = { mode: typeof AUDIO_MODE_NEVER } | { mode: typeof AUDIO_MODE_ALWAYS } | { mode: typeof AUDIO_MODE_OPTIONAL; param: string };
+type ReplicateMovieModelParams = {
+  durations: number[];
+  start_image: string | undefined;
+  last_image?: string;
+  reference_images_param?: string;
+  audio: MovieAudioSpec;
+  price_per_sec: number;
+};
+type GoogleMovieModelParams = {
+  durations: number[];
+  supportsDuration: boolean;
+  supportsLastFrame: boolean;
+  supportsReferenceImages: boolean;
+  supportsPersonGeneration: boolean;
+  audio: MovieAudioSpec;
+};
 
 export const provider2MovieAgent = {
   replicate: {
@@ -121,49 +141,58 @@ export const provider2MovieAgent = {
         durations: [5, 10],
         start_image: "image",
         last_image: "last_frame_image",
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.036, // in USD
       },
       "bytedance/seedance-1-pro": {
         durations: [5, 10],
         start_image: "image",
         last_image: "last_frame_image",
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.15,
       },
       "bytedance/seedance-2.0": {
         durations: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         start_image: "image",
         last_image: "last_frame_image",
+        audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
         price_per_sec: 0.29,
       },
       "bytedance/seedance-2.0-fast": {
         durations: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         start_image: "image",
         last_image: "last_frame_image",
+        audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
         price_per_sec: 0.22,
       },
       "kwaivgi/kling-v1.6-pro": {
         durations: [5, 10],
         start_image: "start_image",
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.095,
       },
       "kwaivgi/kling-v2.1": {
         durations: [5, 10],
         start_image: "start_image",
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.05,
       },
       "kwaivgi/kling-v2.1-master": {
         durations: [5, 10],
         start_image: "start_image",
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.28,
       },
       "google/veo-2": {
         durations: [5, 6, 7, 8],
         start_image: "image",
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.5,
       },
       "google/veo-3": {
         durations: [8],
         start_image: "image",
+        audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
         price_per_sec: 0.75,
       },
       "google/veo-3.1": {
@@ -171,71 +200,84 @@ export const provider2MovieAgent = {
         start_image: "image",
         last_image: "last_frame_image",
         reference_images_param: "reference_images",
+        audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
         price_per_sec: 0.75,
       },
       "google/veo-3.1-fast": {
         durations: [4, 6, 8],
         start_image: "image",
         last_image: "last_frame_image",
+        audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
         price_per_sec: 0.4,
       },
       "google/veo-3.1-lite": {
         durations: [4, 6, 8],
         start_image: "image",
         last_image: "last_frame",
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.05,
       },
       "google/veo-3-fast": {
         durations: [8],
         start_image: "image",
+        audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
         price_per_sec: 0.4,
       },
       "minimax/video-01": {
         durations: [6],
         start_image: "first_frame_image",
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.5,
       },
       "minimax/hailuo-02": {
         durations: [6], // NOTE: 10 for only 720p
         start_image: "first_frame_image",
         last_image: "end_image",
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.08,
       },
       "minimax/hailuo-02-fast": {
         durations: [6, 10], // NOTE: 512P
         start_image: "first_frame_image",
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.0166,
       },
       "pixverse/pixverse-v4.5": {
         durations: [5, 8],
         start_image: "image",
         last_image: "last_frame_image",
+        audio: { mode: AUDIO_MODE_OPTIONAL, param: "sound_effect_switch" },
         price_per_sec: 0.12,
       },
       "wan-video/wan-2.2-i2v-fast": {
         durations: [5],
         start_image: "image",
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.012,
       },
       "wan-video/wan-2.2-t2v-fast": {
         durations: [5],
         start_image: undefined,
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.012,
       },
       "xai/grok-imagine-video": {
         durations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         start_image: "image",
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.08,
       },
       "xai/grok-imagine-r2v": {
         durations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         start_image: undefined,
         reference_images_param: "reference_images",
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.08,
       },
       "runwayml/gen-4.5": {
         durations: [5, 10],
         start_image: "image",
+        audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.25,
       },
       "kwaivgi/kling-v3-omni-video": {
@@ -243,6 +285,7 @@ export const provider2MovieAgent = {
         start_image: "start_image",
         last_image: "end_image",
         reference_images_param: "reference_images",
+        audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
         price_per_sec: 0.3,
       },
       "kwaivgi/kling-v3-video": {
@@ -250,12 +293,10 @@ export const provider2MovieAgent = {
         start_image: "start_image",
         last_image: "end_image",
         reference_images_param: "reference_images",
+        audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
         price_per_sec: 0.3,
       },
-    } as Record<
-      ReplicateModel,
-      { durations: number[]; start_image: string | undefined; last_image?: string; reference_images_param?: string; price_per_sec: number }
-    >,
+    } as Record<ReplicateModel, ReplicateMovieModelParams>,
   },
   google: {
     agentName: "movieGenAIAgent",
@@ -269,6 +310,7 @@ export const provider2MovieAgent = {
         supportsLastFrame: true,
         supportsReferenceImages: false,
         supportsPersonGeneration: false,
+        audio: { mode: AUDIO_MODE_ALWAYS },
       },
       "veo-3.1-generate-preview": {
         durations: [4, 6, 8],
@@ -276,6 +318,7 @@ export const provider2MovieAgent = {
         supportsLastFrame: true,
         supportsReferenceImages: true,
         supportsPersonGeneration: false,
+        audio: { mode: AUDIO_MODE_ALWAYS },
       },
       "veo-3.0-generate-001": {
         durations: [8],
@@ -283,6 +326,7 @@ export const provider2MovieAgent = {
         supportsLastFrame: false,
         supportsReferenceImages: false,
         supportsPersonGeneration: false,
+        audio: { mode: AUDIO_MODE_ALWAYS },
       },
       "veo-2.0-generate-001": {
         durations: [5, 6, 8],
@@ -290,11 +334,9 @@ export const provider2MovieAgent = {
         supportsLastFrame: false, // Vertex AI only
         supportsReferenceImages: false,
         supportsPersonGeneration: true,
+        audio: { mode: AUDIO_MODE_NEVER },
       },
-    } as Record<
-      string,
-      { durations: number[]; supportsDuration: boolean; supportsLastFrame: boolean; supportsReferenceImages: boolean; supportsPersonGeneration: boolean }
-    >,
+    } as Record<string, GoogleMovieModelParams>,
   },
   mock: {
     agentName: "mediaMockAgent",

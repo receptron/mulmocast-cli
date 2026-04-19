@@ -159,6 +159,7 @@ const generateReferenceMovie = async (inputs: {
         params: {
           model: movieAgentInfo.movieParams.model,
           canvasSize: context.presentationStyle.canvasSize,
+          generateAudio: movieAgentInfo.movieParams.generateAudio,
         },
       },
     },

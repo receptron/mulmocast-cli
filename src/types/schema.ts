@@ -571,6 +571,7 @@ export const mulmoMovieParamsSchema = z.object({
     .optional()
     .describe("Style/asset reference images (Veo 3.1). Mutually exclusive with imageName/lastFrameImageName"),
   concurrency: z.number().int().positive().optional().describe("Max concurrent movie generation requests"),
+  generateAudio: z.boolean().optional().describe("Request audio generation in the video (model-dependent)"),
 });
 
 export const mulmoBeatSchema = z
