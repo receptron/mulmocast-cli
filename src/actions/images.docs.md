@@ -1,5 +1,5 @@
 ---
-generated_at: 2026-04-05T21:21:17.538Z
+generated_at: 2026-04-19T19:03:02.920Z
 ---
 
 # images
@@ -103,6 +103,7 @@ flowchart TD
   n_context -- presentationStyle.canvasSize --> n_movieGenerator
   n_preprocessor -- movieAgentInfo.movieParams.vertexai_project --> n_movieGenerator
   n_preprocessor -- movieAgentInfo.movieParams.vertexai_location --> n_movieGenerator
+  n_preprocessor -- movieAgentInfo.movieParams.generateAudio --> n_movieGenerator
   n_imageFromMovie(imageFromMovie<br/>agent)
   n_movieGenerator --> n_imageFromMovie
   n_imagePlugin --> n_imageFromMovie
@@ -278,6 +279,7 @@ flowchart TD
     n_map_context -- presentationStyle.canvasSize --> n_map_movieGenerator
     n_map_preprocessor -- movieAgentInfo.movieParams.vertexai_project --> n_map_movieGenerator
     n_map_preprocessor -- movieAgentInfo.movieParams.vertexai_location --> n_map_movieGenerator
+    n_map_preprocessor -- movieAgentInfo.movieParams.generateAudio --> n_map_movieGenerator
     n_map_imageFromMovie(imageFromMovie<br/>agent)
     n_map_movieGenerator --> n_map_imageFromMovie
     n_map_imagePlugin --> n_map_imageFromMovie
