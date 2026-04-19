@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.8](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.8) (2026-04-20)
+
+- **Generate audio for video models**: `generateAudio` support for video generation models (Veo, Seedance 2.0, Pixverse v4.5). Modeled as a discriminated union so audio capability is explicit per model
+- **Seedance 2.0 models**: Added Seedance 2.0 model configuration and test scenarios
+- **Dependency updates**: yarn upgrade (patch/minor) plus dependabot bumps (`protobufjs`, `hono`, `basic-ftp`)
+
+📦 **npm**: [`mulmocast@2.6.8`](https://www.npmjs.com/package/mulmocast/v/2.6.8)
+
 ## [2.6.7](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.7) (2026-04-13)
 
 - **Configurable concurrency**: `concurrency` parameter for `imageParams`, `movieParams`, and `audioParams` to prevent rate limit errors (e.g., Veo 3 multi-beat generation)
