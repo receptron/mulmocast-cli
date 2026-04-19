@@ -116,20 +116,20 @@ For videos **longer than 8 seconds**, Veo 3.1 uses video extension (generating a
 
 ### Replicate
 
-| Model | first frame | lastFrame | generateAudio | Param Name |
-|---|:---:|:---:|:---:|---|
-| **seedance-1-lite/pro** | ✅ | ✅ | ❌ | `last_frame_image` |
-| **seedance-2.0/2.0-fast** | ✅ | ✅ | optional | `last_frame_image` |
-| **pixverse-v4.5** | ✅ | ✅ | optional | `last_frame_image` |
-| **hailuo-02** | ✅ | ✅ | ❌ | `end_image` |
-| **kling-v1.6/2.1/2.1-master** | ✅ | ❌ | ❌ | — |
-| **kling-v3-video/v3-omni-video** | ✅ | ✅ | optional | `end_image` |
-| **veo-2 (Replicate)** | ✅ | ❌ | ❌ | — |
-| **veo-3/3.1/3.1-fast/3-fast** | ✅ | varies | optional | — |
-| **veo-3.1-lite** | ✅ | ✅ | ❌ | `last_frame` |
-| **minimax/video-01** | ✅ | ❌ | ❌ | — |
-| **xai/grok-imagine-r2v** | ❌ | ❌ | ❌ | — |
-| **wan-video/wan-2.2** | ✅ | ❌ | ❌ | — |
+| Model | first frame | lastFrame | lastFrame param | generateAudio | audio param |
+|---|:---:|:---:|---|:---:|---|
+| **seedance-1-lite/pro** | ✅ | ✅ | `last_frame_image` | ❌ | — |
+| **seedance-2.0/2.0-fast** | ✅ | ✅ | `last_frame_image` | optional | `generate_audio` |
+| **pixverse-v4.5** | ✅ | ✅ | `last_frame_image` | optional | `sound_effect_switch` |
+| **hailuo-02** | ✅ | ✅ | `end_image` | ❌ | — |
+| **kling-v1.6/2.1/2.1-master** | ✅ | ❌ | — | ❌ | — |
+| **kling-v3-video/v3-omni-video** | ✅ | ✅ | `end_image` | optional | `generate_audio` |
+| **veo-2 (Replicate)** | ✅ | ❌ | — | ❌ | — |
+| **veo-3/3.1/3.1-fast/3-fast** | ✅ | varies | — | optional | `generate_audio` |
+| **veo-3.1-lite** | ✅ | ✅ | `last_frame` | ❌ | — |
+| **minimax/video-01** | ✅ | ❌ | — | ❌ | — |
+| **xai/grok-imagine-r2v** | ❌ | ❌ | — | ❌ | — |
+| **wan-video/wan-2.2** | ✅ | ❌ | — | ❌ | — |
 
 > **Note**: `referenceImages` is supported by Veo 3.1 (Google GenAI), Kling v3, and Grok R2V (Replicate).
 
