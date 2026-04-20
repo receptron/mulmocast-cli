@@ -125,7 +125,8 @@ For videos **longer than 8 seconds**, Veo 3.1 uses video extension (generating a
 | **kling-v1.6/2.1/2.1-master** | ✅ | ❌ | — | ❌ | — |
 | **kling-v3-video/v3-omni-video** | ✅ | ✅ | `end_image` | optional | `generate_audio` |
 | **veo-2 (Replicate)** | ✅ | ❌ | — | ❌ | — |
-| **veo-3/3.1/3.1-fast/3-fast** | ✅ | varies | — | optional | `generate_audio` |
+| **veo-3/3-fast** | ✅ | ❌ | — | optional | `generate_audio` |
+| **veo-3.1/3.1-fast** | ✅ | ✅ | `last_frame_image` | optional | `generate_audio` |
 | **veo-3.1-lite** | ✅ | ✅ | `last_frame` | ❌ | — |
 | **minimax/video-01** | ✅ | ❌ | — | ❌ | — |
 | **xai/grok-imagine-r2v** | ❌ | ❌ | — | ❌ | — |
