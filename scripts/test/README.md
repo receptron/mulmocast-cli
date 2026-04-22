@@ -106,7 +106,7 @@ Language setting tests
 Provider-specific feature tests
 
 - [**test_hello_google.json**](./test_hello_google.json) - Google TTS専用テスト / Google TTS specific test
-- [**gpt.json**](./gpt.json) - GPTモデルテスト / GPT model test
+- [**test_gpt_image.json**](./test_gpt_image.json) - GPT image model test
 - [**mulmo_story.json**](./mulmo_story.json) - ストーリー形式テスト / Story format test
 - [**nano_banana.json**](./nano_banana.json) - カスタムサンプル / Custom sample
 
