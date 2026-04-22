@@ -94,14 +94,15 @@ test("test createVideo filterComplex structure", async () => {
   ]);
 });
 
-test("test createVideo with gpt.json", async () => {
-  const script = getMulmoScript("test/gpt.json");
+test("test createVideo with test_gpt_image.json", async () => {
+  const script = getMulmoScript("test/test_gpt_image.json");
   const context = createContextFromScript(script);
   const result = await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true);
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,fps=30,trim=end_frame=150,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,fps=30,trim=end_frame=150,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
-    "[v0][v1]concat=n=2:v=1:a=0[concat_video]",
+    "[2:v]loop=loop=-1:size=1:start=0,fps=30,trim=end_frame=150,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
+    "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]",
   ]);
 });
 
