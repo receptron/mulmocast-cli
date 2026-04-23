@@ -112,8 +112,8 @@
     "jsdom": "^29.0.2",
     "marked": "^18.0.2",
     "mulmocast-vision": "^1.0.9",
-    "ora": "^9.3.0",
-    "puppeteer": "^24.41.0",
+    "ora": "^9.4.0",
+    "puppeteer": "^24.42.0",
     "replicate": "^1.4.0",
     "yaml": "^2.8.3",
     "yargs": "^18.0.0",
@@ -136,7 +136,7 @@
     "prettier": "^3.8.3",
     "tsx": "^4.21.0",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.58.1"
+    "typescript-eslint": "^8.59.0"
   },
   "engines": {
     "node": ">=22.0.0"
