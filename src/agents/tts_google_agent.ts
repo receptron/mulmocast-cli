@@ -1,11 +1,17 @@
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import * as textToSpeech from "@google-cloud/text-to-speech";
+import type { ServiceError } from "google-gax";
 import { agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 
 import type { GoogleTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult } from "../types/agent.js";
 
 const client = new textToSpeech.TextToSpeechClient();
+
+// Hard cap so a hung Google TTS RPC can't pin a beat indefinitely.
+// Most synthesizeSpeech calls return in seconds; 60s leaves headroom
+// for long inputs and slow regions while still failing loud.
+const SYNTHESIZE_TIMEOUT_MS = 60_000;
 
 const getPrompt = (text: string, instructions?: string) => {
   if (instructions) {
@@ -47,7 +53,7 @@ export const ttsGoogleAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
   };
   try {
     // Call the Text-to-Speech API
-    const [response] = await client.synthesizeSpeech(request);
+    const [response] = await client.synthesizeSpeech(request, { timeout: SYNTHESIZE_TIMEOUT_MS });
     return { buffer: response.audioContent as Buffer };
   } catch (e) {
     if (suppressError) {
@@ -56,10 +62,22 @@ export const ttsGoogleAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
       };
     }
     GraphAILogger.info(e);
-    throw new Error("TTS Google Error", {
+    // gRPC errors from @google-cloud/text-to-speech are ServiceError
+    // (extends Error with a `details` string). Surface that human-readable
+    // text so callers don't see only "TTS Google Error".
+    throw new Error(`TTS Google Error: ${grpcErrorDetail(e)}`, {
       cause: agentGenerationError("ttsGoogleAgent", audioAction, audioFileTarget),
     });
   }
+};
+
+const grpcErrorDetail = (e: unknown): string => {
+  if (e instanceof Error) {
+    const details = (e as ServiceError).details;
+    if (typeof details === "string" && details) return details;
+    return e.message;
+  }
+  return String(e);
 };
 
 const ttsGoogleAgentInfo: AgentFunctionInfo = {
