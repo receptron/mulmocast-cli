@@ -56,7 +56,20 @@ export const ttsGoogleAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
       };
     }
     GraphAILogger.info(e);
-    throw new Error("TTS Google Error", {
+    // gRPC errors from @google-cloud/text-to-speech expose the human-readable
+    // cause as `.details` (e.g. "This voice requires a model name to be
+    // specified."). Surface it in the message so callers don't see only a
+    // generic "TTS Google Error".
+    const grpcDetails = (e as { details?: unknown })?.details;
+    let detail: string;
+    if (typeof grpcDetails === "string" && grpcDetails) {
+      detail = grpcDetails;
+    } else if (e instanceof Error) {
+      detail = e.message;
+    } else {
+      detail = String(e);
+    }
+    throw new Error(`TTS Google Error: ${detail}`, {
       cause: agentGenerationError("ttsGoogleAgent", audioAction, audioFileTarget),
     });
   }
