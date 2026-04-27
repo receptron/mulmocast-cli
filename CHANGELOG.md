@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.9](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.9) (2026-04-28)
+
+- **`gpt-image-2` support**: Added OpenAI `gpt-image-2` to image providers
+- **`tts_google_agent` error surfacing**: Surface gRPC `.details` in thrown errors with proper `ServiceError` type and timeout handling
+- **Docs**: Split Veo Replicate model table to show `lastFrame` parameter accurately
+- **Dependency updates**: Routine package updates
+
+📦 **npm**: [`mulmocast@2.6.9`](https://www.npmjs.com/package/mulmocast/v/2.6.9)
+
 ## [2.6.8](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.8) (2026-04-20)
 
 - **Generate audio for video models**: `generateAudio` support for video generation models (Veo, Seedance 2.0, Pixverse v4.5). Modeled as a discriminated union so audio capability is explicit per model
