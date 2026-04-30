@@ -28,6 +28,27 @@ This directory contains developer documentation for MulmoCast.
 - [**Google Prerequisites**](./pre-requisites-google.md) - Google画像生成モデルの事前設定 / Prerequisites for Google image generation models
 - [**NPM Development**](./npm_dev.md) - NPMバージョンアップのテスト手順 / NPM version upgrade testing procedure
 
+### Google AI: Gemini API vs Vertex AI
+
+MulmoCast は Google の生成AI機能（画像・動画・TTS）を **Gemini API** と **Vertex AI** の2つの方式で利用できます。用途に応じて使い分けてください。
+
+MulmoCast supports Google's generative AI (image, video, TTS) via two backends — **Gemini API** and **Vertex AI**. Choose based on your use case.
+
+| 観点 / Aspect | Gemini API | Vertex AI |
+|---|---|---|
+| 認証 / Auth | API キー (`GEMINI_API_KEY`) | ADC (`gcloud auth application-default login`) |
+| 用途 / Use case | 個人開発・プロトタイピング / Personal & prototyping | エンタープライズ・本番 / Enterprise & production |
+| 料金 / Billing | 従量課金 / Pay-as-you-go | Google Cloud 請求 / GCP billing |
+| SLA | なし / None | あり / Yes |
+| モデル / Models | 一部制限あり / Some restrictions | 全モデル利用可能 / All models available |
+
+`imageParams` / `movieParams` に `vertexai_project` を指定すると Vertex AI モードで動作します。詳細は以下を参照:
+
+Set `vertexai_project` in `imageParams` / `movieParams` to switch to Vertex AI mode. See:
+
+- [**Vertex AI Setup (EN)**](./vertexai_en.md) - Vertex AI セットアップガイド（英語） / Vertex AI setup guide (English)
+- [**Vertex AI Setup (JA)**](./vertexai_ja.md) - Vertex AI セットアップガイド（日本語） / Vertex AI setup guide (Japanese)
+
 ## 📖 機能仕様 / Feature Specifications
 
 ### コア機能 / Core Features
