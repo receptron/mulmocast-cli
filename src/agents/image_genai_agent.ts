@@ -80,16 +80,23 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
   const apiKey = config?.apiKey;
 
   const ai = params.vertexai_project
-    ? new GoogleGenAI({
-        vertexai: true,
-        project: params.vertexai_project,
-        location: params.vertexai_location ?? "us-central1",
-      })
+    ? (() => {
+        const location = params.vertexai_location ?? "us-central1";
+        if (model === "gemini-3-pro-image-preview" && location !== "global") {
+          GraphAILogger.warn(
+            `imageGenAIAgent: model "${model}" on Vertex AI is only available in location "global", but got "${location}". Set imageParams.vertexai_location to "global".`,
+          );
+        }
+        return new GoogleGenAI({ vertexai: true, project: params.vertexai_project, location });
+      })()
     : (() => {
         if (!apiKey) {
-          throw new Error("Google GenAI API key is required (GEMINI_API_KEY)", {
-            cause: apiKeyMissingError("imageGenAIAgent", imageAction, "GEMINI_API_KEY"),
-          });
+          throw new Error(
+            "Google GenAI authentication is required. Either set GEMINI_API_KEY (Gemini API) or specify imageParams.vertexai_project (Vertex AI). See docs/vertexai_en.md or docs/vertexai_ja.md.",
+            {
+              cause: apiKeyMissingError("imageGenAIAgent", imageAction, "GEMINI_API_KEY"),
+            },
+          );
         }
         return new GoogleGenAI({ apiKey });
       })();
