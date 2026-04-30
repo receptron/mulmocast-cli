@@ -1,0 +1,29 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "canvasSize": {
+    "width": 1024,
+    "height": 1024
+  },
+  "imageParams": {
+    "provider": "replicate",
+    "model": "black-forest-labs/flux-2-pro"
+  },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "voiceId": "shimmer",
+        "provider": "openai"
+      }
+    }
+  },
+  "lang": "en",
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "Testing flux-2-pro on Replicate.",
+      "imagePrompt": "A cinematic photo of a red panda holding a tiny espresso cup, soft window light, shallow depth of field"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "canvasSize": { "width": 1024, "height": 1024 },
+  "imageParams": {
+    "provider": "replicate"
+  },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "voiceId": "shimmer",
+        "provider": "openai"
+      }
+    }
+  },
+  "audioParams": { "bgmVolume": 0 },
+  "lang": "en",
+  "title": "Replicate Image Models Showcase",
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "PROMPT: A red panda holding a tiny espresso cup, soft window light, cinematic.",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "PROMPT: A red panda holding a tiny espresso cup, soft window light, cinematic."
+        }
+      }
+    },
+    {
+      "id": "flux-2-pro",
+      "speaker": "Presenter",
+      "text": "Flux 2 Pro from Black Forest Labs — high quality text-to-image.",
+      "imagePrompt": "A red panda holding a tiny espresso cup, soft window light, cinematic",
+      "imageParams": { "model": "black-forest-labs/flux-2-pro" }
+    },
+    {
+      "id": "flux-1.1-pro-ultra",
+      "speaker": "Presenter",
+      "text": "Flux 1.1 Pro Ultra — ultra-high resolution variant.",
+      "imagePrompt": "A red panda holding a tiny espresso cup, soft window light, cinematic",
+      "imageParams": { "model": "black-forest-labs/flux-1.1-pro-ultra" }
+    },
+    {
+      "id": "flux-schnell",
+      "speaker": "Presenter",
+      "text": "Flux Schnell — fastest open Flux model.",
+      "imagePrompt": "A red panda holding a tiny espresso cup, soft window light, cinematic",
+      "imageParams": { "model": "black-forest-labs/flux-schnell" }
+    },
+    {
+      "id": "ideogram-v3-turbo",
+      "speaker": "Presenter",
+      "text": "Ideogram v3 Turbo — strong at typography and posters.",
+      "imagePrompt": "A red panda holding a tiny espresso cup, soft window light, cinematic",
+      "imageParams": { "model": "ideogram-ai/ideogram-v3-turbo" }
+    },
+    {
+      "id": "recraft-v3",
+      "speaker": "Presenter",
+      "text": "Recraft v3 — strong at clean illustration and text in images.",
+      "imagePrompt": "A red panda holding a tiny espresso cup, soft window light, cinematic",
+      "imageParams": { "model": "recraft-ai/recraft-v3" }
+    },
+    {
+      "id": "sd-3.5-large",
+      "speaker": "Presenter",
+      "text": "Stable Diffusion 3.5 Large — open weights baseline.",
+      "imagePrompt": "A red panda holding a tiny espresso cup, soft window light, cinematic",
+      "imageParams": { "model": "stability-ai/stable-diffusion-3.5-large" }
+    },
+    {
+      "id": "luma-photon",
+      "speaker": "Presenter",
+      "text": "Luma Photon — strong photorealism and style transfer.",
+      "imagePrompt": "A red panda holding a tiny espresso cup, soft window light, cinematic",
+      "imageParams": { "model": "luma/photon" }
+    }
+  ]
+}
