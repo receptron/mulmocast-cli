@@ -91,6 +91,7 @@ type MovieAudioSpec = { mode: typeof AUDIO_MODE_NEVER } | { mode: typeof AUDIO_M
 type ReplicateMovieModelParams = {
   durations: number[];
   start_image: string | undefined;
+  start_image_required?: boolean;
   last_image?: string;
   reference_images_param?: string;
   audio: MovieAudioSpec;
@@ -315,6 +316,7 @@ export const provider2MovieAgent = {
       "minimax/hailuo-2.3-fast": {
         durations: [6, 10],
         start_image: "first_frame_image",
+        start_image_required: true,
         audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.06,
       },
