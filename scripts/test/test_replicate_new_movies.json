@@ -32,13 +32,6 @@
       "movieParams": { "model": "minimax/hailuo-2.3" }
     },
     {
-      "id": "hailuo-23-fast",
-      "text": "minimax/hailuo-2.3-fast",
-      "duration": 6,
-      "moviePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
-      "movieParams": { "model": "minimax/hailuo-2.3-fast" }
-    },
-    {
       "id": "pixverse-v5",
       "text": "pixverse/pixverse-v5",
       "duration": 5,
