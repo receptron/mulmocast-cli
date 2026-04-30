@@ -262,9 +262,12 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
         })
       : (() => {
           if (!apiKey) {
-            throw new Error("Google GenAI API key is required (GEMINI_API_KEY)", {
-              cause: apiKeyMissingError("movieGenAIAgent", imageAction, "GEMINI_API_KEY"),
-            });
+            throw new Error(
+              "Google GenAI authentication is required. Either set GEMINI_API_KEY (Gemini API) or specify movieParams.vertexai_project (Vertex AI). See docs/vertexai_en.md or docs/vertexai_ja.md.",
+              {
+                cause: apiKeyMissingError("movieGenAIAgent", imageAction, "GEMINI_API_KEY"),
+              },
+            );
           }
           return new GoogleGenAI({ apiKey });
         })();
