@@ -301,6 +301,10 @@ export const provider2MovieAgent = {
         audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
         price_per_sec: 0.3,
       },
+      // TODO: price_per_sec for the models below is a coarse approximation.
+      // Actual Replicate pricing varies by resolution / duration / quality and
+      // cannot be expressed as a single per-second number. Verify each model at
+      // https://replicate.com/<owner>/<model> when this field starts being consumed.
       "alibaba/happyhorse-1.0": {
         durations: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         start_image: "image",
