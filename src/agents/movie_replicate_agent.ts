@@ -162,6 +162,11 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
       cause: agentGenerationError("movieReplicateAgent", imageAction, unsupportedModelTarget),
     });
   }
+  if (provider2MovieAgent.replicate.modelParams[model].start_image_required && !imagePath) {
+    throw new Error(`Model ${model} requires a start image (image-to-video only)`, {
+      cause: agentGenerationError("movieReplicateAgent", imageAction, unsupportedModelTarget),
+    });
+  }
   const duration = getModelDuration("replicate", model, params.duration);
 
   if (duration === undefined || !provider2MovieAgent.replicate.modelParams[model].durations.includes(duration)) {

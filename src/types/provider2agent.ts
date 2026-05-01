@@ -107,6 +107,7 @@ type MovieAudioSpec = { mode: typeof AUDIO_MODE_NEVER } | { mode: typeof AUDIO_M
 type ReplicateMovieModelParams = {
   durations: number[];
   start_image: string | undefined;
+  start_image_required?: boolean;
   last_image?: string;
   reference_images_param?: string;
   audio: MovieAudioSpec;
@@ -151,6 +152,10 @@ export const provider2MovieAgent = {
       "runwayml/gen-4.5",
       "kwaivgi/kling-v3-omni-video",
       "kwaivgi/kling-v3-video",
+      "alibaba/happyhorse-1.0",
+      "minimax/hailuo-2.3",
+      "minimax/hailuo-2.3-fast",
+      "pixverse/pixverse-v5",
     ],
     modelParams: {
       "bytedance/seedance-1-lite": {
@@ -311,6 +316,36 @@ export const provider2MovieAgent = {
         reference_images_param: "reference_images",
         audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
         price_per_sec: 0.3,
+      },
+      // TODO: price_per_sec for the models below is a coarse approximation.
+      // Actual Replicate pricing varies by resolution / duration / quality and
+      // cannot be expressed as a single per-second number. Verify each model at
+      // https://replicate.com/<owner>/<model> when this field starts being consumed.
+      "alibaba/happyhorse-1.0": {
+        durations: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        start_image: "image",
+        audio: { mode: AUDIO_MODE_NEVER },
+        price_per_sec: 0.05,
+      },
+      "minimax/hailuo-2.3": {
+        durations: [6, 10],
+        start_image: "first_frame_image",
+        audio: { mode: AUDIO_MODE_NEVER },
+        price_per_sec: 0.1,
+      },
+      "minimax/hailuo-2.3-fast": {
+        durations: [6, 10],
+        start_image: "first_frame_image",
+        start_image_required: true,
+        audio: { mode: AUDIO_MODE_NEVER },
+        price_per_sec: 0.06,
+      },
+      "pixverse/pixverse-v5": {
+        durations: [5, 8],
+        start_image: "image",
+        last_image: "last_frame_image",
+        audio: { mode: AUDIO_MODE_NEVER },
+        price_per_sec: 0.12,
       },
     } as Record<ReplicateModel, ReplicateMovieModelParams>,
   },

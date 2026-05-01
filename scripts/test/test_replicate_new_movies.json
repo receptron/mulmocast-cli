@@ -1,0 +1,50 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "movieParams": {
+    "provider": "replicate"
+  },
+  "audioParams": { "bgmVolume": 0 },
+  "captionParams": { "lang": "en" },
+  "lang": "en",
+  "title": "Replicate New Movie Models Showcase",
+  "beats": [
+    {
+      "text": "PROMPT: a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "PROMPT: a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses"
+        }
+      }
+    },
+    {
+      "id": "alibaba-happyhorse",
+      "text": "alibaba/happyhorse-1.0",
+      "duration": 5,
+      "moviePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
+      "movieParams": { "model": "alibaba/happyhorse-1.0" }
+    },
+    {
+      "id": "hailuo-23",
+      "text": "minimax/hailuo-2.3",
+      "duration": 6,
+      "moviePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
+      "movieParams": { "model": "minimax/hailuo-2.3" }
+    },
+    {
+      "id": "pixverse-v5",
+      "text": "pixverse/pixverse-v5",
+      "duration": 5,
+      "moviePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
+      "movieParams": { "model": "pixverse/pixverse-v5" }
+    },
+    {
+      "id": "hailuo-23-fast",
+      "text": "minimax/hailuo-2.3-fast (i2v: starts from a generated still image)",
+      "duration": 6,
+      "imagePrompt": "a woman wearing dark sunglasses standing on a busy Tokyo street at night, neon reflections, cinematic still",
+      "moviePrompt": "the woman starts walking forward, neon reflections shimmer on the wet pavement",
+      "movieParams": { "model": "minimax/hailuo-2.3-fast" }
+    }
+  ]
+}
