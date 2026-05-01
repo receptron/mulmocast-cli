@@ -18,6 +18,19 @@ import { provider2ImageAgent } from "../types/provider2agent.js";
 
 export type ReplicateImageAgentConfig = AgentConfig;
 
+// Replicate image models return one of: FileOutput (object with url() method),
+// Array<FileOutput>, string URL, or { url: string }. Normalize to URL string/URL.
+const extractImageUrl = (output: unknown): string | URL | undefined => {
+  if (typeof output === "string") return output;
+  if (Array.isArray(output)) return output.length > 0 ? extractImageUrl(output[0]) : undefined;
+  if (output && typeof output === "object" && "url" in output) {
+    const url = (output as { url: unknown }).url;
+    if (typeof url === "function") return (url as () => URL)();
+    if (typeof url === "string") return url;
+  }
+  return undefined;
+};
+
 export const imageReplicateAgent: AgentFunction<ReplicateImageAgentParams, AgentBufferResult, ImageAgentInputs, ReplicateImageAgentConfig> = async ({
   namedInputs,
   params,
@@ -51,24 +64,23 @@ export const imageReplicateAgent: AgentFunction<ReplicateImageAgentParams, Agent
   try {
     const output = await replicate.run(model, { input });
 
-    // Download the generated video
-    if (output && Array.isArray(output) && output.length > 0 && typeof output[0] === "object" && "url" in output[0]) {
-      const imageUrl = (output[0].url as () => URL)();
-      const imageResponse = await fetch(imageUrl);
-
-      if (!imageResponse.ok) {
-        throw new Error(`Error downloading image: ${imageResponse.status} - ${imageResponse.statusText}`, {
-          cause: agentGenerationError("imageReplicateAgent", imageAction, imageFileTarget),
-        });
-      }
-
-      const arrayBuffer = await imageResponse.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      return { buffer };
+    const imageUrl = extractImageUrl(output);
+    if (!imageUrl) {
+      throw new Error("ERROR: generateImage returned undefined", {
+        cause: agentInvalidResponseError("imageReplicateAgent", imageAction, imageFileTarget),
+      });
     }
-    throw new Error("ERROR: generateImage returned undefined", {
-      cause: agentInvalidResponseError("imageReplicateAgent", imageAction, imageFileTarget),
-    });
+
+    const imageResponse = await fetch(imageUrl);
+    if (!imageResponse.ok) {
+      throw new Error(`Error downloading image: ${imageResponse.status} - ${imageResponse.statusText}`, {
+        cause: agentGenerationError("imageReplicateAgent", imageAction, imageFileTarget),
+      });
+    }
+
+    const arrayBuffer = await imageResponse.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    return { buffer };
   } catch (error) {
     GraphAILogger.info("Replicate generation error:", error);
     if (hasCause(error) && error.cause) {
