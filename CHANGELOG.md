@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.10](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.10) (2026-04-30)
+
+- **Replicate image models**: Added Flux 2 Pro/Dev, Flux 1.1 Pro/Pro Ultra, Flux Pro/Dev/Schnell, Ideogram v3 (turbo/balanced/quality), Recraft v3, Stable Diffusion 3.5 Large, Luma Photon. Generalized agent output handling
+- **Replicate movie models**: Added `alibaba/happyhorse-1.0`, `minimax/hailuo-2.3`, `minimax/hailuo-2.3-fast`, `pixverse/pixverse-v5` with `start_image_required` flag for i2v-only models
+- **Vertex AI usability**: Clearer auth error message and `gemini-3-pro-image-preview` region warn
+- **Docs**: Added Gemini API vs Vertex AI section and links in `docs/README.md`
+
+📦 **npm**: [`mulmocast@2.6.10`](https://www.npmjs.com/package/mulmocast/v/2.6.10)
+
 ## [2.6.9](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.9) (2026-04-28)
 
 - **`gpt-image-2` support**: Added OpenAI `gpt-image-2` to image providers
