@@ -21,10 +21,10 @@
       }
     },
     {
-      "text": "Image with Dall-E 3",
+      "text": "Image with OpenAI gpt-image-1-mini",
       "imagePrompt": "Blue sky, a flock of birds",
       "imageParams": {
-        "model": "dall-e-3",
+        "model": "gpt-image-1-mini",
         "style": "anime-style",
         "provider": "openai"
       }

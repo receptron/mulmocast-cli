@@ -128,7 +128,7 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
     return { buffer: Buffer.from(image_base64, "base64") };
   }
 
-  // For dall-e-3
+  // URL response handling (legacy OpenAI image API response format)
   const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`Failed to fetch ${url}: ${res.status} ${res.statusText}`, {

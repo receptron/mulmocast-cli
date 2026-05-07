@@ -52,6 +52,7 @@ const defaultTextSlideStyles = [
   "td, th { padding: 8px }",
   "tr:nth-child(even) { background-color: #eee }",
 ];
+const unsupportedOpenAIImageModels = new Set(["dall-e-2", "dall-e-3"]);
 
 export const MulmoPresentationStyleMethods = {
   getCanvasSize(presentationStyle: MulmoPresentationStyle): MulmoCanvasDimension {
@@ -119,15 +120,20 @@ export const MulmoPresentationStyleMethods = {
       (MulmoPresentationStyleMethods.getText2ImageProvider(imageParams?.provider) as keyof typeof provider2ImageAgent) ?? defaultProviders.text2image;
     const agentInfo = provider2ImageAgent[provider];
 
-    // The default text2image model is gpt-image-1 from OpenAI, and to use it you must have an OpenAI account and have verified your identity. If this is not possible, please specify dall-e-3 as the model.
+    // The default text2image model is gpt-image-1 from OpenAI.
     const defaultImageParams: MulmoImageParams = {
       provider,
       model: agentInfo.defaultModel,
     };
+    const mergedImageParams: MulmoImageParams = { ...defaultImageParams, ...imageParams };
+    userAssert(
+      !(mergedImageParams.provider === "openai" && unsupportedOpenAIImageModels.has(mergedImageParams.model ?? "")),
+      `Unsupported image model: ${mergedImageParams.model}. OpenAI image models 'dall-e-2' and 'dall-e-3' are no longer available. Please use one of: ${provider2ImageAgent.openai.models.join(", ")}`,
+    );
 
     return {
       agent: agentInfo.agentName,
-      imageParams: { ...defaultImageParams, ...imageParams },
+      imageParams: mergedImageParams,
       keyName: agentInfo.keyName,
     };
   },
@@ -172,8 +178,7 @@ export const MulmoPresentationStyleMethods = {
     const imageAgentInfo = MulmoPresentationStyleMethods.getImageAgentInfo(presentationStyle);
     if (imageAgentInfo.imageParams.provider === "openai") {
       // NOTE: Here are the rate limits of OpenAI's text2image API (1token = 32x32 patch).
-      // dall-e-3: 7,500 RPM、15 images per minute (4 images for max resolution)
-      // gpt-image-1：3,000,000 TPM、150 images per minute
+      // gpt-image-1: 3,000,000 TPM, 150 images per minute
       if (imageAgentInfo.imageParams.model === provider2ImageAgent.openai.defaultModel) {
         return 16;
       }

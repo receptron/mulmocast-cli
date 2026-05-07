@@ -52,7 +52,7 @@ export const provider2ImageAgent = {
   openai: {
     agentName: "imageOpenaiAgent",
     defaultModel: "gpt-image-1",
-    models: ["dall-e-3", ...gptImages],
+    models: [...gptImages],
     keyName: "OPENAI_API_KEY",
     baseURLKeyName: "OPENAI_BASE_URL",
   },

@@ -31,7 +31,7 @@ test("imagePreprocessAgent - movie plugin", async () => {
     imageFromMovie: true,
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -84,7 +84,7 @@ test("imagePreprocessAgent - with image plugin (textSlide)", async () => {
     imageFromMovie: false,
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -119,7 +119,7 @@ test("imagePreprocessAgent - with image plugin (markdown)", async () => {
     imageFromMovie: false,
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -177,7 +177,7 @@ test("imagePreprocessAgent - with image plugin (chart)", async () => {
     imageFromMovie: false,
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -265,7 +265,7 @@ test("imagePreprocessAgent - with image plugin (mermaid)", async () => {
     imageFromMovie: false,
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },

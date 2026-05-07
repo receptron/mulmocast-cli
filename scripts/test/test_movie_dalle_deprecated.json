@@ -1,0 +1,26 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "movieParams": {
+    "provider": "google"
+  },
+  "canvasSize": {
+    "width": 720,
+    "height": 1280
+  },
+  "imageParams": {
+    "provider": "openai",
+    "model": "dall-e-3",
+    "style": "Photo realistic, cinematic style."
+  },
+  "beats": [
+    {
+      "text": "Deprecated model on movie flow should fail",
+      "imagePrompt": "A rocket on the launch pad at dusk.",
+      "moviePrompt": "Rocket lifts off.",
+      "duration": 5
+    }
+  ]
+}
