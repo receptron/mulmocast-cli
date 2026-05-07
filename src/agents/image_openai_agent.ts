@@ -3,7 +3,7 @@ import path from "path";
 import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
 import { toFile, AuthenticationError, RateLimitError, APIError } from "openai";
 import { createOpenAIClient } from "../utils/openai_client.js";
-import { provider2ImageAgent, gptImages } from "../types/provider2agent.js";
+import { provider2ImageAgent, gptImages, deprecatedOpenAIImageModelHints, type DeprecatedOpenAIImageModel } from "../types/provider2agent.js";
 import {
   apiKeyMissingError,
   agentGenerationError,
@@ -17,18 +17,11 @@ import {
 } from "../utils/error_cause.js";
 import type { AgentBufferResult, OpenAIImageOptions, OpenAIImageAgentParams, OpenAIImageAgentInputs, OpenAIImageAgentConfig } from "../types/agent.js";
 
-type DeprecatedModel = "dall-e-2" | "dall-e-3";
-
-const deprecatedModelHints: Record<DeprecatedModel, string> = {
-  "dall-e-2": "Use 'gpt-image-1' or another supported model.",
-  "dall-e-3": "Use 'gpt-image-1' or another supported model.",
-};
-
-const isDeprecatedModel = (model: string): model is DeprecatedModel => model in deprecatedModelHints;
+const isDeprecatedOpenAIImageModel = (model: string): model is DeprecatedOpenAIImageModel => model in deprecatedOpenAIImageModelHints;
 
 export const buildDeprecatedModelMessage = (model: string): string | null => {
-  if (!isDeprecatedModel(model)) return null;
-  return `OpenAI image model "${model}" is no longer available. ${deprecatedModelHints[model]}`;
+  if (!isDeprecatedOpenAIImageModel(model)) return null;
+  return `OpenAI image model "${model}" is no longer available. ${deprecatedOpenAIImageModelHints[model]}`;
 };
 
 // https://platform.openai.com/docs/guides/image-generation
