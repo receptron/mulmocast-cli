@@ -16,6 +16,11 @@ import {
 } from "../utils/error_cause.js";
 import type { AgentBufferResult, OpenAIImageOptions, OpenAIImageAgentParams, OpenAIImageAgentInputs, OpenAIImageAgentConfig } from "../types/agent.js";
 
+const deprecatedModelHints: Record<string, string> = {
+  "dall-e-2": "Use 'gpt-image-1' or another supported model.",
+  "dall-e-3": "Use 'gpt-image-1' or another supported model.",
+};
+
 // https://platform.openai.com/docs/guides/image-generation
 export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBufferResult, OpenAIImageAgentInputs, OpenAIImageAgentConfig> = async ({
   namedInputs,
@@ -83,6 +88,11 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
       }
     } catch (error) {
       GraphAILogger.info("Failed to generate image:", (error as Error).message);
+      if (deprecatedModelHints[model]) {
+        throw new Error(`OpenAI image model "${model}" is no longer available. ${deprecatedModelHints[model]}`, {
+          cause: error,
+        });
+      }
       if (error instanceof AuthenticationError) {
         throw new Error("Failed to generate image: 401 Incorrect API key provided with OpenAI", {
           cause: agentIncorrectAPIKeyError("imageOpenaiAgent", imageAction, imageFileTarget),

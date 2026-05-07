@@ -52,7 +52,6 @@ const defaultTextSlideStyles = [
   "td, th { padding: 8px }",
   "tr:nth-child(even) { background-color: #eee }",
 ];
-const unsupportedOpenAIImageModels = new Set(["dall-e-2", "dall-e-3"]);
 
 export const MulmoPresentationStyleMethods = {
   getCanvasSize(presentationStyle: MulmoPresentationStyle): MulmoCanvasDimension {
@@ -125,15 +124,10 @@ export const MulmoPresentationStyleMethods = {
       provider,
       model: agentInfo.defaultModel,
     };
-    const mergedImageParams: MulmoImageParams = { ...defaultImageParams, ...imageParams };
-    userAssert(
-      !(mergedImageParams.provider === "openai" && unsupportedOpenAIImageModels.has(mergedImageParams.model ?? "")),
-      `Unsupported image model: ${mergedImageParams.model}. OpenAI image models 'dall-e-2' and 'dall-e-3' are no longer available. Please use one of: ${provider2ImageAgent.openai.models.join(", ")}`,
-    );
 
     return {
       agent: agentInfo.agentName,
-      imageParams: mergedImageParams,
+      imageParams: { ...defaultImageParams, ...imageParams },
       keyName: agentInfo.keyName,
     };
   },

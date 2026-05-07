@@ -801,26 +801,55 @@ test("imagePreprocessAgent - with both text and imagePrompt", async () => {
   assert.deepStrictEqual(result, expected);
 });
 
-test("imagePreprocessAgent - rejects unsupported OpenAI image model", async () => {
+test("imagePreprocessAgent - with imageParams override", async () => {
   const context = createMockContext();
   const beat = createMockBeat({
     imagePrompt: "A beautiful sunset",
     imageParams: {
       provider: "openai",
       style: "photorealistic",
-      model: "dall-e-2",
+      model: "gpt-image-1-mini",
     },
   });
 
-  await assert.rejects(
-    imagePreprocessAgent({
-      context,
-      beat,
-      index: 21,
-      imageRefs: {},
-    }),
-    /Unsupported image model: dall-e-2/,
-  );
+  const result = await imagePreprocessAgent({
+    context,
+    beat,
+    index: 21,
+    imageRefs: {},
+  });
+
+  const expected = {
+    imagePath: "/test/images/test_studio/21p.png",
+    referenceImageForMovie: "/test/images/test_studio/21p.png",
+    prompt: "A beautiful sunset\nphotorealistic",
+    beatDuration: undefined,
+    imageAgentInfo: {
+      agent: "imageOpenaiAgent",
+      keyName: "OPENAI_API_KEY",
+      imageParams: {
+        provider: "openai",
+        style: "photorealistic",
+        model: "gpt-image-1-mini",
+        moderation: "auto",
+      },
+    },
+    imageParams: {
+      provider: "openai",
+      model: "gpt-image-1-mini", // From beat override
+      style: "photorealistic", // From beat override
+      moderation: "auto",
+    },
+    movieFile: undefined,
+    movieAgentInfo: {
+      agent: "movieReplicateAgent",
+      keyName: "REPLICATE_API_TOKEN",
+      movieParams: {},
+    },
+    referenceImages: [],
+  };
+
+  assert.deepStrictEqual(result, expected);
 });
 
 // soundEffectPrompt parameter tests(no movie)
