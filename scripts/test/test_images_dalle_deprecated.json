@@ -10,14 +10,14 @@
   },
   "beats": [
     {
-      "text": "Deprecated model dall-e-2 should fail",
+      "text": "Compatibility probe: dall-e-2 (no longer available on OpenAI; expects model_not_found from API)",
       "imagePrompt": "Blue sky, a flock of birds",
       "imageParams": {
         "model": "dall-e-2"
       }
     },
     {
-      "text": "Deprecated model dall-e-3 should fail",
+      "text": "Compatibility probe: dall-e-3 (no longer available on OpenAI; expects model_not_found from API)",
       "imagePrompt": "Blue sky, a flock of birds",
       "imageParams": {
         "model": "dall-e-3"

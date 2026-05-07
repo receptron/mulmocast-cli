@@ -21,6 +21,11 @@ const deprecatedModelHints: Record<string, string> = {
   "dall-e-3": "Use 'gpt-image-1' or another supported model.",
 };
 
+export const buildDeprecatedModelMessage = (model: string): string | null => {
+  const hint = deprecatedModelHints[model];
+  return hint ? `OpenAI image model "${model}" is no longer available. ${hint}` : null;
+};
+
 // https://platform.openai.com/docs/guides/image-generation
 export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBufferResult, OpenAIImageAgentInputs, OpenAIImageAgentConfig> = async ({
   namedInputs,
@@ -88,11 +93,6 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
       }
     } catch (error) {
       GraphAILogger.info("Failed to generate image:", (error as Error).message);
-      if (deprecatedModelHints[model]) {
-        throw new Error(`OpenAI image model "${model}" is no longer available. ${deprecatedModelHints[model]}`, {
-          cause: error,
-        });
-      }
       if (error instanceof AuthenticationError) {
         throw new Error("Failed to generate image: 401 Incorrect API key provided with OpenAI", {
           cause: agentIncorrectAPIKeyError("imageOpenaiAgent", imageAction, imageFileTarget),
@@ -104,6 +104,12 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
         });
       }
       if (error instanceof APIError) {
+        if (error.code === "model_not_found") {
+          const deprecatedMessage = buildDeprecatedModelMessage(model);
+          if (deprecatedMessage) {
+            throw new Error(deprecatedMessage, { cause: error });
+          }
+        }
         if (error.code && error.type) {
           throw new Error("Failed to generate image with OpenAI", {
             cause: openAIAgentGenerationError("imageOpenaiAgent", imageAction, error.code, error.type),

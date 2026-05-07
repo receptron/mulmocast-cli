@@ -17,7 +17,7 @@
   },
   "beats": [
     {
-      "text": "Deprecated model on movie flow should fail",
+      "text": "Compatibility probe: deprecated dall-e-3 on movie flow (expects model_not_found from OpenAI API)",
       "imagePrompt": "A rocket on the launch pad at dusk.",
       "moviePrompt": "Rocket lifts off.",
       "duration": 5
