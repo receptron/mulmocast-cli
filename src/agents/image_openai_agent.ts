@@ -13,17 +13,22 @@ import {
   agentInvalidResponseError,
   imageAction,
   imageFileTarget,
+  unsupportedModelTarget,
 } from "../utils/error_cause.js";
 import type { AgentBufferResult, OpenAIImageOptions, OpenAIImageAgentParams, OpenAIImageAgentInputs, OpenAIImageAgentConfig } from "../types/agent.js";
 
-const deprecatedModelHints: Record<string, string> = {
+type DeprecatedModel = "dall-e-2" | "dall-e-3";
+
+const deprecatedModelHints: Record<DeprecatedModel, string> = {
   "dall-e-2": "Use 'gpt-image-1' or another supported model.",
   "dall-e-3": "Use 'gpt-image-1' or another supported model.",
 };
 
+const isDeprecatedModel = (model: string): model is DeprecatedModel => model in deprecatedModelHints;
+
 export const buildDeprecatedModelMessage = (model: string): string | null => {
-  const hint = deprecatedModelHints[model];
-  return hint ? `OpenAI image model "${model}" is no longer available. ${hint}` : null;
+  if (!isDeprecatedModel(model)) return null;
+  return `OpenAI image model "${model}" is no longer available. ${deprecatedModelHints[model]}`;
 };
 
 // https://platform.openai.com/docs/guides/image-generation
@@ -43,7 +48,9 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
   const model = params.model ?? provider2ImageAgent["openai"].defaultModel;
   const deprecatedMessage = buildDeprecatedModelMessage(model);
   if (deprecatedMessage) {
-    throw new Error(deprecatedMessage);
+    throw new Error(deprecatedMessage, {
+      cause: agentGenerationError("imageOpenaiAgent", imageAction, unsupportedModelTarget),
+    });
   }
   const openai = createOpenAIClient({ apiKey, baseURL, apiVersion });
   const size = (() => {
