@@ -41,6 +41,10 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
     });
   }
   const model = params.model ?? provider2ImageAgent["openai"].defaultModel;
+  const deprecatedMessage = buildDeprecatedModelMessage(model);
+  if (deprecatedMessage) {
+    throw new Error(deprecatedMessage);
+  }
   const openai = createOpenAIClient({ apiKey, baseURL, apiVersion });
   const size = (() => {
     if (gptImages.includes(model)) {
@@ -104,12 +108,6 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
         });
       }
       if (error instanceof APIError) {
-        if (error.code === "model_not_found") {
-          const deprecatedMessage = buildDeprecatedModelMessage(model);
-          if (deprecatedMessage) {
-            throw new Error(deprecatedMessage, { cause: error });
-          }
-        }
         if (error.code && error.type) {
           throw new Error("Failed to generate image with OpenAI", {
             cause: openAIAgentGenerationError("imageOpenaiAgent", imageAction, error.code, error.type),

@@ -10,14 +10,14 @@
   },
   "beats": [
     {
-      "text": "Compatibility probe: dall-e-2 (no longer available on OpenAI; expects model_not_found from API)",
+      "text": "dall-e-2 is deprecated; mulmocast rejects this with a migration hint before calling OpenAI",
       "imagePrompt": "Blue sky, a flock of birds",
       "imageParams": {
         "model": "dall-e-2"
       }
     },
     {
-      "text": "Compatibility probe: dall-e-3 (no longer available on OpenAI; expects model_not_found from API)",
+      "text": "dall-e-3 is deprecated; mulmocast rejects this with a migration hint before calling OpenAI",
       "imagePrompt": "Blue sky, a flock of birds",
       "imageParams": {
         "model": "dall-e-3"
