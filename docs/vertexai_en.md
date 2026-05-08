@@ -245,7 +245,7 @@ Error: Publisher Model was not found
 ## References
 
 - [Vertex AI Documentation](https://cloud.google.com/vertex-ai/docs)
-- [Imagen API Reference](https://cloud.google.com/vertex-ai/generative-ai/docs/image/overview)
+- [Image Generation API Reference](https://cloud.google.com/vertex-ai/generative-ai/docs/image/overview)
 - [Veo API Reference](https://cloud.google.com/vertex-ai/generative-ai/docs/video/overview)
 - [Setting up ADC](https://cloud.google.com/docs/authentication/provide-credentials-adc)
 - [Test Script](../scripts/test/test_vertexai.json) - Replace `YOUR_PROJECT_ID` to use

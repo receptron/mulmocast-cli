@@ -245,7 +245,7 @@ Error: Publisher Model was not found
 ## 参考リンク
 
 - [Vertex AI ドキュメント](https://cloud.google.com/vertex-ai/docs)
-- [Imagen API リファレンス](https://cloud.google.com/vertex-ai/generative-ai/docs/image/overview)
+- [画像生成 API リファレンス](https://cloud.google.com/vertex-ai/generative-ai/docs/image/overview)
 - [Veo API リファレンス](https://cloud.google.com/vertex-ai/generative-ai/docs/video/overview)
 - [ADC の設定](https://cloud.google.com/docs/authentication/provide-credentials-adc)
 - [テスト用スクリプト](../scripts/test/test_vertexai.json) - `YOUR_PROJECT_ID` を置き換えて使用
