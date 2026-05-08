@@ -28,7 +28,8 @@ test("buildDeprecatedGoogleImageModelMessage returns hint for all imagen-4 GA va
   for (const model of ["imagen-4.0-generate-001", "imagen-4.0-ultra-generate-001", "imagen-4.0-fast-generate-001"]) {
     const message = buildDeprecatedGoogleImageModelMessage(model);
     assert.ok(message, `expected hint for ${model}`);
-    assert.match(message, new RegExp(`${model.replace(/\./g, "\\.")}.*no longer available`));
+    assert.ok(message.includes(model), `expected message to contain "${model}", got "${message}"`);
+    assert.ok(message.includes("no longer available"), `expected "no longer available" phrase in "${message}"`);
   }
 });
 
