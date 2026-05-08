@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.11](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.11) (2026-05-08)
+
+- **Remove deprecated DALL-E models**: Reject `dall-e-2` / `dall-e-3` upfront in OpenAI image agent with a clear deprecation hint pointing to `gpt-image-1` / `gpt-image-2`
+- **Dependency updates**: Routine package updates
+
+📦 **npm**: [`mulmocast@2.6.11`](https://www.npmjs.com/package/mulmocast/v/2.6.11)
+
 ## [2.6.10](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.10) (2026-04-30)
 
 - **Replicate image models**: Added Flux 2 Pro/Dev, Flux 1.1 Pro/Pro Ultra, Flux Pro/Dev/Schnell, Ideogram v3 (turbo/balanced/quality), Recraft v3, Stable Diffusion 3.5 Large, Luma Photon. Generalized agent output handling
