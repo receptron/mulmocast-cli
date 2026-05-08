@@ -66,6 +66,7 @@ Each fixture's purpose differs, so the migration strategy differs:
 - The `else` branch in `image_genai_agent.ts` that calls `ai.models.generateImages` (the Imagen-style API path) is **kept** — there may be unlisted / future Imagen variants. With the upfront deprecation gate, the listed models can never reach this branch, but removing the entire code path would cut off any future revival or undocumented model.
 - The pre-existing typo `agentIncorrectAPIKeyError("imageGenAIAgent", ...)` in `src/agents/image_replicate_agent.ts:93` (flagged in PR #1367 by Codex, deferred there as out-of-scope) — still out of scope here. Separate follow-up PR.
 - No refactor to share `buildDeprecatedXModelMessage` between the OpenAI and Google agents. Two ~3-line helpers is not duplication worth abstracting; revisit if a third provider needs the same pattern.
+- `docs/releasenote/index.md` references to Imagen 4 (e.g. line 44, 46 under the v1.2.0 section) are intentionally **not** updated. Release notes are an immutable historical record — they describe what each version shipped, not what is currently recommended. Rewriting them would be revisionism. Forward-looking docs (README, vertexai_*) absolutely need updating; historical release notes do not.
 
 ## Implementation steps
 
@@ -79,7 +80,7 @@ Each fixture's purpose differs, so the migration strategy differs:
 8. Update `README.md` and the two `docs/vertexai_*.md` files (narrative + snippets + tables, see Docs section)
 9. Run `yarn format && yarn lint && yarn build && yarn ci_test` — all green expected
 10. Run `npx tsx ./src/cli/bin.ts images scripts/test/test_images_imagen_deprecated.json` to confirm the upfront rejection error message renders correctly
-11. Commit-by-commit: (a) core (provider2agent + agent) + tests, (b) fixtures + showcase, (c) docs, (d) test-config helper update — for clean review
+11. Commit-by-commit: (a) core (provider2agent + agent) + tests + test-config update, (b) fixtures + showcase, (c) docs — for clean review
 
 ## Verification
 
