@@ -45,6 +45,7 @@ Each fixture's purpose differs, so the migration strategy differs:
 | `test_vertexai.json` | matrix coverage of multiple Vertex AI image variants (default / ultra / fast) | Replace the three Imagen 4 references with three Gemini variants — `gemini-2.5-flash-image`, `gemini-3-pro-image-preview`, `gemini-3.1-flash-image-preview` — and rename the beat IDs (`imagen4_ultra_override` → `gemini_pro_image_override`, etc.) so the matrix coverage intent is preserved |
 | `test_vertexai_simple.json` | one-shot Vertex AI smoke test of the default image model | Replace `imagen-4.0-generate-001` with `gemini-2.5-flash-image` |
 | `test_genai.json` | Gemini API model enumeration | Delete the `imagen_4` and `imagen_4_ultra` beats. The `imagen_4` beat is already buggy (no `model` override, so it silently uses the default `gemini-2.5-flash-image` — the id/text are misleading). The `imagen_4_ultra` beat references `imagen-4.0-ultra-generate-preview-06-06` which has been shut down since 2026-02-17. The remaining three Gemini variants keep the enumeration intent |
+| `scripts/samples/image_animation_showcase.json` | animation showcase that consumes test_genai.json's generated PNGs | Hard-codes 9 references to `../../output/images/test_genai/imagen_4.png` / `imagen_4_ultra.png`. With the test_genai beat removals those filenames are no longer generated. Remap the references to surviving Gemini variant outputs — `imagen_4.png` → `gemini_3_1_flash_image_preview.png` (already a beat in test_genai.json, just not yet shown in the showcase), `imagen_4_ultra.png` → `gemini_3_pro_image_preview.png` (already in showcase; reuse). This preserves the 3-distinct-image animation matrix |
 
 ### New deprecation-probe fixture
 
@@ -52,8 +53,13 @@ Each fixture's purpose differs, so the migration strategy differs:
 
 ### Docs
 
-- `README.md:154` — replace the Imagen 4 example with `gemini-2.5-flash-image`
-- `docs/vertexai_ja.md`, `docs/vertexai_en.md` — replace example snippets and rewrite the supported-models table (drop the three Imagen 4 rows, add Gemini image rows)
+- `README.md`
+  - line 142 — narrative “access models like Imagen 4” → use a non-deprecated example (e.g., reference Gemini image / Veo movie / Vertex-only features) so the rationale for Vertex AI doesn't depend on a removed model
+  - line 154 — example snippet `imagen-4.0-generate-001` → `gemini-2.5-flash-image`
+- `docs/vertexai_ja.md`, `docs/vertexai_en.md`
+  - line 14 (both) — narrative claim that “some models (e.g., Imagen 4) may only be available through Vertex AI” → revise to either drop the Imagen-specific framing or replace the example with a model that genuinely is Vertex-AI-only (the Veo movie family is a fair example)
+  - example snippets at lines 73 / 122 → replace `imagen-4.0-*` with `gemini-2.5-flash-image` (and `gemini-3-pro-image-preview` for the override slot)
+  - supported-models tables at lines 146-148 — drop the three Imagen 4 rows and add corresponding Gemini image rows (`gemini-2.5-flash-image`, `gemini-3-pro-image-preview`, `gemini-3.1-flash-image-preview`)
 
 ## Out of scope
 
@@ -68,11 +74,12 @@ Each fixture's purpose differs, so the migration strategy differs:
 3. Add `test/agents/test_image_genai_agent.ts`
 4. Update `test/utils/test_mulmo_config.ts` (`"imagen-3"` → `"gemini-2.5-flash-image"`)
 5. Migrate the three `scripts/test/test_*.json` fixtures per the table above
-6. Add `scripts/test/test_images_imagen_deprecated.json`
-7. Update `README.md` and the two `docs/vertexai_*.md` files
-8. Run `yarn format && yarn lint && yarn build && yarn ci_test` — all green expected
-9. Run `npx tsx ./src/cli/bin.ts images scripts/test/test_images_imagen_deprecated.json` to confirm the upfront rejection error message renders correctly
-10. Commit-by-commit: (a) core (provider2agent + agent) + tests, (b) fixtures, (c) docs, (d) test-config helper update — for clean review
+6. Migrate `scripts/samples/image_animation_showcase.json` PNG references in lockstep with the test_genai beat removals
+7. Add `scripts/test/test_images_imagen_deprecated.json`
+8. Update `README.md` and the two `docs/vertexai_*.md` files (narrative + snippets + tables, see Docs section)
+9. Run `yarn format && yarn lint && yarn build && yarn ci_test` — all green expected
+10. Run `npx tsx ./src/cli/bin.ts images scripts/test/test_images_imagen_deprecated.json` to confirm the upfront rejection error message renders correctly
+11. Commit-by-commit: (a) core (provider2agent + agent) + tests, (b) fixtures + showcase, (c) docs, (d) test-config helper update — for clean review
 
 ## Verification
 
