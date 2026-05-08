@@ -164,7 +164,7 @@
           "<div class='h-full w-full relative bg-black overflow-hidden'>",
           "  <div id='w0' style='position:absolute;inset:0'><img src='../../output/images/test_genai/gemini_3_1_flash_image_preview.png' style='width:100%;height:100%;object-fit:cover' /></div>",
           "  <div id='w1' style='position:absolute;inset:0;opacity:0'><img src='../../output/images/test_genai/gemini_3_pro_image_preview.png' style='width:100%;height:100%;object-fit:cover' /></div>",
-          "  <div id='w2' style='position:absolute;inset:0;opacity:0'><img src='../../output/images/test_genai/gemini_3_pro_image_preview.png' style='width:100%;height:100%;object-fit:cover' /></div>",
+          "  <div id='w2' style='position:absolute;inset:0;opacity:0'><img src='../../output/images/test_genai/gemini_2_5_flash_image_alt.png' style='width:100%;height:100%;object-fit:cover' /></div>",
           "  <div id='w3' style='position:absolute;inset:0;opacity:0'><img src='../../output/images/test_genai/gemini_2_5_flash_image.png' style='width:100%;height:100%;object-fit:cover' /></div>",
           "  <div id='counter' style='position:absolute;top:24px;right:32px;color:rgba(255,255,255,0.7);font-family:monospace;font-size:18px'>1 / 4</div>",
           "</div>"
@@ -287,8 +287,8 @@
           "      <div style='position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:8px 12px'><p style='color:white;font-size:14px;font-weight:600;margin:0'>Gemini 2.5 Flash</p></div>",
           "    </div>",
           "    <div id='g3' style='opacity:0;position:relative;overflow:hidden;border-radius:12px'>",
-          "      <img src='../../output/images/test_genai/gemini_3_pro_image_preview.png' style='width:100%;height:100%;object-fit:cover' />",
-          "      <div style='position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:8px 12px'><p style='color:white;font-size:14px;font-weight:600;margin:0'>Gemini 3 Pro</p></div>",
+          "      <img src='../../output/images/test_genai/gemini_2_5_flash_image_alt.png' style='width:100%;height:100%;object-fit:cover' />",
+          "      <div style='position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:8px 12px'><p style='color:white;font-size:14px;font-weight:600;margin:0'>Gemini 2.5 Flash (alt prompt)</p></div>",
           "    </div>",
           "  </div>",
           "</div>"
