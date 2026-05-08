@@ -29,7 +29,7 @@ test("imagePreprocessAgent - basic functionality", async () => {
     prompt: "generate image appropriate for the text. text: Test beat text\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -45,7 +45,7 @@ test("imagePreprocessAgent - basic functionality", async () => {
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -76,7 +76,7 @@ test("imagePreprocessAgent - with movie prompt and text", async () => {
   const expected = {
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -111,7 +111,7 @@ test("imagePreprocessAgent - movie prompt only (no image prompt)", async () => {
   const expected = {
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -170,7 +170,7 @@ test("imagePreprocessAgent - with imageNames", async () => {
     prompt: "generate image appropriate for the text. text: Test beat text\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -186,7 +186,7 @@ test("imagePreprocessAgent - with imageNames", async () => {
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -219,7 +219,7 @@ test("imagePreprocessAgent - without imageNames (uses all imageRefs)", async () 
     prompt: "generate image appropriate for the text. text: Test beat text\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -235,7 +235,7 @@ test("imagePreprocessAgent - without imageNames (uses all imageRefs)", async () 
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -269,7 +269,7 @@ test("imagePreprocessAgent - filters undefined image references", async () => {
     prompt: "generate image appropriate for the text. text: Test beat text\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -285,7 +285,7 @@ test("imagePreprocessAgent - filters undefined image references", async () => {
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -318,7 +318,7 @@ test("imagePreprocessAgent - merges beat and imageAgentInfo imageParams", async 
     prompt: "generate image appropriate for the text. text: Test beat text\nvivid",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3", // From imageAgentInfo
+      model: "gpt-image-1", // From imageAgentInfo
       style: "vivid", // From beat (override)
       moderation: "auto", // From beat (override)
     },
@@ -334,7 +334,7 @@ test("imagePreprocessAgent - merges beat and imageAgentInfo imageParams", async 
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "vivid",
@@ -362,7 +362,7 @@ test("imagePreprocessAgent - empty imageRefs", async () => {
     prompt: "generate image appropriate for the text. text: Test beat text\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -378,7 +378,7 @@ test("imagePreprocessAgent - empty imageRefs", async () => {
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -413,7 +413,7 @@ test("imagePreprocessAgent - with real sample data", async () => {
       prompt: "Blue sky, a flock of birds\n<style>sumie-style",
       imageParams: {
         provider: "openai",
-        model: "dall-e-3", // From imageAgentInfo
+        model: "gpt-image-1", // From imageAgentInfo
         style: "<style>sumie-style", // From beat override
         moderation: "auto", // From imageAgentInfo
       },
@@ -429,7 +429,7 @@ test("imagePreprocessAgent - with real sample data", async () => {
         agent: "imageOpenaiAgent",
         keyName: "OPENAI_API_KEY",
         imageParams: {
-          model: "dall-e-3",
+          model: "gpt-image-1",
           moderation: "auto",
           provider: "openai",
           style: "<style>sumie-style",
@@ -462,7 +462,7 @@ test("imagePreprocessAgent - text only", async () => {
     prompt: "generate image appropriate for the text. text: Only text content\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -478,7 +478,7 @@ test("imagePreprocessAgent - text only", async () => {
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -510,7 +510,7 @@ test("imagePreprocessAgent - imagePrompt only", async () => {
     prompt: "Only image prompt\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -526,7 +526,7 @@ test("imagePreprocessAgent - imagePrompt only", async () => {
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -555,7 +555,7 @@ test("imagePreprocessAgent - moviePrompt only", async () => {
   const expected = {
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -593,7 +593,7 @@ test("imagePreprocessAgent - text + moviePrompt (no imagePrompt)", async () => {
   const expected = {
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -632,7 +632,7 @@ test("imagePreprocessAgent - imagePrompt + moviePrompt (no text)", async () => {
     prompt: "Image prompt\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -648,7 +648,7 @@ test("imagePreprocessAgent - imagePrompt + moviePrompt (no text)", async () => {
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -680,7 +680,7 @@ test("imagePreprocessAgent - text + imagePrompt + moviePrompt (all three)", asyn
     prompt: "Image prompt\nnatural", // imagePrompt takes precedence over text
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -696,7 +696,7 @@ test("imagePreprocessAgent - text + imagePrompt + moviePrompt (all three)", asyn
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -727,7 +727,7 @@ test("imagePreprocessAgent - no text, no imagePrompt, no moviePrompt", async () 
     prompt: "generate image appropriate for the text. text: undefined\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -743,7 +743,7 @@ test("imagePreprocessAgent - no text, no imagePrompt, no moviePrompt", async () 
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -774,7 +774,7 @@ test("imagePreprocessAgent - with both text and imagePrompt", async () => {
     prompt: "Custom image prompt\nnatural", // imagePrompt takes precedence
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -790,7 +790,7 @@ test("imagePreprocessAgent - with both text and imagePrompt", async () => {
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -808,7 +808,7 @@ test("imagePreprocessAgent - with imageParams override", async () => {
     imageParams: {
       provider: "openai",
       style: "photorealistic",
-      model: "dall-e-2",
+      model: "gpt-image-1-mini",
     },
   });
 
@@ -830,13 +830,13 @@ test("imagePreprocessAgent - with imageParams override", async () => {
       imageParams: {
         provider: "openai",
         style: "photorealistic",
-        model: "dall-e-2",
+        model: "gpt-image-1-mini",
         moderation: "auto",
       },
     },
     imageParams: {
       provider: "openai",
-      model: "dall-e-2", // From beat override
+      model: "gpt-image-1-mini", // From beat override
       style: "photorealistic", // From beat override
       moderation: "auto",
     },
@@ -873,7 +873,7 @@ test("imagePreprocessAgent - with soundEffectPrompt only", async () => {
     prompt: "generate image appropriate for the text. text: Test text\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -890,7 +890,7 @@ test("imagePreprocessAgent - with soundEffectPrompt only", async () => {
       keyName: "OPENAI_API_KEY",
 
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -923,7 +923,7 @@ test("imagePreprocessAgent - soundEffectPrompt + imagePrompt", async () => {
     prompt: "A forest scene\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -939,7 +939,7 @@ test("imagePreprocessAgent - soundEffectPrompt + imagePrompt", async () => {
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -968,7 +968,7 @@ test("imagePreprocessAgent - soundEffectPrompt + moviePrompt (no imagePrompt)", 
   const expected = {
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -1022,7 +1022,7 @@ test("imagePreprocessAgent - soundEffectPrompt + imagePrompt + moviePrompt", asy
     prompt: "A peaceful forest\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -1052,7 +1052,7 @@ test("imagePreprocessAgent - soundEffectPrompt + imagePrompt + moviePrompt", asy
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -1085,7 +1085,7 @@ test("imagePreprocessAgent - with enableLipSync true", async () => {
     prompt: "generate image appropriate for the text. text: Test text\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -1104,7 +1104,7 @@ test("imagePreprocessAgent - with enableLipSync true", async () => {
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -1137,7 +1137,7 @@ test("imagePreprocessAgent - enableLipSync + imagePrompt", async () => {
     prompt: "Portrait of a person speaking\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -1158,7 +1158,7 @@ test("imagePreprocessAgent - enableLipSync + imagePrompt", async () => {
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -1187,7 +1187,7 @@ test("imagePreprocessAgent - enableLipSync + moviePrompt (no imagePrompt)", asyn
   const expected = {
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -1231,7 +1231,7 @@ test("imagePreprocessAgent - enableLipSync + imagePrompt + moviePrompt", async (
     prompt: "Close-up of person's face\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -1251,7 +1251,7 @@ test("imagePreprocessAgent - enableLipSync + imagePrompt + moviePrompt", async (
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -1284,7 +1284,7 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync", async () => {
     prompt: "generate image appropriate for the text. text: Test text\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -1304,7 +1304,7 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync", async () => {
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -1338,7 +1338,7 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync + imagePrompt", a
     prompt: "Singer performing on stage\nnatural",
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -1358,7 +1358,7 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync + imagePrompt", a
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",
@@ -1388,7 +1388,7 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync + moviePrompt (no
   const expected = {
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -1444,7 +1444,7 @@ test("imagePreprocessAgent - all parameters: soundEffectPrompt + enableLipSync +
   const expected = {
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },
@@ -1474,7 +1474,7 @@ test("imagePreprocessAgent - all parameters: soundEffectPrompt + enableLipSync +
       agent: "imageOpenaiAgent",
       keyName: "OPENAI_API_KEY",
       imageParams: {
-        model: "dall-e-3",
+        model: "gpt-image-1",
         moderation: "auto",
         provider: "openai",
         style: "natural",

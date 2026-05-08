@@ -1,0 +1,27 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "Test Deprecated OpenAI Image Models",
+  "imageParams": {
+    "provider": "openai",
+    "style": "Photorealistic-style"
+  },
+  "beats": [
+    {
+      "text": "dall-e-2 is deprecated; mulmocast rejects this with a migration hint before calling OpenAI",
+      "imagePrompt": "Blue sky, a flock of birds",
+      "imageParams": {
+        "model": "dall-e-2"
+      }
+    },
+    {
+      "text": "dall-e-3 is deprecated; mulmocast rejects this with a migration hint before calling OpenAI",
+      "imagePrompt": "Blue sky, a flock of birds",
+      "imageParams": {
+        "model": "dall-e-3"
+      }
+    }
+  ]
+}

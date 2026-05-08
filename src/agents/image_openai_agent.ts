@@ -3,7 +3,7 @@ import path from "path";
 import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
 import { toFile, AuthenticationError, RateLimitError, APIError } from "openai";
 import { createOpenAIClient } from "../utils/openai_client.js";
-import { provider2ImageAgent, gptImages } from "../types/provider2agent.js";
+import { provider2ImageAgent, gptImages, deprecatedOpenAIImageModelHints, type DeprecatedOpenAIImageModel } from "../types/provider2agent.js";
 import {
   apiKeyMissingError,
   agentGenerationError,
@@ -13,8 +13,16 @@ import {
   agentInvalidResponseError,
   imageAction,
   imageFileTarget,
+  unsupportedModelTarget,
 } from "../utils/error_cause.js";
 import type { AgentBufferResult, OpenAIImageOptions, OpenAIImageAgentParams, OpenAIImageAgentInputs, OpenAIImageAgentConfig } from "../types/agent.js";
+
+const isDeprecatedOpenAIImageModel = (model: string): model is DeprecatedOpenAIImageModel => model in deprecatedOpenAIImageModelHints;
+
+export const buildDeprecatedModelMessage = (model: string): string | null => {
+  if (!isDeprecatedOpenAIImageModel(model)) return null;
+  return `OpenAI image model "${model}" is no longer available. ${deprecatedOpenAIImageModelHints[model]}`;
+};
 
 // https://platform.openai.com/docs/guides/image-generation
 export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBufferResult, OpenAIImageAgentInputs, OpenAIImageAgentConfig> = async ({
@@ -31,6 +39,12 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
     });
   }
   const model = params.model ?? provider2ImageAgent["openai"].defaultModel;
+  const deprecatedMessage = buildDeprecatedModelMessage(model);
+  if (deprecatedMessage) {
+    throw new Error(deprecatedMessage, {
+      cause: agentGenerationError("imageOpenaiAgent", imageAction, unsupportedModelTarget),
+    });
+  }
   const openai = createOpenAIClient({ apiKey, baseURL, apiVersion });
   const size = (() => {
     if (gptImages.includes(model)) {
@@ -128,7 +142,7 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
     return { buffer: Buffer.from(image_base64, "base64") };
   }
 
-  // For dall-e-3
+  // URL response handling (legacy OpenAI image API response format)
   const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`Failed to fetch ${url}: ${res.status} ${res.statusText}`, {

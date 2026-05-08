@@ -48,11 +48,20 @@ export const provider2TTSAgent = {
 
 export const gptImages = ["gpt-image-2", "gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini"];
 
+const supportedOpenAIImageReplacementHint = "Use 'gpt-image-1' or another supported model.";
+
+export const deprecatedOpenAIImageModelHints = {
+  "dall-e-2": supportedOpenAIImageReplacementHint,
+  "dall-e-3": supportedOpenAIImageReplacementHint,
+} as const satisfies Record<string, string>;
+
+export type DeprecatedOpenAIImageModel = keyof typeof deprecatedOpenAIImageModelHints;
+
 export const provider2ImageAgent = {
   openai: {
     agentName: "imageOpenaiAgent",
     defaultModel: "gpt-image-1",
-    models: ["dall-e-3", ...gptImages],
+    models: [...gptImages],
     keyName: "OPENAI_API_KEY",
     baseURLKeyName: "OPENAI_BASE_URL",
   },

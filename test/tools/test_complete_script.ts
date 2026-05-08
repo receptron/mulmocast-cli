@@ -22,7 +22,7 @@ test("mergeScripts - merges base with override (override takes precedence)", () 
   const base = {
     title: "Base Title",
     lang: "en",
-    imageParams: { provider: "openai", model: "dall-e-3" },
+    imageParams: { provider: "openai", model: "gpt-image-1" },
     beats: [],
   };
 

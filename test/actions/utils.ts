@@ -28,7 +28,7 @@ export const createMockContext = (): MulmoStudioContext => ({
   presentationStyle: {
     imageParams: {
       provider: "openai",
-      model: "dall-e-3",
+      model: "gpt-image-1",
       style: "natural",
       moderation: "auto",
     },

@@ -119,7 +119,7 @@ export const MulmoPresentationStyleMethods = {
       (MulmoPresentationStyleMethods.getText2ImageProvider(imageParams?.provider) as keyof typeof provider2ImageAgent) ?? defaultProviders.text2image;
     const agentInfo = provider2ImageAgent[provider];
 
-    // The default text2image model is gpt-image-1 from OpenAI, and to use it you must have an OpenAI account and have verified your identity. If this is not possible, please specify dall-e-3 as the model.
+    // The default text2image model is gpt-image-1 from OpenAI.
     const defaultImageParams: MulmoImageParams = {
       provider,
       model: agentInfo.defaultModel,
@@ -172,8 +172,7 @@ export const MulmoPresentationStyleMethods = {
     const imageAgentInfo = MulmoPresentationStyleMethods.getImageAgentInfo(presentationStyle);
     if (imageAgentInfo.imageParams.provider === "openai") {
       // NOTE: Here are the rate limits of OpenAI's text2image API (1token = 32x32 patch).
-      // dall-e-3: 7,500 RPM、15 images per minute (4 images for max resolution)
-      // gpt-image-1：3,000,000 TPM、150 images per minute
+      // gpt-image-1: 3,000,000 TPM, 150 images per minute
       if (imageAgentInfo.imageParams.model === provider2ImageAgent.openai.defaultModel) {
         return 16;
       }
