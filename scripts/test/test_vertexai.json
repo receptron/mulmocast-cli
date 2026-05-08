@@ -60,7 +60,7 @@
       "imageParams": {
         "model": "gemini-3.1-flash-image-preview",
         "vertexai_project": "YOUR_PROJECT_ID",
-        "vertexai_location": "us-central1"
+        "vertexai_location": "global"
       }
     },
     {
@@ -97,7 +97,7 @@
       "imageParams": {
         "model": "gemini-3.1-flash-image-preview",
         "vertexai_project": "YOUR_PROJECT_ID",
-        "vertexai_location": "us-central1"
+        "vertexai_location": "global"
       },
       "moviePrompt": "The robot turns its head and waves at the camera",
       "movieParams": {

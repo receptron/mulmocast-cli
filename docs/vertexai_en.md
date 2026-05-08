@@ -149,7 +149,7 @@ When changing the model for individual beats, you also need to specify `vertexai
 
 **Note**:
 - Gemini image models may not be available in all regions
-- `gemini-3-pro-image-preview` is available in `global` (see [reference](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro-image) as of 2026-02-04)
+- `gemini-3-pro-image-preview` and `gemini-3.1-flash-image-preview` are only available in `vertexai_location: "global"` on Vertex AI. See [Gemini 3 Pro Image](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro-image) and [Gemini 3.1 Flash Image](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-1-flash-image)
 
 ### Video Generation
 

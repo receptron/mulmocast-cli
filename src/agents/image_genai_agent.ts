@@ -96,7 +96,8 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
   const ai = params.vertexai_project
     ? (() => {
         const location = params.vertexai_location ?? "us-central1";
-        if (model === "gemini-3-pro-image-preview" && location !== "global") {
+        const isGlobalOnlyModel = model === "gemini-3-pro-image-preview" || model === "gemini-3.1-flash-image-preview";
+        if (isGlobalOnlyModel && location !== "global") {
           GraphAILogger.warn(
             `imageGenAIAgent: model "${model}" on Vertex AI is only available in location "global", but got "${location}". Set imageParams.vertexai_location to "global".`,
           );
