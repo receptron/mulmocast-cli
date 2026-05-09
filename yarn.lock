@@ -557,10 +557,10 @@
     zod "^3.25 || ^4.0"
     zod-to-json-schema "^3.25.1"
 
-"@modernized/fluent-ffmpeg@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@modernized/fluent-ffmpeg/-/fluent-ffmpeg-0.1.1.tgz#faed384a37e936488d2f2f40bef700a8de6b948f"
-  integrity sha512-8uBL+dgjODt9Jj4ngRHE+cgqDqdl4kRwWu4l9mct3pccMdH0QrLiTt+6YGZNQj6UlF2ehDSKabYmMsIqst7Qsg==
+"@modernized/fluent-ffmpeg@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@modernized/fluent-ffmpeg/-/fluent-ffmpeg-0.1.2.tgz#68bb8b522becd58f416d04ec968b9226c6f794da"
+  integrity sha512-9BPWDcdC38TP9uZAVcFaG9eGqb1xleZDi8iyGs+j0RFLioGRqhyjYV1HDwltRSWGO8wX0re68utXlpCgKRiwzA==
   dependencies:
     which "^6.0.1"
 
