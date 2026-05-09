@@ -70,6 +70,12 @@ export const deprecatedGoogleImageModelHints = {
 
 export type DeprecatedGoogleImageModel = keyof typeof deprecatedGoogleImageModelHints;
 
+// Google image models that on Vertex AI are only published under location "global"
+// (regional endpoints like us-central1 return 404 NOT_FOUND).
+// See https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro-image
+// and https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-1-flash-image
+export const vertexAIGlobalOnlyImageModels: ReadonlySet<string> = new Set(["gemini-3-pro-image-preview", "gemini-3.1-flash-image-preview"]);
+
 export const provider2ImageAgent = {
   openai: {
     agentName: "imageOpenaiAgent",
