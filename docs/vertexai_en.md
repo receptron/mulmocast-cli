@@ -11,7 +11,7 @@ MulmoCast supports two methods for accessing Google's generative AI capabilities
 | Gemini API | API Key (`GEMINI_API_KEY`) | Personal development, prototyping |
 | Vertex AI | ADC (Application Default Credentials) | Enterprise, production environments |
 
-Some models (e.g., Imagen 4) may only be available through Vertex AI.
+Some models (e.g., Veo movie generation) may only be available through Vertex AI.
 
 ## Prerequisites
 
@@ -70,7 +70,7 @@ Add `vertexai_project` to `imageParams` or `movieParams`:
   "title": "My Presentation",
   "imageParams": {
     "provider": "google",
-    "model": "imagen-4.0-generate-001",
+    "model": "gemini-2.5-flash-image",
     "vertexai_project": "your-project-id",
     "vertexai_location": "us-central1"
   },
@@ -119,9 +119,9 @@ When changing the model for individual beats, you also need to specify `vertexai
       "text": "Generating a high-quality image",
       "imagePrompt": "A woman walking through Tokyo at night",
       "imageParams": {
-        "model": "imagen-4.0-ultra-generate-001",
+        "model": "gemini-3-pro-image-preview",
         "vertexai_project": "your-project-id",
-        "vertexai_location": "us-central1"
+        "vertexai_location": "global"
       }
     },
     {
@@ -143,15 +143,13 @@ When changing the model for individual beats, you also need to specify `vertexai
 
 | Model | Description |
 |-------|-------------|
-| `imagen-4.0-generate-001` | Imagen 4 Standard |
-| `imagen-4.0-ultra-generate-001` | Imagen 4 High Quality |
-| `imagen-4.0-fast-generate-001` | Imagen 4 Fast |
-| `gemini-2.5-flash-image` | Gemini-based image generation |
-| `gemini-3-pro-image-preview` | Gemini 3 Pro image generation |
+| `gemini-2.5-flash-image` | Gemini 2.5 Flash image (default) |
+| `gemini-3-pro-image-preview` | Gemini 3 Pro image |
+| `gemini-3.1-flash-image-preview` | Gemini 3.1 Flash image |
 
 **Note**:
 - Gemini image models may not be available in all regions
-- `gemini-3-pro-image-preview` is available in `global` (see [reference](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro-image) as of 2026-02-04)
+- `gemini-3-pro-image-preview` and `gemini-3.1-flash-image-preview` are only available in `vertexai_location: "global"` on Vertex AI. See [Gemini 3 Pro Image](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro-image) and [Gemini 3.1 Flash Image](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-1-flash-image)
 
 ### Video Generation
 
@@ -247,7 +245,7 @@ Error: Publisher Model was not found
 ## References
 
 - [Vertex AI Documentation](https://cloud.google.com/vertex-ai/docs)
-- [Imagen API Reference](https://cloud.google.com/vertex-ai/generative-ai/docs/image/overview)
+- [Image Generation API Reference](https://cloud.google.com/vertex-ai/generative-ai/docs/image/overview)
 - [Veo API Reference](https://cloud.google.com/vertex-ai/generative-ai/docs/video/overview)
 - [Setting up ADC](https://cloud.google.com/docs/authentication/provide-credentials-adc)
 - [Test Script](../scripts/test/test_vertexai.json) - Replace `YOUR_PROJECT_ID` to use

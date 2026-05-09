@@ -139,7 +139,7 @@ BROWSERLESS_API_TOKEN=your_browserless_api_token # to access web in mulmo tool
 
 ### Google Vertex AI
 
-For enterprise/production environments or to access models like Imagen 4, use Vertex AI with Application Default Credentials (ADC):
+For enterprise/production environments, or to use Veo movie models that are only available on Vertex AI, use Vertex AI with Application Default Credentials (ADC):
 
 ```bash
 # Install gcloud CLI and authenticate
@@ -151,7 +151,7 @@ Configure in MulmoScript:
 {
   "imageParams": {
     "provider": "google",
-    "model": "imagen-4.0-generate-001",
+    "model": "gemini-2.5-flash-image",
     "vertexai_project": "your-project-id",
     "vertexai_location": "us-central1"
   }

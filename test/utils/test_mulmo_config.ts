@@ -223,7 +223,7 @@ describe("loadMulmoConfig", () => {
 describe("mergeScripts - config with script", () => {
   test("script values override config", () => {
     const config = {
-      imageParams: { provider: "google", model: "imagen-3" },
+      imageParams: { provider: "google", model: "gemini-2.5-flash-image" },
       speechParams: { speakers: { Presenter: { provider: "gemini" } } },
     };
     const script = {
@@ -233,7 +233,7 @@ describe("mergeScripts - config with script", () => {
     // script's imageParams overrides config's (shallow merge within imageParams)
     const imageParams = merged.imageParams as Record<string, unknown>;
     assert.strictEqual(imageParams.provider, "openai");
-    assert.strictEqual(imageParams.model, "imagen-3"); // preserved from config
+    assert.strictEqual(imageParams.model, "gemini-2.5-flash-image"); // preserved from config
     // speechParams from config preserved
     assert.ok(merged.speechParams);
   });
