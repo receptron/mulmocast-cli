@@ -1,11 +1,13 @@
-import ffmpeg from "fluent-ffmpeg";
+import ffmpeg from "@modernized/fluent-ffmpeg";
 import { GraphAILogger } from "graphai";
 import { isFile } from "./file.js";
 import fs from "fs";
 import { Readable, PassThrough } from "node:stream";
 
+type FfmpegCommand = ReturnType<typeof ffmpeg>;
+
 export type FfmpegContext = {
-  command: ffmpeg.FfmpegCommand;
+  command: FfmpegCommand;
   inputCount: number;
   filterComplex: string[];
 };
@@ -57,10 +59,10 @@ export const FfmpegContextGenerateOutput = (context: FfmpegContext, output: stri
       .complexFilter(context.filterComplex)
       .outputOptions(options)
       .output(output)
-      .on("start", (cmdLine) => {
+      .on("start", (cmdLine: string) => {
         GraphAILogger.log("Started FFmpeg with command:", cmdLine);
       })
-      .on("error", (err, stdout, stderr) => {
+      .on("error", (err: Error, stdout: string | null, stderr: string | null) => {
         GraphAILogger.error("Error occurred:", err);
         GraphAILogger.error("FFmpeg stdout:", stdout);
         GraphAILogger.error("FFmpeg stderr:", stderr);
