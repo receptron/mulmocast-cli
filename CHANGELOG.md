@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.12](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.12) (2026-05-11)
+
+- **fluent-ffmpeg → @modernized/fluent-ffmpeg**: Migrated to a TypeScript-native fork with bundled type definitions. Verified e2e across 7 movie scenarios (BGM trim, audio mixing, ducking, animation, movie embed, voice over, spillover)
+- **Remove deprecated Imagen 3 / 4**: Reject `imagen-3.0-*` / `imagen-4.0-*` upfront with migration hint; consolidate Vertex AI global-only image model list in `provider2agent.ts`
+- **@google/genai 1.50.1 → 2.0.1**: Major bump; breaking changes limited to Interactions API (our usage unaffected)
+- **@tavily/core 0.5.14 → 0.7.3**: Additive changes only
+- **Dependency updates**: Routine package updates
+
+📦 **npm**: [`mulmocast@2.6.12`](https://www.npmjs.com/package/mulmocast/v/2.6.12)
+
 ## [2.6.11](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.11) (2026-05-08)
 
 - **Remove deprecated DALL-E models**: Reject `dall-e-2` / `dall-e-3` upfront in OpenAI image agent with a clear deprecation hint pointing to `gpt-image-1` / `gpt-image-2`
