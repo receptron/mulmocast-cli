@@ -1,7 +1,12 @@
 import fs from "fs";
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
-import { provider2ImageAgent } from "../types/provider2agent.js";
+import {
+  provider2ImageAgent,
+  deprecatedGoogleImageModelHints,
+  vertexAIGlobalOnlyImageModels,
+  type DeprecatedGoogleImageModel,
+} from "../types/provider2agent.js";
 import {
   apiKeyMissingError,
   agentIncorrectAPIKeyError,
@@ -9,6 +14,7 @@ import {
   agentInvalidResponseError,
   imageAction,
   imageFileTarget,
+  unsupportedModelTarget,
   hasCause,
   getGenAIErrorReason,
   resultify,
@@ -17,6 +23,13 @@ import { getAspectRatio } from "../utils/utils.js";
 import { ASPECT_RATIOS, PRO_ASPECT_RATIOS } from "../types/const.js";
 import type { AgentBufferResult, ImageAgentInputs, ImageAgentParams, GenAIImageAgentConfig } from "../types/agent.js";
 import { GoogleGenAI, PersonGeneration, GenerateContentResponse } from "@google/genai";
+
+const isDeprecatedGoogleImageModel = (model: string): model is DeprecatedGoogleImageModel => model in deprecatedGoogleImageModelHints;
+
+export const buildDeprecatedGoogleImageModelMessage = (model: string): string | null => {
+  if (!isDeprecatedGoogleImageModel(model)) return null;
+  return `Google image model "${model}" is no longer available. ${deprecatedGoogleImageModelHints[model]}`;
+};
 
 const getGeminiContents = (prompt: string, referenceImages?: string[] | null) => {
   const contents: { text?: string; inlineData?: { mimeType: string; data: string } }[] = [{ text: prompt }];
@@ -77,12 +90,18 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
 }) => {
   const { prompt, referenceImages } = namedInputs;
   const model = params.model ?? provider2ImageAgent["google"].defaultModel;
+  const deprecatedMessage = buildDeprecatedGoogleImageModelMessage(model);
+  if (deprecatedMessage) {
+    throw new Error(deprecatedMessage, {
+      cause: agentGenerationError("imageGenAIAgent", imageAction, unsupportedModelTarget),
+    });
+  }
   const apiKey = config?.apiKey;
 
   const ai = params.vertexai_project
     ? (() => {
         const location = params.vertexai_location ?? "us-central1";
-        if (model === "gemini-3-pro-image-preview" && location !== "global") {
+        if (vertexAIGlobalOnlyImageModels.has(model) && location !== "global") {
           GraphAILogger.warn(
             `imageGenAIAgent: model "${model}" on Vertex AI is only available in location "global", but got "${location}". Set imageParams.vertexai_location to "global".`,
           );

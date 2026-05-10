@@ -57,6 +57,25 @@ export const deprecatedOpenAIImageModelHints = {
 
 export type DeprecatedOpenAIImageModel = keyof typeof deprecatedOpenAIImageModelHints;
 
+const supportedGoogleImageReplacementHint = "Use 'gemini-2.5-flash-image' or 'gemini-3-pro-image-preview' instead.";
+
+export const deprecatedGoogleImageModelHints = {
+  "imagen-3.0-generate-002": supportedGoogleImageReplacementHint,
+  "imagen-4.0-generate-001": supportedGoogleImageReplacementHint,
+  "imagen-4.0-ultra-generate-001": supportedGoogleImageReplacementHint,
+  "imagen-4.0-fast-generate-001": supportedGoogleImageReplacementHint,
+  "imagen-4.0-generate-preview-06-06": supportedGoogleImageReplacementHint,
+  "imagen-4.0-ultra-generate-preview-06-06": supportedGoogleImageReplacementHint,
+} as const satisfies Record<string, string>;
+
+export type DeprecatedGoogleImageModel = keyof typeof deprecatedGoogleImageModelHints;
+
+// Google image models that on Vertex AI are only published under location "global"
+// (regional endpoints like us-central1 return 404 NOT_FOUND).
+// See https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro-image
+// and https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-1-flash-image
+export const vertexAIGlobalOnlyImageModels: ReadonlySet<string> = new Set(["gemini-3-pro-image-preview", "gemini-3.1-flash-image-preview"]);
+
 export const provider2ImageAgent = {
   openai: {
     agentName: "imageOpenaiAgent",
@@ -68,14 +87,7 @@ export const provider2ImageAgent = {
   google: {
     agentName: "imageGenAIAgent",
     defaultModel: "gemini-2.5-flash-image",
-    models: [
-      "imagen-4.0-generate-001",
-      "imagen-4.0-ultra-generate-001",
-      "imagen-4.0-fast-generate-001",
-      "gemini-2.5-flash-image",
-      "gemini-3.1-flash-image-preview",
-      "gemini-3-pro-image-preview",
-    ],
+    models: ["gemini-2.5-flash-image", "gemini-3.1-flash-image-preview", "gemini-3-pro-image-preview"],
     keyName: "GEMINI_API_KEY",
   },
   replicate: {
