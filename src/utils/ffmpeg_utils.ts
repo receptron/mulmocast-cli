@@ -1,11 +1,13 @@
-import ffmpeg from "fluent-ffmpeg";
+import ffmpeg from "@modernized/fluent-ffmpeg";
 import { GraphAILogger } from "graphai";
 import { isFile } from "./file.js";
 import fs from "fs";
 import { Readable, PassThrough } from "node:stream";
 
+type FfmpegCommand = ReturnType<typeof ffmpeg>;
+
 export type FfmpegContext = {
-  command: ffmpeg.FfmpegCommand;
+  command: FfmpegCommand;
   inputCount: number;
   filterComplex: string[];
 };
