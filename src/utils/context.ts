@@ -16,6 +16,20 @@ import { loadMulmoConfig, mergeConfigWithScript } from "./mulmo_config.js";
 
 export const silentMp3 = "https://github.com/receptron/mulmocast-cli/raw/refs/heads/main/assets/audio/silent300.mp3";
 
+// Optional error formatter injected by the host application. When set, it is invoked
+// with the raw error before logging; if it returns a non-null string, that string is
+// logged instead of the default `${error}` interpolation. Default behavior (returning
+// null or leaving this unset) keeps the original verbose output.
+export type MulmoErrorFormatter = (error: unknown) => string | null;
+let mulmoErrorFormatter: MulmoErrorFormatter | null = null;
+export const setMulmoErrorFormatter = (formatter: MulmoErrorFormatter | null): void => {
+  mulmoErrorFormatter = formatter;
+};
+const formatMulmoError = (error: unknown): string => {
+  const formatted = mulmoErrorFormatter?.(error);
+  return formatted ?? `${error}`;
+};
+
 const mulmoCredit = (speaker: string, isPortrait: boolean) => {
   return {
     id: "mulmo_credit",
@@ -181,7 +195,7 @@ export const initializeContextFromFiles = async (
       lang: targetLang ?? studio.script.lang, // This lang is target Language. studio.lang is default Language
     };
   } catch (error) {
-    GraphAILogger.info(`Error: invalid MulmoScript Schema: ${isHttpPath ? fileOrUrl : mulmoFilePath} \n ${error}`);
+    GraphAILogger.info(`Error: invalid MulmoScript Schema: ${isHttpPath ? fileOrUrl : mulmoFilePath} \n ${formatMulmoError(error)}`);
     if (raiseError) {
       throw error;
     }
