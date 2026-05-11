@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.13](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.13) (2026-05-11)
+
+- **`setMulmoErrorFormatter` injection point**: Host apps can now register a formatter that turns the schema validation error into a readable summary before `initializeContextFromFiles` logs it (default behavior unchanged when no formatter is registered or the formatter returns `null`)
+
+📦 **npm**: [`mulmocast@2.6.13`](https://www.npmjs.com/package/mulmocast/v/2.6.13)
+
 ## [2.6.12](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.12) (2026-05-11)
 
 - **fluent-ffmpeg → @modernized/fluent-ffmpeg**: Migrated to a TypeScript-native fork with bundled type definitions. Verified e2e across 7 movie scenarios (BGM trim, audio mixing, ducking, animation, movie embed, voice over, spillover)
