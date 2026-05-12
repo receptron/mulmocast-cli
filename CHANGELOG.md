@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.14](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.14) (2026-05-12)
+
+- **Fix `html_render.ts` for puppeteer's stricter waitUntil types**: `page.setContent()` no longer accepts `"networkidle0"` in puppeteer's updated types. Route HTML needing network-idle through the `page.goto` path so external image loads are still waited for properly
+- **Dependency updates**: Routine package updates (PRs #1375, #1376, #1377)
+
+📦 **npm**: [`mulmocast@2.6.14`](https://www.npmjs.com/package/mulmocast/v/2.6.14)
+
 ## [2.6.13](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.13) (2026-05-11)
 
 - **`setMulmoErrorFormatter` injection point**: Host apps can now register a formatter that turns the schema validation error into a readable summary before `initializeContextFromFiles` logs it (default behavior unchanged when no formatter is registered or the formatter returns `null`)
