@@ -114,8 +114,11 @@ const loadHtmlIntoPage = async (page: puppeteer.Page, html: string, timeout_ms: 
   const waitUntil = resolveWaitUntil(html);
   const hasFileUrls = /file:\/\//.test(html);
   const hasExternalScripts = /script src=["']https?:\/\//.test(html);
+  // puppeteer's setContent does not accept "networkidle0" (no navigation, so network-idle states aren't meaningful in types).
+  // Route any HTML that needs network-idle semantics through the page.goto path to preserve the original wait behavior.
+  const needsNetworkIdle = waitUntil === "networkidle0";
 
-  if (hasFileUrls || hasExternalScripts) {
+  if (hasFileUrls || hasExternalScripts || needsNetworkIdle) {
     const tmpFile = nodePath.join(os.tmpdir(), `mulmocast_render_${crypto.randomUUID()}.html`);
     fs.writeFileSync(tmpFile, html);
     try {
