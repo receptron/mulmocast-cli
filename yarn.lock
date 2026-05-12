@@ -310,10 +310,10 @@
     protobufjs "^7.5.4"
     ws "^8.18.0"
 
-"@google/genai@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-2.0.1.tgz#c98c6eaaf173b1b1f280a6d618d73e2ac28480dc"
-  integrity sha512-trxxbVePM9J8Cuni5x7+xvApoqb2y6Zk27/wugjT2cuwHOT78nFGdf/Ni29MkDxzWwrj90OQpno1Ana6dm3D2A==
+"@google/genai@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-2.1.0.tgz#a9dcda579a51950006dc209e3b8f15b88d152ced"
+  integrity sha512-2tF/P5LMkiV31slQpTA92EqP7SRHB8VM1IXWdtC9jWzpp8J5j4TakywSqpB/R0K1aPLlpMt3PgB2O1c/+wJPXQ==
   dependencies:
     google-auth-library "^10.3.0"
     p-retry "^4.6.2"
