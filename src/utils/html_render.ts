@@ -3,7 +3,7 @@ import os from "node:os";
 import nodePath from "node:path";
 import crypto from "node:crypto";
 import { marked } from "marked";
-import puppeteer from "puppeteer";
+import puppeteer, { type Page } from "puppeteer";
 
 import { GraphAILogger } from "graphai";
 
@@ -13,7 +13,7 @@ const VIDEO_LOAD_TIMEOUT_MS = 15000;
 const VIDEO_SEEK_TIMEOUT_MS = 3000;
 
 /** Wait for all <video> elements on the page to be ready for playback */
-const waitForVideosReady = async (page: puppeteer.Page): Promise<void> => {
+const waitForVideosReady = async (page: Page): Promise<void> => {
   const hasVideos = await page.evaluate(() => document.querySelectorAll("video").length > 0);
   if (!hasVideos) return;
 
@@ -46,7 +46,7 @@ const waitForVideosReady = async (page: puppeteer.Page): Promise<void> => {
 };
 
 /** Seek all <video> elements to the specified frame time and wait for seek to complete */
-const syncVideosToFrame = async (page: puppeteer.Page, frameIndex: number, fps: number): Promise<void> => {
+const syncVideosToFrame = async (page: Page, frameIndex: number, fps: number): Promise<void> => {
   const time = frameIndex / fps;
   await page.evaluate(
     (seekTime, seekTimeout) => {
@@ -81,7 +81,7 @@ const syncVideosToFrame = async (page: puppeteer.Page, frameIndex: number, fps: 
 };
 
 /** Scale the page content so it fits inside the viewport without overflow */
-const scaleContentToFit = async (page: puppeteer.Page, viewportWidth: number, viewportHeight: number): Promise<void> => {
+const scaleContentToFit = async (page: Page, viewportWidth: number, viewportHeight: number): Promise<void> => {
   await page.evaluate(
     ({ targetWidth, targetHeight }) => {
       const docElement = document.documentElement;
@@ -110,7 +110,7 @@ const resolveWaitUntil = (html: string): "networkidle0" | "load" | "domcontentlo
  * and navigate via page.goto (setContent uses about:blank origin
  * which blocks file:// loading).
  */
-const loadHtmlIntoPage = async (page: puppeteer.Page, html: string, timeout_ms: number): Promise<void> => {
+const loadHtmlIntoPage = async (page: Page, html: string, timeout_ms: number): Promise<void> => {
   const waitUntil = resolveWaitUntil(html);
   const hasFileUrls = /file:\/\//.test(html);
   const hasExternalScripts = /script src=["']https?:\/\//.test(html);
