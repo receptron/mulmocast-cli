@@ -655,17 +655,6 @@
     tar-fs "^3.1.1"
     yargs "^17.7.2"
 
-"@puppeteer/browsers@3.0.2":
-  version "3.0.2"
-  resolved "https://npm.flatt.tech/@puppeteer/browsers/-/browsers-3.0.2.tgz#724c17909e48afd30a1e1aea4ee2acebd85c90df"
-  integrity sha512-JnOSHrAdCQOj27P5QnTrd6bkYd9cXXeFMJS5UJF3UmQbpZQAMMO7AaL0NyrT7i2l/43bwjaHguU+LOpBRyx66w==
-  dependencies:
-    debug "^4.4.3"
-    progress "^2.0.3"
-    semver "^7.7.4"
-    tar-fs "^3.1.1"
-    yargs "^17.7.2"
-
 "@receptron/test_utils@^2.0.3":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@receptron/test_utils/-/test_utils-2.0.3.tgz#2740f5997a44624da859c2ed80707ea82113d34e"
@@ -1313,14 +1302,6 @@ chromium-bidi@14.0.0:
   version "14.0.0"
   resolved "https://registry.yarnpkg.com/chromium-bidi/-/chromium-bidi-14.0.0.tgz#15a12ab083ae519a49a724e94994ca0a9ced9c8e"
   integrity sha512-9gYlLtS6tStdRWzrtXaTMnqcM4dudNegMXJxkR0I/CXObHalYeYcAMPrL19eroNZHtJ8DQmu1E+ZNOYu/IXMXw==
-  dependencies:
-    mitt "^3.0.1"
-    zod "^3.24.1"
-
-chromium-bidi@16.0.1:
-  version "16.0.1"
-  resolved "https://npm.flatt.tech/chromium-bidi/-/chromium-bidi-16.0.1.tgz#0c6b0e55065468fc777d62032b63b73f614b1d88"
-  integrity sha512-J63PGu/9PpeCwLIcKYyzWP6yaVL5pxuBc0shlYCYM8BaAkmlwiQboXO1iNbOgSDbVklEyYFfNEcHD8oOAWacUA==
   dependencies:
     mitt "^3.0.1"
     zod "^3.24.1"
@@ -3850,7 +3831,7 @@ punycode@^2.1.0, punycode@^2.3.1:
 
 puppeteer-core@24.43.1:
   version "24.43.1"
-  resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-24.43.1.tgz#c10a5d398b69911c324e04c85ee2b236b9ec940e"
+  resolved "https://npm.flatt.tech/puppeteer-core/-/puppeteer-core-24.43.1.tgz#c10a5d398b69911c324e04c85ee2b236b9ec940e"
   integrity sha512-T5ScUMAsmhdNbgDR41AGESYeS6V9MSgetkSnVhhW+gXvzC42VesKCn5ld87gAZDJ6vLHL9GkRvY9WtQWSnwFbw==
   dependencies:
     "@puppeteer/browsers" "2.13.2"
@@ -3861,20 +3842,7 @@ puppeteer-core@24.43.1:
     webdriver-bidi-protocol "0.4.1"
     ws "^8.20.0"
 
-puppeteer-core@25.0.2:
-  version "25.0.2"
-  resolved "https://npm.flatt.tech/puppeteer-core/-/puppeteer-core-25.0.2.tgz#782b7904a635f00ba8cec057c6f745a8b04ab11f"
-  integrity sha512-Q0IUIHER1S9PiNIfdNFc+pVOj79Tp4b9v0Fv4enigwsLy0Hbgq45KFgqzmN31DeCXh+Uvxnt9r7fMERhAMjs8Q==
-  dependencies:
-    "@puppeteer/browsers" "3.0.2"
-    chromium-bidi "16.0.1"
-    debug "^4.4.3"
-    devtools-protocol "0.0.1608973"
-    typed-query-selector "^2.12.2"
-    webdriver-bidi-protocol "0.4.1"
-    ws "^8.20.0"
-
-puppeteer@^24.39.1:
+puppeteer@^24.39.1, puppeteer@^24.43.1:
   version "24.43.1"
   resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-24.43.1.tgz#86cad9170ce2dec2db3b8d1d34c0c91424bbe3e3"
   integrity sha512-/FSOViCrqRdb1HDocpsM9Z1giA71gTQPUt3SpHGVRALKAy/rJr1fLFYZW9F23qPxqVxTHQnbh/5B5opJST3kAw==
@@ -3884,18 +3852,6 @@ puppeteer@^24.39.1:
     cosmiconfig "^9.0.0"
     devtools-protocol "0.0.1608973"
     puppeteer-core "24.43.1"
-    typed-query-selector "^2.12.2"
-
-puppeteer@^25.0.2:
-  version "25.0.2"
-  resolved "https://npm.flatt.tech/puppeteer/-/puppeteer-25.0.2.tgz#d4901c58b859e8fa8f069fd5d46775293583addc"
-  integrity sha512-cXj/5RlDCzSC7k1YdBIm6prb8lK8lEdmScVbcalX1rBn4fqNN1UNuEz/HZZYiDLsK8dOGvyLpGjh6CgxCyqKtg==
-  dependencies:
-    "@puppeteer/browsers" "3.0.2"
-    chromium-bidi "16.0.1"
-    cosmiconfig "^9.0.0"
-    devtools-protocol "0.0.1608973"
-    puppeteer-core "25.0.2"
     typed-query-selector "^2.12.2"
 
 qs@^6.14.0, qs@^6.14.1:
