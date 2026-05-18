@@ -102,7 +102,7 @@
     "@inquirer/input": "^5.0.13",
     "@inquirer/select": "^5.1.5",
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "@modernized/fluent-ffmpeg": "^0.1.5",
+    "@modernized/fluent-ffmpeg": "^1.0.0",
     "@mozilla/readability": "^0.6.0",
     "@tavily/core": "^0.7.3",
     "archiver": "^7.0.1",
