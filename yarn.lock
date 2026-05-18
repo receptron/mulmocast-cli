@@ -663,6 +663,17 @@
     tar-fs "^3.1.1"
     yargs "^17.7.2"
 
+"@puppeteer/browsers@3.0.3":
+  version "3.0.3"
+  resolved "https://npm.flatt.tech/@puppeteer/browsers/-/browsers-3.0.3.tgz#61388895e2f3665b59491152d204b3d9096bddd6"
+  integrity sha512-v3YaiGpzUTgOZkHBFR0iZg58Vto25SqBQxfLUXDiofJccwVl6Mlr7BdLCS1NZgxikdeIHf936cxYWL9IZp3tow==
+  dependencies:
+    debug "^4.4.3"
+    progress "^2.0.3"
+    semver "^7.7.4"
+    tar-fs "^3.1.1"
+    yargs "^17.7.2"
+
 "@receptron/test_utils@^2.0.3":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@receptron/test_utils/-/test_utils-2.0.3.tgz#2740f5997a44624da859c2ed80707ea82113d34e"
@@ -3715,16 +3726,29 @@ puppeteer-core@25.0.2:
     webdriver-bidi-protocol "0.4.1"
     ws "^8.20.0"
 
-puppeteer@^25.0.2:
-  version "25.0.2"
-  resolved "https://npm.flatt.tech/puppeteer/-/puppeteer-25.0.2.tgz#d4901c58b859e8fa8f069fd5d46775293583addc"
-  integrity sha512-cXj/5RlDCzSC7k1YdBIm6prb8lK8lEdmScVbcalX1rBn4fqNN1UNuEz/HZZYiDLsK8dOGvyLpGjh6CgxCyqKtg==
+puppeteer-core@25.0.3:
+  version "25.0.3"
+  resolved "https://npm.flatt.tech/puppeteer-core/-/puppeteer-core-25.0.3.tgz#98059a8db11aef37ec8d9f7a7d2ef309545a8e54"
+  integrity sha512-mNT7RWTAzgo9Q+TD8s1XzIOd6/7ZkbF40A0yNYanZOZZ7zSrFN1Am+EtL0nAMU5QWSSv6Dgi+3unRk0saeGcOg==
   dependencies:
-    "@puppeteer/browsers" "3.0.2"
+    "@puppeteer/browsers" "3.0.3"
+    chromium-bidi "16.0.1"
+    debug "^4.4.3"
+    devtools-protocol "0.0.1608973"
+    typed-query-selector "^2.12.2"
+    webdriver-bidi-protocol "0.4.1"
+    ws "^8.20.0"
+
+puppeteer@^25.0.2, puppeteer@^25.0.3:
+  version "25.0.3"
+  resolved "https://npm.flatt.tech/puppeteer/-/puppeteer-25.0.3.tgz#e099befa32b461843a7c874f81a9e1ea1b4f0cd6"
+  integrity sha512-P2sLckgbW1P6o0p5d4V4SpoYFL9X8kJ3qC7rNKW1dz5WQ9t9wSCj0MnAZVZqax6BZHdBWQo2uLXM6F7O8cwmKg==
+  dependencies:
+    "@puppeteer/browsers" "3.0.3"
     chromium-bidi "16.0.1"
     cosmiconfig "^9.0.0"
     devtools-protocol "0.0.1608973"
-    puppeteer-core "25.0.2"
+    puppeteer-core "25.0.3"
     typed-query-selector "^2.12.2"
 
 qs@^6.14.0, qs@^6.14.1:
