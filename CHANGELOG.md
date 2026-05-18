@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.15](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.15) (2026-05-18)
+
+- **Puppeteer 25**: upgraded to `puppeteer ^25.0.3`. The earlier Chrome-version mismatch (puppeteer 25 vs `mulmocast-vision@1.0.9`'s puppeteer-core 24) is resolved by `mulmocast-vision@1.0.10`, which supports puppeteer 25 — both now dedupe to a single puppeteer-core 25 / Chrome version
+- **Type-safe puppeteer imports**: switched to the named `import { type Page }` export required by puppeteer 25
+- **Dependency updates**: Routine package updates (PRs #1379, #1380)
+
+📦 **npm**: [`mulmocast@2.6.15`](https://www.npmjs.com/package/mulmocast/v/2.6.15)
+
 ## [2.6.14](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.14) (2026-05-12)
 
 - **Fix `html_render.ts` for puppeteer's stricter waitUntil types**: `page.setContent()` no longer accepts `"networkidle0"` in puppeteer's updated types. Route HTML needing network-idle through the `page.goto` path so external image loads are still waited for properly
