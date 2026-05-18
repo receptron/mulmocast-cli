@@ -1,5 +1,5 @@
 import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
-import puppeteer from "puppeteer";
+import puppeteer, { type Page } from "puppeteer";
 import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
 
@@ -20,7 +20,7 @@ const normalize = (s: string) =>
     .replace(/[\n\t]{2,}/g, "\n")
     .trim();
 
-const waitStable = async (page: puppeteer.Page, ms = 1200, step = 200) => {
+const waitStable = async (page: Page, ms = 1200, step = 200) => {
   let last = -1;
   let stable = 0;
   while (stable < ms) {
