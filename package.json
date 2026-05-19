@@ -110,10 +110,10 @@
     "dotenv": "^17.4.2",
     "graphai": "^2.0.16",
     "jsdom": "^29.1.1",
-    "marked": "^18.0.3",
+    "marked": "^18.0.4",
     "mulmocast-vision": "^1.0.10",
     "ora": "^9.4.0",
-    "puppeteer": "^25.0.3",
+    "puppeteer": "^25.0.4",
     "replicate": "^1.4.0",
     "yaml": "^2.9.0",
     "yargs": "^18.0.0",
@@ -133,9 +133,9 @@
     "eslint-plugin-sonarjs": "^4.0.3",
     "globals": "^17.6.0",
     "prettier": "^3.8.3",
-    "tsx": "^4.22.1",
+    "tsx": "^4.22.3",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.59.3"
+    "typescript-eslint": "^8.59.4"
   },
   "engines": {
     "node": ">=22.0.0"
