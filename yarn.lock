@@ -2467,10 +2467,10 @@ graceful-fs@^4.2.0:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.11.tgz#4183e4e8bf08bb6e05bbb2f7d2e0c8f712ca40e3"
   integrity sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==
 
-graphai@^2.0.16:
-  version "2.0.16"
-  resolved "https://registry.yarnpkg.com/graphai/-/graphai-2.0.16.tgz#c0665473f15656dc7b78fc66248553b0431a8603"
-  integrity sha512-fjA7dNelP32Lz+AXO1hMAcUdy/CJlAaDNW5nsrfxZ1s6vc8O1plzBiBf94EmBq7XgAUV3UxOz9w+SRszJbjRVA==
+graphai@^2.0.17:
+  version "2.0.17"
+  resolved "https://npm.flatt.tech/graphai/-/graphai-2.0.17.tgz#50c22d3fed1d78cf38dfb1192b436d95e7fbb6f9"
+  integrity sha512-fi6YhvVOo0P/uwh8W3/R2zfKj7XMvbM+wjc1cQHYkOh5ZfIqEgyUQvRffvb99O7tobmlW1UQBpEKBe50iy5CbA==
 
 groq-sdk@^0.30.0:
   version "0.30.0"
@@ -3701,19 +3701,6 @@ punycode@^2.1.0, punycode@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.1.tgz#027422e2faec0b25e1549c3e1bd8309b9133b6e5"
   integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
-
-puppeteer-core@25.0.3:
-  version "25.0.3"
-  resolved "https://npm.flatt.tech/puppeteer-core/-/puppeteer-core-25.0.3.tgz#98059a8db11aef37ec8d9f7a7d2ef309545a8e54"
-  integrity sha512-mNT7RWTAzgo9Q+TD8s1XzIOd6/7ZkbF40A0yNYanZOZZ7zSrFN1Am+EtL0nAMU5QWSSv6Dgi+3unRk0saeGcOg==
-  dependencies:
-    "@puppeteer/browsers" "3.0.3"
-    chromium-bidi "16.0.1"
-    debug "^4.4.3"
-    devtools-protocol "0.0.1608973"
-    typed-query-selector "^2.12.2"
-    webdriver-bidi-protocol "0.4.1"
-    ws "^8.20.0"
 
 puppeteer-core@25.0.4:
   version "25.0.4"
