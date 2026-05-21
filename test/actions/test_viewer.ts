@@ -3,17 +3,20 @@ import assert from "node:assert";
 import fs from "fs";
 import os from "os";
 import path from "path";
-import { fileURLToPath } from "url";
 
 import { viewer, viewerFilePath } from "../../src/actions/viewer.js";
 import { createStudioData } from "../../src/utils/context.js";
 import type { MulmoStudioContext } from "../../src/types/index.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const repoRoot = path.resolve(__dirname, "..", "..");
-const sampleImage1 = path.resolve(repoRoot, "scripts/test/img_higgs.png");
-const sampleImage2 = path.resolve(repoRoot, "scripts/test/img_detector.png");
+// Minimal valid 1x1 transparent PNG (base64). Self-contained so the test does
+// not depend on any image file being checked into the repo.
+const minimalPngBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+
+const writeSamplePng = (dir: string, name: string): string => {
+  const filePath = path.join(dir, name);
+  fs.writeFileSync(filePath, Buffer.from(minimalPngBase64, "base64"));
+  return filePath;
+};
 
 const buildContext = (tmpDir: string, beatImageFiles: (string | undefined)[]): MulmoStudioContext => {
   const mulmoScript = {
@@ -73,7 +76,9 @@ const buildContext = (tmpDir: string, beatImageFiles: (string | undefined)[]): M
 test("viewer writes a self-contained HTML file with embedded base64 images", async () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "viewer-test-"));
   try {
-    const context = buildContext(tmpDir, [sampleImage1, sampleImage2]);
+    const img1 = writeSamplePng(tmpDir, "sample1.png");
+    const img2 = writeSamplePng(tmpDir, "sample2.png");
+    const context = buildContext(tmpDir, [img1, img2]);
     await viewer(context);
 
     const outPath = viewerFilePath(context);
@@ -110,8 +115,10 @@ test("viewer writes a self-contained HTML file with embedded base64 images", asy
 test("viewer skips beats whose imageFile is missing on disk", async () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "viewer-test-"));
   try {
+    const img1 = writeSamplePng(tmpDir, "sample1.png");
+    const img2 = writeSamplePng(tmpDir, "sample2.png");
     const missing = path.join(tmpDir, "does-not-exist.png");
-    const context = buildContext(tmpDir, [sampleImage1, missing, sampleImage2]);
+    const context = buildContext(tmpDir, [img1, missing, img2]);
     await viewer(context);
 
     const html = fs.readFileSync(viewerFilePath(context), "utf8");
@@ -152,7 +159,7 @@ test("viewer escapes HTML in title and caption", async () => {
       ],
     };
     const studio = createStudioData(mulmoScript, "viewer_test");
-    studio.beats[0].imageFile = sampleImage1;
+    studio.beats[0].imageFile = writeSamplePng(tmpDir, "sample.png");
     const context = {
       studio,
       fileDirs: { baseDirPath: tmpDir, outDirPath: tmpDir, imageDirPath: tmpDir, audioDirPath: tmpDir, grouped: false },
