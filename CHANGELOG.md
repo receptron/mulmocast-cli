@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.16](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.16) (2026-05-21)
+
+- **`mulmocast viewer` command**: generate a zero-dependency, single-file HTML slideshow openable via `file://` (slide images embedded as base64 data URIs). Keyboard nav, click-to-advance, fullscreen, slide counter. Prefers `htmlImageFile` over `imageFile` to match pdf/movie output (#1385, #1386)
+- **Dependency updates**: graphai 2.0.17, puppeteer 25, `@modernized/fluent-ffmpeg` 1.0, `@google/genai` 2.4, dependabot bumps (ws, brace-expansion)
+
+📦 **npm**: [`mulmocast@2.6.16`](https://www.npmjs.com/package/mulmocast/v/2.6.16)
+
 ## [2.6.15](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.15) (2026-05-18)
 
 - **Puppeteer 25**: upgraded to `puppeteer ^25.0.3`. The earlier Chrome-version mismatch (puppeteer 25 vs `mulmocast-vision@1.0.9`'s puppeteer-core 24) is resolved by `mulmocast-vision@1.0.10`, which supports puppeteer 25 — both now dedupe to a single puppeteer-core 25 / Chrome version
