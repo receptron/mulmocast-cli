@@ -12,6 +12,7 @@ import * as pdfCmd from "./commands/pdf/index.js";
 import * as markdownCmd from "./commands/markdown/index.js";
 import * as bundleCmd from "./commands/bundle/index.js";
 import * as htmlCmd from "./commands/html/index.js";
+import * as viewerCmd from "./commands/viewer/index.js";
 import * as toolCmd from "./commands/tool/index.js";
 import { GraphAILogger } from "graphai";
 
@@ -45,6 +46,7 @@ export const cliMain = async () => {
     .command(markdownCmd)
     .command(bundleCmd)
     .command(htmlCmd)
+    .command(viewerCmd)
     .command(toolCmd)
     .demandCommand()
     .strict()

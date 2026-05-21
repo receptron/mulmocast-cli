@@ -760,6 +760,7 @@ export const mulmoSessionStateSchema = z.object({
     pdf: z.boolean(),
     markdown: z.boolean(),
     html: z.boolean(),
+    viewer: z.boolean(),
   }),
   inBeatSession: z.object({
     audio: z.record(z.string(), z.boolean()),
