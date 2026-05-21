@@ -144,6 +144,30 @@ test("viewer produces a usable output even when no beats have images", async () 
   }
 });
 
+test("viewer prefers htmlImageFile over imageFile (matches pdf.ts / movie.ts)", async () => {
+  // Two visually distinct 1x1 PNGs so their base64 differs and we can assert which one was embedded.
+  const redPngBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==";
+  const bluePngBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYPj/HwADAgH/5ncLrgAAAABJRU5ErkJggg==";
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "viewer-test-"));
+  try {
+    const imageFile = path.join(tmpDir, "source.png");
+    const htmlImageFile = path.join(tmpDir, "rendered.png");
+    fs.writeFileSync(imageFile, Buffer.from(redPngBase64, "base64"));
+    fs.writeFileSync(htmlImageFile, Buffer.from(bluePngBase64, "base64"));
+
+    const context = buildContext(tmpDir, [imageFile]);
+    // Beat has BOTH: the HTML-rendered frame must win.
+    context.studio.beats[0].htmlImageFile = htmlImageFile;
+    await viewer(context);
+
+    const html = fs.readFileSync(viewerFilePath(context), "utf8");
+    assert.ok(html.includes(bluePngBase64), "htmlImageFile (rendered frame) should be embedded");
+    assert.ok(!html.includes(redPngBase64), "imageFile (source) must not be embedded when htmlImageFile exists");
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
 test("viewer escapes HTML in title and caption", async () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "viewer-test-"));
   try {

@@ -32,7 +32,8 @@ const collectSlides = (context: MulmoStudioContext): Slide[] => {
   const slides: Slide[] = [];
   studio.script.beats.forEach((beat, index) => {
     const studioBeat = studio.beats[index];
-    const source = studioBeat?.imageFile ?? studioBeat?.htmlImageFile;
+    // Prefer the HTML-rendered frame over the source image, matching pdf.ts / movie.ts.
+    const source = studioBeat?.htmlImageFile ?? studioBeat?.imageFile;
     if (!source) return;
     const dataUri = imageToDataUri(source);
     if (!dataUri) return;
