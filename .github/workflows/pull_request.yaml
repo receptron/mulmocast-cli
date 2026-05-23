@@ -32,12 +32,12 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
     - name: Cache node_modules
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: node_modules
         key: node-modules-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
     - name: Cache Puppeteer
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/puppeteer
         key: puppeteer-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
@@ -78,7 +78,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
     - name: Cache node_modules
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: node_modules
         key: node-modules-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
@@ -111,12 +111,12 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
     - name: Cache node_modules
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: node_modules
         key: node-modules-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
     - name: Cache Puppeteer
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/puppeteer
         key: puppeteer-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
