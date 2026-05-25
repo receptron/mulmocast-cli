@@ -189,7 +189,7 @@ jobs:
         yarn run cli tool complete test/json/minimum_beats.json -s ./assets/styles/ani.json &
         wait
     - name: Upload generated media
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: generatedmedia-${{ matrix.node-version }}
         path: output/
