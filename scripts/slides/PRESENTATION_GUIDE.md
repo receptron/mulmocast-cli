@@ -1,7 +1,8 @@
-# MulmoCast Presentation Deck — Authoring Guide (for LLMs)
+# MulmoCast Business Presentation Deck — Authoring Guide (for LLMs)
 
-You generate a **MulmoScript** JSON file. There are **two ways** to author a slide deck.
-Pick one per deck (don't mix), then imitate the matching sample below.
+This guide is for generating **business presentation decks** (pitches, investor updates, strategy
+reviews, product briefings). You generate a **MulmoScript** JSON file. There are **two ways** to
+author such a deck. Pick one per deck (don't mix), then imitate the matching sample below.
 
 ## The two approaches
 
@@ -13,6 +14,16 @@ Pick one per deck (don't mix), then imitate the matching sample below.
 
 Each beat is `{ "text": "narration…", "image": { … } }`. The two approaches differ only in what goes
 inside `image`. Study the samples — every field you need appears there.
+
+## Styling: shared vs. repeated per beat
+
+The two approaches handle the color scheme / fonts differently — this matters when you generate the JSON:
+
+- **`slide`**: define the theme **once** in `slideParams.theme`. Every beat inherits it. Do **not**
+  repeat it per slide.
+- **`html_tailwind`**: there is **no shared theme**. Each beat is an isolated HTML document, so you
+  must **repeat the same `<style>:root{…}</style>` palette block (and the wrapper styling) in every
+  single beat**. Keep that block byte-for-byte identical across all beats so the deck looks uniform.
 
 ---
 
