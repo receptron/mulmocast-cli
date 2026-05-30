@@ -2,19 +2,19 @@
 # yarn lockfile v1
 
 
-"@mulmocast/deck@^0.1.1":
-  version "0.1.1"
-  resolved "https://npm.flatt.tech/@mulmocast/deck/-/deck-0.1.1.tgz#35eed6f0ddaa29541150618123075892557e81ba"
-  integrity sha512-LOblXxTR99g1w0ovKXYeh7yD7NQEUz1HkdwrjgN8dAugayM0y/hdIfX8jmStQyc5u04MzIIDLEr0W/9wPsPBxg==
+"@mulmocast/deck@^0.1.2":
+  version "0.1.2"
+  resolved "https://npm.flatt.tech/@mulmocast/deck/-/deck-0.1.2.tgz#832f3f8a04e4f06f798a3e75a4e79cb06bdbea5c"
+  integrity sha512-WcXPkplXle4ZsrZP3NdiPF+6NMWRdhx2YC2hEyqa6obBcAJ3Gnamjd4JHepldCw0OxV8W2m9DjgIH0/F2EX9Cg==
   dependencies:
-    zod "^4.3.5"
+    zod "^4.4.3"
 
 typescript@^5.7.2:
   version "5.9.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.9.3.tgz#5b4f59e15310ab17a216f5d6cf53ee476ede670f"
   integrity sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==
 
-zod@^4.3.5:
-  version "4.3.5"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-4.3.5.tgz#aeb269a6f9fc259b1212c348c7c5432aaa474d2a"
-  integrity sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g==
+zod@^4.4.3:
+  version "4.4.3"
+  resolved "https://npm.flatt.tech/zod/-/zod-4.4.3.tgz#b680f172885d18bbebf21a834ea25e55a1bbf356"
+  integrity sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==
