@@ -13,6 +13,7 @@
     "lib"
   ],
   "dependencies": {
+    "@mulmocast/deck": "^0.1.1",
     "zod": "^4.3.5"
   },
   "peerDependencies": {

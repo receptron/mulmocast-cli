@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@mulmocast/deck@^0.1.1":
+  version "0.1.1"
+  resolved "https://npm.flatt.tech/@mulmocast/deck/-/deck-0.1.1.tgz#35eed6f0ddaa29541150618123075892557e81ba"
+  integrity sha512-LOblXxTR99g1w0ovKXYeh7yD7NQEUz1HkdwrjgN8dAugayM0y/hdIfX8jmStQyc5u04MzIIDLEr0W/9wPsPBxg==
+  dependencies:
+    zod "^4.3.5"
+
 typescript@^5.7.2:
   version "5.9.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.9.3.tgz#5b4f59e15310ab17a216f5d6cf53ee476ede670f"
