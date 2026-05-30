@@ -1,10 +1,9 @@
 import nodePath from "node:path";
 import { pathToFileURL } from "node:url";
 import { ImageProcessorParams } from "../../types/index.js";
-import { generateSlideHTML } from "../../slide/index.js";
-import type { SlideLayout, SlideTheme, ContentBlock, MulmoSlideMedia, SlideBranding } from "../../slide/index.js";
+import { generateSlideHTML } from "@mulmocast/deck";
+import type { SlideLayout, SlideTheme, ContentBlock, MulmoSlideMedia, SlideBranding, ResolvedBranding } from "@mulmocast/deck";
 import { slideThemes } from "../../data/slideThemes.js";
-import type { ResolvedBranding } from "../../slide/render.js";
 import { renderHTMLToImage } from "../html_render.js";
 import { parrotingImagePath } from "./utils.js";
 import { pathToDataUrl } from "../../methods/mulmo_media_source.js";
