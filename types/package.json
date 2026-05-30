@@ -13,8 +13,8 @@
     "lib"
   ],
   "dependencies": {
-    "@mulmocast/deck": "^0.1.1",
-    "zod": "^4.3.5"
+    "@mulmocast/deck": "^0.1.2",
+    "zod": "^4.4.3"
   },
   "peerDependencies": {
     "graphai": "^2.0.0",
