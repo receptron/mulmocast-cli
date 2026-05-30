@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.17](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.17) (2026-05-30)
+
+- **`src/slide/` extracted to [`@mulmocast/deck`](https://www.npmjs.com/package/@mulmocast/deck)**: slide DSL module is now a standalone MIT-licensed npm package (receptron/mulmocast-deck). `mulmocast` and `@mulmocast/types` consume it via dependency
+- **GitHub Actions hygiene**: bump `actions/cache` v4 → v5, `actions/upload-artifact` v6 → v7
+- **Dependency updates**: routine updates incl. `@google/genai` 2.7, `puppeteer` 25.1, `mulmocast-vision` 1.0.10, dependabot `qs` 6.15.2
+
+📦 **npm**: [`mulmocast@2.6.17`](https://www.npmjs.com/package/mulmocast/v/2.6.17)
+
 ## [2.6.16](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.16) (2026-05-21)
 
 - **`mulmocast viewer` command**: generate a zero-dependency, single-file HTML slideshow openable via `file://` (slide images embedded as base64 data URIs). Keyboard nav, click-to-advance, fullscreen, slide counter. Prefers `htmlImageFile` over `imageFile` to match pdf/movie output (#1385, #1386)
