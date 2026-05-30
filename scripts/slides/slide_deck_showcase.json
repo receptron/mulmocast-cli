@@ -44,30 +44,12 @@
       "text": "We believe data should speak the moment it arrives, not the morning after.",
       "image": {
         "type": "slide",
-        "theme": {
-          "colors": {
-            "bg": "FFFBEB",
-            "bgCard": "FFFFFF",
-            "bgCardAlt": "FEF3C7",
-            "text": "1C1917",
-            "textMuted": "57534E",
-            "textDim": "A8A29E",
-            "primary": "EA580C",
-            "accent": "D946EF",
-            "success": "16A34A",
-            "warning": "CA8A04",
-            "danger": "DC2626",
-            "info": "0284C7",
-            "highlight": "E11D48"
-          },
-          "fonts": { "title": "Georgia", "body": "Calibri", "mono": "Consolas" }
-        },
         "slide": {
           "layout": "bigQuote",
           "accentColor": "primary",
           "quote": "Data should speak the moment it arrives, not the morning after.",
           "author": "Aurora Founding Principle",
-          "role": "This single beat overrides the deck theme with a light palette to show per-beat theming."
+          "role": "Every beat inherits the deck-level theme from slideParams.theme."
         }
       }
     },
