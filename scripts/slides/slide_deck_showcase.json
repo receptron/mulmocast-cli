@@ -1,0 +1,309 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "en",
+  "title": "Aurora Analytics — Slide Deck Showcase",
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "0F172A",
+        "bgCard": "1E293B",
+        "bgCardAlt": "334155",
+        "text": "F8FAFC",
+        "textMuted": "CBD5E1",
+        "textDim": "64748B",
+        "primary": "38BDF8",
+        "accent": "A78BFA",
+        "success": "34D399",
+        "warning": "FBBF24",
+        "danger": "F87171",
+        "info": "22D3EE",
+        "highlight": "F472B6"
+      },
+      "fonts": {
+        "title": "Georgia",
+        "body": "Helvetica",
+        "mono": "Menlo"
+      }
+    }
+  },
+  "beats": [
+    {
+      "text": "Welcome to Aurora Analytics. Today we will walk through where we are and where we are going.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "title",
+          "title": "Aurora Analytics",
+          "subtitle": "Turning raw events into decisions, in real time",
+          "author": "Mei Tanaka, Head of Product  |  Q2 2026",
+          "note": "Every slide in this deck inherits the deck-level theme defined once in slideParams.theme."
+        }
+      }
+    },
+    {
+      "text": "We believe data should speak the moment it arrives, not the morning after.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "bigQuote",
+          "accentColor": "primary",
+          "quote": "Data should speak the moment it arrives, not the morning after.",
+          "author": "Aurora Founding Principle",
+          "role": "Every beat inherits the deck-level theme from slideParams.theme."
+        }
+      }
+    },
+    {
+      "text": "Our pipeline works in three stages: ingest, transform, and serve.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "columns",
+          "accentColor": "primary",
+          "stepLabel": "PIPELINE",
+          "title": "How Aurora Works",
+          "subtitle": "From raw events to live dashboards in three stages",
+          "showArrows": true,
+          "columns": [
+            {
+              "title": "Ingest",
+              "num": 1,
+              "accentColor": "primary",
+              "content": [
+                { "type": "text", "value": "Events stream in from SDKs, webhooks, and warehouses." },
+                { "type": "bullets", "items": ["50+ source connectors", "Exactly-once delivery", "Schema autodetect"] }
+              ]
+            },
+            {
+              "title": "Transform",
+              "num": 2,
+              "accentColor": "accent",
+              "content": [
+                { "type": "text", "value": "Streaming SQL enriches and aggregates on the fly." },
+                { "type": "bullets", "items": ["Windowed joins", "Sub-second latency", "Versioned models"] }
+              ]
+            },
+            {
+              "title": "Serve",
+              "num": 3,
+              "accentColor": "success",
+              "content": [
+                { "type": "text", "value": "Results push to dashboards, alerts, and reverse-ETL." },
+                { "type": "bullets", "items": ["Live dashboards", "Slack & PagerDuty", "API + reverse-ETL"] }
+              ]
+            }
+          ],
+          "callout": {
+            "label": "Tip",
+            "text": "The same MulmoScript can render to video, PDF, and a self-contained HTML deck.",
+            "color": "info",
+            "leftBar": true
+          }
+        }
+      }
+    },
+    {
+      "text": "The numbers tell the story of the last quarter.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "stats",
+          "accentColor": "primary",
+          "title": "Quarter in Numbers",
+          "subtitle": "FY2026 Q1 snapshot",
+          "stats": [
+            { "value": "+47%", "label": "Revenue YoY", "color": "success", "change": "+12pts" },
+            { "value": "1.9M", "label": "Daily Active Orgs", "color": "primary" },
+            { "value": "320ms", "label": "p99 Query Latency", "color": "info", "change": "-38%" },
+            { "value": "99.98%", "label": "Uptime", "color": "accent" }
+          ],
+          "callout": { "text": "All metrics are sourced live from Aurora running on itself.", "align": "center" }
+        }
+      }
+    },
+    {
+      "text": "Four capabilities set Aurora apart from batch tooling.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "grid",
+          "accentColor": "accent",
+          "title": "What You Get",
+          "subtitle": "Core capabilities at a glance",
+          "gridColumns": 4,
+          "items": [
+            { "title": "Real-time", "icon": "⚡", "accentColor": "primary", "description": "Sub-second freshness from source to screen" },
+            { "title": "Governed", "icon": "🔒", "accentColor": "info", "description": "Row-level security and full audit trails" },
+            { "title": "Open", "icon": "🔌", "accentColor": "accent", "description": "SQL-native, no proprietary lock-in" },
+            { "title": "Scalable", "icon": "📈", "accentColor": "success", "description": "From one stream to a million per second" }
+          ],
+          "footer": "Every capability ships on day one — no add-on tiers."
+        }
+      }
+    },
+    {
+      "text": "Compare the old batch world with the Aurora way.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "accentColor": "primary",
+          "stepLabel": "WHY NOW",
+          "title": "Batch vs. Streaming",
+          "subtitle": "Why teams are leaving nightly jobs behind",
+          "left": {
+            "title": "Nightly Batch",
+            "accentColor": "danger",
+            "content": [
+              { "type": "bullets", "items": ["Data is hours stale", "Failures found next morning", "Rigid, brittle schedules"], "icon": "✗" },
+              { "type": "metric", "value": "~8h", "label": "Decision lag", "color": "danger" }
+            ],
+            "footer": "Yesterday's answers, today"
+          },
+          "right": {
+            "title": "Aurora Streaming",
+            "accentColor": "success",
+            "content": [
+              { "type": "bullets", "items": ["Always-fresh data", "Alerts the moment it breaks", "Self-healing pipelines"], "icon": "✓" },
+              { "type": "metric", "value": "<1s", "label": "Decision lag", "color": "success" }
+            ],
+            "footer": "Answers as events happen"
+          },
+          "callout": { "label": "Result", "text": "From 8 hours to under a second — a 28,000x improvement in freshness.", "color": "success", "leftBar": true }
+        }
+      }
+    },
+    {
+      "text": "Here is the architecture and a taste of the developer experience.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "split",
+          "accentColor": "primary",
+          "left": {
+            "title": "Developer Experience",
+            "label": "DX",
+            "accentColor": "primary",
+            "ratio": 50,
+            "content": [
+              { "type": "text", "value": "Define a streaming view in plain SQL — Aurora handles the rest.", "bold": true },
+              { "type": "divider", "color": "primary" },
+              { "type": "bullets", "items": ["No Kafka to babysit", "Version-controlled models", "Local-to-prod parity"] },
+              { "type": "callout", "text": "Ships with a typed SDK for TypeScript, Python, and Go.", "style": "info" }
+            ]
+          },
+          "right": {
+            "title": "Define a live view",
+            "dark": true,
+            "ratio": 50,
+            "content": [
+              { "type": "code", "code": "CREATE LIVE VIEW active_orgs AS\nSELECT\n  org_id,\n  count(*) AS events,\n  max(ts)  AS last_seen\nFROM stream.events\nWHERE ts > now() - INTERVAL '5 minutes'\nGROUP BY org_id;" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "We position Aurora on flexibility versus ease of use.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "matrix",
+          "accentColor": "info",
+          "title": "The Landscape",
+          "subtitle": "Where each approach lands on flexibility and ease of use",
+          "xAxis": { "low": "Low Flexibility", "high": "High Flexibility" },
+          "yAxis": { "low": "Hard to Use", "high": "Easy to Use" },
+          "cells": [
+            { "label": "Hand-rolled Kafka", "accentColor": "warning", "items": ["Total control", "Heavy ops burden"] },
+            { "label": "Aurora", "accentColor": "success", "items": ["Flexible SQL", "Fully managed", "Sweet spot"] },
+            { "label": "Spreadsheets", "accentColor": "danger", "items": ["Anyone can use", "Breaks at scale"] },
+            { "label": "Closed BI Suite", "accentColor": "info", "items": ["Polished UI", "Vendor lock-in"] }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Our roadmap takes us from launch to an open ecosystem.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "timeline",
+          "accentColor": "primary",
+          "stepLabel": "ROADMAP",
+          "title": "Where We Are Headed",
+          "subtitle": "Major milestones across 2026",
+          "items": [
+            { "date": "Q1 2026", "title": "GA Launch", "description": "Public availability\n50 connectors", "color": "primary", "done": true },
+            { "date": "Q2 2026", "title": "Live Views 2.0", "description": "Incremental joins\nMaterialized caching", "color": "accent", "done": true },
+            { "date": "Q3 2026", "title": "Governance Suite", "description": "Row-level policies\nLineage graph", "color": "info" },
+            { "date": "Q4 2026", "title": "Marketplace", "description": "Community connectors\nShared models", "color": "success" }
+          ]
+        }
+      }
+    },
+    {
+      "text": "Adoption flows from sign-up to active production teams.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "funnel",
+          "accentColor": "primary",
+          "title": "Adoption Funnel",
+          "subtitle": "From first sign-up to production champions",
+          "stages": [
+            { "label": "Sign-ups", "value": "32K", "description": "Free tier activations", "color": "primary" },
+            { "label": "Connected", "value": "9.1K", "description": "First data source wired in", "color": "accent" },
+            { "label": "In Production", "value": "2.4K", "description": "Live view powering a real workflow", "color": "info" },
+            { "label": "Paid Teams", "value": "610", "description": "Upgraded to a paid plan", "color": "warning" },
+            { "label": "Champions", "value": "95", "description": "Multi-team rollout", "color": "success" }
+          ],
+          "callout": { "text": "1.9% sign-up to paid conversion, well above category benchmarks.", "align": "center" }
+        }
+      }
+    },
+    {
+      "text": "This bridge shows how we turned last year's profit into this year's.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "waterfall",
+          "title": "FY2026 ARR Bridge",
+          "subtitle": "YoY +$6.2M (+41%)",
+          "unit": "$M",
+          "items": [
+            { "label": "FY2025\nARR", "value": 15.0, "isTotal": true },
+            { "label": "New\nLogos", "value": 5.4 },
+            { "label": "Expansion", "value": 3.1 },
+            { "label": "Churn", "value": -2.3 },
+            { "label": "FX", "value": -0.0 },
+            { "label": "FY2026\nARR", "value": 21.2, "isTotal": true }
+          ],
+          "callout": { "label": "Summary", "text": "New logos and expansion more than offset churn, lifting ARR past $21M." }
+        }
+      }
+    },
+    {
+      "text": "Finally, here is how every plan compares feature by feature.",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "table",
+          "accentColor": "primary",
+          "title": "Plan Comparison",
+          "subtitle": "Pick the tier that fits your stage",
+          "headers": ["Feature", "Free", "Team", "Enterprise"],
+          "rowHeaders": true,
+          "rows": [
+            ["Live views", "3", "Unlimited", "Unlimited"],
+            ["Connectors", "5", "50", "50+ custom"],
+            ["Row-level security", "—", { "text": "✓", "color": "success", "bold": true }, { "text": "✓", "color": "success", "bold": true }],
+            ["SSO & audit logs", "—", "—", { "text": "✓", "color": "success", "bold": true }],
+            ["Support", "Community", "8x5", { "text": "24x7", "color": "primary", "bold": true }]
+          ],
+          "callout": { "label": "Note", "text": "All tiers include sub-second freshness — performance is never gated.", "color": "info", "leftBar": true }
+        }
+      }
+    }
+  ]
+}
