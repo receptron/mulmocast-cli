@@ -5,7 +5,7 @@ import fs from "node:fs";
 import os from "node:os";
 import crypto from "node:crypto";
 import { collectContentArrays, resolveSlideImageRefs } from "../../src/utils/image_plugins/slide.js";
-import type { SlideLayout, ContentBlock } from "../../src/slide/schema.js";
+import type { SlideLayout, ContentBlock } from "@mulmocast/deck";
 
 const createdFiles: string[] = [];
 after(() => {

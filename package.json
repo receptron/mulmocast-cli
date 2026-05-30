@@ -104,6 +104,7 @@
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@modernized/fluent-ffmpeg": "^1.0.0",
     "@mozilla/readability": "^0.6.0",
+    "@mulmocast/deck": "^0.1.2",
     "@tavily/core": "^0.7.3",
     "archiver": "^7.0.1",
     "clipboardy": "^5.3.1",

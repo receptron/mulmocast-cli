@@ -4,7 +4,7 @@ import { MulmoStudioContext } from "../types/index.js";
 import { localizedText } from "../utils/utils.js";
 import { writingMessage } from "../utils/file.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
-import { escapeHtml } from "../slide/utils.js";
+import { escapeHtml } from "@mulmocast/deck";
 
 const imageMimeTypes: Record<string, string> = {
   png: "image/png",

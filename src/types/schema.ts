@@ -2,13 +2,13 @@ import { z } from "zod";
 import { htmlLLMProvider, provider2TTSAgent, provider2ImageAgent, provider2MovieAgent, defaultProviders, provider2SoundEffectAgent } from "./provider2agent.js";
 import { currentMulmoScriptVersion } from "./const.js";
 import { mulmoVideoFilterSchema } from "./schema_video_filter.js";
-import { mulmoSlideMediaSchema, slideThemeSchema, slideBrandingSchema } from "./slide.js";
+import { mulmoSlideMediaSchema, slideThemeSchema, slideBrandingSchema } from "@mulmocast/deck";
 
 // Re-export video filter schema
 export { mulmoVideoFilterSchema } from "./schema_video_filter.js";
 
 // Re-export slide schema
-export { mulmoSlideMediaSchema } from "./slide.js";
+export { mulmoSlideMediaSchema } from "@mulmocast/deck";
 
 export const langSchema = z.string();
 const URLStringSchema = z.url();
