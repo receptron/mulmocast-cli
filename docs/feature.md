@@ -497,9 +497,9 @@ Display markdown content with complex layouts. Supports 2-column, 2x2 grid, head
 
 #### 10.8 構造化スライド (Slide DSL)
 
-JSON DSLで構造化プレゼンテーションスライドを生成。11レイアウト、7コンテンツブロック、13色テーマシステム。
+JSON DSLで構造化プレゼンテーションスライドを生成。13レイアウト、13コンテンツブロック、13色テーマシステム。`@mulmocast/deck` 0.5.0+。
 
-Generate structured presentation slides using JSON DSL. 11 layouts, 7 content blocks, 13-color theme system.
+Generate structured presentation slides using JSON DSL. 13 layouts, 13 content blocks, 13-color theme system. Powered by `@mulmocast/deck` 0.5.0+.
 
 ```json
 {
@@ -517,9 +517,11 @@ Generate structured presentation slides using JSON DSL. 11 layouts, 7 content bl
 }
 ```
 
-**レイアウト / Layouts:** title, columns, comparison, grid, bigQuote, stats, timeline, split, matrix, table, funnel
+**レイアウト / Layouts:** title, columns, comparison, grid, bigQuote, stats, timeline, split, matrix, table, funnel, waterfall, manifesto
 
-**コンテンツブロック / Content Blocks:** text, bullets, code, callout, metric, divider, image
+**コンテンツブロック / Content Blocks:** text, bullets, code, callout, metric, divider, image, imageRef, chart, mermaid, section, table, tag
+
+**視覚拡張 / Visual extras:** inline `**bold**` / `*emphasis*` / `{color:text}`, text size variants (`lead`/`big`/`sub`), slide `density: compact`, `titleSize`/`subtitleSize`, theme `bgGradient`/`titleGradient`/`cardStyle: glass`, asymmetric layouts (`comparison.ratio` / `cardless`, `grid.span`)
 
 **プリセットテーマ / Preset Themes:** dark, pop, warm, creative, minimal, corporate
 
@@ -530,8 +532,9 @@ mulmo tool complete beats.json -s slide_dark -o presentation.json
 
 **詳細ドキュメント / Documentation:** [Slide SKILL.md](../.claude/skills/slide/SKILL.md)
 **サンプル / Samples:**
+- [scripts/samples/bootcamp_v2_kickoff.json](../scripts/samples/bootcamp_v2_kickoff.json) - 全機能フル活用 / Full feature showcase (Phase 1-6)
 - [scripts/test/test_slide_01.json](../scripts/test/test_slide_01.json)
-- [scripts/test/test_slide_12.json](../scripts/test/test_slide_12.json) - 全11レイアウトデモ / All 11 layouts demo
+- [scripts/test/test_slide_12.json](../scripts/test/test_slide_12.json) - レイアウトデモ / Layouts demo
 
 ---
 
