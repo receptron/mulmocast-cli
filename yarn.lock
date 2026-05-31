@@ -565,10 +565,10 @@
   resolved "https://registry.yarnpkg.com/@mozilla/readability/-/readability-0.6.0.tgz#134e3ce3ff1676716e550de0b8de957bcc59208b"
   integrity sha512-juG5VWh4qAivzTAeMzvY9xs9HY5rAcr2E4I7tiSSCokRFi7XIZCAu92ZkSTsIj1OPceCifL3cpfteP3pDT9/QQ==
 
-"@mulmocast/deck@^0.1.2":
-  version "0.1.2"
-  resolved "https://npm.flatt.tech/@mulmocast/deck/-/deck-0.1.2.tgz#832f3f8a04e4f06f798a3e75a4e79cb06bdbea5c"
-  integrity sha512-WcXPkplXle4ZsrZP3NdiPF+6NMWRdhx2YC2hEyqa6obBcAJ3Gnamjd4JHepldCw0OxV8W2m9DjgIH0/F2EX9Cg==
+"@mulmocast/deck@^0.5.0":
+  version "0.5.0"
+  resolved "https://npm.flatt.tech/@mulmocast/deck/-/deck-0.5.0.tgz#a1521cbd09989fc8ecb7c5c21b10a708bd8d44ff"
+  integrity sha512-sfF/23r/53mL37hQvTw91vF9w7k3o4WtPxCzltnL5e4RUUCYd+xdI+AcdUpH0HRNXtqrkTQa3fep5gukIkbOfQ==
   dependencies:
     zod "^4.4.3"
 
