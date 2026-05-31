@@ -1,0 +1,651 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "ja",
+  "canvasSize": { "width": 1280, "height": 720 },
+  "title": "第4回 Singularity Society BootCamp キックオフ",
+  "description": "半年〜1年、手を動かし続ける旅のはじまり。BootCampの原点・行動哲学・運営の流れ。",
+  "speechParams": {
+    "speakers": {
+      "Presenter": { "voiceId": "shimmer" }
+    }
+  },
+  "slideParams": {
+    "theme": {
+      "colors": {
+        "bg": "0A0F24",
+        "bgCard": "111A3A",
+        "bgCardAlt": "16224D",
+        "text": "EEF2FF",
+        "textMuted": "9FB0D8",
+        "textDim": "6F7FA0",
+        "primary": "38BDF8",
+        "accent": "818CF8",
+        "success": "34D399",
+        "warning": "FBBF24",
+        "danger": "FB7185",
+        "info": "38BDF8",
+        "highlight": "F0ABFC"
+      },
+      "fonts": {
+        "title": "'Noto Sans JP', system-ui, sans-serif",
+        "body": "'Noto Sans JP', system-ui, sans-serif",
+        "mono": "Consolas",
+        "accent": "Outfit"
+      },
+      "bgGradient": "radial-gradient(1200px 700px at 12% -10%, rgba(56,189,248,.16), transparent 60%), radial-gradient(1000px 600px at 100% 0%, rgba(129,140,248,.16), transparent 55%), linear-gradient(160deg, #0A0F24, #111A3A 55%, #16224D)",
+      "titleGradient": "linear-gradient(100deg, #FFFFFF, #38BDF8 60%, #818CF8)",
+      "cardStyle": "glass"
+    }
+  },
+  "beats": [
+    {
+      "text": "第4回 BootCampキックオフ。半年から1年、手を動かし続ける旅のはじまりです。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "title",
+          "titleSize": "hero",
+          "eyebrow": { "label": "Singularity Society · 4th BootCamp" },
+          "title": "第4回 BootCamp\nキックオフ",
+          "subtitle": "半年〜1年、**手を動かし続ける**旅のはじまり。",
+          "author": "2026.06.13 (土) / 06.14 (日) ・ 東京 ・ オフライン開催",
+          "chips": [
+            "🚀 deploy or die",
+            "🔁 ドッグフーディング",
+            "⚡ 週1アウトプット",
+            "🤝 相互フィードバック"
+          ]
+        }
+      }
+    },
+    {
+      "text": "今日話すこと。原点、ドッグフーディング、4つのコース、全体の流れ、最初の3ヶ月、発表とルール。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "grid",
+          "eyebrow": { "label": "Agenda" },
+          "title": "今日話すこと",
+          "gridColumns": 3,
+          "items": [
+            { "num": 1, "title": "原点・なぜ今・行動哲学", "accentColor": "primary", "content": [{ "type": "text", "value": "BootCamp が大事にしている姿勢", "size": "sub" }] },
+            { "num": 2, "title": "ドッグフーディング & つくり方", "accentColor": "primary", "content": [{ "type": "text", "value": "何を、どう作るか", "size": "sub" }] },
+            { "num": 3, "title": "4つのコース", "accentColor": "primary", "content": [{ "type": "text", "value": "あなたはどこで走るか", "size": "sub" }] },
+            { "num": 4, "title": "全体の流れ", "accentColor": "primary", "content": [{ "type": "text", "value": "キックオフ → 中間 → 最終", "size": "sub" }] },
+            { "num": 5, "title": "{warning:最初の3ヶ月が密}", "accentColor": "warning", "content": [{ "type": "text", "value": "*いちばん大事なフェーズ*", "size": "sub" }] },
+            { "num": 6, "title": "発表・チーム・FB・ルール", "accentColor": "primary", "content": [{ "type": "text", "value": "動き方と注意点", "size": "sub" }] }
+          ]
+        }
+      }
+    },
+    {
+      "text": "BootCampの原点。個人、チーム、法人いずれもOK。ゴールを起業に限定しません。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "eyebrow": { "label": "Origin" },
+          "title": "BootCamp の原点",
+          "left": {
+            "title": "対象は誰?",
+            "accentColor": "primary",
+            "cardless": true,
+            "ratio": 1.1,
+            "content": [
+              {
+                "type": "bullets",
+                "size": "lead",
+                "items": [
+                  "**個人 / チーム / 法人** いずれもOK。居住地・タイムゾーン不問。",
+                  "**ゴールを起業に限定しない。** 営利・非営利・社内プロジェクト・個人開発、社会的意義あるもの全て歓迎。"
+                ]
+              }
+            ]
+          },
+          "right": {
+            "title": "起業家マインド",
+            "accentColor": "primary",
+            "content": [
+              { "type": "tag", "text": "全員に共通して", "color": "primary" },
+              { "type": "text", "value": "「会社を作れ」ではない。**自分で課題を見つけ、自分で仕事を作り出す姿勢** のこと。組織の中でも、個人開発でも、社内ツールでも同じ。", "size": "sub" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "なぜ、いまBootCampなのか。指示を待って動くだけなら、もうAIで十分です。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "bigQuote",
+          "eyebrow": { "label": "Why now" },
+          "quote": "指示を待って動くだけなら、もう {primary:AI で十分} です。",
+          "author": "*雑務を振られて仕事があった時代は終わった。*",
+          "role": "仕事を自ら作り出す人にしか、仕事はない。"
+        }
+      }
+    },
+    {
+      "text": "SSの行動哲学。行動する、それがすべて。許可を取るな。deploy or die。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "manifesto",
+          "eyebrow": { "label": "Culture" },
+          "title": "SS の行動哲学",
+          "columns": 2,
+          "items": [
+            { "title": "行動する、それがすべて。", "description": "考えているだけでは、存在しないのと同じ。", "accentColor": "primary" },
+            { "title": "許可を取るな。まず行動して、結果を報告しろ。", "description": "動いてから相談。止まって待たない。", "accentColor": "warning" },
+            { "title": "deploy or die.", "description": "社会に実装していくことが、すべて。", "accentColor": "primary" },
+            { "title": "出さない神レポートより、出すゴミレポート。", "description": "完璧を待たず、まず世に出す。", "accentColor": "warning" },
+            { "title": "締切のないタスクは、やらなくていいタスク。", "description": "絶えず締切を設定し、意識する。", "accentColor": "success" },
+            { "title": "失敗していない＝挑戦していない。", "description": "挑戦して失敗した人を、称え合おう。", "accentColor": "danger" }
+          ]
+        }
+      }
+    },
+    {
+      "text": "最重要ポリシー、ドッグフーディング。自分が使わないものは、誰も使わない。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "bigQuote",
+          "eyebrow": { "label": "🔁 最重要ポリシー", "color": "warning" },
+          "quote": "自分たちが使うツールを作る。*自分が使わないものは、誰も使わない。*",
+          "author": "ドッグフーディング — 最重要ポリシー"
+        }
+      }
+    },
+    {
+      "text": "ドッグフーディングの実践。最初のユーザはあなた。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "eyebrow": { "label": "Dogfooding", "color": "warning" },
+          "title": "なぜドッグフーディング?",
+          "left": {
+            "title": "自分が最初のユーザ",
+            "accentColor": "warning",
+            "cardless": true,
+            "content": [
+              {
+                "type": "bullets",
+                "size": "lead",
+                "items": [
+                  "**最初のユーザは、あなた。** 自分が日常で使い続けるものを作る。",
+                  "自分で使って初めて、*本当の不便・本当の改善点* が見える。"
+                ]
+              }
+            ]
+          },
+          "right": {
+            "title": "現場の課題は、あなたしか知らない",
+            "accentColor": "warning",
+            "cardless": true,
+            "content": [
+              {
+                "type": "bullets",
+                "size": "lead",
+                "items": [
+                  "**まだエンジニアが目をつけていない業界の人ほどチャンス。**",
+                  "発表会では {warning:「私はこう使っています」} を語ろう。"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "つくり方。議論よりプロトタイプ。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "eyebrow": { "label": "How to build" },
+          "title": "つくり方 — 議論よりプロトタイプ",
+          "left": {
+            "title": "共有する",
+            "accentColor": "primary",
+            "ratio": 1.2,
+            "cardless": true,
+            "content": [
+              {
+                "type": "bullets",
+                "size": "lead",
+                "items": [
+                  "**アイデアだけには、価値がない。** 同じアイデアは1万人が思いつく。",
+                  "作ってリリースするのは、そのうち数人。だから隠さず共有しフィードバックを得る。",
+                  "議論のための議論は無駄。*10%でも動いたら、すぐ共有。*"
+                ]
+              }
+            ]
+          },
+          "right": {
+            "title": "価値が伝わる最小のものを",
+            "accentColor": "warning",
+            "content": [
+              { "type": "tag", "text": "まず動く最小 (MVP)", "color": "warning" },
+              { "type": "text", "value": "CLI / HTML1枚 / LP / モック でいい。認証も本番DBも要らない。", "size": "sub" },
+              { "type": "text", "value": "**失敗の回数だけ進化する。** 早く試して、早く失敗する。", "size": "sub" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "4つのコース。BootCamp、Vibe Coding、MulmoCast、広報。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "grid",
+          "eyebrow": { "label": "4 Courses" },
+          "title": "4つのコース",
+          "gridColumns": 2,
+          "items": [
+            {
+              "title": "① BootCamp コース",
+              "accentColor": "primary",
+              "content": [
+                { "type": "tag", "text": "約1年", "color": "primary" },
+                { "type": "text", "value": "アプリ／サービスを立ち上げる王道。個人・法人、営利・非営利、社内プロジェクトの持ち込みもOK。キックオフ〜翌2〜3月の最終発表まで。", "size": "sub" }
+              ]
+            },
+            {
+              "title": "② Vibe Coding コース",
+              "accentColor": "accent",
+              "content": [
+                { "type": "tag", "text": "6ヶ月 (最大9ヶ月)", "color": "accent" },
+                { "type": "text", "value": "小さなツールを高速に回す。時間帯の合う人で **相互サポートグループ** を組み、互いのプロジェクトを支援・研鑽し合う。", "size": "sub" }
+              ]
+            },
+            {
+              "title": "③ MulmoCast / MulmoClaude コース",
+              "accentColor": "info",
+              "content": [
+                { "type": "tag", "text": "6〜9ヶ月 · コア陣のサポート", "color": "info" },
+                { "type": "text", "value": "エコシステムを **使う／拡張する／応用する** マルチモーダルAIツール。動画・Podcast・プレゼン・教材など。", "size": "sub" }
+              ]
+            },
+            {
+              "title": "④ 広報コース",
+              "accentColor": "warning",
+              "content": [
+                { "type": "tag", "text": "第4回 新設", "color": "warning" },
+                { "type": "text", "value": "技術広報・note/SNS運用・参加者インタビュー・イベントレポート。アウトプットは記事・投稿・取材メモ・動画。", "size": "sub" }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "全体の流れ。今から最終発表まで6つのフェーズ。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "timeline",
+          "eyebrow": { "label": "Timeline" },
+          "title": "全体の流れ",
+          "items": [
+            { "date": "今〜6月", "title": "もう走り出す", "description": "Slack合流。すぐ開発開始。", "hot": true, "done": true, "color": "warning" },
+            { "date": "6/13・14", "title": "キックオフ", "description": "都内・オフライン。プロト共有。", "hot": true, "color": "warning" },
+            { "date": "最初の3ヶ月", "title": "密フェーズ", "description": "週1発表会+相互FB必須。", "hot": true, "color": "warning" },
+            { "date": "〜秋", "title": "自走フェーズ", "description": "チームで密に。週1+月1報告。", "color": "primary" },
+            { "date": "10〜12月", "title": "中間発表", "description": "進捗を全員で共有。", "color": "accent" },
+            { "date": "2〜3月", "title": "最終発表", "description": "デモデイ。成果発表。", "color": "success" }
+          ]
+        }
+      }
+    },
+    {
+      "text": "最初の3ヶ月は密。週1発表会と相互フィードバックが必須。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "eyebrow": { "label": "★ ここが一番大事", "color": "warning" },
+          "title": "最初の3ヶ月は「密」",
+          "subtitle": "全コース共通。ここで走り方の土台が決まる。",
+          "subtitleSize": "lead",
+          "left": {
+            "title": "週1のオンライン発表会",
+            "accentColor": "warning",
+            "content": [
+              { "type": "tag", "text": "Output", "color": "warning" },
+              { "type": "text", "value": "Google Meets で開催。「今週なにを作ったか／何に詰まっているか」を共有。SSメンターも参加。", "size": "sub" },
+              { "type": "text", "value": "**毎月 最低1回は必ず発表。**", "size": "sub" }
+            ]
+          },
+          "right": {
+            "title": "週1アウトプット + 相互FB",
+            "accentColor": "warning",
+            "content": [
+              { "type": "tag", "text": "Feedback", "color": "warning" },
+              { "type": "text", "value": "機能追加・デモ・記事など、媒体は問わない。**他の参加者へのフィードバックも必須。**", "size": "sub" },
+              { "type": "text", "value": "⏰ 土日朝・平日夜を週ごとに分散 → 参加しやすい枠を選べる。", "size": "sub" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "なぜ密にするのか。序盤に同期と習慣をつくる。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "eyebrow": { "label": "なぜ密にするのか" },
+          "title": "序盤に「同期」と「習慣」をつくる",
+          "left": {
+            "title": "同期で密に",
+            "accentColor": "primary",
+            "ratio": 1.1,
+            "cardless": true,
+            "content": [
+              {
+                "type": "bullets",
+                "size": "lead",
+                "items": [
+                  "序盤は**同期型で密に**連絡 → 気軽に相談できる **「同期(なかま)」** ができる状態に。",
+                  "Slackで頻繁にデモ+評価。デモに惹かれてチーム参加、目が鍛えられ、交流が進む。",
+                  "*思いついたらすぐ作る* を、習慣に。"
+                ]
+              }
+            ]
+          },
+          "right": {
+            "title": "小さく作る → 評価 → また作る",
+            "accentColor": "warning",
+            "content": [
+              { "type": "tag", "text": "高速ループ", "color": "warning" },
+              { "type": "text", "value": "3〜5人のターゲットに見せて反応を見る。このループだけが、半年〜1年続ける唯一の方法。", "size": "sub" },
+              { "type": "callout", "label": "計算", "text": "1週1個なら半年で **24個**", "color": "primary", "size": "sub" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "3ヶ月目以降は自走フェーズ。週1全体発表会は終了。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "density": "compact",
+          "titleSize": "small",
+          "eyebrow": { "label": "3ヶ月目以降" },
+          "title": "自走フェーズへ",
+          "left": {
+            "title": "進め方",
+            "accentColor": "primary",
+            "content": [
+              {
+                "type": "bullets",
+                "items": [
+                  "週1の全体発表会は**原則終了**(必要時のみ開催)",
+                  "グループ／チームで**密に連絡**を取りながら進める",
+                  "Slackで**毎週報告**"
+                ]
+              }
+            ]
+          },
+          "right": {
+            "title": "継続する定例",
+            "accentColor": "accent",
+            "content": [
+              {
+                "type": "bullets",
+                "items": [
+                  "**週1アウトプット**(手を動かし続ける)",
+                  "**月1の非同期 進捗報告**(Docs / GitHub Markdown)",
+                  "報告に含める: 動作URL／ゴール／スケジュール／デモ／相談"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "中間発表と最終発表。秋と冬の2つのマイルストーン。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "grid",
+          "eyebrow": { "label": "Milestones" },
+          "title": "中間発表 と 最終発表",
+          "gridColumns": 2,
+          "items": [
+            {
+              "title": "中間発表",
+              "accentColor": "accent",
+              "content": [
+                { "type": "tag", "text": "10〜12月頃 · 日程未定", "color": "accent" },
+                { "type": "text", "value": "進捗を全員で共有。ここで「区切る」「後半も継続する」を各自が考えるタイミング。", "size": "sub" }
+              ]
+            },
+            {
+              "title": "最終発表 (デモデイ)",
+              "accentColor": "success",
+              "content": [
+                { "type": "tag", "text": "2027年 2〜3月頃 · 日程未定", "color": "success" },
+                { "type": "text", "value": "成果発表。Vibe Codingコースは終了タイミングにより参加しない場合あり。", "size": "sub" },
+                { "type": "text", "value": "📅 日程は後日確定。確定しだいSlackで案内します。", "size": "sub", "dim": true }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "text": "チーム分けと動き方。BootCamp、Vibe Coding、共通ルール。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "grid",
+          "eyebrow": { "label": "Teams" },
+          "title": "チーム分けと動き方",
+          "gridColumns": 3,
+          "items": [
+            {
+              "title": "BootCamp コース",
+              "accentColor": "primary",
+              "content": [
+                { "type": "text", "value": "個人・チーム・法人いずれも可。1人で立ち上げ or **BootCamp内で仲間探し** を選べる。チーム人数の制限なし。", "size": "sub" }
+              ]
+            },
+            {
+              "title": "Vibe Coding コース",
+              "accentColor": "accent",
+              "content": [
+                { "type": "text", "value": "時間帯の合う人で **相互サポートグループ**。共同で1つを作るのではなく、互いのプロジェクトを支援・研鑽し合う。", "size": "sub" }
+              ]
+            },
+            {
+              "title": "共通",
+              "accentColor": "info",
+              "content": [
+                { "type": "text", "value": "1人が **複数チームに所属OK**。期間中の **チーム移動は自由**。ピボットも可。", "size": "sub" }
+              ]
+            }
+          ],
+          "footer": "💡 **できる限り3〜5人のチーム** を強く推奨。1人でプロダクトを作り切れる人は限られます。手を動かしたい人は、すでに動いているチームに参加するのも◎。"
+        }
+      }
+    },
+    {
+      "text": "フィードバックの効かせ方。真剣に使う人の意見だけが重要。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "eyebrow": { "label": "Feedback", "color": "success" },
+          "title": "フィードバックの効かせ方",
+          "left": {
+            "title": "聞く価値あり",
+            "accentColor": "success",
+            "cardless": true,
+            "content": [
+              {
+                "type": "bullets",
+                "size": "lead",
+                "items": [
+                  { "text": "**真剣に使う人の意見だけが重要。**", "icon": "ok" },
+                  { "text": "「ほしい」と言われたら *「いくら払う？」* と聞く。金額が出れば本物。", "icon": "ok" },
+                  { "text": "推測をやめ、**客観的な数値で評価する仕組み** を作る。", "icon": "ok" }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "title": "聞かなくていい",
+            "accentColor": "danger",
+            "cardless": true,
+            "content": [
+              {
+                "type": "bullets",
+                "size": "lead",
+                "items": [
+                  { "text": "立派な肩書きでも、真剣に使わない人の意見。", "icon": "no" },
+                  { "text": "{danger:「○○があれば使う」} → 追加しても、絶対に使わない。", "icon": "no" },
+                  { "text": "金額の出ない「ほしい」は、ただの思いつき。", "icon": "warn" }
+                ]
+              }
+            ]
+          },
+          "callout": {
+            "label": "💡 ヒント",
+            "text": "みんなが褒めるアイデアは、もう遅い。*尖った数人が超賛成し、他は批判する* くらいが、いちばん可能性がある。",
+            "color": "success"
+          }
+        }
+      }
+    },
+    {
+      "text": "ルールと注意点。NDA持ち込み不可。長期不在は事前報告。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "eyebrow": { "label": "Rules & Notes" },
+          "title": "ルールと注意点",
+          "left": {
+            "title": "持ち込み・参加",
+            "accentColor": "warning",
+            "cardless": true,
+            "content": [
+              {
+                "type": "bullets",
+                "size": "lead",
+                "items": [
+                  { "text": "**NDA・社外秘・取引先情報の持ち込みは不可。**", "icon": "warn" },
+                  { "text": "コードの持ち込みはOK(問題ない範囲)。**汎用化して公開可能な形** に。", "icon": "warn" },
+                  { "text": "**2週間以上 Slack連絡なし** で退出の場合あり。長期不在は事前報告を。", "icon": "warn" }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "title": "成果物・費用",
+            "accentColor": "warning",
+            "cardless": true,
+            "content": [
+              {
+                "type": "bullets",
+                "size": "lead",
+                "items": [
+                  { "text": "成果物の **権利は作った本人に帰属**。", "icon": "warn" },
+                  { "text": "クラウド実費・交通費は自己負担。開発環境は自力で。", "icon": "warn" },
+                  { "text": "Coding Agent は **$100以上のプラン推奨**。", "icon": "warn" }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "text": "続く人と萎む人。ゴールは大きく、直近のタスクは小さく。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "comparison",
+          "titleSize": "small",
+          "eyebrow": { "label": "Mindset" },
+          "title": "続く人 と 萎む人",
+          "left": {
+            "title": "続く人",
+            "accentColor": "success",
+            "content": [
+              {
+                "type": "bullets",
+                "items": [
+                  { "text": "ゴールは大きく、**直近のタスクは小さく**", "icon": "ok" },
+                  { "text": "まず動く最小(MVP)を作る", "icon": "ok" },
+                  { "text": "すぐ人に見せて評価をもらう", "icon": "ok" },
+                  { "text": "反応を見て、また作る", "icon": "ok" }
+                ]
+              }
+            ]
+          },
+          "right": {
+            "title": "萎む人",
+            "accentColor": "danger",
+            "content": [
+              {
+                "type": "bullets",
+                "items": [
+                  { "text": "ずっと議論だけ", "icon": "no" },
+                  { "text": "仕様書だけが増える", "icon": "no" },
+                  { "text": "完成形を一気に作ろうとする", "icon": "no" },
+                  { "text": "誰にも見せないまま半年が過ぎる", "icon": "no" }
+                ]
+              }
+            ]
+          },
+          "callout": {
+            "label": "心構え",
+            "text": "「時間がない」は、*「興味がない」と同じ*。どうしてもやりたいことなら、絶対に時間を作るはず。",
+            "color": "accent"
+          }
+        }
+      }
+    },
+    {
+      "text": "100の議論より、1つ作って試す。",
+      "speaker": "Presenter",
+      "image": {
+        "type": "slide",
+        "slide": {
+          "layout": "bigQuote",
+          "eyebrow": { "label": "Let's go" },
+          "quote": "100の議論より、{primary:1つ作って試す。}",
+          "author": "行動する、それがすべて。 **deploy or die.**",
+          "role": "ようこそ、第4回 BootCamp へ 🚀"
+        }
+      }
+    }
+  ]
+}
