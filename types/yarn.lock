@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@mulmocast/deck@^0.1.2":
-  version "0.1.2"
-  resolved "https://npm.flatt.tech/@mulmocast/deck/-/deck-0.1.2.tgz#832f3f8a04e4f06f798a3e75a4e79cb06bdbea5c"
-  integrity sha512-WcXPkplXle4ZsrZP3NdiPF+6NMWRdhx2YC2hEyqa6obBcAJ3Gnamjd4JHepldCw0OxV8W2m9DjgIH0/F2EX9Cg==
+"@mulmocast/deck@^0.7.0":
+  version "0.7.0"
+  resolved "https://npm.flatt.tech/@mulmocast/deck/-/deck-0.7.0.tgz#53ee2d9cab4f6df2b2984fcf9029aaf4ba39c744"
+  integrity sha512-m2DJ5tipv3ug+KwsH4dWad2lID4nVzjhaNN8dDyosKARfG1sPsVjU3Ti4rJRAwi9d84N3bkKWocGlRS8C4NxXw==
   dependencies:
     zod "^4.4.3"
 
