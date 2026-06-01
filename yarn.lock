@@ -565,10 +565,10 @@
   resolved "https://registry.yarnpkg.com/@mozilla/readability/-/readability-0.6.0.tgz#134e3ce3ff1676716e550de0b8de957bcc59208b"
   integrity sha512-juG5VWh4qAivzTAeMzvY9xs9HY5rAcr2E4I7tiSSCokRFi7XIZCAu92ZkSTsIj1OPceCifL3cpfteP3pDT9/QQ==
 
-"@mulmocast/deck@^0.5.0":
-  version "0.5.0"
-  resolved "https://npm.flatt.tech/@mulmocast/deck/-/deck-0.5.0.tgz#a1521cbd09989fc8ecb7c5c21b10a708bd8d44ff"
-  integrity sha512-sfF/23r/53mL37hQvTw91vF9w7k3o4WtPxCzltnL5e4RUUCYd+xdI+AcdUpH0HRNXtqrkTQa3fep5gukIkbOfQ==
+"@mulmocast/deck@^0.7.0":
+  version "0.7.0"
+  resolved "https://npm.flatt.tech/@mulmocast/deck/-/deck-0.7.0.tgz#53ee2d9cab4f6df2b2984fcf9029aaf4ba39c744"
+  integrity sha512-m2DJ5tipv3ug+KwsH4dWad2lID4nVzjhaNN8dDyosKARfG1sPsVjU3Ti4rJRAwi9d84N3bkKWocGlRS8C4NxXw==
   dependencies:
     zod "^4.4.3"
 
@@ -4328,10 +4328,10 @@ tslib@^2.8.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.8.1.tgz#612efe4ed235d567e8aba5f2a5fab70280ade83f"
   integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
 
-tsx@^4.22.3:
-  version "4.22.3"
-  resolved "https://npm.flatt.tech/tsx/-/tsx-4.22.3.tgz#7ca7cb34028e3e247f1fad300c157e42a90a1f50"
-  integrity sha512-mdoNxBC/cSQObGGVQ5Bpn5i+yv7j68gk3Nfm3wFjcJg3Z0Mix9jzAFfP12prmm5eVGmDKtp0yyArrs0Q+8gZHg==
+tsx@^4.22.4:
+  version "4.22.4"
+  resolved "https://npm.flatt.tech/tsx/-/tsx-4.22.4.tgz#0ab3b7fb4ec7feeee74e5b1f26337caa71e44700"
+  integrity sha512-X8EX+XV4QR5xCsrgxaED954zTDfY8KqlDtskKEL0cHhyS/P8b4IFOvGDQpsC9Q1XnLq915wEfwwY/zzskCtmhg==
   dependencies:
     esbuild "~0.28.0"
   optionalDependencies:
