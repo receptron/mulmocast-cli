@@ -3,11 +3,11 @@ import { pathToFileURL } from "node:url";
 import { ImageProcessorParams } from "../../types/index.js";
 import { generateSlideHTML } from "@mulmocast/deck";
 import type { SlideLayout, SlideTheme, ContentBlock, MulmoSlideMedia, SlideBranding, ResolvedBranding } from "@mulmocast/deck";
-import { slideThemes } from "../../data/slideThemes.js";
 import { renderHTMLToImage } from "../html_render.js";
 import { parrotingImagePath } from "./utils.js";
 import { pathToDataUrl } from "../../methods/mulmo_media_source.js";
 import { MulmoMediaSourceMethods } from "../../methods/mulmo_media_source.js";
+import { MulmoPresentationStyleMethods } from "../../methods/mulmo_presentation_style.js";
 import { imageAction, imageFileTarget, unknownMediaType } from "../error_cause.js";
 
 export const imageType = "slide";
@@ -99,9 +99,12 @@ const resolveTheme = (params: ImageProcessorParams): SlideTheme => {
   if (!beat.image || beat.image.type !== imageType) {
     throw new Error("resolveTheme called on non-slide beat");
   }
-  const defaultTheme = context.presentationStyle.slideParams?.theme;
-  const theme = beat.image.theme ?? defaultTheme ?? slideThemes.corporate;
-  return theme;
+  // Single source of truth for the priority — the same method is now
+  // exposed via `MulmoPresentationStyleMethods` for browser callers
+  // (editor preview) so the deck-web preview and the PDF/movie
+  // render reach the same theme. See the docblock there for the
+  // priority spelled out.
+  return MulmoPresentationStyleMethods.getResolvedSlideTheme(context.presentationStyle, beat);
 };
 
 const resolveSlide = (params: ImageProcessorParams, converter: (filePath: string) => string = pathToDataUrl): SlideLayout => {

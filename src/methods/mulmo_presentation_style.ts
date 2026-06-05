@@ -5,7 +5,9 @@
  */
 
 import { isNull } from "graphai";
+import type { SlideTheme } from "@mulmocast/deck";
 import { userAssert } from "../utils/utils.js";
+import { slideThemes } from "../data/slideThemes.js";
 import {
   MulmoCanvasDimension,
   MulmoBeat,
@@ -72,6 +74,28 @@ export const MulmoPresentationStyleMethods = {
     const extraStyles = beat.textSlideParams?.cssStyles ?? [];
     // This code allows us to support both string and array of strings for cssStyles
     return [...defaultTextSlideStyles, ...[styles], ...[extraStyles]].flat().join("\n");
+  },
+  /**
+   * Resolve the effective theme for a slide-typed beat.
+   * Priority (high → low):
+   *   1. `beat.image.theme` — per-beat override
+   *   2. `presentationStyle.slideParams.theme` — deck-level default
+   *   3. `slideThemes.corporate` — built-in fallback
+   *
+   * Returns the corporate fallback (without throwing) when called on a
+   * non-slide beat, so callers driving the deck preview from a mixed
+   * script can hand any beat in without a special-case check.
+   *
+   * Exposed as a method so the editor (`@mulmocast/deck-web`) can
+   * import it via `mulmocast/browser` and surface the same priority
+   * its render-time slide.ts already enforces — closing the editor
+   * vs. PDF/movie theme mismatch reported on mulmoclaude#1622.
+   */
+  getResolvedSlideTheme(presentationStyle: MulmoPresentationStyle, beat: MulmoBeat): SlideTheme {
+    if (beat.image?.type === "slide" && beat.image.theme) {
+      return beat.image.theme;
+    }
+    return presentationStyle.slideParams?.theme ?? slideThemes.corporate;
   },
   getDefaultSpeaker(presentationStyle: MulmoPresentationStyle) {
     const speakers = presentationStyle?.speechParams?.speakers ?? {};
