@@ -109,7 +109,21 @@ test("defaultSpeaker error no speaker", async () => {
 // will read from, so the tests below pin the contract loudly.
 
 const fakeTheme = (label: string) => ({
-  colors: { bg: label, bgCard: label, bgCardAlt: label, text: label, textMuted: label, textDim: label, primary: label, accent: label, success: label, warning: label, danger: label, info: label, highlight: label },
+  colors: {
+    bg: label,
+    bgCard: label,
+    bgCardAlt: label,
+    text: label,
+    textMuted: label,
+    textDim: label,
+    primary: label,
+    accent: label,
+    success: label,
+    warning: label,
+    danger: label,
+    info: label,
+    highlight: label,
+  },
   fonts: { title: "Georgia", body: "Helvetica", mono: "Menlo" },
 });
 
