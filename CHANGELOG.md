@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.19](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.19) (2026-06-06)
+
+- **`getResolvedSlideTheme` method**: new `MulmoPresentationStyleMethods.getResolvedSlideTheme` exposes the merged slide theme (script + presentation style + defaults) so callers can read the effective theme without re-deriving it (#1402)
+- **Dependency updates**: `@mulmocast/deck` ^0.7.0 → ^1.1.0 (adds `slide.intro` / `slide.staggerMs` CSS entrance animations), dependabot `hono` 4.12.18 → 4.12.23 (#1401, #1403)
+
+📦 **npm**: [`mulmocast@2.6.19`](https://www.npmjs.com/package/mulmocast/v/2.6.19)
+
 ## [2.6.17](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.17) (2026-05-30)
 
 - **`src/slide/` extracted to [`@mulmocast/deck`](https://www.npmjs.com/package/@mulmocast/deck)**: slide DSL module is now a standalone MIT-licensed npm package (receptron/mulmocast-deck). `mulmocast` and `@mulmocast/types` consume it via dependency
