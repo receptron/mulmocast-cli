@@ -104,14 +104,14 @@
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@modernized/fluent-ffmpeg": "^1.0.0",
     "@mozilla/readability": "^0.6.0",
-    "@mulmocast/deck": "^0.7.0",
+    "@mulmocast/deck": "^1.1.0",
     "@tavily/core": "^0.7.3",
     "archiver": "^7.0.1",
     "clipboardy": "^5.3.1",
     "dotenv": "^17.4.2",
     "graphai": "^2.0.17",
     "jsdom": "^29.1.1",
-    "marked": "^18.0.4",
+    "marked": "^18.0.5",
     "mulmocast-vision": "^1.0.10",
     "ora": "^9.4.0",
     "puppeteer": "^25.1.0",
@@ -136,7 +136,7 @@
     "prettier": "^3.8.3",
     "tsx": "^4.22.4",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.60.0"
+    "typescript-eslint": "^8.60.1"
   },
   "engines": {
     "node": ">=22.0.0"
