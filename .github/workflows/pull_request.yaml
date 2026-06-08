@@ -101,8 +101,27 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         node-version: [22.x, 24.x]
+        shard:
+          - { name: img-order,           cmd: "yarn run cli images scripts/test/test_order.json" }
+          - { name: img-beats,           cmd: "yarn run cli images scripts/test/test_beats.json" }
+          - { name: img-render-stress,   cmd: "yarn run cli images scripts/test/test_render_stress.json" }
+          - { name: img-html-animation,  cmd: "yarn run cli images scripts/test/test_html_animation.json" }
+          - { name: img-cover-landscape, cmd: "yarn run cli images scripts/test/test_html_cover_pan_zoom_landscape_canvas.json" }
+          - { name: img-cover-portrait,  cmd: "yarn run cli images scripts/test/test_html_cover_pan_zoom_portrait_canvas.json" }
+          - { name: anim-canvas,         cmd: "yarn run cli movie scripts/test/test_animated.json" }
+          - { name: anim-data,           cmd: "yarn run cli movie scripts/test/test_data_animation.json" }
+          - { name: movie-no-audio,      cmd: "yarn run cli movie scripts/test/test_no_audio.json && yarn run cli pdf scripts/test/test_no_audio.json && yarn run cli bundle scripts/test/test_no_audio.json && yarn run cli markdown scripts/test/test_no_audio.json && yarn run cli html scripts/test/test_no_audio.json" }
+          - { name: movie-credit,        cmd: "yarn run cli movie scripts/test/test_no_audio_with_credit.json" }
+          - { name: movie-transition,    cmd: "yarn run cli movie scripts/test/test_transition_no_audio.json" }
+          - { name: movie-slideout,      cmd: "yarn run cli movie scripts/test/test_slideout_left_no_audio.json" }
+          - { name: movie-hello,         cmd: "yarn run cli movie scripts/test/test_hello_caption.json && yarn run cli movie scripts/test/test_hello_image.json" }
+          - { name: movie-vision,        cmd: "yarn run cli movie scripts/test/test_vision.json" }
+          - { name: pdf-order,           cmd: "yarn run cli pdf scripts/test/test_order.json --pdf_mode slide --pdf_size a4 && yarn run cli pdf scripts/test/test_order.json --pdf_mode talk --pdf_size a4 && yarn run cli pdf scripts/test/test_order.json --pdf_mode handout --pdf_size a4 && yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode slide --pdf_size a4 && yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode talk --pdf_size a4 && yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode handout --pdf_size a4" }
+          - { name: tool-complete,       cmd: "yarn run cli tool complete test/json/minimum_beats.json && yarn run cli tool complete test/json/minimum_beats.json -s ani && yarn run cli tool complete test/json/minimum_beats.json -s ./assets/styles/ani.json" }
+    name: e2e (${{ matrix.node-version }} / ${{ matrix.shard.name }})
     steps:
     - uses: actions/checkout@v5
     - name: Use Node.js ${{ matrix.node-version }}
@@ -132,64 +151,10 @@ jobs:
       run: npx puppeteer browsers install chrome
     - run: yarn run format
     - run: yarn run build
-    - name: Run image tests (parallel)
-      run: |
-        yarn run cli images scripts/test/test_order.json &
-        yarn run cli images scripts/test/test_beats.json &
-        yarn run cli images scripts/test/test_render_stress.json &
-        yarn run cli images scripts/test/test_html_animation.json &
-        yarn run cli images scripts/test/test_animated.json &
-        yarn run cli images scripts/test/test_html_cover_pan_zoom_landscape_canvas.json &
-        yarn run cli images scripts/test/test_html_cover_pan_zoom_portrait_canvas.json &
-        yarn run cli images scripts/test/test_data_animation.json &
-        wait
-    - name: Run movie tests batch 1 (parallel)
-      run: |
-        yarn run cli movie scripts/test/test_no_audio.json &
-        yarn run cli movie scripts/test/test_no_audio_with_credit.json &
-        yarn run cli movie scripts/test/test_transition_no_audio.json &
-        wait
-    - name: Run movie tests batch 2 (parallel)
-      run: |
-        yarn run cli movie scripts/test/test_slideout_left_no_audio.json &
-        yarn run cli movie scripts/test/test_hello_caption.json &
-        yarn run cli movie scripts/test/test_hello_image.json &
-        wait
-    - name: Run animated movie tests (parallel)
-      run: |
-        yarn run cli movie scripts/test/test_animated.json &
-        yarn run cli movie scripts/test/test_data_animation.json &
-        wait
-    - name: Run movie test (vision)
-      run: yarn run cli movie scripts/test/test_vision.json
-    - name: Run pdf tests batch 1 (parallel)
-      run: |
-        yarn run cli pdf scripts/test/test_order.json --pdf_mode slide --pdf_size a4 &
-        yarn run cli pdf scripts/test/test_order.json --pdf_mode talk --pdf_size a4 &
-        yarn run cli pdf scripts/test/test_order.json --pdf_mode handout --pdf_size a4 &
-        wait
-    - name: Run pdf tests batch 2 (parallel)
-      run: |
-        yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode slide --pdf_size a4 &
-        yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode talk --pdf_size a4 &
-        yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode handout --pdf_size a4 &
-        wait
-    - name: Run pdf test (no_audio)
-      run: yarn run cli pdf scripts/test/test_no_audio.json
-    - name: Run other tests (parallel)
-      run: |
-        yarn run cli bundle scripts/test/test_no_audio.json &
-        yarn run cli markdown scripts/test/test_no_audio.json &
-        yarn run cli html scripts/test/test_no_audio.json &
-        wait
-    - name: Run tool complete tests (parallel)
-      run: |
-        yarn run cli tool complete test/json/minimum_beats.json &
-        yarn run cli tool complete test/json/minimum_beats.json -s ani &
-        yarn run cli tool complete test/json/minimum_beats.json -s ./assets/styles/ani.json &
-        wait
+    - name: Run shard ${{ matrix.shard.name }}
+      run: ${{ matrix.shard.cmd }}
     - name: Upload generated media
       uses: actions/upload-artifact@v7
       with:
-        name: generatedmedia-${{ matrix.node-version }}
+        name: generatedmedia-${{ matrix.node-version }}-${{ matrix.shard.name }}
         path: output/

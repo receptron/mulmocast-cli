@@ -319,7 +319,11 @@ export const translate = async (context: MulmoStudioContext, args?: PublicAPIArg
 
     assert(!!config?.openAIAgent?.apiKey, "The OPENAI_API_KEY environment variable is missing or empty", false, translateApiKeyMissingError());
 
-    const graph = new GraphAI(translate_graph_data, { ...vanillaAgents, fileWriteAgent, openAIAgent }, { agentFilters, config });
+    // Nested mapAgents (beats × targetLangs) need enough slots up-front; mapAgent
+    // asserts instead of waiting when concurrency is exhausted (graphai 2.0.17).
+    const beatCount = context.studio.script.beats.length;
+    const concurrency = Math.max(8, beatCount * targetLangs.length + 16);
+    const graph = new GraphAI({ ...translate_graph_data, concurrency }, { ...vanillaAgents, fileWriteAgent, openAIAgent }, { agentFilters, config });
 
     graph.injectValue("context", context);
     graph.injectValue("targetLangs", targetLangs);
@@ -341,6 +345,7 @@ export const translate = async (context: MulmoStudioContext, args?: PublicAPIArg
     if (hasCause(error) && error.cause) {
       throw error;
     }
+    GraphAILogger.error("translate failed:", error);
     throw new Error("Failed to translate", {
       cause: agentGenerationError("translateBeat", translateAction, multiLingualFileTarget),
     });
