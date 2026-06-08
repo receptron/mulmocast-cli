@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.20](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.20) (2026-06-09)
+
+- **e2e CI parallelized**: split the monolithic `e2e` job into 16 shards × `[22.x, 24.x]` matrix so each script runs on its own runner; target wall-clock ~10 min vs ~30 min before (#1404)
+- **`@mulmocast/types` version aligned**: 2.6.18 → 2.6.20 to match `mulmocast` (catches up types changes since `@mulmocast/types@2.4.0`)
+- **Dependency updates**: `graphai` ^2.0.17 → ^2.0.18
+
+📦 **npm**: [`mulmocast@2.6.20`](https://www.npmjs.com/package/mulmocast/v/2.6.20) · [`@mulmocast/types@2.6.20`](https://www.npmjs.com/package/@mulmocast/types/v/2.6.20)
+
 ## [2.6.19](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.19) (2026-06-06)
 
 - **`getResolvedSlideTheme` method**: new `MulmoPresentationStyleMethods.getResolvedSlideTheme` exposes the merged slide theme (script + presentation style + defaults) so callers can read the effective theme without re-deriving it (#1402)
