@@ -109,7 +109,7 @@
     "archiver": "^7.0.1",
     "clipboardy": "^5.3.1",
     "dotenv": "^17.4.2",
-    "graphai": "^2.0.17",
+    "graphai": "^2.0.18",
     "jsdom": "^29.1.1",
     "marked": "^18.0.4",
     "mulmocast-vision": "^1.0.10",
