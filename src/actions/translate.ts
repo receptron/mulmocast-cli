@@ -300,8 +300,12 @@ export const translateBeat = async (index: number, context: MulmoStudioContext, 
     if (hasCause(error) && error.cause) {
       throw error;
     }
-    throw new Error("Failed to translate", {
-      cause: agentGenerationError("translateBeat", translateAction, multiLingualFileTarget),
+    // Preserve the original error. Without this, a non-structured failure (e.g.
+    // a GraphAI assertion such as "mapAgent: Concurrency is too low") would be
+    // masked as a generic apiError with no diagnostic detail.
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to translate: ${message}`, {
+      cause: { ...agentGenerationError("translateBeat", translateAction, multiLingualFileTarget), originalError: error },
     });
   }
 };
@@ -338,11 +342,16 @@ export const translate = async (context: MulmoStudioContext, args?: PublicAPIArg
     MulmoStudioContextMethods.setSessionState(context, "multiLingual", false, true);
   } catch (error) {
     MulmoStudioContextMethods.setSessionState(context, "multiLingual", false, false);
+    GraphAILogger.log(error);
     if (hasCause(error) && error.cause) {
       throw error;
     }
-    throw new Error("Failed to translate", {
-      cause: agentGenerationError("translateBeat", translateAction, multiLingualFileTarget),
+    // Preserve the original error. Without this, a non-structured failure (e.g.
+    // a GraphAI assertion such as "mapAgent: Concurrency is too low") would be
+    // masked as a generic apiError with no diagnostic detail.
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to translate: ${message}`, {
+      cause: { ...agentGenerationError("translateBeat", translateAction, multiLingualFileTarget), originalError: error },
     });
   }
   return context;
