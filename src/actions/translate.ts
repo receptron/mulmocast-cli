@@ -351,7 +351,7 @@ export const translate = async (context: MulmoStudioContext, args?: PublicAPIArg
     // masked as a generic apiError with no diagnostic detail.
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Failed to translate: ${message}`, {
-      cause: { ...agentGenerationError("translateBeat", translateAction, multiLingualFileTarget), originalError: error },
+      cause: { ...agentGenerationError("translate", translateAction, multiLingualFileTarget), originalError: error },
     });
   }
   return context;
