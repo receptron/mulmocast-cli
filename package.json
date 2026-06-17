@@ -102,7 +102,7 @@
     "@inquirer/input": "^5.0.13",
     "@inquirer/select": "^5.1.5",
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "@modernized/fluent-ffmpeg": "^1.0.0",
+    "@modernized/fluent-ffmpeg": "^1.0.1",
     "@mozilla/readability": "^0.6.0",
     "@mulmocast/deck": "^1.1.0",
     "@tavily/core": "^0.7.3",
@@ -127,16 +127,16 @@
     "@types/jsdom": "^28.0.3",
     "@types/yargs": "^17.0.35",
     "cross-env": "^10.1.0",
-    "eslint": "^10.4.1",
+    "eslint": "^10.5.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.6",
     "eslint-plugin-sonarjs": "^4.0.3",
     "globals": "^17.6.0",
-    "prettier": "^3.8.3",
+    "prettier": "^3.8.4",
     "tsx": "^4.22.4",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.60.1"
+    "typescript-eslint": "^8.61.1"
   },
   "engines": {
     "node": ">=22.0.0"
