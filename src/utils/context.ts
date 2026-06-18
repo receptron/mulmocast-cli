@@ -13,6 +13,7 @@ import type {
 import { mulmoStudioSchema, mulmoCaptionParamsSchema, mulmoPresentationStyleSchema } from "../types/schema.js";
 import { MulmoPresentationStyleMethods, MulmoScriptMethods, MulmoStudioMultiLingualMethod } from "../methods/index.js";
 import { loadMulmoConfig, mergeConfigWithScript } from "./mulmo_config.js";
+import { UsageCollector } from "./usage_collector.js";
 
 export const silentMp3 = "https://github.com/receptron/mulmocast-cli/raw/refs/heads/main/assets/audio/silent300.mp3";
 
@@ -194,6 +195,7 @@ export const initializeContextFromFiles = async (
       force: Boolean(force),
       backup: Boolean(withBackup),
       lang: targetLang ?? studio.script.lang, // This lang is target Language. studio.lang is default Language
+      usageCollector: new UsageCollector(),
     };
   } catch (error) {
     GraphAILogger.info(`Error: invalid MulmoScript Schema: ${isHttpPath ? fileOrUrl : mulmoFilePath} \n ${formatMulmoError(error)}`);

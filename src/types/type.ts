@@ -1,4 +1,5 @@
 import { type CallbackFunction } from "graphai";
+import type { UsageCollector } from "../utils/usage_collector.js";
 import {
   langSchema,
   localizedTextSchema,
@@ -132,6 +133,7 @@ export type MulmoStudioContext = {
   sessionState: MulmoSessionState;
   presentationStyle: MulmoPresentationStyle;
   multiLingual: MulmoStudioMultiLingualArray;
+  usageCollector?: UsageCollector;
 };
 
 export type ScriptingParams = {
