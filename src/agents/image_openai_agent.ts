@@ -16,6 +16,7 @@ import {
   unsupportedModelTarget,
 } from "../utils/error_cause.js";
 import type { AgentBufferResult, OpenAIImageOptions, OpenAIImageAgentParams, OpenAIImageAgentInputs, OpenAIImageAgentConfig } from "../types/agent.js";
+import type { AgentUsage } from "../types/usage.js";
 
 const isDeprecatedOpenAIImageModel = (model: string): model is DeprecatedOpenAIImageModel => model in deprecatedOpenAIImageModelHints;
 
@@ -130,6 +131,16 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
       cause: agentInvalidResponseError("imageOpenaiAgent", imageAction, imageFileTarget),
     });
   }
+  // gpt-image-1 surfaces token usage; legacy DALL·E response shapes don't.
+  const usage: AgentUsage | undefined = response.usage
+    ? {
+        provider: "openai",
+        model,
+        inputTokens: response.usage.input_tokens,
+        outputTokens: response.usage.output_tokens,
+        totalTokens: response.usage.total_tokens,
+      }
+    : undefined;
   const url = response.data[0].url;
   if (!url) {
     // For gpt-image-1
@@ -139,7 +150,7 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
         cause: agentInvalidResponseError("imageOpenaiAgent", imageAction, imageFileTarget),
       });
     }
-    return { buffer: Buffer.from(image_base64, "base64") };
+    return { buffer: Buffer.from(image_base64, "base64"), usage };
   }
 
   // URL response handling (legacy OpenAI image API response format)
@@ -154,7 +165,7 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
   const arrayBuffer = await res.arrayBuffer();
 
   // 3. Convert the ArrayBuffer to a Node.js Buffer and return it along with url
-  return { buffer: Buffer.from(arrayBuffer) };
+  return { buffer: Buffer.from(arrayBuffer), usage };
 };
 
 const imageOpenaiAgentInfo: AgentFunctionInfo = {

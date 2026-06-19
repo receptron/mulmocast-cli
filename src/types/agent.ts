@@ -14,7 +14,9 @@ export type OpenAIImageOptions = {
   background?: "opaque" | "transparent" | "auto";
 };
 
-export type AgentBufferResult = { buffer?: Buffer; saved?: string; text?: string };
+import type { AgentUsage } from "./usage.js";
+
+export type AgentBufferResult = { buffer?: Buffer; saved?: string; text?: string; usage?: AgentUsage };
 export type AgentPromptInputs = { prompt: string };
 export type AgentTextInputs = { text: string };
 export type AgentErrorResult = { error: unknown };
