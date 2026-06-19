@@ -1,19 +1,8 @@
-export type UsageRecord = {
-  agent: string;
-  provider: string;
-  model: string;
-  beatIndex?: number;
-  inputTokens?: number;
-  outputTokens?: number;
-  totalTokens?: number;
-  predictSec?: number;
-  inputChars?: number;
-  cached: boolean;
-  retryAttempt?: number;
-  timestamp: string;
-};
+import type { UsageRecord, UsageCollectorAPI } from "../types/usage.js";
 
-export class UsageCollector {
+export type { UsageRecord, UsageCollectorAPI } from "../types/usage.js";
+
+export class UsageCollector implements UsageCollectorAPI {
   private readonly records: UsageRecord[] = [];
 
   add(record: Omit<UsageRecord, "timestamp"> & { timestamp?: string }): void {
@@ -24,7 +13,7 @@ export class UsageCollector {
     return this.records.slice();
   }
 
-  merge(other: UsageCollector): void {
+  merge(other: UsageCollectorAPI): void {
     other.snapshot().forEach((record) => this.records.push(record));
   }
 
