@@ -22,6 +22,7 @@ import {
 import { getAspectRatio } from "../utils/utils.js";
 import { ASPECT_RATIOS, PRO_ASPECT_RATIOS } from "../types/const.js";
 import type { AgentBufferResult, ImageAgentInputs, ImageAgentParams, GenAIImageAgentConfig } from "../types/agent.js";
+import type { AgentUsage } from "../types/usage.js";
 import { GoogleGenAI, PersonGeneration, GenerateContentResponse } from "@google/genai";
 
 const isDeprecatedGoogleImageModel = (model: string): model is DeprecatedGoogleImageModel => model in deprecatedGoogleImageModelHints;
@@ -42,12 +43,21 @@ const getGeminiContents = (prompt: string, referenceImages?: string[] | null) =>
   return contents;
 };
 
-const geminiFlashResult = (response: GenerateContentResponse) => {
+const geminiFlashResult = (response: GenerateContentResponse, model: string) => {
   if (!response.candidates?.[0]?.content?.parts) {
     throw new Error("ERROR: generateContent returned no candidates", {
       cause: agentInvalidResponseError("imageGenAIAgent", imageAction, imageFileTarget),
     });
   }
+  const usage: AgentUsage | undefined = response.usageMetadata
+    ? {
+        provider: "google",
+        model,
+        inputTokens: response.usageMetadata.promptTokenCount,
+        outputTokens: response.usageMetadata.candidatesTokenCount,
+        totalTokens: response.usageMetadata.totalTokenCount,
+      }
+    : undefined;
   for (const part of response.candidates[0].content.parts) {
     if (part.text) {
       GraphAILogger.info("Gemini image generation response:", part.text);
@@ -59,7 +69,7 @@ const geminiFlashResult = (response: GenerateContentResponse) => {
         });
       }
       const buffer = Buffer.from(imageData, "base64");
-      return { buffer };
+      return { buffer, usage };
     }
   }
   throw new Error("ERROR: generateContent returned no image data", {
@@ -135,7 +145,7 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
     })();
     const res = await resultify(() => ai.models.generateContent(contentParams));
     if (res.ok) {
-      return geminiFlashResult(res.value);
+      return geminiFlashResult(res.value, model);
     }
     return errorProcess(res.error);
   }
