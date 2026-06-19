@@ -42,7 +42,7 @@ export const fileCacheAgentFilter: AgentFilterFunction = async (context, next) =
     const output = ((await next(context)) as { buffer?: Buffer; text?: string; saved?: boolean }) || undefined;
     const { buffer, text, saved } = output ?? {};
     if (saved) {
-      return true;
+      return output;
     }
     if (buffer) {
       writingMessage(file);
@@ -50,16 +50,14 @@ export const fileCacheAgentFilter: AgentFilterFunction = async (context, next) =
       if (backup) {
         await fsPromise.writeFile(getBackupFilePath(file), buffer);
       }
-      return true;
+      return output;
     } else if (text) {
       writingMessage(file);
       await fsPromise.writeFile(file, text, "utf-8");
       if (backup) {
         await fsPromise.writeFile(getBackupFilePath(file), text, "utf-8");
       }
-      return true;
-    } else if (saved) {
-      return true;
+      return output;
     }
     GraphAILogger.log("no cache, no buffer: " + file);
     return false;
