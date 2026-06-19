@@ -32,6 +32,7 @@ import { extractImageFromMovie, ffmpegGetMediaDuration, trimMusic } from "../uti
 import { getMediaRefs, resolveBeatLocalRefs } from "./image_references.js";
 import { imagePreprocessAgent, imagePluginAgent, htmlImageGeneratorAgent } from "./image_agents.js";
 import { imageGraphOption } from "./graph_option.js";
+import { createUsageCallback } from "../utils/usage_callback.js";
 
 const vanillaAgents = vanilla.default ?? vanilla;
 
@@ -498,6 +499,7 @@ const generateImages = async (context: MulmoStudioContext, args?: PublicAPIArgs 
       graph.registerCallback(callback);
     });
   }
+  graph.registerCallback(createUsageCallback(context));
   const res = await graph.run<{ output: MulmoStudioBeat[] }>();
   return res.mergeResult as unknown as MulmoStudioContext;
 };
@@ -560,6 +562,7 @@ export const generateBeatImage = async (inputs: {
         graph.registerCallback(callback);
       });
     }
+    graph.registerCallback(createUsageCallback(context));
     await graph.run<{ output: MulmoStudioBeat[] }>();
   } catch (error) {
     if (error instanceof AuthenticationError) {
