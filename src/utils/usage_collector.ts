@@ -10,11 +10,11 @@ export class UsageCollector implements UsageCollectorAPI {
   }
 
   snapshot(): UsageRecord[] {
-    return this.records.slice();
+    return this.records.map((record) => ({ ...record }));
   }
 
   merge(other: UsageCollectorAPI): void {
-    other.snapshot().forEach((record) => this.records.push(record));
+    other.snapshot().forEach((record) => this.records.push({ ...record }));
   }
 
   clear(): void {

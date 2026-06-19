@@ -43,12 +43,32 @@ test("UsageCollector: explicit timestamp is preserved", () => {
   assert.strictEqual(collector.snapshot()[0].timestamp, fixed);
 });
 
-test("UsageCollector: snapshot returns a copy", () => {
+test("UsageCollector: snapshot returns a copy (array + records)", () => {
   const collector = new UsageCollector();
-  collector.add({ agent: "x", provider: "openai", model: "m", cached: false });
+  collector.add({ agent: "x", provider: "openai", model: "m", totalTokens: 100, cached: false });
   const snap = collector.snapshot();
   snap.length = 0;
-  assert.strictEqual(collector.size, 1, "mutating snapshot must not affect collector");
+  assert.strictEqual(collector.size, 1, "mutating snapshot array must not affect collector");
+
+  const snap2 = collector.snapshot();
+  snap2[0].agent = "MUTATED";
+  snap2[0].totalTokens = 999;
+  const fresh = collector.snapshot();
+  assert.strictEqual(fresh[0].agent, "x", "mutating record in snapshot must not affect collector");
+  assert.strictEqual(fresh[0].totalTokens, 100, "mutating numeric field in snapshot must not affect collector");
+});
+
+test("UsageCollector: merge defensively copies records", () => {
+  const a = new UsageCollector();
+  const b = new UsageCollector();
+  b.add({ agent: "b1", provider: "openai", model: "m", totalTokens: 50, cached: false });
+  a.merge(b);
+
+  const aSnap = a.snapshot();
+  aSnap[0].totalTokens = 999;
+  const bSnap = b.snapshot();
+  assert.strictEqual(bSnap[0].totalTokens, 50, "mutating a's snapshot must not reach b's records");
+  assert.strictEqual(a.snapshot()[0].totalTokens, 50, "mutating snapshot must not reach a's records either");
 });
 
 test("UsageCollector: merge", () => {
