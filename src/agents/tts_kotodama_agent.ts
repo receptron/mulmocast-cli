@@ -3,6 +3,7 @@ import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { provider2TTSAgent } from "../types/provider2agent.js";
 import { apiKeyMissingError, agentIncorrectAPIKeyError, agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 import type { KotodamaTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult, AgentConfig } from "../types/agent.js";
+import type { AgentUsage } from "../types/usage.js";
 
 export const ttsKotodamaAgent: AgentFunction<KotodamaTTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs, AgentConfig> = async ({
   namedInputs,
@@ -58,7 +59,15 @@ export const ttsKotodamaAgent: AgentFunction<KotodamaTTSAgentParams, AgentBuffer
     }
 
     const buffer = Buffer.from(json.audios[0], "base64");
-    return { buffer };
+    // Kotodama is subscription-billed externally (no public per-char rate API
+    // surface). Report inputChars + voice/decoration so the billing layer can
+    // do its own accounting.
+    const usage: AgentUsage = {
+      provider: "kotodama",
+      model: body.speaker_id,
+      inputChars: text.length,
+    };
+    return { buffer, usage };
   } catch (error) {
     if (suppressError) {
       return {

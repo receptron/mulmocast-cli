@@ -13,6 +13,7 @@ import {
   audioFileTarget,
 } from "../utils/error_cause.js";
 import type { OpenAITTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult, OpenAIImageAgentConfig } from "../types/agent.js";
+import type { AgentUsage } from "../types/usage.js";
 
 export const ttsOpenaiAgent: AgentFunction<OpenAITTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs, OpenAIImageAgentConfig> = async ({
   namedInputs,
@@ -44,7 +45,15 @@ export const ttsOpenaiAgent: AgentFunction<OpenAITTSAgentParams, AgentBufferResu
     GraphAILogger.log("ttsOptions", tts_options);
     const response = await openai.audio.speech.create(tts_options);
     const buffer = Buffer.from(await response.arrayBuffer());
-    return { buffer };
+    // tts-1 / tts-1-hd bill per character. gpt-4o-mini-tts is token-based and
+    // is handled by #1428; for now we report inputChars uniformly and let the
+    // billing layer pick the right unit from `model`.
+    const usage: AgentUsage = {
+      provider: "openai",
+      model: tts_options.model,
+      inputChars: text.length,
+    };
+    return { buffer, usage };
   } catch (error) {
     if (suppressError) {
       return {
