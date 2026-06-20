@@ -19,6 +19,7 @@ import {
 import { MulmoStudioContext, MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingualData, PublicAPIArgs } from "../types/index.js";
 
 import { audioGraphOption } from "./graph_option.js";
+import { createUsageCallback } from "../utils/usage_callback.js";
 import {
   getAudioArtifactFilePath,
   getAudioFilePath,
@@ -277,6 +278,7 @@ export const generateBeatAudio = async (index: number, context: MulmoStudioConte
 
     const graph = new GraphAI(langs ? graph_tts_map : graph_tts, audioAgents, await audioGraphOption(context, settings));
     callbacks?.forEach((callback) => graph.registerCallback(callback));
+    graph.registerCallback(createUsageCallback(context));
     graph.injectValue("__mapIndex", index);
     graph.injectValue("beat", context.studio.script.beats[index]);
     graph.injectValue("studioBeat", context.studio.beats[index]);
@@ -315,6 +317,7 @@ export const audio = async (context: MulmoStudioContext, args?: PublicAPIArgs) =
 
     const graph = new GraphAI(audio_graph_data, audioAgents, await audioGraphOption(context, settings));
     callbacks?.forEach((callback) => graph.registerCallback(callback));
+    graph.registerCallback(createUsageCallback(context));
     graph.injectValue("context", context);
     graph.injectValue("audioArtifactFilePath", audioArtifactFilePath);
     graph.injectValue("audioCombinedFilePath", audioCombinedFilePath);

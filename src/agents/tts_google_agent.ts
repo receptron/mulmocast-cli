@@ -5,6 +5,7 @@ import type { ServiceError } from "google-gax";
 import { agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 
 import type { GoogleTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult } from "../types/agent.js";
+import type { AgentUsage } from "../types/usage.js";
 
 const client = new textToSpeech.TextToSpeechClient();
 
@@ -54,7 +55,15 @@ export const ttsGoogleAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
   try {
     // Call the Text-to-Speech API
     const [response] = await client.synthesizeSpeech(request, { timeout: SYNTHESIZE_TIMEOUT_MS });
-    return { buffer: response.audioContent as Buffer };
+    // Google Cloud TTS bills per character; SynthesizeSpeechResponse exposes
+    // no usage info. Record inputChars so the billing layer can compute cost
+    // from `model` (voice tier) + char count.
+    const usage: AgentUsage = {
+      provider: "google",
+      model: model ?? voice ?? "default",
+      inputChars: text.length,
+    };
+    return { buffer: response.audioContent as Buffer, usage };
   } catch (e) {
     if (suppressError) {
       return {
