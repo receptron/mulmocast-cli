@@ -1,6 +1,6 @@
 import { audio, images, movie, captions } from "../../../actions/index.js";
 import { CliArgs } from "../../../types/cli_types.js";
-import { initializeContext, runTranslateIfNeeded } from "../../helpers.js";
+import { dumpUsageIfRequested, initializeContext, runTranslateIfNeeded } from "../../helpers.js";
 
 export const handler = async (argv: CliArgs<{ a?: string; i?: string; c?: string }>) => {
   const context = await initializeContext(argv);
@@ -9,4 +9,5 @@ export const handler = async (argv: CliArgs<{ a?: string; i?: string; c?: string
   }
   await runTranslateIfNeeded(context, true);
   await audio(context).then(images).then(captions).then(movie);
+  dumpUsageIfRequested(context);
 };

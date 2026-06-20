@@ -1,5 +1,5 @@
 import { translate } from "../../../actions/index.js";
-import { initializeContext } from "../../helpers.js";
+import { dumpUsageIfRequested, initializeContext } from "../../helpers.js";
 import { CliArgs } from "../../../types/cli_types.js";
 
 export const handler = async (argv: CliArgs<{ i?: string }>) => {
@@ -8,4 +8,5 @@ export const handler = async (argv: CliArgs<{ i?: string }>) => {
     process.exit(1);
   }
   await translate(context);
+  dumpUsageIfRequested(context);
 };

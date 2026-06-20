@@ -28,6 +28,64 @@ export const runTranslateIfNeeded = async (context: MulmoStudioContext, includeC
   }
 };
 
+type UsageGroup = {
+  provider: string;
+  model: string;
+  records: number;
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+  predictSec: number;
+  inputChars: number;
+};
+
+const summarizeUsage = (context: MulmoStudioContext) => {
+  const snapshot = context.usageCollector?.snapshot() ?? [];
+  const groups = new Map<string, UsageGroup>();
+  for (const record of snapshot) {
+    const key = `${record.provider}:${record.model}`;
+    const group = groups.get(key) ?? {
+      provider: record.provider,
+      model: record.model,
+      records: 0,
+      inputTokens: 0,
+      outputTokens: 0,
+      totalTokens: 0,
+      predictSec: 0,
+      inputChars: 0,
+    };
+    group.records += 1;
+    group.inputTokens += record.inputTokens ?? 0;
+    group.outputTokens += record.outputTokens ?? 0;
+    group.totalTokens += record.totalTokens ?? 0;
+    group.predictSec += record.predictSec ?? 0;
+    group.inputChars += record.inputChars ?? 0;
+    groups.set(key, group);
+  }
+  return { records: snapshot.length, byModel: Array.from(groups.values()), snapshot };
+};
+
+// Opt-in usage dump after a CLI action completes. Controlled by
+// MULMOCAST_DUMP_USAGE:
+//   - unset / empty → no-op (zero overhead)
+//   - "1" / "true" / "stdout" → print JSON to stdout via GraphAILogger.info
+//   - any other value → treated as a file path and the JSON is written there
+//
+// The API/billing layer reads context.usageCollector directly; this is for
+// local CLI verification only.
+export const dumpUsageIfRequested = (context: MulmoStudioContext) => {
+  const setting = process.env.MULMOCAST_DUMP_USAGE;
+  if (!setting) return;
+  const payload = summarizeUsage(context);
+  const json = JSON.stringify(payload, null, 2);
+  if (setting === "1" || setting === "true" || setting === "stdout") {
+    GraphAILogger.info("\n=== usage ===\n" + json);
+    return;
+  }
+  fs.writeFileSync(setting, json, "utf-8");
+  GraphAILogger.info(`usage written to ${setting}`);
+};
+
 export const setGraphAILogger = (verbose: boolean | undefined, logValues?: Record<string, unknown>) => {
   if (verbose) {
     if (logValues) {
