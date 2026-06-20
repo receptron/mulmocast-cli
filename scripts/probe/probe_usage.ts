@@ -1,27 +1,28 @@
-// Probe: run a mulmocast action (images / audio / translate) against a test
-// script and dump usageCollector contents.
+// Probe: run a mulmocast action (images / audio / translate / movie) against a
+// test script and dump usageCollector contents.
 //
 // Usage:
 //   OPENAI_API_KEY=sk-... npx tsx scripts/probe/probe_usage.ts
 //
 // Optional env:
-//   USAGE_ACTION=images | audio | translate         (default: images)
-//   USAGE_SCRIPT=scripts/test/test_gpt_image.json   (default depends on action)
-//   USAGE_OUTDIR=/tmp/probe_usage_output             (default: per-action subdir)
-//   USAGE_TARGET_LANG=ja                             (default: ja, translate only)
+//   USAGE_ACTION=images | audio | translate | movie  (default: images)
+//   USAGE_SCRIPT=scripts/test/test_gpt_image.json    (default depends on action)
+//   USAGE_OUTDIR=/tmp/probe_usage_output              (default: per-action subdir)
+//   USAGE_TARGET_LANG=ja                              (default: ja, translate only)
 
 import path from "path";
 import fs from "fs";
-import { images, audio, translate } from "../../src/actions/index.js";
+import { images, audio, translate, movie, captions } from "../../src/actions/index.js";
 import { initializeContextFromFiles } from "../../src/utils/context.js";
 import { getFileObject } from "../../src/cli/helpers.js";
 
 const repoRoot = path.resolve(import.meta.dirname, "../..");
-const action = (process.env.USAGE_ACTION ?? "images") as "images" | "audio" | "translate";
+const action = (process.env.USAGE_ACTION ?? "images") as "images" | "audio" | "translate" | "movie";
 const defaultScript: Record<typeof action, string> = {
   images: "scripts/test/test_gpt_image.json",
   audio: "scripts/test/test_all_tts.json",
   translate: "scripts/test/test_lang.json",
+  movie: "scripts/test/test_veo31_lite.json",
 };
 const scriptArg = process.env.USAGE_SCRIPT ?? defaultScript[action];
 const scriptPath = path.resolve(repoRoot, scriptArg);
@@ -55,6 +56,9 @@ const main = async () => {
     await audio(context);
   } else if (action === "translate") {
     await translate(context);
+  } else if (action === "movie") {
+    // Mirror the CLI movie handler chain: audio → images → captions → movie.
+    await audio(context).then(images).then(captions).then(movie);
   }
   const elapsedSec = (Date.now() - before) / 1000;
 

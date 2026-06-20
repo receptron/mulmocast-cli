@@ -14,8 +14,10 @@ import {
   hasCause,
 } from "../utils/error_cause.js";
 import { getAspectRatio } from "../utils/utils.js";
+import { ffmpegGetMediaDuration } from "../utils/ffmpeg_utils.js";
 import { ASPECT_RATIOS } from "../types/const.js";
 import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, MovieAgentInputs, MovieReferenceImage } from "../types/agent.js";
+import type { AgentUsage } from "../types/usage.js";
 import { getModelDuration, provider2MovieAgent, AUDIO_MODE_NEVER, AUDIO_MODE_ALWAYS } from "../types/provider2agent.js";
 
 type ImagePayload = { imageBytes: string; mimeType: string };
@@ -69,7 +71,22 @@ const loadImageAsBase64 = (imagePath: string): ImagePayload => {
   };
 };
 
-const downloadVideo = async (ai: GoogleGenAI, video: GenAIVideo, movieFile: string, isVertexAI: boolean): Promise<AgentBufferResult> => {
+// Veo bills per second of generated video. The SDK response carries no usage
+// metadata (GenerateVideosResponse only has generatedVideos and RAI flags), so
+// we ffprobe the downloaded file to get the actual duration. Falls back to
+// undefined if ffprobe fails, which lets the billing layer use the requested
+// duration as a fallback.
+const probeDurationSec = async (movieFile: string): Promise<number | undefined> => {
+  try {
+    const { duration } = await ffmpegGetMediaDuration(movieFile);
+    return duration > 0 ? duration : undefined;
+  } catch (e) {
+    GraphAILogger.warn("movieGenAIAgent: ffprobe failed, predictSec will be omitted", e);
+    return undefined;
+  }
+};
+
+const downloadVideo = async (ai: GoogleGenAI, video: GenAIVideo, movieFile: string, isVertexAI: boolean, model: string): Promise<AgentBufferResult> => {
   if (isVertexAI) {
     // Vertex AI returns videoBytes directly
     writeFileSync(movieFile, Buffer.from(video.videoBytes!, "base64"));
@@ -81,7 +98,9 @@ const downloadVideo = async (ai: GoogleGenAI, video: GenAIVideo, movieFile: stri
     });
     await sleep(5000); // HACK: Without this, the file is not ready yet.
   }
-  return { saved: movieFile };
+  const predictSec = await probeDurationSec(movieFile);
+  const usage: AgentUsage | undefined = predictSec !== undefined ? { provider: "google", model, predictSec } : undefined;
+  return { saved: movieFile, usage };
 };
 
 const createVeo31Payload = (
@@ -160,7 +179,7 @@ const generateExtendedVideo = async (
     });
   }
 
-  return downloadVideo(ai, result.video, movieFile, isVertexAI);
+  return downloadVideo(ai, result.video, movieFile, isVertexAI, model);
 };
 
 const generateStandardVideo = async (
@@ -218,7 +237,7 @@ const generateStandardVideo = async (
   const response = await pollUntilDone(ai, operation);
   const video = getVideoFromResponse(response);
 
-  return downloadVideo(ai, video, movieFile, isVertexAI);
+  return downloadVideo(ai, video, movieFile, isVertexAI, model);
 };
 
 export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferResult, MovieAgentInputs, GenAIImageAgentConfig> = async ({
