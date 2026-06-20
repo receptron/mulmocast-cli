@@ -14,7 +14,9 @@ import {
 } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, ImageAgentInputs, AgentConfig } from "../types/agent.js";
+import type { AgentUsage } from "../types/usage.js";
 import { provider2ImageAgent } from "../types/provider2agent.js";
+import { runReplicateWithMetrics } from "../utils/replicate_usage.js";
 
 export type ReplicateImageAgentConfig = AgentConfig;
 
@@ -62,7 +64,7 @@ export const imageReplicateAgent: AgentFunction<ReplicateImageAgentParams, Agent
   }
 
   try {
-    const output = await replicate.run(model, { input });
+    const { output, predictSec } = await runReplicateWithMetrics(replicate, model, input);
 
     const imageUrl = extractImageUrl(output);
     if (!imageUrl) {
@@ -80,7 +82,8 @@ export const imageReplicateAgent: AgentFunction<ReplicateImageAgentParams, Agent
 
     const arrayBuffer = await imageResponse.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    return { buffer };
+    const usage: AgentUsage | undefined = predictSec !== undefined ? { provider: "replicate", model, predictSec } : undefined;
+    return { buffer, usage };
   } catch (error) {
     GraphAILogger.info("Replicate generation error:", error);
     if (hasCause(error) && error.cause) {

@@ -14,6 +14,8 @@ import {
 } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, LipSyncAgentInputs, ReplicateLipSyncAgentParams, ReplicateLipSyncAgentConfig } from "../types/agent.js";
+import type { AgentUsage } from "../types/usage.js";
+import { runReplicateWithMetrics } from "../utils/replicate_usage.js";
 
 export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, AgentBufferResult, LipSyncAgentInputs, ReplicateLipSyncAgentConfig> = async ({
   namedInputs,
@@ -84,12 +86,10 @@ export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, A
   const model_identifier: `${string}/${string}:${string}` | `${string}/${string}` = provider2LipSyncAgent.replicate.modelParams[model]?.identifier ?? model;
 
   try {
-    const output = await replicate.run(model_identifier, {
-      input,
-    });
+    const { output, predictSec } = await runReplicateWithMetrics(replicate, model_identifier, input);
 
     if (output && typeof output === "object" && "url" in output) {
-      const videoUrl = (output.url as () => URL)();
+      const videoUrl = ((output as { url: unknown }).url as () => URL)();
       const videoResponse = await fetch(videoUrl);
 
       if (!videoResponse.ok) {
@@ -99,7 +99,8 @@ export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, A
       }
 
       const arrayBuffer = await videoResponse.arrayBuffer();
-      return { buffer: Buffer.from(arrayBuffer) };
+      const usage: AgentUsage | undefined = predictSec !== undefined ? { provider: "replicate", model, predictSec } : undefined;
+      return { buffer: Buffer.from(arrayBuffer), usage };
     }
     return undefined;
   } catch (error) {
