@@ -79,7 +79,7 @@ export const dumpUsageIfRequested = (context: MulmoStudioContext) => {
   const payload = summarizeUsage(context);
   const json = JSON.stringify(payload, null, 2);
   if (setting === "1" || setting === "true" || setting === "stdout") {
-    GraphAILogger.info("\n=== usage ===\n" + json);
+    GraphAILogger.info(json);
     return;
   }
   fs.writeFileSync(setting, json, "utf-8");
