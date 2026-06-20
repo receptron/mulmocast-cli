@@ -182,3 +182,27 @@ test("usage callback preserves retryAttempt from log.retryCount", () => {
   );
   assert.strictEqual(collector.snapshot()[0].retryAttempt, 2);
 });
+
+test("usage callback accepts a UsageCollectorAPI directly (no context)", () => {
+  const collector = new UsageCollector();
+  const cb = createUsageCallback(collector);
+  cb(
+    makeLog({
+      result: { usage: { provider: "openai", model: "gpt-image-1", totalTokens: 42 } },
+    }),
+    false,
+  );
+  assert.strictEqual(collector.size, 1);
+  assert.strictEqual(collector.snapshot()[0].totalTokens, 42);
+});
+
+test("usage callback is a no-op when undefined is passed directly", () => {
+  const cb = createUsageCallback(undefined);
+  cb(
+    makeLog({
+      result: { usage: { provider: "openai", model: "m", totalTokens: 10 } },
+    }),
+    false,
+  );
+  // Should not throw — no collector to record into.
+});

@@ -16,6 +16,7 @@ import { ScriptingParams } from "../types/index.js";
 import { cliLoadingPlugin } from "../utils/plugins.js";
 import { graphDataScriptFromUrlPrompt } from "../utils/prompt.js";
 import { llmPair, settings2GraphAIConfig } from "../utils/utils.js";
+import { createUsageCallback } from "../utils/usage_callback.js";
 import { readFileSync } from "fs";
 
 dotenv.config({ quiet: true });
@@ -215,7 +216,7 @@ const graphDataText: GraphData = {
   },
 };
 
-export const createMulmoScriptFromUrl = async ({ urls, templateName, outDirPath, filename, cacheDirPath, llm, llm_model }: ScriptingParams) => {
+export const createMulmoScriptFromUrl = async ({ urls, templateName, outDirPath, filename, cacheDirPath, llm, llm_model, usageCollector }: ScriptingParams) => {
   mkdir(outDirPath);
   mkdir(cacheDirPath);
   const parsedUrls = urlsSchema.parse(urls);
@@ -254,6 +255,7 @@ export const createMulmoScriptFromUrl = async ({ urls, templateName, outDirPath,
   graph.injectValue("llmModel", model);
   graph.injectValue("maxTokens", max_tokens);
   graph.registerCallback(cliLoadingPlugin({ nodeId: "mulmoScript", message: "Generating script..." }));
+  graph.registerCallback(createUsageCallback(usageCollector));
 
   const result = await graph.run<{ path: string }>();
   if (!result?.writeJSON?.path) {
@@ -265,7 +267,7 @@ export const createMulmoScriptFromUrl = async ({ urls, templateName, outDirPath,
 
 export const createMulmoScriptFromFile = async (
   fileName: string,
-  { templateName, outDirPath, filename, cacheDirPath, llm, llm_model, verbose }: ScriptingParams,
+  { templateName, outDirPath, filename, cacheDirPath, llm, llm_model, verbose, usageCollector }: ScriptingParams,
 ) => {
   mkdir(outDirPath);
   mkdir(cacheDirPath);
@@ -299,6 +301,7 @@ export const createMulmoScriptFromFile = async (
   if (!verbose) {
     graph.registerCallback(cliLoadingPlugin({ nodeId: "mulmoScript", message: "Generating script..." }));
   }
+  graph.registerCallback(createUsageCallback(usageCollector));
   const result = await graph.run<{ path: string }>();
   if (!result?.writeJSON?.path) {
     showErrorMessage("Script generation failed. Please try again.");

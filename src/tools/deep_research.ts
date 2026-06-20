@@ -11,6 +11,8 @@ import * as agents from "@graphai/vanilla";
 import tavilySearchAgent from "../agents/tavily_agent.js";
 import { cliLoadingPlugin } from "../utils/plugins.js";
 import { searchQueryPrompt, reflectionPrompt, finalAnswerPrompt } from "../utils/prompt.js";
+import { createUsageCallback } from "../utils/usage_callback.js";
+import type { UsageCollectorAPI } from "../types/usage.js";
 
 dotenv.config({ quiet: true });
 
@@ -267,7 +269,7 @@ const graphData = {
   },
 };
 
-export const deepResearch = async () => {
+export const deepResearch = async (usageCollector?: UsageCollectorAPI) => {
   const agentFilters = [
     {
       name: "consoleStreamDataAgentFilter",
@@ -283,6 +285,7 @@ export const deepResearch = async () => {
   graph.registerCallback(cliLoadingPlugin({ nodeId: "reflectionAgent", message: "Analyzing search results..." }));
   graph.registerCallback(cliLoadingPlugin({ nodeId: "tavilySearchAgent", message: "Searching..." }));
   graph.registerCallback(cliLoadingPlugin({ nodeId: "finalAnswer", message: "Generating final answer..." }));
+  graph.registerCallback(createUsageCallback(usageCollector));
 
   GraphAILogger.info(`${agentHeader} What would you like to know?\n`);
   await graph.run();

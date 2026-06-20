@@ -12,7 +12,9 @@ import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 import validateSchemaAgent from "../agents/validate_schema_agent.js";
 import { ZodSchema } from "zod";
 import { llmPair, settings2GraphAIConfig } from "../utils/utils.js";
+import { createUsageCallback } from "../utils/usage_callback.js";
 import type { LLM } from "../types/provider2agent.js";
+import type { UsageCollectorAPI } from "../types/usage.js";
 import { storyToScriptGenerateMode } from "../types/const.js";
 import { cliLoadingPlugin } from "../utils/plugins.js";
 
@@ -282,6 +284,7 @@ export const storyToScript = async ({
   llm,
   llmModel,
   generateMode,
+  usageCollector,
 }: {
   story: MulmoStoryboard;
   beatsPerScene: number;
@@ -291,6 +294,7 @@ export const storyToScript = async ({
   llm?: LLM;
   llmModel?: string;
   generateMode: StoryToScriptGenerateMode;
+  usageCollector?: UsageCollectorAPI;
 }) => {
   const template = readAndParseJson(getPromptTemplateFilePath(templateName), mulmoPromptTemplateSchema);
   const { agent, model, max_tokens } = llmPair(llm, llmModel);
@@ -322,6 +326,7 @@ export const storyToScript = async ({
   graph.injectValue("llmModel", model);
   graph.injectValue("maxTokens", max_tokens);
   graph.registerCallback(cliLoadingPlugin({ nodeId: "script", message: "Generating script..." }));
+  graph.registerCallback(createUsageCallback(usageCollector));
 
   const result = await graph.run<{ path: string }>();
   writingMessage(result?.writeJSON?.path ?? "");
