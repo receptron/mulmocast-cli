@@ -1,22 +1,32 @@
-// Probe: run images() against a test script and dump usageCollector contents.
+// Probe: run a mulmocast action (images / audio / translate) against a test
+// script and dump usageCollector contents.
 //
 // Usage:
 //   OPENAI_API_KEY=sk-... npx tsx scripts/probe/probe_usage.ts
 //
 // Optional env:
-//   USAGE_SCRIPT=scripts/test/test_gpt_image.json   (default)
-//   USAGE_OUTDIR=/tmp/probe_usage_output             (default)
+//   USAGE_ACTION=images | audio | translate         (default: images)
+//   USAGE_SCRIPT=scripts/test/test_gpt_image.json   (default depends on action)
+//   USAGE_OUTDIR=/tmp/probe_usage_output             (default: per-action subdir)
+//   USAGE_TARGET_LANG=ja                             (default: ja, translate only)
 
 import path from "path";
 import fs from "fs";
-import { images } from "../../src/actions/index.js";
+import { images, audio, translate } from "../../src/actions/index.js";
 import { initializeContextFromFiles } from "../../src/utils/context.js";
 import { getFileObject } from "../../src/cli/helpers.js";
 
 const repoRoot = path.resolve(import.meta.dirname, "../..");
-const scriptArg = process.env.USAGE_SCRIPT ?? "scripts/test/test_gpt_image.json";
+const action = (process.env.USAGE_ACTION ?? "images") as "images" | "audio" | "translate";
+const defaultScript: Record<typeof action, string> = {
+  images: "scripts/test/test_gpt_image.json",
+  audio: "scripts/test/test_all_tts.json",
+  translate: "scripts/test/test_lang.json",
+};
+const scriptArg = process.env.USAGE_SCRIPT ?? defaultScript[action];
 const scriptPath = path.resolve(repoRoot, scriptArg);
-const outDir = process.env.USAGE_OUTDIR ?? "/tmp/probe_usage_output";
+const outDir = process.env.USAGE_OUTDIR ?? `/tmp/probe_usage_${action}`;
+const targetLang = process.env.USAGE_TARGET_LANG ?? "ja";
 
 fs.mkdirSync(outDir, { recursive: true });
 
@@ -25,11 +35,12 @@ const main = async () => {
     console.error("OPENAI_API_KEY required");
     process.exit(1);
   }
+  console.log(`action: ${action}`);
   console.log(`script: ${scriptPath}`);
   console.log(`outdir: ${outDir}`);
 
   const fileDirs = getFileObject({ file: scriptPath, outdir: outDir });
-  const context = await initializeContextFromFiles(fileDirs, true, true);
+  const context = await initializeContextFromFiles(fileDirs, true, true, undefined, undefined, action === "translate" ? targetLang : undefined);
   if (!context) {
     console.error("context init failed");
     process.exit(1);
@@ -38,7 +49,13 @@ const main = async () => {
   console.log(`collector initialized: ${Boolean(context.usageCollector)}`);
 
   const before = Date.now();
-  await images(context);
+  if (action === "images") {
+    await images(context);
+  } else if (action === "audio") {
+    await audio(context);
+  } else if (action === "translate") {
+    await translate(context);
+  }
   const elapsedSec = (Date.now() - before) / 1000;
 
   const snap = context.usageCollector?.snapshot() ?? [];
