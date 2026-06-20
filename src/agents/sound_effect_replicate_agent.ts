@@ -6,6 +6,8 @@ import { provider2SoundEffectAgent } from "../types/provider2agent.js";
 import { apiKeyMissingError, agentGenerationError, imageAction, movieFileTarget, hasCause } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, SoundEffectAgentInputs, ReplicateSoundEffectAgentParams, ReplicateSoundEffectAgentConfig } from "../types/agent.js";
+import type { AgentUsage } from "../types/usage.js";
+import { runReplicateWithMetrics } from "../utils/replicate_usage.js";
 
 export const soundEffectReplicateAgent: AgentFunction<
   ReplicateSoundEffectAgentParams,
@@ -42,12 +44,10 @@ export const soundEffectReplicateAgent: AgentFunction<
   try {
     const model_identifier: `${string}/${string}:${string}` | `${string}/${string}` =
       provider2SoundEffectAgent.replicate.modelParams[model]?.identifier ?? model;
-    const output = await replicate.run(model_identifier, {
-      input,
-    });
+    const { output, predictSec } = await runReplicateWithMetrics(replicate, model_identifier, input);
 
     if (output && typeof output === "object" && "url" in output) {
-      const videoUrl = (output.url as () => URL)();
+      const videoUrl = ((output as { url: unknown }).url as () => URL)();
       const videoResponse = await fetch(videoUrl);
 
       if (!videoResponse.ok) {
@@ -57,7 +57,8 @@ export const soundEffectReplicateAgent: AgentFunction<
       }
 
       const arrayBuffer = await videoResponse.arrayBuffer();
-      return { buffer: Buffer.from(arrayBuffer) };
+      const usage: AgentUsage | undefined = predictSec !== undefined ? { provider: "replicate", model, predictSec } : undefined;
+      return { buffer: Buffer.from(arrayBuffer), usage };
     }
     return undefined;
   } catch (error) {

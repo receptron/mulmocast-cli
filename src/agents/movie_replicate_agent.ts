@@ -14,7 +14,9 @@ import {
 } from "../utils/error_cause.js";
 
 import type { AgentBufferResult, MovieAgentInputs, ReplicateMovieAgentParams, ReplicateMovieAgentConfig } from "../types/agent.js";
+import type { AgentUsage } from "../types/usage.js";
 import { provider2MovieAgent, getModelDuration, AUDIO_MODE_OPTIONAL, AUDIO_MODE_NEVER, AUDIO_MODE_ALWAYS } from "../types/provider2agent.js";
+import { runReplicateWithMetrics } from "../utils/replicate_usage.js";
 
 function replicate_get_videoUrl(output: unknown): string | URL | undefined {
   if (typeof output === "string") return output;
@@ -32,7 +34,7 @@ async function generateMovie(
   aspectRatio: string,
   duration: number,
   generateAudio: boolean | undefined,
-): Promise<Buffer | undefined> {
+): Promise<{ buffer: Buffer; predictSec?: number } | undefined> {
   const replicate = new Replicate({
     auth: apiKey,
   });
@@ -114,7 +116,7 @@ async function generateMovie(
   }
 
   try {
-    const output = await replicate.run(model, { input });
+    const { output, predictSec } = await runReplicateWithMetrics(replicate, model, input);
 
     // Download the generated video
     // Some models return a FileOutput object with a url() method; others return a plain string URL.
@@ -129,7 +131,7 @@ async function generateMovie(
       }
 
       const arrayBuffer = await videoResponse.arrayBuffer();
-      return Buffer.from(arrayBuffer);
+      return { buffer: Buffer.from(arrayBuffer), predictSec };
     }
 
     return undefined;
@@ -186,9 +188,10 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
   }
 
   try {
-    const buffer = await generateMovie(model, apiKey, prompt, imagePath, lastFrameImagePath, referenceImages, aspectRatio, duration, params.generateAudio);
-    if (buffer) {
-      return { buffer };
+    const result = await generateMovie(model, apiKey, prompt, imagePath, lastFrameImagePath, referenceImages, aspectRatio, duration, params.generateAudio);
+    if (result) {
+      const usage: AgentUsage | undefined = result.predictSec !== undefined ? { provider: "replicate", model, predictSec: result.predictSec } : undefined;
+      return { buffer: result.buffer, usage };
     }
   } catch (error) {
     if (hasCause(error)) {
