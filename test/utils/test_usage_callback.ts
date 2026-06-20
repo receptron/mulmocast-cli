@@ -99,6 +99,77 @@ test("usage callback is a no-op when context.usageCollector is undefined", () =>
   );
 });
 
+test("usage callback adapts @graphai/openai_agent shape (prompt_tokens etc.)", () => {
+  const collector = new UsageCollector();
+  const cb = createUsageCallback(makeContext(collector));
+  cb(
+    makeLog({
+      agentId: "openAIAgent",
+      params: { model: "gpt-4o-mini" },
+      result: {
+        text: "hi",
+        usage: { prompt_tokens: 12, completion_tokens: 34, total_tokens: 46 },
+      },
+    }),
+    false,
+  );
+  const r = collector.snapshot()[0];
+  assert.strictEqual(r.provider, "openai");
+  assert.strictEqual(r.model, "gpt-4o-mini");
+  assert.strictEqual(r.inputTokens, 12);
+  assert.strictEqual(r.outputTokens, 34);
+  assert.strictEqual(r.totalTokens, 46);
+});
+
+test("usage callback adapts gemini / anthropic / groq LLM shapes", () => {
+  const collector = new UsageCollector();
+  const cb = createUsageCallback(makeContext(collector));
+  for (const agentId of ["geminiAgent", "anthropicAgent", "groqAgent"]) {
+    cb(
+      makeLog({
+        agentId,
+        params: { model: "some-model" },
+        result: { usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 } },
+      }),
+      false,
+    );
+  }
+  const snap = collector.snapshot();
+  assert.strictEqual(snap.length, 3);
+  assert.deepStrictEqual(snap.map((r) => r.provider).sort(), ["anthropic", "google", "groq"]);
+});
+
+test("usage callback falls back to result.model when params lacks model", () => {
+  const collector = new UsageCollector();
+  const cb = createUsageCallback(makeContext(collector));
+  cb(
+    makeLog({
+      agentId: "openAIAgent",
+      params: {},
+      result: {
+        model: "gpt-4o-2024-08-06",
+        usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 },
+      },
+    }),
+    false,
+  );
+  assert.strictEqual(collector.snapshot()[0].model, "gpt-4o-2024-08-06");
+});
+
+test("usage callback ignores LLM shape from unknown agentId", () => {
+  const collector = new UsageCollector();
+  const cb = createUsageCallback(makeContext(collector));
+  cb(
+    makeLog({
+      agentId: "someOtherAgent",
+      params: { model: "m" },
+      result: { usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 } },
+    }),
+    false,
+  );
+  assert.strictEqual(collector.size, 0);
+});
+
 test("usage callback preserves retryAttempt from log.retryCount", () => {
   const collector = new UsageCollector();
   const cb = createUsageCallback(makeContext(collector));

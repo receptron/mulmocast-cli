@@ -8,6 +8,7 @@ import { openAIAgent } from "@graphai/openai_agent";
 import { fileWriteAgent } from "@graphai/vanilla_node_agents";
 
 import { splitText } from "../utils/string.js";
+import { createUsageCallback } from "../utils/usage_callback.js";
 import { settings2GraphAIConfig, beatId, multiLingualObjectToArray } from "../utils/utils.js";
 import { getMultiLingual } from "../utils/context.js";
 import { currentMulmoScriptVersion } from "../types/const.js";
@@ -52,6 +53,8 @@ export const translateTextGraph = {
       },
       output: {
         text: ".text",
+        usage: ".usage",
+        model: ".model",
       },
       // return { lang, text } <- localizedText
       agent: "openAIAgent",
@@ -284,6 +287,7 @@ export const translateBeat = async (index: number, context: MulmoStudioContext, 
         graph.registerCallback(callback);
       });
     }
+    graph.registerCallback(createUsageCallback(context));
     const results = await graph.run<MulmoStudioMultiLingualData>();
 
     const multiLingual = getMultiLingual(outputMultilingualFilePath, context.studio.beats);
@@ -330,6 +334,7 @@ export const translate = async (context: MulmoStudioContext, args?: PublicAPIArg
         graph.registerCallback(callback);
       });
     }
+    graph.registerCallback(createUsageCallback(context));
     const results = await graph.run<{ multiLingual: MulmoStudioMultiLingual }>();
     writingMessage(outputMultilingualFilePath);
     if (results.mergeStudioResult) {
