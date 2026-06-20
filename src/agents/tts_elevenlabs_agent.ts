@@ -10,6 +10,7 @@ import {
   audioFileTarget,
 } from "../utils/error_cause.js";
 import type { ElevenlabsTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult, AgentConfig } from "../types/agent.js";
+import type { AgentUsage } from "../types/usage.js";
 
 export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs, AgentConfig> = async ({
   namedInputs,
@@ -86,10 +87,22 @@ export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBu
     });
   }
 
+  // ElevenLabs returns the exact billed character count in the `character-cost`
+  // header (already discounted for V2 Flash/Turbo etc. — see #1420 research).
+  // We read it BEFORE consuming the body so the header is still accessible.
+  const billedHeader = response.headers.get("character-cost");
+  const billedChars = billedHeader ? Number(billedHeader) : undefined;
+
   const arrayBuffer = await response.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
-  return { buffer };
+  const usage: AgentUsage = {
+    provider: "elevenlabs",
+    model: requestBody.model_id,
+    // Use upstream-billed amount when available (exact); fall back to raw text length.
+    inputChars: Number.isFinite(billedChars) ? billedChars : text.length,
+  };
+  return { buffer, usage };
 };
 
 const ttsElevenlabsAgentInfo: AgentFunctionInfo = {

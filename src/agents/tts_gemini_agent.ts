@@ -14,6 +14,7 @@ import {
 import { pcmToMp3 } from "../utils/ffmpeg_utils.js";
 
 import type { GoogleTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult } from "../types/agent.js";
+import type { AgentUsage } from "../types/usage.js";
 
 const getPrompt = (text: string, instructions?: string) => {
   // https://ai.google.dev/gemini-api/docs/speech-generation?hl=ja#controllable
@@ -65,7 +66,17 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
 
     const rawPcm = Buffer.from(pcmBase64, "base64");
 
-    return { buffer: await pcmToMp3(rawPcm, sampleRate) };
+    const usedModel = model ?? provider2TTSAgent.gemini.defaultModel;
+    const usage: AgentUsage | undefined = response.usageMetadata
+      ? {
+          provider: "gemini",
+          model: usedModel,
+          inputTokens: response.usageMetadata.promptTokenCount,
+          outputTokens: response.usageMetadata.candidatesTokenCount,
+          totalTokens: response.usageMetadata.totalTokenCount,
+        }
+      : undefined;
+    return { buffer: await pcmToMp3(rawPcm, sampleRate), usage };
   } catch (e) {
     if (suppressError) {
       return {
