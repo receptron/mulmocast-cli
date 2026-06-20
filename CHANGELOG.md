@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.21](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.21) (2026-06-21)
+
+- **Token / API usage tracking**: full umbrella ([#1415](https://github.com/receptron/mulmocast-cli/issues/1415)) landed. Per-request `UsageCollector` on `MulmoStudioContext` surfaces structured usage from every AI agent — OpenAI / Gemini image (token), Replicate image/movie/sound_effect/lipsync (predict_sec via `replicate.run()` progress callback), Veo movie_genai (ffprobed mp4 duration), 5 TTS providers (token + char + ElevenLabs `character-cost` header), translate + tools LLM (`@graphai/*` shape adapter). Opt-in CLI dump via `MULMOCAST_DUMP_USAGE=1` (stdout) or `MULMOCAST_DUMP_USAGE=/path/to/file.json`. Full reference in [`docs/api.md`](./docs/api.md).
+- **`docs/api.md`** ([#1442](https://github.com/receptron/mulmocast-cli/issues/1442) / [#1447](https://github.com/receptron/mulmocast-cli/pull/1447)): first consolidated programmatic API reference (lifecycle, action / per-beat / settings / callbacks / usage tracking matrix for all 17 AI agents).
+- **Dependency updates**: `undici` 7.25.0 → 7.28.0 ([#1443](https://github.com/receptron/mulmocast-cli/pull/1443)).
+
+📦 **npm**: [`mulmocast@2.6.21`](https://www.npmjs.com/package/mulmocast/v/2.6.21) · [`@mulmocast/types@2.6.21`](https://www.npmjs.com/package/@mulmocast/types/v/2.6.21)
+
 ## [2.6.20](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.20) (2026-06-09)
 
 - **e2e CI parallelized**: split the monolithic `e2e` job into 16 shards × `[22.x, 24.x]` matrix so each script runs on its own runner; target wall-clock ~10 min vs ~30 min before (#1404)
