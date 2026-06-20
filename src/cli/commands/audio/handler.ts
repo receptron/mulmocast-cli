@@ -1,5 +1,5 @@
 import { audio } from "../../../actions/index.js";
-import { initializeContext, runTranslateIfNeeded } from "../../helpers.js";
+import { dumpUsageIfRequested, initializeContext, runTranslateIfNeeded } from "../../helpers.js";
 import { CliArgs } from "../../../types/cli_types.js";
 
 export const handler = async (argv: CliArgs<{ a?: string }>) => {
@@ -9,4 +9,5 @@ export const handler = async (argv: CliArgs<{ a?: string }>) => {
   }
   await runTranslateIfNeeded(context);
   await audio(context);
+  dumpUsageIfRequested(context);
 };

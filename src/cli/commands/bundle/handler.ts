@@ -1,6 +1,6 @@
 import { mulmoViewerBundle, audio, images, translate } from "../../../actions/index.js";
 import { CliArgs } from "../../../types/cli_types.js";
-import { initializeContext } from "../../helpers.js";
+import { dumpUsageIfRequested, initializeContext } from "../../helpers.js";
 import { bundleTargetLang } from "../../../types/const.js";
 
 export const handler = async (argv: CliArgs<{ image_width?: string }>) => {
@@ -15,4 +15,5 @@ export const handler = async (argv: CliArgs<{ image_width?: string }>) => {
   }
 
   await audio(context).then(images).then(mulmoViewerBundle);
+  dumpUsageIfRequested(context);
 };
