@@ -145,6 +145,7 @@ export type ScriptingParams = {
   llm_model?: string;
   llm?: LLM;
   verbose?: boolean;
+  usageCollector?: UsageCollectorAPI;
 };
 
 export type ImageProcessorParams = {

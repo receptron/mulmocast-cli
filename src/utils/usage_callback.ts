@@ -1,6 +1,6 @@
 import { NodeState, type CallbackFunction, type TransactionLog } from "graphai";
 import type { MulmoStudioContext } from "../types/type.js";
-import type { AgentUsage } from "../types/usage.js";
+import type { AgentUsage, UsageCollectorAPI } from "../types/usage.js";
 
 // @graphai/* LLM agents (openAIAgent / geminiAgent / anthropicAgent / groqAgent)
 // return usage in the OpenAI chat-completions wire shape:
@@ -52,17 +52,27 @@ const extractUsage = (log: TransactionLog): AgentUsage | undefined => {
   return extractLLMUsage(log);
 };
 
-// GraphAI callback that pushes any agent's reported usage into
-// context.usageCollector when the node completes successfully. No-op when
-// usageCollector is absent, the node fails, or the result has no `usage`.
-export const createUsageCallback = (context: MulmoStudioContext): CallbackFunction => {
+const resolveCollector = (target: MulmoStudioContext | UsageCollectorAPI | undefined): UsageCollectorAPI | undefined => {
+  if (!target) return undefined;
+  // A MulmoStudioContext has the optional `usageCollector` slot; the API itself
+  // doesn't. Distinguishing on the slot name lets either form pass through.
+  if ("usageCollector" in target) return (target as MulmoStudioContext).usageCollector;
+  return target as UsageCollectorAPI;
+};
+
+// GraphAI callback that pushes any agent's reported usage into the given
+// UsageCollector when the node completes successfully. No-op when the
+// collector is absent (either undefined directly or `context.usageCollector`
+// undefined), the node fails, or the result has no `usage`.
+export const createUsageCallback = (target: MulmoStudioContext | UsageCollectorAPI | undefined): CallbackFunction => {
   return (log: TransactionLog, isUpdate: boolean) => {
     if (isUpdate) return;
     if (log.state !== NodeState.Completed) return;
-    if (!context.usageCollector) return;
+    const collector = resolveCollector(target);
+    if (!collector) return;
     const usage = extractUsage(log);
     if (!usage) return;
-    context.usageCollector.add({
+    collector.add({
       agent: log.agentId ?? "unknown",
       provider: usage.provider,
       model: usage.model,

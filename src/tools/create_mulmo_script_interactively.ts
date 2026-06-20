@@ -18,6 +18,8 @@ import { mulmoScriptSchema, ScriptingParams } from "../types/index.js";
 import { browserlessAgent } from "@graphai/browserless_agent";
 import validateSchemaAgent from "../agents/validate_schema_agent.js";
 import { llmPair, settings2GraphAIConfig } from "../utils/utils.js";
+import { createUsageCallback } from "../utils/usage_callback.js";
+import type { UsageCollectorAPI } from "../types/usage.js";
 import { interactiveClarificationPrompt, prefixPrompt } from "../utils/prompt.js";
 // import { cliLoadingPlugin } from "../utils/plugins.js";
 
@@ -209,7 +211,7 @@ const graphData = {
   },
 };
 
-const scrapeWebContent = async (urls: string[], cacheDirPath: string) => {
+const scrapeWebContent = async (urls: string[], cacheDirPath: string, usageCollector?: UsageCollectorAPI) => {
   mkdir(cacheDirPath);
   GraphAILogger.info(`${agentHeader} Scraping ${urls.length} URLs...\n`);
 
@@ -224,6 +226,7 @@ const scrapeWebContent = async (urls: string[], cacheDirPath: string) => {
 
   const graph = new GraphAI(graphDataForScraping, { ...vanillaAgents, openAIAgent, textInputAgent, fileWriteAgent, browserlessAgent }, { agentFilters });
   graph.injectValue("urls", urls);
+  graph.registerCallback(createUsageCallback(usageCollector));
 
   const result = (await graph.run()) as { sourceText: { text: string } };
   if (!result?.sourceText?.text) {
@@ -232,10 +235,19 @@ const scrapeWebContent = async (urls: string[], cacheDirPath: string) => {
   return `\n\n${prefixPrompt}\n${result?.sourceText.text}`;
 };
 
-export const createMulmoScriptInteractively = async ({ outDirPath, cacheDirPath, filename, templateName, urls, llm, llm_model }: ScriptingParams) => {
+export const createMulmoScriptInteractively = async ({
+  outDirPath,
+  cacheDirPath,
+  filename,
+  templateName,
+  urls,
+  llm,
+  llm_model,
+  usageCollector,
+}: ScriptingParams) => {
   mkdir(outDirPath);
   // if urls is not empty, scrape web content and reference it in the prompt
-  const webContentPrompt = urls.length > 0 ? await scrapeWebContent(urls, cacheDirPath) : "";
+  const webContentPrompt = urls.length > 0 ? await scrapeWebContent(urls, cacheDirPath, usageCollector) : "";
 
   const { agent, model, max_tokens } = llmPair(llm, llm_model);
   GraphAILogger.log({ agent, model, max_tokens });
@@ -277,6 +289,7 @@ export const createMulmoScriptInteractively = async ({ outDirPath, cacheDirPath,
       }
     }
   });
+  graph.registerCallback(createUsageCallback(usageCollector));
   // graph.registerCallback(cliLoadingPlugin({ nodeId: "reply", message: "Loading..." }));
 
   GraphAILogger.info(`${agentHeader} Hi! What topic would you like me to generate about?\n`);
