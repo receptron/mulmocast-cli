@@ -53,6 +53,8 @@ export const translateTextGraph = {
       },
       output: {
         text: ".text",
+        usage: ".usage",
+        model: ".model",
       },
       // return { lang, text } <- localizedText
       agent: "openAIAgent",
