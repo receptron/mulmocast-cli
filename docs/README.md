@@ -8,6 +8,7 @@ This directory contains developer documentation for MulmoCast.
 
 ### Getting Started
 
+- [**API Reference**](./api.md) - プログラマティック API リファレンス（CLI / ライブラリ用法・usage tracking 含む）/ Programmatic API reference (CLI / library use, including usage tracking)
 - [**Workflow**](./Workflow.md) - MulmoCastの処理フロー（Mermaid図） / MulmoCast processing flow (Mermaid diagram)
 - [**Beta Release Notes (EN)**](./beta1_en.md) - Beta版リリースノート（英語） / Beta release notes (English)
 - [**Beta Release Notes (JA)**](./beta1_ja.md) - Beta版リリースノート（日本語） / Beta release notes (Japanese)

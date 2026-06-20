@@ -137,6 +137,14 @@ ELEVENLABS_API_KEY=your_elevenlabs_api_key
 BROWSERLESS_API_TOKEN=your_browserless_api_token # to access web in mulmo tool
 ```
 
+#### (Optional) Local usage tracking
+```bash
+MULMOCAST_DUMP_USAGE=1                 # print JSON usage dump to stdout after each CLI action
+MULMOCAST_DUMP_USAGE=/tmp/usage.json   # ...or write it to a file
+```
+
+Token / per-second / per-char usage per provider:model. See [docs/api.md](./docs/api.md#usage-tracking) for the full reference.
+
 ### Google Vertex AI
 
 For enterprise/production environments, or to use Veo movie models that are only available on Vertex AI, use Vertex AI with Application Default Credentials (ADC):
