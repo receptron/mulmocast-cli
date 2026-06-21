@@ -407,7 +407,7 @@ Payload shape:
 
 ```json
 {
-  "records": 5,
+  "records": 3,
   "byModel": [
     { "provider": "openai",     "model": "gpt-4o-mini-tts", "records": 1, "inputChars": 20 },
     { "provider": "gemini",     "model": "gemini-2.5-flash-preview-tts", "records": 1, "inputTokens": 9, "outputTokens": 59, "totalTokens": 68 },
