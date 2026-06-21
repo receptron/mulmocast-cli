@@ -391,6 +391,34 @@ mulmo movie script.json
 mulmo translate script.json
 ```
 
+### Usage tracking (token / character / predict-second per provider:model)
+
+Any of the commands above can dump a JSON breakdown of upstream AI consumption when `MULMOCAST_DUMP_USAGE` is set:
+
+```bash
+# print JSON to stdout (pipe-friendly: `... | jq .`)
+MULMOCAST_DUMP_USAGE=1 mulmo audio script.json
+
+# ...or write it to a file
+MULMOCAST_DUMP_USAGE=/tmp/usage.json mulmo movie script.json
+```
+
+Payload shape:
+
+```json
+{
+  "records": 3,
+  "byModel": [
+    { "provider": "openai",     "model": "gpt-4o-mini-tts", "records": 1, "inputChars": 20 },
+    { "provider": "gemini",     "model": "gemini-2.5-flash-preview-tts", "records": 1, "inputTokens": 9, "outputTokens": 59, "totalTokens": 68 },
+    { "provider": "elevenlabs", "model": "eleven_multilingual_v2", "records": 1, "inputChars": 18 }
+  ],
+  "snapshot": [ /* per-call UsageRecord[] */ ]
+}
+```
+
+`byModel` groups by `provider:model` (different models have different rate cards, so summing across them isn't meaningful). The full per-call snapshot is also included so a billing layer can apply its own grouping. See [docs/api.md § Usage tracking](./docs/api.md#usage-tracking) for the per-agent field-population matrix and the programmatic (library) API.
+
 ## Cache and Re-run
 When running the same `mulmo` command multiple times, previously generated files are treated as cache. For example, audio or image files will not be regenerated if they already exist.
 
