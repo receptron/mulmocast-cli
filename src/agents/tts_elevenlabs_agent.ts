@@ -62,7 +62,12 @@ export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBu
         };
       }
       GraphAILogger.info(e);
-      throw new Error("TTS Eleven Labs Error", {
+      // Include the underlying message so fetch failures (DNS / TLS /
+      // ETIMEDOUT / ECONNRESET) are diagnosable from the thrown error
+      // — previously every such case collapsed to the static label.
+      // Same template as #1452 / #1453 / #1454 / #1455 / #1456 / #1457.
+      const detail = e instanceof Error ? e.message : String(e);
+      throw new Error(`TTS Eleven Labs Error: ${detail}`, {
         cause: agentGenerationError("ttsElevenlabsAgent", audioAction, audioFileTarget),
       });
     }
