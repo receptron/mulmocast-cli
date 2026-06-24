@@ -97,7 +97,11 @@ export const imageReplicateAgent: AgentFunction<ReplicateImageAgentParams, Agent
         });
       }
     }
-    throw new Error("Failed to generate image with Replicate", {
+    // Include the underlying message so the catch-all path doesn't
+    // mask Replicate SDK / fetch / arrayBuffer failures behind a
+    // generic label (same fix as tts_gemini #1452, whisper #1453).
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to generate image with Replicate: ${detail}`, {
       cause: agentGenerationError("imageReplicateAgent", imageAction, imageFileTarget),
     });
   }
