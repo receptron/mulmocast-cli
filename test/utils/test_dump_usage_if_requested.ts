@@ -29,8 +29,7 @@ test("dumpUsageIfRequested: no-op when env var unset", () => {
   withEnv(undefined, () => {
     const collector = new UsageCollector();
     collector.add({ agent: "x", provider: "openai", model: "m", totalTokens: 10, cached: false });
-    // Should not throw, should not print.
-    dumpUsageIfRequested(makeContext(collector));
+    assert.doesNotThrow(() => dumpUsageIfRequested(makeContext(collector)));
   });
 });
 

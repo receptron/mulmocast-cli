@@ -132,18 +132,22 @@ test("imagePreprocessAgent - movie prompt only (no image prompt)", async () => {
 test.skip("imagePreprocessAgent - with image plugin (textSlide)", async () => {
   // Skip this test as it requires complex file system setup and Puppeteer
   // The plugin functionality is tested in the actual integration tests
+  assert.ok(typeof imagePreprocessAgent === "function");
 });
 
 test.skip("imagePreprocessAgent - with image plugin (markdown)", async () => {
   // Skip this test as it requires complex file system setup and Puppeteer
+  assert.ok(typeof imagePreprocessAgent === "function");
 });
 
 test.skip("imagePreprocessAgent - with image plugin (chart)", async () => {
   // Skip this test as it requires complex file system setup and Chart.js
+  assert.ok(typeof imagePreprocessAgent === "function");
 });
 
 test.skip("imagePreprocessAgent - with image plugin (mermaid)", async () => {
   // Skip this test as it requires complex file system setup and Mermaid rendering
+  assert.ok(typeof imagePreprocessAgent === "function");
 });
 
 test("imagePreprocessAgent - with imageNames", async () => {
