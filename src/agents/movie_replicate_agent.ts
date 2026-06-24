@@ -198,6 +198,15 @@ export const movieReplicateAgent: AgentFunction<ReplicateMovieAgentParams, Agent
       throw error;
     }
     GraphAILogger.info("Failed to generate movie:", (error as Error).message);
+    // Throw a properly-labeled error with the underlying message
+    // preserved rather than falling through to the "returned
+    // undefined" line below — that message is only meaningful when
+    // `result` actually IS undefined, not when generation threw.
+    // (Same template as #1452 / #1453 / #1454 / #1455.)
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to generate movie with Replicate: ${detail}`, {
+      cause: agentGenerationError("movieReplicateAgent", imageAction, movieFileTarget),
+    });
   }
   throw new Error("ERROR: generateMovie returned undefined", {
     cause: agentInvalidResponseError("movieReplicateAgent", imageAction, movieFileTarget),
