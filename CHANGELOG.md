@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.22](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.22) (2026-06-25)
+
+- **Diagnostic-error sweep ([#1451](https://github.com/receptron/mulmocast-cli/issues/1451))**: a `mulmoclaude` end-user hit an `ffmpeg was killed with signal SIGABRT` whose only surface log line read `error="TTS Gemini Error"` — the actual ffmpeg stderr never reached the thrown error message, so triage chased the wrong subsystem. This release plugs every variant of the same masking pattern across 6 agents / handlers:
+  - **TTS Gemini** ([#1452](https://github.com/receptron/mulmocast-cli/pull/1452)): split the Gemini API call and `pcmToMp3` (ffmpeg) into separate try blocks. ffmpeg failures now surface as `"Audio encoding (ffmpeg) failed: <stderr>"`; non-API-KEY Gemini failures now include the underlying message.
+  - **Whisper CLI handler** ([#1453](https://github.com/receptron/mulmocast-cli/pull/1453)): split into 3 phases (ffmpeg duration / OpenAI transcribe / fs write) so each phase's failure logs the right subsystem instead of the generic `"Error transcribing audio:"`.
+  - **Replicate image / lipsync / movie** ([#1454](https://github.com/receptron/mulmocast-cli/pull/1454), [#1455](https://github.com/receptron/mulmocast-cli/pull/1455), [#1456](https://github.com/receptron/mulmocast-cli/pull/1456)): catch-all throws now interpolate `error.message`, so Replicate SDK errors without `cause`, `fetch()` ETIMEDOUT/ECONNRESET, and `arrayBuffer()` resets are diagnosable from the thrown error alone. `movie_replicate` additionally separates the catch-all from the legacy fall-through to `"ERROR: generateMovie returned undefined"` (that label is now reserved for the actual undefined-result case).
+  - **OpenAI image** ([#1457](https://github.com/receptron/mulmocast-cli/pull/1457)): three throw sites all emitting the identical `"Failed to generate image with OpenAI"` literal now interpolate the underlying message; `AuthenticationError` / `RateLimitError` branches left as-is (their messages are already specific).
+- Net effect: previously, `error="<opaque label>"` was the dominant terminal log line for any failure outside the structured-cause guard. After this release, ffmpeg crashes, network resets, and unanticipated SDK exceptions surface their real message at the throw site.
+- No behaviour change on the happy path; no public API change; no test required adjustment (no test grepped for the old literal strings).
+
+📦 **npm**: [`mulmocast@2.6.22`](https://www.npmjs.com/package/mulmocast/v/2.6.22)
+
 ## [2.6.21](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.21) (2026-06-21)
 
 - **Token / API usage tracking**: full umbrella ([#1415](https://github.com/receptron/mulmocast-cli/issues/1415)) landed. Per-request `UsageCollector` on `MulmoStudioContext` surfaces structured usage from every AI agent — OpenAI / Gemini image (token), Replicate image/movie/sound_effect/lipsync (predict_sec via `replicate.run()` progress callback), Veo movie_genai (ffprobed mp4 duration), 5 TTS providers (token + char + ElevenLabs `character-cost` header), translate + tools LLM (`@graphai/*` shape adapter). Opt-in CLI dump via `MULMOCAST_DUMP_USAGE=1` (stdout) or `MULMOCAST_DUMP_USAGE=/path/to/file.json`. Full reference in [`docs/api.md`](./docs/api.md).
