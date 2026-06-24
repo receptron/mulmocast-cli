@@ -57,56 +57,76 @@ export const handler = async (argv: ToolCliArgs<{ file: string }>) => {
     process.exit(1);
   }
 
-  try {
-    // Get audio duration using FFmpeg
-    const { duration: audioDuration } = await ffmpegGetMediaDuration(fullPath);
-    GraphAILogger.info(`Audio duration: ${audioDuration.toFixed(2)} seconds`);
+  // Each phase has its own try/catch so a failure points at the right
+  // subsystem instead of being collapsed into "Error transcribing audio"
+  // (same anti-pattern as #1451 in tts_gemini_agent.ts — an ffmpeg
+  // SIGABRT or a permission-denied write would otherwise read as an
+  // OpenAI-side failure).
 
-    const openai = new OpenAI({ apiKey });
+  // Phase 1 — ffmpeg: read the audio file's duration.
+  const audioDuration = await (async (): Promise<number> => {
+    try {
+      const { duration } = await ffmpegGetMediaDuration(fullPath);
+      return duration;
+    } catch (error) {
+      GraphAILogger.error("Error reading audio duration with ffmpeg:", error);
+      process.exit(1);
+    }
+  })();
+  GraphAILogger.info(`Audio duration: ${audioDuration.toFixed(2)} seconds`);
 
-    const transcription = await openai.audio.transcriptions.create({
-      file: createReadStream(fullPath),
-      model: "whisper-1",
-      response_format: "verbose_json",
-      timestamp_granularities: ["word", "segment"],
+  // Phase 2 — OpenAI: Whisper transcription API call.
+  const transcription = await (async () => {
+    try {
+      const openai = new OpenAI({ apiKey });
+      return await openai.audio.transcriptions.create({
+        file: createReadStream(fullPath),
+        model: "whisper-1",
+        response_format: "verbose_json",
+        timestamp_granularities: ["word", "segment"],
+      });
+    } catch (error) {
+      GraphAILogger.error("Error calling OpenAI transcription API:", error);
+      process.exit(1);
+    }
+  })();
+
+  if (transcription.segments) {
+    const starts = transcription.segments.map((segment) => segment.start);
+    starts[0] = 0;
+    starts.push(audioDuration);
+    // Create beats from transcription segments
+    const beats = transcription.segments.map((segment, index) => {
+      const duration = Math.round((starts[index + 1] - starts[index]) * 100) / 100;
+      return {
+        text: segment.text,
+        duration,
+        /*
+        image: {
+          type: "textSlide",
+          slide: {
+            title: "Place Holder",
+          },
+        },
+        */
+      };
     });
 
-    if (transcription.segments) {
-      const starts = transcription.segments.map((segment) => segment.start);
-      starts[0] = 0;
-      starts.push(audioDuration);
-      // Create beats from transcription segments
-      const beats = transcription.segments.map((segment, index) => {
-        const duration = Math.round((starts[index + 1] - starts[index]) * 100) / 100;
-        return {
-          text: segment.text,
-          duration,
-          /*
-          image: {
-            type: "textSlide",
-            slide: {
-              title: "Place Holder",
-            },
-          },
-          */
-        };
-      });
+    // Create the script with the processed beats
+    const script = createMulmoScript(fullPath, beats);
 
-      // Create the script with the processed beats
-      const script = createMulmoScript(fullPath, beats);
-
-      // Save script to output directory
+    // Phase 3 — fs: write the generated script to disk.
+    try {
       const outputDir = "output";
       if (!existsSync(outputDir)) {
         mkdirSync(outputDir, { recursive: true });
       }
-
       const outputPath = join(outputDir, `${filename}.json`);
       writeFileSync(outputPath, JSON.stringify(script, null, 2));
       GraphAILogger.info(`Script saved to: ${outputPath}`);
+    } catch (error) {
+      GraphAILogger.error("Error writing transcription output file:", error);
+      process.exit(1);
     }
-  } catch (error) {
-    GraphAILogger.error("Error transcribing audio:", error);
-    process.exit(1);
   }
 };
