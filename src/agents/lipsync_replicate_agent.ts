@@ -108,7 +108,12 @@ export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, A
     if (hasCause(error) && error.cause) {
       throw error;
     }
-    throw new Error("Failed to lipSync with Replicate", {
+    // Include the underlying message so the catch-all path doesn't
+    // mask Replicate SDK / fetch / arrayBuffer failures behind a
+    // generic label (same fix as tts_gemini #1452, whisper #1453,
+    // image_replicate #1454).
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to lipSync with Replicate: ${detail}`, {
       cause: agentGenerationError("lipSyncReplicateAgent", imageAction, movieFileTarget),
     });
   }
