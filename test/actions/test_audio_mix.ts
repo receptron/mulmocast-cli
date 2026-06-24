@@ -6,6 +6,9 @@ import { FfmpegContextInit } from "../../src/utils/ffmpeg_utils.js";
 import { createMockContext } from "./utils.js";
 import { MulmoStudioContext, MulmoBeat } from "../../src/types/index.js";
 
+const FLOAT_TOLERANCE = 1e-9;
+const approxEqual = (actual: number, expected: number): boolean => Math.abs(actual - expected) < FLOAT_TOLERANCE;
+
 const createContextWithAudioParams = (audioParamsOverrides: Record<string, unknown> = {}): MulmoStudioContext => {
   const context = createMockContext();
   context.presentationStyle.audioParams = {
@@ -156,13 +159,14 @@ test("resolveMovieVolume: script-level movieVolume - returns script value", () =
 test("resolveMovieVolume: beat-level movieVolume overrides script-level", () => {
   const context = createContextWithAudioParams({ movieVolume: 0.5 });
   const beat: MulmoBeat = { speaker: "Presenter", text: "Hello", audioParams: { movieVolume: 0.8 } };
-  assert.strictEqual(resolveMovieVolume(beat, context), 0.8);
+  const result = resolveMovieVolume(beat, context);
+  assert.ok(approxEqual(result, 0.8), `expected 0.8, got ${result}`);
 });
 
 test("resolveMovieVolume: ducking with TTS - applies default ratio 0.3", () => {
   const context = createContextWithAudioParams({ ducking: {} });
   const result = resolveMovieVolume(beatWithText, context);
-  assert.strictEqual(result, 1.0 * 0.3);
+  assert.ok(approxEqual(result, 1.0 * 0.3), `expected ${1.0 * 0.3}, got ${result}`);
 });
 
 test("resolveMovieVolume: ducking without TTS - returns full volume", () => {
@@ -179,14 +183,14 @@ test("resolveMovieVolume: ducking with custom ratio", () => {
 test("resolveMovieVolume: ducking with movieVolume and custom ratio", () => {
   const context = createContextWithAudioParams({ ducking: { ratio: 0.5 }, movieVolume: 0.4 });
   const result = resolveMovieVolume(beatWithText, context);
-  assert.strictEqual(result, 0.4 * 0.5);
+  assert.ok(approxEqual(result, 0.4 * 0.5), `expected ${0.4 * 0.5}, got ${result}`);
 });
 
 test("resolveMovieVolume: ducking with beat-level movieVolume override", () => {
   const context = createContextWithAudioParams({ ducking: {}, movieVolume: 0.4 });
   const beat: MulmoBeat = { speaker: "Presenter", text: "Hello", audioParams: { movieVolume: 0.8 } };
   const result = resolveMovieVolume(beat, context);
-  assert.strictEqual(result, 0.8 * 0.3);
+  assert.ok(approxEqual(result, 0.8 * 0.3), `expected ${0.8 * 0.3}, got ${result}`);
 });
 
 test("resolveMovieVolume: ducking + suppressSpeech - no ducking applied", () => {

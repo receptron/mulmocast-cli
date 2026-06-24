@@ -90,12 +90,13 @@ test("usage callback rejects malformed usage (missing provider/model)", () => {
 
 test("usage callback is a no-op when context.usageCollector is undefined", () => {
   const cb = createUsageCallback(makeContext(undefined));
-  // Should not throw.
-  cb(
-    makeLog({
-      result: { usage: { provider: "openai", model: "m", totalTokens: 10 } },
-    }),
-    false,
+  assert.doesNotThrow(() =>
+    cb(
+      makeLog({
+        result: { usage: { provider: "openai", model: "m", totalTokens: 10 } },
+      }),
+      false,
+    ),
   );
 });
 
@@ -198,11 +199,12 @@ test("usage callback accepts a UsageCollectorAPI directly (no context)", () => {
 
 test("usage callback is a no-op when undefined is passed directly", () => {
   const cb = createUsageCallback(undefined);
-  cb(
-    makeLog({
-      result: { usage: { provider: "openai", model: "m", totalTokens: 10 } },
-    }),
-    false,
+  assert.doesNotThrow(() =>
+    cb(
+      makeLog({
+        result: { usage: { provider: "openai", model: "m", totalTokens: 10 } },
+      }),
+      false,
+    ),
   );
-  // Should not throw — no collector to record into.
 });

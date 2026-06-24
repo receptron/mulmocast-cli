@@ -73,6 +73,7 @@ test("calculateTimingRatios: HTML tags are excluded from length calculation", ()
   // stripped: "アリババのAI頭脳が一斉離脱。" (15) / "オープンソースAI\n「Qwen」の責任者が\nXで離職を発表しました。" (34)
   const len1 = 15;
   const len2 = 34;
+  assert.strictEqual(ratios.length, 2);
   assertApprox(ratios[0], len1 / (len1 + len2));
   assertApprox(ratios[1], len2 / (len1 + len2));
 });
@@ -81,12 +82,14 @@ test("calculateTimingRatios: same HTML different text lengths produce correct ra
   const texts = ["<span style='color:red'>短い</span>", "<span style='color:red'>これは長いテキストです</span>"];
   const ratios = calculateTimingRatios(texts);
   // stripped: "短い" (2) / "これは長いテキストです" (11)
+  assert.strictEqual(ratios.length, 2);
   assertApprox(ratios[0], 2 / 13);
   assertApprox(ratios[1], 11 / 13);
 });
 
 test("calculateTimingRatios: all empty texts produce equal ratios", () => {
   const ratios = calculateTimingRatios(["", "", ""]);
+  assert.strictEqual(ratios.length, 3);
   ratios.forEach((r) => assertApprox(r, 1 / 3));
 });
 
@@ -99,6 +102,7 @@ test("calculateTimingRatios: single element returns [1]", () => {
 test("calculateTimingRatios: ratios sum to 1", () => {
   const texts = ["<b>First</b> segment.", "Second <em>segment</em> is longer.", "<span class='x'>Third</span>."];
   const ratios = calculateTimingRatios(texts);
+  assert.strictEqual(ratios.length, 3);
   const sum = ratios.reduce((a, b) => a + b, 0);
   assertApprox(sum, 1);
 });

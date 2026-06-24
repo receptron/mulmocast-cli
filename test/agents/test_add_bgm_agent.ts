@@ -6,12 +6,15 @@ import type { MulmoStudioContext } from "../../src/types/index.js";
 
 type AudioParams = MulmoStudioContext["presentationStyle"]["audioParams"];
 
+const FLOAT_TOLERANCE = 1e-9;
+const approxEqual = (actual: number, expected: number): boolean => Math.abs(actual - expected) < FLOAT_TOLERANCE;
+
 test("resolveAddBgmMixParams: legacy mode keeps voice volume unchanged", () => {
   const { useExplicitMix, voiceVolume } = resolveAddBgmMixParams({
     audioVolume: 1.2,
   } as AudioParams);
   assert.strictEqual(useExplicitMix, false);
-  assert.strictEqual(voiceVolume, 1.2);
+  assert.ok(approxEqual(voiceVolume, 1.2), `expected 1.2, got ${voiceVolume}`);
 });
 
 test("resolveAddBgmMixParams: explicit mode applies ttsVolume to voice only", () => {
@@ -20,7 +23,7 @@ test("resolveAddBgmMixParams: explicit mode applies ttsVolume to voice only", ()
     ttsVolume: 0.5,
   } as AudioParams);
   assert.strictEqual(useExplicitMix, true);
-  assert.strictEqual(voiceVolume, 0.4);
+  assert.ok(approxEqual(voiceVolume, 0.4), `expected 0.4, got ${voiceVolume}`);
 });
 
 test("resolveAddBgmFilterConfig: legacy mode has no limiter", () => {

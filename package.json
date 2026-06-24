@@ -89,7 +89,7 @@
   "homepage": "https://github.com/receptron/mulmocast-cli#readme",
   "dependencies": {
     "@google-cloud/text-to-speech": "^6.4.1",
-    "@google/genai": "^2.7.0",
+    "@google/genai": "^2.10.0",
     "@graphai/anthropic_agent": "^2.0.12",
     "@graphai/browserless_agent": "^2.0.2",
     "@graphai/gemini_agent": "^2.0.5",
@@ -113,8 +113,8 @@
     "jsdom": "^29.1.1",
     "marked": "^18.0.5",
     "mulmocast-vision": "^1.0.10",
-    "ora": "^9.4.0",
-    "puppeteer": "^25.1.0",
+    "ora": "^9.4.1",
+    "puppeteer": "^25.2.1",
     "replicate": "^1.4.0",
     "yaml": "^2.9.0",
     "yargs": "^18.0.0",
@@ -131,12 +131,12 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.6",
-    "eslint-plugin-sonarjs": "^4.0.3",
-    "globals": "^17.6.0",
+    "eslint-plugin-sonarjs": "^4.1.0",
+    "globals": "^17.7.0",
     "prettier": "^3.8.4",
     "tsx": "^4.22.4",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.61.1"
+    "typescript-eslint": "^8.62.0"
   },
   "engines": {
     "node": ">=22.0.0"
