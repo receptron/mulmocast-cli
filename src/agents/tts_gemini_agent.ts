@@ -39,14 +39,6 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
     });
   }
 
-  // Phase 1 — Gemini TTS: API call + response decode. Extracted into a
-  // helper so its result tuple is bound with `const`, and so its catch
-  // can return early without trapping the ffmpeg call below in the same
-  // try (#1451: an ffmpeg SIGABRT in `pcmToMp3` was previously masked
-  // as "TTS Gemini Error" because both phases shared one try/catch).
-  // Returns the decoded PCM + sample rate + usage, OR the suppressError
-  // `{ error }` envelope (in which case the outer function returns it
-  // verbatim, same as the original behaviour).
   const geminiResult: { rawPcm: Buffer; sampleRate: number; usage: AgentUsage | undefined } | AgentErrorResult = await (async () => {
     try {
       const ai = new GoogleGenAI({ apiKey });
@@ -98,9 +90,6 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
           cause: agentIncorrectAPIKeyError("ttsGeminiAgent", audioAction, audioFileTarget),
         });
       }
-      // Include the underlying message so non-API-KEY errors are
-      // identifiable in logs (previously every such error printed the
-      // same opaque "TTS Gemini Error" string).
       const detail = e instanceof Error ? e.message : String(e);
       throw new Error(`TTS Gemini Error: ${detail}`, {
         cause: agentGenerationError("ttsGeminiAgent", audioAction, audioFileTarget),
@@ -112,11 +101,6 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
     return geminiResult;
   }
 
-  // Phase 2 — ffmpeg PCM → MP3. OS-side failure modes (missing/broken
-  // `ffmpeg` binary, missing `libmp3lame` encoder, SIGABRT under memory
-  // pressure) get their own label so the underlying message reaches
-  // mulmoclaude/CI logs instead of being collapsed into "TTS Gemini
-  // Error" (#1451).
   try {
     return { buffer: await pcmToMp3(geminiResult.rawPcm, geminiResult.sampleRate), usage: geminiResult.usage };
   } catch (e) {
