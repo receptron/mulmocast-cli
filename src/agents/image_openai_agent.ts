@@ -110,17 +110,22 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
       }
       if (error instanceof APIError) {
         if (error.code && error.type) {
-          throw new Error("Failed to generate image with OpenAI", {
+          throw new Error(`Failed to generate image with OpenAI: ${error.message}`, {
             cause: openAIAgentGenerationError("imageOpenaiAgent", imageAction, error.code, error.type),
           });
         }
         if (error.type === "invalid_request_error" && error?.error?.message?.includes("Your organization must be verified")) {
-          throw new Error("Failed to generate image with OpenAI", {
+          throw new Error(`Failed to generate image with OpenAI: ${error.message}`, {
             cause: openAIAgentGenerationError("imageOpenaiAgent", imageAction, "need_verified_organization", error.type),
           });
         }
       }
-      throw new Error("Failed to generate image with OpenAI", {
+      // Catch-all: include the underlying message so unknown errors
+      // (OpenAI SDK exceptions w/o APIError shape, fetch resets) are
+      // diagnosable from the thrown error alone — not just the log
+      // line above. Same template as #1452 / #1453 / #1454 / #1455 / #1456.
+      const detail = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to generate image with OpenAI: ${detail}`, {
         cause: agentGenerationError("imageOpenaiAgent", imageAction, imageFileTarget),
       });
     }
