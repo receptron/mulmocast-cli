@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.23](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.23) (2026-06-30)
+
+- **ElevenLabs TTS error detail** ([#1459](https://github.com/receptron/mulmocast-cli/pull/1459)): the IIFE catch-all in `tts_elevenlabs_agent` now interpolates the underlying error message instead of a generic literal — a continuation of the [#1451](https://github.com/receptron/mulmocast-cli/issues/1451) diagnostic-error sweep that landed after 2.6.22 was tagged.
+- **Dependency updates** ([#1460](https://github.com/receptron/mulmocast-cli/pull/1460), [#1461](https://github.com/receptron/mulmocast-cli/pull/1461), [#1462](https://github.com/receptron/mulmocast-cli/pull/1462)): routine package bumps. `eslint-plugin-sonarjs` 4.0.3 → 4.1.0 added `no-floating-point-equality` and a stricter `assertions-in-tests`; affected tests were updated to comply (no lint rules disabled).
+- No public API change; no `src/types/` change (so `@mulmocast/types` is unchanged).
+
+📦 **npm**: [`mulmocast@2.6.23`](https://www.npmjs.com/package/mulmocast/v/2.6.23)
+
 ## [2.6.22](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.22) (2026-06-25)
 
 - **Diagnostic-error sweep ([#1451](https://github.com/receptron/mulmocast-cli/issues/1451))**: a `mulmoclaude` end-user hit an `ffmpeg was killed with signal SIGABRT` whose only surface log line read `error="TTS Gemini Error"` — the actual ffmpeg stderr never reached the thrown error message, so triage chased the wrong subsystem. This release plugs every variant of the same masking pattern across 6 agents / handlers:
