@@ -25,7 +25,7 @@
   },
   "resolutions": {
     "minimatch": "^10.2.5",
-    "tar": "7.5.16",
+    "tar": "7.5.19",
     "yauzl": "^3.3.1"
   },
   "bin": {
@@ -91,7 +91,7 @@
     "@google-cloud/text-to-speech": "^6.4.1",
     "@google/genai": "^2.10.0",
     "@graphai/anthropic_agent": "^2.0.12",
-    "@graphai/browserless_agent": "^2.0.2",
+    "@graphai/browserless_agent": "^2.0.3",
     "@graphai/gemini_agent": "^2.0.5",
     "@graphai/groq_agent": "^2.0.2",
     "@graphai/input_agents": "^1.0.2",
@@ -133,10 +133,10 @@
     "eslint-plugin-prettier": "^5.5.6",
     "eslint-plugin-sonarjs": "^4.1.0",
     "globals": "^17.7.0",
-    "prettier": "^3.9.1",
+    "prettier": "^3.9.3",
     "tsx": "^4.22.4",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.62.0"
+    "typescript-eslint": "^8.62.1"
   },
   "engines": {
     "node": ">=22.0.0"
