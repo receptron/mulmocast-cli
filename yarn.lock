@@ -1874,10 +1874,10 @@ eslint-visitor-keys@^5.0.0, eslint-visitor-keys@^5.0.1:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-5.0.1.tgz#9e3c9489697824d2d4ce3a8ad12628f91e9f59be"
   integrity sha512-tD40eHxA35h0PEIZNeIjkHoDR4YjjJp34biM0mDvplBe//mB+IHCqHDGV7pxF+7MklTvighcCPPZC7ynWyjdTA==
 
-eslint@^10.5.0:
-  version "10.5.0"
-  resolved "https://npm.flatt.tech/eslint/-/eslint-10.5.0.tgz#5fca69d6b41fe7e00ba22d4100b2e44efe439ad5"
-  integrity sha512-1y+7C+vi12bUK1IpZeaV3gsH9fHLBmPvYmPx42pvT/E9yG0IC8g3PUZZgp0+JLJl7ZDK0flc2gc+Aw9dpCvIsQ==
+eslint@^10.6.0:
+  version "10.6.0"
+  resolved "https://npm.flatt.tech/eslint/-/eslint-10.6.0.tgz#e1b4059c582be950c7088c9b55f984738b243c27"
+  integrity sha512-6lVbcqSodALYo+4ELD0heG6lFiFxnLMuLkiMi2qV8LMp54N8tE8FT1GMH+ev4Ti00nFjNze2+Su6DsV5OQW3Dg==
   dependencies:
     "@eslint-community/eslint-utils" "^4.8.0"
     "@eslint-community/regexpp" "^4.12.2"
@@ -2905,7 +2905,7 @@ js-tiktoken@^1.0.14:
 
 jsdom@^29.1.1:
   version "29.1.1"
-  resolved "https://registry.yarnpkg.com/jsdom/-/jsdom-29.1.1.tgz#5b9704906f3cd510c34aa941ae2f8f7f8179df01"
+  resolved "https://npm.flatt.tech/jsdom/-/jsdom-29.1.1.tgz#5b9704906f3cd510c34aa941ae2f8f7f8179df01"
   integrity sha512-ECi4Fi2f7BdJtUKTflYRTiaMxIB0O6zfR1fX0GXpUrf6flp8QIYn1UT20YQqdSOfk2dfkCwS8LAFoJDEppNK5Q==
   dependencies:
     "@asamuzakjp/css-color" "^5.1.11"
@@ -3189,16 +3189,16 @@ ms@^2.0.0, ms@^2.1.1, ms@^2.1.3:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
-mulmocast-vision@^1.0.10:
-  version "1.0.10"
-  resolved "https://npm.flatt.tech/mulmocast-vision/-/mulmocast-vision-1.0.10.tgz#997e89772bb425e700a22f6aedefd435cb943b26"
-  integrity sha512-OIg0ueEnZlQIHnYIXuUlCitrq8AGmSNCSlKgHBGPWSnZq2zfNmdoT8otRMPhepalT+mL/Ty9T4CpEi9JLxzG6g==
+mulmocast-vision@^1.0.11:
+  version "1.0.11"
+  resolved "https://npm.flatt.tech/mulmocast-vision/-/mulmocast-vision-1.0.11.tgz#4ce29b99f214028d2f08b5962334557623b78e74"
+  integrity sha512-j6gY3Ita08Zm0Hoi0ilP1OnmFsBTamyu/1X82F5YytQZdpaVgqZSTS207oHclRR5qAOjrNzszE+aQXRKNEcGAA==
   dependencies:
     "@modelcontextprotocol/sdk" "^1.27.1"
     nunjucks "^3.2.4"
     pdfkit "^0.18.0"
-    puppeteer "^25.0.2"
-    yauzl "^3.2.1"
+    puppeteer "^25.2.1"
+    yauzl "^3.4.0"
 
 mute-stream@^2.0.0:
   version "2.0.0"
@@ -3555,10 +3555,10 @@ prettier-linter-helpers@^1.0.1:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@^3.8.5:
-  version "3.8.5"
-  resolved "https://npm.flatt.tech/prettier/-/prettier-3.8.5.tgz#81cf9de0cf46db973fa85103ff06dfcdb0d9bc39"
-  integrity sha512-zxcTTCedNGJM4R8sj/Cq/F0W/c4iE0afWBcBwMTRtw4WHYP9TWkYjdiH3npPRUYsXQCPR0hTU9yjovOu+E6EQA==
+prettier@^3.9.1:
+  version "3.9.1"
+  resolved "https://npm.flatt.tech/prettier/-/prettier-3.9.1.tgz#5868bcf16456bfe145ddbfa107c623b6f39e332c"
+  integrity sha512-ppiDo2CSwexck1eyZUwJHg/N3nf1+6IRCv7W/VJ5vaLnVCmB7+3CdRfMwoCHBBX6xTrREDTksZ4OZl5SSf4zXA==
 
 pretty-ms@^9.2.0:
   version "9.3.0"
@@ -3631,7 +3631,7 @@ puppeteer-core@25.2.1:
     webdriver-bidi-protocol "0.4.2"
     ws "^8.21.0"
 
-puppeteer@^25.0.2, puppeteer@^25.2.1:
+puppeteer@^25.2.1:
   version "25.2.1"
   resolved "https://npm.flatt.tech/puppeteer/-/puppeteer-25.2.1.tgz#a8ac6879ffd0d08322d8a266763da3bb9e6d4e19"
   integrity sha512-2D5RMkQH9FRhDU57a1/jV9xWoxqZvUjaZOYjAAPdRCEY8A01V5sxzyGOMs8XiKU9fPF91SOSwNYpHRu5SD958g==
@@ -4458,18 +4458,18 @@ unbox-primitive@^1.1.0:
     which-boxed-primitive "^1.1.1"
 
 undici-types@^7.21.0:
-  version "7.25.0"
-  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-7.25.0.tgz#c5f8feb61c70d8954e05beb5f1c786c7ff95458a"
-  integrity sha512-AXNgS1Byr27fTI+2bsPEkV9CxkT8H6xNyRI68b3TatlZo3RkzlqQBLL+w7SmGPVpokjHbcuNVQUWE7FRTg+LRA==
+  version "7.28.0"
+  resolved "https://npm.flatt.tech/undici-types/-/undici-types-7.28.0.tgz#295c3e632e0c0bbfaf9ab66b6d573e97df39b9b3"
+  integrity sha512-LJAfY+2w6HGeT8d8J1wNQsUGUEGio6NWWpwdwurQe4f6oojzCFuGLizl1KSve4irsTxyLly1QhEeE6iapdaIvQ==
 
 undici-types@~5.26.4:
   version "5.26.5"
-  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-5.26.5.tgz#bcd539893d00b56e964fd2657a4866b221a65617"
+  resolved "https://npm.flatt.tech/undici-types/-/undici-types-5.26.5.tgz#bcd539893d00b56e964fd2657a4866b221a65617"
   integrity sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==
 
 undici@^7.25.0:
   version "7.28.0"
-  resolved "https://registry.yarnpkg.com/undici/-/undici-7.28.0.tgz#97d64564198b285bc281f0e8e29597e3d11fe7ec"
+  resolved "https://npm.flatt.tech/undici/-/undici-7.28.0.tgz#97d64564198b285bc281f0e8e29597e3d11fe7ec"
   integrity sha512-cRZYrTDwWznlnRiPjggAGxZXanty6M8RV1ff8Wm4LWXBp7/IG8v5DnOm74DtUBp9OONpK75YlPnIjQqX0dBDtA==
 
 unicode-properties@^1.4.0:
@@ -4763,7 +4763,7 @@ yargs@^18.0.0:
     y18n "^5.0.5"
     yargs-parser "^22.0.0"
 
-yauzl@^3.2.1, yauzl@^3.3.1:
+yauzl@^3.3.1, yauzl@^3.4.0:
   version "3.3.1"
   resolved "https://npm.flatt.tech/yauzl/-/yauzl-3.3.1.tgz#b0de68ae3a862715e130849679a4236f54dba45f"
   integrity sha512-RNPCUkiE/ZgO4w8i9U5yDQVHaFDdnzaFANElRvpJteCspvmv2VqrRb9lvS6odVD+jqI/zDsxAHJVsafpcheVQQ==
