@@ -635,8 +635,8 @@ export const modelPricing: Record<string, Record<string, ModelPricing>> = {
   google: {
     // https://ai.google.dev/gemini-api/docs/pricing ($0.039/image ≒ 1290 output tokens at $30/1M)
     "gemini-2.5-flash-image": { unit: "images", inputPerMTokensUSD: 0.3, perImageUSD: 0.039, asOf: "2026-07-03" },
-    // Veo per second of generated video (720p). veo-2.0-generate-001 was shut down on 2026-06-30 (no price).
-    "veo-3.0-generate-001": { unit: "seconds", perSecUSD: 0.4, asOf: "2026-07-03" },
+    // Veo per second of generated video (720p). veo-2.0-generate-001 and veo-3.0-generate-001
+    // were shut down on 2026-06-30, so they intentionally have no price.
     "veo-3.1-generate-preview": { unit: "seconds", perSecUSD: 0.4, asOf: "2026-07-03" },
     "veo-3.1-lite-generate-preview": { unit: "seconds", perSecUSD: 0.05, asOf: "2026-07-03" },
     // Google Cloud Text-to-Speech per 1M characters, keyed by voice tier.
