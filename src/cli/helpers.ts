@@ -18,6 +18,8 @@ import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 import { translate } from "../actions/translate.js";
 
 import { initializeContextFromFiles } from "../utils/context.js";
+import { estimateUsage, actionEstimateProcesses, type EstimateAction } from "../utils/estimate_usage.js";
+import { formatUsageEstimates } from "../utils/estimate_usage_format.js";
 import type { CliArgs } from "../types/cli_types.js";
 import { FileObject, InitOptions, MulmoStudioContext } from "../types/index.js";
 
@@ -84,6 +86,24 @@ export const dumpUsageIfRequested = (context: MulmoStudioContext) => {
   }
   fs.writeFileSync(setting, json, "utf-8");
   GraphAILogger.info(`usage written to ${setting}`);
+};
+
+// Pre-run estimate for --estimate: scoped to what the invoked action would consume,
+// resolved with the same context (script, presentation style, -l, caption lang) as a real run.
+export const printUsageEstimate = (context: MulmoStudioContext, action: EstimateAction, asJson: boolean = false) => {
+  const script = context.studio.script;
+  const lang = context.lang;
+  // The caption language triggers translation only where the real run does:
+  // movie (runTranslateIfNeeded with includeCaption) and the translate action itself.
+  const captionLang = action === "movie" || action === "translate" ? script.captionParams?.lang : undefined;
+  const targetLangs = [...new Set([lang, captionLang].filter((l): l is string => !!l))];
+  const records = estimateUsage(script, {
+    presentationStyle: context.presentationStyle,
+    langs: lang ? [lang] : undefined,
+    targetLangs,
+    processes: actionEstimateProcesses[action],
+  });
+  GraphAILogger.info(asJson ? JSON.stringify(records, null, 2) : formatUsageEstimates(records));
 };
 
 export const setGraphAILogger = (verbose: boolean | undefined, logValues?: Record<string, unknown>) => {

@@ -5,7 +5,7 @@
 import { Tiktoken } from "js-tiktoken/lite";
 import o200k_base from "js-tiktoken/ranks/o200k_base";
 import type { MulmoScript, MulmoPresentationStyle, MulmoBeat, MulmoCanvasDimension, MulmoImageParams, SpeakerData, SpeechOptions } from "../types/index.js";
-import type { EstimatedMetric, UsageEstimate } from "../types/usage.js";
+import type { EstimatedMetric, UsageEstimate, UsageEstimateProcess } from "../types/usage.js";
 import {
   provider2TTSAgent,
   provider2MovieAgent,
@@ -46,6 +46,22 @@ export type EstimateUsageOptions = {
   langs?: string[];
   targetLangs?: string[];
   presentationStyle?: MulmoPresentationStyle;
+  processes?: UsageEstimateProcess[];
+};
+
+// What each CLI action actually consumes. translate is part of every generation scope
+// because the CLI runs it implicitly when the target/caption language differs from the
+// script language; the estimator emits zero translate records otherwise.
+const VISUAL_PROCESSES: UsageEstimateProcess[] = ["image", "htmlImage", "movie", "soundEffect", "lipSync", "imageReference", "movieReference"];
+
+export type EstimateAction = "audio" | "images" | "pdf" | "movie" | "translate";
+
+export const actionEstimateProcesses: Record<EstimateAction, UsageEstimateProcess[]> = {
+  audio: ["tts", "translate"],
+  images: [...VISUAL_PROCESSES, "translate"],
+  pdf: [...VISUAL_PROCESSES, "translate"],
+  movie: ["tts", ...VISUAL_PROCESSES, "translate"],
+  translate: ["translate"],
 };
 
 const isDefined = <T>(value: T | undefined): value is T => value !== undefined;
@@ -409,5 +425,7 @@ export const estimateUsage = (script: MulmoScript, options?: EstimateUsageOption
     ...estimateBeatVisuals(style, beat, beatIndex),
     ...estimateMediaReferences(style, beat.images, beatIndex),
   ]);
-  return [...estimateMediaReferences(style, style.imageParams?.images), ...beatRecords, ...estimateTranslate(script, targetLangs)];
+  const records = [...estimateMediaReferences(style, style.imageParams?.images), ...beatRecords, ...estimateTranslate(script, targetLangs)];
+  const processes = options?.processes;
+  return processes ? records.filter((record) => processes.includes(record.process)) : records;
 };

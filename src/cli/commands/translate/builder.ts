@@ -1,8 +1,8 @@
 import type { Argv } from "yargs";
-import { commonOptions } from "../../common.js";
+import { commonOptions, estimateOptions } from "../../common.js";
 
 export const builder = (yargs: Argv) =>
-  commonOptions(yargs).positional("file", {
+  estimateOptions(commonOptions(yargs)).positional("file", {
     describe: "Mulmo Script File",
     type: "string",
   });

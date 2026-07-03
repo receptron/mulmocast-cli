@@ -1,11 +1,15 @@
 import { images } from "../../../actions/index.js";
 import { CliArgs } from "../../../types/cli_types.js";
-import { dumpUsageIfRequested, initializeContext, runTranslateIfNeeded } from "../../helpers.js";
+import { dumpUsageIfRequested, initializeContext, runTranslateIfNeeded, printUsageEstimate } from "../../helpers.js";
 
-export const handler = async (argv: CliArgs<{ i?: string }>) => {
+export const handler = async (argv: CliArgs<{ estimate?: boolean; json?: boolean; i?: string }>) => {
   const context = await initializeContext(argv);
   if (!context) {
     process.exit(1);
+  }
+  if (argv.estimate) {
+    printUsageEstimate(context, "images", argv.json);
+    return;
   }
   await runTranslateIfNeeded(context);
   await images(context);
