@@ -639,14 +639,6 @@
   resolved "https://npm.flatt.tech/@protobufjs/utf8/-/utf8-1.1.1.tgz#eaee5900122c110a3dbcb728c0597014a2621774"
   integrity sha512-oOAWABowe8EAbMyWKM0tYDKi8Yaox52D+HWZhAIJqQXbqe0xI/GV7FhLWqlEKreMkfDjshR5FKgi3mnle0h6Eg==
 
-"@puppeteer/browsers@3.0.5":
-  version "3.0.5"
-  resolved "https://npm.flatt.tech/@puppeteer/browsers/-/browsers-3.0.5.tgz#0c546a545bd4be7f39e89862200b5e93a1776d72"
-  integrity sha512-xYXNuEQmHNIPWWcbL/skf2KF7seyp7c1xmKFRk3wmdFx7VwBsKVrtOLKs8ecaezsKPsWeF1YsgwIiElAscaryA==
-  dependencies:
-    modern-tar "^0.7.6"
-    yargs "^18.0.0"
-
 "@puppeteer/browsers@3.0.6":
   version "3.0.6"
   resolved "https://npm.flatt.tech/@puppeteer/browsers/-/browsers-3.0.6.tgz#6b772e0fc11deb255c8a3c14219e34a16a2ab23d"
@@ -2906,6 +2898,13 @@ js-tiktoken@^1.0.14:
   dependencies:
     base64-js "^1.5.1"
 
+js-tiktoken@^1.0.21:
+  version "1.0.21"
+  resolved "https://npm.flatt.tech/js-tiktoken/-/js-tiktoken-1.0.21.tgz#368a9957591a30a62997dd0c4cf30866f00f8221"
+  integrity sha512-biOj/6M5qdgx5TKjDnFT1ymSpM5tbd3ylwDtrQvFQSu0Z7bBYko2dF+W/aUkXUPuk6IVpRxk/3Q2sHOzGlS36g==
+  dependencies:
+    base64-js "^1.5.1"
+
 jsdom@^29.1.1:
   version "29.1.1"
   resolved "https://npm.flatt.tech/jsdom/-/jsdom-29.1.1.tgz#5b9704906f3cd510c34aa941ae2f8f7f8179df01"
@@ -3621,18 +3620,6 @@ punycode@^2.1.0, punycode@^2.3.1:
   version "2.3.1"
   resolved "https://npm.flatt.tech/punycode/-/punycode-2.3.1.tgz#027422e2faec0b25e1549c3e1bd8309b9133b6e5"
   integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
-
-puppeteer-core@25.2.1:
-  version "25.2.1"
-  resolved "https://npm.flatt.tech/puppeteer-core/-/puppeteer-core-25.2.1.tgz#ebc7ea02cf742f1714652b4d34d5e267f3da1c54"
-  integrity sha512-MwEZ4FFGJ1ZLOmu/04eISxoEMKtCnHyJBRFfgpwPPSYNG6gT6Xw1laNziFSV7uwDcx3jK+ATYIo9SfOd8Uhc3w==
-  dependencies:
-    "@puppeteer/browsers" "3.0.5"
-    chromium-bidi "16.0.1"
-    devtools-protocol "0.0.1638949"
-    typed-query-selector "^2.12.2"
-    webdriver-bidi-protocol "0.4.2"
-    ws "^8.21.0"
 
 puppeteer-core@25.3.0:
   version "25.3.0"

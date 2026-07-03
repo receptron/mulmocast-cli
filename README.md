@@ -419,6 +419,21 @@ Payload shape:
 
 `byModel` groups by `provider:model` (different models have different rate cards, so summing across them isn't meaningful). The full per-call snapshot is also included so a billing layer can apply its own grouping. See [docs/api.md § Usage tracking](./docs/api.md#usage-tracking) for the per-agent field-population matrix and the programmatic (library) API.
 
+### Usage estimation (before running anything)
+
+The library API can estimate what a full run would consume — per beat, per process — without calling any API:
+
+```typescript
+import { estimateUsage } from "mulmocast";
+
+const estimates = estimateUsage(script, { targetLangs: ["ja"] });
+// [{ process: "tts", beatIndex: 0, provider: "openai", model: "gpt-4o-mini-tts",
+//    inputChars: { value: 50, precision: "exact" }, outputTokens: { value: 150, precision: "estimated" },
+//    costUSD: 0.0019, pricingAsOf: "2026-07-03" }, ...]
+```
+
+Each metric carries a `precision` flag: `"exact"` for values that are deterministic from the script (TTS character counts, tokenized OpenAI prompts, fixed image-output token tables) and `"estimated"` for heuristics (LLM output length, speech duration derived from text). `costUSD` appears when pricing data exists in `modelPricing` (`src/types/provider2agent.ts`), where every price records the date it was last verified. See [docs/api.md § Pre-run estimation](./docs/api.md#pre-run-estimation-estimateusage).
+
 ## Cache and Re-run
 When running the same `mulmo` command multiple times, previously generated files are treated as cache. For example, audio or image files will not be regenerated if they already exist.
 

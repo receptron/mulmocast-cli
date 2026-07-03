@@ -32,6 +32,7 @@ What `import { … } from "mulmocast"` gives you, by area:
 | Logging | `setGraphAILogger` |
 | Path helpers | `getOutputStudioFilePath`, `getOutputMultilingualFilePath`, `getOutputVideoFilePath`, `getOutputPdfFilePath`, `getReferenceImagePath`, `getBeatPngImagePath`, `getCaptionImagePath`, `getBeatMoviePaths` |
 | Usage tracking | `UsageCollector`, `UsageRecord`, `UsageCollectorAPI`, `AgentUsage` (see [Usage tracking](#usage-tracking) below) |
+| Usage estimation | `estimateUsage`, `UsageEstimate`, `EstimatedMetric`, `modelPricing`, `ModelPricing` (see [Pre-run estimation](#pre-run-estimation-estimateusage) below) |
 | Agents (direct use) | `puppeteerCrawlerAgent`, `validateSchemaAgent`, all `image*Agent` / `tts*Agent` / `movie*Agent` / `lipsync*Agent` agents |
 
 ## Lifecycle: from MulmoScript JSON to rendered video
@@ -323,10 +324,31 @@ Mulmocast caches generated media on disk. When a beat is re-run and the artifact
 
 ### Known gaps
 
-- **gpt-4o-mini-tts** is token-billed (text input + audio output) but OpenAI does not expose per-call token usage in the response or headers (probed and documented in PR #1439 / issue #1428). `inputChars: text.length` is the only signal mulmocast surfaces; the billing layer needs either a tokenizer (e.g. `tiktoken` with `o200k_base`) or an estimator (input chars × 4.1 chars/token, audio tokens ≈ 50/s).
+- **gpt-4o-mini-tts** is token-billed (text input + audio output) but OpenAI does not expose per-call token usage in the response or headers (probed and documented in PR #1439 / issue #1428). `inputChars: text.length` is the only signal mulmocast surfaces at runtime; [`estimateUsage`](#pre-run-estimation-estimateusage) fills the gap with tokenized input (`o200k_base`) and audio tokens ≈ 50/s.
 - **Tavily search** (used only by `deepResearch`, not by the regular generation flow) is per-request billed and not surfaced. Out of scope (closed via #1446).
 - **Whisper transcription** (only by `mulmo tool whisper`) is per-minute billed and not surfaced. Out of scope (closed via #1445).
 - **Standalone CLI tools** (`mulmo tool scripting`, `mulmo tool whisper`, `mulmo tool sound_effect`) do not initialize a `MulmoStudioContext`. They are not part of the billed API surface.
+
+### Pre-run estimation (`estimateUsage`)
+
+```ts
+import { estimateUsage } from "mulmocast";
+
+const estimates = estimateUsage(script, { langs: ["en"], targetLangs: ["ja"] });
+```
+
+Walks the script without calling any API and returns `UsageEstimate[]` — one record per beat per process (`tts`, `image`, `htmlImage`, `movie`, `soundEffect`, `lipSync`, `translate`, `imageReference`, `movieReference`). Field names mirror `UsageRecord`, so estimates can be compared with runtime actuals per `provider:model`.
+
+Every metric is an `EstimatedMetric` — `{ value, precision: "exact" | "estimated" }`:
+
+- `exact`: deterministic from the script — TTS character counts, tokenized OpenAI prompts (`o200k_base` via js-tiktoken), the fixed gpt-image output-token table, explicit beat durations snapped to model-supported values.
+- `estimated`: heuristic — LLM output length, speech duration derived from text, char-based token counts for non-OpenAI tokenizers, TTS input for languages whose translation doesn't exist yet.
+
+`costUSD` (+ `pricingAsOf`) is attached when pricing is known. Prices live in `modelPricing` in `src/types/provider2agent.ts`; each entry records the date it was last verified against the provider's pricing page (`asOf`) because rates drift. Supporting a new model is a data change there, not a code change.
+
+Options: `langs` (audio languages), `targetLangs` (translate targets; defaults to `langs` + `captionParams.lang` minus the script language), `presentationStyle` (overrides the script's own style, like the CLI `--presentation-style` flag).
+
+Caveats: assumes a fresh run (no cache hits — see [Cache hits](#cache-hits)); mock providers are skipped; `zsxkib/mmaudio` (sound effects) gets no `costUSD` because it bills by GPU time rather than clip duration. The function is pure and browser-compatible, but bundling it pulls in the ~2 MB `o200k_base` rank table.
 
 ### Probes (for verifying new agents)
 
