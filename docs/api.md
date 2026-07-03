@@ -346,7 +346,9 @@ Every metric is an `EstimatedMetric` — `{ value, precision: "exact" | "estimat
 
 `costUSD` (+ `pricingAsOf`) is attached when pricing is known. Prices live in `modelPricing` in `src/types/provider2agent.ts`; each entry records the date it was last verified against the provider's pricing page (`asOf`) because rates drift. Supporting a new model is a data change there, not a code change.
 
-Options: `langs` (audio languages), `targetLangs` (translate targets; defaults to `langs` + `captionParams.lang` minus the script language), `presentationStyle` (overrides the script's own style, like the CLI `--presentation-style` flag).
+Options: `langs` (audio languages), `targetLangs` (translate targets; defaults to `langs` + `captionParams.lang` minus the script language), `presentationStyle` (overrides the script's own style, like the CLI `--presentation-style` flag), `processes` (restrict to a subset of processes — what a run consumes depends on the action, so `actionEstimateProcesses` maps each CLI action to its process scope: `audio` → tts+translate, `images`/`pdf` → all visual generation+translate, `movie` → everything, `translate` → translate only).
+
+CLI equivalent: every generation command accepts `--estimate` (print the action-scoped estimate and exit without generating) and `--json` (raw `UsageEstimate[]` instead of the table). The table is rendered by `formatUsageEstimates` (also exported).
 
 Caveats: assumes a fresh run (no cache hits — see [Cache hits](#cache-hits)); mock providers are skipped; `zsxkib/mmaudio` (sound effects) gets no `costUSD` because it bills by GPU time rather than clip duration. The function is pure and browser-compatible, but bundling it pulls in the ~2 MB `o200k_base` rank table.
 

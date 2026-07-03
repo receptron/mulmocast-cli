@@ -1,9 +1,9 @@
 import type { Argv } from "yargs";
-import { commonOptions } from "../../common.js";
+import { commonOptions, estimateOptions } from "../../common.js";
 import { pdf_modes, pdf_sizes } from "../../../types/const.js";
 
 export const builder = (yargs: Argv) =>
-  commonOptions(yargs)
+  estimateOptions(commonOptions(yargs))
     .option("i", {
       alias: "imagedir",
       describe: "Image output directory",

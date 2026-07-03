@@ -421,7 +421,16 @@ Payload shape:
 
 ### Usage estimation (before running anything)
 
-The library API can estimate what a full run would consume — per beat, per process — without calling any API:
+Every generation command accepts `--estimate`: it prints what the command would consume — scoped to that command's pipeline — and exits without generating:
+
+```bash
+mulmo movie script.json --estimate         # table per provider:model + total cost
+mulmo audio script.json --estimate --json  # raw UsageEstimate[] records (pipe-friendly)
+```
+
+`mulmo audio --estimate` covers TTS (plus translation when `-l` differs from the script language); `mulmo images` / `mulmo pdf` cover image, htmlPrompt, movie, sound-effect, lip-sync and reference-media generation; `mulmo movie` covers everything; `mulmo translate` only translation. Values marked `~` are heuristic estimates; unmarked values are exact for the given script.
+
+The library API can estimate the same thing — per beat, per process — without calling any API:
 
 ```typescript
 import { estimateUsage } from "mulmocast";

@@ -1,6 +1,20 @@
 import type { Argv } from "yargs";
 import { languages } from "../types/const.js";
 
+export const estimateOptions = (yargs: Argv) => {
+  return yargs
+    .option("estimate", {
+      describe: "Estimate API usage (tokens / characters / seconds / cost) and exit without generating",
+      type: "boolean",
+      default: false,
+    })
+    .option("json", {
+      describe: "With --estimate, print the raw JSON records instead of a table",
+      type: "boolean",
+      default: false,
+    });
+};
+
 export const commonOptions = (yargs: Argv) => {
   return yargs
     .option("o", {

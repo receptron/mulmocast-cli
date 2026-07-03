@@ -8,6 +8,7 @@ export * from "./utils/utils.js";
 export * from "./utils/prompt.js";
 export * from "./utils/error_cause.js";
 export * from "./utils/estimate_usage.js";
+export * from "./utils/estimate_usage_format.js";
 
 export * from "./methods/mulmo_presentation_style.js";
 export * from "./methods/mulmo_script.js";
