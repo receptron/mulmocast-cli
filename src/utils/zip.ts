@@ -1,5 +1,5 @@
 import fs from "fs";
-import archiver from "archiver";
+import { ZipArchive, ArchiverError } from "archiver";
 import path from "path";
 
 /**
@@ -12,7 +12,7 @@ import path from "path";
  * await zipper.finalize();
  */
 export class ZipBuilder {
-  private archive: archiver.Archiver;
+  private archive: ZipArchive;
   private output: fs.WriteStream;
   private outputPath: string;
   private finalized = false;
@@ -20,7 +20,7 @@ export class ZipBuilder {
   constructor(outputPath: string) {
     this.outputPath = outputPath;
     this.output = fs.createWriteStream(outputPath);
-    this.archive = archiver("zip", {
+    this.archive = new ZipArchive({
       zlib: { level: 9 }, // Maximum compression level
     });
 
@@ -32,7 +32,7 @@ export class ZipBuilder {
       throw err;
     });
 
-    this.archive.on("warning", (err: archiver.ArchiverError) => {
+    this.archive.on("warning", (err: ArchiverError) => {
       if (err.code !== "ENOENT") {
         throw err;
       }
