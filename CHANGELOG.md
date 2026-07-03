@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.7.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.7.0) (2026-07-03)
+
+- **Pre-run usage estimator** ([#1466](https://github.com/receptron/mulmocast-cli/pull/1466), closes [#1465](https://github.com/receptron/mulmocast-cli/issues/1465)): new `estimateUsage(script, options?)` walks a MulmoScript **before generating anything** and returns per-beat, per-process usage records (tokens / characters / billed seconds) with a `precision: "exact" | "estimated"` flag per metric, plus `costUSD` when pricing is known. Exact metrics were validated against real billed usage (±0%; heuristics within ±10% — see the [validation record](https://github.com/receptron/mulmocast-cli/pull/1466#issuecomment-4873194771) and `scripts/probe/probe_estimate_vs_actual.ts`). OpenAI prompts are tokenized with js-tiktoken (`o200k_base`); browser-compatible and exported from both entries.
+- **Model pricing data** ([#1466](https://github.com/receptron/mulmocast-cli/pull/1466)): new `modelPricing` table + `ModelPricing` type in `src/types/provider2agent.ts` — every price records the date it was verified against the provider's official pricing page (`asOf`). Replicate movie/lipSync entries are generated from the existing `price_per_sec` data. Also exports `gptImageOutputTokens` (gpt-image size × quality output-token table) and re-exports `provider2agent` from the types index so `@mulmocast/types` consumers get the tables.
+- **`--estimate` CLI flag** ([#1468](https://github.com/receptron/mulmocast-cli/pull/1468), closes [#1467](https://github.com/receptron/mulmocast-cli/issues/1467)): `mulmo audio|images|movie|pdf|translate <script> --estimate` prints what that command would consume — scoped to its pipeline via the new `processes` option / `actionEstimateProcesses` map — and exits without generating. `--json` emits raw `UsageEstimate[]`; the default table (rendered by the new `formatUsageEstimates`) marks heuristic values with `~` and ends with a total-cost line.
+- **Dependency updates** ([#1464](https://github.com/receptron/mulmocast-cli/pull/1464)): routine package bumps, including syncing `yarn.lock` with the `tar` 7.5.19 resolution.
+- `src/types/` changed, so `@mulmocast/types` is released as **2.7.0** alongside (new `UsageEstimate` / `EstimatedMetric` / `ModelPricing` types and pricing tables).
+
+📦 **npm**: [`mulmocast@2.7.0`](https://www.npmjs.com/package/mulmocast/v/2.7.0) / [`@mulmocast/types@2.7.0`](https://www.npmjs.com/package/@mulmocast/types/v/2.7.0)
+
 ## [2.6.23](https://github.com/receptron/mulmocast-cli/releases/tag/2.6.23) (2026-06-30)
 
 - **ElevenLabs TTS error detail** ([#1459](https://github.com/receptron/mulmocast-cli/pull/1459)): the IIFE catch-all in `tts_elevenlabs_agent` now interpolates the underlying error message instead of a generic literal — a continuation of the [#1451](https://github.com/receptron/mulmocast-cli/issues/1451) diagnostic-error sweep that landed after 2.6.22 was tagged.
