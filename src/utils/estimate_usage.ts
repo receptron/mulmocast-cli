@@ -28,13 +28,19 @@ const LATIN_CHARS_PER_SEC = 15;
 const OPENAI_TTS_AUDIO_TOKENS_PER_SEC = 50;
 // Documented: Gemini TTS audio tokens = 25 per second of audio.
 const GEMINI_TTS_AUDIO_TOKENS_PER_SEC = 25;
-// A typical generated Tailwind slide is 4-8 KB of HTML.
-const HTML_OUTPUT_TOKENS_GUESS = 2000;
+// gpt-5 completion_tokens include reasoning tokens; a simple slide measured ≈4.4k (probe 2026-07-03).
+const HTML_OUTPUT_TOKENS_GUESS = 4000;
 const TRANSLATE_OUTPUT_FACTOR = 1.2;
 // The translate action doesn't set a model, so @graphai/openai_agent's default applies.
 const TRANSLATE_DEFAULT_MODEL = "gpt-4o";
 const DEFAULT_MOVIE_DURATION_SEC = 8;
 const GPT_IMAGE_FIXED_TOKEN_MODELS = ["gpt-image-1", "gpt-image-1-mini"];
+// Fixed request framing the API adds on top of the tokenized prompt text. Both values
+// reproduced the billed prompt_tokens exactly, per record, in the 2026-07-03 probes
+// (scripts/probe/probe_estimate_vs_actual.ts): chat completions (system + user) +10,
+// image generation +6.
+const OPENAI_CHAT_INPUT_OVERHEAD_TOKENS = 10;
+const GPT_IMAGE_INPUT_OVERHEAD_TOKENS = 6;
 
 export type EstimateUsageOptions = {
   langs?: string[];
@@ -212,7 +218,11 @@ type ImageRecordInput = {
 const buildImageRecord = ({ process, provider, model, prompt, canvasSize, quality, beatIndex, refKey }: ImageRecordInput): UsageEstimate => {
   const base = { process, beatIndex, refKey, provider, model };
   if (provider === "openai") {
-    return { ...base, inputTokens: exact(countOpenAITokens(prompt)), outputTokens: gptImageOutputMetric(model, canvasSize, quality) };
+    return {
+      ...base,
+      inputTokens: exact(countOpenAITokens(prompt) + GPT_IMAGE_INPUT_OVERHEAD_TOKENS),
+      outputTokens: gptImageOutputMetric(model, canvasSize, quality),
+    };
   }
   if (provider === "google") {
     return { ...base, inputTokens: estimated(countHeuristicTokens(prompt)), imageCount: exact(1) };
@@ -242,7 +252,10 @@ const estimateHtmlImage = (style: MulmoPresentationStyle, beat: MulmoBeat, beatI
     return undefined;
   }
   const fullPrompt = htmlImageSystemPrompt(MulmoPresentationStyleMethods.getCanvasSize(style)) + "\n" + (MulmoBeatMethods.getHtmlPrompt(beat) ?? "");
-  const inputTokens = info.provider === "openai" ? exact(countOpenAITokens(fullPrompt)) : estimated(countHeuristicTokens(fullPrompt));
+  const inputTokens =
+    info.provider === "openai"
+      ? exact(countOpenAITokens(fullPrompt) + OPENAI_CHAT_INPUT_OVERHEAD_TOKENS)
+      : estimated(countHeuristicTokens(fullPrompt) + OPENAI_CHAT_INPUT_OVERHEAD_TOKENS);
   return attachCost({
     process: "htmlImage",
     beatIndex,
@@ -364,7 +377,7 @@ const buildTranslateRecord = (defaultLang: string, text: string, targetLang: str
     lang: targetLang,
     provider: "openai",
     model: TRANSLATE_DEFAULT_MODEL,
-    inputTokens: exact(countOpenAITokens(input)),
+    inputTokens: exact(countOpenAITokens(input) + OPENAI_CHAT_INPUT_OVERHEAD_TOKENS),
     outputTokens: estimated(Math.ceil(countOpenAITokens(text) * TRANSLATE_OUTPUT_FACTOR)),
   });
 };
