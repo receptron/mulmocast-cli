@@ -106,7 +106,7 @@
     "@mozilla/readability": "^0.6.0",
     "@mulmocast/deck": "^1.1.0",
     "@tavily/core": "^0.7.6",
-    "archiver": "^7.0.1",
+    "archiver": "^8.0.0",
     "clipboardy": "^5.3.1",
     "dotenv": "^17.4.2",
     "graphai": "^2.0.18",
@@ -124,7 +124,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@receptron/test_utils": "^2.0.3",
-    "@types/archiver": "^7.0.0",
+    "@types/archiver": "^8.0.0",
     "@types/jsdom": "^28.0.3",
     "@types/yargs": "^17.0.35",
     "cross-env": "^10.1.0",
@@ -135,7 +135,7 @@
     "eslint-plugin-sonarjs": "^4.1.0",
     "globals": "^17.7.0",
     "prettier": "^3.9.4",
-    "tsx": "^4.22.4",
+    "tsx": "^4.22.5",
     "typescript": "6.0.3",
     "typescript-eslint": "^8.62.1"
   },
