@@ -110,6 +110,7 @@
     "clipboardy": "^5.3.1",
     "dotenv": "^17.4.2",
     "graphai": "^2.0.18",
+    "js-tiktoken": "^1.0.21",
     "jsdom": "^29.1.1",
     "marked": "^18.0.5",
     "mulmocast-vision": "^1.0.11",

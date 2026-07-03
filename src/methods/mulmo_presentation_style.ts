@@ -107,18 +107,21 @@ export const MulmoPresentationStyleMethods = {
     }
     return keys[0];
   },
-  getSpeaker(context: MulmoStudioContext, beat: MulmoBeat, targetLang: string | undefined): SpeakerData {
-    userAssert(!!context.presentationStyle?.speechParams?.speakers, "presentationStyle.speechParams.speakers is not set!!");
-    const speakerId = beat?.speaker ?? MulmoPresentationStyleMethods.getDefaultSpeaker(context.presentationStyle);
-    const speaker = context.presentationStyle.speechParams.speakers[speakerId];
+  getSpeakerData(presentationStyle: MulmoPresentationStyle, beat: MulmoBeat, lang: string | undefined): SpeakerData {
+    userAssert(!!presentationStyle?.speechParams?.speakers, "presentationStyle.speechParams.speakers is not set!!");
+    const speakerId = beat?.speaker ?? MulmoPresentationStyleMethods.getDefaultSpeaker(presentationStyle);
+    const speaker = presentationStyle.speechParams.speakers[speakerId];
     userAssert(!!speaker, `speaker is not set: speaker "${speakerId}"`);
     // Check if the speaker has a language-specific version.
-    // Normally, lang is determined by the context, but lang may be specified when using the API.
-    const lang = targetLang ?? context.lang ?? context?.studio?.script?.lang;
     if (speaker.lang && lang && speaker.lang[lang]) {
       return speaker.lang[lang];
     }
     return speaker;
+  },
+  getSpeaker(context: MulmoStudioContext, beat: MulmoBeat, targetLang: string | undefined): SpeakerData {
+    // Normally, lang is determined by the context, but lang may be specified when using the API.
+    const lang = targetLang ?? context.lang ?? context?.studio?.script?.lang;
+    return MulmoPresentationStyleMethods.getSpeakerData(context.presentationStyle, beat, lang);
   },
   getMovieTransition(context: MulmoStudioContext, beat: MulmoBeat): MulmoTransition | null {
     const transitionData = beat.movieParams?.transition ?? context.presentationStyle.movieParams?.transition;

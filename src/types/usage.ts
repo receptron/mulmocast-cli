@@ -32,3 +32,30 @@ export type UsageCollectorAPI = {
   clear(): void;
   readonly size: number;
 };
+
+// Pre-run estimates. Field names mirror UsageRecord so an estimate can be
+// compared with the actuals collected at runtime.
+export type EstimatePrecision = "exact" | "estimated";
+
+export type EstimatedMetric = {
+  value: number;
+  precision: EstimatePrecision;
+};
+
+export type UsageEstimateProcess = "tts" | "image" | "htmlImage" | "movie" | "soundEffect" | "lipSync" | "translate" | "imageReference" | "movieReference";
+
+export type UsageEstimate = {
+  process: UsageEstimateProcess;
+  beatIndex?: number;
+  refKey?: string;
+  lang?: string;
+  provider: string;
+  model: string;
+  inputTokens?: EstimatedMetric;
+  outputTokens?: EstimatedMetric;
+  inputChars?: EstimatedMetric;
+  predictSec?: EstimatedMetric;
+  imageCount?: EstimatedMetric;
+  costUSD?: number;
+  pricingAsOf?: string;
+};

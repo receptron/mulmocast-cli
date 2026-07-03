@@ -474,7 +474,10 @@ export const provider2LipSyncAgent = {
         audio: "audio_file",
       },
       */
-    } as Record<ReplicateModel, { identifier?: `${string}/${string}:${string}` | `${string}/${string}`; video?: string; audio: string; image?: string }>,
+    } as Record<
+      ReplicateModel,
+      { identifier?: `${string}/${string}:${string}` | `${string}/${string}`; video?: string; audio: string; image?: string; price_per_sec?: number }
+    >,
   },
 };
 
@@ -565,4 +568,107 @@ export const getModelDuration = (provider: keyof typeof provider2MovieAgent, mod
     return largerDurations.length > 0 ? largerDurations[0] : durations[durations.length - 1];
   }
   return durations?.[0];
+};
+
+// ---- Pricing metadata (for pre-run usage estimation and cost reporting) ----
+// Prices drift over time; every entry records the date it was last verified
+// against the provider's official pricing page (asOf, YYYY-MM-DD).
+
+export type ModelPricing = {
+  unit: "tokens" | "chars" | "seconds" | "images";
+  inputPerMTokensUSD?: number;
+  outputPerMTokensUSD?: number;
+  perMCharsUSD?: number;
+  perSecUSD?: number;
+  perImageUSD?: number;
+  asOf: string;
+};
+
+// gpt-image-1 / gpt-image-1-mini emit a fixed number of image output tokens per size × quality.
+// Later gpt-image models (1.5 / 2) use variable resolutions, so this table is only an approximation for them.
+// Source: https://developers.openai.com/api/docs/guides/image-generation (verified 2026-07-03)
+export const gptImageOutputTokens: Record<string, { low: number; medium: number; high: number }> = {
+  "1024x1024": { low: 272, medium: 1056, high: 4160 },
+  "1024x1536": { low: 408, medium: 1584, high: 6240 },
+  "1536x1024": { low: 400, medium: 1568, high: 6208 },
+};
+
+// Spot-checked against replicate.com model pages on this date (seedance-1-lite, kling-v2.1, omni-human).
+// Some replicate prices vary by resolution/variant; price_per_sec holds the rate for the typical configuration
+// (e.g. seedance-1-lite at 720p, kling-v2.1 standard).
+const REPLICATE_PRICING_AS_OF = "2026-07-03";
+
+const replicateMoviePricing: Record<string, ModelPricing> = Object.fromEntries(
+  Object.entries(provider2MovieAgent.replicate.modelParams).map(([model, params]) => [
+    model,
+    { unit: "seconds", perSecUSD: params.price_per_sec, asOf: REPLICATE_PRICING_AS_OF },
+  ]),
+);
+
+const replicateLipSyncPricing: Record<string, ModelPricing> = Object.fromEntries(
+  Object.entries(provider2LipSyncAgent.replicate.modelParams)
+    .filter(([, params]) => params.price_per_sec !== undefined)
+    .map(([model, params]) => [model, { unit: "seconds", perSecUSD: params.price_per_sec, asOf: REPLICATE_PRICING_AS_OF }]),
+);
+
+export const modelPricing: Record<string, Record<string, ModelPricing>> = {
+  openai: {
+    // https://developers.openai.com/api/docs/models/gpt-4o-mini-tts
+    "gpt-4o-mini-tts": { unit: "tokens", inputPerMTokensUSD: 0.6, outputPerMTokensUSD: 12, asOf: "2026-07-03" },
+    "tts-1": { unit: "chars", perMCharsUSD: 15, asOf: "2026-07-03" },
+    "tts-1-hd": { unit: "chars", perMCharsUSD: 30, asOf: "2026-07-03" },
+    // https://developers.openai.com/api/docs/models/gpt-image-1 (image input tokens, $10/1M, are not modeled)
+    "gpt-image-1": { unit: "tokens", inputPerMTokensUSD: 5, outputPerMTokensUSD: 40, asOf: "2026-07-03" },
+    "gpt-image-1.5": { unit: "tokens", inputPerMTokensUSD: 5, outputPerMTokensUSD: 32, asOf: "2026-07-03" },
+    "gpt-image-2": { unit: "tokens", inputPerMTokensUSD: 5, outputPerMTokensUSD: 30, asOf: "2026-07-03" },
+    "gpt-image-1-mini": { unit: "tokens", inputPerMTokensUSD: 2, outputPerMTokensUSD: 8, asOf: "2026-07-03" },
+    // https://developers.openai.com/api/docs/models/gpt-5 etc.
+    "gpt-5": { unit: "tokens", inputPerMTokensUSD: 1.25, outputPerMTokensUSD: 10, asOf: "2026-07-03" },
+    "gpt-5-mini": { unit: "tokens", inputPerMTokensUSD: 0.25, outputPerMTokensUSD: 2, asOf: "2026-07-03" },
+    "gpt-4o": { unit: "tokens", inputPerMTokensUSD: 2.5, outputPerMTokensUSD: 10, asOf: "2026-07-03" },
+  },
+  gemini: {
+    // https://ai.google.dev/gemini-api/docs/pricing
+    "gemini-2.5-flash-preview-tts": { unit: "tokens", inputPerMTokensUSD: 0.5, outputPerMTokensUSD: 10, asOf: "2026-07-03" },
+    "gemini-2.5-pro-preview-tts": { unit: "tokens", inputPerMTokensUSD: 1, outputPerMTokensUSD: 20, asOf: "2026-07-03" },
+  },
+  google: {
+    // https://ai.google.dev/gemini-api/docs/pricing ($0.039/image ≒ 1290 output tokens at $30/1M)
+    "gemini-2.5-flash-image": { unit: "images", inputPerMTokensUSD: 0.3, perImageUSD: 0.039, asOf: "2026-07-03" },
+    // Veo per second of generated video (720p). veo-2.0-generate-001 was shut down on 2026-06-30 (no price).
+    "veo-3.0-generate-001": { unit: "seconds", perSecUSD: 0.4, asOf: "2026-07-03" },
+    "veo-3.1-generate-preview": { unit: "seconds", perSecUSD: 0.4, asOf: "2026-07-03" },
+    "veo-3.1-lite-generate-preview": { unit: "seconds", perSecUSD: 0.05, asOf: "2026-07-03" },
+    // Google Cloud Text-to-Speech per 1M characters, keyed by voice tier.
+    // https://cloud.google.com/text-to-speech/pricing
+    "tts-standard": { unit: "chars", perMCharsUSD: 4, asOf: "2026-07-03" },
+    "tts-wavenet": { unit: "chars", perMCharsUSD: 4, asOf: "2026-07-03" },
+    "tts-neural2": { unit: "chars", perMCharsUSD: 16, asOf: "2026-07-03" },
+    "tts-chirp3-hd": { unit: "chars", perMCharsUSD: 30, asOf: "2026-07-03" },
+    "tts-studio": { unit: "chars", perMCharsUSD: 160, asOf: "2026-07-03" },
+  },
+  anthropic: {
+    // https://platform.claude.com/docs/en/docs/about-claude/pricing
+    "claude-sonnet-4-5-20250929": { unit: "tokens", inputPerMTokensUSD: 3, outputPerMTokensUSD: 15, asOf: "2026-07-03" },
+  },
+  elevenlabs: {
+    // https://elevenlabs.io/pricing/api ($0.10 per 1k chars for multilingual/v3, $0.05 for flash/turbo)
+    eleven_v3: { unit: "chars", perMCharsUSD: 100, asOf: "2026-07-03" },
+    eleven_multilingual_v2: { unit: "chars", perMCharsUSD: 100, asOf: "2026-07-03" },
+    eleven_turbo_v2_5: { unit: "chars", perMCharsUSD: 50, asOf: "2026-07-03" },
+    eleven_turbo_v2: { unit: "chars", perMCharsUSD: 50, asOf: "2026-07-03" },
+    eleven_flash_v2_5: { unit: "chars", perMCharsUSD: 50, asOf: "2026-07-03" },
+    eleven_flash_v2: { unit: "chars", perMCharsUSD: 50, asOf: "2026-07-03" },
+  },
+  replicate: {
+    ...replicateMoviePricing,
+    ...replicateLipSyncPricing,
+    // https://replicate.com/bytedance/seedream-4 ($0.03 per output image)
+    // zsxkib/mmaudio is intentionally unpriced: it bills by GPU time (~$0.005 per run), not by clip duration.
+    "bytedance/seedream-4": { unit: "images", perImageUSD: 0.03, asOf: "2026-07-03" },
+  },
+};
+
+export const getModelPricing = (provider: string, model: string): ModelPricing | undefined => {
+  return modelPricing[provider]?.[model];
 };
