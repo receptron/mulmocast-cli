@@ -75,19 +75,31 @@ In `src/actions/translate.ts`, add a slide-catalog stage alongside the existing 
 ### 4. Render pipeline (apply + per-language output)
 
 Localization is the rendering-side mirror of how audio already writes `<hash>_<lang>.mp3`:
-- In the images action / `imagePreprocessAgent` (`src/actions/image_agents.ts`), before invoking a text-based plugin, build the localized payload: `localizedImage = plugin.applyStrings(beat.image, resolve(catalog[context.lang], extractStrings(beat.image)))` and render from it.
-- Add `lang` to the slide render output path + cache key (mirror `getBeatAudioPathOrUrl`), so `-l ja` renders/caches a separate PNG. Default lang (== script lang) keeps the current path for backward compatibility.
-- `movie` / `pdf` already run per active `context.lang`, so they pick up the localized image automatically.
+- Only when a **slide language** is set (see §5). In the images action / `imagePreprocessAgent` (`src/actions/image_agents.ts`), before invoking a text-based plugin, resolve each string by the §5 precedence (`image.lang` → `slideCatalog[slideLang]` → source) and build the localized payload: `localizedImage = plugin.applyStrings(beat.image, resolved)`; render from it.
+- Add the slide language to the render output path + cache key (mirror `getBeatAudioPathOrUrl`), so a `ja` slide renders/caches a separate PNG. No slide language (== source) keeps the current path — backward compatible and byte-identical.
+- The slide language comes from `slideParams.lang` / `--slide-lang`, **not** `context.lang`, so it is independent of audio and captions.
 
-### 5. Author override (optional, layered)
+### 5. Language selection: opt-in, independent, and author-provided
 
-Like editing a `.po` entry by hand, allow the script to pin exact wording, reusing the existing `speaker.lang[lang]` precedent — e.g. an optional `image.lang[lang]` override that wins over the LLM catalog. Deferred to a follow-up; the catalog is the primary mechanism.
+Three requirements drive this section:
+
+**Opt-in (off by default).** Slide localization must be explicitly requested; not requesting it leaves slides in the source language exactly as today. There is no "translate slides automatically because the audio language differs" behavior — a deck whose slides should stay in the original language simply doesn't set a slide language. This is the safe default for cost and for decks where on-screen text is intentionally monolingual (code, brand terms, product names).
+
+**Independent from audio and captions.** The slide language is its own setting, decoupled from the audio language (`-l` / `context.lang`) and the caption language (`captionParams.lang`). All three can differ — e.g. Japanese narration, English captions, Japanese slides — so slide localization does **not** reuse the audio/caption `targetLangs`; it has its own `slideParams.lang` (config) / `--slide-lang` (CLI).
+
+**Author-provided translations are first-class (not LLM-only).** An author can supply exact per-language wording via a `lang` map on the image payload, reusing the existing `speaker.lang[lang]` precedent. This is a **P1** feature, not a follow-up. Resolution precedence per string:
+
+1. `image.lang[slideLang]` — author-provided wording (verbatim, no LLM)
+2. `slideCatalog[slideLang][sha256(source)]` — LLM catalog
+3. source string — untranslated fallback
+
+A fully author-authored multilingual deck (every slide has `image.lang` for the target) therefore needs **no `OPENAI_API_KEY` and no translate step at all** — the render just resolves from `image.lang`. The LLM catalog only fills the gaps the author left.
 
 ## Usage: author templates, API, CLI
 
 ### A. What the author writes (MulmoScript templates)
 
-**Automatic (no script change).** Any existing text-based slide beat is localized just by running with a target language — the author writes nothing extra:
+**LLM-translated (no script change).** Once slide localization is turned on (a slide language is set — see below; it is **off by default**), any existing text-based slide beat is localized without the author writing anything extra:
 
 ```json
 {
@@ -109,9 +121,9 @@ Like editing a `.po` entry by hand, allow the script to pin exact wording, reusi
 }
 ```
 
-`mulmo movie deck.json -l ja` → `title`/`bullets` and the markdown heading/list render in Japanese, **same layout**; `**` markup, the number `20%`, and any URLs/code are preserved.
+`mulmo movie deck.json -l ja --slide-lang ja` → `title`/`bullets` and the markdown heading/list render in Japanese, **same layout**; `**` markup, the number `20%`, and any URLs/code are preserved. Without `--slide-lang` (or `slideParams.lang`), the slides stay in English.
 
-**Author override (exact wording), optional.** Mirroring the existing `speaker.lang[lang]` precedent, an author can pin wording per language via a `lang` map on the image payload; it wins over the LLM catalog:
+**Author-provided wording (first-class).** Mirroring the existing `speaker.lang[lang]` precedent, an author pins exact wording per language via a `lang` map on the image payload. It takes precedence over the LLM catalog, and a slide fully covered by `image.lang` needs no LLM call at all:
 
 ```json
 {
@@ -123,11 +135,11 @@ Like editing a `.po` entry by hand, allow the script to pin exact wording, reusi
 }
 ```
 
-(Schema shown for completeness; the override layer is a later phase — the catalog is the primary mechanism.)
+Mix and match: fill `image.lang` for the strings you care about (headings, product names) and let the LLM catalog cover the rest. An author who fills every target string gets a fully hand-authored bilingual deck with **no API key and no translate step**.
 
 ### B. Public API changes
 
-- **`translate(context, args?)`** — signature unchanged (`args?: PublicAPIArgs & { targetLangs?: string[] }`). Behavior addition: it now also **extracts and translates the slide catalog** into the `_lang.json` multiLingual file. Backward compatible — the `slideCatalog` field is simply absent for scripts with no text-based slides.
+- **`translate(context, args?)`** — signature gains an independent `slideLangs?: string[]` (separate from the existing audio/caption `targetLangs`). It builds the slide catalog **only for `slideLangs`**, and **only for strings not already covered by `image.lang`**. When `slideLangs` is empty/unset, no slide translation runs (opt-in). Backward compatible — `slideCatalog` is absent otherwise.
 - **`src/utils/slide_i18n.ts` (new, exported from `index.common`, pure / browser-safe):**
   - `extractSlideStrings(image: MulmoImage): I18nField[]`
   - `applySlideStrings(image: MulmoImage, resolved: Record<string, string>): MulmoImage`
@@ -139,25 +151,31 @@ Like editing a `.po` entry by hand, allow the script to pin exact wording, reusi
 
 ### C. CLI
 
-No new command or flag in the default design — it rides the existing translation flow (which already keys off `-l` / `captionParams.lang` and writes `<name>_lang.json`):
+Slide localization is **opt-in** via a dedicated `--slide-lang` flag (or `presentationStyle.slideParams.lang` in config), **independent** of `-l` (audio) and `captionParams.lang` (captions). Omit it → slides stay in the source language (today's behavior).
 
 ```bash
-# Build translations (incl. slideCatalog) into deck_lang.json
-mulmo translate deck.json -l ja
+# Slides stay English (no slide localization requested)
+mulmo movie deck.json -l ja                       # ja audio + captions, EN slides
 
-# Render localized slides (runTranslateIfNeeded builds the catalog first)
-mulmo images deck.json -l ja
-mulmo movie  deck.json -l ja        # localized audio + captions + slides
-mulmo pdf    deck.json -l ja
+# Independent axes — ja audio, EN captions, ja slides
+mulmo movie deck.json -l ja -c en --slide-lang ja
 
-# Multiple targets: -l and captionParams.lang both feed targetLangs (as today)
+# Slide-only translation on an English narration deck
+mulmo images deck.json --slide-lang ja            # EN audio, ja slides
+
+# Build just the slide catalog into deck_lang.json
+mulmo translate deck.json --slide-lang ja
+
+# Fully author-authored deck (image.lang filled) — no API key needed
+mulmo images deck.json --slide-lang ja            # resolves from image.lang, no LLM call
 
 # Cost preview includes the extra slide-translation tokens
-mulmo movie deck.json -l ja --estimate
+mulmo movie deck.json --slide-lang ja --estimate
 ```
 
-- **Default**: slides localize automatically whenever `targetLangs` differ from `script.lang`, consistent with how audio and captions already behave. Per-language slide renders use a lang-suffixed cache path (mirrors `_<lang>.mp3`); the default-language run is byte-identical to today.
-- **Opt-out** (cost control, ties to open question #5): a config gate such as `presentationStyle.i18n.translateSlides: false` — proposed, left to discussion rather than a CLI flag, to keep parity with the config-driven `captionParams`.
+- `--slide-lang` may be repeatable / comma-separated for multi-language builds (`--slide-lang ja,fr`), mirroring how audio/captions handle multiple `targetLangs`.
+- Per-slide-language renders use a slide-lang-suffixed cache path (mirrors `_<lang>.mp3`); a run without `--slide-lang` is byte-identical to today.
+- Resolves open question #5 (opt-in) and #1's coupling — slide language is its own axis, not `targetLangs`.
 
 ## Files touched (first scope)
 
@@ -167,15 +185,17 @@ mulmo movie deck.json -l ja --estimate
 - `src/utils/slide_i18n.ts` (new) — catalog helpers (hash key, dedupe, resolve, placeholder tokenizer for inline markup), pure/browser-safe.
 - `src/index.common.ts` — export `slide_i18n` helpers.
 - `src/actions/translate.ts` — extract + translate the catalog into `_lang.json`.
-- `src/actions/image_agents.ts` / `images.ts` — apply localized payload + lang in render path/cache.
-- `src/utils/estimate_usage.ts` — run the extractor so `--estimate` counts slide-translation tokens.
+- `src/actions/image_agents.ts` / `images.ts` — resolve `image.lang` → catalog → source; apply localized payload + slide-lang in render path/cache.
+- `src/cli/common.ts` + `{audio,image,movie,pdf,translate}` builders/handlers — `--slide-lang` flag (independent of `-l` / `-c`), threaded into the context.
+- `src/types/schema.ts` — `slideParams.lang` config gate; `slideCatalog` on the multiLingual file; `lang` override map on text-based image schemas.
+- `src/utils/estimate_usage.ts` — run the extractor so `--estimate` counts slide-translation tokens (only for `slideLangs`, minus `image.lang`-covered strings).
 - `src/utils/prompt.ts` — slide-translation system prompt.
 - `test/utils/test_slide_i18n.ts` (new), plus golden per-lang render fixtures.
 - `@mulmocast/types` release (because `src/types/` changes).
 
 ## Phasing
 
-1. **P1** — catalog infra + `textSlide` (structured, lowest risk) end-to-end: extract → translate → per-lang render.
+1. **P1** — opt-in plumbing (`--slide-lang` / `slideParams.lang`, independent axis) + `image.lang` author-override resolution + catalog infra + `textSlide` (structured, lowest risk) end-to-end: resolve → (translate gaps) → per-lang render. Note: author-override + opt-in are P1, not deferred.
 2. **P2** — `markdown` (block-level placeholder extraction via `marked`).
 3. **P3** — deck `slide` (needs `@mulmocast/deck` field exposure).
 4. **P4** — `html_tailwind` (DOM text nodes + attribute whitelist; skip `script`/classes/`elements`), `chart`/`mermaid` labels.
@@ -183,14 +203,15 @@ mulmo movie deck.json -l ja --estimate
 ## Testing
 
 - Unit: extractor/injector round-trip per plugin (extract→translate-stub→apply reproduces structure with swapped text); placeholder preservation for inline markup; hash-key dedup; token protection of numbers/URLs/code.
-- Golden: render `textSlide`/`markdown` beats in `en` and `ja` and diff against stored per-lang PNph fixtures (mock translator, no API key).
-- Regression: default-lang run produces byte-identical output to today (no `_<lang>` suffix, no catalog).
+- Golden: render `textSlide`/`markdown` beats in `en` and `ja` and diff against stored per-lang PNG fixtures (mock translator, no API key).
+- Opt-in: no `--slide-lang` → no catalog, no extra render, byte-identical to today. Independence: `-l ja -c en --slide-lang fr` produces the three languages on their respective outputs.
+- Author-override: a beat with full `image.lang[ja]` renders the ja slide with **zero** translator calls; partial `image.lang` falls back to the catalog only for the missing strings.
 
 ## Open questions (for discussion / codex)
 
 1. **Catalog scope** — deck-level (dedupe, proposed) vs per-beat (simpler, matches current multiLingual shape). Trade dedup savings vs. structural consistency.
 2. **Markdown granularity** — block-level `<Trans>`-style placeholders (coherent sentences, more complex) vs. per-inline-text-node (simpler, risks fragmented translations). Proposal: block-level.
 3. **Keying** — source-string-as-key (proposed, gettext) vs. path-based stable IDs (survive edits). Homograph/context handling (`msgctxt`) — needed now or later?
-4. **Per-language rendering cost** — render only `context.lang` per run (proposed, minimal) vs. render all `targetLangs` upfront. Interaction with the image cache and `-f`.
-5. **Opt-in** — always translate slides when `targetLangs` differ, or gate behind a flag / `captionParams`-like config to avoid surprising cost?
-6. **Deck coupling** — is modifying `@mulmocast/deck` to expose translatable fields acceptable, or should deck slides be out of first scope?
+4. **Per-language rendering cost** — render only the requested `slideLangs` per run (proposed, minimal) vs. render all upfront. Interaction with the image cache and `-f`.
+5. ~~Opt-in~~ **Resolved** — slide localization is opt-in via `--slide-lang` / `slideParams.lang`, an axis independent of audio (`-l`) and captions (`-c`); author-provided `image.lang` is first-class. Remaining sub-question: exact config field name (`slideParams.lang` vs a dedicated `i18nParams`) and whether `--slide-lang` should accept multiple values.
+6. **Deck coupling** — is modifying `@mulmocast/deck` to expose translatable fields (and honor `image.lang`) acceptable, or should deck slides be out of first scope?
