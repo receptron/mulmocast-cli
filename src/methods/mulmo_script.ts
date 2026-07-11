@@ -46,6 +46,9 @@ export const MulmoScriptMethods = {
     );
     return mulmoScriptSchema.parse(validatedScript);
   },
+  hasClosingCredit(script: MulmoScript): boolean {
+    return script.$mulmocast.credit === "closing";
+  },
 };
 
 export const MulmoStudioMultiLingualMethod = {

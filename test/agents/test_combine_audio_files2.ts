@@ -32,7 +32,7 @@ test("getPadding with custom beat padding", () => {
   assert.strictEqual(result, 3.5); // Should use beat's custom padding
 });
 
-test("getPadding for last beat", () => {
+test("getPadding for last beat without closing credit gets closingPadding", () => {
   const beat = createMockBeat({});
   const mock = createMockContext();
   mock.presentationStyle.audioParams = {
@@ -42,11 +42,28 @@ test("getPadding for last beat", () => {
   mock.studio.script.beats.push(beat);
   mock.studio = createStudioData(mock.studio.script, "test");
 
-  const result = getPadding(mock, beat, 0); // Only beat, so it's the last one
-  assert.strictEqual(result, 0); // Last beat gets 0 padding
+  // No closing credit → the last beat is the closing beat and gets closingPadding.
+  const result = getPadding(mock, beat, 0);
+  assert.strictEqual(result, 1.0);
 });
 
-test("getPadding for second-to-last beat (closing gap)", () => {
+test("getPadding puts closingPadding on the beat before the closing credit", () => {
+  const beat1 = createMockBeat({});
+  const beat2 = createMockBeat({});
+  const mock = createMockContext();
+  mock.presentationStyle.audioParams = {
+    padding: 2.0,
+    closingPadding: 1.5,
+  };
+  mock.studio.script.$mulmocast.credit = "closing";
+  mock.studio.script.beats.push(beat1, beat2);
+  mock.studio = createStudioData(mock.studio.script, "test"); // appends the silent credit beat as index 2
+
+  assert.strictEqual(getPadding(mock, beat2, 1), 1.5); // last content beat → closingPadding
+  assert.strictEqual(getPadding(mock, mock.studio.script.beats[2], 2), 0); // credit logo → no trailing padding
+});
+
+test("getPadding without credit: closingPadding on last, padding before it", () => {
   const beat1 = createMockBeat({});
   const beat2 = createMockBeat({});
   const mock = createMockContext();
@@ -57,8 +74,8 @@ test("getPadding for second-to-last beat (closing gap)", () => {
   mock.studio.script.beats.push(beat1, beat2);
   mock.studio = createStudioData(mock.studio.script, "test");
 
-  const result = getPadding(mock, beat1, 0); // First of two beats (second-to-last)
-  assert.strictEqual(result, 1.5); // Should use closingPadding
+  assert.strictEqual(getPadding(mock, beat1, 0), 2.0); // regular padding
+  assert.strictEqual(getPadding(mock, beat2, 1), 1.5); // last beat → closingPadding
 });
 
 test("getPadding for regular beat", () => {
@@ -353,10 +370,11 @@ test("noSpilledOverAudio with movie and audio", () => {
 
   noSpilledOverAudio(mock, beat1, 0, 50, 30, beatDurations, mediaDurations);
 
-  // Total padding = 1.0 + (50 - 30) = 21.0 (closingPadding + movie extra)
-  // Beat duration = 30 + 21 = 51
-  assert.strictEqual(beatDurations[0], 51);
-  assert.strictEqual(mediaDurations[0].silenceDuration, 21);
+  // beat1 is not the closing beat (no credit → beat2 is), so it uses regular padding.
+  // Total padding = 2.0 + (50 - 30) = 22.0 (padding + movie extra)
+  // Beat duration = 30 + 22 = 52
+  assert.strictEqual(beatDurations[0], 52);
+  assert.strictEqual(mediaDurations[0].silenceDuration, 22);
 });
 
 test("noSpilledOverAudio with specified beat duration", () => {

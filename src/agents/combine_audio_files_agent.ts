@@ -10,7 +10,7 @@ import {
   ffmpegGetMediaDuration,
 } from "../utils/ffmpeg_utils.js";
 import { MulmoMediaSourceMethods } from "../methods/mulmo_media_source.js";
-import { MulmoBeatMethods } from "../methods/index.js";
+import { MulmoBeatMethods, MulmoScriptMethods } from "../methods/index.js";
 import { userAssert } from "../utils/utils.js";
 import { getAudioInputIdsError } from "../utils/error_cause.js";
 
@@ -34,11 +34,16 @@ export const getPadding = (context: MulmoStudioContext, beat: MulmoBeat, index: 
   if (beat.audioParams?.padding !== undefined) {
     return beat.audioParams.padding;
   }
-  if (index === context.studio.beats.length - 1) {
+  const lastIndex = context.studio.beats.length - 1;
+  // The closing credit is a silent logo beat appended as the last beat; it carries no
+  // trailing padding, and closingPadding falls on the content beat just before it. Without
+  // a credit, the last beat itself is the closing beat, so closingPadding falls on it.
+  const hasClosingCredit = MulmoScriptMethods.hasClosingCredit(context.studio.script);
+  if (hasClosingCredit && index === lastIndex) {
     return 0;
   }
-  const isClosingGap = index === context.studio.beats.length - 2;
-  return isClosingGap ? context.presentationStyle.audioParams.closingPadding : context.presentationStyle.audioParams.padding;
+  const closingIndex = hasClosingCredit ? lastIndex - 1 : lastIndex;
+  return index === closingIndex ? context.presentationStyle.audioParams.closingPadding : context.presentationStyle.audioParams.padding;
 };
 
 export const getTotalPadding = (padding: number, movieDuration: number, audioDuration: number, duration?: number) => {

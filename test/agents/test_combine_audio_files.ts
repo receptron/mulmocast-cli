@@ -20,6 +20,7 @@ test("updateDurations audio duration", async () => {
   });
 
   const mock = createMockContext();
+  mock.presentationStyle.audioParams = { padding: 0.3, closingPadding: 0 };
   mock.studio.script.beats.push(beat);
   mock.studio = createStudioData(mock.studio.script, "test");
   const res = updateDurations(mock, mediaDurations);
@@ -486,13 +487,11 @@ test("updateDurations with default padding", async () => {
 
   const res = updateDurations(mock, mediaDurations);
 
-  // First beat: audio + padding but not last beat, so gets regular padding
-  // From getPadding logic: index 0 of 2 beats, so not closing (that's index 0 of 2-1=1, which is false)
-  // So it should get regular padding, but actual is 30, so it's getting 0 padding
-  // This suggests the presentationStyle.audioParams.padding is being used differently
-  assert.strictEqual(res[0], 30); // Audio only, no padding applied
-  assert.strictEqual(mediaDurations[0].silenceDuration, 0); // No silence added
-  // Last beat: gets no padding as expected
+  // No closing credit → beat2 (last) is the closing beat and gets closingPadding (0).
+  // beat1 is a regular beat and gets padding (2.0).
+  assert.strictEqual(res[0], 32); // 30 audio + 2.0 padding
+  assert.strictEqual(mediaDurations[0].silenceDuration, 2.0);
+  // Last beat: closingPadding is 0, so no extra silence.
   assert.strictEqual(res[1], 25);
   assert.strictEqual(mediaDurations[1].silenceDuration, 0);
 });

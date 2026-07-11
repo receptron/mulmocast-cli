@@ -99,7 +99,7 @@ export const createStudioData = (_mulmoScript: MulmoScript, fileName: string, vi
 
   // TODO: Move this code out of this function later
   // Addition cloing credit
-  if (mulmoScript.$mulmocast.credit === "closing") {
+  if (MulmoScriptMethods.hasClosingCredit(mulmoScript)) {
     const defaultSpeaker = MulmoPresentationStyleMethods.getDefaultSpeaker(presentationStyle ?? studio.script);
     mulmoScript.beats.push(mulmoCredit(mulmoScript.beats[0].speaker ?? defaultSpeaker, isPortrait)); // First speaker
   }
