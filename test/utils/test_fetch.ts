@@ -5,6 +5,8 @@ import type { AddressInfo } from "node:net";
 
 import { safeFetch } from "../../src/utils/fetch.js";
 
+const SLOW_RESPONSE_MS = 250;
+
 let server: http.Server;
 let baseUrl: string;
 
@@ -13,6 +15,13 @@ before(async () => {
     if (req.url === "/fast") {
       res.writeHead(200, { "content-type": "text/plain" });
       res.end("ok");
+    } else if (req.url === "/slow") {
+      // Responds after a delay — used to prove one call's timeout abort does
+      // not cancel another concurrent, still-in-budget request.
+      setTimeout(() => {
+        res.writeHead(200, { "content-type": "text/plain" });
+        res.end("slow-ok");
+      }, SLOW_RESPONSE_MS);
     }
     // Any other path (e.g. "/hang"): intentionally never respond, to exercise the timeout path.
   });
@@ -53,4 +62,42 @@ test("safeFetch propagates non-timeout network errors (not as a timeout)", async
       return true;
     },
   );
+});
+
+// --- Concurrency safety: each call owns its AbortController + timer, so calls
+// running in parallel (the image pipeline uses concurrency: 4) must not
+// interfere with one another. ---
+
+test("concurrent safeFetch timeouts each fire at their own budget (no cross-talk)", async () => {
+  const budgets = [60, 90, 120, 150, 180, 210];
+  const results = await Promise.allSettled(budgets.map((ms) => safeFetch(`${baseUrl}/hang`, {}, ms)));
+
+  results.forEach((result, index) => {
+    assert.equal(result.status, "rejected", `call ${index} should have timed out`);
+    const reason = (result as PromiseRejectedResult).reason;
+    assert.ok(reason instanceof Error);
+    // Each rejection must carry its OWN budget — proof the timers/controllers are independent.
+    assert.match(reason.message, new RegExp(`Fetch timeout after ${budgets[index]}ms`));
+  });
+});
+
+test("a concurrent timeout does not abort another in-flight request", async () => {
+  // The slow request (2s budget, responds at 250ms) runs alongside several
+  // short-budget hangs that abort at ~80ms. If aborts leaked across calls, the
+  // slow request would be cancelled too.
+  const slow = safeFetch(`${baseUrl}/slow`, {}, 2000);
+  const hangs = Array.from({ length: 4 }, () => safeFetch(`${baseUrl}/hang`, {}, 80));
+
+  const hangResults = await Promise.allSettled(hangs);
+  hangResults.forEach((result) => assert.equal(result.status, "rejected"));
+
+  const res = await slow;
+  assert.equal(res.status, 200);
+  assert.equal(await res.text(), "slow-ok");
+});
+
+test("many concurrent successful fetches all resolve independently", async () => {
+  const responses = await Promise.all(Array.from({ length: 20 }, () => safeFetch(`${baseUrl}/fast`)));
+  const texts = await Promise.all(responses.map((r) => r.text()));
+  assert.ok(texts.every((t) => t === "ok"));
 });
