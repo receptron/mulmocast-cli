@@ -7,6 +7,7 @@ import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { localizedText, isHttp } from "../utils/utils.js";
 import { getOutputPdfFilePath, writingMessage, getHTMLFile, mulmoCreditPath } from "../utils/file.js";
 import { interpolate } from "../utils/html_render.js";
+import { safeFetch, FETCH_DOWNLOAD_TIMEOUT_MS } from "../utils/fetch.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 
 const isCI = process.env.CI === "true";
@@ -30,7 +31,9 @@ const getPdfSize = (pdfSize: PDFSize) => {
 
 const loadImage = async (imagePath: string, index: number): Promise<string> => {
   try {
-    const imageData = isHttp(imagePath) ? Buffer.from(await (await fetch(imagePath)).arrayBuffer()) : fs.readFileSync(imagePath);
+    const imageData = isHttp(imagePath)
+      ? Buffer.from(await (await safeFetch(imagePath, {}, FETCH_DOWNLOAD_TIMEOUT_MS)).arrayBuffer())
+      : fs.readFileSync(imagePath);
     const ext = path.extname(imagePath).toLowerCase().replace(".", "");
     const mimeType = ext === "jpg" ? "jpeg" : ext;
     return `data:image/${mimeType};base64,${imageData.toString("base64")}`;

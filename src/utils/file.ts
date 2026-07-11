@@ -11,6 +11,7 @@ import { PDFMode } from "../types/index.js";
 import { z, ZodSchema, ZodType } from "zod";
 import { getMulmoScriptTemplateSystemPrompt } from "./prompt.js";
 import { resolveAssetFile } from "./asset_import.js";
+import { safeFetch } from "./fetch.js";
 
 const promptTemplateDirName = "./assets/templates";
 const scriptTemplateDirName = "./scripts/templates";
@@ -75,7 +76,7 @@ export function readMulmoScriptFile<T = MulmoScript>(
 }
 export const fetchMulmoScriptFile = async (url: string): Promise<{ result: boolean; script?: MulmoScript; status: string | number }> => {
   try {
-    const res = await fetch(url);
+    const res = await safeFetch(url);
     if (!res.ok) {
       return { result: false, status: res.status };
     }

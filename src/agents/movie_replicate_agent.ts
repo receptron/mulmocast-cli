@@ -17,6 +17,7 @@ import type { AgentBufferResult, MovieAgentInputs, ReplicateMovieAgentParams, Re
 import type { AgentUsage } from "../types/usage.js";
 import { provider2MovieAgent, getModelDuration, AUDIO_MODE_OPTIONAL, AUDIO_MODE_NEVER, AUDIO_MODE_ALWAYS } from "../types/provider2agent.js";
 import { runReplicateWithMetrics } from "../utils/replicate_usage.js";
+import { safeFetch, FETCH_MEDIA_DOWNLOAD_TIMEOUT_MS } from "../utils/fetch.js";
 
 function replicate_get_videoUrl(output: unknown): string | URL | undefined {
   if (typeof output === "string") return output;
@@ -122,7 +123,7 @@ async function generateMovie(
     // Some models return a FileOutput object with a url() method; others return a plain string URL.
     const videoUrl = replicate_get_videoUrl(output);
     if (videoUrl) {
-      const videoResponse = await fetch(videoUrl);
+      const videoResponse = await safeFetch(videoUrl, {}, FETCH_MEDIA_DOWNLOAD_TIMEOUT_MS);
 
       if (!videoResponse.ok) {
         throw new Error(`Error downloading video: ${videoResponse.status} - ${videoResponse.statusText}`, {

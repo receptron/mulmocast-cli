@@ -11,6 +11,7 @@ import {
 } from "../utils/error_cause.js";
 import type { ElevenlabsTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult, AgentConfig } from "../types/agent.js";
 import type { AgentUsage } from "../types/usage.js";
+import { safeFetch, FETCH_API_TIMEOUT_MS } from "../utils/fetch.js";
 
 export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs, AgentConfig> = async ({
   namedInputs,
@@ -46,15 +47,19 @@ export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBu
 
   const response = await (async () => {
     try {
-      return await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice}`, {
-        method: "POST",
-        headers: {
-          Accept: "audio/mpeg",
-          "Content-Type": "application/json",
-          "xi-api-key": apiKey,
+      return await safeFetch(
+        `https://api.elevenlabs.io/v1/text-to-speech/${voice}`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "audio/mpeg",
+            "Content-Type": "application/json",
+            "xi-api-key": apiKey,
+          },
+          body: JSON.stringify(requestBody),
         },
-        body: JSON.stringify(requestBody),
-      });
+        FETCH_API_TIMEOUT_MS,
+      );
     } catch (e) {
       if (suppressError) {
         return {
@@ -81,8 +86,8 @@ export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBu
         cause: agentIncorrectAPIKeyError("ttsElevenlabsAgent", audioAction, audioFileTarget),
       });
     }
-    const errorDetail = await response.json();
-    if (errorDetail.detail.status === "voice_limit_reached") {
+    const errorDetail = await response.json<{ detail?: { status?: string } }>();
+    if (errorDetail.detail?.status === "voice_limit_reached") {
       throw new Error("Failed to generate audio: 400 You have reached your maximum amount of custom voices with ElevenLabs", {
         cause: agentVoiceLimitReachedError("ttsElevenlabsAgent", audioAction, audioFileTarget),
       });

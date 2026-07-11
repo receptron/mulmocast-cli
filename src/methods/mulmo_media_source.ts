@@ -2,6 +2,7 @@ import fs from "fs";
 import { GraphAILogger, assert } from "graphai";
 import type { MulmoMediaSource, MulmoMediaMermaidSource, MulmoStudioContext, ImageType } from "../types/index.js";
 import { getFullPath, getReferenceImagePath, resolveAssetPath } from "../utils/file.js";
+import { safeFetch, DEFAULT_FETCH_TIMEOUT_MS } from "../utils/fetch.js";
 import {
   downLoadReferenceImageError,
   getTextError,
@@ -29,7 +30,7 @@ export const getExtention = (contentType: string | null, url: string) => {
 };
 
 const downLoadReferenceImage = async (context: MulmoStudioContext, key: string, url: string) => {
-  const response = await fetch(url);
+  const response = await safeFetch(url);
 
   assert(response.ok, `Failed to download reference image: ${url}`, false, downLoadReferenceImageError(key, url));
   const buffer = Buffer.from(await response.arrayBuffer());
@@ -54,26 +55,20 @@ function pluginSourceFixExtention(path: string, imageType: ImageType) {
 
 // end of util
 
-const DEFAULT_FETCH_TIMEOUT_MS = 30000;
-
 // Convert URL to data URL (base64 encoded)
 const urlToDataUrl = async (url: string, timeoutMs = DEFAULT_FETCH_TIMEOUT_MS): Promise<string> => {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
   try {
-    const response = await fetch(url, { signal: controller.signal });
+    const response = await safeFetch(url, {}, timeoutMs);
     assert(response.ok, `Failed to fetch: ${url}`, false, mediaSourceToDataUrlError(url));
     const buffer = Buffer.from(await response.arrayBuffer());
     const contentType = response.headers.get("content-type") || "image/png";
     return `data:${contentType};base64,${buffer.toString("base64")}`;
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
-      throw new Error(`Fetch timeout: ${url}`, { cause: mediaSourceToDataUrlError(url) });
+    // assert() failures already carry the structured cause — keep it as-is.
+    if (error instanceof Error && error.cause) {
+      throw error;
     }
-    throw new Error(`Fetch failed: ${url}`, { cause: mediaSourceToDataUrlError(url) });
-  } finally {
-    clearTimeout(timeoutId);
+    throw new Error(`Fetch failed: ${url}: ${error instanceof Error ? error.message : String(error)}`, { cause: mediaSourceToDataUrlError(url) });
   }
 };
 
@@ -112,7 +107,7 @@ export const MulmoMediaSourceMethods = {
       return mediaSource.text;
     }
     if (mediaSource.kind === "url") {
-      const response = await fetch(mediaSource.url);
+      const response = await safeFetch(mediaSource.url);
       assert(response.ok, `Failed to download mermaid code text: ${mediaSource.url}`, false, getTextError(mediaSource.url)); // TODO: index
       return await response.text();
     }
@@ -145,7 +140,7 @@ export const MulmoMediaSourceMethods = {
 
   async imagePluginSource(mediaSource: MulmoMediaSource, context: MulmoStudioContext, expectImagePath: string, imageType: ImageType) {
     if (mediaSource.kind === "url") {
-      const response = await fetch(mediaSource.url);
+      const response = await safeFetch(mediaSource.url);
       assert(response.ok, `Failed to download image plugin: ${imageType} ${mediaSource.url}`, false, downloadImagePluginError(mediaSource.url, imageType)); // TODO: key, id, index
       const buffer = Buffer.from(await response.arrayBuffer());
 
