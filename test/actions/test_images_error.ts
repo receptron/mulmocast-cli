@@ -12,62 +12,62 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const testMulmoScript = {
+  $mulmocast: {
+    version: "1.1",
+  },
+  canvasSize: {
+    width: 1280,
+    height: 720,
+  },
+  speechParams: {
+    speakers: {
+      Presenter: {
+        displayName: {
+          en: "Presenter",
+        },
+        voiceId: "shimmer",
+      },
+    },
+  },
+  imageParams: {
+    provider: "openai",
+    images: {},
+  },
+  soundEffectParams: {
+    provider: "replicate",
+  },
+  audioParams: {
+    padding: 0.3,
+    introPadding: 1,
+    closingPadding: 0.8,
+    outroPadding: 1,
+    bgmVolume: 0.2,
+    audioVolume: 1,
+    suppressSpeech: false,
+  },
+  title: "(無題)",
+  description: "mulmocast",
+  lang: "en",
+  beats: [
+    {
+      speaker: "Presenter",
+      text: "",
+      id: "a7105c4e-8614-4028-9ea6-3492a1f55d6d",
+      image: {
+        type: "image",
+        source: {
+          kind: "path",
+          path: ".",
+        },
+      },
+    },
+  ],
+};
+
 const getContext = () => {
   const fileDirs = getFileObject({ file: "hello.yaml" });
-  const mulmoScript = {
-    $mulmocast: {
-      version: "1.1",
-    },
-    canvasSize: {
-      width: 1280,
-      height: 720,
-    },
-    speechParams: {
-      speakers: {
-        Presenter: {
-          displayName: {
-            en: "Presenter",
-          },
-          voiceId: "shimmer",
-        },
-      },
-    },
-    imageParams: {
-      provider: "openai",
-      images: {},
-    },
-    soundEffectParams: {
-      provider: "replicate",
-    },
-    audioParams: {
-      padding: 0.3,
-      introPadding: 1,
-      closingPadding: 0.8,
-      outroPadding: 1,
-      bgmVolume: 0.2,
-      audioVolume: 1,
-      suppressSpeech: false,
-    },
-    title: "(無題)",
-    description: "mulmocast",
-    lang: "en",
-    beats: [
-      {
-        speaker: "Presenter",
-        text: "",
-        id: "a7105c4e-8614-4028-9ea6-3492a1f55d6d",
-        image: {
-          type: "image",
-          source: {
-            kind: "path",
-            path: ".",
-          },
-        },
-      },
-    ],
-  };
-
-  const studio = createStudioData(mulmoScript, "hello");
+  const studio = createStudioData(testMulmoScript, "hello");
   const context = {
     studio,
     fileDirs,
