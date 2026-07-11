@@ -25,6 +25,10 @@ import type { AgentBufferResult, ImageAgentInputs, ImageAgentParams, GenAIImageA
 import type { AgentUsage } from "../types/usage.js";
 import { GoogleGenAI, PersonGeneration, GenerateContentResponse } from "@google/genai";
 
+// Per-request timeout so a stalled GenAI image call rejects (and GraphAI retry
+// can recover) instead of hanging. Generous vs. normal generation time.
+const GENAI_REQUEST_TIMEOUT_MS = 120_000;
+
 const isDeprecatedGoogleImageModel = (model: string): model is DeprecatedGoogleImageModel => model in deprecatedGoogleImageModelHints;
 
 export const buildDeprecatedGoogleImageModelMessage = (model: string): string | null => {
@@ -116,7 +120,7 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
             `imageGenAIAgent: model "${model}" on Vertex AI is only available in location "global", but got "${location}". Set imageParams.vertexai_location to "global".`,
           );
         }
-        return new GoogleGenAI({ vertexai: true, project: params.vertexai_project, location });
+        return new GoogleGenAI({ vertexai: true, project: params.vertexai_project, location, httpOptions: { timeout: GENAI_REQUEST_TIMEOUT_MS } });
       })()
     : (() => {
         if (!apiKey) {
@@ -127,7 +131,7 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
             },
           );
         }
-        return new GoogleGenAI({ apiKey });
+        return new GoogleGenAI({ apiKey, httpOptions: { timeout: GENAI_REQUEST_TIMEOUT_MS } });
       })();
 
   if (model === "gemini-2.5-flash-image" || model === "gemini-3.1-flash-image-preview" || model === "gemini-3-pro-image-preview") {
