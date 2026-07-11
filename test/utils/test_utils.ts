@@ -85,7 +85,9 @@ test("test settings2GraphAIConfig", async () => {
     ttsOpenaiAgent: { apiKey: "openai_env" },
     imageOpenaiAgent: { apiKey: "openai_env" },
   });
+});
 
+test("test settings2GraphAIConfig (setting/env precedence)", async () => {
   const res5 = settings2GraphAIConfig(
     {
       LLM_OPENAI_API_KEY: "llm_setting",
