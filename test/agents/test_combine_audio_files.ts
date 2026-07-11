@@ -777,47 +777,49 @@ test("updateDurations spill-over with minimum duration enforcement", async () =>
 });
 
 // Mixed scenarios (voice-over + spill-over)
+const complexMixedScenarioDurations = [
+  // Regular audio with spill-over
+  {
+    movieDuration: 0,
+    audioDuration: 120,
+    hasMedia: true,
+    silenceDuration: 0,
+    hasMovieAudio: false,
+  },
+  {
+    movieDuration: 0,
+    audioDuration: 0,
+    hasMedia: false,
+    silenceDuration: 0,
+    hasMovieAudio: false,
+  },
+  // Movie with voice-over
+  {
+    movieDuration: 180,
+    audioDuration: 30,
+    hasMedia: true,
+    silenceDuration: 0,
+    hasMovieAudio: true,
+  },
+  {
+    movieDuration: 0,
+    audioDuration: 25,
+    hasMedia: false,
+    silenceDuration: 0,
+    hasMovieAudio: false,
+  },
+  // Regular beat
+  {
+    movieDuration: 0,
+    audioDuration: 40,
+    hasMedia: true,
+    silenceDuration: 0,
+    hasMovieAudio: false,
+  },
+];
+
 test("updateDurations complex mixed scenario", async () => {
-  const mediaDurations = [
-    // Regular audio with spill-over
-    {
-      movieDuration: 0,
-      audioDuration: 120,
-      hasMedia: true,
-      silenceDuration: 0,
-      hasMovieAudio: false,
-    },
-    {
-      movieDuration: 0,
-      audioDuration: 0,
-      hasMedia: false,
-      silenceDuration: 0,
-      hasMovieAudio: false,
-    },
-    // Movie with voice-over
-    {
-      movieDuration: 180,
-      audioDuration: 30,
-      hasMedia: true,
-      silenceDuration: 0,
-      hasMovieAudio: true,
-    },
-    {
-      movieDuration: 0,
-      audioDuration: 25,
-      hasMedia: false,
-      silenceDuration: 0,
-      hasMovieAudio: false,
-    },
-    // Regular beat
-    {
-      movieDuration: 0,
-      audioDuration: 40,
-      hasMedia: true,
-      silenceDuration: 0,
-      hasMovieAudio: false,
-    },
-  ];
+  const mediaDurations = complexMixedScenarioDurations;
 
   const beats = [
     createMockBeat({ duration: 60 }), // Spill-over group
@@ -930,39 +932,41 @@ test("updateDurations voice-over followed by spill-over", async () => {
   assert.strictEqual(res[3], 45);
 });
 
+const multipleVoiceOverGroupsDurations = [
+  // First movie with voice-over
+  {
+    movieDuration: 120,
+    audioDuration: 15,
+    hasMedia: true,
+    silenceDuration: 0,
+    hasMovieAudio: true,
+  },
+  {
+    movieDuration: 0,
+    audioDuration: 20,
+    hasMedia: false,
+    silenceDuration: 0,
+    hasMovieAudio: false,
+  },
+  // Second movie with voice-over
+  {
+    movieDuration: 200,
+    audioDuration: 25,
+    hasMedia: true,
+    silenceDuration: 0,
+    hasMovieAudio: true,
+  },
+  {
+    movieDuration: 0,
+    audioDuration: 35,
+    hasMedia: false,
+    silenceDuration: 0,
+    hasMovieAudio: false,
+  },
+];
+
 test("updateDurations multiple voice-over groups with different movies", async () => {
-  const mediaDurations = [
-    // First movie with voice-over
-    {
-      movieDuration: 120,
-      audioDuration: 15,
-      hasMedia: true,
-      silenceDuration: 0,
-      hasMovieAudio: true,
-    },
-    {
-      movieDuration: 0,
-      audioDuration: 20,
-      hasMedia: false,
-      silenceDuration: 0,
-      hasMovieAudio: false,
-    },
-    // Second movie with voice-over
-    {
-      movieDuration: 200,
-      audioDuration: 25,
-      hasMedia: true,
-      silenceDuration: 0,
-      hasMovieAudio: true,
-    },
-    {
-      movieDuration: 0,
-      audioDuration: 35,
-      hasMedia: false,
-      silenceDuration: 0,
-      hasMovieAudio: false,
-    },
-  ];
+  const mediaDurations = multipleVoiceOverGroupsDurations;
 
   const beats = [
     createMockBeat({

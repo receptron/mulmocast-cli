@@ -134,6 +134,70 @@ test("imagePreprocessAgent - with image plugin (markdown)", async () => {
   assert.deepStrictEqual(result, expected);
 });
 
+const chartPluginExpected = {
+  imageFromMovie: false,
+  imageParams: {
+    provider: "openai",
+    model: "gpt-image-1",
+    style: "natural",
+    moderation: "auto",
+  },
+  movieFile: undefined,
+  beatDuration: undefined,
+  markdown: undefined,
+  movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {}, keyName: "REPLICATE_API_TOKEN" },
+  imagePath: "/test/images/test_studio/1p.png",
+  referenceImageForMovie: "/test/images/test_studio/1p.png",
+  html:
+    "\n" +
+    '<div class="chart-container mb-6">\n' +
+    '  <h3 class="text-xl font-semibold mb-4">A sample pie chart</h3>\n' +
+    '  <div class="w-full" style="position: relative; height: 400px;">\n' +
+    '    <canvas id="id"></canvas>\n' +
+    "  </div>\n" +
+    "  <script>\n" +
+    "    (function() {\n" +
+    "      const ctx = document.getElementById('id').getContext('2d');\n" +
+    "      new Chart(ctx, {\n" +
+    '  "type": "pie",\n' +
+    '  "data": {\n' +
+    '    "labels": [\n' +
+    '      "OpenAIと投資家の取り分",\n' +
+    '      "マイクロソフトの取り分"\n' +
+    "    ],\n" +
+    '    "datasets": [\n' +
+    "      {\n" +
+    '        "data": [\n' +
+    "          90,\n" +
+    "          10\n" +
+    "        ],\n" +
+    '        "backgroundColor": [\n' +
+    '          "rgba(75, 192, 192, 0.5)",\n' +
+    '          "rgba(54, 162, 235, 0.5)"\n' +
+    "        ],\n" +
+    '        "borderColor": [\n' +
+    '          "rgba(75, 192, 192, 1)",\n' +
+    '          "rgba(54, 162, 235, 1)"\n' +
+    "        ],\n" +
+    '        "borderWidth": 1\n' +
+    "      }\n" +
+    "    ]\n" +
+    "  },\n" +
+    '  "options": {\n' +
+    '    "responsive": true,\n' +
+    '    "animation": false,\n' +
+    '    "plugins": {\n' +
+    '      "legend": {\n' +
+    '        "position": "bottom"\n' +
+    "      }\n" +
+    "    }\n" +
+    "  }\n" +
+    "});\n" +
+    "    })();\n" +
+    "  </script>\n" +
+    "</div>",
+};
+
 test("imagePreprocessAgent - with image plugin (chart)", async () => {
   const context = createMockContext();
   const beat = createMockBeat({
@@ -173,72 +237,54 @@ test("imagePreprocessAgent - with image plugin (chart)", async () => {
     index: 1,
     imageRefs: {},
   });
-  const expected = {
-    imageFromMovie: false,
-    imageParams: {
-      provider: "openai",
-      model: "gpt-image-1",
-      style: "natural",
-      moderation: "auto",
-    },
-    movieFile: undefined,
-    beatDuration: undefined,
-    markdown: undefined,
-    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {}, keyName: "REPLICATE_API_TOKEN" },
-    imagePath: "/test/images/test_studio/1p.png",
-    referenceImageForMovie: "/test/images/test_studio/1p.png",
-    html:
-      "\n" +
-      '<div class="chart-container mb-6">\n' +
-      '  <h3 class="text-xl font-semibold mb-4">A sample pie chart</h3>\n' +
-      '  <div class="w-full" style="position: relative; height: 400px;">\n' +
-      '    <canvas id="id"></canvas>\n' +
-      "  </div>\n" +
-      "  <script>\n" +
-      "    (function() {\n" +
-      "      const ctx = document.getElementById('id').getContext('2d');\n" +
-      "      new Chart(ctx, {\n" +
-      '  "type": "pie",\n' +
-      '  "data": {\n' +
-      '    "labels": [\n' +
-      '      "OpenAIと投資家の取り分",\n' +
-      '      "マイクロソフトの取り分"\n' +
-      "    ],\n" +
-      '    "datasets": [\n' +
-      "      {\n" +
-      '        "data": [\n' +
-      "          90,\n" +
-      "          10\n" +
-      "        ],\n" +
-      '        "backgroundColor": [\n' +
-      '          "rgba(75, 192, 192, 0.5)",\n' +
-      '          "rgba(54, 162, 235, 0.5)"\n' +
-      "        ],\n" +
-      '        "borderColor": [\n' +
-      '          "rgba(75, 192, 192, 1)",\n' +
-      '          "rgba(54, 162, 235, 1)"\n' +
-      "        ],\n" +
-      '        "borderWidth": 1\n' +
-      "      }\n" +
-      "    ]\n" +
-      "  },\n" +
-      '  "options": {\n' +
-      '    "responsive": true,\n' +
-      '    "animation": false,\n' +
-      '    "plugins": {\n' +
-      '      "legend": {\n' +
-      '        "position": "bottom"\n' +
-      "      }\n" +
-      "    }\n" +
-      "  }\n" +
-      "});\n" +
-      "    })();\n" +
-      "  </script>\n" +
-      "</div>",
-  };
 
-  assert.deepStrictEqual(result, expected);
+  assert.deepStrictEqual(result, chartPluginExpected);
 });
+
+const mermaidPluginExpected = {
+  imageFromMovie: false,
+  imageParams: {
+    provider: "openai",
+    model: "gpt-image-1",
+    style: "natural",
+    moderation: "auto",
+  },
+  movieFile: undefined,
+  beatDuration: undefined,
+  movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {}, keyName: "REPLICATE_API_TOKEN" },
+  markdown:
+    "```mermaid\n" +
+    "graph LR\n" +
+    "    A[Market Research] --> B[Product Planning]\n" +
+    "    B --> C[Development]\n" +
+    "    C --> D[Testing]\n" +
+    "    D --> E[Manufacturing]\n" +
+    "    E --> F[Marketing]\n" +
+    "    F --> G[Sales]\n" +
+    "    G --> H[Customer Support]\n" +
+    "    H --> A\n" +
+    "```",
+  html:
+    "\n" +
+    '<div class="mermaid-container mb-6">\n' +
+    '  <h3 class="text-xl font-semibold mb-4">Business Process Flow</h3>\n' +
+    '  <div class="flex justify-center">\n' +
+    '    <div id="id" class="mermaid">\n' +
+    "      graph LR\n" +
+    "    A[Market Research] --> B[Product Planning]\n" +
+    "    B --> C[Development]\n" +
+    "    C --> D[Testing]\n" +
+    "    D --> E[Manufacturing]\n" +
+    "    E --> F[Marketing]\n" +
+    "    F --> G[Sales]\n" +
+    "    G --> H[Customer Support]\n" +
+    "    H --> A\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "</div>",
+  imagePath: "/test/images/test_studio/1p.png",
+  referenceImageForMovie: "/test/images/test_studio/1p.png",
+};
 
 test("imagePreprocessAgent - with image plugin (mermaid)", async () => {
   // Skip this test as it requires complex file system setup and Mermaid rendering
@@ -261,50 +307,5 @@ test("imagePreprocessAgent - with image plugin (mermaid)", async () => {
     imageRefs: {},
   });
 
-  const expected = {
-    imageFromMovie: false,
-    imageParams: {
-      provider: "openai",
-      model: "gpt-image-1",
-      style: "natural",
-      moderation: "auto",
-    },
-    movieFile: undefined,
-    beatDuration: undefined,
-    movieAgentInfo: { agent: "movieReplicateAgent", movieParams: {}, keyName: "REPLICATE_API_TOKEN" },
-    markdown:
-      "```mermaid\n" +
-      "graph LR\n" +
-      "    A[Market Research] --> B[Product Planning]\n" +
-      "    B --> C[Development]\n" +
-      "    C --> D[Testing]\n" +
-      "    D --> E[Manufacturing]\n" +
-      "    E --> F[Marketing]\n" +
-      "    F --> G[Sales]\n" +
-      "    G --> H[Customer Support]\n" +
-      "    H --> A\n" +
-      "```",
-    html:
-      "\n" +
-      '<div class="mermaid-container mb-6">\n' +
-      '  <h3 class="text-xl font-semibold mb-4">Business Process Flow</h3>\n' +
-      '  <div class="flex justify-center">\n' +
-      '    <div id="id" class="mermaid">\n' +
-      "      graph LR\n" +
-      "    A[Market Research] --> B[Product Planning]\n" +
-      "    B --> C[Development]\n" +
-      "    C --> D[Testing]\n" +
-      "    D --> E[Manufacturing]\n" +
-      "    E --> F[Marketing]\n" +
-      "    F --> G[Sales]\n" +
-      "    G --> H[Customer Support]\n" +
-      "    H --> A\n" +
-      "    </div>\n" +
-      "  </div>\n" +
-      "</div>",
-    imagePath: "/test/images/test_studio/1p.png",
-    referenceImageForMovie: "/test/images/test_studio/1p.png",
-  };
-
-  assert.deepStrictEqual(result, expected);
+  assert.deepStrictEqual(result, mermaidPluginExpected);
 });

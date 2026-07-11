@@ -1428,6 +1428,54 @@ test("imagePreprocessAgent - soundEffectPrompt + enableLipSync + moviePrompt (no
   assert.deepStrictEqual(result, expected);
 });
 
+const expectedAllParametersResult = {
+  imageParams: {
+    provider: "openai",
+    model: "gpt-image-1",
+    style: "natural",
+    moderation: "auto",
+  },
+  movieFile: "/test/images/test_studio/33.mov",
+  soundEffectAgentInfo: {
+    agentName: "soundEffectReplicateAgent",
+    keyName: "REPLICATE_API_TOKEN",
+    defaultModel: "zsxkib/mmaudio",
+    models: ["zsxkib/mmaudio"],
+    modelParams: {
+      "zsxkib/mmaudio": {
+        identifier: "zsxkib/mmaudio:62871fb59889b2d7c13777f08deb3b36bdff88f7e1d53a50ad7694548a41b484",
+      },
+    },
+  },
+  soundEffectModel: "zsxkib/mmaudio",
+  soundEffectFile: "/test/images/test_studio/33_sound.mov",
+  soundEffectPrompt: "Ambient conference room sound",
+  lipSyncAgentName: "lipSyncReplicateAgent",
+  lipSyncModel: "bytedance/omni-human",
+  lipSyncFile: "/test/images/test_studio/33_lipsync.mov",
+  audioFile: path.resolve("/test/audio", "test_studio", "test_studio_2b80f67aea18b0fe27db395d3ffc2255e86fe22ecb4e9e408147a5bb7da1b69b_en.mp3"),
+  beatDuration: undefined,
+  imagePath: "/test/images/test_studio/33p.png",
+  referenceImageForMovie: "/test/images/test_studio/33p.png",
+  imageAgentInfo: {
+    agent: "imageOpenaiAgent",
+    keyName: "OPENAI_API_KEY",
+    imageParams: {
+      model: "gpt-image-1",
+      moderation: "auto",
+      provider: "openai",
+      style: "natural",
+    },
+  },
+  prompt: "Professional speaker at podium\nnatural",
+  referenceImages: [],
+  movieAgentInfo: {
+    agent: "movieReplicateAgent",
+    keyName: "REPLICATE_API_TOKEN",
+    movieParams: {},
+  },
+};
+
 test("imagePreprocessAgent - all parameters: soundEffectPrompt + enableLipSync + imagePrompt + moviePrompt + text", async () => {
   const context = createMockContext();
   const beat = createMockBeat({
@@ -1445,53 +1493,5 @@ test("imagePreprocessAgent - all parameters: soundEffectPrompt + enableLipSync +
     imageRefs: {},
   });
 
-  const expected = {
-    imageParams: {
-      provider: "openai",
-      model: "gpt-image-1",
-      style: "natural",
-      moderation: "auto",
-    },
-    movieFile: "/test/images/test_studio/33.mov",
-    soundEffectAgentInfo: {
-      agentName: "soundEffectReplicateAgent",
-      keyName: "REPLICATE_API_TOKEN",
-      defaultModel: "zsxkib/mmaudio",
-      models: ["zsxkib/mmaudio"],
-      modelParams: {
-        "zsxkib/mmaudio": {
-          identifier: "zsxkib/mmaudio:62871fb59889b2d7c13777f08deb3b36bdff88f7e1d53a50ad7694548a41b484",
-        },
-      },
-    },
-    soundEffectModel: "zsxkib/mmaudio",
-    soundEffectFile: "/test/images/test_studio/33_sound.mov",
-    soundEffectPrompt: "Ambient conference room sound",
-    lipSyncAgentName: "lipSyncReplicateAgent",
-    lipSyncModel: "bytedance/omni-human",
-    lipSyncFile: "/test/images/test_studio/33_lipsync.mov",
-    audioFile: path.resolve("/test/audio", "test_studio", "test_studio_2b80f67aea18b0fe27db395d3ffc2255e86fe22ecb4e9e408147a5bb7da1b69b_en.mp3"),
-    beatDuration: undefined,
-    imagePath: "/test/images/test_studio/33p.png",
-    referenceImageForMovie: "/test/images/test_studio/33p.png",
-    imageAgentInfo: {
-      agent: "imageOpenaiAgent",
-      keyName: "OPENAI_API_KEY",
-      imageParams: {
-        model: "gpt-image-1",
-        moderation: "auto",
-        provider: "openai",
-        style: "natural",
-      },
-    },
-    prompt: "Professional speaker at podium\nnatural",
-    referenceImages: [],
-    movieAgentInfo: {
-      agent: "movieReplicateAgent",
-      keyName: "REPLICATE_API_TOKEN",
-      movieParams: {},
-    },
-  };
-
-  assert.deepStrictEqual(result, expected);
+  assert.deepStrictEqual(result, expectedAllParametersResult);
 });

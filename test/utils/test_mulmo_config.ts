@@ -43,7 +43,9 @@ describe("findConfigFile", () => {
       cleanup(tmpDir);
     }
   });
+});
 
+describe("findConfigFile - home directory fallback", () => {
   test("finds config in home directory when not in CWD", () => {
     const tmpDir = createTempDir();
     const homeConfigPath = path.join(os.homedir(), CONFIG_FILE_NAME);
@@ -141,7 +143,9 @@ describe("loadMulmoConfig", () => {
       cleanup(tmpDir);
     }
   });
+});
 
+describe("loadMulmoConfig - invalid and empty configs", () => {
   test("throws on invalid JSON", () => {
     const tmpDir = createTempDir();
     try {
@@ -164,7 +168,9 @@ describe("loadMulmoConfig", () => {
       cleanup(tmpDir);
     }
   });
+});
 
+describe("loadMulmoConfig - kind:path preservation", () => {
   test("preserves kind:path entries as-is without resolving to absolute", () => {
     const tmpDir = createTempDir();
     try {
