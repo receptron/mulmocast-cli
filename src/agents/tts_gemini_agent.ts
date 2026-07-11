@@ -13,6 +13,10 @@ import {
 } from "../utils/error_cause.js";
 import { pcmToMp3 } from "../utils/ffmpeg_utils.js";
 
+// Per-request timeout so a stalled GenAI TTS call rejects (and GraphAI retry can
+// recover) instead of hanging. Generous vs. normal generation time.
+const GENAI_REQUEST_TIMEOUT_MS = 120_000;
+
 import type { GoogleTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult } from "../types/agent.js";
 import type { AgentUsage } from "../types/usage.js";
 
@@ -41,7 +45,7 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
 
   const geminiResult: { rawPcm: Buffer; sampleRate: number; usage: AgentUsage | undefined } | AgentErrorResult = await (async () => {
     try {
-      const ai = new GoogleGenAI({ apiKey });
+      const ai = new GoogleGenAI({ apiKey, httpOptions: { timeout: GENAI_REQUEST_TIMEOUT_MS } });
       const response = await ai.models.generateContent({
         model: model ?? provider2TTSAgent.gemini.defaultModel,
         contents: [{ parts: [{ text: getPrompt(text, instructions) }] }],
