@@ -6,8 +6,11 @@ export const FETCH_DOWNLOAD_TIMEOUT_MS = 60_000; // generated image download
 export const FETCH_MEDIA_DOWNLOAD_TIMEOUT_MS = 180_000; // large video/audio download
 export const FETCH_API_TIMEOUT_MS = 120_000; // generation API POST (e.g. TTS text -> audio)
 
-// Statuses whose Response must not carry a body (constructing one with a body throws).
-const NULL_BODY_STATUSES = new Set([101, 103, 204, 205, 304]);
+// Statuses that fetch can surface whose Response must not carry a body
+// (constructing `new Response(body, { status })` with a body throws). 1xx
+// statuses are excluded: fetch never surfaces them as a final response, and
+// `new Response(null, { status: 101 })` itself throws (valid range is 200-599).
+const NULL_BODY_STATUSES = new Set([204, 205, 304]);
 
 /**
  * fetch() with an AbortController timeout that covers the whole exchange —
