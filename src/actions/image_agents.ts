@@ -72,72 +72,80 @@ type ImagePreprocessAgentResponse =
   | ImageOnlyMoviePreprocessAgentResponse
   | ImageGenearalPreprocessAgentResponse;
 
-export const imagePreprocessAgent = async (namedInputs: {
-  context: MulmoStudioContext;
-  beat: MulmoBeat;
-  index: number;
-  imageRefs?: Record<string, string>;
-}): Promise<ImagePreprocessAgentResponse> => {
-  const { context, beat, index, imageRefs } = namedInputs;
+const buildHtmlPromptResponse = (context: MulmoStudioContext, beat: MulmoBeat, imagePath: string, htmlImageFile: string): ImagePreprocessAgentResponse => {
+  const htmlPrompt = MulmoBeatMethods.getHtmlPrompt(beat);
+  const htmlPath = imagePath.replace(/\.[^/.]+$/, ".html");
+  // ImageHtmlPreprocessAgentResponse
+  return { imagePath, htmlPrompt, htmlImageFile, htmlPath, htmlImageSystemPrompt: htmlImageSystemPrompt(context.presentationStyle.canvasSize) };
+};
 
-  const studioBeat = context.studio.beats[index];
-  const { imagePath, htmlImageFile } = getBeatPngImagePath(context, index);
-  if (beat.htmlPrompt) {
-    const htmlPrompt = MulmoBeatMethods.getHtmlPrompt(beat);
-    const htmlPath = imagePath.replace(/\.[^/.]+$/, ".html");
-    // ImageHtmlPreprocessAgentResponse
-    return { imagePath, htmlPrompt, htmlImageFile, htmlPath, htmlImageSystemPrompt: htmlImageSystemPrompt(context.presentationStyle.canvasSize) };
+const applySoundEffect = (
+  returnValue: ImagePreprocessAgentReturnValue,
+  params: { context: MulmoStudioContext; beat: MulmoBeat; index: number; isMovie: boolean; moviePaths: ReturnType<typeof getBeatMoviePaths> },
+): void => {
+  const { context, beat, index, isMovie, moviePaths } = params;
+  if (isMovie) {
+    returnValue.soundEffectAgentInfo = MulmoPresentationStyleMethods.getSoundEffectAgentInfo(context.presentationStyle, beat);
+    returnValue.soundEffectModel =
+      beat.soundEffectParams?.model ?? context.presentationStyle.soundEffectParams?.model ?? returnValue.soundEffectAgentInfo.defaultModel;
+    returnValue.soundEffectFile = moviePaths.soundEffectFile;
+    returnValue.soundEffectPrompt = beat.soundEffectPrompt;
+  } else {
+    GraphAILogger.warn(`soundEffectPrompt is set, but there is no video. beat: ${index}`);
   }
+};
 
-  const imageAgentInfo = MulmoPresentationStyleMethods.getImageAgentInfo(context.presentationStyle, beat);
-  const moviePaths = getBeatMoviePaths(context, index);
-  const returnValue: ImagePreprocessAgentReturnValue = {
-    imageParams: imageAgentInfo.imageParams,
-    movieFile: beat.moviePrompt ? moviePaths.movieFile : undefined,
-    beatDuration: beat.duration ?? studioBeat?.duration,
-  };
-
-  const isMovie = Boolean(beat.moviePrompt || beat?.image?.type === "movie");
-  if (beat.soundEffectPrompt) {
-    if (isMovie) {
-      returnValue.soundEffectAgentInfo = MulmoPresentationStyleMethods.getSoundEffectAgentInfo(context.presentationStyle, beat);
-      returnValue.soundEffectModel =
-        beat.soundEffectParams?.model ?? context.presentationStyle.soundEffectParams?.model ?? returnValue.soundEffectAgentInfo.defaultModel;
-      returnValue.soundEffectFile = moviePaths.soundEffectFile;
-      returnValue.soundEffectPrompt = beat.soundEffectPrompt;
-    } else {
-      GraphAILogger.warn(`soundEffectPrompt is set, but there is no video. beat: ${index}`);
-    }
+const applyLipSync = (
+  returnValue: ImagePreprocessAgentReturnValue,
+  params: {
+    context: MulmoStudioContext;
+    beat: MulmoBeat;
+    index: number;
+    studioBeat: MulmoStudioContext["studio"]["beats"][number];
+    moviePaths: ReturnType<typeof getBeatMoviePaths>;
+  },
+): void => {
+  const { context, beat, index, studioBeat, moviePaths } = params;
+  const lipSyncAgentInfo = MulmoPresentationStyleMethods.getLipSyncAgentInfo(context.presentationStyle, beat);
+  returnValue.lipSyncAgentName = lipSyncAgentInfo.agentName;
+  returnValue.lipSyncModel = beat.lipSyncParams?.model ?? context.presentationStyle.lipSyncParams?.model ?? lipSyncAgentInfo.defaultModel;
+  returnValue.lipSyncFile = moviePaths.lipSyncFile;
+  if (context.studio.script.audioParams?.suppressSpeech) {
+    // studio beat may ot have startAt and duration yet, in case of API call from the app.
+    returnValue.startAt = context.studio.script.beats.filter((_, i) => i < index).reduce((acc, curr) => acc + (curr.duration ?? 0), 0);
+    returnValue.duration = beat.duration ?? 0;
+    returnValue.lipSyncTrimAudio = true;
+    returnValue.bgmFile = MulmoMediaSourceMethods.resolve(context.studio.script.audioParams.bgm, context);
+    const folderName = MulmoStudioContextMethods.getFileName(context);
+    const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
+    const trimmedName = `${beatId(beat.id, index)}_trimmed`;
+    returnValue.audioFile = context.fileDirs.grouped
+      ? getGroupedAudioFilePath(audioDirPath, trimmedName)
+      : getAudioFilePath(audioDirPath, folderName, trimmedName);
+  } else {
+    // Audio file will be set from the beat's audio file when available
+    const lang = context.lang ?? context.studio.script.lang;
+    returnValue.audioFile = studioBeat?.audioFile ?? localizedPath(context, beat, index, lang);
   }
+};
 
-  if (beat.enableLipSync) {
-    const lipSyncAgentInfo = MulmoPresentationStyleMethods.getLipSyncAgentInfo(context.presentationStyle, beat);
-    returnValue.lipSyncAgentName = lipSyncAgentInfo.agentName;
-    returnValue.lipSyncModel = beat.lipSyncParams?.model ?? context.presentationStyle.lipSyncParams?.model ?? lipSyncAgentInfo.defaultModel;
-    returnValue.lipSyncFile = moviePaths.lipSyncFile;
-    if (context.studio.script.audioParams?.suppressSpeech) {
-      // studio beat may ot have startAt and duration yet, in case of API call from the app.
-      returnValue.startAt = context.studio.script.beats.filter((_, i) => i < index).reduce((acc, curr) => acc + (curr.duration ?? 0), 0);
-      returnValue.duration = beat.duration ?? 0;
-      returnValue.lipSyncTrimAudio = true;
-      returnValue.bgmFile = MulmoMediaSourceMethods.resolve(context.studio.script.audioParams.bgm, context);
-      const folderName = MulmoStudioContextMethods.getFileName(context);
-      const audioDirPath = MulmoStudioContextMethods.getAudioDirPath(context);
-      const trimmedName = `${beatId(beat.id, index)}_trimmed`;
-      returnValue.audioFile = context.fileDirs.grouped
-        ? getGroupedAudioFilePath(audioDirPath, trimmedName)
-        : getAudioFilePath(audioDirPath, folderName, trimmedName);
-    } else {
-      // Audio file will be set from the beat's audio file when available
-      const lang = context.lang ?? context.studio.script.lang;
-      returnValue.audioFile = studioBeat?.audioFile ?? localizedPath(context, beat, index, lang);
-    }
-  }
+const resolveMovieReferenceImages = (
+  referenceImages: NonNullable<MulmoMovieParams["referenceImages"]>,
+  imageRefs: Record<string, string>,
+): { imagePath: string; referenceType: "ASSET" | "STYLE" }[] => {
+  return referenceImages
+    .map((ref) => {
+      const refPath = imageRefs[ref.imageName];
+      return refPath ? { imagePath: refPath, referenceType: ref.referenceType } : undefined;
+    })
+    .filter((r): r is { imagePath: string; referenceType: "ASSET" | "STYLE" } => r !== undefined);
+};
 
-  returnValue.movieAgentInfo = MulmoPresentationStyleMethods.getMovieAgentInfo(context.presentationStyle, beat);
-
-  // Resolve movie reference images from imageRefs
-  const movieParams = beat.movieParams ?? context.presentationStyle.movieParams;
+const applyMovieReferenceImages = (
+  returnValue: ImagePreprocessAgentReturnValue,
+  movieParams: MulmoMovieParams | undefined,
+  imageRefs?: Record<string, string>,
+): void => {
   if (movieParams?.firstFrameImageName && imageRefs) {
     const firstFramePath = imageRefs[movieParams.firstFrameImageName];
     if (firstFramePath) {
@@ -151,73 +159,125 @@ export const imagePreprocessAgent = async (namedInputs: {
     }
   }
   if (movieParams?.referenceImages && imageRefs) {
-    returnValue.movieReferenceImages = movieParams.referenceImages
-      .map((ref) => {
-        const refPath = imageRefs[ref.imageName];
-        return refPath ? { imagePath: refPath, referenceType: ref.referenceType } : undefined;
-      })
-      .filter((r): r is { imagePath: string; referenceType: "ASSET" | "STYLE" } => r !== undefined);
+    returnValue.movieReferenceImages = resolveMovieReferenceImages(movieParams.referenceImages, imageRefs);
+  }
+};
+
+const buildImagePluginResponse = async (
+  returnValue: ImagePreprocessAgentReturnValue,
+  params: { context: MulmoStudioContext; beat: MulmoBeat; image: NonNullable<MulmoBeat["image"]>; index: number; imagePath: string },
+): Promise<ImagePreprocessAgentResponse> => {
+  const { context, beat, image, index, imagePath } = params;
+  const plugin = MulmoBeatMethods.getPlugin(beat);
+  const pluginPath = plugin.path({ beat, context, imagePath, ...htmlStyle(context, beat) });
+
+  const markdown = plugin.markdown ? plugin.markdown({ beat, context, imagePath, ...htmlStyle(context, beat) }) : undefined;
+  const html = plugin.html ? await plugin.html({ beat, context, imagePath, ...htmlStyle(context, beat) }) : undefined;
+
+  const isTypeMovie = image.type === "movie";
+  const isAnimatedHtml = MulmoBeatMethods.isAnimatedHtmlTailwind(beat);
+
+  // animation and moviePrompt cannot be used together
+  if (isAnimatedHtml && beat.moviePrompt) {
+    throw new Error("html_tailwind animation and moviePrompt cannot be used together on the same beat. Use either animation or moviePrompt, not both.");
   }
 
-  if (beat.image) {
-    const plugin = MulmoBeatMethods.getPlugin(beat);
-    const pluginPath = plugin.path({ beat, context, imagePath, ...htmlStyle(context, beat) });
-
-    const markdown = plugin.markdown ? plugin.markdown({ beat, context, imagePath, ...htmlStyle(context, beat) }) : undefined;
-    const html = plugin.html ? await plugin.html({ beat, context, imagePath, ...htmlStyle(context, beat) }) : undefined;
-
-    const isTypeMovie = beat.image.type === "movie";
-    const isAnimatedHtml = MulmoBeatMethods.isAnimatedHtmlTailwind(beat);
-
-    // animation and moviePrompt cannot be used together
-    if (isAnimatedHtml && beat.moviePrompt) {
-      throw new Error("html_tailwind animation and moviePrompt cannot be used together on the same beat. Use either animation or moviePrompt, not both.");
-    }
-
-    if (isAnimatedHtml) {
-      const animatedVideoPath = getBeatAnimatedVideoPath(context, index);
-      // ImagePluginPreprocessAgentResponse
-      // imageFromMovie is false: the plugin generates both the .mp4 video AND
-      // a high-quality final-frame PNG directly from HTML (better than extracting from compressed video).
-      return {
-        ...returnValue,
-        imagePath, // static final-frame PNG (generated by the plugin)
-        movieFile: animatedVideoPath, // .mp4 path for the pipeline
-        referenceImageForMovie: pluginPath,
-        markdown,
-        html,
-      };
-    }
-
-    // undefined prompt indicates that image generation is not needed
+  if (isAnimatedHtml) {
+    const animatedVideoPath = getBeatAnimatedVideoPath(context, index);
     // ImagePluginPreprocessAgentResponse
+    // imageFromMovie is false: the plugin generates both the .mp4 video AND
+    // a high-quality final-frame PNG directly from HTML (better than extracting from compressed video).
     return {
       ...returnValue,
-      // imagePath: isTypeMovie ? undefined : pluginPath,
-      imagePath: isTypeMovie ? imagePath : pluginPath,
-      movieFile: isTypeMovie ? pluginPath : returnValue.movieFile,
-      imageFromMovie: isTypeMovie,
+      imagePath, // static final-frame PNG (generated by the plugin)
+      movieFile: animatedVideoPath, // .mp4 path for the pipeline
       referenceImageForMovie: pluginPath,
       markdown,
       html,
     };
   }
 
-  if (beat.moviePrompt && !beat.imagePrompt) {
-    // ImageOnlyMoviePreprocessAgentResponse
-    // If firstFrameImageName is specified, use the resolved ref image as the movie's first frame
-    const base = { ...returnValue, imagePath, imageFromMovie: true };
-    return returnValue.firstFrameImagePath ? { ...base, referenceImageForMovie: returnValue.firstFrameImagePath } : base;
-  }
+  // undefined prompt indicates that image generation is not needed
+  // ImagePluginPreprocessAgentResponse
+  return {
+    ...returnValue,
+    // imagePath: isTypeMovie ? undefined : pluginPath,
+    imagePath: isTypeMovie ? imagePath : pluginPath,
+    movieFile: isTypeMovie ? pluginPath : returnValue.movieFile,
+    imageFromMovie: isTypeMovie,
+    referenceImageForMovie: pluginPath,
+    markdown,
+    html,
+  };
+};
 
+const buildMovieOnlyResponse = (returnValue: ImagePreprocessAgentReturnValue, imagePath: string): ImagePreprocessAgentResponse => {
+  // ImageOnlyMoviePreprocessAgentResponse
+  // If firstFrameImageName is specified, use the resolved ref image as the movie's first frame
+  const base = { ...returnValue, imagePath, imageFromMovie: true };
+  return returnValue.firstFrameImagePath ? { ...base, referenceImageForMovie: returnValue.firstFrameImagePath } : base;
+};
+
+const buildGeneralResponse = (
+  returnValue: ImagePreprocessAgentReturnValue,
+  params: { beat: MulmoBeat; imageAgentInfo: Text2ImageAgentInfo; imageRefs?: Record<string, string>; imagePath: string },
+): ImagePreprocessAgentResponse => {
+  const { beat, imageAgentInfo, imageRefs, imagePath } = params;
   // referenceImages for "edit_image", openai agent.
   const referenceImages = MulmoBeatMethods.getImageReferenceForImageGenerator(beat, imageRefs ?? {});
-
   const prompt = imagePrompt(beat, imageAgentInfo.imageParams.style);
   // ImageGenearalPreprocessAgentResponse
   // firstFrameImagePath (from movieParams.firstFrameImageName) takes precedence over generated image
   const movieFirstFramePath = returnValue.firstFrameImagePath ?? imagePath;
   return { ...returnValue, imagePath, referenceImageForMovie: movieFirstFramePath, imageAgentInfo, prompt, referenceImages };
+};
+
+export const imagePreprocessAgent = async (namedInputs: {
+  context: MulmoStudioContext;
+  beat: MulmoBeat;
+  index: number;
+  imageRefs?: Record<string, string>;
+}): Promise<ImagePreprocessAgentResponse> => {
+  const { context, beat, index, imageRefs } = namedInputs;
+
+  const studioBeat = context.studio.beats[index];
+  const { imagePath, htmlImageFile } = getBeatPngImagePath(context, index);
+  if (beat.htmlPrompt) {
+    return buildHtmlPromptResponse(context, beat, imagePath, htmlImageFile);
+  }
+
+  const imageAgentInfo = MulmoPresentationStyleMethods.getImageAgentInfo(context.presentationStyle, beat);
+  const moviePaths = getBeatMoviePaths(context, index);
+  const returnValue: ImagePreprocessAgentReturnValue = {
+    imageParams: imageAgentInfo.imageParams,
+    movieFile: beat.moviePrompt ? moviePaths.movieFile : undefined,
+    beatDuration: beat.duration ?? studioBeat?.duration,
+  };
+
+  const isMovie = Boolean(beat.moviePrompt || beat?.image?.type === "movie");
+  if (beat.soundEffectPrompt) {
+    applySoundEffect(returnValue, { context, beat, index, isMovie, moviePaths });
+  }
+
+  if (beat.enableLipSync) {
+    applyLipSync(returnValue, { context, beat, index, studioBeat, moviePaths });
+  }
+
+  returnValue.movieAgentInfo = MulmoPresentationStyleMethods.getMovieAgentInfo(context.presentationStyle, beat);
+
+  // Resolve movie reference images from imageRefs
+  const movieParams = beat.movieParams ?? context.presentationStyle.movieParams;
+  applyMovieReferenceImages(returnValue, movieParams, imageRefs);
+
+  if (beat.image) {
+    return buildImagePluginResponse(returnValue, { context, beat, image: beat.image, index, imagePath });
+  }
+
+  if (beat.moviePrompt && !beat.imagePrompt) {
+    return buildMovieOnlyResponse(returnValue, imagePath);
+  }
+
+  return buildGeneralResponse(returnValue, { beat, imageAgentInfo, imageRefs, imagePath });
 };
 
 export const imagePluginAgent = async (namedInputs: {
