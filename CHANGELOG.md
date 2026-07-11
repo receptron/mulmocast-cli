@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.7.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.7.1) (2026-07-12)
+
+- **Network timeout hardening** (6-part series, [#1476](https://github.com/receptron/mulmocast-cli/pull/1476)–[#1481](https://github.com/receptron/mulmocast-cli/pull/1481)): every outbound network call now has an explicit timeout, so a hung connection fails fast with a clear error instead of stalling the pipeline (or CI) indefinitely:
+  - `safeFetch` timeout wrapper covering all network downloads ([#1476](https://github.com/receptron/mulmocast-cli/pull/1476))
+  - explicit request timeout on the OpenAI client ([#1477](https://github.com/receptron/mulmocast-cli/pull/1477))
+  - timeout for `replicate.run()` ([#1478](https://github.com/receptron/mulmocast-cli/pull/1478))
+  - per-request timeout for GenAI image generation ([#1479](https://github.com/receptron/mulmocast-cli/pull/1479))
+  - per-request timeout for GenAI (Gemini) TTS ([#1480](https://github.com/receptron/mulmocast-cli/pull/1480))
+  - bounded GenAI video generation — request timeout + poll cap + error detail ([#1481](https://github.com/receptron/mulmocast-cli/pull/1481))
+- **Lint / test quality**: added a `maxLines` ESLint rule ([#1482](https://github.com/receptron/mulmocast-cli/pull/1482)) and reduced test function length to comply, via data extraction / describe splits / fixture hoisting ([#1484](https://github.com/receptron/mulmocast-cli/pull/1484), [#1485](https://github.com/receptron/mulmocast-cli/pull/1485)).
+- **Dependency updates** ([#1470](https://github.com/receptron/mulmocast-cli/pull/1470), [#1471](https://github.com/receptron/mulmocast-cli/pull/1471), [#1483](https://github.com/receptron/mulmocast-cli/pull/1483)): routine package bumps.
+- No public API change; no `src/types/` change (so `@mulmocast/types` stays at 2.7.0).
+
+📦 **npm**: [`mulmocast@2.7.1`](https://www.npmjs.com/package/mulmocast/v/2.7.1)
+
 ## [2.7.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.7.0) (2026-07-03)
 
 - **Pre-run usage estimator** ([#1466](https://github.com/receptron/mulmocast-cli/pull/1466), closes [#1465](https://github.com/receptron/mulmocast-cli/issues/1465)): new `estimateUsage(script, options?)` walks a MulmoScript **before generating anything** and returns per-beat, per-process usage records (tokens / characters / billed seconds) with a `precision: "exact" | "estimated"` flag per metric, plus `costUSD` when pricing is known. Exact metrics were validated against real billed usage (±0%; heuristics within ±10% — see the [validation record](https://github.com/receptron/mulmocast-cli/pull/1466#issuecomment-4873194771) and `scripts/probe/probe_estimate_vs_actual.ts`). OpenAI prompts are tokenized with js-tiktoken (`o200k_base`); browser-compatible and exported from both entries.
