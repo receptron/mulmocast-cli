@@ -157,7 +157,9 @@ describe("MulmoAnimation", () => {
     assert.equal(anim._entries[0].kind, "typewriter");
     assert.equal(anim._entries[0].text, "Hello World");
   });
+});
 
+describe("MulmoAnimation methods", () => {
   it("registers blink entries", () => {
     const ctx = loadRuntime();
     const MulmoAnimation = ctx.MulmoAnimation;
