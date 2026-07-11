@@ -19,6 +19,7 @@ import { ASPECT_RATIOS } from "../types/const.js";
 import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, MovieAgentInputs, MovieReferenceImage } from "../types/agent.js";
 import type { AgentUsage } from "../types/usage.js";
 import { getModelDuration, provider2MovieAgent, AUDIO_MODE_NEVER, AUDIO_MODE_ALWAYS } from "../types/provider2agent.js";
+import { GENAI_REQUEST_TIMEOUT_MS, VIDEO_POLL_TIMEOUT_MS } from "../utils/sdk_timeout.js";
 
 type ImagePayload = { imageBytes: string; mimeType: string };
 
@@ -40,7 +41,13 @@ type VideoPayload = {
 
 const pollUntilDone = async (ai: GoogleGenAI, operation: GenerateVideosOperation) => {
   const response = { operation };
+  const deadline = Date.now() + VIDEO_POLL_TIMEOUT_MS;
   while (!response.operation.done) {
+    if (Date.now() > deadline) {
+      throw new Error(`Video generation did not complete within ${VIDEO_POLL_TIMEOUT_MS}ms`, {
+        cause: agentGenerationError("movieGenAIAgent", imageAction, movieFileTarget),
+      });
+    }
     await sleep(5000);
     response.operation = await ai.operations.getVideosOperation(response);
   }
@@ -278,6 +285,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
           vertexai: true,
           project: params.vertexai_project,
           location: params.vertexai_location ?? "us-central1",
+          httpOptions: { timeout: GENAI_REQUEST_TIMEOUT_MS },
         })
       : (() => {
           if (!apiKey) {
@@ -288,7 +296,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
               },
             );
           }
-          return new GoogleGenAI({ apiKey });
+          return new GoogleGenAI({ apiKey, httpOptions: { timeout: GENAI_REQUEST_TIMEOUT_MS } });
         })();
 
     // Veo 3.1: Video extension mode for videos longer than 8s

@@ -24,6 +24,7 @@ import { ASPECT_RATIOS, PRO_ASPECT_RATIOS } from "../types/const.js";
 import type { AgentBufferResult, ImageAgentInputs, ImageAgentParams, GenAIImageAgentConfig } from "../types/agent.js";
 import type { AgentUsage } from "../types/usage.js";
 import { GoogleGenAI, PersonGeneration, GenerateContentResponse } from "@google/genai";
+import { GENAI_REQUEST_TIMEOUT_MS } from "../utils/sdk_timeout.js";
 
 const isDeprecatedGoogleImageModel = (model: string): model is DeprecatedGoogleImageModel => model in deprecatedGoogleImageModelHints;
 
@@ -116,7 +117,7 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
             `imageGenAIAgent: model "${model}" on Vertex AI is only available in location "global", but got "${location}". Set imageParams.vertexai_location to "global".`,
           );
         }
-        return new GoogleGenAI({ vertexai: true, project: params.vertexai_project, location });
+        return new GoogleGenAI({ vertexai: true, project: params.vertexai_project, location, httpOptions: { timeout: GENAI_REQUEST_TIMEOUT_MS } });
       })()
     : (() => {
         if (!apiKey) {
@@ -127,7 +128,7 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
             },
           );
         }
-        return new GoogleGenAI({ apiKey });
+        return new GoogleGenAI({ apiKey, httpOptions: { timeout: GENAI_REQUEST_TIMEOUT_MS } });
       })();
 
   if (model === "gemini-2.5-flash-image" || model === "gemini-3.1-flash-image-preview" || model === "gemini-3-pro-image-preview") {

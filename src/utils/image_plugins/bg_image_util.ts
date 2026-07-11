@@ -1,8 +1,7 @@
 import { BackgroundImage, MulmoStudioContext, ImageProcessorParams } from "../../types/index.js";
 import { MulmoMediaSourceMethods } from "../../methods/mulmo_media_source.js";
 import { resolveStyle } from "./utils.js";
-
-const DEFAULT_FETCH_TIMEOUT_MS = 30000;
+import { safeFetch, DEFAULT_FETCH_TIMEOUT_MS } from "../fetch.js";
 
 /**
  * Resolve background image from beat level and global level settings.
@@ -32,25 +31,13 @@ export const resolveBackgroundImage = (
  * Fetch URL and convert to data URL with timeout
  */
 const fetchUrlAsDataUrl = async (url: string, timeoutMs = DEFAULT_FETCH_TIMEOUT_MS): Promise<string> => {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    const response = await fetch(url, { signal: controller.signal });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch background image: ${url} (${response.status})`);
-    }
-    const buffer = Buffer.from(await response.arrayBuffer());
-    const contentType = response.headers.get("content-type") || "image/png";
-    return `data:${contentType};base64,${buffer.toString("base64")}`;
-  } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
-      throw new Error(`Fetch timeout for background image: ${url}`);
-    }
-    throw error;
-  } finally {
-    clearTimeout(timeoutId);
+  const response = await safeFetch(url, {}, timeoutMs);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch background image: ${url} (${response.status})`);
   }
+  const buffer = Buffer.from(await response.arrayBuffer());
+  const contentType = response.headers.get("content-type") || "image/png";
+  return `data:${contentType};base64,${buffer.toString("base64")}`;
 };
 
 /**

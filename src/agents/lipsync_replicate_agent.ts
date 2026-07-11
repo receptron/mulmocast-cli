@@ -16,6 +16,7 @@ import {
 import type { AgentBufferResult, LipSyncAgentInputs, ReplicateLipSyncAgentParams, ReplicateLipSyncAgentConfig } from "../types/agent.js";
 import type { AgentUsage } from "../types/usage.js";
 import { runReplicateWithMetrics } from "../utils/replicate_usage.js";
+import { safeFetch, FETCH_MEDIA_DOWNLOAD_TIMEOUT_MS } from "../utils/fetch.js";
 
 export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, AgentBufferResult, LipSyncAgentInputs, ReplicateLipSyncAgentConfig> = async ({
   namedInputs,
@@ -90,7 +91,7 @@ export const lipSyncReplicateAgent: AgentFunction<ReplicateLipSyncAgentParams, A
 
     if (output && typeof output === "object" && "url" in output) {
       const videoUrl = ((output as { url: unknown }).url as () => URL)();
-      const videoResponse = await fetch(videoUrl);
+      const videoResponse = await safeFetch(videoUrl, {}, FETCH_MEDIA_DOWNLOAD_TIMEOUT_MS);
 
       if (!videoResponse.ok) {
         throw new Error(`Error downloading video: ${videoResponse.status} - ${videoResponse.statusText}`, {

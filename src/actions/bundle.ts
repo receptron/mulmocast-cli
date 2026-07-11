@@ -8,9 +8,10 @@ import { ZipBuilder } from "../utils/zip.js";
 import { bundleTargetLang } from "../types/const.js";
 import { createSilentAudio } from "../utils/ffmpeg_utils.js";
 import { silentMp3 } from "../utils/context.js";
+import { safeFetch, FETCH_MEDIA_DOWNLOAD_TIMEOUT_MS } from "../utils/fetch.js";
 
 const downloadFile = async (url: string, destPath: string): Promise<void> => {
-  const response = await fetch(url);
+  const response = await safeFetch(url, {}, FETCH_MEDIA_DOWNLOAD_TIMEOUT_MS);
   if (!response.ok) {
     throw new Error(`Failed to download file from ${url}: ${response.statusText}`);
   }

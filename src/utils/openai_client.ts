@@ -1,5 +1,10 @@
 import OpenAI, { AzureOpenAI } from "openai";
 
+// Explicit per-request timeout so a stalled connection rejects (and the SDK's
+// default maxRetries=2 re-issues it) instead of hanging on the SDK's 10-minute
+// default. gpt-image-1 generation is typically well under this.
+const OPENAI_REQUEST_TIMEOUT_MS = 120_000;
+
 export interface OpenAIClientOptions {
   apiKey?: string;
   baseURL?: string;
@@ -33,11 +38,13 @@ export const createOpenAIClient = (options: OpenAIClientOptions): OpenAI => {
       apiKey,
       endpoint: baseURL,
       apiVersion: apiVersion ?? "2025-04-01-preview",
+      timeout: OPENAI_REQUEST_TIMEOUT_MS,
     });
   }
 
   return new OpenAI({
     apiKey,
     baseURL,
+    timeout: OPENAI_REQUEST_TIMEOUT_MS,
   });
 };

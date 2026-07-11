@@ -1,6 +1,7 @@
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
 import { GoogleGenAI } from "@google/genai";
+import { GENAI_REQUEST_TIMEOUT_MS } from "../utils/sdk_timeout.js";
 
 import { provider2TTSAgent } from "../types/provider2agent.js";
 import {
@@ -41,7 +42,7 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
 
   const geminiResult: { rawPcm: Buffer; sampleRate: number; usage: AgentUsage | undefined } | AgentErrorResult = await (async () => {
     try {
-      const ai = new GoogleGenAI({ apiKey });
+      const ai = new GoogleGenAI({ apiKey, httpOptions: { timeout: GENAI_REQUEST_TIMEOUT_MS } });
       const response = await ai.models.generateContent({
         model: model ?? provider2TTSAgent.gemini.defaultModel,
         contents: [{ parts: [{ text: getPrompt(text, instructions) }] }],
