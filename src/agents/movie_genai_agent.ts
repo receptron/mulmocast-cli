@@ -20,6 +20,11 @@ import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, 
 import type { AgentUsage } from "../types/usage.js";
 import { getModelDuration, provider2MovieAgent, AUDIO_MODE_NEVER, AUDIO_MODE_ALWAYS } from "../types/provider2agent.js";
 
+// Per-request timeout so a stalled GenAI video API call rejects instead of hanging.
+const GENAI_REQUEST_TIMEOUT_MS = 120_000;
+// Wall-clock cap on the long-running video operation poll loop (Veo runs minutes).
+const VIDEO_POLL_TIMEOUT_MS = 1_200_000;
+
 type ImagePayload = { imageBytes: string; mimeType: string };
 
 type VideoPayload = {
@@ -40,7 +45,13 @@ type VideoPayload = {
 
 const pollUntilDone = async (ai: GoogleGenAI, operation: GenerateVideosOperation) => {
   const response = { operation };
+  const deadline = Date.now() + VIDEO_POLL_TIMEOUT_MS;
   while (!response.operation.done) {
+    if (Date.now() > deadline) {
+      throw new Error(`Video generation did not complete within ${VIDEO_POLL_TIMEOUT_MS}ms`, {
+        cause: agentGenerationError("movieGenAIAgent", imageAction, movieFileTarget),
+      });
+    }
     await sleep(5000);
     response.operation = await ai.operations.getVideosOperation(response);
   }
@@ -278,6 +289,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
           vertexai: true,
           project: params.vertexai_project,
           location: params.vertexai_location ?? "us-central1",
+          httpOptions: { timeout: GENAI_REQUEST_TIMEOUT_MS },
         })
       : (() => {
           if (!apiKey) {
@@ -288,7 +300,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
               },
             );
           }
-          return new GoogleGenAI({ apiKey });
+          return new GoogleGenAI({ apiKey, httpOptions: { timeout: GENAI_REQUEST_TIMEOUT_MS } });
         })();
 
     // Veo 3.1: Video extension mode for videos longer than 8s
@@ -299,11 +311,14 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
     // Standard mode
     return generateStandardVideo(ai, model, prompt, aspectRatio, imagePath, lastFrameImagePath, referenceImages, duration, movieFile, isVertexAI);
   } catch (error) {
-    GraphAILogger.info("Failed to generate movie:", (error as Error).message);
     if (hasCause(error) && error.cause) {
       throw error;
     }
-    throw new Error("Failed to generate movie with Google GenAI", {
+    GraphAILogger.info("Failed to generate movie:", (error as Error).message);
+    // Preserve the underlying message (e.g. a timeout/abort deadline) instead of
+    // collapsing every failure to a static label. (Same template as #1452.)
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to generate movie with Google GenAI: ${detail}`, {
       cause: agentGenerationError("movieGenAIAgent", imageAction, movieFileTarget),
     });
   }
