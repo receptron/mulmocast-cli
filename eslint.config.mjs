@@ -49,6 +49,7 @@ export default [
       "no-shadow": "error",
       "no-param-reassign": "error",
       // "no-plusplus": "error",
+      "max-lines-per-function": ["warn", { max: 60, skipBlankLines: true, skipComments: true, IIFEs: true }],
       "preserve-caught-error": "off",
       "no-undef": "error",
       "prefer-const": "error",
