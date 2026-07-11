@@ -325,8 +325,8 @@ Fine-tune timing between beats and silence at audio start/end.
 **グローバル設定 / Global Settings:**
 - `introPadding`: 音声開始前の無音時間（秒、デフォルト: 1.0）/ Silence before first audio
 - `padding`: Beat間の無音時間（秒、デフォルト: 0.3）/ Silence between beats
-- `closingPadding`: 最終Beat前の無音時間（秒、デフォルト: 0.8）/ Silence before last beat
-- `outroPadding`: 音声終了後の無音時間（秒、デフォルト: 1.0）/ Silence after last audio
+- `closingPadding`: 最終Beat（通常はクロージングクレジット）の**前**の無音時間（秒、デフォルト: 0.8）。最終Beatの後ろは `outroPadding` を使う / Silence before the last beat (typically the closing credit); for padding after the last beat use outroPadding
+- `outroPadding`: 音声**末尾**（最終Beatの後・BGMフェードアウト）の無音時間（秒、デフォルト: 1.0）。`closingPadding` とは別 / Silence after the last beat at the very end of the audio, where the BGM fades out (distinct from closingPadding)
 - `suppressSpeech`: 音声生成の抑制（デフォルト: false）/ Suppress speech generation
 
 **Beat個別設定 / Per-Beat Settings:**

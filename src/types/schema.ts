@@ -488,8 +488,18 @@ export const audioParamsSchema = z
   .object({
     padding: z.number().optional().default(0.3).describe("Padding between beats"), // seconds
     introPadding: z.number().optional().default(1.0).describe("Padding at the beginning of the audio"), // seconds
-    closingPadding: z.number().optional().default(0.8).describe("Padding before the last beat"), // seconds
-    outroPadding: z.number().optional().default(1.0).describe("Padding at the end of the audio"), // seconds
+    closingPadding: z
+      .number()
+      .optional()
+      .default(0.8)
+      .describe("Padding before the last beat (typically the closing credit). For padding after the last beat, use outroPadding"), // seconds
+    outroPadding: z
+      .number()
+      .optional()
+      .default(1.0)
+      .describe(
+        "Padding after the last beat, at the very end of the audio where the BGM fades out (distinct from closingPadding, which comes before the last beat)",
+      ), // seconds
     bgm: mediaSourceSchema.optional(),
     bgmVolume: z.number().optional().default(0.2).describe("Volume of the background music"),
     audioVolume: z.number().optional().default(1.0).describe("Volume of the audio"),
