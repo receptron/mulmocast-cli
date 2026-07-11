@@ -6,20 +6,32 @@ export const FETCH_DOWNLOAD_TIMEOUT_MS = 60_000; // generated image download
 export const FETCH_MEDIA_DOWNLOAD_TIMEOUT_MS = 180_000; // large video/audio download
 export const FETCH_API_TIMEOUT_MS = 120_000; // generation API POST (e.g. TTS text -> audio)
 
+// Statuses whose Response must not carry a body (constructing one with a body throws).
+const NULL_BODY_STATUSES = new Set([101, 103, 204, 205, 304]);
+
 /**
- * fetch() with an AbortController timeout.
+ * fetch() with an AbortController timeout that covers the whole exchange —
+ * headers AND body.
  *
  * A stalled connection otherwise yields a promise that never resolves or
  * rejects; callers relying on GraphAI `retry` never recover because retry only
- * fires on rejection. This converts a timeout into a thrown error so the caller
- * (and its retry) can react. The success path is unchanged — the returned
- * Response is the raw fetch Response.
+ * fires on rejection. The body is buffered under the same deadline (callers
+ * already read it eagerly via arrayBuffer()/json()/text(), so memory behavior
+ * is unchanged) — otherwise a server that sends headers and then stalls
+ * mid-body would hang the caller's body read instead. Returns a Response backed
+ * by the buffered bytes so callers keep using .ok/.status/.headers/.arrayBuffer().
  */
 export const safeFetch = async (url: string | URL, init: Parameters<typeof fetch>[1] = {}, timeoutMs = DEFAULT_FETCH_TIMEOUT_MS): Promise<Response> => {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await fetch(url, { ...init, signal: controller.signal });
+    const response = await fetch(url, { ...init, signal: controller.signal });
+    const body = await response.arrayBuffer();
+    return new Response(NULL_BODY_STATUSES.has(response.status) ? null : body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+    });
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
       throw new Error(`Fetch timeout after ${timeoutMs}ms: ${url}`);

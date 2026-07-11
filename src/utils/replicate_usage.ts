@@ -8,15 +8,20 @@ import { REPLICATE_RUN_TIMEOUT_MS } from "./sdk_timeout.js";
 // would be a much bigger blast radius.
 //
 // A timeout aborts the run so a stalled job rejects (and the caller's GraphAI
-// `retry` can recover) instead of hanging forever.
+// `retry` can recover) instead of hanging forever. An optional caller `signal`
+// is composed with the timeout so upstream cancellation still works.
 export const runReplicateWithMetrics = async (
   replicate: Replicate,
   identifier: `${string}/${string}` | `${string}/${string}:${string}`,
   input: object,
-  timeoutMs: number = REPLICATE_RUN_TIMEOUT_MS,
+  options: { timeoutMs?: number; signal?: AbortSignal } = {},
 ): Promise<{ output: unknown; predictSec?: number }> => {
+  const { timeoutMs = REPLICATE_RUN_TIMEOUT_MS, signal: externalSignal } = options;
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  const forwardAbort = () => controller.abort();
+  externalSignal?.addEventListener("abort", forwardAbort, { once: true });
+  if (externalSignal?.aborted) controller.abort();
   let lastPrediction: Prediction | undefined;
   try {
     const output = await replicate.run(identifier, { input, signal: controller.signal }, (prediction) => {
@@ -25,5 +30,6 @@ export const runReplicateWithMetrics = async (
     return { output, predictSec: lastPrediction?.metrics?.predict_time };
   } finally {
     clearTimeout(timeoutId);
+    externalSignal?.removeEventListener("abort", forwardAbort);
   }
 };

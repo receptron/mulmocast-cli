@@ -307,11 +307,14 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
     // Standard mode
     return generateStandardVideo(ai, model, prompt, aspectRatio, imagePath, lastFrameImagePath, referenceImages, duration, movieFile, isVertexAI);
   } catch (error) {
-    GraphAILogger.info("Failed to generate movie:", (error as Error).message);
     if (hasCause(error) && error.cause) {
       throw error;
     }
-    throw new Error("Failed to generate movie with Google GenAI", {
+    GraphAILogger.info("Failed to generate movie:", (error as Error).message);
+    // Preserve the underlying message (e.g. a timeout/abort deadline) instead of
+    // collapsing every failure to a static label. (Same template as #1452.)
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to generate movie with Google GenAI: ${detail}`, {
       cause: agentGenerationError("movieGenAIAgent", imageAction, movieFileTarget),
     });
   }

@@ -22,6 +22,11 @@ before(async () => {
         res.writeHead(200, { "content-type": "text/plain" });
         res.end("slow-ok");
       }, SLOW_RESPONSE_MS);
+    } else if (req.url === "/headers-then-hang") {
+      // Send headers (promising a body via content-length) and a partial chunk,
+      // then never finish — exercises a mid-body stall.
+      res.writeHead(200, { "content-type": "application/octet-stream", "content-length": "1000" });
+      res.write("partial");
     }
     // Any other path (e.g. "/hang"): intentionally never respond, to exercise the timeout path.
   });
@@ -47,6 +52,17 @@ test("safeFetch rejects with a timeout error when the server never responds", as
     (error: unknown) => {
       assert.ok(error instanceof Error);
       assert.match(error.message, /Fetch timeout after 100ms/);
+      return true;
+    },
+  );
+});
+
+test("safeFetch times out when the body stalls after headers are sent", async () => {
+  await assert.rejects(
+    () => safeFetch(`${baseUrl}/headers-then-hang`, {}, 120),
+    (error: unknown) => {
+      assert.ok(error instanceof Error);
+      assert.match(error.message, /Fetch timeout after 120ms/);
       return true;
     },
   );
