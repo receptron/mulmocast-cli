@@ -56,7 +56,7 @@ export const ttsKotodamaAgent: AgentFunction<KotodamaTTSAgentParams, AgentBuffer
     }
 
     // Response is JSON with base64-encoded audio in "audios" array
-    const json = await response.json();
+    const json = await response.json<{ audios?: string[] }>();
     if (!json.audios || !json.audios[0]) {
       throw new Error("TTS Kotodama Error: No audio data in response", {
         cause: agentGenerationError("ttsKotodamaAgent", audioAction, audioFileTarget),
@@ -85,7 +85,10 @@ export const ttsKotodamaAgent: AgentFunction<KotodamaTTSAgentParams, AgentBuffer
       throw error;
     }
 
-    throw new Error("TTS Kotodama Error", {
+    // Preserve the underlying message (e.g. a safeFetch timeout) rather than
+    // collapsing every failure to a static label. (Same template as #1452.)
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`TTS Kotodama Error: ${detail}`, {
       cause: agentGenerationError("ttsKotodamaAgent", audioAction, audioFileTarget),
     });
   }

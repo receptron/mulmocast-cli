@@ -80,6 +80,13 @@ test("safeFetch propagates non-timeout network errors (not as a timeout)", async
   );
 });
 
+test("safeFetch honors a caller-provided abort signal (composition)", async () => {
+  const controller = new AbortController();
+  const pending = safeFetch(`${baseUrl}/hang`, { signal: controller.signal }, 5000);
+  controller.abort();
+  await assert.rejects(pending, (error: unknown) => error instanceof Error);
+});
+
 // --- Concurrency safety: each call owns its AbortController + timer, so calls
 // running in parallel (the image pipeline uses concurrency: 4) must not
 // interfere with one another. ---

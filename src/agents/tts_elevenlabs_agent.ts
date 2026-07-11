@@ -86,8 +86,8 @@ export const ttsElevenlabsAgent: AgentFunction<ElevenlabsTTSAgentParams, AgentBu
         cause: agentIncorrectAPIKeyError("ttsElevenlabsAgent", audioAction, audioFileTarget),
       });
     }
-    const errorDetail = await response.json();
-    if (errorDetail.detail.status === "voice_limit_reached") {
+    const errorDetail = await response.json<{ detail?: { status?: string } }>();
+    if (errorDetail.detail?.status === "voice_limit_reached") {
       throw new Error("Failed to generate audio: 400 You have reached your maximum amount of custom voices with ElevenLabs", {
         cause: agentVoiceLimitReachedError("ttsElevenlabsAgent", audioAction, audioFileTarget),
       });

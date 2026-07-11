@@ -67,7 +67,10 @@ export const soundEffectReplicateAgent: AgentFunction<
     if (hasCause(error) && error.cause) {
       throw error;
     }
-    throw new Error("Failed to generate sound effect with Replicate", {
+    // Preserve the underlying message (e.g. a safeFetch timeout) rather than
+    // collapsing every failure to a static label. (Same template as #1452.)
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to generate sound effect with Replicate: ${detail}`, {
       cause: agentGenerationError("soundEffectReplicateAgent", imageAction, movieFileTarget),
     });
   }
