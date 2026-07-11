@@ -4,6 +4,7 @@ import { provider2TTSAgent } from "../types/provider2agent.js";
 import { apiKeyMissingError, agentIncorrectAPIKeyError, agentGenerationError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 import type { KotodamaTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult, AgentConfig } from "../types/agent.js";
 import type { AgentUsage } from "../types/usage.js";
+import { safeFetch, FETCH_API_TIMEOUT_MS } from "../utils/fetch.js";
 
 export const ttsKotodamaAgent: AgentFunction<KotodamaTTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs, AgentConfig> = async ({
   namedInputs,
@@ -29,14 +30,18 @@ export const ttsKotodamaAgent: AgentFunction<KotodamaTTSAgentParams, AgentBuffer
   };
 
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-API-Key": apiKey,
+    const response = await safeFetch(
+      url,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-Key": apiKey,
+        },
+        body: JSON.stringify(body),
       },
-      body: JSON.stringify(body),
-    });
+      FETCH_API_TIMEOUT_MS,
+    );
 
     if (!response.ok) {
       if (response.status === 401) {

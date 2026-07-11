@@ -8,6 +8,7 @@ import { apiKeyMissingError, agentGenerationError, imageAction, movieFileTarget,
 import type { AgentBufferResult, SoundEffectAgentInputs, ReplicateSoundEffectAgentParams, ReplicateSoundEffectAgentConfig } from "../types/agent.js";
 import type { AgentUsage } from "../types/usage.js";
 import { runReplicateWithMetrics } from "../utils/replicate_usage.js";
+import { safeFetch, FETCH_MEDIA_DOWNLOAD_TIMEOUT_MS } from "../utils/fetch.js";
 
 export const soundEffectReplicateAgent: AgentFunction<
   ReplicateSoundEffectAgentParams,
@@ -48,7 +49,7 @@ export const soundEffectReplicateAgent: AgentFunction<
 
     if (output && typeof output === "object" && "url" in output) {
       const videoUrl = ((output as { url: unknown }).url as () => URL)();
-      const videoResponse = await fetch(videoUrl);
+      const videoResponse = await safeFetch(videoUrl, {}, FETCH_MEDIA_DOWNLOAD_TIMEOUT_MS);
 
       if (!videoResponse.ok) {
         throw new Error(`Error downloading video: ${videoResponse.status} - ${videoResponse.statusText}`, {

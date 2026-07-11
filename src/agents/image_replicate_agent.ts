@@ -17,6 +17,7 @@ import type { AgentBufferResult, ImageAgentInputs, AgentConfig } from "../types/
 import type { AgentUsage } from "../types/usage.js";
 import { provider2ImageAgent } from "../types/provider2agent.js";
 import { runReplicateWithMetrics } from "../utils/replicate_usage.js";
+import { safeFetch, FETCH_DOWNLOAD_TIMEOUT_MS } from "../utils/fetch.js";
 
 export type ReplicateImageAgentConfig = AgentConfig;
 
@@ -73,7 +74,7 @@ export const imageReplicateAgent: AgentFunction<ReplicateImageAgentParams, Agent
       });
     }
 
-    const imageResponse = await fetch(imageUrl);
+    const imageResponse = await safeFetch(imageUrl, {}, FETCH_DOWNLOAD_TIMEOUT_MS);
     if (!imageResponse.ok) {
       throw new Error(`Error downloading image: ${imageResponse.status} - ${imageResponse.statusText}`, {
         cause: agentGenerationError("imageReplicateAgent", imageAction, imageFileTarget),

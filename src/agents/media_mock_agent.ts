@@ -1,6 +1,7 @@
 import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
 import fs from "fs";
 import { silent60secPath, mulmoCreditPath } from "../utils/file.js";
+import { safeFetch, FETCH_DOWNLOAD_TIMEOUT_MS } from "../utils/fetch.js";
 
 export const mediaMockAgent: AgentFunction = async ({ namedInputs }) => {
   if (namedInputs.media === "audio") {
@@ -13,7 +14,7 @@ export const mediaMockAgent: AgentFunction = async ({ namedInputs }) => {
   }
   if (namedInputs.media === "movie") {
     const url = "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/test/pingpong.mov";
-    const res = await fetch(url);
+    const res = await safeFetch(url, {}, FETCH_DOWNLOAD_TIMEOUT_MS);
     if (!res.ok) {
       throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
     }

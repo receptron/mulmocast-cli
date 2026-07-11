@@ -3,6 +3,7 @@ import path from "path";
 import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
 import { toFile, AuthenticationError, RateLimitError, APIError } from "openai";
 import { createOpenAIClient } from "../utils/openai_client.js";
+import { safeFetch, FETCH_DOWNLOAD_TIMEOUT_MS } from "../utils/fetch.js";
 import { provider2ImageAgent, gptImages, deprecatedOpenAIImageModelHints, type DeprecatedOpenAIImageModel } from "../types/provider2agent.js";
 import {
   apiKeyMissingError,
@@ -159,7 +160,7 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
   }
 
   // URL response handling (legacy OpenAI image API response format)
-  const res = await fetch(url);
+  const res = await safeFetch(url, {}, FETCH_DOWNLOAD_TIMEOUT_MS);
   if (!res.ok) {
     throw new Error(`Failed to fetch ${url}: ${res.status} ${res.statusText}`, {
       cause: agentGenerationError("imageOpenaiAgent", imageAction, imageFileTarget),
