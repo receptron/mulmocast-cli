@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.7.2](https://github.com/receptron/mulmocast-cli/releases/tag/2.7.2) (2026-07-12)
+
+- **Fix `mulmocast/browser` puppeteer bleed-through** ([#1491](https://github.com/receptron/mulmocast-cli/pull/1491)): since 2.7.0, importing `mulmocast/browser` in a Vite/Rollup renderer pulled `utils/image_plugins` → `mulmocast-vision` → `puppeteer` → `@puppeteer/browsers/debug.js` into the browser bundle, which hit `node:util.debuglog` at module load and threw `TypeError: import_browser_external_node_util$1.debuglog is not a function`. Split `MulmoBeatMethods` into a browser-safe subset (`methods/mulmo_beat.ts`, no `getPlugin`) and a Node-only extension (`methods/mulmo_beat_node.ts`, adds `getPlugin`). `methods/index.ts` now re-exports the Node version so `import { MulmoBeatMethods } from "mulmocast"` keeps `getPlugin` intact.
+- No public API change for Node consumers; no `src/types/` change (so `@mulmocast/types` stays at 2.7.0).
+
+📦 **npm**: [`mulmocast@2.7.2`](https://www.npmjs.com/package/mulmocast/v/2.7.2)
+
 ## [2.7.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.7.1) (2026-07-12)
 
 - **Network timeout hardening** (6-part series, [#1476](https://github.com/receptron/mulmocast-cli/pull/1476)–[#1481](https://github.com/receptron/mulmocast-cli/pull/1481)): every outbound network call now has an explicit timeout, so a hung connection fails fast with a clear error instead of stalling the pipeline (or CI) indefinitely:
