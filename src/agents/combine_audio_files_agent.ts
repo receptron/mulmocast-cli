@@ -166,7 +166,15 @@ const getVoiceOverGroup = (context: MulmoStudioContext, index: number) => {
 
 const getSpillOverGroup = (context: MulmoStudioContext, mediaDurations: MediaDuration[], index: number) => {
   const group = [index];
-  for (let i = index + 1; i < context.studio.beats.length && !mediaDurations[i].hasMedia; i++) {
+  for (let i = index + 1; i < context.studio.beats.length; i++) {
+    const media = mediaDurations[i];
+    // An empty-text beat continues the preceding narration (spill-over) even when it
+    // carries its own silent visuals (a moviePrompt or a movie without audio);
+    // only a beat with its own audio — TTS text or a movie soundtrack — ends the group.
+    const isSilentContinuation = !context.studio.script.beats[i].text?.trim() && media.audioDuration === 0 && !(media.movieDuration > 0 && media.hasMovieAudio);
+    if (media.hasMedia && !isSilentContinuation) {
+      break;
+    }
     group.push(i);
   }
   return group;
