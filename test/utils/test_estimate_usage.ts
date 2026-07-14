@@ -131,6 +131,16 @@ describe("estimateUsage: movie / soundEffect / lipSync", () => {
     assert.ok(Math.abs((movie.costUSD ?? 0) - 8 * 0.036) < 1e-12);
   });
 
+  it("snaps up to the next supported duration across a gap in the durations list", () => {
+    const records = estimateUsage(
+      makeScript([{ speaker: "Presenter", text: "", moviePrompt: "wave", duration: 7, movieParams: { model: "bytedance/seedance-1-pro" } }]),
+    );
+    const movie = byProcess(records, "movie")[0];
+    assert.equal(movie.model, "bytedance/seedance-1-pro");
+    assert.deepEqual(movie.predictSec, { value: 10, precision: "exact" }); // supported durations are [5, 10]: ceiling, not nearest
+    assert.ok(Math.abs((movie.costUSD ?? 0) - 10 * 0.15) < 1e-12);
+  });
+
   it("estimates the duration from the narration text when no duration is set", () => {
     const records = estimateUsage(makeScript([{ speaker: "Presenter", text: "こんにちは。これはテストです。", moviePrompt: "city" }]));
     assert.deepEqual(byProcess(records, "movie")[0].predictSec, { value: 4, precision: "estimated" });
