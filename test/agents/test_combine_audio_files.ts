@@ -1014,3 +1014,137 @@ test("updateDurations multiple voice-over groups with different movies", async (
   assert.strictEqual(res[2], 100); // Until second voice-over
   assert.strictEqual(res[3], 100); // Remaining movie2: 200 - 100 = 100
 });
+
+// Spill-over grouping across movie beats: a silent generated movie continues the
+// narration group; anything with its own audio or an intrinsic timeline ends it.
+
+const spillOverNarration = { movieDuration: 0, audioDuration: 10, hasMedia: true, silenceDuration: 0, hasMovieAudio: false };
+const moviePromptMedia = { movieDuration: 0, audioDuration: 0, hasMedia: true, silenceDuration: 0, hasMovieAudio: false };
+
+test("updateDurations spill-over continues over a silent moviePrompt beat", async () => {
+  const mediaDurations = [{ ...spillOverNarration }, { ...moviePromptMedia }];
+  const beat1 = createMockBeat({});
+  const beat2 = createMockBeat({ text: "", moviePrompt: "draw the diagram" });
+
+  const mock = createMockContext();
+  mock.presentationStyle.audioParams = { padding: 0, closingPadding: 0 };
+  mock.studio.script.beats.push(beat1, beat2);
+  mock.studio = createStudioData(mock.studio.script, "test");
+
+  const res = updateDurations(mock, mediaDurations);
+
+  assert.strictEqual(res[0], 5); // narration splits evenly across the group
+  assert.strictEqual(res[1], 5);
+});
+
+test("updateDurations spill-over ends at a moviePrompt beat with generateAudio", async () => {
+  const mediaDurations = [{ ...spillOverNarration }, { ...moviePromptMedia }];
+  const beat1 = createMockBeat({});
+  const beat2 = createMockBeat({
+    text: "",
+    moviePrompt: "draw the diagram",
+    movieParams: { model: "bytedance/seedance-2.0", generateAudio: true },
+  });
+
+  const mock = createMockContext();
+  mock.presentationStyle.audioParams = { padding: 0, closingPadding: 0 };
+  mock.studio.script.beats.push(beat1, beat2);
+  mock.studio = createStudioData(mock.studio.script, "test");
+
+  const res = updateDurations(mock, mediaDurations);
+
+  assert.strictEqual(res[0], 10); // narration stays on the first beat
+  assert.strictEqual(res[1], 1); // movie beat falls back to the default duration
+});
+
+test("updateDurations spill-over ends at a moviePrompt beat with an always-audio model", async () => {
+  const mediaDurations = [{ ...spillOverNarration }, { ...moviePromptMedia }];
+  const beat1 = createMockBeat({});
+  const beat2 = createMockBeat({
+    text: "",
+    moviePrompt: "draw the diagram",
+    movieParams: { model: "xai/grok-imagine-video-1.5" },
+  });
+
+  const mock = createMockContext();
+  mock.presentationStyle.audioParams = { padding: 0, closingPadding: 0 };
+  mock.studio.script.beats.push(beat1, beat2);
+  mock.studio = createStudioData(mock.studio.script, "test");
+
+  const res = updateDurations(mock, mediaDurations);
+
+  assert.strictEqual(res[0], 10);
+  assert.strictEqual(res[1], 1);
+});
+
+test("updateDurations spill-over ends at an imported silent movie beat", async () => {
+  const mediaDurations = [
+    { movieDuration: 0, audioDuration: 6, hasMedia: true, silenceDuration: 0, hasMovieAudio: false },
+    { movieDuration: 10, audioDuration: 0, hasMedia: true, silenceDuration: 0, hasMovieAudio: false },
+  ];
+  const beat1 = createMockBeat({});
+  const beat2 = createMockBeat({
+    text: "",
+    image: { type: "movie", source: { kind: "path", path: "test-movie.mp4" } },
+  });
+
+  const mock = createMockContext();
+  mock.presentationStyle.audioParams = { padding: 0, closingPadding: 0 };
+  mock.studio.script.beats.push(beat1, beat2);
+  mock.studio = createStudioData(mock.studio.script, "test");
+
+  const res = updateDurations(mock, mediaDurations);
+
+  assert.strictEqual(res[0], 6); // narration is not spilled over the movie
+  assert.strictEqual(res[1], 10); // the movie keeps its intrinsic duration
+});
+
+test("updateDurations spill-over ends at an animated html_tailwind beat with explicit duration", async () => {
+  const mediaDurations = [
+    { movieDuration: 0, audioDuration: 6, hasMedia: true, silenceDuration: 0, hasMovieAudio: false },
+    { movieDuration: 8, audioDuration: 0, hasMedia: true, silenceDuration: 0, hasMovieAudio: false },
+  ];
+  const beat1 = createMockBeat({});
+  const beat2 = createMockBeat({
+    text: "",
+    duration: 8,
+    image: { type: "html_tailwind", html: "<div>animated</div>", animation: true },
+  });
+
+  const mock = createMockContext();
+  mock.presentationStyle.audioParams = { padding: 0, closingPadding: 0 };
+  mock.studio.script.beats.push(beat1, beat2);
+  mock.studio = createStudioData(mock.studio.script, "test");
+
+  const res = updateDurations(mock, mediaDurations);
+
+  assert.strictEqual(res[0], 6);
+  assert.strictEqual(res[1], 8); // the animation keeps its own timeline
+});
+
+test("updateDurations silent movie beat still heads a voice-over group after narration", async () => {
+  const mediaDurations = [
+    { movieDuration: 0, audioDuration: 6, hasMedia: true, silenceDuration: 0, hasMovieAudio: false },
+    { movieDuration: 10, audioDuration: 0, hasMedia: true, silenceDuration: 0, hasMovieAudio: false },
+    { movieDuration: 0, audioDuration: 3, hasMedia: true, silenceDuration: 0, hasMovieAudio: false },
+  ];
+  const beat1 = createMockBeat({});
+  const beat2 = createMockBeat({
+    text: "",
+    image: { type: "movie", source: { kind: "path", path: "test-movie.mp4" } },
+  });
+  const beat3 = createMockBeat({
+    image: { type: "voice_over", startAt: 2 },
+  });
+
+  const mock = createMockContext();
+  mock.presentationStyle.audioParams = { padding: 0, closingPadding: 0 };
+  mock.studio.script.beats.push(beat1, beat2, beat3);
+  mock.studio = createStudioData(mock.studio.script, "test");
+
+  const res = updateDurations(mock, mediaDurations);
+
+  assert.strictEqual(res[0], 6);
+  assert.strictEqual(res[1], 2); // until the voice-over starts (startAt)
+  assert.strictEqual(res[2], 8); // remaining movie duration
+});
