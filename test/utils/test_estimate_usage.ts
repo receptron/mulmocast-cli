@@ -124,16 +124,16 @@ describe("estimateUsage: htmlPrompt beats", () => {
 
 describe("estimateUsage: movie / soundEffect / lipSync", () => {
   it("snaps an explicit beat duration to the model's supported durations as exact", () => {
-    const records = estimateUsage(makeScript([{ speaker: "Presenter", text: "", moviePrompt: "wave", duration: 7 }]));
+    const records = estimateUsage(makeScript([{ speaker: "Presenter", text: "", moviePrompt: "wave", duration: 7.5 }]));
     const movie = byProcess(records, "movie")[0];
     assert.equal(movie.model, "bytedance/seedance-1-lite");
-    assert.deepEqual(movie.predictSec, { value: 10, precision: "exact" }); // supported durations are [5, 10]
-    assert.ok(Math.abs((movie.costUSD ?? 0) - 10 * 0.036) < 1e-12);
+    assert.deepEqual(movie.predictSec, { value: 8, precision: "exact" }); // supported durations are [4..12]
+    assert.ok(Math.abs((movie.costUSD ?? 0) - 8 * 0.036) < 1e-12);
   });
 
   it("estimates the duration from the narration text when no duration is set", () => {
     const records = estimateUsage(makeScript([{ speaker: "Presenter", text: "こんにちは。これはテストです。", moviePrompt: "city" }]));
-    assert.deepEqual(byProcess(records, "movie")[0].predictSec, { value: 5, precision: "estimated" });
+    assert.deepEqual(byProcess(records, "movie")[0].predictSec, { value: 4, precision: "estimated" });
   });
 
   it("emits soundEffect only for movie beats, and lipSync when enabled", () => {
