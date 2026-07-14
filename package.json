@@ -25,7 +25,7 @@
   },
   "resolutions": {
     "minimatch": "^10.2.5",
-    "tar": "7.5.19",
+    "tar": "7.5.20",
     "yauzl": "^3.4.0"
   },
   "bin": {
@@ -112,7 +112,7 @@
     "graphai": "^2.0.18",
     "js-tiktoken": "^1.0.21",
     "jsdom": "^29.1.1",
-    "marked": "^18.0.5",
+    "marked": "^18.0.6",
     "mulmocast-vision": "^1.0.11",
     "ora": "^9.4.1",
     "puppeteer": "^25.3.0",
@@ -132,12 +132,12 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.6",
-    "eslint-plugin-sonarjs": "^4.1.0",
+    "eslint-plugin-sonarjs": "^4.2.0",
     "globals": "^17.7.0",
     "prettier": "^3.9.5",
-    "tsx": "^4.23.0",
+    "tsx": "^4.23.1",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.63.0"
+    "typescript-eslint": "^8.64.0"
   },
   "engines": {
     "node": ">=22.0.0"
