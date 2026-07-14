@@ -10,7 +10,7 @@ import {
   ffmpegGetMediaDuration,
 } from "../utils/ffmpeg_utils.js";
 import { MulmoMediaSourceMethods } from "../methods/mulmo_media_source.js";
-import { MulmoBeatMethods } from "../methods/index.js";
+import { MulmoBeatMethods, MulmoPresentationStyleMethods } from "../methods/index.js";
 import { userAssert } from "../utils/utils.js";
 import { getAudioInputIdsError } from "../utils/error_cause.js";
 
@@ -164,15 +164,24 @@ const getVoiceOverGroup = (context: MulmoStudioContext, index: number) => {
   return group;
 };
 
+const isSilentContinuation = (context: MulmoStudioContext, media: MediaDuration, beat: MulmoBeat) => {
+  // Only an empty-text beat whose visuals are a *generated* movie that will stay
+  // silent may continue the preceding narration. Imported movies and animated
+  // html_tailwind beats keep their own timeline (movieDuration > 0) and end the group.
+  return (
+    !beat.text?.trim() &&
+    media.audioDuration === 0 &&
+    media.movieDuration === 0 &&
+    Boolean(beat.moviePrompt) &&
+    !MulmoPresentationStyleMethods.generatedMovieHasAudio(context.presentationStyle, beat)
+  );
+};
+
 const getSpillOverGroup = (context: MulmoStudioContext, mediaDurations: MediaDuration[], index: number) => {
   const group = [index];
   for (let i = index + 1; i < context.studio.beats.length; i++) {
     const media = mediaDurations[i];
-    // An empty-text beat continues the preceding narration (spill-over) even when it
-    // carries its own silent visuals (a moviePrompt or a movie without audio);
-    // only a beat with its own audio — TTS text or a movie soundtrack — ends the group.
-    const isSilentContinuation = !context.studio.script.beats[i].text?.trim() && media.audioDuration === 0 && !(media.movieDuration > 0 && media.hasMovieAudio);
-    if (media.hasMedia && !isSilentContinuation) {
+    if (media.hasMedia && !isSilentContinuation(context, media, context.studio.script.beats[i])) {
       break;
     }
     group.push(i);

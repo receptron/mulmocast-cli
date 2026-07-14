@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert";
 
 import { MulmoPresentationStyleMethods } from "../../src/methods/mulmo_presentation_style.js";
+import { createMockContext, createMockBeat } from "../actions/utils.js";
 
 test("defaultSpeaker isDefault", async () => {
   const presentationStyle = {
@@ -161,4 +162,49 @@ test("getResolvedSlideTheme: non-slide beat falls through to fallback (no throw)
   // Falls through to the presentation-level theme since beat.image.theme
   // doesn't apply (different image kind), instead of throwing.
   assert.equal(result.colors.bg, "PRES");
+});
+
+// generatedMovieHasAudio: resolves provider/model (including defaults) and the
+// model's audio mode to predict whether a generated movie will carry a soundtrack.
+
+test("generatedMovieHasAudio: replicate default model (audio never) is silent", () => {
+  const { presentationStyle } = createMockContext();
+  const beat = createMockBeat({ moviePrompt: "wave" });
+  assert.equal(MulmoPresentationStyleMethods.generatedMovieHasAudio(presentationStyle, beat), false);
+});
+
+test("generatedMovieHasAudio: optional-audio model without generateAudio is silent", () => {
+  const { presentationStyle } = createMockContext();
+  const beat = createMockBeat({ moviePrompt: "wave", movieParams: { model: "bytedance/seedance-2.0" } });
+  assert.equal(MulmoPresentationStyleMethods.generatedMovieHasAudio(presentationStyle, beat), false);
+});
+
+test("generatedMovieHasAudio: optional-audio model with generateAudio true has audio", () => {
+  const { presentationStyle } = createMockContext();
+  const beat = createMockBeat({ moviePrompt: "wave", movieParams: { model: "bytedance/seedance-2.0", generateAudio: true } });
+  assert.equal(MulmoPresentationStyleMethods.generatedMovieHasAudio(presentationStyle, beat), true);
+});
+
+test("generatedMovieHasAudio: always-audio replicate model has audio", () => {
+  const { presentationStyle } = createMockContext();
+  const beat = createMockBeat({ moviePrompt: "wave", movieParams: { model: "xai/grok-imagine-video-1.5" } });
+  assert.equal(MulmoPresentationStyleMethods.generatedMovieHasAudio(presentationStyle, beat), true);
+});
+
+test("generatedMovieHasAudio: google always-audio model has audio", () => {
+  const { presentationStyle } = createMockContext();
+  const beat = createMockBeat({ moviePrompt: "wave", movieParams: { provider: "google", model: "veo-3.1-generate-preview" } });
+  assert.equal(MulmoPresentationStyleMethods.generatedMovieHasAudio(presentationStyle, beat), true);
+});
+
+test("generatedMovieHasAudio: google default model (audio never) is silent", () => {
+  const { presentationStyle } = createMockContext();
+  const beat = createMockBeat({ moviePrompt: "wave", movieParams: { provider: "google" } });
+  assert.equal(MulmoPresentationStyleMethods.generatedMovieHasAudio(presentationStyle, beat), false);
+});
+
+test("generatedMovieHasAudio: mock provider is silent", () => {
+  const { presentationStyle } = createMockContext();
+  const beat = createMockBeat({ moviePrompt: "wave", movieParams: { provider: "mock" } });
+  assert.equal(MulmoPresentationStyleMethods.generatedMovieHasAudio(presentationStyle, beat), false);
 });

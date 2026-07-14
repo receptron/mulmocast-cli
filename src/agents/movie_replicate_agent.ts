@@ -105,8 +105,9 @@ async function generateMovie(
   const audio = provider2MovieAgent.replicate.modelParams[model].audio;
 
   if (audio.mode === AUDIO_MODE_OPTIONAL) {
-    // Always send the flag: several models (e.g. seedance-2.0) default it to true,
-    // which silently embeds generated audio. Silent unless explicitly requested.
+    // Always send the flag: several models (e.g. seedance-2.0's generate_audio,
+    // p-video's save_audio) default it to true, which silently embeds generated audio.
+    // Silent unless explicitly requested.
     (input as Record<string, unknown>)[audio.param] = generateAudio ?? false;
   }
   if (generateAudio !== undefined) {
@@ -117,10 +118,6 @@ async function generateMovie(
     } else if (audio.mode === AUDIO_MODE_ALWAYS && generateAudio === false) {
       GraphAILogger.warn(`movieReplicateAgent: model ${model} always generates audio — ignoring generateAudio=false`);
     }
-  }
-  if (audio.mode === AUDIO_MODE_NEVER && audio.param) {
-    // The model embeds generated audio unless this input is explicitly disabled.
-    (input as Record<string, unknown>)[audio.param] = false;
   }
 
   try {
