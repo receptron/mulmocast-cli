@@ -121,7 +121,9 @@ For videos **longer than 8 seconds**, Veo 3.1 uses video extension (generating a
 | **seedance-1-lite/pro** | ✅ | ✅ | `last_frame_image` | ❌ | — |
 | **seedance-2.0/2.0-fast** | ✅ | ✅ | `last_frame_image` | optional | `generate_audio` |
 | **pixverse-v4.5** | ✅ | ✅ | `last_frame_image` | optional | `sound_effect_switch` |
+| **pixverse-v5** | ✅ | ✅ | `last_frame_image` | ❌ | — |
 | **hailuo-02** | ✅ | ✅ | `end_image` | ❌ | — |
+| **hailuo-02-fast / hailuo-2.3 / 2.3-fast** | ✅ | ❌ | — | ❌ | — |
 | **kling-v1.6/2.1/2.1-master** | ✅ | ❌ | — | ❌ | — |
 | **kling-v3-video/v3-omni-video** | ✅ | ✅ | `end_image` | optional | `generate_audio` |
 | **veo-2 (Replicate)** | ✅ | ❌ | — | ❌ | — |
@@ -129,10 +131,20 @@ For videos **longer than 8 seconds**, Veo 3.1 uses video extension (generating a
 | **veo-3.1/3.1-fast** | ✅ | ✅ | `last_frame_image` | optional | `generate_audio` |
 | **veo-3.1-lite** | ✅ | ✅ | `last_frame` | ❌ | — |
 | **minimax/video-01** | ✅ | ❌ | — | ❌ | — |
+| **runwayml/gen-4.5** | ✅ | ❌ | — | ❌ | — |
+| **alibaba/happyhorse-1.0** | ✅ | ❌ | — | ❌ | — |
+| **prunaai/p-video** | ✅ | ✅ | `last_frame_image` | optional | `save_audio` |
+| **xai/grok-imagine-video** | ✅ | ❌ | — | ❌ | — |
+| **xai/grok-imagine-video-1.5** | ✅ | ❌ | — | always | — |
 | **xai/grok-imagine-r2v** | ❌ | ❌ | — | ❌ | — |
-| **wan-video/wan-2.2** | ✅ | ❌ | — | ❌ | — |
+| **wan-2.2-i2v-fast** | ✅ | ✅ | `last_image` | ❌ | — |
+| **wan-2.2-t2v-fast** | ❌ | ❌ | — | ❌ | — |
 
 > **Note**: `referenceImages` is supported by Veo 3.1 (Google GenAI), Kling v3, and Grok R2V (Replicate).
+
+> **First frame required**: `wan-2.2-i2v-fast`, `hailuo-2.3-fast`, and `grok-imagine-video-1.5` cannot generate from text alone — they need an `imagePrompt` / `firstFrameImageName` (or a beat image).
+
+> **Audio behavior**: models marked `optional` are **silent by default** — set `movieParams: { "generateAudio": true }` to embed the generated soundtrack. Models marked `always` (grok-imagine-video-1.5) embed audio in every output and cannot be silenced; `generateAudio: false` logs a warning and is ignored.
 
 ## Test Script
 
