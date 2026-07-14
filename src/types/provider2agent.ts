@@ -124,7 +124,7 @@ export type ReplicateModel = `${string}/${string}`;
 export const AUDIO_MODE_NEVER = "never" as const;
 export const AUDIO_MODE_ALWAYS = "always" as const;
 export const AUDIO_MODE_OPTIONAL = "optional" as const;
-type MovieAudioSpec = { mode: typeof AUDIO_MODE_NEVER } | { mode: typeof AUDIO_MODE_ALWAYS } | { mode: typeof AUDIO_MODE_OPTIONAL; param: string };
+export type MovieAudioSpec = { mode: typeof AUDIO_MODE_NEVER } | { mode: typeof AUDIO_MODE_ALWAYS } | { mode: typeof AUDIO_MODE_OPTIONAL; param: string };
 type ReplicateMovieModelParams = {
   durations: number[];
   start_image: string | undefined;
@@ -177,10 +177,12 @@ export const provider2MovieAgent = {
       "minimax/hailuo-2.3",
       "minimax/hailuo-2.3-fast",
       "pixverse/pixverse-v5",
+      "prunaai/p-video",
+      "xai/grok-imagine-video-1.5",
     ],
     modelParams: {
       "bytedance/seedance-1-lite": {
-        durations: [5, 10],
+        durations: [4, 5, 6, 7, 8, 9, 10, 11, 12],
         start_image: "image",
         last_image: "last_frame_image",
         audio: { mode: AUDIO_MODE_NEVER },
@@ -292,10 +294,13 @@ export const provider2MovieAgent = {
         price_per_sec: 0.12,
       },
       "wan-video/wan-2.2-i2v-fast": {
+        // No duration input: length is num_frames (default 81) / frames_per_second (default 16) ≈ 5s.
         durations: [5],
         start_image: "image",
+        start_image_required: true,
+        last_image: "last_image",
         audio: { mode: AUDIO_MODE_NEVER },
-        price_per_sec: 0.012,
+        price_per_sec: 0.01, // $0.05 per 81-frame 480p video; up to $0.145 at 720p
       },
       "wan-video/wan-2.2-t2v-fast": {
         durations: [5],
@@ -328,7 +333,7 @@ export const provider2MovieAgent = {
         last_image: "end_image",
         reference_images_param: "reference_images",
         audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
-        price_per_sec: 0.3,
+        price_per_sec: 0.28, // 'pro' (1080p, default); 'standard' $0.168, '4k' $0.42
       },
       "kwaivgi/kling-v3-video": {
         durations: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
@@ -367,6 +372,20 @@ export const provider2MovieAgent = {
         last_image: "last_frame_image",
         audio: { mode: AUDIO_MODE_NEVER },
         price_per_sec: 0.12,
+      },
+      "prunaai/p-video": {
+        durations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+        start_image: "image",
+        last_image: "last_frame_image",
+        audio: { mode: AUDIO_MODE_OPTIONAL, param: "save_audio" },
+        price_per_sec: 0.02, // 720p, draft mode off ($0.04 at 1080p)
+      },
+      "xai/grok-imagine-video-1.5": {
+        durations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        start_image: "image",
+        start_image_required: true,
+        audio: { mode: AUDIO_MODE_ALWAYS },
+        price_per_sec: 0.08,
       },
     } as Record<ReplicateModel, ReplicateMovieModelParams>,
   },
@@ -559,6 +578,11 @@ export const llm = Object.keys(provider2LLMAgent) as (keyof typeof provider2LLMA
 export type LLM = keyof typeof provider2LLMAgent;
 
 export const htmlLLMProvider = ["openai", "anthropic", "mock"];
+
+export const getModelAudio = (provider: keyof typeof provider2MovieAgent, model: string): MovieAudioSpec | undefined => {
+  const modelParams = provider2MovieAgent[provider]?.modelParams as Record<string, { audio?: MovieAudioSpec }>;
+  return modelParams?.[model]?.audio;
+};
 
 export const getModelDuration = (provider: keyof typeof provider2MovieAgent, model: string, movieDuration?: number) => {
   const modelParams = provider2MovieAgent[provider]?.modelParams as Record<string, { durations?: number[] }>;
