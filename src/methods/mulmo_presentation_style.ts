@@ -38,6 +38,8 @@ import {
   provider2SoundEffectAgent,
   provider2LipSyncAgent,
   defaultProviders,
+  getModelAudio,
+  AUDIO_MODE_ALWAYS,
 } from "../types/provider2agent.js";
 
 const defaultTextSlideStyles = [
@@ -168,6 +170,17 @@ export const MulmoPresentationStyleMethods = {
       movieParams,
       keyName: agentInfo.keyName,
     };
+  },
+  // True when the movie generated for this beat will carry an audio track:
+  // the model always embeds audio, or audio generation is explicitly requested.
+  generatedMovieHasAudio(presentationStyle: MulmoPresentationStyle, beat: MulmoBeat): boolean {
+    const movieParams = { ...presentationStyle.movieParams, ...beat.movieParams };
+    if (movieParams?.generateAudio === true) {
+      return true;
+    }
+    const provider = text2MovieProviderSchema.parse(movieParams?.provider ?? defaultProviders.text2movie) as keyof typeof provider2MovieAgent;
+    const model = movieParams?.model ?? provider2MovieAgent[provider].defaultModel;
+    return getModelAudio(provider, model)?.mode === AUDIO_MODE_ALWAYS;
   },
   getSoundEffectAgentInfo(presentationStyle: MulmoPresentationStyle, beat: MulmoBeat) {
     const soundEffectProvider = (beat.soundEffectParams?.provider ??

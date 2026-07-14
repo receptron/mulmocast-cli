@@ -124,7 +124,7 @@ export type ReplicateModel = `${string}/${string}`;
 export const AUDIO_MODE_NEVER = "never" as const;
 export const AUDIO_MODE_ALWAYS = "always" as const;
 export const AUDIO_MODE_OPTIONAL = "optional" as const;
-type MovieAudioSpec = { mode: typeof AUDIO_MODE_NEVER } | { mode: typeof AUDIO_MODE_ALWAYS } | { mode: typeof AUDIO_MODE_OPTIONAL; param: string };
+export type MovieAudioSpec = { mode: typeof AUDIO_MODE_NEVER } | { mode: typeof AUDIO_MODE_ALWAYS } | { mode: typeof AUDIO_MODE_OPTIONAL; param: string };
 type ReplicateMovieModelParams = {
   durations: number[];
   start_image: string | undefined;
@@ -578,6 +578,11 @@ export const llm = Object.keys(provider2LLMAgent) as (keyof typeof provider2LLMA
 export type LLM = keyof typeof provider2LLMAgent;
 
 export const htmlLLMProvider = ["openai", "anthropic", "mock"];
+
+export const getModelAudio = (provider: keyof typeof provider2MovieAgent, model: string): MovieAudioSpec | undefined => {
+  const modelParams = provider2MovieAgent[provider]?.modelParams as Record<string, { audio?: MovieAudioSpec }>;
+  return modelParams?.[model]?.audio;
+};
 
 export const getModelDuration = (provider: keyof typeof provider2MovieAgent, model: string, movieDuration?: number) => {
   const modelParams = provider2MovieAgent[provider]?.modelParams as Record<string, { durations?: number[] }>;

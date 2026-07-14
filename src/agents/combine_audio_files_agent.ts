@@ -10,7 +10,7 @@ import {
   ffmpegGetMediaDuration,
 } from "../utils/ffmpeg_utils.js";
 import { MulmoMediaSourceMethods } from "../methods/mulmo_media_source.js";
-import { MulmoBeatMethods } from "../methods/index.js";
+import { MulmoBeatMethods, MulmoPresentationStyleMethods } from "../methods/index.js";
 import { userAssert } from "../utils/utils.js";
 import { getAudioInputIdsError } from "../utils/error_cause.js";
 
@@ -179,7 +179,7 @@ const getSpillOverGroup = (context: MulmoStudioContext, mediaDurations: MediaDur
       media.movieDuration === 0 &&
       Boolean(beat.moviePrompt) &&
       !beat.soundEffectPrompt &&
-      beat.movieParams?.generateAudio !== true;
+      !MulmoPresentationStyleMethods.generatedMovieHasAudio(context.presentationStyle, beat);
     if (media.hasMedia && !isSilentContinuation) {
       break;
     }
