@@ -124,10 +124,7 @@ export type ReplicateModel = `${string}/${string}`;
 export const AUDIO_MODE_NEVER = "never" as const;
 export const AUDIO_MODE_ALWAYS = "always" as const;
 export const AUDIO_MODE_OPTIONAL = "optional" as const;
-// For AUDIO_MODE_NEVER, an optional `param` names a model input that must be set to
-// false to keep the output silent (e.g. p-video's `save_audio`, which defaults to true).
-type MovieAudioSpec =
-  { mode: typeof AUDIO_MODE_NEVER; param?: string } | { mode: typeof AUDIO_MODE_ALWAYS } | { mode: typeof AUDIO_MODE_OPTIONAL; param: string };
+type MovieAudioSpec = { mode: typeof AUDIO_MODE_NEVER } | { mode: typeof AUDIO_MODE_ALWAYS } | { mode: typeof AUDIO_MODE_OPTIONAL; param: string };
 type ReplicateMovieModelParams = {
   durations: number[];
   start_image: string | undefined;
@@ -380,14 +377,14 @@ export const provider2MovieAgent = {
         durations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
         start_image: "image",
         last_image: "last_frame_image",
-        audio: { mode: AUDIO_MODE_NEVER, param: "save_audio" },
+        audio: { mode: AUDIO_MODE_OPTIONAL, param: "save_audio" },
         price_per_sec: 0.02, // 720p, draft mode off ($0.04 at 1080p)
       },
       "xai/grok-imagine-video-1.5": {
         durations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         start_image: "image",
         start_image_required: true,
-        audio: { mode: AUDIO_MODE_NEVER },
+        audio: { mode: AUDIO_MODE_ALWAYS },
         price_per_sec: 0.08,
       },
     } as Record<ReplicateModel, ReplicateMovieModelParams>,
