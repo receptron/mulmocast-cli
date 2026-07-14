@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.8.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.8.0) (2026-07-15)
+
+- **New Replicate movie models** ([#1493](https://github.com/receptron/mulmocast-cli/pull/1493)): `prunaai/p-video` (1–20s, first + last frame conditioning, optional audio via `save_audio`, $0.02/s at 720p) and `xai/grok-imagine-video-1.5` (1–15s, first frame required, always outputs synchronized audio, $0.08/s).
+- **Silent-by-default movie audio** ([#1493](https://github.com/receptron/mulmocast-cli/pull/1493)): optional-audio Replicate models (seedance-2.0 family, veo-3 family, kling-v3, pixverse-v4.5, p-video) now always receive their audio flag explicitly, defaulting to **off** — several models embed generated audio by default, which mixed unexpected music into narration-only beats. Opt in per beat with `movieParams: { "generateAudio": true }`. Scripts that relied on the provider's audio-on default will produce silent movies until they opt in.
+- **Spill-over movies** ([#1493](https://github.com/receptron/mulmocast-cli/pull/1493)): an empty-text beat carrying only a `moviePrompt` whose generated movie will stay silent (new `MulmoPresentationStyleMethods.generatedMovieHasAudio`) now continues the preceding narration's spill-over group, so one narration can flow across self-animating slides. Imported movies, animated `html_tailwind` beats, and audio-carrying generations end the group as before.
+- **Replicate spec refresh** ([#1493](https://github.com/receptron/mulmocast-cli/pull/1493)): seedance-1-lite durations 4–12s (was [5, 10]); wan-2.2-i2v-fast gains `last_image` and is marked first-frame-required; kling-v3-omni-video price updated to $0.28/s.
+- **Regression tests & docs** ([#1495](https://github.com/receptron/mulmocast-cli/pull/1495)): 14 tests locking in the spill-over grouping semantics, `generatedMovieHasAudio` provider/model resolution, and gap-aware duration snapping; `docs/movie_reference_images.md` model matrix refreshed (wan-2.2 split, new model rows, audio behavior notes).
+- `src/types/provider2agent.ts` changed → `@mulmocast/types` released as 2.8.0.
+
+📦 **npm**: [`mulmocast@2.8.0`](https://www.npmjs.com/package/mulmocast/v/2.8.0)
+
 ## [2.7.2](https://github.com/receptron/mulmocast-cli/releases/tag/2.7.2) (2026-07-12)
 
 - **Fix `mulmocast/browser` puppeteer bleed-through** ([#1491](https://github.com/receptron/mulmocast-cli/pull/1491)): since 2.7.0, importing `mulmocast/browser` in a Vite/Rollup renderer pulled `utils/image_plugins` → `mulmocast-vision` → `puppeteer` → `@puppeteer/browsers/debug.js` into the browser bundle, which hit `node:util.debuglog` at module load and threw `TypeError: import_browser_external_node_util$1.debuglog is not a function`. Split `MulmoBeatMethods` into a browser-safe subset (`methods/mulmo_beat.ts`, no `getPlugin`) and a Node-only extension (`methods/mulmo_beat_node.ts`, adds `getPlugin`). `methods/index.ts` now re-exports the Node version so `import { MulmoBeatMethods } from "mulmocast"` keeps `getPlugin` intact.
