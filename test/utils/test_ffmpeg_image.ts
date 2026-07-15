@@ -50,3 +50,12 @@ test("padImageToCanvas pads to the requested canvas size", async () => {
 test("ffmpegGetImageDimensions rejects for a missing file", async () => {
   await assert.rejects(ffmpegGetImageDimensions("/nonexistent/no_such_image.png"));
 });
+
+test("padImageToCanvas rejects fill colors that could inject filtergraph syntax", async () => {
+  // paths are never touched: validation rejects before ffmpeg runs
+  const src = "/nonexistent/src.png";
+  const dest = "/nonexistent/dest.png";
+  await assert.rejects(padImageToCanvas(src, dest, 1280, 720, "black,drawtext=text=x"), /invalid fill color/);
+  await assert.rejects(padImageToCanvas(src, dest, 1280, 720, "black:x=1"), /invalid fill color/);
+  await assert.rejects(padImageToCanvas(src, dest, 1280, 720, "#F7F6"), /invalid fill color/);
+});

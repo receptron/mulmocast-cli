@@ -19,7 +19,7 @@ The one gap: generated images come back at the provider's fixed sizes (gpt-image
 so the model receives mismatched first/last frames and reconciles them unpredictably.
 The `nurtured-at-home` deck worked around this manually:
 
-```
+```sh
 ffmpeg -i <src> -vf "scale=1080:720,pad=1280:720:100:0:color=0xF7F6F4" <dst>
 ```
 

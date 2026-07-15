@@ -1,4 +1,5 @@
 import fs from "fs";
+import { createHash } from "crypto";
 import { GraphAILogger } from "graphai";
 import { MulmoStudioContext, MulmoBeat, MulmoCanvasDimension, MulmoImageParams, MulmoMovieParams, Text2ImageAgentInfo } from "../types/index.js";
 import { MulmoPresentationStyleMethods, MulmoStudioContextMethods, MulmoBeatMethods, MulmoMediaSourceMethods } from "../methods/index.js";
@@ -84,19 +85,28 @@ export const conformFrameImageToCanvas = async (context: MulmoStudioContext, ima
     return imagePath; // mock agents / dry runs
   }
   const canvasSize = MulmoPresentationStyleMethods.getCanvasSize(context.presentationStyle);
-  const { width, height } = await ffmpegGetImageDimensions(imagePath);
-  if (Math.abs(width / height - canvasSize.width / canvasSize.height) < 0.01) {
-    return imagePath;
-  }
-  const destPath = getReferenceImagePath(context, `${imageName}_fit_${canvasSize.width}x${canvasSize.height}`, "png");
+  // The cache key includes the source path and fill color: the same ref name can resolve
+  // to different sources in different beats, and a color change must invalidate the cache.
+  const digest = createHash("sha256").update(`${imagePath}|${fillColor}`).digest("hex").slice(0, 8);
+  const destPath = getReferenceImagePath(context, `${imageName}_fit_${canvasSize.width}x${canvasSize.height}_${digest}`, "png");
   const inFlight = conformingInFlight.get(destPath);
   if (inFlight) {
     return inFlight;
   }
   const promise = (async () => {
-    if (!fs.existsSync(destPath) || fs.statSync(destPath).mtimeMs < fs.statSync(imagePath).mtimeMs) {
-      GraphAILogger.info(`conformFrameImageToCanvas: padding ${imageName} (${width}x${height}) to ${canvasSize.width}x${canvasSize.height}`);
+    if (fs.existsSync(destPath) && fs.statSync(destPath).mtimeMs >= fs.statSync(imagePath).mtimeMs) {
+      return destPath;
+    }
+    const { width, height } = await ffmpegGetImageDimensions(imagePath);
+    if (Math.abs(width / height - canvasSize.width / canvasSize.height) < 0.01) {
+      return imagePath;
+    }
+    GraphAILogger.info(`conformFrameImageToCanvas: padding ${imageName} (${width}x${height}) to ${canvasSize.width}x${canvasSize.height}`);
+    try {
       await padImageToCanvas(imagePath, destPath, canvasSize.width, canvasSize.height, fillColor);
+    } catch (error) {
+      fs.rmSync(destPath, { force: true }); // don't let a partial file poison the mtime cache
+      throw error;
     }
     return destPath;
   })();

@@ -39,7 +39,8 @@ test("conformFrameImageToCanvas pads a mismatched image to the canvas size", asy
 
   const result = await conformFrameImageToCanvas(context, "square", src, "#F7F6F4");
 
-  assert.strictEqual(result, path.join(dir, context.studio.filename, "square_fit_1280x720.png"));
+  assert.match(path.basename(result), /^square_fit_1280x720_[0-9a-f]{8}\.png$/);
+  assert.strictEqual(path.dirname(result), path.join(dir, context.studio.filename));
   const { width, height } = await ffmpegGetImageDimensions(result);
   assert.strictEqual(width, 1280);
   assert.strictEqual(height, 720);
@@ -47,6 +48,28 @@ test("conformFrameImageToCanvas pads a mismatched image to the canvas size", asy
   // second call reuses the conformed file (same path, no error)
   const again = await conformFrameImageToCanvas(context, "square", src, "#F7F6F4");
   assert.strictEqual(again, result);
+
+  // a different fill color produces a different cached file
+  const otherColor = await conformFrameImageToCanvas(context, "square", src, "white");
+  assert.notStrictEqual(otherColor, result);
+
+  // the same ref name resolved to a different source produces a different cached file
+  const src2 = path.join(dir, "square2.png");
+  await createSolidPng(src2, 500, 500);
+  const otherSource = await conformFrameImageToCanvas(context, "square", src2, "#F7F6F4");
+  assert.notStrictEqual(otherSource, result);
+
+  fs.rmSync(dir, { recursive: true, force: true });
+});
+
+test("conformFrameImageToCanvas rejects an invalid fill color without leaving a cached file", async () => {
+  const { context, dir } = createTempContext();
+  const src = path.join(dir, "square.png");
+  await createSolidPng(src, 400, 400);
+
+  await assert.rejects(conformFrameImageToCanvas(context, "square", src, "black,drawtext=text=x"), /invalid fill color/);
+  const leftovers = fs.readdirSync(path.join(dir, context.studio.filename)).filter((f) => f.startsWith("square_fit_"));
+  assert.deepStrictEqual(leftovers, []);
 
   fs.rmSync(dir, { recursive: true, force: true });
 });
@@ -95,7 +118,7 @@ test("imagePreprocessAgent conforms firstFrame/lastFrame reference images", asyn
   assert.ok("firstFrameImagePath" in result && "lastFrameImagePath" in result);
   const { firstFrameImagePath, lastFrameImagePath } = result as { firstFrameImagePath: string; lastFrameImagePath: string };
   assert.strictEqual(firstFrameImagePath, boardPath); // matching aspect: untouched
-  assert.strictEqual(lastFrameImagePath, path.join(dir, context.studio.filename, "slide_fit_1280x720.png"));
+  assert.match(path.basename(lastFrameImagePath), /^slide_fit_1280x720_[0-9a-f]{8}\.png$/);
   const { width, height } = await ffmpegGetImageDimensions(lastFrameImagePath);
   assert.strictEqual(width, 1280);
   assert.strictEqual(height, 720);
