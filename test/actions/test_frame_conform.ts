@@ -40,7 +40,8 @@ test("conformFrameImageToCanvas pads a mismatched image to the canvas size", asy
   const result = await conformFrameImageToCanvas(context, "square", src, "#F7F6F4");
 
   assert.match(path.basename(result), /^square_fit_1280x720_[0-9a-f]{8}\.png$/);
-  assert.strictEqual(path.dirname(result), path.join(dir, context.studio.filename));
+  // normalize: getReferenceImagePath joins with "/" while mkdtemp returns "\" paths on Windows
+  assert.strictEqual(path.normalize(path.dirname(result)), path.join(dir, context.studio.filename));
   const { width, height } = await ffmpegGetImageDimensions(result);
   assert.strictEqual(width, 1280);
   assert.strictEqual(height, 720);
