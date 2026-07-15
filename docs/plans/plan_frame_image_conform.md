@@ -71,9 +71,16 @@ are resolved into `firstFrameImagePath` / `lastFrameImagePath`, conform the reso
 Downstream needs no changes: `movieGenerator` (both replicate and genai agents) and the
 `referenceImageForMovie` fallback already consume these paths.
 
-Scope note: the beat's own generated image used as an implicit first frame
-(`imagePrompt` + `moviePrompt` without frame names) is intentionally **not** conformed —
-that is long-standing behavior that many scripts rely on.
+Scope notes:
+- The beat's own generated image used as an implicit first frame
+  (`imagePrompt` + `moviePrompt` without frame names) is intentionally **not** conformed —
+  that is long-standing behavior that many scripts rely on.
+- `movieParams.referenceImages` (Veo style/asset references) are intentionally **not**
+  conformed either: they describe aesthetics or objects, not frames, so they need not
+  match the canvas aspect ratio.
+- Frame-name/fill-color resolution shallow-merges style-level and beat-level
+  `movieParams` (like `getMovieAgentInfo`), so a beat setting only `lastFrameImageName`
+  keeps the global `frameFillColor`.
 
 ## Sample script (`scripts/samples/whiteboard_marker_animation.json`)
 
@@ -92,10 +99,9 @@ Demonstrates the fully self-contained whiteboard workflow:
   Chaining slide N as the first frame of beat N+1 is not used: beat-local refs are only
   visible to their own beat, and global imagePrompt refs support one level of
   `referenceImageName` (stage-2 entries resolve in parallel).
+- `frameFillColor` sits in the global `movieParams` and applies to every beat via the
+  shallow merge.
 - global `movieParams.model` = `wan-video/wan-2.2-i2v-fast`
-
-Note: beat-level `movieParams` replaces the global object for frame-name resolution
-(`beat.movieParams ?? presentationStyle.movieParams`), so `frameFillColor` is set per beat.
 
 ## Tests
 

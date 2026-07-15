@@ -126,3 +126,25 @@ test("imagePreprocessAgent conforms firstFrame/lastFrame reference images", asyn
 
   fs.rmSync(dir, { recursive: true, force: true });
 });
+
+test("imagePreprocessAgent merges style-level frameFillColor with beat-level frame names", async () => {
+  const { context, dir } = createTempContext();
+  const slidePath = path.join(dir, "slide.png");
+  await createSolidPng(slidePath, 1536, 1024);
+  context.presentationStyle.movieParams = { frameFillColor: "#F7F6F4" };
+
+  const beat = createMockBeat({
+    text: "",
+    moviePrompt: "A hand draws the illustration stroke by stroke.",
+    movieParams: { lastFrameImageName: "slide" }, // no frameFillColor on the beat
+  });
+
+  const result = await imagePreprocessAgent({ context, beat, index: 0, imageRefs: { slide: slidePath } });
+
+  // The digest in the conformed file name includes the fill color, so matching the path
+  // produced with the global color proves the merge (default "black" would differ).
+  const expected = await conformFrameImageToCanvas(context, "slide", slidePath, "#F7F6F4");
+  assert.strictEqual((result as { lastFrameImagePath: string }).lastFrameImagePath, expected);
+
+  fs.rmSync(dir, { recursive: true, force: true });
+});

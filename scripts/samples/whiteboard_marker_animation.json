@@ -25,7 +25,8 @@
   },
   "movieParams": {
     "provider": "replicate",
-    "model": "wan-video/wan-2.2-i2v-fast"
+    "model": "wan-video/wan-2.2-i2v-fast",
+    "frameFillColor": "#F7F6F4"
   },
   "beats": [
     {
@@ -40,8 +41,7 @@
       "moviePrompt": "Whiteboard-animation time-lapse: a hand with a marker draws this exact illustration, stroke by stroke, and moves away when it is finished. Fixed camera, bright even lighting.",
       "movieParams": {
         "firstFrameImageName": "board",
-        "lastFrameImageName": "sketch_home",
-        "frameFillColor": "#F7F6F4"
+        "lastFrameImageName": "sketch_home"
       }
     },
     {
@@ -56,8 +56,7 @@
       "moviePrompt": "Whiteboard-animation time-lapse: a hand with a marker draws this exact illustration, stroke by stroke, and moves away when it is finished. Fixed camera, bright even lighting.",
       "movieParams": {
         "firstFrameImageName": "board",
-        "lastFrameImageName": "sketch_sprout",
-        "frameFillColor": "#F7F6F4"
+        "lastFrameImageName": "sketch_sprout"
       }
     },
     {
@@ -72,8 +71,7 @@
       "moviePrompt": "Whiteboard-animation time-lapse: a hand with a marker draws this exact illustration, stroke by stroke, and moves away when it is finished. Fixed camera, bright even lighting.",
       "movieParams": {
         "firstFrameImageName": "board",
-        "lastFrameImageName": "sketch_pile",
-        "frameFillColor": "#F7F6F4"
+        "lastFrameImageName": "sketch_pile"
       }
     }
   ]

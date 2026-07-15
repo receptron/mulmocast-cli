@@ -44,6 +44,14 @@ test("padImageToCanvas pads to the requested canvas size", async () => {
   assert.strictEqual(width, 1280);
   assert.strictEqual(height, 720);
 
+  // prefix-less hex and color names are also accepted
+  const dest2 = path.join(dir, "dest2.png");
+  await padImageToCanvas(src, dest2, 1280, 720, "F7F6F4");
+  assert.ok(fs.existsSync(dest2));
+  const dest3 = path.join(dir, "dest3.png");
+  await padImageToCanvas(src, dest3, 1280, 720, "white");
+  assert.ok(fs.existsSync(dest3));
+
   fs.rmSync(dir, { recursive: true, force: true });
 });
 

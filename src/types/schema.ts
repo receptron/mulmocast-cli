@@ -578,6 +578,7 @@ export const mulmoMovieParamsSchema = z.object({
   lastFrameImageName: imageIdSchema.optional().describe("Reference an imageRefs key for the last frame (image-to-video interpolation)"),
   frameFillColor: z
     .string()
+    .regex(/^(#|0x)?[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$|^[a-zA-Z]+$/, "must be a hex color ('#RRGGBB[AA]', '0x' or no prefix) or a color name")
     .optional()
     .describe("Fill color used when padding firstFrame/lastFrame reference images to the canvas aspect ratio (e.g. '#F7F6F4'). Default: black"),
   referenceImages: z

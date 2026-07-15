@@ -158,7 +158,8 @@ export const padImageToCanvas = (srcPath: string, destPath: string, width: numbe
   if (!/^(#|0x)?[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(fillColor) && !/^[a-zA-Z]+$/.test(fillColor)) {
     return Promise.reject(new Error(`padImageToCanvas: invalid fill color: ${fillColor}`));
   }
-  const color = fillColor.replace(/^#/, "0x"); // ffmpeg color syntax
+  // ffmpeg color syntax: hex needs a 0x prefix ('#RRGGBB' and bare 'RRGGBB' both normalize)
+  const color = /^[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(fillColor) ? `0x${fillColor}` : fillColor.replace(/^#/, "0x");
   return new Promise((resolve, reject) => {
     ffmpeg(srcPath)
       .outputOptions([
