@@ -113,7 +113,7 @@
     "js-tiktoken": "^1.0.21",
     "jsdom": "^29.1.1",
     "marked": "^18.0.6",
-    "mulmocast-vision": "^1.0.11",
+    "mulmocast-vision": "^1.0.12",
     "ora": "^9.4.1",
     "puppeteer": "^25.3.0",
     "replicate": "^1.4.0",
