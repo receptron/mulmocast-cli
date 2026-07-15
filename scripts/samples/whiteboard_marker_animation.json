@@ -1,0 +1,80 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "title": "Whiteboard Marker Drawing Animation",
+  "description": "Whiteboard-animation workflow: each beat generates its finished slide in-script (beat-local imagePrompt ref, drawn onto a shared blank board via referenceImageName), then animates a hand drawing it by interpolating from the blank board (firstFrameImageName) to the finished slide (lastFrameImageName). Frame images are automatically padded to the canvas aspect ratio using frameFillColor. The blank board is a checked-in solid-color image: generating it via imagePrompt does not work, because the global imageParams.style is appended to ref prompts and the model fills the 'blank' board with content.",
+  "lang": "en",
+  "canvasSize": {
+    "width": 1280,
+    "height": 720
+  },
+  "imageParams": {
+    "provider": "openai",
+    "model": "gpt-image-2",
+    "style": "Whiteboard marker drawing: a hand-drawn sketch on a clean white dry-erase whiteboard, drawn with black, blue, red and green marker pens. Rough but confident strokes, simple diagrams, boxes, arrows, stick figures, underlines and quick handwritten labels. Slight marker texture, a few faint eraser smudges. Flat, bright, evenly lit, full-bleed white background. No photorealism, no gradients, no 3D rendering, no watercolor.",
+    "images": {
+      "board": {
+        "type": "image",
+        "source": {
+          "kind": "path",
+          "path": "./images/whiteboard/blank_board.png"
+        }
+      }
+    }
+  },
+  "movieParams": {
+    "provider": "replicate",
+    "model": "wan-video/wan-2.2-i2v-fast"
+  },
+  "beats": [
+    {
+      "text": "Let's start with an idea: a home. A place you own, where everything you build stays yours.",
+      "images": {
+        "sketch_home": {
+          "type": "imagePrompt",
+          "referenceImageName": "board",
+          "prompt": "Draw on this blank whiteboard: a big warm house outline in black marker with a smiling sun in the top corner, and one large handwritten word 'HOME' below the house, underlined in red. No other text."
+        }
+      },
+      "moviePrompt": "Whiteboard-animation time-lapse: a hand with a marker draws this exact illustration, stroke by stroke, and moves away when it is finished. Fixed camera, bright even lighting.",
+      "movieParams": {
+        "firstFrameImageName": "board",
+        "lastFrameImageName": "sketch_home",
+        "frameFillColor": "#F7F6F4"
+      }
+    },
+    {
+      "text": "Inside that home, something small starts growing — and every day you tend it, it becomes a little more valuable.",
+      "images": {
+        "sketch_sprout": {
+          "type": "imagePrompt",
+          "referenceImageName": "board",
+          "prompt": "Draw on this blank whiteboard: a stick figure lovingly watering a small green sprout that grows out of an open laptop, with a green handwritten label 'grows every day' and an arrow pointing at the sprout. No other text."
+        }
+      },
+      "moviePrompt": "Whiteboard-animation time-lapse: a hand with a marker draws this exact illustration, stroke by stroke, and moves away when it is finished. Fixed camera, bright even lighting.",
+      "movieParams": {
+        "firstFrameImageName": "board",
+        "lastFrameImageName": "sketch_sprout",
+        "frameFillColor": "#F7F6F4"
+      }
+    },
+    {
+      "text": "The pile of what you have grown keeps getting taller. And the one who raised it — is you.",
+      "images": {
+        "sketch_pile": {
+          "type": "imagePrompt",
+          "referenceImageName": "board",
+          "prompt": "Draw on this blank whiteboard: a tall growing stack of folders, papers and small app windows with a red heart on top, a stick figure proudly standing next to it, and a large handwritten heading 'YOURS' underlined in red. No other text."
+        }
+      },
+      "moviePrompt": "Whiteboard-animation time-lapse: a hand with a marker draws this exact illustration, stroke by stroke, and moves away when it is finished. Fixed camera, bright even lighting.",
+      "movieParams": {
+        "firstFrameImageName": "board",
+        "lastFrameImageName": "sketch_pile",
+        "frameFillColor": "#F7F6F4"
+      }
+    }
+  ]
+}

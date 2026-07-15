@@ -576,6 +576,10 @@ export const mulmoMovieParamsSchema = z.object({
   vertexai_location: z.string().optional(), // Vertex AI location (default: us-central1)
   firstFrameImageName: imageIdSchema.optional().describe("Reference an imageRefs key for the first frame (image-to-video input)"),
   lastFrameImageName: imageIdSchema.optional().describe("Reference an imageRefs key for the last frame (image-to-video interpolation)"),
+  frameFillColor: z
+    .string()
+    .optional()
+    .describe("Fill color used when padding firstFrame/lastFrame reference images to the canvas aspect ratio (e.g. '#F7F6F4'). Default: black"),
   referenceImages: z
     .array(movieReferenceImageSchema)
     .optional()
