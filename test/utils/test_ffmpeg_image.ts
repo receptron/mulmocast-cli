@@ -1,0 +1,69 @@
+import test from "node:test";
+import assert from "node:assert";
+import fs from "fs";
+import os from "os";
+import path from "path";
+import ffmpeg from "@modernized/fluent-ffmpeg";
+import { ffmpegGetImageDimensions, padImageToCanvas } from "../../src/utils/ffmpeg_utils.js";
+
+const createSolidPng = (filePath: string, width: number, height: number): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    ffmpeg()
+      .input(`color=0xF7F6F4:s=${width}x${height}`)
+      .inputFormat("lavfi")
+      .outputOptions(["-frames:v", "1"])
+      .output(filePath)
+      .on("end", () => resolve())
+      .on("error", (err: Error) => reject(err))
+      .run();
+  });
+};
+
+test("ffmpegGetImageDimensions returns the image size", async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mulmo-ffmpeg-image-"));
+  const src = path.join(dir, "src.png");
+  await createSolidPng(src, 300, 200);
+
+  const { width, height } = await ffmpegGetImageDimensions(src);
+  assert.strictEqual(width, 300);
+  assert.strictEqual(height, 200);
+
+  fs.rmSync(dir, { recursive: true, force: true });
+});
+
+test("padImageToCanvas pads to the requested canvas size", async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mulmo-ffmpeg-image-"));
+  const src = path.join(dir, "src.png");
+  const dest = path.join(dir, "dest.png");
+  await createSolidPng(src, 1536, 1024); // gpt-image landscape size
+
+  await padImageToCanvas(src, dest, 1280, 720, "#F7F6F4");
+
+  assert.ok(fs.existsSync(dest));
+  const { width, height } = await ffmpegGetImageDimensions(dest);
+  assert.strictEqual(width, 1280);
+  assert.strictEqual(height, 720);
+
+  // prefix-less hex and color names are also accepted
+  const dest2 = path.join(dir, "dest2.png");
+  await padImageToCanvas(src, dest2, 1280, 720, "F7F6F4");
+  assert.ok(fs.existsSync(dest2));
+  const dest3 = path.join(dir, "dest3.png");
+  await padImageToCanvas(src, dest3, 1280, 720, "white");
+  assert.ok(fs.existsSync(dest3));
+
+  fs.rmSync(dir, { recursive: true, force: true });
+});
+
+test("ffmpegGetImageDimensions rejects for a missing file", async () => {
+  await assert.rejects(ffmpegGetImageDimensions("/nonexistent/no_such_image.png"));
+});
+
+test("padImageToCanvas rejects fill colors that could inject filtergraph syntax", async () => {
+  // paths are never touched: validation rejects before ffmpeg runs
+  const src = "/nonexistent/src.png";
+  const dest = "/nonexistent/dest.png";
+  await assert.rejects(padImageToCanvas(src, dest, 1280, 720, "black,drawtext=text=x"), /invalid fill color/);
+  await assert.rejects(padImageToCanvas(src, dest, 1280, 720, "black:x=1"), /invalid fill color/);
+  await assert.rejects(padImageToCanvas(src, dest, 1280, 720, "#F7F6"), /invalid fill color/);
+});

@@ -1,7 +1,17 @@
+import fs from "fs";
+import { createHash } from "crypto";
 import { GraphAILogger } from "graphai";
 import { MulmoStudioContext, MulmoBeat, MulmoCanvasDimension, MulmoImageParams, MulmoMovieParams, Text2ImageAgentInfo } from "../types/index.js";
 import { MulmoPresentationStyleMethods, MulmoStudioContextMethods, MulmoBeatMethods, MulmoMediaSourceMethods } from "../methods/index.js";
-import { getBeatPngImagePath, getBeatMoviePaths, getBeatAnimatedVideoPath, getAudioFilePath, getGroupedAudioFilePath } from "../utils/file.js";
+import {
+  getBeatPngImagePath,
+  getBeatMoviePaths,
+  getBeatAnimatedVideoPath,
+  getAudioFilePath,
+  getGroupedAudioFilePath,
+  getReferenceImagePath,
+} from "../utils/file.js";
+import { ffmpegGetImageDimensions, padImageToCanvas } from "../utils/ffmpeg_utils.js";
 import { imagePrompt, htmlImageSystemPrompt } from "../utils/prompt.js";
 import { renderHTMLToImage } from "../utils/html_render.js";
 import { beatId } from "../utils/utils.js";
@@ -63,6 +73,65 @@ type ImagePluginPreprocessAgentResponse = ImagePreprocessAgentResponseBase & {
   referenceImageForMovie: string;
   markdown: string;
   html: string;
+};
+
+// Image-to-video models expect first/last frame images that match the video canvas.
+// Generated reference images come back at the provider's fixed sizes (e.g. gpt-image emits
+// 1536x1024), so aspect-fit pad them to the canvas before movie generation.
+const conformingInFlight = new Map<string, Promise<string>>();
+
+// Aspect-matching sources never get a destPath, so without this memo every beat
+// (and every rerun) would ffprobe them again. Keyed by path + mtime.
+const imageDimensionsCache = new Map<string, { width: number; height: number }>();
+
+const getImageDimensionsCached = async (imagePath: string, mtimeMs: number) => {
+  const key = `${imagePath}:${mtimeMs}`;
+  const cached = imageDimensionsCache.get(key);
+  if (cached) {
+    return cached;
+  }
+  const dimensions = await ffmpegGetImageDimensions(imagePath);
+  imageDimensionsCache.set(key, dimensions);
+  return dimensions;
+};
+
+export const conformFrameImageToCanvas = async (context: MulmoStudioContext, imageName: string, imagePath: string, fillColor: string): Promise<string> => {
+  if (!fs.existsSync(imagePath)) {
+    return imagePath; // mock agents / dry runs
+  }
+  const canvasSize = MulmoPresentationStyleMethods.getCanvasSize(context.presentationStyle);
+  // The cache key includes the source path and fill color: the same ref name can resolve
+  // to different sources in different beats, and a color change must invalidate the cache.
+  const digest = createHash("sha256").update(`${imagePath}|${fillColor}`).digest("hex").slice(0, 8);
+  const destPath = getReferenceImagePath(context, `${imageName}_fit_${canvasSize.width}x${canvasSize.height}_${digest}`, "png");
+  const inFlight = conformingInFlight.get(destPath);
+  if (inFlight) {
+    return inFlight;
+  }
+  const promise = (async () => {
+    const sourceMtimeMs = fs.statSync(imagePath).mtimeMs;
+    if (fs.existsSync(destPath) && fs.statSync(destPath).mtimeMs >= sourceMtimeMs) {
+      return destPath;
+    }
+    const { width, height } = await getImageDimensionsCached(imagePath, sourceMtimeMs);
+    if (Math.abs(width / height - canvasSize.width / canvasSize.height) < 0.01) {
+      return imagePath;
+    }
+    GraphAILogger.info(`conformFrameImageToCanvas: padding ${imageName} (${width}x${height}) to ${canvasSize.width}x${canvasSize.height}`);
+    try {
+      await padImageToCanvas(imagePath, destPath, canvasSize.width, canvasSize.height, fillColor);
+    } catch (error) {
+      fs.rmSync(destPath, { force: true }); // don't let a partial file poison the mtime cache
+      throw error;
+    }
+    return destPath;
+  })();
+  conformingInFlight.set(destPath, promise);
+  try {
+    return await promise;
+  } finally {
+    conformingInFlight.delete(destPath);
+  }
 };
 
 type ImagePreprocessAgentResponse =
@@ -136,21 +205,24 @@ export const imagePreprocessAgent = async (namedInputs: {
 
   returnValue.movieAgentInfo = MulmoPresentationStyleMethods.getMovieAgentInfo(context.presentationStyle, beat);
 
-  // Resolve movie reference images from imageRefs
-  const movieParams = beat.movieParams ?? context.presentationStyle.movieParams;
-  if (movieParams?.firstFrameImageName && imageRefs) {
+  // Resolve movie reference images from imageRefs.
+  // Shallow-merge like getMovieAgentInfo: beat-level fields override style-level fields
+  // individually, so a beat setting only lastFrameImageName keeps the global frameFillColor.
+  const movieParams = { ...context.presentationStyle.movieParams, ...beat.movieParams };
+  const frameFillColor = movieParams.frameFillColor ?? "black";
+  if (movieParams.firstFrameImageName && imageRefs) {
     const firstFramePath = imageRefs[movieParams.firstFrameImageName];
     if (firstFramePath) {
-      returnValue.firstFrameImagePath = firstFramePath;
+      returnValue.firstFrameImagePath = await conformFrameImageToCanvas(context, movieParams.firstFrameImageName, firstFramePath, frameFillColor);
     }
   }
-  if (movieParams?.lastFrameImageName && imageRefs) {
+  if (movieParams.lastFrameImageName && imageRefs) {
     const lastFramePath = imageRefs[movieParams.lastFrameImageName];
     if (lastFramePath) {
-      returnValue.lastFrameImagePath = lastFramePath;
+      returnValue.lastFrameImagePath = await conformFrameImageToCanvas(context, movieParams.lastFrameImageName, lastFramePath, frameFillColor);
     }
   }
-  if (movieParams?.referenceImages && imageRefs) {
+  if (movieParams.referenceImages && imageRefs) {
     returnValue.movieReferenceImages = movieParams.referenceImages
       .map((ref) => {
         const refPath = imageRefs[ref.imageName];

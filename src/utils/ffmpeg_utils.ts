@@ -133,6 +133,50 @@ export const ffmpegGetMediaDuration = (filePath: string) => {
   });
 };
 
+export const ffmpegGetImageDimensions = (filePath: string) => {
+  return new Promise<{ width: number; height: number }>((resolve, reject) => {
+    ffmpeg.ffprobe(filePath, (err, metadata) => {
+      if (err) {
+        GraphAILogger.error("Error while getting image dimensions:", err);
+        reject(err);
+        return;
+      }
+      const stream = metadata.streams?.find((s) => s.codec_type === "video" && s.width && s.height);
+      if (!stream?.width || !stream?.height) {
+        reject(new Error(`ffmpegGetImageDimensions: no video stream found: ${filePath}`));
+        return;
+      }
+      resolve({ width: stream.width, height: stream.height });
+    });
+  });
+};
+
+// Aspect-fit the image into width x height, filling the extra space with fillColor (centered).
+export const padImageToCanvas = (srcPath: string, destPath: string, width: number, height: number, fillColor: string): Promise<void> => {
+  // Only allow hex colors and color names: fillColor is interpolated into the
+  // filtergraph, where ',' and ':' would allow injecting arbitrary filters.
+  if (!/^(#|0x)?[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(fillColor) && !/^[a-zA-Z]+$/.test(fillColor)) {
+    return Promise.reject(new Error(`padImageToCanvas: invalid fill color: ${fillColor}`));
+  }
+  // ffmpeg color syntax: hex needs a 0x prefix ('#RRGGBB' and bare 'RRGGBB' both normalize)
+  const color = /^[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(fillColor) ? `0x${fillColor}` : fillColor.replace(/^#/, "0x");
+  return new Promise((resolve, reject) => {
+    ffmpeg(srcPath)
+      .outputOptions([
+        "-frames:v",
+        "1",
+        "-update",
+        "1",
+        "-vf",
+        `scale=w=${width}:h=${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=${color}`,
+      ])
+      .output(destPath)
+      .on("end", () => resolve())
+      .on("error", (err) => reject(err))
+      .run();
+  });
+};
+
 export const extractImageFromMovie = (movieFile: string, imagePath: string, useLastFrame = false): Promise<object> => {
   return new Promise<object>((resolve, reject) => {
     const command = ffmpeg(movieFile);
