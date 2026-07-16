@@ -296,10 +296,10 @@
     protobufjs "^7.5.4"
     ws "^8.18.0"
 
-"@google/genai@^2.10.0":
-  version "2.10.0"
-  resolved "https://npm.flatt.tech/@google/genai/-/genai-2.10.0.tgz#a668a0cc98f83e58fa8c80e04b780513d7281715"
-  integrity sha512-e4cFxj3tiuMtsgOT4G9c1hXyGJhg7/Buj7VVeBacRY3fRtkRZZ59Q3nuVp2xbq8BGQXLXCDB253qMhklMOeUDg==
+"@google/genai@^2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-2.12.0.tgz#42d81d8f5c5189b467189bd5b823858a17587a70"
+  integrity sha512-LUr972DZosqPUhf9Mb3CIVu/B99woD3QW6ZJV1T9aNgxaoimAZARmo+IyyDsxIL+zouFiYSdA4hzfEWXc9oNIQ==
   dependencies:
     google-auth-library "^10.3.0"
     p-retry "^4.6.2"
@@ -553,10 +553,10 @@
     zod "^3.25 || ^4.0"
     zod-to-json-schema "^3.25.1"
 
-"@modernized/fluent-ffmpeg@^1.0.1":
-  version "1.0.1"
-  resolved "https://npm.flatt.tech/@modernized/fluent-ffmpeg/-/fluent-ffmpeg-1.0.1.tgz#d76e2b2d3ac7b4851ea118f683a3651d41684da2"
-  integrity sha512-neVU7y4Pne5w1SSCyd7wm4s66vVB0HVPI93huP0R0/t9Xs9BFP9wse2erSZv08ZobXfOWoKpk39Q3rXQWYEWlg==
+"@modernized/fluent-ffmpeg@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@modernized/fluent-ffmpeg/-/fluent-ffmpeg-1.0.2.tgz#d300afd52c32c7617636cf4257af47a5a0ba219e"
+  integrity sha512-cQeJuTlOS9RH0AKu7p1h/B9CwPdXnkQonSHtvfYNusc23z36Rkab0LfS+ghu+QbBbPB+oxaTEgFw6YV1sxMl9w==
   dependencies:
     which "^6.0.1"
 
