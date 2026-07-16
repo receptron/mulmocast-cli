@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.8.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.8.1) (2026-07-16)
+
+- **Conform first/last frame reference images to the canvas aspect ratio** ([#1499](https://github.com/receptron/mulmocast-cli/pull/1499)): image-to-video models expect `movieParams.firstFrameImageName` / `lastFrameImageName` refs to match the video canvas, but generated refs come back at the provider's fixed sizes (e.g. gpt-image emits 1536×1024 for a landscape canvas), forcing manual ffmpeg padding outside MulmoScript. `imagePreprocessAgent` now aspect-fit pads resolved frame refs to the canvas before movie generation. New `movieParams.frameFillColor` (schema-validated hex or color name, default `black`) picks the fill color; the previous behavior is preserved for refs whose aspect already matches (pass-through) and for the implicit first frame (`imagePrompt` + `moviePrompt` without frame names). `beat.movieParams` now shallow-merges with `presentationStyle.movieParams` for frame-name resolution (matching `getMovieAgentInfo`), so setting `frameFillColor` globally and `lastFrameImageName` per beat no longer silently drops the global color. Ships with the `whiteboard_marker_animation.json` sample (whiteboard drawing animation fully in-script). ffprobe results are memoized by `(path, mtime)` and concurrent conforms dedupe via an in-flight map.
+- **Dependency updates** ([#1497](https://github.com/receptron/mulmocast-cli/pull/1497), [#1498](https://github.com/receptron/mulmocast-cli/pull/1498)): runtime and dev dependencies bumped (tar, markdown, linting, TypeScript tooling, etc.); yarn.lock resynced so `tar@7.5.20` matches the `resolutions` field (fixes `yarn upgrade-interactive` failing with `Outdated lockfile`).
+- `src/types/schema.ts` changed (`frameFillColor`) → `@mulmocast/types` released as 2.8.1.
+
+📦 **npm**: [`mulmocast@2.8.1`](https://www.npmjs.com/package/mulmocast/v/2.8.1)
+
 ## [2.8.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.8.0) (2026-07-15)
 
 - **New Replicate movie models** ([#1493](https://github.com/receptron/mulmocast-cli/pull/1493)): `prunaai/p-video` (1–20s, first + last frame conditioning, optional audio via `save_audio`, $0.02/s at 720p) and `xai/grok-imagine-video-1.5` (1–15s, first frame required, always outputs synchronized audio, $0.08/s).
