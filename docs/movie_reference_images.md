@@ -44,6 +44,30 @@ Specify `lastFrameImageName` in `movieParams` to set an end frame. The video wil
 
 > **Note**: `lastFrameImageName` requires a first frame image (`imagePrompt` or `firstFrameImageName`).
 
+### `$beatImage` — the beat's own image as a frame
+
+The reserved name `"$beatImage"` refers to the beat's own generated image (from `imagePrompt` or a beat `image`). This makes "animate toward the beat's still" expressible — e.g. a blank-paper → finished-illustration time-lapse:
+
+```json
+{
+  "imagePrompt": "Travis, the robot and the ship in one shot",
+  "imageNames": ["portrait_travis", "portrait_robot", "portrait_ship"],
+  "moviePrompt": "An artist's hand draws the linework, then paints watercolor washes",
+  "movieParams": {
+    "firstFrameImageName": "blank_paper",
+    "lastFrameImageName": "$beatImage"
+  }
+}
+```
+
+The beat image is generated first, conformed to the canvas aspect ratio, and passed as the last frame. Constraints:
+
+- `$beatImage` cannot be used for both `firstFrameImageName` and `lastFrameImageName` at once.
+- The beat must produce its own still: an `imagePrompt` or an `image` (but not `image.type` `"movie"`, `"beat"`, or `"voice_over"`, whose image derives from the movie or another beat).
+- Keys in `imageParams.images` / beat-local `images` may not start with `$` — that prefix is reserved.
+
+(Note: `firstFrameImageName: "$beatImage"` is also accepted, but the beat image is already the default image-to-video start frame; the sentinel just makes it explicit and applies canvas conforming.)
+
 ### Reference Images (Style/Asset)
 
 Use `referenceImages` in `movieParams` to provide style or asset references without setting a first frame:

@@ -83,6 +83,7 @@ export const provider2ImageAgent = {
     models: [...gptImages],
     keyName: "OPENAI_API_KEY",
     baseURLKeyName: "OPENAI_BASE_URL",
+    maxReferenceImages: 16, // images.edit accepts up to 16 input images
   },
   google: {
     agentName: "imageGenAIAgent",
@@ -93,6 +94,10 @@ export const provider2ImageAgent = {
   replicate: {
     agentName: "imageReplicateAgent",
     defaultModel: "bytedance/seedream-4",
+    // Per-model reference image limits (image_input array). Only verified entries; unlisted models are not truncated.
+    imageModelParams: {
+      "bytedance/seedream-4": { maxReferenceImages: 10 },
+    } as Record<ReplicateModel, { maxReferenceImages?: number }>,
     models: [
       "bytedance/seedream-4",
       "qwen/qwen-image",
@@ -578,6 +583,15 @@ export const llm = Object.keys(provider2LLMAgent) as (keyof typeof provider2LLMA
 export type LLM = keyof typeof provider2LLMAgent;
 
 export const htmlLLMProvider = ["openai", "anthropic", "mock"];
+
+// Max reference images an image model accepts as input; undefined means no known limit (no truncation).
+export const getMaxImageReferenceImages = (provider: keyof typeof provider2ImageAgent, model: string): number | undefined => {
+  if (provider === "replicate") {
+    return provider2ImageAgent.replicate.imageModelParams[model as ReplicateModel]?.maxReferenceImages;
+  }
+  const agentInfo = provider2ImageAgent[provider] as { maxReferenceImages?: number };
+  return agentInfo?.maxReferenceImages;
+};
 
 export const getModelAudio = (provider: keyof typeof provider2MovieAgent, model: string): MovieAudioSpec | undefined => {
   const modelParams = provider2MovieAgent[provider]?.modelParams as Record<string, { audio?: MovieAudioSpec }>;

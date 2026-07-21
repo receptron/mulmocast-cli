@@ -393,13 +393,29 @@ export const mulmoAudioAssetSchema = z.union([mulmoAudioMediaSchema, mulmoMidiMe
 
 const imageIdSchema = z.string();
 
+// Sentinel for movieParams.firstFrameImageName / lastFrameImageName: "this beat's own generated image".
+export const BEAT_IMAGE_SENTINEL = "$beatImage";
+
+// imageRefs keys may not start with "$": that prefix is reserved for sentinels like $beatImage.
+const imageRefKeySchema = imageIdSchema.refine((key) => !key.startsWith("$"), { message: 'image keys must not start with the reserved prefix "$"' });
+
+export const mulmoImageReferenceSchema = z
+  .object({
+    name: imageIdSchema.optional().describe("An imageRefs key to use as a reference image"),
+    source: mediaSourceSchema.optional().describe("Direct source (path/url) to use as a reference image"),
+    label: z.string().optional().describe("Role of this reference (e.g. 'the firefighter Travis Kane'), injected into the prompt as a preamble"),
+  })
+  .strict()
+  .refine((ref) => (ref.name === undefined) !== (ref.source === undefined), { message: "specify exactly one of name or source" });
+
 export const mulmoImagePromptMediaSchema = z
   .object({
     type: z.literal("imagePrompt"),
     prompt: z.string().min(1),
     canvasSize: z.object({ width: z.number(), height: z.number() }).strict().optional(),
-    referenceImageName: imageIdSchema.optional().describe("Reference another imageRefs key as input for image generation"),
-    referenceImage: mediaSourceSchema.optional().describe("Direct source (path/url/base64) as reference image for generation"),
+    referenceImageName: imageIdSchema.optional().describe("Reference another imageRefs key as input for image generation. Sugar for references[0].name"),
+    referenceImage: mediaSourceSchema.optional().describe("Direct source (path/url/base64) as reference image for generation. Sugar for references[0].source"),
+    references: z.array(mulmoImageReferenceSchema).optional().describe("Reference images (by imageRefs key or direct source) with optional role labels"),
   })
   .strict();
 
@@ -409,7 +425,7 @@ export const mulmoImageParamsImagesValueSchema = z.union([
   mulmoMovieMediaSchema,
   mulmoMoviePromptMediaSchema,
 ]);
-export const mulmoImageParamsImagesSchema = z.record(imageIdSchema, mulmoImageParamsImagesValueSchema);
+export const mulmoImageParamsImagesSchema = z.record(imageRefKeySchema, mulmoImageParamsImagesValueSchema);
 export const mulmoFillOptionSchema = z
   .object({
     style: z.enum(["aspectFit", "aspectFill"]).optional().default("aspectFit"),
@@ -574,8 +590,12 @@ export const mulmoMovieParamsSchema = z.object({
   filters: z.array(mulmoVideoFilterSchema).optional(), // for movie.ts
   vertexai_project: z.string().optional(), // Google Cloud Project ID for Vertex AI
   vertexai_location: z.string().optional(), // Vertex AI location (default: us-central1)
-  firstFrameImageName: imageIdSchema.optional().describe("Reference an imageRefs key for the first frame (image-to-video input)"),
-  lastFrameImageName: imageIdSchema.optional().describe("Reference an imageRefs key for the last frame (image-to-video interpolation)"),
+  firstFrameImageName: imageIdSchema
+    .optional()
+    .describe("Reference an imageRefs key for the first frame (image-to-video input), or '$beatImage' for the beat's own generated image"),
+  lastFrameImageName: imageIdSchema
+    .optional()
+    .describe("Reference an imageRefs key for the last frame (image-to-video interpolation), or '$beatImage' for the beat's own generated image"),
   frameFillColor: z
     .string()
     .regex(/^(#|0x)?[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$|^[a-zA-Z]+$/, "must be a hex color ('#RRGGBB[AA]', '0x' or no prefix) or a color name")

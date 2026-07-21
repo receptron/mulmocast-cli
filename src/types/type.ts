@@ -54,6 +54,7 @@ import {
   mulmoGoogleMovieModelSchema,
   mulmoReplicateMovieModelSchema,
   mulmoImagePromptMediaSchema,
+  mulmoImageReferenceSchema,
   mulmoMovieMediaSchema,
   mulmoMoviePromptMediaSchema,
   markdownLayoutSchema,
@@ -109,6 +110,7 @@ export type MulmoGoogleImageModel = z.infer<typeof mulmoGoogleImageModelSchema>;
 export type MulmoGoogleMovieModel = z.infer<typeof mulmoGoogleMovieModelSchema>;
 export type MulmoReplicateMovieModel = z.infer<typeof mulmoReplicateMovieModelSchema>;
 export type MulmoImagePromptMedia = z.infer<typeof mulmoImagePromptMediaSchema>;
+export type MulmoImageReference = z.infer<typeof mulmoImageReferenceSchema>;
 export type MulmoMoviePromptMedia = z.infer<typeof mulmoMoviePromptMediaSchema>;
 
 export type MulmoMarkdownLayout = z.infer<typeof markdownLayoutSchema>;
