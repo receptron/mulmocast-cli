@@ -76,6 +76,11 @@ export type DeprecatedGoogleImageModel = keyof typeof deprecatedGoogleImageModel
 // and https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-1-flash-image
 export const vertexAIGlobalOnlyImageModels: ReadonlySet<string> = new Set(["gemini-3-pro-image-preview", "gemini-3.1-flash-image-preview"]);
 
+// Per-model reference image limits (image_input array). Only verified entries; unlisted models are not truncated.
+const replicateImageModelParams: Record<string, { maxReferenceImages?: number }> = {
+  "bytedance/seedream-4": { maxReferenceImages: 10 },
+};
+
 export const provider2ImageAgent = {
   openai: {
     agentName: "imageOpenaiAgent",
@@ -83,6 +88,7 @@ export const provider2ImageAgent = {
     models: [...gptImages],
     keyName: "OPENAI_API_KEY",
     baseURLKeyName: "OPENAI_BASE_URL",
+    maxReferenceImages: 16, // images.edit accepts up to 16 input images
   },
   google: {
     agentName: "imageGenAIAgent",
@@ -93,6 +99,7 @@ export const provider2ImageAgent = {
   replicate: {
     agentName: "imageReplicateAgent",
     defaultModel: "bytedance/seedream-4",
+    imageModelParams: replicateImageModelParams,
     models: [
       "bytedance/seedream-4",
       "qwen/qwen-image",
@@ -578,6 +585,34 @@ export const llm = Object.keys(provider2LLMAgent) as (keyof typeof provider2LLMA
 export type LLM = keyof typeof provider2LLMAgent;
 
 export const htmlLLMProvider = ["openai", "anthropic", "mock"];
+
+// Provider name literals. Compare via these identifiers (e.g. provider === ProviderName.Replicate)
+// instead of raw strings.
+export const ProviderName = {
+  OpenAI: "openai",
+  Google: "google",
+  Gemini: "gemini",
+  Anthropic: "anthropic",
+  Replicate: "replicate",
+  ElevenLabs: "elevenlabs",
+  Mock: "mock",
+} as const;
+
+export const isImageProvider = (provider: string | undefined): provider is keyof typeof provider2ImageAgent => {
+  return provider !== undefined && provider in provider2ImageAgent;
+};
+
+// Max reference images an image model accepts as input; undefined means no known limit (no truncation).
+export const getMaxImageReferenceImages = (provider: string | undefined, model: string): number | undefined => {
+  if (!isImageProvider(provider)) {
+    return undefined;
+  }
+  if (provider === ProviderName.Replicate) {
+    return provider2ImageAgent.replicate.imageModelParams[model]?.maxReferenceImages;
+  }
+  const agentInfo = provider2ImageAgent[provider];
+  return "maxReferenceImages" in agentInfo ? agentInfo.maxReferenceImages : undefined;
+};
 
 export const getModelAudio = (provider: keyof typeof provider2MovieAgent, model: string): MovieAudioSpec | undefined => {
   const modelParams = provider2MovieAgent[provider]?.modelParams as Record<string, { audio?: MovieAudioSpec }>;

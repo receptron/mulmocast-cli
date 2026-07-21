@@ -1,5 +1,5 @@
 ---
-generated_at: 2026-04-19T19:03:02.920Z
+generated_at: 2026-07-21T03:42:17.407Z
 ---
 
 # images
@@ -82,12 +82,18 @@ flowchart TD
   n_preprocessor -- imageParams.quality --> n_imageGenerator
   n_preprocessor -- imageParams.vertexai_project --> n_imageGenerator
   n_preprocessor -- imageParams.vertexai_location --> n_imageGenerator
+  n_frameResolver(frameResolver<br/>beatFrameResolverAgent)
+  n_imageGenerator --> n_frameResolver
+  n_imagePlugin --> n_frameResolver
+  n_context --> n_frameResolver
+  n_beat --> n_frameResolver
+  n___mapIndex --> n_frameResolver
+  n_preprocessor --> n_frameResolver
   n_movieGenerator(movieGenerator<br/>:preprocessor.movieAgentInfo.agent)
-  n_imageGenerator --> n_movieGenerator
-  n_imagePlugin --> n_movieGenerator
+  n_frameResolver --> n_movieGenerator
   n_beat -- moviePrompt --> n_movieGenerator
-  n_preprocessor -- referenceImageForMovie --> n_movieGenerator
-  n_preprocessor -- lastFrameImagePath --> n_movieGenerator
+  n_frameResolver -- referenceImageForMovie --> n_movieGenerator
+  n_frameResolver -- lastFrameImagePath --> n_movieGenerator
   n_preprocessor -- movieReferenceImages --> n_movieGenerator
   n_preprocessor -- movieFile --> n_movieGenerator
   n_context -- force --> n_movieGenerator
@@ -178,7 +184,7 @@ flowchart TD
   n_preprocessor -- markdown --> n_output
   n_preprocessor -- html --> n_output
   class n_context,n_htmlImageAgentInfo,n_imageRefs,n_movieRefs,n_beat,n___mapIndex,n_forceMovie,n_forceImage,n_forceLipSync,n_forceSoundEffect,n_withBackup staticNode
-  class n_localRefs,n_preprocessor,n_imagePlugin,n_htmlImageAgent,n_htmlReader,n_htmlImageGenerator,n_imageGenerator,n_movieGenerator,n_imageFromMovie,n_audioChecker,n_soundEffectGenerator,n_AudioTrimmer,n_lipSyncGenerator,n_output computedNode
+  class n_localRefs,n_preprocessor,n_imagePlugin,n_htmlImageAgent,n_htmlReader,n_htmlImageGenerator,n_imageGenerator,n_frameResolver,n_movieGenerator,n_imageFromMovie,n_audioChecker,n_soundEffectGenerator,n_AudioTrimmer,n_lipSyncGenerator,n_output computedNode
 ```
 
 ### images_graph_data
@@ -258,12 +264,18 @@ flowchart TD
     n_map_preprocessor -- imageParams.quality --> n_map_imageGenerator
     n_map_preprocessor -- imageParams.vertexai_project --> n_map_imageGenerator
     n_map_preprocessor -- imageParams.vertexai_location --> n_map_imageGenerator
+    n_map_frameResolver(frameResolver<br/>beatFrameResolverAgent)
+    n_map_imageGenerator --> n_map_frameResolver
+    n_map_imagePlugin --> n_map_frameResolver
+    n_map_context --> n_map_frameResolver
+    n_map_beat --> n_map_frameResolver
+    n_map___mapIndex --> n_map_frameResolver
+    n_map_preprocessor --> n_map_frameResolver
     n_map_movieGenerator(movieGenerator<br/>:preprocessor.movieAgentInfo.agent)
-    n_map_imageGenerator --> n_map_movieGenerator
-    n_map_imagePlugin --> n_map_movieGenerator
+    n_map_frameResolver --> n_map_movieGenerator
     n_map_beat -- moviePrompt --> n_map_movieGenerator
-    n_map_preprocessor -- referenceImageForMovie --> n_map_movieGenerator
-    n_map_preprocessor -- lastFrameImagePath --> n_map_movieGenerator
+    n_map_frameResolver -- referenceImageForMovie --> n_map_movieGenerator
+    n_map_frameResolver -- lastFrameImagePath --> n_map_movieGenerator
     n_map_preprocessor -- movieReferenceImages --> n_map_movieGenerator
     n_map_preprocessor -- movieFile --> n_map_movieGenerator
     n_map_context -- force --> n_map_movieGenerator
@@ -366,7 +378,7 @@ flowchart TD
   n_outputStudioFilePath --> n_writeOutput
   n_mergeResult -- studio.toJSON() --> n_writeOutput
   class n_context,n_htmlImageAgentInfo,n_outputStudioFilePath,n_imageRefs,n_movieRefs,n_map_context,n_map_htmlImageAgentInfo,n_map_imageRefs,n_map_movieRefs,n_map_beat,n_map___mapIndex,n_map_forceMovie,n_map_forceImage,n_map_forceLipSync,n_map_forceSoundEffect,n_map_withBackup staticNode
-  class n_map_localRefs,n_map_preprocessor,n_map_imagePlugin,n_map_htmlImageAgent,n_map_htmlReader,n_map_htmlImageGenerator,n_map_imageGenerator,n_map_movieGenerator,n_map_imageFromMovie,n_map_audioChecker,n_map_soundEffectGenerator,n_map_AudioTrimmer,n_map_lipSyncGenerator,n_map_output,n_mergeResult,n_writeOutput computedNode
+  class n_map_localRefs,n_map_preprocessor,n_map_imagePlugin,n_map_htmlImageAgent,n_map_htmlReader,n_map_htmlImageGenerator,n_map_imageGenerator,n_map_frameResolver,n_map_movieGenerator,n_map_imageFromMovie,n_map_audioChecker,n_map_soundEffectGenerator,n_map_AudioTrimmer,n_map_lipSyncGenerator,n_map_output,n_mergeResult,n_writeOutput computedNode
   class n_map nestedGraph
 ```
 

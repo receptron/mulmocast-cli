@@ -157,9 +157,24 @@ const mulmoPdfMediaSchema = z
   })
   .strict();
 
+// Media type literals shared by imageParams.images entries and beat images. Compare via
+// these identifiers (e.g. entry.type === ImageMediaType.ImagePrompt) instead of raw strings.
+export const ImageMediaType = {
+  Image: "image",
+  ImagePrompt: "imagePrompt",
+  Movie: "movie",
+  MoviePrompt: "moviePrompt",
+  Beat: "beat",
+  VoiceOver: "voice_over",
+} as const;
+
+// Beat image types whose still derives from the movie or another beat — they cannot supply
+// their own still for the $beatImage frame sentinel.
+export const beatImageTypesWithoutOwnStill: readonly string[] = [ImageMediaType.Movie, ImageMediaType.Beat, ImageMediaType.VoiceOver];
+
 export const mulmoImageMediaSchema = z
   .object({
-    type: z.literal("image"),
+    type: z.literal(ImageMediaType.Image),
     source: mediaSourceSchema,
   })
   .strict();
@@ -173,14 +188,14 @@ const mulmoSvgMediaSchema = z
 
 export const mulmoMovieMediaSchema = z
   .object({
-    type: z.literal("movie"),
+    type: z.literal(ImageMediaType.Movie),
     source: mediaSourceSchema,
   })
   .strict();
 
 export const mulmoMoviePromptMediaSchema = z
   .object({
-    type: z.literal("moviePrompt"),
+    type: z.literal(ImageMediaType.MoviePrompt),
     prompt: z.string().min(1),
     imageName: z.string().optional().describe("Reference an imageRefs key to use as image-to-video input"),
   })
@@ -338,14 +353,14 @@ export const mulmoHtmlTailwindMediaSchema = z
 
 export const mulmoBeatReferenceMediaSchema = z
   .object({
-    type: z.literal("beat"),
+    type: z.literal(ImageMediaType.Beat),
     id: z.string().optional().describe("Specifies the beat to reference."),
   })
   .strict();
 
 export const mulmoVoiceOverMediaSchema = z
   .object({
-    type: z.literal("voice_over"),
+    type: z.literal(ImageMediaType.VoiceOver),
     startAt: z.number().optional().describe("The time to start the voice over the video in seconds."),
   })
   .strict();
@@ -393,13 +408,29 @@ export const mulmoAudioAssetSchema = z.union([mulmoAudioMediaSchema, mulmoMidiMe
 
 const imageIdSchema = z.string();
 
+// Sentinel for movieParams.firstFrameImageName / lastFrameImageName: "this beat's own generated image".
+export const BEAT_IMAGE_SENTINEL = "$beatImage";
+
+// imageRefs keys may not start with "$": that prefix is reserved for sentinels like $beatImage.
+const imageRefKeySchema = imageIdSchema.refine((key) => !key.startsWith("$"), { message: 'image keys must not start with the reserved prefix "$"' });
+
+export const mulmoImageReferenceSchema = z
+  .object({
+    name: imageIdSchema.optional().describe("An imageRefs key to use as a reference image"),
+    source: mediaSourceSchema.optional().describe("Direct source (path/url) to use as a reference image"),
+    label: z.string().optional().describe("Role of this reference (e.g. 'the firefighter Travis Kane'), injected into the prompt as a preamble"),
+  })
+  .strict()
+  .refine((ref) => (ref.name === undefined) !== (ref.source === undefined), { message: "specify exactly one of name or source" });
+
 export const mulmoImagePromptMediaSchema = z
   .object({
-    type: z.literal("imagePrompt"),
+    type: z.literal(ImageMediaType.ImagePrompt),
     prompt: z.string().min(1),
     canvasSize: z.object({ width: z.number(), height: z.number() }).strict().optional(),
-    referenceImageName: imageIdSchema.optional().describe("Reference another imageRefs key as input for image generation"),
-    referenceImage: mediaSourceSchema.optional().describe("Direct source (path/url/base64) as reference image for generation"),
+    referenceImageName: imageIdSchema.optional().describe("Reference another imageRefs key as input for image generation. Sugar for references[0].name"),
+    referenceImage: mediaSourceSchema.optional().describe("Direct source (path/url/base64) as reference image for generation. Sugar for references[0].source"),
+    references: z.array(mulmoImageReferenceSchema).optional().describe("Reference images (by imageRefs key or direct source) with optional role labels"),
   })
   .strict();
 
@@ -409,7 +440,7 @@ export const mulmoImageParamsImagesValueSchema = z.union([
   mulmoMovieMediaSchema,
   mulmoMoviePromptMediaSchema,
 ]);
-export const mulmoImageParamsImagesSchema = z.record(imageIdSchema, mulmoImageParamsImagesValueSchema);
+export const mulmoImageParamsImagesSchema = z.record(imageRefKeySchema, mulmoImageParamsImagesValueSchema);
 export const mulmoFillOptionSchema = z
   .object({
     style: z.enum(["aspectFit", "aspectFill"]).optional().default("aspectFit"),
@@ -574,8 +605,12 @@ export const mulmoMovieParamsSchema = z.object({
   filters: z.array(mulmoVideoFilterSchema).optional(), // for movie.ts
   vertexai_project: z.string().optional(), // Google Cloud Project ID for Vertex AI
   vertexai_location: z.string().optional(), // Vertex AI location (default: us-central1)
-  firstFrameImageName: imageIdSchema.optional().describe("Reference an imageRefs key for the first frame (image-to-video input)"),
-  lastFrameImageName: imageIdSchema.optional().describe("Reference an imageRefs key for the last frame (image-to-video interpolation)"),
+  firstFrameImageName: imageIdSchema
+    .optional()
+    .describe("Reference an imageRefs key for the first frame (image-to-video input), or '$beatImage' for the beat's own generated image"),
+  lastFrameImageName: imageIdSchema
+    .optional()
+    .describe("Reference an imageRefs key for the last frame (image-to-video interpolation), or '$beatImage' for the beat's own generated image"),
   frameFillColor: z
     .string()
     .regex(/^(#|0x)?[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$|^[a-zA-Z]+$/, "must be a hex color ('#RRGGBB[AA]', '0x' or no prefix) or a color name")
@@ -616,7 +651,7 @@ export const mulmoBeatSchema = z
     images: mulmoImageParamsImagesSchema
       .optional()
       .describe("Beat-local media references. Same schema as imageParams.images. Merged with global refs (local takes precedence)."),
-    imageNames: z.array(imageIdSchema).optional(), // list of image names to use for image generation. The default is all images in the imageParams.images.
+    imageNames: z.array(imageRefKeySchema).optional(), // list of image names to use for image generation. The default is all images in the imageParams.images.
     imagePrompt: z.string().optional(),
     moviePrompt: z.string().optional(),
     soundEffectPrompt: z.string().optional(),

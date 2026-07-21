@@ -30,7 +30,7 @@ import { audioCheckerError } from "../utils/error_cause.js";
 import { extractImageFromMovie, ffmpegGetMediaDuration, trimMusic } from "../utils/ffmpeg_utils.js";
 
 import { getMediaRefs, resolveBeatLocalRefs } from "./image_references.js";
-import { imagePreprocessAgent, imagePluginAgent, htmlImageGeneratorAgent } from "./image_agents.js";
+import { imagePreprocessAgent, imagePluginAgent, htmlImageGeneratorAgent, beatFrameResolverAgent } from "./image_agents.js";
 import { imageGraphOption } from "./graph_option.js";
 import { createUsageCallback } from "../utils/usage_callback.js";
 
@@ -190,15 +190,27 @@ export const beat_graph_data = {
       },
       defaultValue: {},
     },
+    // Resolves $beatImage frame references once the beat image exists (after imageGenerator/imagePlugin);
+    // passes the preprocessor's frame paths through unchanged for non-sentinel beats.
+    frameResolver: {
+      agent: beatFrameResolverAgent,
+      inputs: {
+        onComplete: [":imageGenerator", ":imagePlugin"],
+        context: ":context",
+        beat: ":beat",
+        index: ":__mapIndex",
+        preprocessor: ":preprocessor",
+      },
+    },
     movieGenerator: {
       if: ":beat.moviePrompt",
       agent: ":preprocessor.movieAgentInfo.agent",
       inputs: {
         media: "movie",
-        onComplete: [":imageGenerator", ":imagePlugin"], // to wait for imageGenerator to finish
+        onComplete: [":frameResolver"], // frameResolver itself waits for imageGenerator/imagePlugin
         prompt: ":beat.moviePrompt",
-        imagePath: ":preprocessor.referenceImageForMovie",
-        lastFrameImagePath: ":preprocessor.lastFrameImagePath",
+        imagePath: ":frameResolver.referenceImageForMovie",
+        lastFrameImagePath: ":frameResolver.lastFrameImagePath",
         referenceImages: ":preprocessor.movieReferenceImages",
         movieFile: ":preprocessor.movieFile", // for google genai agent
         cache: {
