@@ -157,9 +157,24 @@ const mulmoPdfMediaSchema = z
   })
   .strict();
 
+// Media type literals shared by imageParams.images entries and beat images. Compare via
+// these identifiers (e.g. entry.type === ImageMediaType.ImagePrompt) instead of raw strings.
+export const ImageMediaType = {
+  Image: "image",
+  ImagePrompt: "imagePrompt",
+  Movie: "movie",
+  MoviePrompt: "moviePrompt",
+  Beat: "beat",
+  VoiceOver: "voice_over",
+} as const;
+
+// Beat image types whose still derives from the movie or another beat — they cannot supply
+// their own still for the $beatImage frame sentinel.
+export const beatImageTypesWithoutOwnStill: readonly string[] = [ImageMediaType.Movie, ImageMediaType.Beat, ImageMediaType.VoiceOver];
+
 export const mulmoImageMediaSchema = z
   .object({
-    type: z.literal("image"),
+    type: z.literal(ImageMediaType.Image),
     source: mediaSourceSchema,
   })
   .strict();
@@ -173,14 +188,14 @@ const mulmoSvgMediaSchema = z
 
 export const mulmoMovieMediaSchema = z
   .object({
-    type: z.literal("movie"),
+    type: z.literal(ImageMediaType.Movie),
     source: mediaSourceSchema,
   })
   .strict();
 
 export const mulmoMoviePromptMediaSchema = z
   .object({
-    type: z.literal("moviePrompt"),
+    type: z.literal(ImageMediaType.MoviePrompt),
     prompt: z.string().min(1),
     imageName: z.string().optional().describe("Reference an imageRefs key to use as image-to-video input"),
   })
@@ -338,14 +353,14 @@ export const mulmoHtmlTailwindMediaSchema = z
 
 export const mulmoBeatReferenceMediaSchema = z
   .object({
-    type: z.literal("beat"),
+    type: z.literal(ImageMediaType.Beat),
     id: z.string().optional().describe("Specifies the beat to reference."),
   })
   .strict();
 
 export const mulmoVoiceOverMediaSchema = z
   .object({
-    type: z.literal("voice_over"),
+    type: z.literal(ImageMediaType.VoiceOver),
     startAt: z.number().optional().describe("The time to start the voice over the video in seconds."),
   })
   .strict();
@@ -410,7 +425,7 @@ export const mulmoImageReferenceSchema = z
 
 export const mulmoImagePromptMediaSchema = z
   .object({
-    type: z.literal("imagePrompt"),
+    type: z.literal(ImageMediaType.ImagePrompt),
     prompt: z.string().min(1),
     canvasSize: z.object({ width: z.number(), height: z.number() }).strict().optional(),
     referenceImageName: imageIdSchema.optional().describe("Reference another imageRefs key as input for image generation. Sugar for references[0].name"),

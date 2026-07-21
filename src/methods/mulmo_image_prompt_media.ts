@@ -1,6 +1,6 @@
 import { GraphAILogger } from "graphai";
 import { MulmoImagePromptMedia, MulmoImageReference, Text2ImageAgentInfo } from "../types/index.js";
-import { getMaxImageReferenceImages, provider2ImageAgent } from "../types/provider2agent.js";
+import { getMaxImageReferenceImages } from "../types/provider2agent.js";
 
 export type MulmoNormalizedImageReference = MulmoImageReference & {
   // true for entries normalized from the legacy referenceImageName/referenceImage fields.
@@ -43,8 +43,8 @@ export const MulmoImagePromptMediaMethods = {
     if (!references) {
       return undefined;
     }
-    const provider = imageAgentInfo.imageParams.provider as keyof typeof provider2ImageAgent;
-    const max = getMaxImageReferenceImages(provider, imageAgentInfo.imageParams.model ?? "");
+    const { provider, model } = imageAgentInfo.imageParams;
+    const max = getMaxImageReferenceImages(provider, model ?? "");
     if (max !== undefined && references.length > max) {
       GraphAILogger.warn(`imagePrompt "${imageKey}": ${references.length} reference images exceed the ${provider} limit of ${max} — keeping the first ${max}`);
       return references.slice(0, max);

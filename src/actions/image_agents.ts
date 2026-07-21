@@ -2,7 +2,7 @@ import fs from "fs";
 import { createHash } from "crypto";
 import { GraphAILogger } from "graphai";
 import { MulmoStudioContext, MulmoBeat, MulmoCanvasDimension, MulmoImageParams, MulmoMovieParams, Text2ImageAgentInfo } from "../types/index.js";
-import { BEAT_IMAGE_SENTINEL } from "../types/schema.js";
+import { BEAT_IMAGE_SENTINEL, ImageMediaType, beatImageTypesWithoutOwnStill } from "../types/schema.js";
 import { MulmoPresentationStyleMethods, MulmoStudioContextMethods, MulmoBeatMethods, MulmoMediaSourceMethods } from "../methods/index.js";
 import {
   getBeatPngImagePath,
@@ -159,7 +159,7 @@ const validateBeatImageSentinel = (movieParams: MulmoMovieParams, beat: MulmoBea
       cause: beatImageSentinelError(index, missingBeatImageTarget),
     });
   }
-  if (beat.image && ["movie", "beat", "voice_over"].includes(beat.image.type)) {
+  if (beat.image && beatImageTypesWithoutOwnStill.includes(beat.image.type)) {
     throw new Error(`${BEAT_IMAGE_SENTINEL} cannot be used with image type "${beat.image.type}" (the beat image is not its own still). beat: ${index}`, {
       cause: beatImageSentinelError(index, unsupportedImageTypeTarget),
     });
@@ -238,7 +238,7 @@ export const imagePreprocessAgent = async (namedInputs: {
     beatDuration: beat.duration ?? studioBeat?.duration,
   };
 
-  const isMovie = Boolean(beat.moviePrompt || beat?.image?.type === "movie");
+  const isMovie = Boolean(beat.moviePrompt || beat?.image?.type === ImageMediaType.Movie);
   if (beat.soundEffectPrompt) {
     if (isMovie) {
       returnValue.soundEffectAgentInfo = MulmoPresentationStyleMethods.getSoundEffectAgentInfo(context.presentationStyle, beat);
@@ -298,7 +298,7 @@ export const imagePreprocessAgent = async (namedInputs: {
     const markdown = plugin.markdown ? plugin.markdown({ beat, context, imagePath, ...htmlStyle(context, beat) }) : undefined;
     const html = plugin.html ? await plugin.html({ beat, context, imagePath, ...htmlStyle(context, beat) }) : undefined;
 
-    const isTypeMovie = beat.image.type === "movie";
+    const isTypeMovie = beat.image.type === ImageMediaType.Movie;
     const isAnimatedHtml = MulmoBeatMethods.isAnimatedHtmlTailwind(beat);
 
     // animation and moviePrompt cannot be used together
@@ -352,6 +352,16 @@ export const imagePreprocessAgent = async (namedInputs: {
   return { ...returnValue, imagePath, referenceImageForMovie: movieFirstFramePath, imageAgentInfo, prompt, referenceImages };
 };
 
+// The subset of imagePreprocessAgent's response that beatFrameResolverAgent consumes.
+export type BeatFramePreprocessorInput = {
+  imagePath?: string;
+  lastFrameImagePath?: string;
+  firstFrameIsBeatImage?: boolean;
+  lastFrameIsBeatImage?: boolean;
+  frameFillColor?: string;
+  referenceImageForMovie?: string;
+};
+
 // Resolves $beatImage frame references after the beat's image exists. imagePreprocessAgent runs
 // before image generation, so it can only flag the sentinel; this agent runs after
 // imageGenerator/imagePlugin and conforms the now-existing beat image to the canvas.
@@ -361,28 +371,20 @@ export const beatFrameResolverAgent = async (namedInputs: {
   context: MulmoStudioContext;
   beat: MulmoBeat;
   index: number;
-  preprocessor?: {
-    imagePath?: string;
-    lastFrameImagePath?: string;
-    firstFrameIsBeatImage?: boolean;
-    lastFrameIsBeatImage?: boolean;
-    frameFillColor?: string;
-    referenceImageForMovie?: string;
-  };
+  preprocessor?: BeatFramePreprocessorInput;
 }) => {
   const { context, beat, index, preprocessor } = namedInputs;
-  const passThrough = {
+  if (preprocessor?.imagePath && (preprocessor.firstFrameIsBeatImage || preprocessor.lastFrameIsBeatImage)) {
+    const name = `${beatId(beat.id, index)}_beatImage`;
+    const conformed = await conformFrameImageToCanvas(context, name, preprocessor.imagePath, preprocessor.frameFillColor ?? "black");
+    return {
+      lastFrameImagePath: preprocessor.lastFrameIsBeatImage ? conformed : preprocessor.lastFrameImagePath,
+      referenceImageForMovie: preprocessor.firstFrameIsBeatImage ? conformed : preprocessor.referenceImageForMovie,
+    };
+  }
+  return {
     lastFrameImagePath: preprocessor?.lastFrameImagePath,
     referenceImageForMovie: preprocessor?.referenceImageForMovie,
-  };
-  if (!preprocessor?.imagePath || (!preprocessor.firstFrameIsBeatImage && !preprocessor.lastFrameIsBeatImage)) {
-    return passThrough;
-  }
-  const name = `${beatId(beat.id, index)}_beatImage`;
-  const conformed = await conformFrameImageToCanvas(context, name, preprocessor.imagePath, preprocessor.frameFillColor ?? "black");
-  return {
-    lastFrameImagePath: preprocessor.lastFrameIsBeatImage ? conformed : preprocessor.lastFrameImagePath,
-    referenceImageForMovie: preprocessor.firstFrameIsBeatImage ? conformed : preprocessor.referenceImageForMovie,
   };
 };
 
