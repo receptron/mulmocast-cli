@@ -1,9 +1,9 @@
 // Tests for the "$beatImage" frame sentinel: a beat's own generated image used as a movie frame.
 import test from "node:test";
 import assert from "node:assert";
-import fs from "fs";
-import os from "os";
-import path from "path";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import ffmpeg from "@modernized/fluent-ffmpeg";
 import { imagePreprocessAgent, beatFrameResolverAgent } from "../../src/actions/image_agents.js";
 import { ffmpegGetImageDimensions } from "../../src/utils/ffmpeg_utils.js";
@@ -44,6 +44,25 @@ test("imagePreprocessAgent flags $beatImage as lastFrame instead of resolving it
   assert.strictEqual((result as { lastFrameIsBeatImage?: boolean }).lastFrameIsBeatImage, true);
   assert.strictEqual((result as { lastFrameImagePath?: string }).lastFrameImagePath, undefined);
   assert.strictEqual((result as { frameFillColor?: string }).frameFillColor, "#F7F6F4");
+});
+
+test("imagePreprocessAgent ignores a style-level $beatImage on beats that generate no movie", async () => {
+  const context = createMockContext();
+  context.presentationStyle.movieParams = { lastFrameImageName: "$beatImage" };
+  const textOnly = createMockBeat({ text: "narration only" }); // no moviePrompt, no imagePrompt, no image
+
+  const result = await imagePreprocessAgent({ context, beat: textOnly, index: 0, imageRefs: {} });
+
+  assert.strictEqual((result as { lastFrameIsBeatImage?: boolean }).lastFrameIsBeatImage, undefined);
+  assert.strictEqual((result as { lastFrameImagePath?: string }).lastFrameImagePath, undefined);
+});
+
+test("imagePreprocessAgent still validates a style-level $beatImage on movie-generating beats", async () => {
+  const context = createMockContext();
+  context.presentationStyle.movieParams = { lastFrameImageName: "$beatImage" };
+  const movieOnly = createMockBeat({ moviePrompt: "a movie" }); // generates a movie but no beat image
+
+  await assert.rejects(imagePreprocessAgent({ context, beat: movieOnly, index: 0, imageRefs: {} }), /requires the beat to have an imagePrompt or image/);
 });
 
 test("imagePreprocessAgent rejects $beatImage on both frames", async () => {
@@ -90,8 +109,9 @@ test("beatFrameResolverAgent passes preprocessor frame paths through for non-sen
   });
 });
 
-test("beatFrameResolverAgent conforms the beat image and uses it as the last frame", async () => {
+test("beatFrameResolverAgent conforms the beat image and uses it as the last frame", async (t) => {
   const { context, dir } = createTempContext();
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
   const beatImagePath = path.join(dir, "beat_image.png");
   await createSolidPng(beatImagePath, 1536, 1024); // gpt-image landscape size, canvas is 1280x720
 
@@ -115,12 +135,11 @@ test("beatFrameResolverAgent conforms the beat image and uses it as the last fra
   // first frame and movie start image are untouched
   assert.strictEqual(result.firstFrameImagePath, path.join(dir, "blank.png"));
   assert.strictEqual(result.referenceImageForMovie, path.join(dir, "blank.png"));
-
-  fs.rmSync(dir, { recursive: true, force: true });
 });
 
-test("beatFrameResolverAgent uses the conformed beat image as the movie start for a firstFrame sentinel", async () => {
+test("beatFrameResolverAgent uses the conformed beat image as the movie start for a firstFrame sentinel", async (t) => {
   const { context, dir } = createTempContext();
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
   const beatImagePath = path.join(dir, "beat_image.png");
   await createSolidPng(beatImagePath, 640, 360); // matches canvas aspect: conform returns the original
 
@@ -139,6 +158,4 @@ test("beatFrameResolverAgent uses the conformed beat image as the movie start fo
   assert.strictEqual(result.firstFrameImagePath, beatImagePath);
   assert.strictEqual(result.referenceImageForMovie, beatImagePath);
   assert.strictEqual(result.lastFrameImagePath, path.join(dir, "final.png"));
-
-  fs.rmSync(dir, { recursive: true, force: true });
 });

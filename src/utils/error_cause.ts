@@ -57,6 +57,7 @@ export const apiRateLimitErrorType = "apiRateLimit";
 export const apiKeyMissingType = "apiKeyMissing";
 export const invalidResponseType = "invalidResponse";
 export const voiceLimitReachedType = "voice_limit_reached";
+export const invalidFrameSentinelType = "invalidFrameSentinel";
 
 // Actions
 export const movieAction = "movie";
@@ -75,6 +76,9 @@ export const multiLingualFileTarget = "multiLingualFile";
 export const videoSourceTarget = "videoSource";
 export const audioSourceTarget = "audioSource";
 export const codeTextTarget = "codeText";
+export const bothFramesTarget = "bothFrames";
+export const missingBeatImageTarget = "missingBeatImage";
+export const unsupportedImageTypeTarget = "unsupportedImageType";
 
 // Agent File Not Exist Errors
 export const agentFileNotExistError = (agentName: string, action: string, target: string, fileName: string, beatIndex?: number) => {
@@ -117,6 +121,17 @@ export const invalidAudioSourceError = (beatIndex: number) => {
     action: audioAction,
     target: audioSourceTarget,
     agentName: "getAudioPathOrUrl",
+    beatIndex,
+  };
+};
+
+// $beatImage frame sentinel misuse (invalid combination or beat cannot supply its own image)
+export const beatImageSentinelError = (beatIndex: number, target: string) => {
+  return {
+    type: invalidFrameSentinelType,
+    action: imageAction,
+    target,
+    agentName: "imagePreprocessAgent",
     beatIndex,
   };
 };

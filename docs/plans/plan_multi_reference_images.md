@@ -102,6 +102,27 @@ No default-behavior change for scripts that don't use the sentinel.
 - `src/actions/images.docs.md` (regenerated via `yarn generate_action_docs`)
 - tests: `test/methods/`, `test/actions/`, `test/zod/`
 
+## Implementation steps
+
+1. Schema: `mulmoImageReferenceSchema`, `references` on `mulmoImagePromptMediaSchema`,
+   reserved `$` key prefix, sentinel mentions in `movieParams` describes (`src/types/schema.ts`,
+   type exports in `src/types/type.ts`).
+2. Methods: `MulmoImagePromptMediaMethods` (normalization, `hasNamedReference`,
+   `buildReferencePreamble`) and export from `src/methods/index.ts`.
+3. Provider limits: `maxReferenceImages` metadata and `getMaxImageReferenceImages`
+   (`src/types/provider2agent.ts`).
+4. Resolution: `resolveReferences` / `limitReferences`, `references` input on
+   `generateReferenceImage`, staged resolution via `hasNamedReference`
+   (`src/actions/image_references.ts`).
+5. Sentinel preprocessing: validation (with structured error causes) and
+   `firstFrameIsBeatImage`/`lastFrameIsBeatImage` flags, scoped to movie-generating beats
+   (`src/actions/image_agents.ts`).
+6. Post-generation resolution: `beatFrameResolverAgent` and the `frameResolver` node feeding
+   `movieGenerator` (`src/actions/image_agents.ts`, `src/actions/images.ts`); regenerate
+   `images.docs.md`.
+7. Tests (schema, methods, sentinel/resolver) and user docs (`docs/image.md`,
+   `docs/movie_reference_images.md`).
+
 ## Usage example
 
 ```jsonc

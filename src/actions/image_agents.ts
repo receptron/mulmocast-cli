@@ -13,6 +13,7 @@ import {
   getReferenceImagePath,
 } from "../utils/file.js";
 import { ffmpegGetImageDimensions, padImageToCanvas } from "../utils/ffmpeg_utils.js";
+import { beatImageSentinelError, bothFramesTarget, missingBeatImageTarget, unsupportedImageTypeTarget } from "../utils/error_cause.js";
 import { imagePrompt, htmlImageSystemPrompt } from "../utils/prompt.js";
 import { renderHTMLToImage } from "../utils/html_render.js";
 import { beatId } from "../utils/utils.js";
@@ -149,13 +150,19 @@ type ImagePreprocessAgentResponse =
 
 const validateBeatImageSentinel = (movieParams: MulmoMovieParams, beat: MulmoBeat, index: number) => {
   if (movieParams.firstFrameImageName === BEAT_IMAGE_SENTINEL && movieParams.lastFrameImageName === BEAT_IMAGE_SENTINEL) {
-    throw new Error(`${BEAT_IMAGE_SENTINEL} cannot be used for both firstFrameImageName and lastFrameImageName. beat: ${index}`);
+    throw new Error(`${BEAT_IMAGE_SENTINEL} cannot be used for both firstFrameImageName and lastFrameImageName. beat: ${index}`, {
+      cause: beatImageSentinelError(index, bothFramesTarget),
+    });
   }
   if (!beat.imagePrompt && !beat.image) {
-    throw new Error(`${BEAT_IMAGE_SENTINEL} requires the beat to have an imagePrompt or image. beat: ${index}`);
+    throw new Error(`${BEAT_IMAGE_SENTINEL} requires the beat to have an imagePrompt or image. beat: ${index}`, {
+      cause: beatImageSentinelError(index, missingBeatImageTarget),
+    });
   }
   if (beat.image && ["movie", "beat", "voice_over"].includes(beat.image.type)) {
-    throw new Error(`${BEAT_IMAGE_SENTINEL} cannot be used with image type "${beat.image.type}" (the beat image is not its own still). beat: ${index}`);
+    throw new Error(`${BEAT_IMAGE_SENTINEL} cannot be used with image type "${beat.image.type}" (the beat image is not its own still). beat: ${index}`, {
+      cause: beatImageSentinelError(index, unsupportedImageTypeTarget),
+    });
   }
 };
 
@@ -171,24 +178,29 @@ const applyFrameImageParams = async (
   imageRefs?: Record<string, string>,
 ) => {
   const frameFillColor = movieParams.frameFillColor ?? "black";
-  if (movieParams.firstFrameImageName === BEAT_IMAGE_SENTINEL || movieParams.lastFrameImageName === BEAT_IMAGE_SENTINEL) {
+  // A style-level $beatImage merges into every beat; beats that generate no movie
+  // (no moviePrompt) ignore the sentinel instead of failing validation.
+  const sentinelActive = Boolean(beat.moviePrompt);
+  const firstFrameImageName = !sentinelActive && movieParams.firstFrameImageName === BEAT_IMAGE_SENTINEL ? undefined : movieParams.firstFrameImageName;
+  const lastFrameImageName = !sentinelActive && movieParams.lastFrameImageName === BEAT_IMAGE_SENTINEL ? undefined : movieParams.lastFrameImageName;
+  if (firstFrameImageName === BEAT_IMAGE_SENTINEL || lastFrameImageName === BEAT_IMAGE_SENTINEL) {
     validateBeatImageSentinel(movieParams, beat, index);
     returnValue.frameFillColor = frameFillColor;
   }
-  if (movieParams.firstFrameImageName === BEAT_IMAGE_SENTINEL) {
+  if (firstFrameImageName === BEAT_IMAGE_SENTINEL) {
     returnValue.firstFrameIsBeatImage = true;
-  } else if (movieParams.firstFrameImageName && imageRefs) {
-    const firstFramePath = imageRefs[movieParams.firstFrameImageName];
+  } else if (firstFrameImageName && imageRefs) {
+    const firstFramePath = imageRefs[firstFrameImageName];
     if (firstFramePath) {
-      returnValue.firstFrameImagePath = await conformFrameImageToCanvas(context, movieParams.firstFrameImageName, firstFramePath, frameFillColor);
+      returnValue.firstFrameImagePath = await conformFrameImageToCanvas(context, firstFrameImageName, firstFramePath, frameFillColor);
     }
   }
-  if (movieParams.lastFrameImageName === BEAT_IMAGE_SENTINEL) {
+  if (lastFrameImageName === BEAT_IMAGE_SENTINEL) {
     returnValue.lastFrameIsBeatImage = true;
-  } else if (movieParams.lastFrameImageName && imageRefs) {
-    const lastFramePath = imageRefs[movieParams.lastFrameImageName];
+  } else if (lastFrameImageName && imageRefs) {
+    const lastFramePath = imageRefs[lastFrameImageName];
     if (lastFramePath) {
-      returnValue.lastFrameImagePath = await conformFrameImageToCanvas(context, movieParams.lastFrameImageName, lastFramePath, frameFillColor);
+      returnValue.lastFrameImagePath = await conformFrameImageToCanvas(context, lastFrameImageName, lastFramePath, frameFillColor);
     }
   }
 };
