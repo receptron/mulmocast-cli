@@ -16,7 +16,6 @@ test("getReferences returns an empty list when no references are given", () => {
 test("getReferences normalizes legacy fields ahead of the references array", () => {
   const image = imagePrompt({
     referenceImageName: "portrait",
-    referenceImage: { kind: "path", path: "./legacy.png" },
     references: [
       { name: "robot", label: "the robot" },
       { source: { kind: "path", path: "./ship.png" }, label: "the ship" },
@@ -25,10 +24,22 @@ test("getReferences normalizes legacy fields ahead of the references array", () 
   const refs = MulmoImagePromptMediaMethods.getReferences(image);
   assert.deepStrictEqual(refs, [
     { name: "portrait", legacy: true },
-    { source: { kind: "path", path: "./legacy.png" }, legacy: true },
     { name: "robot", label: "the robot" },
     { source: { kind: "path", path: "./ship.png" }, label: "the ship" },
   ]);
+});
+
+test("getReferences normalizes a legacy referenceImage source", () => {
+  const image = imagePrompt({ referenceImage: { kind: "path", path: "./legacy.png" } });
+  assert.deepStrictEqual(MulmoImagePromptMediaMethods.getReferences(image), [{ source: { kind: "path", path: "./legacy.png" }, legacy: true }]);
+});
+
+test("getReferences ignores referenceImage when referenceImageName is set (legacy behavior)", () => {
+  const image = imagePrompt({
+    referenceImageName: "portrait",
+    referenceImage: { kind: "path", path: "./legacy.png" },
+  });
+  assert.deepStrictEqual(MulmoImagePromptMediaMethods.getReferences(image), [{ name: "portrait", legacy: true }]);
 });
 
 test("hasNamedReference reflects both legacy and array references", () => {

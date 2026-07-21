@@ -28,7 +28,13 @@ export const mulmoImageReferenceSchema = z
 
 - `mulmoImagePromptMediaSchema` gains `references: z.array(mulmoImageReferenceSchema).optional()`.
 - `referenceImageName` / `referenceImage` remain valid; internally normalized as the leading
-  entries of the reference list (deprecate in docs only).
+  entries of the reference list (deprecate in docs only). When both legacy fields are set,
+  `referenceImageName` wins and `referenceImage` is ignored, preserving the pre-`references`
+  behavior.
+- Migration note for the changelog: rewriting `referenceImage: X` as
+  `references: [{ source: X }]` changes the url download cache file name
+  (`<key>` → `<key>_ref0`), causing a one-time re-download for url sources; local paths are
+  unaffected.
 - `imageParams.images` / beat-local `images` record keys reject the reserved `$` prefix.
 
 ### Normalization (`src/methods/mulmo_image_prompt_media.ts`, new)
@@ -70,9 +76,13 @@ export const mulmoImageReferenceSchema = z
 `firstFrameImageName: "$beatImage"` / `lastFrameImageName: "$beatImage"` resolve to the beat's
 own image (generated `imagePrompt` still, or the beat's `image` plugin output).
 
-Validation (runtime, in `imagePreprocessAgent`):
+Validation (runtime, in `imagePreprocessAgent`, only for movie-generating beats — a
+style-level sentinel is ignored on beats without `moviePrompt`):
 
 - reject `$beatImage` on both first and last frame simultaneously;
+- reject `$beatImage` as last frame without an explicit `firstFrameImageName` (the implicit
+  first frame is the raw, unconformed beat image — pairing it with a conformed last frame
+  feeds mismatched sizes to strict i2v models);
 - reject when the beat has no image-producing field (no `imagePrompt`, no `image`);
 - reject when the beat's image is itself derived from the movie
   (`moviePrompt`-only beats, `image.type === "movie"`) or resolved after the map

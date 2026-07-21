@@ -636,7 +636,7 @@ export const mulmoBeatSchema = z
     images: mulmoImageParamsImagesSchema
       .optional()
       .describe("Beat-local media references. Same schema as imageParams.images. Merged with global refs (local takes precedence)."),
-    imageNames: z.array(imageIdSchema).optional(), // list of image names to use for image generation. The default is all images in the imageParams.images.
+    imageNames: z.array(imageRefKeySchema).optional(), // list of image names to use for image generation. The default is all images in the imageParams.images.
     imagePrompt: z.string().optional(),
     moviePrompt: z.string().optional(),
     soundEffectPrompt: z.string().optional(),

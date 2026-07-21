@@ -13,7 +13,7 @@ import {
   getReferenceImagePath,
 } from "../utils/file.js";
 import { ffmpegGetImageDimensions, padImageToCanvas } from "../utils/ffmpeg_utils.js";
-import { beatImageSentinelError, bothFramesTarget, missingBeatImageTarget, unsupportedImageTypeTarget } from "../utils/error_cause.js";
+import { beatImageSentinelError, bothFramesTarget, missingBeatImageTarget, unsupportedImageTypeTarget, missingFirstFrameTarget } from "../utils/error_cause.js";
 import { imagePrompt, htmlImageSystemPrompt } from "../utils/prompt.js";
 import { renderHTMLToImage } from "../utils/html_render.js";
 import { beatId } from "../utils/utils.js";
@@ -162,6 +162,14 @@ const validateBeatImageSentinel = (movieParams: MulmoMovieParams, beat: MulmoBea
   if (beat.image && ["movie", "beat", "voice_over"].includes(beat.image.type)) {
     throw new Error(`${BEAT_IMAGE_SENTINEL} cannot be used with image type "${beat.image.type}" (the beat image is not its own still). beat: ${index}`, {
       cause: beatImageSentinelError(index, unsupportedImageTypeTarget),
+    });
+  }
+  // The implicit first frame (the raw beat image) is not conformed to the canvas, so pairing
+  // it with a conformed $beatImage last frame would feed mismatched frame sizes to strict
+  // image-to-video models (e.g. wan-2.2-i2v-fast). Require an explicit, conformed first frame.
+  if (movieParams.lastFrameImageName === BEAT_IMAGE_SENTINEL && !movieParams.firstFrameImageName) {
+    throw new Error(`${BEAT_IMAGE_SENTINEL} as lastFrameImageName requires firstFrameImageName. beat: ${index}`, {
+      cause: beatImageSentinelError(index, missingFirstFrameTarget),
     });
   }
 };
@@ -347,13 +355,14 @@ export const imagePreprocessAgent = async (namedInputs: {
 // Resolves $beatImage frame references after the beat's image exists. imagePreprocessAgent runs
 // before image generation, so it can only flag the sentinel; this agent runs after
 // imageGenerator/imagePlugin and conforms the now-existing beat image to the canvas.
+// movieGenerator consumes only referenceImageForMovie (the movie's first frame / i2v input)
+// and lastFrameImagePath.
 export const beatFrameResolverAgent = async (namedInputs: {
   context: MulmoStudioContext;
   beat: MulmoBeat;
   index: number;
   preprocessor?: {
     imagePath?: string;
-    firstFrameImagePath?: string;
     lastFrameImagePath?: string;
     firstFrameIsBeatImage?: boolean;
     lastFrameIsBeatImage?: boolean;
@@ -363,7 +372,6 @@ export const beatFrameResolverAgent = async (namedInputs: {
 }) => {
   const { context, beat, index, preprocessor } = namedInputs;
   const passThrough = {
-    firstFrameImagePath: preprocessor?.firstFrameImagePath,
     lastFrameImagePath: preprocessor?.lastFrameImagePath,
     referenceImageForMovie: preprocessor?.referenceImageForMovie,
   };
@@ -373,7 +381,6 @@ export const beatFrameResolverAgent = async (namedInputs: {
   const name = `${beatId(beat.id, index)}_beatImage`;
   const conformed = await conformFrameImageToCanvas(context, name, preprocessor.imagePath, preprocessor.frameFillColor ?? "black");
   return {
-    firstFrameImagePath: preprocessor.firstFrameIsBeatImage ? conformed : preprocessor.firstFrameImagePath,
     lastFrameImagePath: preprocessor.lastFrameIsBeatImage ? conformed : preprocessor.lastFrameImagePath,
     referenceImageForMovie: preprocessor.firstFrameIsBeatImage ? conformed : preprocessor.referenceImageForMovie,
   };

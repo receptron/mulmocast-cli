@@ -75,6 +75,16 @@ test("imagePreprocessAgent rejects $beatImage on both frames", async () => {
   await assert.rejects(imagePreprocessAgent({ context, beat, index: 0, imageRefs: {} }), /\$beatImage cannot be used for both/);
 });
 
+test("imagePreprocessAgent rejects a $beatImage last frame without an explicit first frame", async () => {
+  const context = createMockContext();
+  const beat = createMockBeat({
+    imagePrompt: "a scene",
+    moviePrompt: "a movie",
+    movieParams: { lastFrameImageName: "$beatImage" }, // no firstFrameImageName
+  });
+  await assert.rejects(imagePreprocessAgent({ context, beat, index: 0, imageRefs: {} }), /requires firstFrameImageName/);
+});
+
 test("imagePreprocessAgent rejects $beatImage when the beat produces no image of its own", async () => {
   const context = createMockContext();
   const movieOnly = createMockBeat({ moviePrompt: "a movie", movieParams: { lastFrameImageName: "$beatImage" } });
@@ -97,13 +107,11 @@ test("beatFrameResolverAgent passes preprocessor frame paths through for non-sen
     index: 0,
     preprocessor: {
       imagePath: "/test/images/beat.png",
-      firstFrameImagePath: "/test/images/first.png",
       lastFrameImagePath: "/test/images/last.png",
       referenceImageForMovie: "/test/images/first.png",
     },
   });
   assert.deepStrictEqual(result, {
-    firstFrameImagePath: "/test/images/first.png",
     lastFrameImagePath: "/test/images/last.png",
     referenceImageForMovie: "/test/images/first.png",
   });
@@ -121,7 +129,6 @@ test("beatFrameResolverAgent conforms the beat image and uses it as the last fra
     index: 8,
     preprocessor: {
       imagePath: beatImagePath,
-      firstFrameImagePath: path.join(dir, "blank.png"),
       lastFrameIsBeatImage: true,
       frameFillColor: "#F7F6F4",
       referenceImageForMovie: path.join(dir, "blank.png"),
@@ -132,8 +139,7 @@ test("beatFrameResolverAgent conforms the beat image and uses it as the last fra
   const { width, height } = await ffmpegGetImageDimensions(result.lastFrameImagePath as string);
   assert.strictEqual(width, 1280);
   assert.strictEqual(height, 720);
-  // first frame and movie start image are untouched
-  assert.strictEqual(result.firstFrameImagePath, path.join(dir, "blank.png"));
+  // the movie start image is untouched
   assert.strictEqual(result.referenceImageForMovie, path.join(dir, "blank.png"));
 });
 
@@ -155,7 +161,6 @@ test("beatFrameResolverAgent uses the conformed beat image as the movie start fo
     },
   });
 
-  assert.strictEqual(result.firstFrameImagePath, beatImagePath);
   assert.strictEqual(result.referenceImageForMovie, beatImagePath);
   assert.strictEqual(result.lastFrameImagePath, path.join(dir, "final.png"));
 });

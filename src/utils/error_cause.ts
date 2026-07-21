@@ -79,6 +79,7 @@ export const codeTextTarget = "codeText";
 export const bothFramesTarget = "bothFrames";
 export const missingBeatImageTarget = "missingBeatImage";
 export const unsupportedImageTypeTarget = "unsupportedImageType";
+export const missingFirstFrameTarget = "missingFirstFrame";
 
 // Agent File Not Exist Errors
 export const agentFileNotExistError = (agentName: string, action: string, target: string, fileName: string, beatIndex?: number) => {

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
-import { mulmoImagePromptMediaSchema, mulmoImageParamsImagesSchema } from "../../src/types/schema.js";
+import { mulmoImagePromptMediaSchema, mulmoImageParamsImagesSchema, mulmoBeatSchema } from "../../src/types/schema.js";
 
 test("imagePrompt accepts a references array with name/source/label entries", () => {
   const result = mulmoImagePromptMediaSchema.safeParse({
@@ -46,4 +46,9 @@ test("imageParams.images keys reject the reserved $ prefix", () => {
   assert.ok(mulmoImageParamsImagesSchema.safeParse({ scene_01: image }).success);
   assert.strictEqual(mulmoImageParamsImagesSchema.safeParse({ $beatImage: image }).success, false);
   assert.strictEqual(mulmoImageParamsImagesSchema.safeParse({ $anything: image }).success, false);
+});
+
+test("beat.imageNames rejects the reserved $ prefix", () => {
+  assert.ok(mulmoBeatSchema.safeParse({ text: "a", imageNames: ["teacher"] }).success);
+  assert.strictEqual(mulmoBeatSchema.safeParse({ text: "a", imageNames: ["$beatImage"] }).success, false);
 });
