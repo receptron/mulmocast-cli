@@ -105,8 +105,8 @@ No default-behavior change for scripts that don't use the sentinel.
 ## Implementation steps
 
 1. Schema: `mulmoImageReferenceSchema`, `references` on `mulmoImagePromptMediaSchema`,
-   reserved `$` key prefix, sentinel mentions in `movieParams` describes (`src/types/schema.ts`,
-   type exports in `src/types/type.ts`).
+   reserved `$` key prefix, and `$beatImage` in the `movieParams` frame-field descriptions
+   (`src/types/schema.ts`, type exports in `src/types/type.ts`).
 2. Methods: `MulmoImagePromptMediaMethods` (normalization, `hasNamedReference`,
    `buildReferencePreamble`) and export from `src/methods/index.ts`.
 3. Provider limits: `maxReferenceImages` metadata and `getMaxImageReferenceImages`
