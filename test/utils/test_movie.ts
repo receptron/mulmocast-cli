@@ -14,6 +14,11 @@ import {
   getConcatVideoFilter,
   addSplitAndExtractFrames,
   getTransitionFrameDurations,
+  getPrevRenderedBeatIndex,
+  getNextRenderedBeatIndex,
+  getBeatDuration,
+  getVoiceOverGroupDuration,
+  getSegmentDuration,
 } from "../../src/actions/movie.js";
 import { FfmpegContextInit } from "../../src/utils/ffmpeg_utils.js";
 import type { MulmoStudioContext, MulmoBeat, MulmoPresentationStyle, MulmoStudioBeat } from "../../src/types/index.js";
@@ -54,7 +59,8 @@ type TestContextForTransitionDurations = {
     };
     beats: Partial<MulmoStudioBeat>[];
   };
-  presentationStyle: Partial<MulmoPresentationStyle>;
+  // Segment lengths fold in intro/outro padding, so audioParams has to be present.
+  presentationStyle: { audioParams: { introPadding: number; outroPadding: number } };
 };
 
 test("test getVideoParts image", async () => {
@@ -413,7 +419,7 @@ test("test getTransitionFrameDurations clamps to 90 percent of adjacent beats", 
       },
       beats: [{ duration: 2.0 }, { duration: 4.0 }, { duration: 10.0 }],
     },
-    presentationStyle: {},
+    presentationStyle: { audioParams: { introPadding: 0, outroPadding: 0 } },
   };
 
   const result = getTransitionFrameDurations(context as MulmoStudioContext, 1);
@@ -433,7 +439,7 @@ test("test getTransitionFrameDurations enforces min frame", async () => {
       },
       beats: [{ duration: 1.0 }, { duration: 1.0 }, { duration: 1.0 }],
     },
-    presentationStyle: {},
+    presentationStyle: { audioParams: { introPadding: 0, outroPadding: 0 } },
   };
 
   const result = getTransitionFrameDurations(context as MulmoStudioContext, 1);
@@ -442,7 +448,9 @@ test("test getTransitionFrameDurations enforces min frame", async () => {
   assert.ok(Math.abs(result.lastDuration - minFrame) < 1e-6);
 });
 
-test("test getTransitionFrameDurations defaults missing durations and handles first beat", async () => {
+// A beat without a duration renders a zero-length segment, so its transition collapses to the
+// minimum frame rather than being clamped against a made-up default length.
+test("test getTransitionFrameDurations falls back to the min frame for missing durations and handles first beat", async () => {
   const context: TestContextForTransitionDurations = {
     studio: {
       script: {
@@ -450,12 +458,12 @@ test("test getTransitionFrameDurations defaults missing durations and handles fi
       },
       beats: [{}, {}],
     },
-    presentationStyle: {},
+    presentationStyle: { audioParams: { introPadding: 0, outroPadding: 0 } },
   };
 
   const result = getTransitionFrameDurations(context as MulmoStudioContext, 0);
   assert.ok(Math.abs(result.firstDuration - 1 / 30) < 1e-6);
-  assert.equal(result.lastDuration, 0.9);
+  assert.ok(Math.abs(result.lastDuration - 1 / 30) < 1e-6);
 });
 
 test("test getTransitionFrameDurations handles last beat with transition and null next transition", async () => {
@@ -466,7 +474,7 @@ test("test getTransitionFrameDurations handles last beat with transition and nul
       },
       beats: [{ duration: 2.0 }, { duration: 2.0 }, { duration: 2.0 }],
     },
-    presentationStyle: {},
+    presentationStyle: { audioParams: { introPadding: 0, outroPadding: 0 } },
   };
 
   const result = getTransitionFrameDurations(context as MulmoStudioContext, 2);
@@ -483,7 +491,7 @@ test("test getTransitionFrameDurations handles null transitions", async () => {
       },
       beats: [{ duration: 2.0 }, { duration: 2.0 }, { duration: 2.0 }],
     },
-    presentationStyle: {},
+    presentationStyle: { audioParams: { introPadding: 0, outroPadding: 0 } },
   };
 
   const result = getTransitionFrameDurations(context as MulmoStudioContext, 1);
@@ -571,4 +579,81 @@ test("test addSplitAndExtractFrames with both for movie", async () => {
   assert.equal(ffmpegContext.filterComplex[4], "nullsrc=size=1280x720:duration=180:rate=30[v5_last_null]");
   assert.equal(ffmpegContext.filterComplex[5], "[v5_last_src]reverse,select='eq(n,0)',reverse,scale=1280:720[v5_last_frame]");
   assert.equal(ffmpegContext.filterComplex[6], "[v5_last_null][v5_last_frame]overlay=format=auto,fps=30[v5_last]");
+});
+
+// Rendered-beat helpers (voice_over beats produce no video segment of their own)
+const voiceOver = { image: { type: "voice_over" } } as unknown as MulmoBeat;
+const shot = (speaker: string) => ({ speaker }) as unknown as MulmoBeat;
+
+test("test getPrevRenderedBeatIndex skips voice_over beats", async () => {
+  const beats = [shot("A"), voiceOver, voiceOver, shot("B"), voiceOver];
+  assert.equal(getPrevRenderedBeatIndex(beats, 3), 0); // walks back over two voice_overs
+  assert.equal(getPrevRenderedBeatIndex(beats, 4), 3);
+  assert.equal(getPrevRenderedBeatIndex(beats, 1), 0);
+});
+
+test("test getPrevRenderedBeatIndex returns -1 when there is no previous shot", async () => {
+  assert.equal(getPrevRenderedBeatIndex([shot("A"), shot("B")], 0), -1); // first beat
+  assert.equal(getPrevRenderedBeatIndex([voiceOver, voiceOver, shot("A")], 2), -1); // leading voice_overs
+  assert.equal(getPrevRenderedBeatIndex([], 0), -1); // empty
+});
+
+test("test getNextRenderedBeatIndex skips voice_over beats", async () => {
+  const beats = [shot("A"), voiceOver, voiceOver, shot("B"), voiceOver];
+  assert.equal(getNextRenderedBeatIndex(beats, 0), 3); // walks forward over two voice_overs
+  assert.equal(getNextRenderedBeatIndex(beats, 2), 3);
+});
+
+test("test getNextRenderedBeatIndex returns -1 when no shot follows", async () => {
+  assert.equal(getNextRenderedBeatIndex([shot("A"), voiceOver, voiceOver], 0), -1); // group ends the script
+  assert.equal(getNextRenderedBeatIndex([shot("A")], 0), -1); // last beat
+  assert.equal(getNextRenderedBeatIndex([], 0), -1); // empty
+});
+
+const durationContext = (scriptBeats: MulmoBeat[], durations: (number | undefined)[], introPadding = 0, outroPadding = 0) =>
+  ({
+    studio: {
+      script: { beats: scriptBeats },
+      beats: durations.map((duration) => ({ duration })),
+    },
+    presentationStyle: { audioParams: { introPadding, outroPadding } },
+  }) as unknown as MulmoStudioContext;
+
+test("test getBeatDuration adds intro and outro padding", async () => {
+  const context = durationContext([shot("A"), shot("B"), shot("C")], [1.0, 2.0, 3.0], 1.5, 2.5);
+  assert.equal(getBeatDuration(context, 0), 2.5); // 1.0 + introPadding
+  assert.equal(getBeatDuration(context, 1), 2.0); // middle beats carry no extra padding
+  assert.equal(getBeatDuration(context, 2), 5.5); // 3.0 + outroPadding
+});
+
+test("test getBeatDuration treats a missing duration as zero", async () => {
+  const context = durationContext([shot("A"), shot("B")], [undefined, 2.0]);
+  assert.equal(getBeatDuration(context, 0), 0);
+});
+
+test("test getVoiceOverGroupDuration sums the trailing voice_over beats", async () => {
+  const context = durationContext([shot("A"), voiceOver, voiceOver, shot("B"), voiceOver], [4.0, 2.0, 1.0, 5.0, 3.0]);
+  assert.equal(getVoiceOverGroupDuration(context, 0), 3.0); // 2.0 + 1.0
+  assert.equal(getVoiceOverGroupDuration(context, 1), 1.0); // from inside the group
+  assert.equal(getVoiceOverGroupDuration(context, 2), 0); // group ends here
+  assert.equal(getVoiceOverGroupDuration(context, 3), 3.0); // trailing group at the end of the script
+});
+
+test("test getVoiceOverGroupDuration includes the outro padding of a trailing voice_over", async () => {
+  const context = durationContext([shot("A"), voiceOver], [4.0, 2.0], 0, 1.5);
+  assert.equal(getVoiceOverGroupDuration(context, 0), 3.5); // 2.0 + outroPadding
+});
+
+test("test getSegmentDuration spans the voice_over group", async () => {
+  const context = durationContext([shot("A"), voiceOver, shot("B")], [4.716, 2.604, 7.256]);
+  assert.ok(Math.abs(getSegmentDuration(context, 0) - 7.32) < 1e-9); // owner + its voice_over
+  assert.equal(getSegmentDuration(context, 2), 7.256); // no group
+});
+
+test("test getSegmentDuration is never shorter than the movie", async () => {
+  const context = durationContext([shot("A"), voiceOver], [4.0, 2.0]);
+  context.studio.beats[0].movieDuration = 20.0;
+  assert.equal(getSegmentDuration(context, 0), 20.0);
+  context.studio.beats[0].movieDuration = 3.0; // shorter than the group: the group wins
+  assert.equal(getSegmentDuration(context, 0), 6.0);
 });

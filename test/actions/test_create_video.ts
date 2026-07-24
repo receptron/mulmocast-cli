@@ -51,7 +51,7 @@ test("test createVideo with fsd_demo.json in testMode", async () => {
   // Call createVideo in test mode
   const result = await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true);
   assert.deepStrictEqual(result, [
-    "[0:v]tpad=stop_mode=clone:stop_duration=10,fps=30,trim=end_frame=150,setpts=PTS-STARTPTS,scale=w=1080:h=1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
+    "[0:v]tpad=stop_mode=clone:stop_duration=80,fps=30,trim=end_frame=1200,setpts=PTS-STARTPTS,scale=w=1080:h=1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
     "[1:v]loop=loop=-1:size=1:start=0,fps=30,trim=end_frame=150,setpts=PTS-STARTPTS,scale=w=1080:h=1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[v0][v1]concat=n=2:v=1:a=0[concat_video]",
   ]);
@@ -1026,7 +1026,7 @@ test("test createVideo with test_voice_over.json", async () => {
   const result = await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true);
   assert.deepStrictEqual(result, [
     "[0:v]loop=loop=-1:size=1:start=0,fps=30,trim=end_frame=150,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v0]",
-    "[1:v]tpad=stop_mode=clone:stop_duration=10,fps=30,trim=end_frame=150,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
+    "[1:v]tpad=stop_mode=clone:stop_duration=120,fps=30,trim=end_frame=1800,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v1]",
     "[2:v]loop=loop=-1:size=1:start=0,fps=30,trim=end_frame=150,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p[v2]",
     "[v0][v1][v2]concat=n=3:v=1:a=0[concat_video]",
   ]);
@@ -1077,4 +1077,121 @@ test("test createVideo with test_video_filters.json", async () => {
     "[25:v]tpad=stop_mode=clone:stop_duration=10,fps=30,trim=end_frame=150,setpts=PTS-STARTPTS,scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p,lagfun=decay=0.85:planes=15[v25]",
     "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10][v11][v12][v13][v14][v15][v16][v17][v18][v19][v20][v21][v22][v23][v24][v25]concat=n=26:v=1:a=0[concat_video]",
   ]);
+});
+
+// Regression test for issue #1509: a voice_over beat before a beat with a transition
+// used to reference an undefined filtergraph pad ([undefined_last]) and crash ffmpeg.
+const createVoiceOverTransitionScript = (transitionType: string): MulmoScript =>
+  ({
+    $mulmocast: { version: "1.1" },
+    lang: "en",
+    title: "Voice over with transition",
+    beats: [
+      { speaker: "A", text: "First line over a shot.", image: { type: "image", source: { kind: "path", path: "/dummy/image.png" } } },
+      { speaker: "B", text: "A reply over the same shot.", image: { type: "voice_over" } },
+      {
+        speaker: "A",
+        text: "Now a new shot begins.",
+        image: { type: "image", source: { kind: "path", path: "/dummy/image.png" } },
+        movieParams: { transition: { type: transitionType, duration: 0.6 } },
+      },
+    ],
+  }) as unknown as MulmoScript;
+
+test("test createVideo with voice_over beat before a fade transition", async () => {
+  const context = createContextFromScript(createVoiceOverTransitionScript("fade"));
+  const result = (await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true)) as string[];
+
+  // No dangling/undefined filtergraph pads
+  assert.ok(
+    result.every((filter) => !filter.includes("undefined")),
+    `filterComplex contains undefined: ${result.join("\n")}`,
+  );
+  // The voice_over beat contributes no video segment
+  assert.ok(result.includes("[v0][v1]concat=n=2:v=1:a=0[concat_video]"));
+  // The transition on beat 2 uses the last frame of beat 0 (the previous *rendered* beat)
+  assert.ok(
+    result.some((filter) => filter.startsWith("[v0_last]format=yuva420p,fade=t=out")),
+    `fade transition does not use v0_last: ${result.join("\n")}`,
+  );
+  // Only beat 0 produces a _last frame; the voice_over beat does not
+  assert.ok(result.some((filter) => filter.includes("[v0_last_src]")));
+  assert.ok(!result.some((filter) => filter.includes("[v1_last_src]")));
+});
+
+test("test createVideo with voice_over beat before a wipe transition", async () => {
+  const context = createContextFromScript(createVoiceOverTransitionScript("wipeleft"));
+  const result = (await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true)) as string[];
+
+  assert.ok(
+    result.every((filter) => !filter.includes("undefined")),
+    `filterComplex contains undefined: ${result.join("\n")}`,
+  );
+  // xfade goes from beat 0's last frame to beat 2's first frame
+  assert.ok(
+    result.some((filter) => filter.includes("[v0_last_fmt][v1_first_fmt]xfade=transition=wipeleft")),
+    `wipe transition is not wired to v0_last/v1_first: ${result.join("\n")}`,
+  );
+});
+
+test("test createVideo with voice_over beat before a slidein transition", async () => {
+  const context = createContextFromScript(createVoiceOverTransitionScript("slidein_left"));
+  const result = (await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true)) as string[];
+
+  assert.ok(
+    result.every((filter) => !filter.includes("undefined")),
+    `filterComplex contains undefined: ${result.join("\n")}`,
+  );
+  // The background of the slidein is the last frame of beat 0
+  assert.ok(
+    result.some((filter) => filter.startsWith("[v0_last]format=yuva420p,setpts")),
+    `slidein background is not v0_last: ${result.join("\n")}`,
+  );
+});
+
+// Regression test for issue #1510: when the owner beat's movie is shorter than the total audio
+// of its voice_over group, the owner's video segment must span the whole group, otherwise the
+// video ends up shorter than the audio and everything after the first voice_over drifts.
+test("test createVideo covers the voice_over group when the movie is shorter than its audio", async () => {
+  const script = {
+    $mulmocast: { version: "1.1" },
+    lang: "en",
+    title: "Voice over longer than the movie",
+    beats: [
+      { speaker: "A", text: "Rise and shine!", moviePrompt: "slow gentle push-in" },
+      { speaker: "B", text: "Mm, thanks.", image: { type: "voice_over" } },
+      { speaker: "A", text: "Toast is ready.", moviePrompt: "gentle drift" },
+      { speaker: "B", text: "Coming.", image: { type: "voice_over" } },
+    ],
+  } as unknown as MulmoScript;
+
+  // Durations measured in the issue: a 5.06s i2v clip with 6.72s of group audio.
+  const durations = [4.716, 2.604, 7.256, 2.112];
+  const context = {
+    lang: "en",
+    studio: {
+      script,
+      beats: durations.map((duration) => ({ movieFile: "/dummy/movie.mov", duration, movieDuration: 0 })),
+    },
+    presentationStyle: {
+      audioParams: { introPadding: 0, outroPadding: 0 },
+      imageParams: {},
+      canvasSize: { width: 1280, height: 720 },
+    },
+  } as unknown as MulmoStudioContext;
+
+  const result = (await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true)) as string[];
+
+  // Only the two owner beats produce video segments.
+  assert.ok(result.includes("[v0][v1]concat=n=2:v=1:a=0[concat_video]"));
+
+  // The audio timeline is 4.716 + 2.604 + 7.256 + 2.112 = 16.688s.
+  // beat0 spans 4.716 + 2.604 = 7.32s -> 220 frames at 30fps
+  // beat1 (script beat 2) spans 7.256 + 2.112 = 9.368s -> the remaining 281 frames
+  const frameCounts = result.filter((filter) => filter.includes("trim=end_frame=")).map((filter) => Number(filter.match(/trim=end_frame=(\d+)/)![1]));
+  assert.deepStrictEqual(frameCounts, [220, 281]);
+  assert.equal(
+    frameCounts.reduce((a, b) => a + b, 0) / 30,
+    16.7, // 16.688s of audio, rounded up to the next frame boundary
+  );
 });
