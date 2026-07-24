@@ -27,6 +27,34 @@ const VIDEO_FPS = 30;
 const DEFAULT_DUCKING_RATIO = 0.3;
 type VideoId = string | undefined;
 
+// voice_over beats share the preceding beat's shot, and contribute no video segment of their own.
+const isVoiceOverBeat = (beat?: MulmoBeat) => beat?.image?.type === "voice_over";
+
+// Index of the closest preceding beat which is actually rendered as a video segment (-1 if none).
+export const getPrevRenderedBeatIndex = (beats: MulmoBeat[], index: number) => {
+  for (let i = index - 1; i >= 0; i--) {
+    if (!isVoiceOverBeat(beats[i])) return i;
+  }
+  return -1;
+};
+
+// Index of the closest following beat which is actually rendered as a video segment (-1 if none).
+export const getNextRenderedBeatIndex = (beats: MulmoBeat[], index: number) => {
+  for (let i = index + 1; i < beats.length; i++) {
+    if (!isVoiceOverBeat(beats[i])) return i;
+  }
+  return -1;
+};
+
+// videoIdsForBeats holds undefined for voice_over beats; walk back to the previous rendered beat's videoId.
+const getPrevVideoId = (videoIdsForBeats: VideoId[], index: number): string | undefined => {
+  for (let i = index - 1; i >= 0; i--) {
+    const videoId = videoIdsForBeats[i];
+    if (videoId !== undefined) return videoId;
+  }
+  return undefined;
+};
+
 export const getVideoPart = (
   inputIndex: number,
   isMovie: boolean,
@@ -216,7 +244,8 @@ const addTransitionEffects = (
     const startAt = beatTimestamps[beatIndex] - 0.05; // 0.05 is to avoid flickering
 
     // Limit transition duration to be no longer than either beat's duration
-    const prevBeatDuration = context.studio.beats[beatIndex - 1].duration ?? 1;
+    const prevBeatIndex = getPrevRenderedBeatIndex(context.studio.script.beats, beatIndex);
+    const prevBeatDuration = context.studio.beats[prevBeatIndex]?.duration ?? 1;
     const currentBeatDuration = context.studio.beats[beatIndex].duration ?? 1;
     const duration = getClampedTransitionDuration(transition.duration, prevBeatDuration, currentBeatDuration);
 
@@ -242,8 +271,11 @@ const addTransitionEffects = (
         return prevVideoId;
       }
 
-      // Get previous beat's last frame for background
-      const prevVideoSourceId = videoIdsForBeats[beatIndex - 1];
+      // Get previous rendered beat's last frame for background (voice_over beats have no video)
+      const prevVideoSourceId = getPrevVideoId(videoIdsForBeats, beatIndex);
+      if (!prevVideoSourceId) {
+        return prevVideoId; // Cannot apply slidein without the previous shot
+      }
       // Both movie and image beats now have _last
       const prevLastFrame = `${prevVideoSourceId}_last`;
 
@@ -294,17 +326,23 @@ const addTransitionEffects = (
 };
 
 export const getNeedFirstFrame = (context: MulmoStudioContext) => {
-  return context.studio.script.beats.map((beat, index) => {
-    if (index === 0) return false; // First beat cannot have transition
+  const beats = context.studio.script.beats;
+  return beats.map((beat, index) => {
+    if (isVoiceOverBeat(beat)) return false; // voice_over beats have no video segment
+    if (getPrevRenderedBeatIndex(beats, index) < 0) return false; // No previous shot: the transition is skipped
     const transition = MulmoPresentationStyleMethods.getMovieTransition(context, beat);
     return (transition?.type.startsWith("slidein_") || transition?.type.startsWith("wipe")) ?? false;
   });
 };
 
 export const getNeedLastFrame = (context: MulmoStudioContext) => {
-  return context.studio.script.beats.map((beat, index) => {
-    if (index === context.studio.script.beats.length - 1) return false; // Last beat doesn't need _last
-    const nextTransition = MulmoPresentationStyleMethods.getMovieTransition(context, context.studio.script.beats[index + 1]);
+  const beats = context.studio.script.beats;
+  return beats.map((beat, index) => {
+    if (isVoiceOverBeat(beat)) return false; // voice_over beats have no video segment
+    // A transition consumes the last frame of the previous *rendered* beat, skipping voice_over beats.
+    const nextIndex = getNextRenderedBeatIndex(beats, index);
+    if (nextIndex < 0) return false; // Last rendered beat doesn't need _last
+    const nextTransition = MulmoPresentationStyleMethods.getMovieTransition(context, beats[nextIndex]);
     return nextTransition !== null; // Any transition on next beat requires this beat's last frame
   });
 };
@@ -385,22 +423,26 @@ export const getFillOption = (context: MulmoStudioContext, beat: MulmoBeat) => {
 };
 
 export const getTransitionVideoId = (transition: MulmoTransition, videoIdsForBeats: VideoId[], index: number) => {
+  // Every transition needs the previous *rendered* beat (voice_over beats have no video of their own).
+  const prevVideoSourceId = getPrevVideoId(videoIdsForBeats, index);
+  const currentVideoId = videoIdsForBeats[index];
+  if (!prevVideoSourceId || !currentVideoId) {
+    return null; // Skip the transition instead of referencing a filtergraph pad which does not exist.
+  }
   if (transition.type === "fade" || transition.type.startsWith("slideout_")) {
-    // Use previous beat's last frame. TODO: support voice-over
-    const prevVideoSourceId = videoIdsForBeats[index - 1];
+    // Use previous beat's last frame.
     // Both movie and image beats now have _last
     const frameId = `${prevVideoSourceId}_last`;
     return { videoId: frameId, nextVideoId: undefined, beatIndex: index };
   }
   if (transition.type.startsWith("wipe")) {
     // Wipe needs both previous beat's last frame and this beat's first frame
-    const prevVideoSourceId = videoIdsForBeats[index - 1];
     const prevLastFrame = `${prevVideoSourceId}_last`;
-    const nextFirstFrame = `${videoIdsForBeats[index]}_first`;
+    const nextFirstFrame = `${currentVideoId}_first`;
     return { videoId: prevLastFrame, nextVideoId: nextFirstFrame, beatIndex: index };
   }
   // Use this beat's first frame. slidein_ case
-  return { videoId: "", nextVideoId: `${videoIdsForBeats[index]}_first`, beatIndex: index };
+  return { videoId: "", nextVideoId: `${currentVideoId}_first`, beatIndex: index };
 };
 
 export const getConcatVideoFilter = (concatVideoId: string, videoIdsForBeats: VideoId[]) => {
@@ -427,11 +469,15 @@ export const getTransitionFrameDurations = (context: MulmoStudioContext, index: 
     return getClampedTransitionDuration(transition.duration, prevBeatDuration, currentBeatDuration);
   };
 
-  const currentTransition = MulmoPresentationStyleMethods.getMovieTransition(context, scriptBeats[index]);
-  const firstDuration = index > 0 ? getTransitionDuration(currentTransition, index - 1, index) : 0;
+  // Transitions are resolved against the neighboring *rendered* beats (voice_over beats have no video).
+  const prevIndex = getPrevRenderedBeatIndex(scriptBeats, index);
+  const nextIndex = getNextRenderedBeatIndex(scriptBeats, index);
 
-  const nextTransition = index < scriptBeats.length - 1 ? MulmoPresentationStyleMethods.getMovieTransition(context, scriptBeats[index + 1]) : null;
-  const lastDuration = getTransitionDuration(nextTransition, index, index + 1);
+  const currentTransition = MulmoPresentationStyleMethods.getMovieTransition(context, scriptBeats[index]);
+  const firstDuration = prevIndex >= 0 ? getTransitionDuration(currentTransition, prevIndex, index) : 0;
+
+  const nextTransition = nextIndex >= 0 ? MulmoPresentationStyleMethods.getMovieTransition(context, scriptBeats[nextIndex]) : null;
+  const lastDuration = nextIndex >= 0 ? getTransitionDuration(nextTransition, index, nextIndex) : 0;
 
   return {
     firstDuration: Math.max(firstDuration, minFrame),
@@ -579,7 +625,9 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
     const transition = MulmoPresentationStyleMethods.getMovieTransition(context, beat);
     if (transition && index > 0) {
       const transitionVideoId = getTransitionVideoId(transition, videoIdsForBeats, index);
-      transitionVideoIds.push(transitionVideoId);
+      if (transitionVideoId) {
+        transitionVideoIds.push(transitionVideoId);
+      }
     }
 
     // NOTE: We don't support audio if the speed is not 1.0.

@@ -1078,3 +1078,73 @@ test("test createVideo with test_video_filters.json", async () => {
     "[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10][v11][v12][v13][v14][v15][v16][v17][v18][v19][v20][v21][v22][v23][v24][v25]concat=n=26:v=1:a=0[concat_video]",
   ]);
 });
+
+// Regression test for issue #1509: a voice_over beat before a beat with a transition
+// used to reference an undefined filtergraph pad ([undefined_last]) and crash ffmpeg.
+const createVoiceOverTransitionScript = (transitionType: string): MulmoScript =>
+  ({
+    $mulmocast: { version: "1.1" },
+    lang: "en",
+    title: "Voice over with transition",
+    beats: [
+      { speaker: "A", text: "First line over a shot.", image: { type: "image", source: { kind: "path", path: "/dummy/image.png" } } },
+      { speaker: "B", text: "A reply over the same shot.", image: { type: "voice_over" } },
+      {
+        speaker: "A",
+        text: "Now a new shot begins.",
+        image: { type: "image", source: { kind: "path", path: "/dummy/image.png" } },
+        movieParams: { transition: { type: transitionType, duration: 0.6 } },
+      },
+    ],
+  }) as unknown as MulmoScript;
+
+test("test createVideo with voice_over beat before a fade transition", async () => {
+  const context = createContextFromScript(createVoiceOverTransitionScript("fade"));
+  const result = (await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true)) as string[];
+
+  // No dangling/undefined filtergraph pads
+  assert.ok(
+    result.every((filter) => !filter.includes("undefined")),
+    `filterComplex contains undefined: ${result.join("\n")}`,
+  );
+  // The voice_over beat contributes no video segment
+  assert.ok(result.includes("[v0][v1]concat=n=2:v=1:a=0[concat_video]"));
+  // The transition on beat 2 uses the last frame of beat 0 (the previous *rendered* beat)
+  assert.ok(
+    result.some((filter) => filter.startsWith("[v0_last]format=yuva420p,fade=t=out")),
+    `fade transition does not use v0_last: ${result.join("\n")}`,
+  );
+  // Only beat 0 produces a _last frame; the voice_over beat does not
+  assert.ok(result.some((filter) => filter.includes("[v0_last_src]")));
+  assert.ok(!result.some((filter) => filter.includes("[v1_last_src]")));
+});
+
+test("test createVideo with voice_over beat before a wipe transition", async () => {
+  const context = createContextFromScript(createVoiceOverTransitionScript("wipeleft"));
+  const result = (await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true)) as string[];
+
+  assert.ok(
+    result.every((filter) => !filter.includes("undefined")),
+    `filterComplex contains undefined: ${result.join("\n")}`,
+  );
+  // xfade goes from beat 0's last frame to beat 2's first frame
+  assert.ok(
+    result.some((filter) => filter.includes("[v0_last_fmt][v1_first_fmt]xfade=transition=wipeleft")),
+    `wipe transition is not wired to v0_last/v1_first: ${result.join("\n")}`,
+  );
+});
+
+test("test createVideo with voice_over beat before a slidein transition", async () => {
+  const context = createContextFromScript(createVoiceOverTransitionScript("slidein_left"));
+  const result = (await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true)) as string[];
+
+  assert.ok(
+    result.every((filter) => !filter.includes("undefined")),
+    `filterComplex contains undefined: ${result.join("\n")}`,
+  );
+  // The background of the slidein is the last frame of beat 0
+  assert.ok(
+    result.some((filter) => filter.startsWith("[v0_last]format=yuva420p,setpts")),
+    `slidein background is not v0_last: ${result.join("\n")}`,
+  );
+});
