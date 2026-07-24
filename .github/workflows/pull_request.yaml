@@ -117,6 +117,7 @@ jobs:
           - { name: movie-credit,        cmd: "yarn run cli movie scripts/test/test_no_audio_with_credit.json" }
           - { name: movie-transition,    cmd: "yarn run cli movie scripts/test/test_transition_no_audio.json" }
           - { name: movie-slideout,      cmd: "yarn run cli movie scripts/test/test_slideout_left_no_audio.json" }
+          - { name: movie-voice-over,    cmd: "yarn run cli movie scripts/test/test_voice_over_transition_no_audio.json" }
           - { name: movie-hello,         cmd: "yarn run cli movie scripts/test/test_hello_caption.json && yarn run cli movie scripts/test/test_hello_image.json" }
           - { name: movie-vision,        cmd: "yarn run cli movie scripts/test/test_vision.json" }
           - { name: pdf-order,           cmd: "yarn run cli pdf scripts/test/test_order.json --pdf_mode slide --pdf_size a4 && yarn run cli pdf scripts/test/test_order.json --pdf_mode talk --pdf_size a4 && yarn run cli pdf scripts/test/test_order.json --pdf_mode handout --pdf_size a4 && yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode slide --pdf_size a4 && yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode talk --pdf_size a4 && yarn run cli pdf scripts/test/test_order_portrait.json --pdf_mode handout --pdf_size a4" }

@@ -1,0 +1,71 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "en",
+  "title": "VoiceOver Transition Test",
+  "movieParams": {
+    "transition": {
+      "type": "fade",
+      "duration": 1.0
+    }
+  },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 3.0,
+      "image": {
+        "type": "image",
+        "source": {
+          "kind": "path",
+          "path": "../../assets/images/mulmocast_credit.png"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2.0,
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 3.0,
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Fade after a voice_over"
+        }
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 2.0,
+      "image": {
+        "type": "voice_over"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "",
+      "duration": 3.0,
+      "movieParams": {
+        "transition": {
+          "type": "wipeleft",
+          "duration": 1.0
+        }
+      },
+      "image": {
+        "type": "textSlide",
+        "slide": {
+          "title": "Wipe after a voice_over"
+        }
+      }
+    }
+  ]
+}
