@@ -245,8 +245,8 @@ const addTransitionEffects = (
 
     // Limit transition duration to be no longer than either beat's duration
     const prevBeatIndex = getPrevRenderedBeatIndex(context.studio.script.beats, beatIndex);
-    const prevBeatDuration = context.studio.beats[prevBeatIndex]?.duration ?? 1;
-    const currentBeatDuration = context.studio.beats[beatIndex].duration ?? 1;
+    const prevBeatDuration = getRenderedSegmentDuration(context, prevBeatIndex);
+    const currentBeatDuration = getRenderedSegmentDuration(context, beatIndex);
     const duration = getClampedTransitionDuration(transition.duration, prevBeatDuration, currentBeatDuration);
 
     const outputVideoId = `trans_${beatIndex}_o`;
@@ -414,6 +414,21 @@ export const getExtraPadding = (context: MulmoStudioContext, index: number) => {
   return 0;
 };
 
+// The duration this beat occupies on the audio timeline.
+export const getBeatDuration = (context: MulmoStudioContext, index: number) => {
+  return (context.studio.beats[index].duration ?? 0) + getExtraPadding(context, index);
+};
+
+// The total duration of the voice_over beats which follow (and share the shot of) this beat.
+export const getVoiceOverGroupDuration = (context: MulmoStudioContext, index: number) => {
+  const beats = context.studio.script.beats;
+  let duration = 0;
+  for (let i = index + 1; i < beats.length && isVoiceOverBeat(beats[i]); i++) {
+    duration += getBeatDuration(context, i);
+  }
+  return duration;
+};
+
 export const getFillOption = (context: MulmoStudioContext, beat: MulmoBeat) => {
   // Get fillOption from merged imageParams (global + beat-specific)
   const globalFillOption = context.presentationStyle.movieParams?.fillOption;
@@ -452,6 +467,11 @@ export const getConcatVideoFilter = (concatVideoId: string, videoIdsForBeats: Vi
   return `${inputs}concat=n=${videoIds.length}:v=1:a=0[${concatVideoId}]`;
 };
 
+// How long this beat stays on screen: its own duration plus its trailing voice_over beats.
+const getRenderedSegmentDuration = (context: MulmoStudioContext, index: number) => {
+  return (context.studio.beats[index]?.duration ?? 1) + getVoiceOverGroupDuration(context, index);
+};
+
 const getClampedTransitionDuration = (transitionDuration: number, prevBeatDuration: number, currentBeatDuration: number) => {
   const maxDuration = Math.min(prevBeatDuration, currentBeatDuration) * 0.9; // Use 90% to leave some margin
   return Math.min(transitionDuration, maxDuration);
@@ -464,8 +484,8 @@ export const getTransitionFrameDurations = (context: MulmoStudioContext, index: 
 
   const getTransitionDuration = (transition: MulmoTransition | null, prevBeatIndex: number, currentBeatIndex: number) => {
     if (!transition || prevBeatIndex < 0 || currentBeatIndex >= beats.length) return 0;
-    const prevBeatDuration = beats[prevBeatIndex].duration ?? 1;
-    const currentBeatDuration = beats[currentBeatIndex].duration ?? 1;
+    const prevBeatDuration = getRenderedSegmentDuration(context, prevBeatIndex);
+    const currentBeatDuration = getRenderedSegmentDuration(context, currentBeatIndex);
     return getClampedTransitionDuration(transition.duration, prevBeatDuration, currentBeatDuration);
   };
 
@@ -585,13 +605,17 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
     if (beat.image?.type === "voice_over") {
       videoIdsForBeats.push(undefined);
       beatTimestamps.push(timestamp);
-      return timestamp; // Skip voice-over beats.
+      // Skip voice-over beats: their video is covered by the owner beat's segment, but the
+      // audio timeline still advances, so keep the timestamp in sync with the audio artifact.
+      return timestamp + getBeatDuration(context, index);
     }
 
     const sourceFile = isTest ? "/test/dummy.mp4" : validateBeatSource(studioBeat, index);
 
-    // The movie duration is bigger in case of voice-over.
-    const duration = Math.max(studioBeat.duration! + getExtraPadding(context, index), studioBeat.movieDuration ?? 0);
+    // This beat's video segment has to cover its trailing voice_over beats as well (they have
+    // no video of their own). getVideoPart extends a short movie by cloning its last frame.
+    const voiceOverDuration = getVoiceOverGroupDuration(context, index);
+    const duration = Math.max(getBeatDuration(context, index) + voiceOverDuration, studioBeat.movieDuration ?? 0);
 
     // Use cumulative frame tracking to prevent audio-video drift from frame quantization.
     // trim=duration=X rounds up to the next frame boundary (~0.03s per beat at 30fps),
@@ -639,7 +663,8 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
       ffmpegContext.filterComplex.push(audioPart);
     }
     beatTimestamps.push(timestamp);
-    return timestamp + duration;
+    // The trailing voice_over beats advance the timestamp themselves.
+    return timestamp + duration - voiceOverDuration;
   }, 0);
 
   assert(videoIdsForBeats.length === context.studio.beats.length, "videoIds.length !== studio.beats.length");
