@@ -416,7 +416,7 @@ export const getExtraPadding = (context: MulmoStudioContext, index: number) => {
 
 // The duration this beat occupies on the audio timeline.
 export const getBeatDuration = (context: MulmoStudioContext, index: number) => {
-  return (context.studio.beats[index].duration ?? 0) + getExtraPadding(context, index);
+  return (context.studio.beats[index]?.duration ?? 0) + getExtraPadding(context, index);
 };
 
 // The total duration of the voice_over beats which follow (and share the shot of) this beat.
@@ -468,6 +468,10 @@ export const getConcatVideoFilter = (concatVideoId: string, videoIdsForBeats: Vi
 };
 
 // How long this beat stays on screen: its own duration plus its trailing voice_over beats.
+// Used only to clamp transition durations, so it deliberately differs from getBeatDuration:
+// it keeps the pre-existing `?? 1` default for beats without a duration (a `?? 0` default would
+// silently turn their transitions into no-ops), and it ignores intro/outro padding, which makes
+// the clamp slightly conservative rather than letting a transition overrun the shot.
 const getRenderedSegmentDuration = (context: MulmoStudioContext, index: number) => {
   return (context.studio.beats[index]?.duration ?? 1) + getVoiceOverGroupDuration(context, index);
 };
