@@ -35,6 +35,16 @@ export const fileCacheAgentFilter: AgentFilterFunction = async (context, next) =
     GraphAILogger.debug(`cache: ${path.basename(file)}`);
     return true;
   }
+
+  // The media payload is on disk by the time we return, and no downstream node reads it, so it
+  // must not become part of the node result: GraphAI keeps every node result (and a debug key for
+  // each of its leaves) alive for the whole run. Buffers are array-like, so that key walk expands
+  // one media buffer into a key per byte (~280x its size), which is what made memory grow with
+  // the beat count. Keep `usage` — createUsageCallback reads it off the transaction log.
+  const withoutPayload = <T extends { buffer?: Buffer; text?: string }>(output: T) => {
+    const { buffer: __buffer, ...rest } = output;
+    return rest;
+  };
   const backup = withBackup && withBackup.some((element: boolean | undefined) => element);
 
   try {
@@ -42,7 +52,7 @@ export const fileCacheAgentFilter: AgentFilterFunction = async (context, next) =
     const output = ((await next(context)) as { buffer?: Buffer; text?: string; saved?: boolean }) || undefined;
     const { buffer, text, saved } = output ?? {};
     if (saved) {
-      return output;
+      return withoutPayload(output ?? {});
     }
     if (buffer) {
       writingMessage(file);
@@ -50,7 +60,7 @@ export const fileCacheAgentFilter: AgentFilterFunction = async (context, next) =
       if (backup) {
         await fsPromise.writeFile(getBackupFilePath(file), buffer);
       }
-      return output;
+      return withoutPayload(output ?? {});
     } else if (text) {
       writingMessage(file);
       await fsPromise.writeFile(file, text, "utf-8");
