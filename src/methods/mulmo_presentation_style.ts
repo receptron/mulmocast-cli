@@ -21,6 +21,7 @@ import {
   Text2ImageProvider,
   MulmoStudioContext,
   MulmoTransition,
+  MulmoFillOption,
 } from "../types/index.js";
 import {
   text2ImageProviderSchema,
@@ -29,7 +30,9 @@ import {
   text2SpeechProviderSchema,
   mulmoCanvasDimensionSchema,
   mulmoTransitionSchema,
+  mulmoFillOptionSchema,
 } from "../types/schema.js";
+import { MulmoBeatMethods } from "./mulmo_beat.js";
 import {
   provider2ImageAgent,
   provider2MovieAgent,
@@ -56,6 +59,15 @@ const defaultTextSlideStyles = [
   "td, th { padding: 8px }",
   "tr:nth-child(even) { background-color: #eee }",
 ];
+
+const DEFAULT_DUCKING_RATIO = 0.3;
+
+// Both frame requirements answer the same question for each *rendered* beat (voice_over beats have
+// no video segment, so they never supply a frame): does a transition need a still from this beat?
+const mapRenderedBeats = (context: MulmoStudioContext, needsFrame: (beats: MulmoBeat[], index: number) => boolean) => {
+  const beats = context.studio.script.beats;
+  return beats.map((beat, index) => (MulmoBeatMethods.isVoiceOver(beat) ? false : needsFrame(beats, index)));
+};
 
 export const MulmoPresentationStyleMethods = {
   getCanvasSize(presentationStyle: MulmoPresentationStyle): MulmoCanvasDimension {
@@ -130,6 +142,38 @@ export const MulmoPresentationStyleMethods = {
     if (!transitionData) return null;
 
     return mulmoTransitionSchema.parse(transitionData);
+  },
+  getNeedFirstFrame(context: MulmoStudioContext): boolean[] {
+    // This beat slides/wipes in over the previous shot, so it supplies its own first frame.
+    return mapRenderedBeats(context, (beats, index) => {
+      if (MulmoBeatMethods.getPrevRenderedBeatIndex(beats, index) < 0) return false; // No previous shot: the transition is skipped
+      const transition = MulmoPresentationStyleMethods.getMovieTransition(context, beats[index]);
+      return (transition?.type.startsWith("slidein_") || transition?.type.startsWith("wipe")) ?? false;
+    });
+  },
+  getNeedLastFrame(context: MulmoStudioContext): boolean[] {
+    // Any transition consumes the last frame of the previous rendered beat, skipping voice_over beats.
+    return mapRenderedBeats(context, (beats, index) => {
+      const nextIndex = MulmoBeatMethods.getNextRenderedBeatIndex(beats, index);
+      if (nextIndex < 0) return false; // Last rendered beat doesn't need _last
+      return MulmoPresentationStyleMethods.getMovieTransition(context, beats[nextIndex]) !== null;
+    });
+  },
+  getFillOption(context: MulmoStudioContext, beat: MulmoBeat): MulmoFillOption {
+    const globalFillOption = context.presentationStyle.movieParams?.fillOption;
+    const beatFillOption = beat.movieParams?.fillOption;
+    const defaultFillOption = mulmoFillOptionSchema.parse({}); // let the schema infer the default value
+    return { ...defaultFillOption, ...globalFillOption, ...beatFillOption };
+  },
+  getMovieVolume(context: MulmoStudioContext, beat: MulmoBeat): number {
+    const baseMovieVolume = beat.audioParams?.movieVolume ?? context.presentationStyle.audioParams.movieVolume ?? 1.0;
+    const ducking = context.presentationStyle.audioParams.ducking;
+    const hasSpeech = !!beat.text && !context.presentationStyle.audioParams.suppressSpeech;
+    if (ducking && hasSpeech) {
+      const ratio = ducking.ratio ?? DEFAULT_DUCKING_RATIO;
+      return baseMovieVolume * ratio;
+    }
+    return baseMovieVolume;
   },
   /* NOTE: This method is not used.
   getTTSModel(context: MulmoStudioContext, beat: MulmoBeat): string | undefined {

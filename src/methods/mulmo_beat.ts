@@ -1,4 +1,4 @@
-import { MulmoBeat } from "../types/index.js";
+import { MulmoBeat, ImageMediaType } from "../types/index.js";
 
 type AnimationConfig = { fps?: number; movie?: boolean };
 
@@ -24,11 +24,28 @@ const isAnimatedHtmlTailwind = (beat: MulmoBeat): boolean => {
   return isAnimationEnabled(animation);
 };
 
+// voice_over beats share the preceding beat's shot, and contribute no video segment of their own.
+const isVoiceOver = (beat?: MulmoBeat) => beat?.image?.type === ImageMediaType.VoiceOver;
+
 export const MulmoBeatMethods = {
   isAnimationEnabled,
   isAnimationObject,
   isAnimatedHtmlTailwind,
   isMovieMode,
+  isVoiceOver,
+  // Index of the closest preceding beat which is actually rendered as a video segment (-1 if none).
+  getPrevRenderedBeatIndex(beats: MulmoBeat[], index: number) {
+    const offset = beats
+      .slice(0, Math.max(index, 0))
+      .reverse()
+      .findIndex((beat) => !isVoiceOver(beat));
+    return offset < 0 ? -1 : index - 1 - offset;
+  },
+  // Index of the closest following beat which is actually rendered as a video segment (-1 if none).
+  getNextRenderedBeatIndex(beats: MulmoBeat[], index: number) {
+    const offset = beats.slice(index + 1).findIndex((beat) => !isVoiceOver(beat));
+    return offset < 0 ? -1 : index + 1 + offset;
+  },
   getHtmlPrompt(beat: MulmoBeat) {
     if (beat?.htmlPrompt?.data) {
       return beat.htmlPrompt.prompt + "\n\n[data]\n" + JSON.stringify(beat.htmlPrompt.data, null, 2);
