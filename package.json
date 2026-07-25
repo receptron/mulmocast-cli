@@ -89,7 +89,7 @@
   "homepage": "https://github.com/receptron/mulmocast-cli#readme",
   "dependencies": {
     "@google-cloud/text-to-speech": "^6.4.1",
-    "@google/genai": "^2.12.0",
+    "@google/genai": "^2.13.0",
     "@graphai/anthropic_agent": "^2.0.12",
     "@graphai/browserless_agent": "^2.0.3",
     "@graphai/gemini_agent": "^2.0.5",
@@ -107,12 +107,12 @@
     "@mulmocast/deck": "^1.1.0",
     "@tavily/core": "^0.7.6",
     "archiver": "^8.0.0",
-    "clipboardy": "^5.3.1",
+    "clipboardy": "^5.3.2",
     "dotenv": "^17.4.2",
     "graphai": "^2.0.18",
     "js-tiktoken": "^1.0.21",
     "jsdom": "^29.1.1",
-    "marked": "^18.0.6",
+    "marked": "^18.0.7",
     "mulmocast-vision": "^1.0.12",
     "ora": "^9.4.1",
     "puppeteer": "^25.3.0",
@@ -128,16 +128,16 @@
     "@types/jsdom": "^28.0.3",
     "@types/yargs": "^17.0.35",
     "cross-env": "^10.1.0",
-    "eslint": "^10.7.0",
+    "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.6",
     "eslint-plugin-sonarjs": "^4.2.0",
     "globals": "^17.7.0",
-    "prettier": "^3.9.5",
+    "prettier": "^3.9.6",
     "tsx": "^4.23.1",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.64.0"
+    "typescript-eslint": "^8.65.0"
   },
   "engines": {
     "node": ">=22.0.0"
