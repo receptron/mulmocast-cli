@@ -1,13 +1,10 @@
 import test from "node:test";
 import assert from "node:assert";
 
-import { isExplicitMixMode, mixAudiosFromMovieBeats, resolveMovieVolume } from "../../src/actions/movie.js";
+import { isExplicitMixMode, mixAudiosFromMovieBeats } from "../../src/actions/movie.js";
 import { FfmpegContextInit } from "../../src/utils/ffmpeg_utils.js";
 import { createMockContext } from "./utils.js";
-import { MulmoStudioContext, MulmoBeat } from "../../src/types/index.js";
-
-const FLOAT_TOLERANCE = 1e-9;
-const approxEqual = (actual: number, expected: number): boolean => Math.abs(actual - expected) < FLOAT_TOLERANCE;
+import { MulmoStudioContext } from "../../src/types/index.js";
 
 const createContextWithAudioParams = (audioParamsOverrides: Record<string, unknown> = {}): MulmoStudioContext => {
   const context = createMockContext();
@@ -139,62 +136,4 @@ test("mixAudiosFromMovieBeats: ducking - uses normalize=0 and alimiter (same as 
   const filterStr = ffmpegContext.filterComplex.join(";");
   assert.ok(filterStr.includes("normalize=0"), "should include normalize=0");
   assert.ok(filterStr.includes("alimiter"), "should include alimiter");
-});
-
-// --- resolveMovieVolume ---
-
-const beatWithText: MulmoBeat = { speaker: "Presenter", text: "Hello" };
-const beatWithoutText: MulmoBeat = { speaker: "Presenter" };
-
-test("resolveMovieVolume: no ducking, no movieVolume - returns 1.0", () => {
-  const context = createContextWithAudioParams();
-  assert.strictEqual(resolveMovieVolume(beatWithText, context), 1.0);
-});
-
-test("resolveMovieVolume: script-level movieVolume - returns script value", () => {
-  const context = createContextWithAudioParams({ movieVolume: 0.5 });
-  assert.strictEqual(resolveMovieVolume(beatWithText, context), 0.5);
-});
-
-test("resolveMovieVolume: beat-level movieVolume overrides script-level", () => {
-  const context = createContextWithAudioParams({ movieVolume: 0.5 });
-  const beat: MulmoBeat = { speaker: "Presenter", text: "Hello", audioParams: { movieVolume: 0.8 } };
-  const result = resolveMovieVolume(beat, context);
-  assert.ok(approxEqual(result, 0.8), `expected 0.8, got ${result}`);
-});
-
-test("resolveMovieVolume: ducking with TTS - applies default ratio 0.3", () => {
-  const context = createContextWithAudioParams({ ducking: {} });
-  const result = resolveMovieVolume(beatWithText, context);
-  assert.ok(approxEqual(result, 1.0 * 0.3), `expected ${1.0 * 0.3}, got ${result}`);
-});
-
-test("resolveMovieVolume: ducking without TTS - returns full volume", () => {
-  const context = createContextWithAudioParams({ ducking: {} });
-  assert.strictEqual(resolveMovieVolume(beatWithoutText, context), 1.0);
-});
-
-test("resolveMovieVolume: ducking with custom ratio", () => {
-  const context = createContextWithAudioParams({ ducking: { ratio: 0.5 } });
-  const result = resolveMovieVolume(beatWithText, context);
-  assert.strictEqual(result, 1.0 * 0.5);
-});
-
-test("resolveMovieVolume: ducking with movieVolume and custom ratio", () => {
-  const context = createContextWithAudioParams({ ducking: { ratio: 0.5 }, movieVolume: 0.4 });
-  const result = resolveMovieVolume(beatWithText, context);
-  assert.ok(approxEqual(result, 0.4 * 0.5), `expected ${0.4 * 0.5}, got ${result}`);
-});
-
-test("resolveMovieVolume: ducking with beat-level movieVolume override", () => {
-  const context = createContextWithAudioParams({ ducking: {}, movieVolume: 0.4 });
-  const beat: MulmoBeat = { speaker: "Presenter", text: "Hello", audioParams: { movieVolume: 0.8 } };
-  const result = resolveMovieVolume(beat, context);
-  assert.ok(approxEqual(result, 0.8 * 0.3), `expected ${0.8 * 0.3}, got ${result}`);
-});
-
-test("resolveMovieVolume: ducking + suppressSpeech - no ducking applied", () => {
-  const context = createContextWithAudioParams({ ducking: {}, suppressSpeech: true });
-  const result = resolveMovieVolume(beatWithText, context);
-  assert.strictEqual(result, 1.0, "should return full volume because speech is suppressed");
 });

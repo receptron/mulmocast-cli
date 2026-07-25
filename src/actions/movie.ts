@@ -1,16 +1,6 @@
 import { GraphAILogger, assert } from "graphai";
-import {
-  MulmoStudioContext,
-  MulmoStudioBeat,
-  MulmoBeat,
-  MulmoTransition,
-  MulmoCanvasDimension,
-  MulmoFillOption,
-  MulmoVideoFilter,
-  mulmoFillOptionSchema,
-  ImageMediaType,
-} from "../types/index.js";
-import { MulmoPresentationStyleMethods } from "../methods/index.js";
+import { MulmoStudioContext, MulmoTransition, MulmoCanvasDimension, MulmoFillOption, MulmoVideoFilter } from "../types/index.js";
+import { MulmoPresentationStyleMethods, MulmoBeatMethods } from "../methods/index.js";
 import { getAudioArtifactFilePath, getOutputVideoFilePath, writingMessage, isFile } from "../utils/file.js";
 import { createVideoFileError, createVideoSourceError } from "../utils/error_cause.js";
 import {
@@ -26,26 +16,7 @@ import { convertVideoFilterToFFmpeg } from "../utils/video_filter.js";
 // const isMac = process.platform === "darwin";
 const videoCodec = "libx264"; // "h264_videotoolbox" (macOS only) is too noisy
 const VIDEO_FPS = 30;
-const DEFAULT_DUCKING_RATIO = 0.3;
 type VideoId = string | undefined;
-
-// voice_over beats share the preceding beat's shot, and contribute no video segment of their own.
-export const isVoiceOverBeat = (beat?: MulmoBeat) => beat?.image?.type === ImageMediaType.VoiceOver;
-
-// Index of the closest preceding beat which is actually rendered as a video segment (-1 if none).
-export const getPrevRenderedBeatIndex = (beats: MulmoBeat[], index: number) => {
-  const offset = beats
-    .slice(0, Math.max(index, 0))
-    .reverse()
-    .findIndex((beat) => !isVoiceOverBeat(beat));
-  return offset < 0 ? -1 : index - 1 - offset;
-};
-
-// Index of the closest following beat which is actually rendered as a video segment (-1 if none).
-export const getNextRenderedBeatIndex = (beats: MulmoBeat[], index: number) => {
-  const offset = beats.slice(index + 1).findIndex((beat) => !isVoiceOverBeat(beat));
-  return offset < 0 ? -1 : index + 1 + offset;
-};
 
 // videoIdsForBeats holds undefined for voice_over beats; walk back to the previous rendered beat's videoId.
 const getPrevVideoId = (videoIdsForBeats: VideoId[], index: number): string | undefined => {
@@ -358,8 +329,12 @@ const addTransitionEffects = (
       return prevVideoId; // Skip if no transition is defined
     }
     // Limit transition duration to be no longer than either beat's duration
-    const prevBeatIndex = getPrevRenderedBeatIndex(context.studio.script.beats, beatIndex);
-    const duration = getClampedTransitionDuration(transition.duration, getSegmentDuration(context, prevBeatIndex), getSegmentDuration(context, beatIndex));
+    const prevBeatIndex = MulmoBeatMethods.getPrevRenderedBeatIndex(context.studio.script.beats, beatIndex);
+    const duration = getClampedTransitionDuration(
+      transition.duration,
+      MulmoStudioContextMethods.getSegmentDuration(context, prevBeatIndex),
+      MulmoStudioContextMethods.getSegmentDuration(context, beatIndex),
+    );
 
     // The last frame of the previous rendered beat (voice_over beats have no video of their own).
     // Both movie and image beats now have _last.
@@ -379,42 +354,6 @@ const addTransitionEffects = (
       }) ?? prevVideoId
     );
   }, captionedVideoId);
-};
-
-// Both frame requirements answer the same question for each *rendered* beat (voice_over beats have
-// no video segment, so they never supply a frame): does a transition need a still from this beat?
-const mapRenderedBeats = (context: MulmoStudioContext, needsFrame: (beats: MulmoBeat[], index: number) => boolean) => {
-  const beats = context.studio.script.beats;
-  return beats.map((beat, index) => (isVoiceOverBeat(beat) ? false : needsFrame(beats, index)));
-};
-
-export const getNeedFirstFrame = (context: MulmoStudioContext) => {
-  // This beat slides/wipes in over the previous shot, so it supplies its own first frame.
-  return mapRenderedBeats(context, (beats, index) => {
-    if (getPrevRenderedBeatIndex(beats, index) < 0) return false; // No previous shot: the transition is skipped
-    const transition = MulmoPresentationStyleMethods.getMovieTransition(context, beats[index]);
-    return (transition?.type.startsWith("slidein_") || transition?.type.startsWith("wipe")) ?? false;
-  });
-};
-
-export const getNeedLastFrame = (context: MulmoStudioContext) => {
-  // Any transition consumes the last frame of the previous rendered beat, skipping voice_over beats.
-  return mapRenderedBeats(context, (beats, index) => {
-    const nextIndex = getNextRenderedBeatIndex(beats, index);
-    if (nextIndex < 0) return false; // Last rendered beat doesn't need _last
-    return MulmoPresentationStyleMethods.getMovieTransition(context, beats[nextIndex]) !== null;
-  });
-};
-
-export const resolveMovieVolume = (beat: MulmoBeat, context: MulmoStudioContext): number => {
-  const baseMovieVolume = beat.audioParams?.movieVolume ?? context.presentationStyle.audioParams.movieVolume ?? 1.0;
-  const ducking = context.presentationStyle.audioParams.ducking;
-  const hasSpeech = !!beat.text && !context.presentationStyle.audioParams.suppressSpeech;
-  if (ducking && hasSpeech) {
-    const ratio = ducking.ratio ?? DEFAULT_DUCKING_RATIO;
-    return baseMovieVolume * ratio;
-  }
-  return baseMovieVolume;
 };
 
 export const isExplicitMixMode = (context: MulmoStudioContext): boolean => {
@@ -463,57 +402,6 @@ export const mixAudiosFromMovieBeats = (
   return artifactAudioId;
 };
 
-export const getExtraPadding = (context: MulmoStudioContext, index: number) => {
-  // We need to consider only intro and outro padding because the other paddings were already added to the beat.duration
-  if (index === 0) {
-    return MulmoStudioContextMethods.getIntroPadding(context);
-  } else if (index === context.studio.beats.length - 1) {
-    return context.presentationStyle.audioParams.outroPadding;
-  }
-  return 0;
-};
-
-// The duration this beat occupies on the audio timeline.
-export const getBeatDuration = (context: MulmoStudioContext, index: number) => {
-  return (context.studio.beats[index]?.duration ?? 0) + getExtraPadding(context, index);
-};
-
-// How long this beat's video segment is: its own duration plus the trailing voice_over beats which
-// share its shot (they have no video segment of their own), never shorter than its movie. This is
-// the single rule for a segment's length -- createVideo builds from it and transitions clamp
-// against it. getVideoPart extends a short movie by cloning its last frame to fill the span.
-// Whether this beat's source is a movie (as opposed to a still which has to be looped).
-export const isMovieBeat = (context: MulmoStudioContext, studioBeat: MulmoStudioBeat, beat: MulmoBeat) => {
-  return !!(
-    studioBeat.lipSyncFile ||
-    studioBeat.movieFile ||
-    MulmoPresentationStyleMethods.getImageType(context.presentationStyle, beat) === ImageMediaType.Movie
-  );
-};
-
-export const getSegmentDuration = (context: MulmoStudioContext, index: number) => {
-  const ownDuration = getBeatDuration(context, index) + getVoiceOverGroupDuration(context, index);
-  return Math.max(ownDuration, context.studio.beats[index]?.movieDuration ?? 0);
-};
-
-// The total duration of the voice_over beats which follow (and share the shot of) this beat.
-export const getVoiceOverGroupDuration = (context: MulmoStudioContext, index: number) => {
-  const beats = context.studio.script.beats;
-  let duration = 0;
-  for (let i = index + 1; i < beats.length && isVoiceOverBeat(beats[i]); i++) {
-    duration += getBeatDuration(context, i);
-  }
-  return duration;
-};
-
-export const getFillOption = (context: MulmoStudioContext, beat: MulmoBeat) => {
-  // Get fillOption from merged imageParams (global + beat-specific)
-  const globalFillOption = context.presentationStyle.movieParams?.fillOption;
-  const beatFillOption = beat.movieParams?.fillOption;
-  const defaultFillOption = mulmoFillOptionSchema.parse({}); // let the schema infer the default value
-  return { ...defaultFillOption, ...globalFillOption, ...beatFillOption };
-};
-
 export const getTransitionVideoId = (transition: MulmoTransition, videoIdsForBeats: VideoId[], index: number) => {
   // Every transition needs the previous *rendered* beat (voice_over beats have no video of their own).
   const prevVideoSourceId = getPrevVideoId(videoIdsForBeats, index);
@@ -556,14 +444,14 @@ export const getTransitionFrameDurations = (context: MulmoStudioContext, index: 
 
   const getTransitionDuration = (transition: MulmoTransition | null, prevBeatIndex: number, currentBeatIndex: number) => {
     if (!transition || prevBeatIndex < 0 || currentBeatIndex >= beats.length) return 0;
-    const prevBeatDuration = getSegmentDuration(context, prevBeatIndex);
-    const currentBeatDuration = getSegmentDuration(context, currentBeatIndex);
+    const prevBeatDuration = MulmoStudioContextMethods.getSegmentDuration(context, prevBeatIndex);
+    const currentBeatDuration = MulmoStudioContextMethods.getSegmentDuration(context, currentBeatIndex);
     return getClampedTransitionDuration(transition.duration, prevBeatDuration, currentBeatDuration);
   };
 
   // Transitions are resolved against the neighboring *rendered* beats (voice_over beats have no video).
-  const prevIndex = getPrevRenderedBeatIndex(scriptBeats, index);
-  const nextIndex = getNextRenderedBeatIndex(scriptBeats, index);
+  const prevIndex = MulmoBeatMethods.getPrevRenderedBeatIndex(scriptBeats, index);
+  const nextIndex = MulmoBeatMethods.getNextRenderedBeatIndex(scriptBeats, index);
 
   const currentTransition = MulmoPresentationStyleMethods.getMovieTransition(context, scriptBeats[index]);
   const firstDuration = prevIndex >= 0 ? getTransitionDuration(currentTransition, prevIndex, index) : 0;
@@ -639,7 +527,7 @@ export const addSplitAndExtractFrames = (
 const findMissingIndex = (context: MulmoStudioContext) => {
   return context.studio.beats.findIndex((studioBeat, index) => {
     const beat = context.studio.script.beats[index];
-    if (isVoiceOverBeat(beat)) {
+    if (MulmoBeatMethods.isVoiceOver(beat)) {
       return false; // Voice-over does not have either imageFile or movieFile.
     }
     return !studioBeat.imageFile && !studioBeat.movieFile;
@@ -688,26 +576,26 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
   const beatTimestamps: number[] = [];
 
   // Check which beats need _first (for slidein transition on this beat)
-  const needsFirstFrame: boolean[] = getNeedFirstFrame(context);
+  const needsFirstFrame: boolean[] = MulmoPresentationStyleMethods.getNeedFirstFrame(context);
 
   // Check which beats need _last (for any transition on next beat - they all need previous beat's last frame)
-  const needsLastFrame: boolean[] = getNeedLastFrame(context);
+  const needsLastFrame: boolean[] = MulmoPresentationStyleMethods.getNeedLastFrame(context);
 
   let cumulativeFrames = 0;
   context.studio.beats.reduce((timestamp, studioBeat, index) => {
     const beat = context.studio.script.beats[index];
-    if (isVoiceOverBeat(beat)) {
+    if (MulmoBeatMethods.isVoiceOver(beat)) {
       videoIdsForBeats.push(undefined);
       beatTimestamps.push(timestamp);
       // Skip voice-over beats: their video is covered by the owner beat's segment, but the
       // audio timeline still advances, so keep the timestamp in sync with the audio artifact.
-      return timestamp + getBeatDuration(context, index);
+      return timestamp + MulmoStudioContextMethods.getBeatDuration(context, index);
     }
 
     const sourceFile = isTest ? "/test/dummy.mp4" : validateBeatSource(studioBeat, index);
 
-    const voiceOverDuration = getVoiceOverGroupDuration(context, index);
-    const duration = getSegmentDuration(context, index);
+    const voiceOverDuration = MulmoStudioContextMethods.getVoiceOverGroupDuration(context, index);
+    const duration = MulmoStudioContextMethods.getSegmentDuration(context, index);
 
     // Use cumulative frame tracking to prevent audio-video drift from frame quantization.
     // trim=duration=X rounds up to the next frame boundary (~0.03s per beat at 30fps),
@@ -717,10 +605,19 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
     cumulativeFrames = targetEndFrame;
 
     const inputIndex = FfmpegContextAddInput(ffmpegContext, sourceFile);
-    const isMovie = isMovieBeat(context, studioBeat, beat);
+    const isMovie = MulmoStudioContextMethods.isMovieBeat(context, studioBeat, beat);
     const speed = beat.movieParams?.speed ?? 1.0;
     const filters = beat.movieParams?.filters;
-    const { videoId, videoPart } = getVideoPart(inputIndex, isMovie, duration, canvasInfo, getFillOption(context, beat), speed, filters, frameCount);
+    const { videoId, videoPart } = getVideoPart(
+      inputIndex,
+      isMovie,
+      duration,
+      canvasInfo,
+      MulmoPresentationStyleMethods.getFillOption(context, beat),
+      speed,
+      filters,
+      frameCount,
+    );
     ffmpegContext.filterComplex.push(videoPart);
 
     videoIdsForBeats.push(videoId);
@@ -735,7 +632,7 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
     }
 
     // NOTE: We don't support audio if the speed is not 1.0.
-    const movieVolume = resolveMovieVolume(beat, context);
+    const movieVolume = MulmoPresentationStyleMethods.getMovieVolume(context, beat);
     if (studioBeat.hasMovieAudio && movieVolume > 0.0 && speed === 1.0) {
       // TODO: Handle a special case where it has lipSyncFile AND hasMovieAudio is on (the source file has an audio, such as sound effect).
       const { audioId, audioPart } = getAudioPart(inputIndex, duration, timestamp, movieVolume);
