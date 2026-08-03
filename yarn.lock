@@ -2479,9 +2479,9 @@ hasown@^2.0.2, hasown@^2.0.4:
     function-bind "^1.1.2"
 
 hono@^4.11.4:
-  version "4.12.32"
-  resolved "https://registry.yarnpkg.com/hono/-/hono-4.12.32.tgz#9489eb5507c2b90554ee7817a3f97d9b754ee1ff"
-  integrity sha512-XcuyW9qE2kJn07PkecMOBd5Vq/hMy7mmGw+idz1yblbg9N17ijJODrvPkn7/dwL3Kulj8LcRJ69DLOWf91dRUg==
+  version "4.12.34"
+  resolved "https://registry.yarnpkg.com/hono/-/hono-4.12.34.tgz#9d6fb4ff01d6a8fa3a0290b4e120da19ea181b9b"
+  integrity sha512-GqXJqY/xJkJmuloTrnV1ZEXG3fqte+VjkUqoRNZXcrUidiUOP4fMSIHHY4tsqZBK++kVyWmt/AAfSUuy57/eSA==
 
 html-encoding-sniffer@^6.0.0:
   version "6.0.0"
