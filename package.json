@@ -24,7 +24,7 @@
     }
   },
   "resolutions": {
-    "minimatch": "^10.2.5",
+    "minimatch": "^10.2.6",
     "tar": "7.5.22",
     "yauzl": "^3.4.0"
   },
@@ -89,7 +89,7 @@
   "homepage": "https://github.com/receptron/mulmocast-cli#readme",
   "dependencies": {
     "@google-cloud/text-to-speech": "^6.4.1",
-    "@google/genai": "^2.13.0",
+    "@google/genai": "^2.15.0",
     "@graphai/anthropic_agent": "^2.0.12",
     "@graphai/browserless_agent": "^2.0.3",
     "@graphai/gemini_agent": "^2.0.5",
@@ -102,7 +102,7 @@
     "@inquirer/input": "^5.1.2",
     "@inquirer/select": "^5.2.1",
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "@modernized/fluent-ffmpeg": "^1.0.2",
+    "@modernized/fluent-ffmpeg": "^1.0.3",
     "@mozilla/readability": "^0.6.0",
     "@mulmocast/deck": "^1.1.0",
     "@tavily/core": "^0.7.6",
@@ -115,10 +115,10 @@
     "marked": "^18.0.7",
     "mulmocast-vision": "^1.0.12",
     "ora": "^9.4.1",
-    "puppeteer": "^25.3.0",
+    "puppeteer": "^25.4.0",
     "replicate": "^1.4.0",
     "yaml": "^2.9.0",
-    "yargs": "^18.0.0",
+    "yargs": "^18.1.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -133,11 +133,11 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.6",
     "eslint-plugin-sonarjs": "^4.2.0",
-    "globals": "^17.7.0",
+    "globals": "^17.9.0",
     "prettier": "^3.9.6",
-    "tsx": "^4.23.1",
+    "tsx": "^4.23.5",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.65.0"
+    "typescript-eslint": "^8.66.0"
   },
   "engines": {
     "node": ">=22.0.0"
