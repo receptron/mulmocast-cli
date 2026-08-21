@@ -6,11 +6,11 @@
 
 `#1535` は当初「6ファイルを一括で直す」と書いていたが、実際に各サイトを見ると3種類に割れる。
 
-| 種別 | 該当 | 対応 |
-|---|---|---|
-| データ（HTML text / 属性 / script 内 JSON） | chart の title・chartData、mermaid の title・code | エスケープする |
-| CSS 文字列内の URL | `bg_image_util` の `url('${imageUrl}')` | CSS エスケープ（別種） |
-| 意図的なマークアップ | `html_tailwind` のユーザー HTML/JS、markdown→marked 経路 | エスケープ不可。契約として明記する |
+| 種別                                        | 該当                                                     | 対応                               |
+| ------------------------------------------- | -------------------------------------------------------- | ---------------------------------- |
+| データ（HTML text / 属性 / script 内 JSON） | chart の title・chartData、mermaid の title・code        | エスケープする                     |
+| CSS 文字列内の URL                          | `bg_image_util` の `url('${imageUrl}')`                  | CSS エスケープ（別種）             |
+| 意図的なマークアップ                        | `html_tailwind` のユーザー HTML/JS、markdown→marked 経路 | エスケープ不可。契約として明記する |
 
 3番目をエスケープすると機能が壊れる。`size` は enum、`opacity` は範囲付き数値なのでユーザー制御ではない。
 
