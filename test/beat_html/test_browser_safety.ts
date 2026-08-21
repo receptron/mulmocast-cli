@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
-import { readFileSync, writeFileSync, unlinkSync } from "node:fs";
+import { writeFileSync, unlinkSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import * as esbuild from "esbuild";
@@ -53,8 +53,17 @@ const bundledLocalSources = async (): Promise<string[]> => {
   return files;
 };
 
-/** Comments carry example code; scanning them would produce false positives. */
-const stripComments = (src: string): string => src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+/** Compiler options with Node taken away — see the layer-2 test for why. */
+const BROWSER_ONLY: ts.CompilerOptions = {
+  target: ts.ScriptTarget.ES2022,
+  module: ts.ModuleKind.NodeNext,
+  moduleResolution: ts.ModuleResolutionKind.NodeNext,
+  strict: true,
+  noEmit: true,
+  skipLibCheck: true,
+  types: [],
+  lib: ["lib.es2022.d.ts"],
+};
 
 /**
  * Packages `beat_html` may reach. esbuild decides whether a package WORKS in a browser;
@@ -131,17 +140,7 @@ test("beat_html reaches only allow-listed packages", async () => {
 
 test("everything the bundle includes compiles with no Node types available", async () => {
   const files = await bundledLocalSources();
-  const program = ts.createProgram(files, {
-    target: ts.ScriptTarget.ES2022,
-    module: ts.ModuleKind.NodeNext,
-    moduleResolution: ts.ModuleResolutionKind.NodeNext,
-    strict: true,
-    noEmit: true,
-    skipLibCheck: true,
-    // The whole point: no @types/node, and no DOM either — this module returns strings.
-    types: [],
-    lib: ["lib.es2022.d.ts"],
-  });
+  const program = ts.createProgram(files, BROWSER_ONLY);
 
   // Filtered by the bundle's input set, not by directory. Type-only imports are erased
   // and never reach the bundle, so the code they name stays free to be Node-flavoured;
@@ -162,14 +161,7 @@ test("the no-Node-types check actually rejects Node globals", () => {
     const file = join(SRC_DIR, "__probe__.ts");
     writeFileSync(file, `export const probe = () => ${expr};\n`);
     try {
-      const program = ts.createProgram([file], {
-        target: ts.ScriptTarget.ES2022,
-        strict: true,
-        noEmit: true,
-        skipLibCheck: true,
-        types: [],
-        lib: ["lib.es2022.d.ts"],
-      });
+      const program = ts.createProgram([file], BROWSER_ONLY);
       return ts.getPreEmitDiagnostics(program).length > 0;
     } finally {
       unlinkSync(file);
@@ -182,8 +174,48 @@ test("everything the bundle includes uses only static imports", async () => {
   // The one shape neither layer above can see is a computed specifier —
   // `import(`node:${m}`)` bundles clean and typechecks clean. This module has no reason
   // to load anything dynamically, so it does not: one rule covering every specifier
-  // shape, literal or computed, rather than a list of the ones thought of so far.
+  // shape, literal or computed.
+  //
+  // Asked of the parser, not of a regex. The regex version stripped comments first, so a
+  // string containing `//` — `"https://marked.js.org"` — swallowed the rest of its line
+  // and hid an `import(` sitting after it. Review found that by writing exactly that
+  // line. A parser distinguishes a comment from a string by construction, which is the
+  // whole reason to use one.
   const files = await bundledLocalSources();
-  const offenders = files.filter((f) => /\bimport\s*\(/.test(stripComments(readFileSync(f, "utf8")))).map((f) => f.slice(REPO.length + 1));
+  const program = ts.createProgram(files, BROWSER_ONLY);
+  const bundled = new Set(files);
+
+  const offenders: string[] = [];
+  const visit = (node: ts.Node, file: ts.SourceFile): void => {
+    if (ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword) {
+      const { line } = file.getLineAndCharacterOfPosition(node.getStart(file));
+      offenders.push(`${file.fileName.slice(REPO.length + 1)}:${line + 1}`);
+    }
+    ts.forEachChild(node, (child) => visit(child, file));
+  };
+  program
+    .getSourceFiles()
+    .filter((file) => bundled.has(file.fileName))
+    .forEach((file) => visit(file, file));
+
   assert.deepStrictEqual(offenders, [], `dynamic import in a bundled source: ${offenders.join(", ")}`);
+});
+
+test("the dynamic-import check sees through comments and strings", () => {
+  // Both halves matter. The first is the shape that defeated the regex; the second is a
+  // near-miss that must NOT be reported, because a check that flags everything is as
+  // useless as one that flags nothing.
+  const probe = (contents: string): number => {
+    const file = ts.createSourceFile("probe.ts", contents, ts.ScriptTarget.ES2022, true);
+    let count = 0;
+    const visit = (node: ts.Node): void => {
+      if (ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword) count++;
+      ts.forEachChild(node, visit);
+    };
+    visit(file);
+    return count;
+  };
+  assert.strictEqual(probe('const u = "https://x.org"; export const f = () => import("node:fs");'), 1, "hidden behind a string containing //");
+  assert.strictEqual(probe('// export const f = () => import("node:fs");\nexport const g = 1;'), 0, "a commented-out call is not a call");
+  assert.strictEqual(probe("export const s = \"import('node:fs')\";"), 0, "a call inside a string literal is not a call");
 });
