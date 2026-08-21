@@ -49,11 +49,27 @@ test("an absent slot emits nothing for itself", () => {
   assert.ok(!html.includes("w-56"), "no sidebar");
 });
 
+/**
+ * Ids are compared out, not compared against a literal.
+ *
+ * The first version asserted against `id="id"`, which `generateUniqueId` returns only
+ * when NODE_ENV is "test". It passed under `yarn ci_test` (which sets it) and failed
+ * under a plain `npx tsx --test` — a test that is green or red depending on how it is
+ * invoked is worse than no test, because whoever sees the red assumes the code is broken.
+ */
+const withoutIds = (html: string): string => html.replace(/id="[^"]*"/g, 'id="_"');
+
 test("mermaid markup is one implementation, not two", () => {
   // generateMermaidHtml is the Node path's entry point and mermaidHtml is the shared
   // markup; if they ever stop agreeing, one diagram is being drawn two ways.
-  assert.strictEqual(generateMermaidHtml("graph TD; A-->B"), mermaidHtml("graph TD; A-->B", "id"));
-  assert.strictEqual(generateMermaidHtml("graph TD; A-->B", "T"), mermaidHtml("graph TD; A-->B", "id", "T"));
+  assert.strictEqual(withoutIds(generateMermaidHtml("graph TD; A-->B")), withoutIds(mermaidHtml("graph TD; A-->B", "anything")));
+  assert.strictEqual(withoutIds(generateMermaidHtml("graph TD; A-->B", "T")), withoutIds(mermaidHtml("graph TD; A-->B", "anything", "T")));
+});
+
+test("comparing ids out does not compare everything out", () => {
+  // Otherwise the test above passes for any two mermaid blocks whatsoever.
+  assert.notStrictEqual(withoutIds(mermaidHtml("A", "x")), withoutIds(mermaidHtml("B", "x")), "different diagrams");
+  assert.notStrictEqual(withoutIds(mermaidHtml("A", "x")), withoutIds(mermaidHtml("A", "x", "title")), "title present or not");
 });
 
 test("a mermaid fence renders the shared markup verbatim", () => {
