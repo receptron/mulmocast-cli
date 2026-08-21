@@ -28,13 +28,13 @@ test("a mermaid fence turns into mermaid markup and requires the runtime", () =>
   const { html, requires } = markdownToHtml(media("# T\n\n```mermaid\ngraph TD; A-->B\n```"), "p");
   assert.deepStrictEqual(requires, ["mermaid"], "the host has to be told to load mermaid");
   assert.match(html, /class="mermaid"/);
-  // Unescaped, because mermaid reads the element's textContent and `-->` in a text node
+  // Mermaid entity-decodes the element's innerHTML, so `--&gt;` reaches it as `-->`; the
   // is ordinary HTML. `image_plugins/mermaid.ts` interpolates the code the same way, so
   // the two paths render a diagram identically — which is the point of sharing
   // mermaid_html.ts, shared by both paths. It also means a diagram containing `</div>` would break out of the
   // element, which is the unsanitized contract on BeatHtmlFragment.html, not a new hole.
-  // Escaped for its HTML text context. Mermaid reads textContent, which the parser produces by
-  // decoding entities, so the diagram it draws is unchanged — measured byte-identical SVG.
+  // Escaped for its HTML text context. Mermaid entity-decodes the element's innerHTML before
+  // parsing, so the diagram it draws is unchanged — measured byte-identical SVG.
   assert.match(html, /graph TD; A--&gt;B/, "the diagram source survives into the element");
   assert.ok(!html.includes("<code"), "the fence must not render as a code block");
 });

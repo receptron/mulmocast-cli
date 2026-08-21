@@ -264,8 +264,8 @@ const mermaidPluginExpected = {
     "    G --> H[Customer Support]\n" +
     "    H --> A\n" +
     "```",
-  // The diagram source is escaped for its HTML text context. Mermaid reads textContent,
-  // which the parser produces by decoding entities, so the rendered SVG is unchanged.
+  // The diagram source is escaped for its HTML text context. Mermaid entity-decodes the
+  // element's innerHTML before parsing, so the rendered SVG is unchanged.
   html:
     "\n" +
     '<div class="mermaid-container mb-6">\n' +

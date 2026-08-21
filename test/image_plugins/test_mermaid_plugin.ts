@@ -255,9 +255,10 @@ test("mermaid plugin with empty code", () => {
 });
 
 // Both mermaid paths drop the title into an HTML text context and the diagram source into a
-// `.mermaid` element. Mermaid reads that element's textContent, which the parser produces by
-// decoding entities, so escaping is transparent to it — measured in a browser across five
-// diagram kinds, the rendered SVG is byte-identical with and without the escape.
+// `.mermaid` element. Mermaid entity-decodes that element's innerHTML before parsing, so
+// escaping is transparent to it — measured in a browser across ten diagram shapes, including
+// the ones that mechanism makes non-obvious (`<br/>` in a label, mermaid's own `#quot;`, a
+// raw `<b>` tag, an init directive), the rendered SVG is byte-identical either way.
 const countTags = (html: string, tag: string): number => html.toLowerCase().split(tag).length - 1;
 
 test("a hostile title and hostile diagram source cannot escape their contexts", () => {

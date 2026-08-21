@@ -15,9 +15,13 @@
 
 ## エスケープしても mermaid は壊れない（実測）
 
-mermaid は要素の textContent を読む。HTML パーサは実体参照を復号して textContent を作るので、
-mermaid が受け取る文字列は変わらない。5種類の図（単純 / `&` と引用符入り / 山括弧入り / 日本語 /
-sequence）で、エスケープ有無の**レンダリング済み SVG がバイト単位で同一**であることを確認した。
+mermaid は要素の **innerHTML** を読み、パース前に entity decode する
+(mermaid 11.17.0: `o = u.innerHTML; o = ck(or.entityDecode(o))`)。したがって受け取る文字列は変わらない。
+
+当初「textContent を読む」と書いていたがこれは誤りで、Codex のレビューで指摘され runtime を読んで確認した。
+仕組みが違うと危険になる形が変わるため、測定対象を10形に広げた: 単純 / `&` と引用符 / 山括弧 / 日本語 /
+sequence / ラベル内の `<br/>` / mermaid 自身の `#quot;` / ラベル内の `&amp;` / ラベル内の生タグ `<b>` /
+`%%{init}%%` ディレクティブ。**全形でレンダリング済み SVG がバイト単位で同一**。
 
 ## browser-safety ゲートの allow-list
 

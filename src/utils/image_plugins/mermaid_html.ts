@@ -9,9 +9,10 @@ import { escapeHtml } from "@mulmocast/deck/lib/utils.js";
  * to produce the same markup, or a host diffing fragments sees every diagram change
  * identity on every render.
  *
- * Both values are escaped. Mermaid reads the element's textContent, which the HTML parser
- * produces by decoding entities, so it receives the original characters either way —
- * measured across five diagram kinds, the rendered SVG is byte-identical.
+ * Both values are escaped. Mermaid reads the element's innerHTML and entity-decodes it
+ * before parsing (mermaid 11.17.0: `o = u.innerHTML; o = entityDecode(o)`), so it receives
+ * the original characters either way — measured across ten diagram shapes including `<br/>`
+ * in labels, `#quot;`, raw tags and an init directive, the rendered SVG is byte-identical.
  */
 export const mermaidHtml = (code: string, id: string, title?: string): string => {
   const titleHtml = title ? `<h3 class="text-xl font-semibold mb-4">${escapeHtml(title)}</h3>` : "";
