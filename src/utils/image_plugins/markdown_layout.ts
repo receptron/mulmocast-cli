@@ -1,136 +1,108 @@
 import { type MulmoMarkdownLayout, type MulmoRow2, type MulmoGrid2x2 } from "../../types/type.js";
-import { marked } from "marked";
-import { generateMermaidHtml } from "./mermaid.js";
+import { Marked } from "marked";
+import { mermaidHtml } from "./mermaid_html.js";
 
-// Regex to match mermaid code blocks
-const mermaidBlockRegex = /```mermaid\n([\s\S]*?)```/g;
+/**
+ * The one markdown implementation, shared by the Node render path
+ * (`image_plugins/markdown.ts`, which turns it into a PNG) and the browser fragment path
+ * (`beat_html/markdown.ts`, which hands it to a host's DOM).
+ *
+ * Deliberately pure: no `node:*`, no filesystem, no puppeteer. That is what lets the
+ * browser side import it rather than keep a second copy — and a second copy is not
+ * hypothetical, it existed for one commit and the two immediately disagreed about which
+ * fences are diagrams. `test/beat_html/test_browser_safety.ts` bundles the browser entry
+ * with esbuild and fails if anything here reaches Node.
+ *
+ * Element ids come from a caller-supplied generator, because that is the only thing the
+ * two callers genuinely need to differ on.
+ */
 
-// Convert string or string array to markdown string
-const toMarkdownString = (content: string | string[]): string => {
-  if (Array.isArray(content)) {
-    return content.join("\n");
-  }
-  return content;
-};
+/** A markdown field is written either as one string or as lines to be joined. */
+export const toMarkdownString = (content: string | string[]): string => (Array.isArray(content) ? content.join("\n") : content);
 
-// Replace mermaid code blocks with rendered HTML
-const convertMermaidBlocks = (text: string): string => {
-  return text.replace(mermaidBlockRegex, (_match, code) => {
-    return generateMermaidHtml(code.trim());
+/**
+ * A fence's info string can carry more than the language (```mermaid title="x"), and
+ * marked hands it over verbatim. The language is its first word.
+ */
+const languageOf = (info: string | undefined): string => (info ?? "").trim().split(/\s+/)[0].toLowerCase();
+
+/**
+ * Renders markdown, turning fenced `mermaid` blocks into mermaid markup.
+ *
+ * Asked of marked's own lexer rather than matched against the raw source. A regex over
+ * text was what both copies used, and review found four inputs it got wrong: a CRLF fence
+ * and a fence with trailing whitespace after the language were missed, while a mermaid
+ * fence quoted INSIDE an outer ````markdown fence, and one inside an indented code block,
+ * were converted — turning somebody's example of mermaid syntax into an actual diagram.
+ * marked decides what is a code block and what language it is, so all four follow from
+ * asking it.
+ *
+ * A fresh `Marked` instance per call rather than the global `marked.use`, because the
+ * renderer closes over this call's mermaid counter — a shared one would leak ids between
+ * beats.
+ */
+export const renderMarkdownContent = (content: string | string[], nextId: () => string): { html: string; hasMermaid: boolean } => {
+  let hasMermaid = false;
+  const md = new Marked({
+    async: false,
+    renderer: {
+      code({ text, lang }: { text: string; lang?: string }) {
+        if (languageOf(lang) !== "mermaid") return false;
+        hasMermaid = true;
+        return mermaidHtml(text, nextId());
+      },
+    },
   });
+  return { html: md.parse(toMarkdownString(content), { async: false }), hasMermaid };
 };
 
-// Parse markdown content to HTML (with mermaid support)
-const parseMarkdown = async (content: string | string[]): Promise<string> => {
-  const text = toMarkdownString(content);
-  const textWithMermaidHtml = convertMermaidBlocks(text);
-  return await marked.parse(textWithMermaidHtml);
-};
+/** The object form of `markdown`, as opposed to a plain string or array of lines. */
+export const isMarkdownLayout = (md: unknown): md is MulmoMarkdownLayout => typeof md === "object" && md !== null && !Array.isArray(md);
 
-// Generate header HTML
-const generateHeaderHtml = async (data: string | string[]): Promise<string> => {
-  const headerHtml = await parseMarkdown(data);
-  return `
-    <div class="shrink-0 px-8 py-4 border-b border-gray-200 bg-gray-50">
-      <div class="prose prose-lg max-w-none">${headerHtml}</div>
-    </div>
-  `;
-};
+const wrap = (className: string, inner: string): string => `<div class="${className}">${inner}</div>`;
 
-// Generate sidebar HTML
-const generateSidebarHtml = async (data: string | string[]): Promise<string> => {
-  const sidebarHtml = await parseMarkdown(data);
-  return `
-    <div class="shrink-0 w-56 px-4 py-4 border-r border-gray-200 bg-gray-100 overflow-auto">
-      <div class="prose prose-sm max-w-none">${sidebarHtml}</div>
-    </div>
-  `;
-};
+const HEADER = "shrink-0 px-8 py-4 border-b border-gray-200 bg-gray-50";
+const SIDEBAR = "shrink-0 w-56 px-4 py-4 border-r border-gray-200 bg-gray-100 overflow-auto";
+const CELL = "overflow-auto p-4 bg-gray-50 rounded-lg";
 
-// Generate row-2 layout HTML (two columns)
-const generateRow2Html = async (data: MulmoRow2): Promise<string> => {
-  const [left, right] = data;
-  const leftHtml = await parseMarkdown(left);
-  const rightHtml = await parseMarkdown(right);
-  return `
-    <div class="h-full flex gap-6">
-      <div class="flex-1 overflow-auto">
-        <div class="prose max-w-none">${leftHtml}</div>
-      </div>
-      <div class="flex-1 overflow-auto">
-        <div class="prose max-w-none">${rightHtml}</div>
-      </div>
-    </div>
-  `;
-};
+/** Lay a markdown layout out in Tailwind: header / sidebar-left / row-2 | 2x2 | content. */
+export const renderMarkdownLayout = (md: MulmoMarkdownLayout, nextId: () => string): { html: string; hasMermaid: boolean } => {
+  let hasMermaid = false;
+  const part = (content: string | string[], proseClass: string): string => {
+    const rendered = renderMarkdownContent(content, nextId);
+    hasMermaid = hasMermaid || rendered.hasMermaid;
+    return wrap(proseClass, rendered.html);
+  };
 
-// Generate 2x2 grid layout HTML
-const generate2x2Html = async (data: MulmoGrid2x2): Promise<string> => {
-  const [tl, tr, bl, br] = data;
-  const [tlHtml, trHtml, blHtml, brHtml] = await Promise.all([parseMarkdown(tl), parseMarkdown(tr), parseMarkdown(bl), parseMarkdown(br)]);
-  return `
-    <div class="h-full grid grid-cols-2 grid-rows-2 gap-4">
-      <div class="overflow-auto p-4 bg-gray-50 rounded-lg">
-        <div class="prose prose-sm max-w-none">${tlHtml}</div>
-      </div>
-      <div class="overflow-auto p-4 bg-gray-50 rounded-lg">
-        <div class="prose prose-sm max-w-none">${trHtml}</div>
-      </div>
-      <div class="overflow-auto p-4 bg-gray-50 rounded-lg">
-        <div class="prose prose-sm max-w-none">${blHtml}</div>
-      </div>
-      <div class="overflow-auto p-4 bg-gray-50 rounded-lg">
-        <div class="prose prose-sm max-w-none">${brHtml}</div>
-      </div>
-    </div>
-  `;
-};
-
-// Generate content HTML (single column)
-const generateContentHtml = async (data: string | string[]): Promise<string> => {
-  const contentHtml = await parseMarkdown(data);
-  return `<div class="prose max-w-none">${contentHtml}</div>`;
-};
-
-// Generate Tailwind HTML for layout
-export const generateLayoutHtml = async (md: MulmoMarkdownLayout): Promise<string> => {
   const parts: string[] = ['<div class="w-full h-full flex flex-col overflow-hidden">'];
-
-  if (md.header) {
-    parts.push(await generateHeaderHtml(md.header));
-  }
-
+  if (md.header) parts.push(wrap(HEADER, part(md.header, "prose prose-lg max-w-none")));
   parts.push('<div class="flex-1 flex min-h-0 overflow-hidden">');
-
-  if (md["sidebar-left"]) {
-    parts.push(await generateSidebarHtml(md["sidebar-left"]));
-  }
-
+  if (md["sidebar-left"]) parts.push(wrap(SIDEBAR, part(md["sidebar-left"], "prose prose-sm max-w-none")));
   parts.push('<div class="flex-1 p-6 overflow-auto">');
 
   if ("row-2" in md) {
-    parts.push(await generateRow2Html(md["row-2"]));
+    const [left, right] = md["row-2"] satisfies MulmoRow2;
+    const columns = [left, right].map((c) => wrap("flex-1 overflow-auto", part(c, "prose max-w-none"))).join("");
+    parts.push(wrap("h-full flex gap-6", columns));
   } else if ("2x2" in md) {
-    parts.push(await generate2x2Html(md["2x2"]));
+    const cells = (md["2x2"] satisfies MulmoGrid2x2).map((c) => wrap(CELL, part(c, "prose prose-sm max-w-none"))).join("");
+    parts.push(wrap("h-full grid grid-cols-2 grid-rows-2 gap-4", cells));
   } else if ("content" in md) {
-    parts.push(await generateContentHtml(md.content));
+    parts.push(part(md.content, "prose max-w-none"));
   }
 
   parts.push("</div>", "</div>", "</div>");
-
-  return parts.join("");
+  return { html: parts.join(""), hasMermaid };
 };
 
-// Convert layout to plain markdown string
+/**
+ * A layout flattened back to plain markdown, in slot order. Used by `mulmo markdown`,
+ * which wants what the beat SAYS rather than how it is laid out.
+ */
 export const layoutToMarkdown = (md: MulmoMarkdownLayout): string => {
   const parts: string[] = [];
-
-  if (md.header) {
-    parts.push(toMarkdownString(md.header));
-  }
-  if (md["sidebar-left"]) {
-    parts.push(toMarkdownString(md["sidebar-left"]));
-  }
+  if (md.header) parts.push(toMarkdownString(md.header));
+  if (md["sidebar-left"]) parts.push(toMarkdownString(md["sidebar-left"]));
   if ("row-2" in md) {
     parts.push(...md["row-2"].map(toMarkdownString));
   } else if ("2x2" in md) {
@@ -138,8 +110,5 @@ export const layoutToMarkdown = (md: MulmoMarkdownLayout): string => {
   } else if ("content" in md) {
     parts.push(toMarkdownString(md.content));
   }
-
   return parts.join("\n\n");
 };
-
-export { toMarkdownString, parseMarkdown };

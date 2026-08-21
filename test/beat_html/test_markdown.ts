@@ -31,7 +31,7 @@ test("a mermaid fence turns into mermaid markup and requires the runtime", () =>
   // Unescaped, because mermaid reads the element's textContent and `-->` in a text node
   // is ordinary HTML. `image_plugins/mermaid.ts` interpolates the code the same way, so
   // the two paths render a diagram identically — which is the point of sharing
-  // mermaidBlockHtml. It also means a diagram containing `</div>` would break out of the
+  // mermaid_html.ts, shared by both paths. It also means a diagram containing `</div>` would break out of the
   // element, which is the unsanitized contract on BeatHtmlFragment.html, not a new hole.
   assert.match(html, /graph TD; A-->B/, "the diagram source survives into the element");
   assert.ok(!html.includes("<code"), "the fence must not render as a code block");
@@ -148,65 +148,54 @@ test("a fence is a diagram when marked says it is a mermaid code block", () => {
 });
 
 // ═══════════════════════════════════════════════════════════
-// Parity with the Node path.
+// One implementation, not two.
 //
-// `image_plugins/markdown_layout.ts` renders the same beat for PDF / movie output. Two
-// implementations of one thing drift, and PR 10 is where they are meant to become one —
-// this is what tells us they have not. Whitespace differs by construction (the Node
-// version formats its template literals across lines), so the comparison collapses it.
+// The rendering lives in `image_plugins/markdown_layout.ts` and both paths call it: the
+// Node path to make a PNG, this one to hand markup to a browser host. There was briefly a
+// second copy here, and the two immediately disagreed about which fences are diagrams —
+// while a test asserting they matched passed, because they agreed on being wrong.
+//
+// So this does not compare two renderers. It checks that there is still only one: if
+// somebody forks the implementation again, these go red.
 // ═══════════════════════════════════════════════════════════
 
-test("renders the same markup as the Node plugin, for both formats", async () => {
-  const { generateLayoutHtml, parseMarkdown } = await import("../../src/utils/image_plugins/markdown_layout.js");
-  const collapse = (html: string) => html.replace(/\s+/g, " ").replace(/> </g, "><").trim();
+test("the Node path and the browser path render byte-identical markup", async () => {
+  const { renderMarkdownContent, renderMarkdownLayout } = await import("../../src/utils/image_plugins/markdown_layout.js");
+  // Ids are the one thing the two callers supply differently — random for a
+  // render-once-to-PNG path, deterministic for one that re-renders — so normalise them.
+  const sameIds = (html: string) => html.replace(/id="[^"]*"/g, 'id="ID"');
 
-  const textCases = ["# T\n\n- a\n- b", "plain", "**bold** and `code`", "```ts\nconst a = 1;\n```", "| a | b |\n|---|---|\n| 1 | 2 |"];
-  await Promise.all(
-    textCases.map(async (md) => {
-      assert.strictEqual(collapse(markdownToHtml(media(md), "p").html), collapse(await parseMarkdown(md)), `text form: ${md}`);
-    }),
-  );
+  const textCases = [
+    "# T\n\n- a\n- b",
+    "```mermaid\ngraph TD; A-->B\n```",
+    "```mermaid\r\ngraph TD; A-->B\r\n```",
+    "````markdown\n```mermaid\ngraph TD; A-->B\n```\n````",
+    "    ```mermaid\n    graph TD; A-->B\n    ```",
+    "| a | b |\n|---|---|\n| 1 | 2 |",
+  ];
+  textCases.forEach((src) => {
+    const node = renderMarkdownContent(src, () => "ID").html;
+    assert.strictEqual(sameIds(markdownToHtml(media(src), "p").html), node, `text: ${JSON.stringify(src)}`);
+  });
 
   const layoutCases = [
     { content: "para" },
     { header: "# H", "sidebar-left": "- s", content: "para" },
     { "row-2": ["L", "R"] },
     { "2x2": ["a", "b", "c", "d"] },
-    { header: "# H", "row-2": ["L", "R"] },
-    { content: ["line one", "", "line two"] },
+    { content: "```mermaid\ngraph TD; A-->B\n```" },
   ];
-  await Promise.all(
-    layoutCases.map(async (layout) => {
-      const theirs = await generateLayoutHtml(layout as never);
-      assert.strictEqual(collapse(markdownToHtml(media(layout), "p").html), collapse(theirs), `layout: ${JSON.stringify(layout)}`);
-    }),
-  );
+  layoutCases.forEach((layout) => {
+    const node = renderMarkdownLayout(layout as never, () => "ID").html;
+    assert.strictEqual(sameIds(markdownToHtml(media(layout), "p").html), node, `layout: ${JSON.stringify(layout)}`);
+  });
 });
 
-test("the parity check can actually tell the two apart", () => {
-  // A comparison that collapses whitespace could also collapse a real difference into
-  // nothing. It does not: changing which slots are present shows up.
-  const collapse = (html: string) => html.replace(/\s+/g, " ").replace(/> </g, "><").trim();
-  const a = markdownToHtml(media({ content: "para" }), "p").html;
-  const b = markdownToHtml(media({ header: "# H", content: "para" }), "p").html;
-  assert.notStrictEqual(collapse(a), collapse(b));
-});
-
-test("KNOWN DIVERGENCE: the Node path misses fences this one catches", async () => {
-  // Not parity, on purpose. The Node path still classifies mermaid fences with a regex
-  // over raw source, so it misses a CRLF fence, a trailing space after the language, and
-  // an info string — all of which marked reads as mermaid code blocks and this path now
-  // renders. The browser side is the correct one; the Node side is a separate change,
-  // because it alters PDF and movie output and needs its own verification.
-  //
-  // Pinned rather than left implicit: when the Node path is fixed, this test fails, which
-  // is the reminder to delete it and fold these cases into the parity test above.
-  const { parseMarkdown } = await import("../../src/utils/image_plugins/markdown_layout.js");
-  const divergent = ["```mermaid\r\ngraph TD; A-->B\r\n```", "```mermaid \ngraph TD; A-->B\n```", '```mermaid title="x"\ngraph TD; A-->B\n```'];
-  await Promise.all(
-    divergent.map(async (src) => {
-      assert.ok(markdownToHtml(media(src), "p").html.includes('class="mermaid"'), `browser path should render a diagram: ${JSON.stringify(src)}`);
-      assert.ok(!(await parseMarkdown(src)).includes('class="mermaid"'), `Node path is still expected to miss: ${JSON.stringify(src)}`);
-    }),
-  );
+test("the identity check can actually tell two renderings apart", async () => {
+  // Normalising ids could also normalise away a real difference. It does not: two
+  // different layouts still compare unequal.
+  const { renderMarkdownLayout } = await import("../../src/utils/image_plugins/markdown_layout.js");
+  const a = renderMarkdownLayout({ content: "para" } as never, () => "ID").html;
+  const b = renderMarkdownLayout({ header: "# H", content: "para" } as never, () => "ID").html;
+  assert.notStrictEqual(a, b);
 });

@@ -6,7 +6,6 @@ import { markdownToHtml } from "./markdown.js";
 export type { BeatHtmlFragment, BeatHtmlOptions, BeatRuntime } from "./type.js";
 export { textSlideToMarkdown, textSlideToHtml } from "./text_slide.js";
 export { markdownToHtml } from "./markdown.js";
-export { mermaidBlockHtml } from "./mermaid_block.js";
 
 /**
  * Beat image types this module can turn into markup, extended one type at a time.

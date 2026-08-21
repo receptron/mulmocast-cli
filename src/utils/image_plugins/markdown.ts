@@ -1,13 +1,23 @@
 import { ImageProcessorParams } from "../../types/index.js";
 import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../html_render.js";
-import { parrotingImagePath } from "./utils.js";
+import { parrotingImagePath, generateUniqueId } from "./utils.js";
 import { resolveCombinedStyle } from "./bg_image_util.js";
 import { type MulmoMarkdownLayout } from "../../types/type.js";
-import { generateLayoutHtml, layoutToMarkdown, toMarkdownString, parseMarkdown } from "./markdown_layout.js";
+import { renderMarkdownContent, renderMarkdownLayout, layoutToMarkdown, toMarkdownString } from "./markdown_layout.js";
 import { resolveImageRefs, resolveMovieRefs } from "./html_tailwind.js";
 
 import { isObject } from "graphai";
+
+/**
+ * This path renders once to a PNG, so a random element id is fine. The browser path needs
+ * a stable one and supplies its own — that generator is the only thing the two callers of
+ * the shared markdown renderer differ on.
+ */
+const nodeMermaidId = (): string => generateUniqueId("mermaid");
+
+const parseMarkdown = (content: string | string[]): string => renderMarkdownContent(content, nodeMermaidId).html;
+const generateLayoutHtml = (md: MulmoMarkdownLayout): string => renderMarkdownLayout(md, nodeMermaidId).html;
 
 export const imageType = "markdown";
 
