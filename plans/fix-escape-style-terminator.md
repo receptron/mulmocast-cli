@@ -11,7 +11,7 @@ issue には `beat.image.style` と書いたが、これは誤り。`resolveStyl
 
 実際に届くのは `textSlideParams.cssStyles`:
 
-```
+```text
 beat.textSlideParams.cssStyles / presentationStyle.textSlideParams.cssStyles
   → getTextSlideStyle()        (mulmo_presentation_style.ts:85-90)
   → params.textSlideStyle      (image_agents.ts:25)
@@ -28,10 +28,10 @@ beat.textSlideParams.cssStyles / presentationStyle.textSlideParams.cssStyles
   （chart / mermaid / markdown / text_slide）なので、ここ1箇所で全部塞がる
 
 CSS 全体をエスケープすると「script が CSS を書ける」仕様が壊れる。`<style>` は raw text 要素で
-終端は `</style` だけなので、そこだけ CSS エスケープ `\3c ` にする。マッチした文字列は
-そのまま繋ぐので `</STYLE>` の大文字も保たれる。
+終端は `</style` だけなので、そこだけ CSS の16進エスケープ（`\3c` に**続く空白1個**まで含めてエスケープを終端する）
+に置き換える。マッチした文字列はそのまま繋ぐので `</STYLE>` の大文字も保たれる。
 
 ## 検証
 
 実ブラウザで、`getTextSlideStyle` から組み立てた実経路で before/after を比較する。
-`\3c ` が値を保つこと（`content: "</style>"` が同じ値として読まれること）も確認する。
+このエスケープが値を保つこと（`content: "</style>"` が同じ値として読まれること）も確認する。
