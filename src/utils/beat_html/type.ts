@@ -25,3 +25,13 @@ export type BeatHtmlFragment = {
 
 /** External runtimes a fragment can depend on. */
 export type BeatRuntime = "chart" | "mermaid";
+
+export type BeatHtmlOptions = {
+  /**
+   * Prefix for element ids generated inside a fragment (mermaid containers, chart
+   * canvases). Pass something stable per beat — its id, or its index — so re-rendering
+   * the same beat produces the same markup and a host diffing fragments does not see
+   * every diagram change identity on every render.
+   */
+  idPrefix?: string;
+};

@@ -1,9 +1,12 @@
 import type { MulmoBeat } from "../../types/index.js";
-import type { BeatHtmlFragment } from "./type.js";
+import type { BeatHtmlFragment, BeatHtmlOptions } from "./type.js";
 import { textSlideToHtml } from "./text_slide.js";
+import { markdownToHtml } from "./markdown.js";
 
-export type { BeatHtmlFragment, BeatRuntime } from "./type.js";
+export type { BeatHtmlFragment, BeatHtmlOptions, BeatRuntime } from "./type.js";
 export { textSlideToMarkdown, textSlideToHtml } from "./text_slide.js";
+export { markdownToHtml } from "./markdown.js";
+export { mermaidBlockHtml } from "./mermaid_block.js";
 
 /**
  * Beat image types this module can turn into markup, extended one type at a time.
@@ -11,7 +14,10 @@ export { textSlideToMarkdown, textSlideToHtml } from "./text_slide.js";
  * a type added here without a case — or vice versa — fails rather than silently
  * rendering nothing.
  */
-export const supportedBeatTypes = ["textSlide"] as const;
+/** Used when the caller supplies no `idPrefix`. Stable, so output stays reproducible. */
+const DEFAULT_ID_PREFIX = "mulmo-beat";
+
+export const supportedBeatTypes = ["textSlide", "markdown"] as const;
 
 /**
  * Render a beat as markup for a browser host.
@@ -28,8 +34,15 @@ export const supportedBeatTypes = ["textSlide"] as const;
  * anything that would drag Node into a bundle — the failure mode is a runtime error in
  * the browser, not a compile error, so it has to be checked mechanically.
  */
-export const beatToHtml = (beat: MulmoBeat): BeatHtmlFragment | undefined => {
+export const beatToHtml = (beat: MulmoBeat, options: BeatHtmlOptions = {}): BeatHtmlFragment | undefined => {
   const image = beat.image;
-  if (image?.type === "textSlide") return textSlideToHtml(image);
-  return undefined;
+  if (!image) return undefined;
+  switch (image.type) {
+    case "textSlide":
+      return textSlideToHtml(image);
+    case "markdown":
+      return markdownToHtml(image, options.idPrefix ?? DEFAULT_ID_PREFIX);
+    default:
+      return undefined;
+  }
 };
