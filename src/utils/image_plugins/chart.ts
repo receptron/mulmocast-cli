@@ -3,21 +3,9 @@ import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../html_render.js";
 import { parrotingImagePath, generateUniqueId } from "./utils.js";
 import { resolveCombinedStyle } from "./bg_image_util.js";
+import { chartHtml, resolveChartPlugins, stringifyChartData } from "./chart_html.js";
 
 export const imageType = "chart";
-
-/** Chart.js plugin CDN URLs keyed by chart type */
-const CHART_PLUGIN_CDNS: Record<string, string> = {
-  sankey: "https://cdn.jsdelivr.net/npm/chartjs-chart-sankey",
-  treemap: "https://cdn.jsdelivr.net/npm/chartjs-chart-treemap@3",
-};
-
-/** Resolve CDN script tags for Chart.js plugins based on chart type */
-const resolveChartPlugins = (chartType: string): string => {
-  const cdn = CHART_PLUGIN_CDNS[chartType];
-  if (!cdn) return "";
-  return `<script src="${cdn}"></script>`;
-};
 
 const processChart = async (params: ImageProcessorParams) => {
   const { beat, imagePath, canvasSize } = params;
@@ -43,23 +31,10 @@ const dumpHtml = async (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
-  const chartData = JSON.stringify(beat.image.chartData, null, 2);
-  const title = beat.image.title || "Chart";
-  const chartId = generateUniqueId("chart");
-
-  return `
-<div class="chart-container mb-6">
-  <h3 class="text-xl font-semibold mb-4">${title}</h3>
-  <div class="w-full" style="position: relative; height: 400px;">
-    <canvas id="${chartId}"></canvas>
-  </div>
-  <script>
-    (function() {
-      const ctx = document.getElementById('${chartId}').getContext('2d');
-      new Chart(ctx, ${chartData});
-    })();
-  </script>
-</div>`;
+  // main と同じ評価順（stringify → title 読み取り → id 生成）を保つ。引数式は本体より先に
+  // 評価されるので、stringify を wrapper 側でやらないと throw / getter の順序が入れ替わる。
+  const chartDataJson = stringifyChartData(beat.image.chartData);
+  return chartHtml(chartDataJson, beat.image.title, generateUniqueId("chart"));
 };
 
 export const process = processChart;
