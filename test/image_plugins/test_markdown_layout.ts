@@ -69,3 +69,36 @@ test("layoutToMarkdown and toMarkdownString flatten in slot order", () => {
   assert.strictEqual(layoutToMarkdown({ "row-2": ["L", "R"] }), "L\n\nR");
   assert.strictEqual(layoutToMarkdown({ "2x2": ["a", "b", "c", "d"] }), "a\n\nb\n\nc\n\nd");
 });
+
+test("hasMermaid and the markup can never disagree", () => {
+  // This is why there is one detector rather than two. There used to be a second —
+  // `containsMermaid`, a `text.includes("```mermaid")` over the raw source — deciding
+  // whether the Node path loaded the mermaid runtime, while the renderer decided what to
+  // draw. Once the renderer started asking marked, they disagreed: ```MERMAID drew a
+  // diagram nothing was loaded for (an empty box in the PNG), and an example quoted
+  // inside an outer ````markdown fence loaded the runtime for nothing.
+  const fences = [
+    "```mermaid\ngraph TD; A-->B\n```",
+    "```MERMAID\ngraph TD; A-->B\n```",
+    "```mermaid\r\ngraph TD; A-->B\r\n```",
+    "```mermaid \ngraph TD; A-->B\n```",
+    '```mermaid title="x"\ngraph TD; A-->B\n```',
+    "````markdown\n```mermaid\ngraph TD; A-->B\n```\n````",
+    "    ```mermaid\n    graph TD; A-->B\n    ```",
+    "```ts\nconst a = 1;\n```",
+    "# no fence at all",
+  ];
+  fences.forEach((src) => {
+    const { html, hasMermaid } = renderMarkdownContent(src, ID);
+    assert.strictEqual(hasMermaid, html.includes('class="mermaid"'), `disagreement for ${JSON.stringify(src)}`);
+  });
+
+  // Both answers have to actually occur, or this passes by never seeing a diagram.
+  const answers = new Set(fences.map((src) => renderMarkdownContent(src, ID).hasMermaid));
+  assert.deepStrictEqual([...answers].sort(), [false, true]);
+
+  // And through a layout, where the flag has to travel up out of a slot.
+  const nested = renderMarkdownLayout({ "2x2": ["a", "```mermaid\ngraph TD; A-->B\n```", "c", "d"] }, ID);
+  assert.strictEqual(nested.hasMermaid, nested.html.includes('class="mermaid"'));
+  assert.strictEqual(nested.hasMermaid, true);
+});

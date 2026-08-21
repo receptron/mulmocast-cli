@@ -16,9 +16,6 @@ import { isObject } from "graphai";
  */
 const nodeMermaidId = (): string => generateUniqueId("mermaid");
 
-const parseMarkdown = (content: string | string[]): string => renderMarkdownContent(content, nodeMermaidId).html;
-const generateLayoutHtml = (md: MulmoMarkdownLayout): string => renderMarkdownLayout(md, nodeMermaidId).html;
-
 export const imageType = "markdown";
 
 // Type guard for object (data) format
@@ -42,54 +39,59 @@ const dumpMarkdown = (params: ImageProcessorParams): string | undefined => {
   return layoutToMarkdown(md);
 };
 
-// Generate full HTML for rendering
-const generateHtml = async (params: ImageProcessorParams): Promise<string> => {
+/**
+ * Full HTML for rendering, and whether it contains a diagram.
+ *
+ * The two come back together on purpose. There used to be a second detector —
+ * `containsMermaid`, a `text.includes("```mermaid")` over the raw source — deciding
+ * whether to load the mermaid runtime, while the renderer decided what to draw. Once the
+ * renderer started asking marked's lexer, the two disagreed: a ```MERMAID fence drew a
+ * diagram that no runtime was loaded for, so the PNG came out with an empty box, and an
+ * example quoted inside an outer ````markdown fence loaded the runtime for nothing.
+ *
+ * One question, one answer. The renderer already knows, so it says.
+ */
+const generateHtml = async (params: ImageProcessorParams): Promise<{ html: string; hasMermaid: boolean }> => {
   const { beat } = params;
-  if (!beat.image || beat.image.type !== imageType) return "";
+  if (!beat.image || beat.image.type !== imageType) return { html: "", hasMermaid: false };
 
   const md = beat.image.markdown;
   const combinedStyle = await resolveCombinedStyle(params, beat.image.backgroundImage, beat.image.style);
 
   if (isMarkdownLayout(md)) {
-    const htmlBody = await generateLayoutHtml(md);
+    const { html: htmlBody, hasMermaid } = renderMarkdownLayout(md, nodeMermaidId);
     const template = getHTMLFile("tailwind");
-    return interpolate(template, {
-      title: "Markdown Layout",
-      html_body: htmlBody,
-      custom_style: combinedStyle,
-    });
+    return {
+      html: interpolate(template, { title: "Markdown Layout", html_body: htmlBody, custom_style: combinedStyle }),
+      hasMermaid,
+    };
   }
 
-  const markdown = dumpMarkdown(params) ?? "";
-  const body = await parseMarkdown(markdown);
+  const { html: body, hasMermaid } = renderMarkdownContent(dumpMarkdown(params) ?? "", nodeMermaidId);
 
-  // Use tailwind template if mermaid is present to ensure mermaid CDN is loaded
-  if (containsMermaid(md)) {
+  // The tailwind template is what loads the mermaid CDN, so a diagram needs it.
+  if (hasMermaid) {
     const template = getHTMLFile("tailwind");
-    return interpolate(template, {
-      title: "Markdown",
-      html_body: `<div class="prose max-w-none p-6">${body}</div>`,
-      custom_style: combinedStyle,
-    });
+    return {
+      html: interpolate(template, {
+        title: "Markdown",
+        html_body: `<div class="prose max-w-none p-6">${body}</div>`,
+        custom_style: combinedStyle,
+      }),
+      hasMermaid,
+    };
   }
 
-  return `<html><head><style>${combinedStyle}</style></head><body>${body}</body></html>`;
-};
-
-// Check if markdown content contains mermaid code blocks
-const containsMermaid = (md: string | string[] | MulmoMarkdownLayout): boolean => {
-  const text = isMarkdownLayout(md) ? layoutToMarkdown(md) : toMarkdownString(md);
-  return text.includes("```mermaid");
+  return { html: `<html><head><style>${combinedStyle}</style></head><body>${body}</body></html>`, hasMermaid };
 };
 
 const processMarkdown = async (params: ImageProcessorParams) => {
   const { beat, imagePath, canvasSize } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
-  const rawHtml = await generateHtml(params);
+  const { html: rawHtml, hasMermaid } = await generateHtml(params);
   const resolvedImages = resolveImageRefs(rawHtml, params.imageRefs ?? {});
   const html = resolveMovieRefs(resolvedImages, params.movieRefs ?? {});
-  const hasMermaid = containsMermaid(beat.image.markdown);
   await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height, hasMermaid);
 
   return imagePath;
@@ -102,10 +104,9 @@ const dumpHtml = async (params: ImageProcessorParams) => {
   const md = beat.image.markdown;
 
   if (isMarkdownLayout(md)) {
-    return await generateLayoutHtml(md);
+    return renderMarkdownLayout(md, nodeMermaidId).html;
   } else {
-    const markdown = dumpMarkdown(params);
-    return await parseMarkdown(markdown ?? "");
+    return renderMarkdownContent(dumpMarkdown(params) ?? "", nodeMermaidId).html;
   }
 };
 
