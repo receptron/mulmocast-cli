@@ -57,13 +57,18 @@ test("entity references in a title become literal text", () => {
 
 // Verified in a real browser before and after: with these values main executed the injected
 // handler AND lost the chart entirely, because the `</script>` ended the block that draws it.
+// Counting is done on the lower-cased string rather than with a tag-shaped regex: the escape
+// neutralizes `<` itself, so a guard that only recognized lower-case tags would be weaker than
+// the code it checks.
+const countTags = (html: string, tag: string): number => html.toLowerCase().split(tag).length - 1;
+
 test("a hostile title and hostile chart data cannot escape their contexts", () => {
-  const html = chartHtml(stringifyChartData({ label: "</script><script>pwn()</script>" }), '</h3><img src=x onerror="pwn()">', "c1");
-  assert.strictEqual(html.match(/<h3/g)?.length, 1, "the heading must not be closed early");
-  assert.strictEqual(html.match(/<script>/g)?.length, 1, "only the chart's own script tag may appear");
-  assert.strictEqual(html.match(/<\/script>/g)?.length, 1, "the chart's script must not be terminated early");
-  assert.ok(!html.includes("<img"), "no injected element may survive");
-  assert.ok(html.includes("&lt;/h3&gt;"), "the title is neutralized, not dropped");
+  const html = chartHtml(stringifyChartData({ label: "</SCRIPT ><script>pwn()</script>" }), '</H3 ><img src=x onerror="pwn()">', "c1");
+  assert.strictEqual(countTags(html, "<h3"), 1, "the heading must not be closed early");
+  assert.strictEqual(countTags(html, "<script"), 1, "only the chart's own script tag may appear");
+  assert.strictEqual(countTags(html, "</script"), 1, "the chart's script must not be terminated early");
+  assert.strictEqual(countTags(html, "<img"), 0, "no injected element may survive");
+  assert.ok(html.includes("&lt;/H3 &gt;"), "the title is neutralized, not dropped");
 });
 
 test("the caller-supplied id is the only id, and reaches both the canvas and the lookup", () => {
