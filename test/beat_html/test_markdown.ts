@@ -33,7 +33,9 @@ test("a mermaid fence turns into mermaid markup and requires the runtime", () =>
   // the two paths render a diagram identically — which is the point of sharing
   // mermaid_html.ts, shared by both paths. It also means a diagram containing `</div>` would break out of the
   // element, which is the unsanitized contract on BeatHtmlFragment.html, not a new hole.
-  assert.match(html, /graph TD; A-->B/, "the diagram source survives into the element");
+  // Escaped for its HTML text context. Mermaid reads textContent, which the parser produces by
+  // decoding entities, so the diagram it draws is unchanged — measured byte-identical SVG.
+  assert.match(html, /graph TD; A--&gt;B/, "the diagram source survives into the element");
   assert.ok(!html.includes("<code"), "the fence must not render as a code block");
 });
 

@@ -264,6 +264,8 @@ const mermaidPluginExpected = {
     "    G --> H[Customer Support]\n" +
     "    H --> A\n" +
     "```",
+  // The diagram source is escaped for its HTML text context. Mermaid reads textContent,
+  // which the parser produces by decoding entities, so the rendered SVG is unchanged.
   html:
     "\n" +
     '<div class="mermaid-container mb-6">\n' +
@@ -271,14 +273,14 @@ const mermaidPluginExpected = {
     '  <div class="flex justify-center">\n' +
     '    <div id="id" class="mermaid">\n' +
     "      graph LR\n" +
-    "    A[Market Research] --> B[Product Planning]\n" +
-    "    B --> C[Development]\n" +
-    "    C --> D[Testing]\n" +
-    "    D --> E[Manufacturing]\n" +
-    "    E --> F[Marketing]\n" +
-    "    F --> G[Sales]\n" +
-    "    G --> H[Customer Support]\n" +
-    "    H --> A\n" +
+    "    A[Market Research] --&gt; B[Product Planning]\n" +
+    "    B --&gt; C[Development]\n" +
+    "    C --&gt; D[Testing]\n" +
+    "    D --&gt; E[Manufacturing]\n" +
+    "    E --&gt; F[Marketing]\n" +
+    "    F --&gt; G[Sales]\n" +
+    "    G --&gt; H[Customer Support]\n" +
+    "    H --&gt; A\n" +
     "    </div>\n" +
     "  </div>\n" +
     "</div>",

@@ -3,7 +3,7 @@ import { MulmoMediaSourceMethods } from "../../methods/index.js";
 import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../html_render.js";
 import { parrotingImagePath, generateUniqueId } from "./utils.js";
-import { mermaidHtml } from "./mermaid_html.js";
+import { escapedMermaidTemplateValues, mermaidHtml } from "./mermaid_html.js";
 import { resolveCombinedStyle } from "./bg_image_util.js";
 import { resolveImageRefs, resolveMovieRefs, resolveRelativeImagePaths } from "./html_tailwind.js";
 
@@ -21,9 +21,8 @@ const processMermaid = async (params: ImageProcessorParams) => {
   if (diagram_code) {
     const combinedStyle = await resolveCombinedStyle(params, beat.image.backgroundImage, beat.image.style);
     const rawHtml = interpolate(template, {
-      title: beat.image.title,
+      ...escapedMermaidTemplateValues(beat.image.title, `${diagram_code}\n${beat.image.appendix?.join("\n") ?? ""}`),
       style: combinedStyle,
-      diagram_code: `${diagram_code}\n${beat.image.appendix?.join("\n") ?? ""}`,
     });
     const resolvedImageRefs = resolveImageRefs(rawHtml, params.imageRefs ?? {});
     const resolvedAllRefs = resolveMovieRefs(resolvedImageRefs, params.movieRefs ?? {});

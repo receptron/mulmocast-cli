@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert";
 import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
 import { ImageProcessorParams } from "../../src/types/index.js";
+import { escapedMermaidTemplateValues, mermaidHtml } from "../../src/utils/image_plugins/mermaid_html.js";
 
 test("mermaid plugin basic functionality", () => {
   const plugin = findImagePlugin("mermaid");
@@ -251,4 +252,36 @@ test("mermaid plugin with empty code", () => {
 
   const markdown = plugin.markdown(mockParams);
   assert.strictEqual(markdown, "```mermaid\n\n```");
+});
+
+// Both mermaid paths drop the title into an HTML text context and the diagram source into a
+// `.mermaid` element. Mermaid reads that element's textContent, which the parser produces by
+// decoding entities, so escaping is transparent to it — measured in a browser across five
+// diagram kinds, the rendered SVG is byte-identical with and without the escape.
+const countTags = (html: string, tag: string): number => html.toLowerCase().split(tag).length - 1;
+
+test("a hostile title and hostile diagram source cannot escape their contexts", () => {
+  const html = mermaidHtml('graph TD; A-->B;</DIV ><img src=x onerror="pwn()">', "d1", '</H3 ><img src=x onerror="pwn()">');
+  assert.strictEqual(countTags(html, "<img"), 0, "no injected element may survive");
+  assert.strictEqual(countTags(html, "<h3"), 1, "the heading must not be closed early");
+  assert.strictEqual(countTags(html, "<div"), 3, "only the three containers may appear");
+  assert.strictEqual(countTags(html, "</div"), 3, "the containers must not be closed early");
+});
+
+test("the diagram source keeps its characters, escaped for the text context", () => {
+  const html = mermaidHtml('graph TD; A-->B["R&D"];', "d1");
+  assert.match(html, /graph TD; A--&gt;B\[&quot;R&amp;D&quot;\];/, "arrows, quotes and ampersands are entities, not raw");
+  assert.ok(!html.includes("A-->B"), "the raw form must not also be present");
+});
+
+test("a title is optional and an empty one emits no heading", () => {
+  assert.ok(!mermaidHtml("graph TD; A-->B;", "d1").includes("<h3"), "no title, no heading");
+  assert.ok(!mermaidHtml("graph TD; A-->B;", "d1", "").includes("<h3"), "an empty title emits no heading either");
+});
+
+test("the render template's user values are escaped for their own contexts", () => {
+  const values = escapedMermaidTemplateValues('</H1 ><img src=x onerror="pwn()">', 'graph TD; A-->B;</DIV ><img src=x onerror="pwn()">');
+  assert.ok(!values.title.includes("<"), "the heading value must not carry a tag");
+  assert.ok(!values.diagram_code.includes("<"), "the diagram value must not carry a tag");
+  assert.strictEqual(values.title, "&lt;/H1 &gt;&lt;img src=x onerror=&quot;pwn()&quot;&gt;");
 });
