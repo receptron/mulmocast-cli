@@ -32,10 +32,26 @@ test("escapeJsonForScript preserves the value a JSON reader sees", () => {
   });
 });
 
-// `&` cannot terminate a script, so it is defence in depth rather than the breakout fix —
-// pinned so removing it is a decision someone makes rather than one that goes unnoticed.
-test("escapeJsonForScript also escapes the ampersand", () => {
-  assert.strictEqual(escapeJsonForScript(JSON.stringify({ s: "a&b" })), '{"s":"a\\u0026b"}');
+// The whole mapping, not one character at a time: this table was added after a review found
+// `&` untested, and a second review then found `>` untested. Only `<` is load-bearing for the
+// breakout — the rest are defence in depth — but an incomplete table is how the next one hides.
+test("escapeJsonForScript escapes every character it claims, and only those", () => {
+  const escapes: [string, string][] = [
+    ["<", "\\u003c"],
+    [">", "\\u003e"],
+    ["&", "\\u0026"],
+    ["\u2028", "\\u2028"],
+    ["\u2029", "\\u2029"],
+  ];
+  escapes.forEach(([raw, escaped]) => {
+    assert.strictEqual(escapeJsonForScript(JSON.stringify({ s: raw })), `{"s":"${escaped}"}`, `${JSON.stringify(raw)} must become ${escaped}`);
+  });
+
+  // The near-miss half: everything JSON.stringify can emit that is NOT in the table survives.
+  ["'", '\\"', "/", "\\\\", "a", "日", "\u00a0", "\u200b"].forEach((raw) => {
+    const json = JSON.stringify({ s: raw });
+    assert.strictEqual(escapeJsonForScript(json), json, `${JSON.stringify(raw)} must pass through`);
+  });
 });
 
 test("escapeJsonForScript leaves JSON without those characters byte-identical", () => {
