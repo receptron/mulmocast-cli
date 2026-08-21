@@ -5,7 +5,8 @@ receptron/mulmocast-cli#1526
 ## ゴール
 
 `src/utils/beat_html/` を新設し、**全 beat 種別が同じ形を返す**ブラウザ安全な純粋関数群を置く。
-`src/index.browser.ts` から export する。
+`src/index.browser.ts` からの export は **PR 9**（下の分割表）で行う。
+各 beat 種別が個別にレビューを受けてから公開 API に載せるため。
 
 ```ts
 export type BeatHtmlFragment = {

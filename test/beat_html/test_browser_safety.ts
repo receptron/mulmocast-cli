@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert";
 import { readFileSync, existsSync } from "node:fs";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 
@@ -33,6 +34,8 @@ const SIDE_EFFECT_IMPORT = /^[ \t]*import\s*["']([^"']+)["']/gm;
 const TYPE_ONLY = /^(?:import|export)\s+type\b/;
 /** How far back to look for the `import` / `export` keyword owning a `from` clause. */
 const LOOKBACK = 500;
+/** Stop rather than report a clean scan we did not finish. */
+const PACKAGE_FILE_CAP = 4000;
 
 const isTypeOnly = (source: string, fromIndex: number): boolean => {
   const before = source.slice(Math.max(0, fromIndex - LOOKBACK), fromIndex);
@@ -103,4 +106,78 @@ test("the closure walk actually reaches past the entry file", () => {
   const { files, packages } = walk();
   assert.ok(files.size >= 2, `expected the closure to span several files, got ${files.size}`);
   assert.ok(packages.size >= 1, "expected at least one third-party package in the closure");
+});
+
+/** Comments carry example code; scanning them would produce false positives. */
+const stripComments = (src: string): string => src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+
+test("beat_html uses no dynamic import and no require", () => {
+  // The closure walk can only see static specifiers. Rather than teaching it to chase
+  // `import()` and `require()` — an enumeration of bad forms, which always has one more
+  // member — this module is not allowed to contain them at all. A future beat type that
+  // genuinely needs a conditional import has to change this rule deliberately.
+  const offenders = [...walk().files]
+    .filter((f) => f.includes("/beat_html/"))
+    .flatMap((f) => {
+      const src = stripComments(readFileSync(f, "utf8"));
+      const found = [/\bimport\s*\(/.test(src) ? "import(" : "", /\brequire\s*\(/.test(src) ? "require(" : ""].filter(Boolean);
+      return found.length > 0 ? [`${f.slice(SRC.length + 1)}: ${found.join(", ")}`] : [];
+    });
+  assert.deepStrictEqual(offenders, [], `dynamic module loading in beat_html:\n${offenders.join("\n")}`);
+});
+
+/**
+ * Walk a package's own module graph. A package entry is usually a barrel that re-exports —
+ * graphai's is 3.4 kB and names no builtin, puppeteer-core's is 700 bytes — so a scan that
+ * reads only the entry can never find anything and reports a clean result either way.
+ */
+const scanPackage = (pkg: string, require_: ReturnType<typeof createRequire>): { builtins: string[]; filesScanned: number } => {
+  const manifestPath = require_.resolve(`${pkg}/package.json`);
+  const manifest: { module?: string; browser?: string; main?: string } = JSON.parse(readFileSync(manifestPath, "utf8"));
+  const pkgRoot = dirname(manifestPath);
+  const entries = [manifest.module, manifest.browser, manifest.main].filter((e): e is string => typeof e === "string");
+  assert.ok(entries.length > 0, `${pkg} declares no entry to check`);
+
+  const found = new Set<string>();
+  const seen = new Set<string>();
+  const queue = entries.map((e) => join(pkgRoot, e));
+  while (queue.length > 0 && seen.size < PACKAGE_FILE_CAP) {
+    const file = queue.pop();
+    if (!file || seen.has(file) || !existsSync(file)) continue;
+    seen.add(file);
+    specifiersIn(readFileSync(file, "utf8")).forEach((spec) => {
+      if (spec.startsWith("node:")) {
+        found.add(spec);
+      } else if (spec.startsWith(".")) {
+        const base = resolve(dirname(file), spec);
+        const local = resolveLocal(file, spec) ?? [base, `${base}.js`, `${base}.mjs`, join(base, "index.js")].find(existsSync);
+        if (local) queue.push(local);
+      }
+    });
+  }
+  assert.ok(seen.size < PACKAGE_FILE_CAP, `${pkg}: hit the ${PACKAGE_FILE_CAP}-file cap, so this scan proved nothing`);
+  return { builtins: [...found], filesScanned: seen.size };
+};
+
+test("no allow-listed package reaches a Node builtin through its own module graph", () => {
+  const require_ = createRequire(join(SRC, "x.js"));
+  const offenders = [...ALLOWED_PACKAGES].flatMap((pkg) => {
+    const { builtins } = scanPackage(pkg, require_);
+    return builtins.length > 0 ? [`${pkg}: ${builtins.join(", ")}`] : [];
+  });
+  assert.deepStrictEqual(offenders, [], `allow-listed packages reaching Node:\n${offenders.join("\n")}`);
+});
+
+test("the package scan can actually find a builtin when one is there", () => {
+  // Without this, the test above is green whether the scan works or not — the failure that
+  // made its first version worthless, where reading only a package's entry barrel could
+  // never find anything. yargs was chosen by measurement, not by guess: graphai's `node:`
+  // hits are all in .d.ts (erased, so it is genuinely isomorphic) and marked's are in its
+  // CLI binary, unreachable from the library entry. yargs reaches node:module and node:fs
+  // from its entry in 20 files. If yargs ever stops doing that, this fails loudly and the
+  // right response is to pick a new case, not to delete the check.
+  const require_ = createRequire(join(SRC, "x.js"));
+  const { builtins, filesScanned } = scanPackage("yargs", require_);
+  assert.ok(builtins.length > 0, "the package scan found nothing in a package that demonstrably uses Node");
+  assert.ok(filesScanned > 1, `the scan stopped at the entry (${filesScanned} file), so it proved nothing`);
 });

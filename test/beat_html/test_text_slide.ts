@@ -45,3 +45,28 @@ test("textSlideToHtml: markdown inside the text is rendered, not escaped away", 
   assert.match(html, /<strong>bold<\/strong>/);
   assert.match(html, /<code>code<\/code>/);
 });
+
+// ═══════════════════════════════════════════════════════════
+// The sanitisation contract, pinned in both directions.
+//
+// marked renders raw HTML through by design, so this markup carries whatever the beat
+// author wrote. Sanitising here would be worse than useless: this module has no DOM and
+// must stay dependency-light to remain bundleable, so any filtering it did would be a
+// regex over HTML — which reads as a safety guarantee while not being one. The host
+// sanitises; these tests exist so that stops being an unstated assumption.
+// ═══════════════════════════════════════════════════════════
+
+test("textSlideToHtml: raw HTML in a beat reaches the caller intact, so the host must sanitize", () => {
+  const { html } = textSlideToHtml(media({ title: "<script>alert(1)</script>", bullets: ["<img src=x onerror=alert(1)>", "[l](javascript:alert(1))"] }));
+  assert.ok(html.includes("<script>alert(1)</script>"), "raw elements are not stripped");
+  assert.ok(html.includes("onerror=alert(1)"), "event-handler attributes are not stripped");
+  assert.ok(html.includes("javascript:alert(1)"), "javascript: URLs are not stripped");
+});
+
+test("textSlideToHtml: ordinary markdown still renders, so the contract is not an excuse for doing nothing", () => {
+  // The paired half: a change that started escaping everything would satisfy the test
+  // above by breaking normal content, and this is what would catch it.
+  const { html } = textSlideToHtml(media({ title: "Plain & Simple", bullets: ["*em*"] }));
+  assert.match(html, /<h1[^>]*>Plain &amp; Simple<\/h1>/);
+  assert.match(html, /<em>em<\/em>/);
+});

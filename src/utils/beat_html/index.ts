@@ -16,6 +16,9 @@ export const supportedBeatTypes = ["textSlide"] as const;
 /**
  * Render a beat as markup for a browser host.
  *
+ * **The markup is not sanitized** — see `BeatHtmlFragment.html`. Sanitize before inserting
+ * it into a DOM.
+ *
  * Returns `undefined` for a beat this module cannot render — a type not yet supported,
  * or one whose media it cannot reach from a browser (a local file path, say). Callers
  * decide what to show in its place; this module does not invent a placeholder.

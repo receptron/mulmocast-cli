@@ -18,6 +18,10 @@ export const textSlideToMarkdown = (image: MulmoTextSlideMedia): string => {
 /**
  * `async: false` keeps `parse` returning a string rather than a promise, so a browser
  * host can render a beat inside a computed property instead of an effect.
+ *
+ * The result is NOT sanitized: marked renders raw HTML through by design, so a title of
+ * `<script>alert(1)</script>` reaches the caller intact. That is the documented contract
+ * on `BeatHtmlFragment.html`, and `test_text_slide.ts` pins it in both directions.
  */
 export const textSlideToHtml = (image: MulmoTextSlideMedia): BeatHtmlFragment => ({
   html: marked.parse(textSlideToMarkdown(image), { async: false }),
