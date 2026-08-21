@@ -120,9 +120,22 @@ test("the plugin declines beats that are not charts", async () => {
   assert.strictEqual(await html({ beat: { image: { type: "markdown", markdown: "x" } } }), undefined);
 });
 
-test("each call gets its own id", { skip: process.env.NODE_ENV === "test" ? 'generateUniqueId is pinned to "id" in test mode' : false }, async () => {
+// generateUniqueId returns the literal "id" under NODE_ENV=test, which is what CI sets, so
+// the id's real shape is only observable with that flag off.
+test("each call gets its own chart-prefixed id", async () => {
   const html = chartPluginHtml();
-  const beat = { image: { type: "chart", title: "t", chartData: {} } };
-  const ids = await Promise.all([0, 1, 2].map(async () => (await html({ beat }))?.match(/<canvas id="([^"]*)">/)?.[1]));
-  assert.strictEqual(new Set(ids).size, 3, `ids must be unique, got ${JSON.stringify(ids)}`);
+  const saved = process.env.NODE_ENV;
+  delete process.env.NODE_ENV;
+  try {
+    const beat = { image: { type: "chart", title: "t", chartData: {} } };
+    const ids = await Promise.all([0, 1, 2].map(async () => (await html({ beat }))?.match(/<canvas id="([^"]*)">/)?.[1]));
+    ids.forEach((id) => assert.match(id ?? "", /^chart-[0-9a-f]{8}$/));
+    assert.strictEqual(new Set(ids).size, 3, `ids must be unique, got ${JSON.stringify(ids)}`);
+  } finally {
+    if (saved === undefined) {
+      delete process.env.NODE_ENV;
+    } else {
+      process.env.NODE_ENV = saved;
+    }
+  }
 });
