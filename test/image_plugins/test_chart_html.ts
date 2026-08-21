@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
-import { chartHtml, resolveChartPlugins, stringifyChartData } from "../../src/utils/image_plugins/chart_html.js";
+import { chartHtml, escapedChartTemplateValues, resolveChartPlugins, stringifyChartData } from "../../src/utils/image_plugins/chart_html.js";
 import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
 
 /**
@@ -157,4 +157,16 @@ test("each call gets its own chart-prefixed id", async () => {
       process.env.NODE_ENV = saved;
     }
   }
+});
+
+// The PNG / PDF / movie path renders assets/html/chart.html through Puppeteer with
+// --allow-file-access-from-files, so an injection there reads local files. Verified in a
+// browser: before this, both payloads ran and the chart did not draw at all.
+test("the render template's user values are escaped for their own contexts", () => {
+  const values = escapedChartTemplateValues('</h1><img src=x onerror="pwn()">', { label: "</script><script>pwn()</script>" });
+  assert.ok(!values.title.includes("<"), "the heading value must not carry a tag");
+  assert.strictEqual(values.title, "&lt;/h1&gt;&lt;img src=x onerror=&quot;pwn()&quot;&gt;");
+  assert.ok(!values.chart_data.includes("</script>"), "the script value must not terminate the block");
+  assert.ok(!values.chart_data.includes("<"), "the script value must not carry a raw angle bracket");
+  assert.deepStrictEqual(JSON.parse(values.chart_data), { label: "</script><script>pwn()</script>" }, "the value itself is unchanged");
 });

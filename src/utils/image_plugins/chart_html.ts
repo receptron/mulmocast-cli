@@ -47,3 +47,12 @@ export const chartHtml = (chartDataJson: string, title: string, chartId: string)
   </script>
 </div>`;
 };
+
+/**
+ * The two values the PNG/PDF/movie template interpolates from user data, escaped for the
+ * contexts it drops them into: `<h1>${title}</h1>` and `const chartData = ${chart_data};`.
+ */
+export const escapedChartTemplateValues = (title: string, chartData: MulmoChartMedia["chartData"]): { title: string; chart_data: string } => ({
+  title: escapeHtml(title),
+  chart_data: escapeJsonForScript(JSON.stringify(chartData)),
+});

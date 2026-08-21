@@ -25,6 +25,9 @@ canvas id は内部生成 (`generateUniqueId`)、CDN URL は内部テーブル�
   - `escapeJsonForScript(json)` — `JSON.stringify` の出力を inline `<script>` 用に無害化
   - lookup は Map。オブジェクトリテラルだと #1534 と同じプロトタイプ経由の穴が空く
 - `chart_html.ts` — title に `escapeHtml`、chartData に `escapeJsonForScript`
+- `escapedChartTemplateValues` — PNG/PDF/動画経路 (`processChart`) 用。Codex レビューで
+  こちらを見落としていたことが判明した。`--allow-file-access-from-files` 付きで起動するため
+  dump 経路より影響が大きい。Puppeteer 無しでテストできるよう pure 関数に切り出す。
 
 ## 検証
 
@@ -34,3 +37,4 @@ canvas id は内部生成 (`generateUniqueId`)、CDN URL は内部テーブル�
 
 mermaid / bg_image_util / html_tailwind・markdown の契約。
 `src/actions/html.ts:51` の `<title>${title}</title>` も無エスケープ。
+`beat.image.style` の `</style>` breakout は #1537（生産者は `resolveCombinedStyle` 1つ、消費者4プラグイン）。
