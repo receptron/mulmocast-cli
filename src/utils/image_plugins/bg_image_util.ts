@@ -2,6 +2,7 @@ import { BackgroundImage, MulmoStudioContext, ImageProcessorParams } from "../..
 import { MulmoMediaSourceMethods } from "../../methods/mulmo_media_source.js";
 import { resolveStyle } from "./utils.js";
 import { safeFetch, DEFAULT_FETCH_TIMEOUT_MS } from "../fetch.js";
+import { neutralizeStyleTerminator } from "../html_escape.js";
 
 /**
  * Resolve background image from beat level and global level settings.
@@ -62,7 +63,7 @@ export const resolveCombinedStyle = async (
   const resolvedBackgroundImage = resolveBackgroundImage(beatBackgroundImage, globalBackgroundImage);
   const backgroundCSS = await backgroundImageToCSS(resolvedBackgroundImage, context);
   const style = resolveStyle(beatStyle, textSlideStyle);
-  return backgroundCSS + style;
+  return neutralizeStyleTerminator(backgroundCSS + style);
 };
 
 export const backgroundImageToCSS = async (backgroundImage: BackgroundImage | undefined, context: MulmoStudioContext): Promise<string> => {
