@@ -90,6 +90,16 @@ test("neutralizeStyleTerminator uses a CSS escape, so the value is preserved", (
   assert.strictEqual(neutralizeStyleTerminator('h1::after{content:"</style>"}'), 'h1::after{content:"\\3c /style>"}');
 });
 
+// Deliberately broader than the exploitable set. Measured in a browser, injection needs
+// `</style` followed by `>` or HTML whitespace (space, tab, LF, CR, FF); `</stylex` and a
+// trailing `</style` at end of input do not inject. Escaping those anyway costs nothing —
+// the CSS escape preserves the value — and it removes any dependence on getting the
+// terminator set exactly right in every browser.
+test("neutralizeStyleTerminator over-matches on purpose, and the value survives it", () => {
+  assert.strictEqual(neutralizeStyleTerminator('a{content:"</stylesheet>"}'), 'a{content:"\\3c /stylesheet>"}');
+  assert.strictEqual(neutralizeStyleTerminator("h1{}</style"), "h1{}\\3c /style");
+});
+
 test("neutralizeStyleTerminator leaves ordinary CSS byte-identical", () => {
   [
     "",
