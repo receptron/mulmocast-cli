@@ -59,36 +59,71 @@ export const renderMarkdownContent = (content: string | string[], nextId: () => 
 /** The object form of `markdown`, as opposed to a plain string or array of lines. */
 export const isMarkdownLayout = (md: unknown): md is MulmoMarkdownLayout => typeof md === "object" && md !== null && !Array.isArray(md);
 
-const wrap = (className: string, inner: string): string => `<div class="${className}">${inner}</div>`;
+/**
+ * The slot markup is main's, verbatim including its indentation. Reformatting it would
+ * change every rendered markdown beat's HTML for no reason — semantically inert, but this
+ * feeds Puppeteer and the `mulmo html` export, and "no behaviour change" should mean the
+ * bytes too.
+ */
+const HEADER_HTML = (inner: string): string => `
+    <div class="shrink-0 px-8 py-4 border-b border-gray-200 bg-gray-50">
+      <div class="prose prose-lg max-w-none">${inner}</div>
+    </div>
+  `;
 
-const HEADER = "shrink-0 px-8 py-4 border-b border-gray-200 bg-gray-50";
-const SIDEBAR = "shrink-0 w-56 px-4 py-4 border-r border-gray-200 bg-gray-100 overflow-auto";
-const CELL = "overflow-auto p-4 bg-gray-50 rounded-lg";
+const SIDEBAR_HTML = (inner: string): string => `
+    <div class="shrink-0 w-56 px-4 py-4 border-r border-gray-200 bg-gray-100 overflow-auto">
+      <div class="prose prose-sm max-w-none">${inner}</div>
+    </div>
+  `;
+
+const ROW2_HTML = (left: string, right: string): string => `
+    <div class="h-full flex gap-6">
+      <div class="flex-1 overflow-auto">
+        <div class="prose max-w-none">${left}</div>
+      </div>
+      <div class="flex-1 overflow-auto">
+        <div class="prose max-w-none">${right}</div>
+      </div>
+    </div>
+  `;
+
+const GRID_2X2_HTML = (cells: string[]): string => `
+    <div class="h-full grid grid-cols-2 grid-rows-2 gap-4">
+${cells
+  .map(
+    (cell) => `      <div class="overflow-auto p-4 bg-gray-50 rounded-lg">
+        <div class="prose prose-sm max-w-none">${cell}</div>
+      </div>`,
+  )
+  .join("\n")}
+    </div>
+  `;
+
+const CONTENT_HTML = (inner: string): string => `<div class="prose max-w-none">${inner}</div>`;
 
 /** Lay a markdown layout out in Tailwind: header / sidebar-left / row-2 | 2x2 | content. */
 export const renderMarkdownLayout = (md: MulmoMarkdownLayout, nextId: () => string): { html: string; hasMermaid: boolean } => {
   let hasMermaid = false;
-  const part = (content: string | string[], proseClass: string): string => {
+  const render = (content: string | string[]): string => {
     const rendered = renderMarkdownContent(content, nextId);
     hasMermaid = hasMermaid || rendered.hasMermaid;
-    return wrap(proseClass, rendered.html);
+    return rendered.html;
   };
 
   const parts: string[] = ['<div class="w-full h-full flex flex-col overflow-hidden">'];
-  if (md.header) parts.push(wrap(HEADER, part(md.header, "prose prose-lg max-w-none")));
+  if (md.header) parts.push(HEADER_HTML(render(md.header)));
   parts.push('<div class="flex-1 flex min-h-0 overflow-hidden">');
-  if (md["sidebar-left"]) parts.push(wrap(SIDEBAR, part(md["sidebar-left"], "prose prose-sm max-w-none")));
+  if (md["sidebar-left"]) parts.push(SIDEBAR_HTML(render(md["sidebar-left"])));
   parts.push('<div class="flex-1 p-6 overflow-auto">');
 
   if ("row-2" in md) {
     const [left, right] = md["row-2"] satisfies MulmoRow2;
-    const columns = [left, right].map((c) => wrap("flex-1 overflow-auto", part(c, "prose max-w-none"))).join("");
-    parts.push(wrap("h-full flex gap-6", columns));
+    parts.push(ROW2_HTML(render(left), render(right)));
   } else if ("2x2" in md) {
-    const cells = (md["2x2"] satisfies MulmoGrid2x2).map((c) => wrap(CELL, part(c, "prose prose-sm max-w-none"))).join("");
-    parts.push(wrap("h-full grid grid-cols-2 grid-rows-2 gap-4", cells));
+    parts.push(GRID_2X2_HTML((md["2x2"] satisfies MulmoGrid2x2).map(render)));
   } else if ("content" in md) {
-    parts.push(part(md.content, "prose max-w-none"));
+    parts.push(CONTENT_HTML(render(md.content)));
   }
 
   parts.push("</div>", "</div>", "</div>");
