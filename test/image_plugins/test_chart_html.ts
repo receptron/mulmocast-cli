@@ -14,6 +14,12 @@ import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
 
 const CHART_DATA = { type: "bar", data: { labels: ["a", "b"], datasets: [{ data: [1, 2] }] } };
 
+const chartPluginHtml = () => {
+  const plugin = findImagePlugin("chart");
+  assert.ok(plugin?.html, "the chart plugin must expose an html method");
+  return plugin.html;
+};
+
 test("chart markup is exact", () => {
   assert.strictEqual(
     chartHtml({ type: "bar" }, "Revenue", "c1"),
@@ -73,10 +79,7 @@ test("prototype member names leak through the plugin lookup", () => {
 });
 
 test("the plugin passes the beat straight through to the renderer", async () => {
-  const plugin = findImagePlugin("chart");
-  const beat = { image: { type: "chart", title: "Revenue", chartData: CHART_DATA } };
-
-  const html = await plugin.html({ beat });
+  const html = await chartPluginHtml()({ beat: { image: { type: "chart", title: "Revenue", chartData: CHART_DATA } } });
   assert.ok(html, "a chart beat must produce html");
 
   const id = html.match(/<canvas id="([^"]*)">/)?.[1];
@@ -86,15 +89,15 @@ test("the plugin passes the beat straight through to the renderer", async () => 
 });
 
 test("the plugin declines beats that are not charts", async () => {
-  const plugin = findImagePlugin("chart");
-  assert.strictEqual(await plugin.html({ beat: {} }), undefined);
-  assert.strictEqual(await plugin.html({ beat: { image: undefined } }), undefined);
-  assert.strictEqual(await plugin.html({ beat: { image: { type: "markdown", markdown: "x" } } }), undefined);
+  const html = chartPluginHtml();
+  assert.strictEqual(await html({ beat: {} }), undefined);
+  assert.strictEqual(await html({ beat: { image: undefined } }), undefined);
+  assert.strictEqual(await html({ beat: { image: { type: "markdown", markdown: "x" } } }), undefined);
 });
 
 test("each call gets its own id", { skip: process.env.NODE_ENV === "test" ? 'generateUniqueId is pinned to "id" in test mode' : false }, async () => {
-  const plugin = findImagePlugin("chart");
+  const html = chartPluginHtml();
   const beat = { image: { type: "chart", title: "t", chartData: {} } };
-  const ids = await Promise.all([0, 1, 2].map(async () => (await plugin.html({ beat }))?.match(/<canvas id="([^"]*)">/)?.[1]));
+  const ids = await Promise.all([0, 1, 2].map(async () => (await html({ beat }))?.match(/<canvas id="([^"]*)">/)?.[1]));
   assert.strictEqual(new Set(ids).size, 3, `ids must be unique, got ${JSON.stringify(ids)}`);
 });
