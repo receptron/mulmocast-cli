@@ -19,6 +19,19 @@ import ts from "typescript";
  * always has one more way to say a thing than anyone will list. esbuild resolves every form
  * there is, follows the whole graph, and fails on a builtin it cannot provide — so the rule
  * became "this must bundle for a browser" instead of a list of ways it must not.
+ *
+ * Three layers, because no one of them can answer the whole question:
+ *
+ *   1. the bundle          — the import graph, every static form, transitively
+ *   2. the no-Node-types compile — Node globals and `require`, which touch no module
+ *                            resolution and so are invisible to any bundler
+ *   3. static imports only — a computed specifier, which is invisible to both
+ *
+ * WHAT NONE OF THEM CATCH: Node reached through `eval("require")`,
+ * `Function("return process")()`, or anything else that hides an identifier from the
+ * compiler at runtime. Nothing here would notice, and saying so is more useful than a
+ * fourth layer that pretends otherwise — the module is small and its imports are read
+ * by humans in review.
  */
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
