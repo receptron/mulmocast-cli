@@ -3,25 +3,14 @@ import { MulmoMediaSourceMethods } from "../../methods/index.js";
 import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../html_render.js";
 import { parrotingImagePath, generateUniqueId } from "./utils.js";
+import { mermaidHtml } from "./mermaid_html.js";
 import { resolveCombinedStyle } from "./bg_image_util.js";
 import { resolveImageRefs, resolveMovieRefs, resolveRelativeImagePaths } from "./html_tailwind.js";
 
 export const imageType = "mermaid";
 
-// Generate mermaid HTML from code string (shared utility)
-export const generateMermaidHtml = (code: string, title?: string): string => {
-  const diagramId = generateUniqueId("mermaid");
-  const titleHtml = title ? `<h3 class="text-xl font-semibold mb-4">${title}</h3>` : "";
-  return `
-<div class="mermaid-container mb-6">
-  ${titleHtml}
-  <div class="flex justify-center">
-    <div id="${diagramId}" class="mermaid">
-      ${code.trim()}
-    </div>
-  </div>
-</div>`;
-};
+/** Mermaid markup for this path. The markup itself is shared with the browser path. */
+export const generateMermaidHtml = (code: string, title?: string): string => mermaidHtml(code, generateUniqueId("mermaid"), title);
 
 const processMermaid = async (params: ImageProcessorParams) => {
   const { beat, imagePath, canvasSize, context } = params;

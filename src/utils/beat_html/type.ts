@@ -25,3 +25,19 @@ export type BeatHtmlFragment = {
 
 /** External runtimes a fragment can depend on. */
 export type BeatRuntime = "chart" | "mermaid";
+
+export type BeatHtmlOptions = {
+  /**
+   * Prefix for element ids generated inside a fragment (mermaid containers, and chart
+   * canvases later). Required, and deliberately so.
+   *
+   * A page-wide default was the first design, and review found what it does: two markdown
+   * beats each start their counter at zero, so both emit `<div id="…-mermaid-0">`. That is
+   * invalid HTML and sends mermaid at whichever element it finds first. There is no value
+   * a library can pick that is unique per beat AND stable across re-renders — only the
+   * caller knows which beat this is, so the caller says.
+   *
+   * Pass the beat's id, or its index in the deck.
+   */
+  idPrefix: string;
+};

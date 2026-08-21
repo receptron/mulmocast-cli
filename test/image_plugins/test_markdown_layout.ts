@@ -1,0 +1,120 @@
+import test from "node:test";
+import assert from "node:assert";
+import { renderMarkdownContent, renderMarkdownLayout, layoutToMarkdown, toMarkdownString } from "../../src/utils/image_plugins/markdown_layout.js";
+import { generateMermaidHtml } from "../../src/utils/image_plugins/mermaid.js";
+import { mermaidHtml } from "../../src/utils/image_plugins/mermaid_html.js";
+
+/**
+ * Characterization tests for the markdown renderer, which is shared by the Node render
+ * path (PNG / PDF / movie) and the browser fragment path.
+ *
+ * The exact bytes are pinned, not just the elements. This renderer had no test of its own
+ * when it was one implementation feeding Puppeteer, and the first thing that happened when
+ * it was touched was that its indentation changed for every markdown beat — inert, but
+ * nobody would have noticed.
+ */
+
+const ID = () => "id";
+
+test("layout slots render with their exact markup", () => {
+  const { html } = renderMarkdownLayout({ header: "# H", "sidebar-left": "- s", content: "para" }, ID);
+  assert.strictEqual(
+    html,
+    '<div class="w-full h-full flex flex-col overflow-hidden">' +
+      '\n    <div class="shrink-0 px-8 py-4 border-b border-gray-200 bg-gray-50">' +
+      '\n      <div class="prose prose-lg max-w-none"><h1>H</h1>\n</div>' +
+      "\n    </div>" +
+      '\n  <div class="flex-1 flex min-h-0 overflow-hidden">' +
+      '\n    <div class="shrink-0 w-56 px-4 py-4 border-r border-gray-200 bg-gray-100 overflow-auto">' +
+      '\n      <div class="prose prose-sm max-w-none"><ul>\n<li>s</li>\n</ul>\n</div>' +
+      "\n    </div>" +
+      '\n  <div class="flex-1 p-6 overflow-auto">' +
+      '<div class="prose max-w-none"><p>para</p>\n</div>' +
+      "</div></div></div>",
+  );
+});
+
+test("row-2 and 2x2 render with their exact markup", () => {
+  assert.match(renderMarkdownLayout({ "row-2": ["L", "R"] }, ID).html, /\n {4}<div class="h-full flex gap-6">\n {6}<div class="flex-1 overflow-auto">/);
+  assert.match(
+    renderMarkdownLayout({ "2x2": ["a", "b", "c", "d"] }, ID).html,
+    /\n {4}<div class="h-full grid grid-cols-2 grid-rows-2 gap-4">\n {6}<div class="overflow-auto p-4 bg-gray-50 rounded-lg">/,
+  );
+  assert.strictEqual((renderMarkdownLayout({ "2x2": ["a", "b", "c", "d"] }, ID).html.match(/rounded-lg/g) ?? []).length, 4);
+});
+
+test("an absent slot emits nothing for itself", () => {
+  const { html } = renderMarkdownLayout({ content: "only" }, ID);
+  assert.ok(!html.includes("border-b border-gray-200"), "no header");
+  assert.ok(!html.includes("w-56"), "no sidebar");
+});
+
+/**
+ * Ids are compared out, not compared against a literal.
+ *
+ * The first version asserted against `id="id"`, which `generateUniqueId` returns only
+ * when NODE_ENV is "test". It passed under `yarn ci_test` (which sets it) and failed
+ * under a plain `npx tsx --test` — a test that is green or red depending on how it is
+ * invoked is worse than no test, because whoever sees the red assumes the code is broken.
+ */
+const withoutIds = (html: string): string => html.replace(/id="[^"]*"/g, 'id="_"');
+
+test("mermaid markup is one implementation, not two", () => {
+  // generateMermaidHtml is the Node path's entry point and mermaidHtml is the shared
+  // markup; if they ever stop agreeing, one diagram is being drawn two ways.
+  assert.strictEqual(withoutIds(generateMermaidHtml("graph TD; A-->B")), withoutIds(mermaidHtml("graph TD; A-->B", "anything")));
+  assert.strictEqual(withoutIds(generateMermaidHtml("graph TD; A-->B", "T")), withoutIds(mermaidHtml("graph TD; A-->B", "anything", "T")));
+});
+
+test("comparing ids out does not compare everything out", () => {
+  // Otherwise the test above passes for any two mermaid blocks whatsoever.
+  assert.notStrictEqual(withoutIds(mermaidHtml("A", "x")), withoutIds(mermaidHtml("B", "x")), "different diagrams");
+  assert.notStrictEqual(withoutIds(mermaidHtml("A", "x")), withoutIds(mermaidHtml("A", "x", "title")), "title present or not");
+});
+
+test("a mermaid fence renders the shared markup verbatim", () => {
+  // Previously the markup was spliced into the markdown source and marked reflowed it on
+  // the way through. It is emitted by the renderer now, so it arrives as written — the
+  // .mermaid element is byte-identical either way, which is what mermaid actually reads.
+  assert.strictEqual(renderMarkdownContent("```mermaid\ngraph TD; A-->B\n```", ID).html, mermaidHtml("graph TD; A-->B", "id"));
+});
+
+test("layoutToMarkdown and toMarkdownString flatten in slot order", () => {
+  assert.strictEqual(toMarkdownString(["a", "b"]), "a\nb");
+  assert.strictEqual(layoutToMarkdown({ header: "H", "sidebar-left": "S", content: "C" }), "H\n\nS\n\nC");
+  assert.strictEqual(layoutToMarkdown({ "row-2": ["L", "R"] }), "L\n\nR");
+  assert.strictEqual(layoutToMarkdown({ "2x2": ["a", "b", "c", "d"] }), "a\n\nb\n\nc\n\nd");
+});
+
+test("hasMermaid and the markup can never disagree", () => {
+  // This is why there is one detector rather than two. There used to be a second —
+  // `containsMermaid`, a `text.includes("```mermaid")` over the raw source — deciding
+  // whether the Node path loaded the mermaid runtime, while the renderer decided what to
+  // draw. Once the renderer started asking marked, they disagreed: ```MERMAID drew a
+  // diagram nothing was loaded for (an empty box in the PNG), and an example quoted
+  // inside an outer ````markdown fence loaded the runtime for nothing.
+  const fences = [
+    "```mermaid\ngraph TD; A-->B\n```",
+    "```MERMAID\ngraph TD; A-->B\n```",
+    "```mermaid\r\ngraph TD; A-->B\r\n```",
+    "```mermaid \ngraph TD; A-->B\n```",
+    '```mermaid title="x"\ngraph TD; A-->B\n```',
+    "````markdown\n```mermaid\ngraph TD; A-->B\n```\n````",
+    "    ```mermaid\n    graph TD; A-->B\n    ```",
+    "```ts\nconst a = 1;\n```",
+    "# no fence at all",
+  ];
+  fences.forEach((src) => {
+    const { html, hasMermaid } = renderMarkdownContent(src, ID);
+    assert.strictEqual(hasMermaid, html.includes('class="mermaid"'), `disagreement for ${JSON.stringify(src)}`);
+  });
+
+  // Both answers have to actually occur, or this passes by never seeing a diagram.
+  const answers = new Set(fences.map((src) => renderMarkdownContent(src, ID).hasMermaid));
+  assert.deepStrictEqual([...answers].sort(), [false, true]);
+
+  // And through a layout, where the flag has to travel up out of a slot.
+  const nested = renderMarkdownLayout({ "2x2": ["a", "```mermaid\ngraph TD; A-->B\n```", "c", "d"] }, ID);
+  assert.strictEqual(nested.hasMermaid, nested.html.includes('class="mermaid"'));
+  assert.strictEqual(nested.hasMermaid, true);
+});
