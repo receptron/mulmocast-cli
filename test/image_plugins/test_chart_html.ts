@@ -41,10 +41,21 @@ test("chart markup is exact", () => {
   );
 });
 
-test("an empty title falls back to Chart, a present one is used verbatim", () => {
+test("an empty title falls back to Chart, a present one is escaped into the heading", () => {
   assert.match(chartHtml("{}", "", "c1"), /<h3 class="text-xl font-semibold mb-4">Chart<\/h3>/);
   assert.match(chartHtml("{}", "  ", "c1"), /<h3 class="text-xl font-semibold mb-4"> {2}<\/h3>/);
-  assert.match(chartHtml("{}", "日本語 & <b>", "c1"), /<h3 class="text-xl font-semibold mb-4">日本語 & <b><\/h3>/);
+  assert.match(chartHtml("{}", "日本語 & <b>", "c1"), /<h3 class="text-xl font-semibold mb-4">日本語 &amp; &lt;b&gt;<\/h3>/);
+});
+
+// Verified in a real browser before and after: with these values main executed the injected
+// handler AND lost the chart entirely, because the `</script>` ended the block that draws it.
+test("a hostile title and hostile chart data cannot escape their contexts", () => {
+  const html = chartHtml(stringifyChartData({ label: "</script><script>pwn()</script>" }), '</h3><img src=x onerror="pwn()">', "c1");
+  assert.strictEqual(html.match(/<h3/g)?.length, 1, "the heading must not be closed early");
+  assert.strictEqual(html.match(/<script>/g)?.length, 1, "only the chart's own script tag may appear");
+  assert.strictEqual(html.match(/<\/script>/g)?.length, 1, "the chart's script must not be terminated early");
+  assert.ok(!html.includes("<img"), "no injected element may survive");
+  assert.ok(html.includes("&lt;/h3&gt;"), "the title is neutralized, not dropped");
 });
 
 test("the caller-supplied id is the only id, and reaches both the canvas and the lookup", () => {

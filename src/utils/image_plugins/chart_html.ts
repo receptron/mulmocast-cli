@@ -1,4 +1,5 @@
 import type { MulmoChartMedia } from "../../types/index.js";
+import { escapeHtml, escapeJsonForScript } from "../html_escape.js";
 
 /**
  * Chart.js markup and plugin resolution. Pure — no Node, no filesystem — because both the
@@ -27,7 +28,7 @@ export const resolveChartPlugins = (chartType: string): string => {
 export const stringifyChartData = (chartData: MulmoChartMedia["chartData"]): string => JSON.stringify(chartData, null, 2);
 
 export const chartHtml = (chartDataJson: string, title: string, chartId: string): string => {
-  const heading = title || "Chart";
+  const heading = escapeHtml(title || "Chart");
 
   return `
 <div class="chart-container mb-6">
@@ -38,7 +39,7 @@ export const chartHtml = (chartDataJson: string, title: string, chartId: string)
   <script>
     (function() {
       const ctx = document.getElementById('${chartId}').getContext('2d');
-      new Chart(ctx, ${chartDataJson});
+      new Chart(ctx, ${escapeJsonForScript(chartDataJson)});
     })();
   </script>
 </div>`;
