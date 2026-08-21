@@ -24,3 +24,10 @@ const SCRIPT_JSON_ESCAPES = new Map([
 
 /** Neutralize the output of JSON.stringify for embedding inside an inline `<script>`. */
 export const escapeJsonForScript = (json: string): string => json.replace(/[<>&\u2028\u2029]/g, (character) => SCRIPT_JSON_ESCAPES.get(character) ?? character);
+
+// A <style> element holds raw text: nothing inside it is parsed as markup except the closing
+// tag, so `</style` is the only sequence that can end it. Neutralizing just that keeps
+// author-supplied CSS working, which escaping the whole string would not. `\3c ` is the CSS
+// escape for `<`, and the matched text is carried through unchanged so a `</STYLE>` written
+// inside a CSS string keeps its casing as well as its value.
+export const neutralizeStyleTerminator = (css: string): string => css.replace(/<\/style/gi, (terminator) => `\\3c ${terminator.slice(1)}`);

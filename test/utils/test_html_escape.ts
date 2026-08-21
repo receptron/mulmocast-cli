@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
-import { escapeJsonForScript } from "../../src/utils/html_escape.js";
+import { escapeJsonForScript, neutralizeStyleTerminator } from "../../src/utils/html_escape.js";
 
 const LINE_SEPARATOR = " ";
 const PARAGRAPH_SEPARATOR = " ";
@@ -66,4 +66,39 @@ test("escapeJsonForScript covers the separators that were line terminators befor
   const escaped = escapeJsonForScript(json);
   assert.ok(!escaped.includes(LINE_SEPARATOR), "U+2028 must not survive raw");
   assert.ok(!escaped.includes(PARAGRAPH_SEPARATOR), "U+2029 must not survive raw");
+});
+
+// A <style> element holds raw text, so `</style` is the ONLY sequence that can end it — no
+// entities, no comments, no other spelling. That is why enumerating the bad form is complete
+// here, unlike the script case where the value itself has to be neutralized.
+test("neutralizeStyleTerminator catches the terminator in every casing and shape", () => {
+  ["</style>", "</STYLE>", "</StYlE>", "</style >", "</style\n>", "</style/"].forEach((terminator) => {
+    const out = neutralizeStyleTerminator(`h1{color:red}${terminator}<img src=x onerror="pwn()">`);
+    assert.ok(!/<\/style/i.test(out), `${JSON.stringify(terminator)} must not survive`);
+    assert.ok(out.startsWith("h1{color:red}"), "the author's CSS before it is untouched");
+  });
+});
+
+test("neutralizeStyleTerminator catches every occurrence, not just the first", () => {
+  const out = neutralizeStyleTerminator("a</style>b</STYLE>c");
+  assert.strictEqual(out, "a\\3c /style>b\\3c /STYLE>c");
+});
+
+// Verified in a browser: the escaped form computes to the value "</style>", so CSS that
+// deliberately contains the text keeps working.
+test("neutralizeStyleTerminator uses a CSS escape, so the value is preserved", () => {
+  assert.strictEqual(neutralizeStyleTerminator('h1::after{content:"</style>"}'), 'h1::after{content:"\\3c /style>"}');
+});
+
+test("neutralizeStyleTerminator leaves ordinary CSS byte-identical", () => {
+  [
+    "",
+    "h1 { color: rgb(9, 9, 9); }",
+    "body { background-image: url('data:image/png;base64,AAA'); }",
+    "/* <style> in a comment is not a terminator */ p { margin: 0 }",
+    "@media (max-width: 100px) { .a > .b { content: '<'; } }",
+    ".x::before { content: 'style'; }",
+  ].forEach((css) => {
+    assert.strictEqual(neutralizeStyleTerminator(css), css, `${JSON.stringify(css)} must pass through`);
+  });
 });
