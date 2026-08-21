@@ -47,6 +47,14 @@ test("an empty title falls back to Chart, a present one is escaped into the head
   assert.match(chartHtml("{}", "日本語 & <b>", "c1"), /<h3 class="text-xl font-semibold mb-4">日本語 &amp; &lt;b&gt;<\/h3>/);
 });
 
+// The title is text, not markup, so an entity reference stops decoding as well: a browser
+// showed "Revenue &amp; Profit" rendering as "Revenue & Profit" before and literally after.
+// Pinned because it is the second user-visible consequence of the fix, and the easier to miss.
+test("entity references in a title become literal text", () => {
+  assert.match(chartHtml("{}", "Revenue &amp; Profit", "c1"), /<h3[^>]*>Revenue &amp;amp; Profit<\/h3>/);
+  assert.match(chartHtml("{}", "&#x58;", "c1"), /<h3[^>]*>&amp;#x58;<\/h3>/);
+});
+
 // Verified in a real browser before and after: with these values main executed the injected
 // handler AND lost the chart entirely, because the `</script>` ended the block that draws it.
 test("a hostile title and hostile chart data cannot escape their contexts", () => {

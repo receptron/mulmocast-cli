@@ -1,29 +1,9 @@
 import test from "node:test";
 import assert from "node:assert";
-import { escapeHtml, escapeJsonForScript } from "../../src/utils/html_escape.js";
+import { escapeJsonForScript } from "../../src/utils/html_escape.js";
 
 const LINE_SEPARATOR = " ";
 const PARAGRAPH_SEPARATOR = " ";
-
-test("escapeHtml neutralizes every character that can leave a text or attribute context", () => {
-  assert.strictEqual(escapeHtml("&"), "&amp;");
-  assert.strictEqual(escapeHtml("<"), "&lt;");
-  assert.strictEqual(escapeHtml(">"), "&gt;");
-  assert.strictEqual(escapeHtml('"'), "&quot;");
-  assert.strictEqual(escapeHtml("'"), "&#39;");
-  assert.strictEqual(escapeHtml("</h3><img src=x onerror=alert(1)>"), "&lt;/h3&gt;&lt;img src=x onerror=alert(1)&gt;");
-});
-
-// The near-miss half: a guard that escapes everything is as wrong as one that escapes nothing.
-test("escapeHtml leaves everything else byte-identical", () => {
-  ["", "Revenue", "売上 2026", "a-b_c 100%", "80% → 90%", "line\nbreak", "tab\there", "emoji 📊", "\\backslash", "`tick`"].forEach((value) => {
-    assert.strictEqual(escapeHtml(value), value, `${JSON.stringify(value)} must pass through unchanged`);
-  });
-});
-
-test("escapeHtml escapes what it is given, so calling it twice double-escapes", () => {
-  assert.strictEqual(escapeHtml(escapeHtml("&")), "&amp;amp;");
-});
 
 test("escapeJsonForScript stops JSON from terminating the script that carries it", () => {
   const json = JSON.stringify({ s: "</script><script>alert(1)</script>" });
@@ -50,6 +30,12 @@ test("escapeJsonForScript preserves the value a JSON reader sees", () => {
     const escaped = escapeJsonForScript(json);
     assert.deepStrictEqual(JSON.parse(escaped), value, "JSON.parse must see the same value");
   });
+});
+
+// `&` cannot terminate a script, so it is defence in depth rather than the breakout fix —
+// pinned so removing it is a decision someone makes rather than one that goes unnoticed.
+test("escapeJsonForScript also escapes the ampersand", () => {
+  assert.strictEqual(escapeJsonForScript(JSON.stringify({ s: "a&b" })), '{"s":"a\\u0026b"}');
 });
 
 test("escapeJsonForScript leaves JSON without those characters byte-identical", () => {

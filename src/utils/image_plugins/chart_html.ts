@@ -1,5 +1,8 @@
 import type { MulmoChartMedia } from "../../types/index.js";
-import { escapeHtml, escapeJsonForScript } from "../html_escape.js";
+// Deep import: the package barrel pulls in every layout and all of zod, which measured
+// 551kb against 1.5kb for this file, and the browser fragment path bundles this module.
+import { escapeHtml } from "@mulmocast/deck/lib/utils.js";
+import { escapeJsonForScript } from "../html_escape.js";
 
 /**
  * Chart.js markup and plugin resolution. Pure — no Node, no filesystem — because both the
