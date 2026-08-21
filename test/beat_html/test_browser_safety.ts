@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
-import { readdirSync, readFileSync, writeFileSync, unlinkSync } from "node:fs";
+import { readFileSync, writeFileSync, unlinkSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import * as esbuild from "esbuild";
@@ -37,6 +37,21 @@ import ts from "typescript";
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const ENTRY = "src/utils/beat_html/index.ts";
 const SRC_DIR = join(REPO, "src", "utils", "beat_html");
+
+/**
+ * The local files the browser bundle actually includes — esbuild's own input list, not a
+ * directory listing. A helper living outside `beat_html` and value-imported into it is part
+ * of the bundle and has to obey the same rules; scanning the folder would miss it, which
+ * review caught by writing exactly that helper and watching every test stay green.
+ */
+const bundledLocalSources = async (): Promise<string[]> => {
+  const result = await bundle({ entryPoints: [ENTRY] });
+  const files = Object.keys(result.metafile?.inputs ?? {})
+    .filter((f) => !f.includes("node_modules/"))
+    .map((f) => join(REPO, f));
+  assert.ok(files.length > 0, "the bundle reported no local input — the metafile proved nothing");
+  return files;
+};
 
 /** Comments carry example code; scanning them would produce false positives. */
 const stripComments = (src: string): string => src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
@@ -114,12 +129,8 @@ test("beat_html reaches only allow-listed packages", async () => {
 // form, computed or not.
 // ═══════════════════════════════════════════════════════════
 
-test("beat_html compiles with no Node types available", () => {
-  const files = readdirSync(SRC_DIR)
-    .filter((f) => f.endsWith(".ts"))
-    .map((f) => join(SRC_DIR, f));
-  assert.ok(files.length > 0, "found no beat_html sources to check");
-
+test("everything the bundle includes compiles with no Node types available", async () => {
+  const files = await bundledLocalSources();
   const program = ts.createProgram(files, {
     target: ts.ScriptTarget.ES2022,
     module: ts.ModuleKind.NodeNext,
@@ -132,18 +143,21 @@ test("beat_html compiles with no Node types available", () => {
     lib: ["lib.es2022.d.ts"],
   });
 
-  // Only this module's own files. The type-only imports it makes reach code that is
-  // allowed to be Node-flavoured; what matters is that beat_html itself is not.
+  // Filtered by the bundle's input set, not by directory. Type-only imports are erased
+  // and never reach the bundle, so the code they name stays free to be Node-flavoured;
+  // anything the bundle actually carries is not.
+  const bundled = new Set(files);
   const ours = ts
     .getPreEmitDiagnostics(program)
-    .filter((d) => d.file?.fileName.includes("/beat_html/"))
+    .filter((d) => d.file && bundled.has(d.file.fileName))
     .map((d) => `${d.file?.fileName.slice(REPO.length + 1)}: ${ts.flattenDiagnosticMessageText(d.messageText, " ")}`);
-  assert.deepStrictEqual(ours, [], `beat_html does not compile without Node types:\n${ours.join("\n")}`);
+  assert.deepStrictEqual(ours, [], `bundled sources do not compile without Node types:\n${ours.join("\n")}`);
 });
 
 test("the no-Node-types check actually rejects Node globals", () => {
   // Same trap as everywhere else: a program that resolved nothing reports no diagnostics.
   const shapes = ["process.cwd()", "Buffer.from('a')", "__dirname", "require('fs')"];
+  // Written into beat_html itself; the check under test reads the bundle's input list.
   const rejected = shapes.filter((expr) => {
     const file = join(SRC_DIR, "__probe__.ts");
     writeFileSync(file, `export const probe = () => ${expr};\n`);
@@ -164,13 +178,12 @@ test("the no-Node-types check actually rejects Node globals", () => {
   assert.deepStrictEqual(rejected, shapes, "the no-Node-types check let a Node global through");
 });
 
-test("beat_html uses only static imports", () => {
+test("everything the bundle includes uses only static imports", async () => {
   // The one shape neither layer above can see is a computed specifier —
   // `import(`node:${m}`)` bundles clean and typechecks clean. This module has no reason
   // to load anything dynamically, so it does not: one rule covering every specifier
   // shape, literal or computed, rather than a list of the ones thought of so far.
-  const offenders = readdirSync(SRC_DIR)
-    .filter((f) => f.endsWith(".ts"))
-    .filter((f) => /\bimport\s*\(/.test(stripComments(readFileSync(join(SRC_DIR, f), "utf8"))));
-  assert.deepStrictEqual(offenders, [], `dynamic import in beat_html: ${offenders.join(", ")}`);
+  const files = await bundledLocalSources();
+  const offenders = files.filter((f) => /\bimport\s*\(/.test(stripComments(readFileSync(f, "utf8")))).map((f) => f.slice(REPO.length + 1));
+  assert.deepStrictEqual(offenders, [], `dynamic import in a bundled source: ${offenders.join(", ")}`);
 });
