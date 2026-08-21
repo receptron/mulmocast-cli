@@ -3,7 +3,7 @@ import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../html_render.js";
 import { parrotingImagePath, generateUniqueId } from "./utils.js";
 import { resolveCombinedStyle } from "./bg_image_util.js";
-import { chartHtml, resolveChartPlugins, stringifyChartData } from "./chart_html.js";
+import { chartHtml, escapedChartTemplateValues, resolveChartPlugins, stringifyChartData } from "./chart_html.js";
 
 export const imageType = "chart";
 
@@ -17,10 +17,9 @@ const processChart = async (params: ImageProcessorParams) => {
   const combinedStyle = await resolveCombinedStyle(params, beat.image.backgroundImage, beat.image.style);
   const template = getHTMLFile("chart");
   const htmlData = interpolate(template, {
-    title: beat.image.title,
+    ...escapedChartTemplateValues(beat.image.title, beat.image.chartData),
     style: combinedStyle,
     chart_width: chart_width.toString(),
-    chart_data: JSON.stringify(beat.image.chartData),
     chart_plugins: resolveChartPlugins(chartType),
   });
   await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height);

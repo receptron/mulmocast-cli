@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
-import { chartHtml, resolveChartPlugins, stringifyChartData } from "../../src/utils/image_plugins/chart_html.js";
+import { chartHtml, escapedChartTemplateValues, resolveChartPlugins, stringifyChartData } from "../../src/utils/image_plugins/chart_html.js";
 import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
 
 /**
@@ -41,10 +41,34 @@ test("chart markup is exact", () => {
   );
 });
 
-test("an empty title falls back to Chart, a present one is used verbatim", () => {
+test("an empty title falls back to Chart, a present one is escaped into the heading", () => {
   assert.match(chartHtml("{}", "", "c1"), /<h3 class="text-xl font-semibold mb-4">Chart<\/h3>/);
   assert.match(chartHtml("{}", "  ", "c1"), /<h3 class="text-xl font-semibold mb-4"> {2}<\/h3>/);
-  assert.match(chartHtml("{}", "日本語 & <b>", "c1"), /<h3 class="text-xl font-semibold mb-4">日本語 & <b><\/h3>/);
+  assert.match(chartHtml("{}", "日本語 & <b>", "c1"), /<h3 class="text-xl font-semibold mb-4">日本語 &amp; &lt;b&gt;<\/h3>/);
+});
+
+// The title is text, not markup, so an entity reference stops decoding as well: a browser
+// showed "Revenue &amp; Profit" rendering as "Revenue & Profit" before and literally after.
+// Pinned because it is the second user-visible consequence of the fix, and the easier to miss.
+test("entity references in a title become literal text", () => {
+  assert.match(chartHtml("{}", "Revenue &amp; Profit", "c1"), /<h3[^>]*>Revenue &amp;amp; Profit<\/h3>/);
+  assert.match(chartHtml("{}", "&#x58;", "c1"), /<h3[^>]*>&amp;#x58;<\/h3>/);
+});
+
+// Verified in a real browser before and after: with these values main executed the injected
+// handler AND lost the chart entirely, because the `</script>` ended the block that draws it.
+// Counting is done on the lower-cased string rather than with a tag-shaped regex: the escape
+// neutralizes `<` itself, so a guard that only recognized lower-case tags would be weaker than
+// the code it checks.
+const countTags = (html: string, tag: string): number => html.toLowerCase().split(tag).length - 1;
+
+test("a hostile title and hostile chart data cannot escape their contexts", () => {
+  const html = chartHtml(stringifyChartData({ label: "</SCRIPT ><script>pwn()</script>" }), '</H3 ><img src=x onerror="pwn()">', "c1");
+  assert.strictEqual(countTags(html, "<h3"), 1, "the heading must not be closed early");
+  assert.strictEqual(countTags(html, "<script"), 1, "only the chart's own script tag may appear");
+  assert.strictEqual(countTags(html, "</script"), 1, "the chart's script must not be terminated early");
+  assert.strictEqual(countTags(html, "<img"), 0, "no injected element may survive");
+  assert.ok(html.includes("&lt;/H3 &gt;"), "the title is neutralized, not dropped");
 });
 
 test("the caller-supplied id is the only id, and reaches both the canvas and the lookup", () => {
@@ -138,4 +162,16 @@ test("each call gets its own chart-prefixed id", async () => {
       process.env.NODE_ENV = saved;
     }
   }
+});
+
+// The PNG / PDF / movie path renders assets/html/chart.html through Puppeteer with
+// --allow-file-access-from-files, so an injection there reads local files. Verified in a
+// browser: before this, both payloads ran and the chart did not draw at all.
+test("the render template's user values are escaped for their own contexts", () => {
+  const values = escapedChartTemplateValues('</h1><img src=x onerror="pwn()">', { label: "</script><script>pwn()</script>" });
+  assert.ok(!values.title.includes("<"), "the heading value must not carry a tag");
+  assert.strictEqual(values.title, "&lt;/h1&gt;&lt;img src=x onerror=&quot;pwn()&quot;&gt;");
+  assert.ok(!values.chart_data.includes("</script>"), "the script value must not terminate the block");
+  assert.ok(!values.chart_data.includes("<"), "the script value must not carry a raw angle bracket");
+  assert.deepStrictEqual(JSON.parse(values.chart_data), { label: "</script><script>pwn()</script>" }, "the value itself is unchanged");
 });

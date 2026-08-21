@@ -1,4 +1,8 @@
 import type { MulmoChartMedia } from "../../types/index.js";
+// Deep import: the package barrel pulls in every layout and all of zod, which measured
+// 551kb against 1.5kb for this file, and the browser fragment path bundles this module.
+import { escapeHtml } from "@mulmocast/deck/lib/utils.js";
+import { escapeJsonForScript } from "../html_escape.js";
 
 /**
  * Chart.js markup and plugin resolution. Pure — no Node, no filesystem — because both the
@@ -27,7 +31,7 @@ export const resolveChartPlugins = (chartType: string): string => {
 export const stringifyChartData = (chartData: MulmoChartMedia["chartData"]): string => JSON.stringify(chartData, null, 2);
 
 export const chartHtml = (chartDataJson: string, title: string, chartId: string): string => {
-  const heading = title || "Chart";
+  const heading = escapeHtml(title || "Chart");
 
   return `
 <div class="chart-container mb-6">
@@ -38,8 +42,17 @@ export const chartHtml = (chartDataJson: string, title: string, chartId: string)
   <script>
     (function() {
       const ctx = document.getElementById('${chartId}').getContext('2d');
-      new Chart(ctx, ${chartDataJson});
+      new Chart(ctx, ${escapeJsonForScript(chartDataJson)});
     })();
   </script>
 </div>`;
 };
+
+/**
+ * The two values the PNG/PDF/movie template interpolates from user data, escaped for the
+ * contexts it drops them into: `<h1>${title}</h1>` and `const chartData = ${chart_data};`.
+ */
+export const escapedChartTemplateValues = (title: string, chartData: MulmoChartMedia["chartData"]): { title: string; chart_data: string } => ({
+  title: escapeHtml(title),
+  chart_data: escapeJsonForScript(JSON.stringify(chartData)),
+});
