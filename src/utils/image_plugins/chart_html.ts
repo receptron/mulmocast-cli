@@ -24,8 +24,9 @@ export const resolveChartPlugins = (chartType: string): string => {
   return `<script src="${cdn}"></script>`;
 };
 
-export const chartHtml = (chartData: MulmoChartMedia["chartData"], title: string, chartId: string): string => {
-  const data = JSON.stringify(chartData, null, 2);
+export const stringifyChartData = (chartData: MulmoChartMedia["chartData"]): string => JSON.stringify(chartData, null, 2);
+
+export const chartHtml = (chartDataJson: string, title: string, chartId: string): string => {
   const heading = title || "Chart";
 
   return `
@@ -37,7 +38,7 @@ export const chartHtml = (chartData: MulmoChartMedia["chartData"], title: string
   <script>
     (function() {
       const ctx = document.getElementById('${chartId}').getContext('2d');
-      new Chart(ctx, ${data});
+      new Chart(ctx, ${chartDataJson});
     })();
   </script>
 </div>`;

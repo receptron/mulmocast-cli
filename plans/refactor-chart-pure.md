@@ -15,7 +15,9 @@ parity テストが通ってしまった）。ブラウザ側を書く前に、�
 ## 変更
 
 - `src/utils/image_plugins/chart_html.ts` (新規, pure)
-  - `chartHtml(chartData, title, chartId)` — canvas id を引数で受ける
+  - `chartHtml(chartDataJson, title, chartId)` — canvas id を引数で受ける
+  - `stringifyChartData(chartData)` — wrapper 側で先に呼ぶ。main の評価順
+    (stringify → title 読み取り → id 生成) を保つため
   - `resolveChartPlugins(chartType)` と CDN テーブルを移設
 - `src/utils/image_plugins/chart.ts` — 上記を import する wrapper に。
   `processChart` は一字も変えない。

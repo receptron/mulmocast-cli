@@ -3,7 +3,7 @@ import { getHTMLFile } from "../file.js";
 import { renderHTMLToImage, interpolate } from "../html_render.js";
 import { parrotingImagePath, generateUniqueId } from "./utils.js";
 import { resolveCombinedStyle } from "./bg_image_util.js";
-import { chartHtml, resolveChartPlugins } from "./chart_html.js";
+import { chartHtml, resolveChartPlugins, stringifyChartData } from "./chart_html.js";
 
 export const imageType = "chart";
 
@@ -31,7 +31,10 @@ const dumpHtml = async (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
-  return chartHtml(beat.image.chartData, beat.image.title, generateUniqueId("chart"));
+  // main と同じ評価順（stringify → title 読み取り → id 生成）を保つ。引数式は本体より先に
+  // 評価されるので、stringify を wrapper 側でやらないと throw / getter の順序が入れ替わる。
+  const chartDataJson = stringifyChartData(beat.image.chartData);
+  return chartHtml(chartDataJson, beat.image.title, generateUniqueId("chart"));
 };
 
 export const process = processChart;
