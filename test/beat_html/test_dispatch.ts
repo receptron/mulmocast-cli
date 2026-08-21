@@ -14,7 +14,7 @@ const minimalBeat: Record<(typeof supportedBeatTypes)[number], ReturnType<typeof
 
 test("every type in supportedBeatTypes actually renders", () => {
   supportedBeatTypes.forEach((type) => {
-    const fragment = beatToHtml(minimalBeat[type]);
+    const fragment = beatToHtml(minimalBeat[type], { idPrefix: "t" });
     assert.ok(fragment, `${type} is listed as supported but beatToHtml returned undefined`);
     assert.ok(fragment.html.length > 0, `${type} rendered empty markup`);
   });
@@ -35,10 +35,10 @@ test("types not on the list render nothing, rather than something wrong", () => 
   ];
   notYetSupported.forEach(([type, image]) => {
     assert.ok(!supportedBeatTypes.some((t) => t === type), `${type} is on supportedBeatTypes — move it out of this list and give it a minimal beat`);
-    assert.strictEqual(beatToHtml(beat(image)), undefined, `${type} should not render yet`);
+    assert.strictEqual(beatToHtml(beat(image), { idPrefix: "t" }), undefined, `${type} should not render yet`);
   });
 });
 
 test("a beat with no image renders nothing", () => {
-  assert.strictEqual(beatToHtml(mulmoBeatSchema.parse({ text: "narration only" })), undefined);
+  assert.strictEqual(beatToHtml(mulmoBeatSchema.parse({ text: "narration only" }), { idPrefix: "t" }), undefined);
 });

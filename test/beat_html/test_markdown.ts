@@ -99,29 +99,71 @@ test("markdown emits no document scaffolding and no shared assets", () => {
 test("beatToHtml routes a markdown beat and passes the id prefix through", () => {
   const beat = mulmoBeatSchema.parse({ image: { type: "markdown", markdown: "```mermaid\ngraph TD; A-->B\n```" } });
   assert.match(beatToHtml(beat, { idPrefix: "b7" })?.html ?? "", /id="b7-mermaid-0"/);
-  // Without a prefix the output still has to be deterministic.
-  assert.strictEqual(beatToHtml(beat)?.html, beatToHtml(beat)?.html);
+  assert.strictEqual(beatToHtml(beat, { idPrefix: "b7" })?.html, beatToHtml(beat, { idPrefix: "b7" })?.html);
+});
+
+test("two beats cannot be rendered into the same ids by omission", () => {
+  // The first design defaulted idPrefix, and two markdown beats then both emitted
+  // `id="…-mermaid-0"` — invalid HTML, and mermaid initialising against whichever element
+  // it found first. There is no value a library can pick that is unique per beat AND
+  // stable across re-renders, so the caller has to say. This asserts the API still makes
+  // that unavoidable: `idPrefix` is required, so there is no way to omit it.
+  const beat = mulmoBeatSchema.parse({ image: { type: "markdown", markdown: "```mermaid\ngraph TD; A-->B\n```" } });
+  const idsOf = (html: string) => [...html.matchAll(/id="([^"]+)"/g)].map((m) => m[1]);
+  const a = idsOf(beatToHtml(beat, { idPrefix: "beat-0" })?.html ?? "");
+  const b = idsOf(beatToHtml(beat, { idPrefix: "beat-1" })?.html ?? "");
+  assert.deepStrictEqual(a, ["beat-0-mermaid-0"]);
+  assert.deepStrictEqual(b, ["beat-1-mermaid-0"]);
+  assert.strictEqual(a.filter((id) => b.includes(id)).length, 0, "two beats must not share an element id");
+});
+
+// ═══════════════════════════════════════════════════════════
+// What counts as a mermaid fence.
+//
+// The first version matched ```` ```mermaid ```` against the raw source with a regex and
+// review found four inputs it got wrong. marked's own lexer decides now — these are the
+// cases that distinguish the two, both directions.
+// ═══════════════════════════════════════════════════════════
+
+test("a fence is a diagram when marked says it is a mermaid code block", () => {
+  const isDiagram = (src: string) => {
+    const { html, requires } = markdownToHtml(media(src), "p");
+    const inMarkup = html.includes('class="mermaid"');
+    // requires and the markup come from one decision; if they ever disagree, the host
+    // either loads a runtime for nothing or renders a diagram as an empty box.
+    assert.strictEqual(inMarkup, requires?.includes("mermaid") ?? false, `requires disagrees with the markup for: ${src}`);
+    return inMarkup;
+  };
+
+  assert.ok(isDiagram("```mermaid\ngraph TD; A-->B\n```"), "plain fence");
+  assert.ok(isDiagram("```mermaid\r\ngraph TD; A-->B\r\n```"), "CRLF line endings");
+  assert.ok(isDiagram("```mermaid \ngraph TD; A-->B\n```"), "trailing space after the language");
+  assert.ok(isDiagram('```mermaid title="x"\ngraph TD; A-->B\n```'), "an info string after the language");
+  assert.ok(isDiagram("```MERMAID\ngraph TD; A-->B\n```"), "language matched case-insensitively");
+
+  assert.ok(!isDiagram("````markdown\n```mermaid\ngraph TD; A-->B\n```\n````"), "quoted inside an outer fence");
+  assert.ok(!isDiagram("    ```mermaid\n    graph TD; A-->B\n    ```"), "inside an indented code block");
+  assert.ok(!isDiagram("```ts\nconst a = 1;\n```"), "a different language");
+  assert.ok(!isDiagram("no fence here at all"), "no fence");
 });
 
 // ═══════════════════════════════════════════════════════════
 // Parity with the Node path.
 //
-// `image_plugins/markdown.ts` renders the same beat for PDF / movie output. Two
+// `image_plugins/markdown_layout.ts` renders the same beat for PDF / movie output. Two
 // implementations of one thing drift, and PR 10 is where they are meant to become one —
-// this is what tells us they have not diverged before then. Whitespace differs by
-// construction (the Node version formats its template literals across lines), so the
-// comparison collapses it; everything else has to match.
+// this is what tells us they have not. Whitespace differs by construction (the Node
+// version formats its template literals across lines), so the comparison collapses it.
 // ═══════════════════════════════════════════════════════════
 
 test("renders the same markup as the Node plugin, for both formats", async () => {
   const { generateLayoutHtml, parseMarkdown } = await import("../../src/utils/image_plugins/markdown_layout.js");
   const collapse = (html: string) => html.replace(/\s+/g, " ").replace(/> </g, "><").trim();
 
-  const textCases = ["# T\n\n- a\n- b", "plain", "**bold** and `code`"];
+  const textCases = ["# T\n\n- a\n- b", "plain", "**bold** and `code`", "```ts\nconst a = 1;\n```", "| a | b |\n|---|---|\n| 1 | 2 |"];
   await Promise.all(
     textCases.map(async (md) => {
-      const mine = markdownToHtml(media(md), "p").html;
-      assert.strictEqual(collapse(mine), collapse(await parseMarkdown(md)), `text form: ${md}`);
+      assert.strictEqual(collapse(markdownToHtml(media(md), "p").html), collapse(await parseMarkdown(md)), `text form: ${md}`);
     }),
   );
 
@@ -131,21 +173,40 @@ test("renders the same markup as the Node plugin, for both formats", async () =>
     { "row-2": ["L", "R"] },
     { "2x2": ["a", "b", "c", "d"] },
     { header: "# H", "row-2": ["L", "R"] },
+    { content: ["line one", "", "line two"] },
   ];
   await Promise.all(
     layoutCases.map(async (layout) => {
-      const mine = markdownToHtml(media(layout), "p").html;
       const theirs = await generateLayoutHtml(layout as never);
-      assert.strictEqual(collapse(mine), collapse(theirs), `layout form: ${JSON.stringify(layout)}`);
+      assert.strictEqual(collapse(markdownToHtml(media(layout), "p").html), collapse(theirs), `layout: ${JSON.stringify(layout)}`);
     }),
   );
 });
 
 test("the parity check can actually tell the two apart", () => {
   // A comparison that collapses whitespace could also collapse a real difference into
-  // nothing. It does not: changing one slot's classes shows up.
+  // nothing. It does not: changing which slots are present shows up.
   const collapse = (html: string) => html.replace(/\s+/g, " ").replace(/> </g, "><").trim();
   const a = markdownToHtml(media({ content: "para" }), "p").html;
   const b = markdownToHtml(media({ header: "# H", content: "para" }), "p").html;
   assert.notStrictEqual(collapse(a), collapse(b));
+});
+
+test("KNOWN DIVERGENCE: the Node path misses fences this one catches", async () => {
+  // Not parity, on purpose. The Node path still classifies mermaid fences with a regex
+  // over raw source, so it misses a CRLF fence, a trailing space after the language, and
+  // an info string — all of which marked reads as mermaid code blocks and this path now
+  // renders. The browser side is the correct one; the Node side is a separate change,
+  // because it alters PDF and movie output and needs its own verification.
+  //
+  // Pinned rather than left implicit: when the Node path is fixed, this test fails, which
+  // is the reminder to delete it and fold these cases into the parity test above.
+  const { parseMarkdown } = await import("../../src/utils/image_plugins/markdown_layout.js");
+  const divergent = ["```mermaid\r\ngraph TD; A-->B\r\n```", "```mermaid \ngraph TD; A-->B\n```", '```mermaid title="x"\ngraph TD; A-->B\n```'];
+  await Promise.all(
+    divergent.map(async (src) => {
+      assert.ok(markdownToHtml(media(src), "p").html.includes('class="mermaid"'), `browser path should render a diagram: ${JSON.stringify(src)}`);
+      assert.ok(!(await parseMarkdown(src)).includes('class="mermaid"'), `Node path is still expected to miss: ${JSON.stringify(src)}`);
+    }),
+  );
 });

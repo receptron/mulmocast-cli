@@ -14,9 +14,6 @@ export { mermaidBlockHtml } from "./mermaid_block.js";
  * a type added here without a case — or vice versa — fails rather than silently
  * rendering nothing.
  */
-/** Used when the caller supplies no `idPrefix`. Stable, so output stays reproducible. */
-const DEFAULT_ID_PREFIX = "mulmo-beat";
-
 export const supportedBeatTypes = ["textSlide", "markdown"] as const;
 
 /**
@@ -24,6 +21,9 @@ export const supportedBeatTypes = ["textSlide", "markdown"] as const;
  *
  * **The markup is not sanitized** — see `BeatHtmlFragment.html`. Sanitize before inserting
  * it into a DOM.
+ *
+ * `options.idPrefix` is required: fragments can generate element ids, and only the caller
+ * knows which beat this is. See `BeatHtmlOptions`.
  *
  * Returns `undefined` for a beat this module cannot render — a type not yet supported,
  * or one whose media it cannot reach from a browser (a local file path, say). Callers
@@ -34,14 +34,14 @@ export const supportedBeatTypes = ["textSlide", "markdown"] as const;
  * anything that would drag Node into a bundle — the failure mode is a runtime error in
  * the browser, not a compile error, so it has to be checked mechanically.
  */
-export const beatToHtml = (beat: MulmoBeat, options: BeatHtmlOptions = {}): BeatHtmlFragment | undefined => {
+export const beatToHtml = (beat: MulmoBeat, options: BeatHtmlOptions): BeatHtmlFragment | undefined => {
   const image = beat.image;
   if (!image) return undefined;
   switch (image.type) {
     case "textSlide":
       return textSlideToHtml(image);
     case "markdown":
-      return markdownToHtml(image, options.idPrefix ?? DEFAULT_ID_PREFIX);
+      return markdownToHtml(image, options.idPrefix);
     default:
       return undefined;
   }

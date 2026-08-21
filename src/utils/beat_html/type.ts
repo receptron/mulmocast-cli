@@ -28,10 +28,16 @@ export type BeatRuntime = "chart" | "mermaid";
 
 export type BeatHtmlOptions = {
   /**
-   * Prefix for element ids generated inside a fragment (mermaid containers, chart
-   * canvases). Pass something stable per beat — its id, or its index — so re-rendering
-   * the same beat produces the same markup and a host diffing fragments does not see
-   * every diagram change identity on every render.
+   * Prefix for element ids generated inside a fragment (mermaid containers, and chart
+   * canvases later). Required, and deliberately so.
+   *
+   * A page-wide default was the first design, and review found what it does: two markdown
+   * beats each start their counter at zero, so both emit `<div id="…-mermaid-0">`. That is
+   * invalid HTML and sends mermaid at whichever element it finds first. There is no value
+   * a library can pick that is unique per beat AND stable across re-renders — only the
+   * caller knows which beat this is, so the caller says.
+   *
+   * Pass the beat's id, or its index in the deck.
    */
-  idPrefix?: string;
+  idPrefix: string;
 };

@@ -1,4 +1,4 @@
-import { marked } from "marked";
+import { Marked } from "marked";
 import type { MulmoMarkdownMedia, MulmoMarkdownLayout, MulmoRow2, MulmoGrid2x2 } from "../../types/index.js";
 import type { BeatHtmlFragment } from "./type.js";
 import { mermaidBlockHtml } from "./mermaid_block.js";
@@ -6,26 +6,39 @@ import { mermaidBlockHtml } from "./mermaid_block.js";
 /** A markdown field is written either as one string or as lines to be joined. */
 const toMarkdownString = (content: string | string[]): string => (Array.isArray(content) ? content.join("\n") : content);
 
-const MERMAID_FENCE = /```mermaid\n([\s\S]*?)```/g;
+/**
+ * A fence's info string can carry more than the language (```mermaid title="x"), and
+ * marked hands it over verbatim. The language is its first word.
+ */
+const languageOf = (info: string | undefined): string => (info ?? "").trim().split(/\s+/)[0].toLowerCase();
 
 /**
- * Mermaid fences become mermaid markup before `marked` sees them, so the diagram is not
- * rendered as a code block. Ids come from a counter the caller owns rather than from
- * `node:crypto`, so re-rendering the same beat produces the same markup — a host that
- * diffs the fragment should not see every diagram change identity on every render.
+ * Renders markdown, turning fenced `mermaid` blocks into mermaid markup.
+ *
+ * Asked of marked's own lexer rather than matched against the raw source. A regex over
+ * text was the first version and review found four inputs it got wrong: a CRLF fence and
+ * a fence with trailing whitespace after the language were missed, while a mermaid fence
+ * quoted INSIDE an outer ````markdown fence, and one inside an indented code block, were
+ * converted — turning somebody's example of mermaid syntax into an actual diagram. marked
+ * decides what is a code block and what language it is, so all four follow from asking it.
+ *
+ * A fresh `Marked` instance per call rather than the global `marked.use`, because the
+ * renderer closes over this call's mermaid counter — a shared one would leak ids between
+ * beats.
  */
-const replaceMermaidFences = (text: string, nextId: () => string): { text: string; hasMermaid: boolean } => {
+const renderMarkdown = (content: string | string[], nextId: () => string): { html: string; hasMermaid: boolean } => {
   let hasMermaid = false;
-  const replaced = text.replace(MERMAID_FENCE, (_match, code: string) => {
-    hasMermaid = true;
-    return mermaidBlockHtml(code, nextId());
+  const md = new Marked({
+    async: false,
+    renderer: {
+      code({ text, lang }: { text: string; lang?: string }) {
+        if (languageOf(lang) !== "mermaid") return false;
+        hasMermaid = true;
+        return mermaidBlockHtml(text, nextId());
+      },
+    },
   });
-  return { text: replaced, hasMermaid };
-};
-
-const render = (content: string | string[], nextId: () => string): { html: string; hasMermaid: boolean } => {
-  const { text, hasMermaid } = replaceMermaidFences(toMarkdownString(content), nextId);
-  return { html: marked.parse(text, { async: false }), hasMermaid };
+  return { html: md.parse(toMarkdownString(content), { async: false }), hasMermaid };
 };
 
 /** The object form of `markdown`, as opposed to a plain string or array of lines. */
@@ -40,9 +53,9 @@ const CELL = "overflow-auto p-4 bg-gray-50 rounded-lg";
 const layoutHtml = (md: MulmoMarkdownLayout, nextId: () => string): { html: string; hasMermaid: boolean } => {
   let hasMermaid = false;
   const part = (content: string | string[], proseClass: string): string => {
-    const r = render(content, nextId);
-    hasMermaid = hasMermaid || r.hasMermaid;
-    return wrap(proseClass, r.html);
+    const rendered = renderMarkdown(content, nextId);
+    hasMermaid = hasMermaid || rendered.hasMermaid;
+    return wrap(proseClass, rendered.html);
   };
 
   const parts: string[] = ['<div class="w-full h-full flex flex-col overflow-hidden">'];
@@ -74,12 +87,16 @@ const layoutHtml = (md: MulmoMarkdownLayout, nextId: () => string): { html: stri
  *
  * Either can embed a mermaid fence, which is why this can come back requiring the mermaid
  * runtime — a markdown beat is not obviously a diagram beat, and a host that only loads
- * mermaid for `mermaid` beats would render the diagram as nothing.
+ * mermaid for `mermaid` beats would render the diagram as nothing. `requires` and the
+ * markup come from the same decision, so they cannot disagree about what is a diagram.
+ *
+ * `idPrefix` has no default on purpose: a page-wide default gives two markdown beats the
+ * same element ids, which is invalid HTML and sends mermaid at the wrong element.
  */
 export const markdownToHtml = (image: MulmoMarkdownMedia, idPrefix: string): BeatHtmlFragment => {
   let counter = 0;
   const nextId = (): string => `${idPrefix}-mermaid-${counter++}`;
   const md = image.markdown;
-  const { html, hasMermaid } = isLayout(md) ? layoutHtml(md, nextId) : render(md, nextId);
+  const { html, hasMermaid } = isLayout(md) ? layoutHtml(md, nextId) : renderMarkdown(md, nextId);
   return { html, ...(hasMermaid ? { requires: ["mermaid" as const] } : {}) };
 };
