@@ -1,6 +1,7 @@
 import type { MulmoBeat } from "../../types/index.js";
 import type { BeatHtmlFragment, BeatHtmlOptions } from "./type.js";
 import { textSlideToHtml } from "./text_slide.js";
+import { chartToHtml } from "./chart.js";
 import { markdownToHtml } from "./markdown.js";
 import { assertSafeElementId } from "../element_id.js";
 
@@ -14,7 +15,7 @@ export { markdownToHtml } from "./markdown.js";
  * a type added here without a case — or vice versa — fails rather than silently
  * rendering nothing.
  */
-export const supportedBeatTypes = ["textSlide", "markdown"] as const;
+export const supportedBeatTypes = ["textSlide", "markdown", "chart"] as const;
 
 /**
  * Render a beat as markup for a browser host.
@@ -45,6 +46,8 @@ export const beatToHtml = (beat: MulmoBeat, options: BeatHtmlOptions): BeatHtmlF
       return textSlideToHtml(image);
     case "markdown":
       return markdownToHtml(image, options.idPrefix);
+    case "chart":
+      return chartToHtml(image, options.idPrefix);
     default:
       return undefined;
   }

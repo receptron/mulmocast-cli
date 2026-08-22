@@ -94,12 +94,14 @@ test("plugin CDNs are resolved per chart type, and unknown types get nothing", (
   });
 });
 
-// Pre-existing on main: the lookup is a plain object literal, so a chart type naming an
-// Object.prototype member resolves through the prototype chain. Pinned to make a fix visible,
-// not because it is wanted.
-test("prototype member names leak through the plugin lookup", () => {
-  assert.strictEqual(resolveChartPlugins("constructor"), '<script src="function Object() { [native code] }"></script>');
-  assert.strictEqual(resolveChartPlugins("__proto__"), '<script src="[object Object]"></script>');
+// The lookup is a Map, so a chart type naming an Object.prototype member resolves to
+// nothing instead of to a function. This was #1534, filed when the table was an object
+// literal; it closed here because the new chartPluginCdns would otherwise have returned a
+// function from an array typed string[].
+test("prototype member names resolve to no plugin", () => {
+  ["constructor", "__proto__", "toString", "valueOf", "hasOwnProperty"].forEach((type) => {
+    assert.strictEqual(resolveChartPlugins(type), "", `${type} must resolve to no plugin`);
+  });
 });
 
 test("the plugin passes the beat straight through to the renderer", async () => {
