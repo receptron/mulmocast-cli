@@ -17,7 +17,7 @@
  * narrower than CSS allows (it rejects `-a`, which is valid) in exchange for being stateable
  * in one line.
  */
-const SAFE_ELEMENT_ID = /^[A-Za-z_][A-Za-z0-9_-]*$/;
+export const SAFE_ELEMENT_ID = /^[A-Za-z_][A-Za-z0-9_-]*$/;
 
 export const isSafeElementId = (id: string): boolean => SAFE_ELEMENT_ID.test(id);
 
