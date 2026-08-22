@@ -73,11 +73,9 @@ it needs rather than pulling it in:
 | `mermaidTheme` | Which mermaid theme suits the beat's background                                 |
 
 **Driving what a `<script>` would have driven.** Fragments carry no `<script>`, because one
-injected through `innerHTML` does not execute and does not survive sanitizing. (A `slide`
-beat's chart block arrives from `@mulmocast/deck` with an inline driver for the standalone
-document; it is stripped here rather than shipped as markup that cannot run.) A chart's
+injected through `innerHTML` does not execute and does not survive sanitizing. A chart's
 config rides on its canvas as `data-mulmo-chart` instead — the same shape `@mulmocast/deck`
-uses, so one host loop drives slides and beats alike:
+uses for slides, so one host loop drives slides and beats alike:
 
 ```ts
 document.querySelectorAll("canvas[data-mulmo-chart]").forEach((canvas) => {

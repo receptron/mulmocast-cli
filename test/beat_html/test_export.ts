@@ -18,8 +18,8 @@ const sample: Record<string, unknown> = {
   mermaid: { type: "mermaid", title: "T", code: { kind: "text", text: "graph TD; A-->B" } },
   image: { type: "image", source: { kind: "url", url: "https://example.com/a.png" } },
   movie: { type: "movie", source: { kind: "url", url: "https://example.com/a.mp4" } },
-  // A chart block on purpose: deck ships an inline driver script with it, and the no-script
-  // claim below is only worth making if the sample can violate it.
+  // A chart block on purpose: it is the shape that carried an inline driver before deck 2.0.0,
+  // so the no-script assertion below is checked against the case that used to violate it.
   slide: { type: "slide", slide: { layout: "split", title: "T", left: { content: [{ type: "chart", chartData: { type: "bar" } }] }, right: { content: [] } } },
   html_tailwind: { type: "html_tailwind", html: "<div>T</div>" },
 };
