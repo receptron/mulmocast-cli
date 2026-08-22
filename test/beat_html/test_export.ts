@@ -35,7 +35,7 @@ test("every exported type renders through the public entry point", () => {
     const fragment = beatToHtml(beat, { idPrefix: `beat-${index}` });
     assert.ok(fragment, `${type} must render`);
     assert.ok(fragment.html.length > 0, `${type} must produce markup`);
-    assert.ok(!fragment.html.toLowerCase().includes("<script"), `${type} must not carry a script — an injected one does not execute`);
+    assert.ok(!fragment.html.toLowerCase().includes("<script"), `${type} must not carry a GENERATED script — an injected one does not execute`);
   });
 });
 
@@ -49,4 +49,19 @@ test("the host is told which runtimes the whole page needs", () => {
 
 test("the id rule applies at the public boundary too", () => {
   assert.throws(() => beatToHtml(mulmoBeatSchema.parse({ image: sample.textSlide }), { idPrefix: "beat 1" }), /element id must match/);
+});
+
+// The claim above is about what this module generates, not about what an author writes.
+// Nothing is sanitized, so an author's own script reaches the fragment verbatim — which is
+// why the docs tell hosts to sanitize before inserting.
+test("an author's own script is passed through, because nothing here sanitizes", () => {
+  const authored: [string, unknown][] = [
+    ["html_tailwind", { type: "html_tailwind", html: "<div>a</div><script>alert(1)</script>" }],
+    ["markdown", { type: "markdown", markdown: "<script>alert(1)</script>" }],
+    ["textSlide", { type: "textSlide", slide: { title: "<script>alert(1)</script>" } }],
+  ];
+  authored.forEach(([type, image]) => {
+    const fragment = beatToHtml(mulmoBeatSchema.parse({ image }), { idPrefix: "b" });
+    assert.match(fragment?.html ?? "", /<script>alert\(1\)<\/script>/, `${type} passes the author's script through`);
+  });
 });

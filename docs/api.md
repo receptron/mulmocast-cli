@@ -87,10 +87,13 @@ it needs rather than pulling it in:
 | `css`          | Rules the fragment needs, already scoped. Absent when it needs none             |
 | `mermaidTheme` | Which mermaid theme suits the beat's background                                 |
 
-**Driving what a `<script>` would have driven.** Fragments carry no `<script>`, because one
-injected through `innerHTML` does not execute and does not survive sanitizing. A chart's
-config rides on its canvas as `data-mulmo-chart` instead — the same shape `@mulmocast/deck`
-uses for slides, so one host loop drives slides and beats alike:
+**Driving what a `<script>` would have driven.** This module generates no `<script>` —
+one injected through `innerHTML` does not execute and does not survive sanitizing, so a
+chart's config rides on its canvas as `data-mulmo-chart` instead, the same shape
+`@mulmocast/deck` uses for slides. That says nothing about a script an author _wrote_: a
+`<script>` in an `html_tailwind` beat's markup, in raw HTML inside a `markdown` beat, or in
+a `textSlide` field reaches the fragment verbatim, because this module does not sanitize.
+Sanitize before inserting, as above. One host loop drives what this module does generate:
 
 ```ts
 document.querySelectorAll<HTMLCanvasElement>("canvas[data-mulmo-chart]").forEach((canvas) => {
