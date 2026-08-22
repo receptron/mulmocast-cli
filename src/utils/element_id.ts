@@ -1,3 +1,5 @@
+import { SAFE_ELEMENT_ID } from "../types/const.js";
+
 /**
  * The rule for element ids that generated markup interpolates. Pure — no Node, no
  * filesystem — because the Node render path and the browser fragment path build the same
@@ -17,7 +19,6 @@
  * narrower than CSS allows (it rejects `-a`, which is valid) in exchange for being stateable
  * in one line.
  */
-export const SAFE_ELEMENT_ID = /^[A-Za-z_][A-Za-z0-9_-]*$/;
 
 export const isSafeElementId = (id: string): boolean => SAFE_ELEMENT_ID.test(id);
 

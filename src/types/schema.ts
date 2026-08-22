@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { htmlLLMProvider, provider2TTSAgent, provider2ImageAgent, provider2MovieAgent, defaultProviders, provider2SoundEffectAgent } from "./provider2agent.js";
-import { currentMulmoScriptVersion } from "./const.js";
-import { SAFE_ELEMENT_ID } from "../utils/element_id.js";
+import { currentMulmoScriptVersion, SAFE_ELEMENT_ID } from "./const.js";
 import { mulmoVideoFilterSchema } from "./schema_video_filter.js";
 import { mulmoSlideMediaSchema, slideThemeSchema, slideBrandingSchema } from "@mulmocast/deck";
 
