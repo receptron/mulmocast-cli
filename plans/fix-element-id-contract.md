@@ -31,7 +31,7 @@ JS 側と食い違い `getElementById` が一致しなくなる。文脈ごと�
 
 ## 到達性
 
-`beat_html/index.ts` の契約は「beat の id か index を渡せ」と書いており、
+`beat_html/index.ts` の契約は当初「beat の id か index を渡せ」と書いており、
 `mulmoBeatSchema.id`（"Unique identifier for the beat"）はスクリプト由来かつ無制約。
 host が beat.id をそのまま渡すと属性を抜け出せる。
 
@@ -39,7 +39,7 @@ host が beat.id をそのまま渡すと属性を抜け出せる。
 
 不正文字を置換すると、異なる2つの beat id が同じ安全な id に潰れ得る。
 重複 element id はまさに `idPrefix` が防ごうとしているバグなので、黙って直すより落とす。
-契約に「index を渡すか、自分で sanitize しろ」と明記した。
+契約には「index から derive せよ（`beat-3`。`3` は数字始まりなので不可）、または自分で sanitize せよ」と明記した。
 
 ## #1539 との関係
 
