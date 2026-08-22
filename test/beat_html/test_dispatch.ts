@@ -12,6 +12,8 @@ const minimalBeat: Record<(typeof supportedBeatTypes)[number], ReturnType<typeof
   markdown: beat({ type: "markdown", markdown: "# T" }),
   chart: beat({ type: "chart", title: "T", chartData: { type: "bar", data: { labels: ["a"], datasets: [{ data: [1] }] } } }),
   mermaid: beat({ type: "mermaid", title: "T", code: { kind: "text", text: "graph TD; A-->B" } }),
+  image: beat({ type: "image", source: { kind: "url", url: "https://example.com/a.png" } }),
+  movie: beat({ type: "movie", source: { kind: "url", url: "https://example.com/a.mp4" } }),
 };
 
 test("every type in supportedBeatTypes actually renders", () => {
@@ -27,8 +29,6 @@ test("types not on the list render nothing, rather than something wrong", () => 
   // As each of these lands in a later PR it moves into supportedBeatTypes and out of here.
   // Real beats, not stubs: a stub could fail to render for the wrong reason.
   const notYetSupported: [string, unknown][] = [
-    ["image", { type: "image", source: { kind: "url", url: "https://example.com/a.png" } }],
-    ["movie", { type: "movie", source: { kind: "url", url: "https://example.com/a.mp4" } }],
     ["html_tailwind", { type: "html_tailwind", html: "<div></div>" }],
     ["slide", { type: "slide", slide: { layout: "title", title: "T" } }],
     ["beat", { type: "beat" }],
