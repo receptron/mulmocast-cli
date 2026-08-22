@@ -78,11 +78,18 @@ config rides on its canvas as `data-mulmo-chart` instead — the same shape `@mu
 uses for slides, so one host loop drives slides and beats alike:
 
 ```ts
-document.querySelectorAll("canvas[data-mulmo-chart]").forEach((canvas) => {
-  new Chart(canvas.getContext("2d"), JSON.parse(canvas.dataset.mulmoChart));
+document.querySelectorAll<HTMLCanvasElement>("canvas[data-mulmo-chart]").forEach((canvas) => {
+  const config = canvas.dataset.mulmoChart;
+  const context = canvas.getContext("2d");
+  if (!config || !context) return;
+  new Chart(context, JSON.parse(config));
 });
 mermaid.init(undefined, document.querySelectorAll(".mermaid"));
 ```
+
+The two guards are not ceremony: `dataset.mulmoChart` is `string | undefined` and
+`getContext` returns `null` on a canvas that already has a context of another kind, and
+Chart.js throws on either.
 
 ### What renders, and what does not
 

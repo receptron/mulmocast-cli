@@ -73,13 +73,26 @@ test("a chart slide carries its config on the canvas and no script", () => {
 
 // A chart label containing `</script>` is schema-valid. It is why removing a script
 // downstream could not be made safe, and why deck stopped emitting one.
-test("a hostile chart config stays inside its attribute", () => {
+test("a hostile chart config stays inside its attribute, and survives it", () => {
+  const label = "</script><p>injected</p>";
   const hostile = media({
-    slide: { layout: "split", title: "T", left: { content: [{ type: "chart", chartData: { label: "</script><p>injected</p>" } }] }, right: { content: [] } },
+    slide: { layout: "split", title: "T", left: { content: [{ type: "chart", chartData: { label } }] }, right: { content: [] } },
   });
   const html = slideToHtml(hostile, options()).html;
   assert.strictEqual(html.toLowerCase().split("<script").length - 1, 0);
   assert.ok(!html.includes("<p>injected</p>"), "the payload must not become markup");
+
+  // Neutralized, not dropped: the two assertions above also pass if the renderer throws the
+  // label away, which is chart configuration loss wearing a security fix's clothes.
+  const encoded = html.match(/data-mulmo-chart="([^"]*)"/)?.[1];
+  assert.ok(encoded, "the config must still be on the canvas");
+  const decoded = encoded
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+  assert.strictEqual(JSON.parse(decoded).label, label, "the host must read back exactly what the slide said");
 });
 
 test("a slide with no script is passed through untouched", () => {
