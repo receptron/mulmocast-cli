@@ -70,7 +70,11 @@ const BROWSER_ONLY: ts.CompilerOptions = {
  * this decides whether it BELONGS here. Adding one is a deliberate act, not a side effect
  * of an import — the smaller this graph stays, the less there is to go wrong in a bundle.
  */
-const ALLOWED_PACKAGES = new Set(["marked"]);
+// @mulmocast/deck is here for escapeHtml, imported deeply rather than through the package
+// barrel: the barrel pulls every layout and all of zod (551kb measured), the deep path pulls
+// one file. It contributes exactly `lib/utils.js` to this bundle, and the browser fragment
+// path depends on deck anyway.
+const ALLOWED_PACKAGES = new Set(["marked", "@mulmocast/deck"]);
 
 const bundle = (options: esbuild.BuildOptions) =>
   esbuild.build({
