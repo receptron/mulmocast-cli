@@ -63,6 +63,47 @@ jobs:
         yarn run build
     - run: yarn run ci_test
 
+  # Reports type errors in test/ WITHOUT gating the PR. tsconfig.json's `include` is `src`,
+  # so the tests have never been typechecked and have accumulated a backlog. Blocking on it
+  # today would block every unrelated PR; leaving it unmeasured lets it grow silently. The
+  # count in the job summary is the middle ground until the backlog is cleared (issue #1551).
+  typecheck_tests:
+    name: typecheck test/ (warn, non-blocking)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Use Node.js 22.x
+      uses: actions/setup-node@v5
+      with:
+        node-version: 22.x
+        cache: 'yarn'
+    - name: Install dependencies
+      env:
+        PUPPETEER_SKIP_DOWNLOAD: true
+      run: yarn install --frozen-lockfile
+    - name: Typecheck test/
+      continue-on-error: true
+      run: |
+        set -o pipefail
+        yarn run typecheck:test 2>&1 | tee typecheck-test.log || true
+        COUNT=$(grep -cE "error TS[0-9]+" typecheck-test.log || true)
+        {
+          echo "## \`test/\` typecheck: ${COUNT} error(s)"
+          echo
+          echo "Non-blocking. See the tracking issue for the backlog."
+          echo
+          echo "### By error code"
+          echo '```'
+          grep -oE "error TS[0-9]+" typecheck-test.log | sort | uniq -c | sort -rn | head -15 || true
+          echo '```'
+          echo "### By file"
+          echo '```'
+          grep -E "error TS[0-9]+" typecheck-test.log | cut -d'(' -f1 | sort | uniq -c | sort -rn | head -15 || true
+          echo '```'
+        } >> "$GITHUB_STEP_SUMMARY"
+
   lint_test_cross_platform:
     runs-on: ${{ matrix.os }}
     strategy:

@@ -60,6 +60,7 @@
     "ci_test": "cross-env NODE_ENV=test tsx --test --experimental-test-coverage ./test/*/test_*.ts",
     "lint": "eslint src test assets/html/js",
     "build": "tsc",
+    "typecheck:test": "tsc --noEmit -p tsconfig.test.json",
     "build_test": "tsc && git checkout -- lib/*",
     "cli": "npx tsx ./src/cli/bin.ts",
     "scripting": "npx tsx ./src/cli/bin.ts tool scripting",
