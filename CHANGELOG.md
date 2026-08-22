@@ -2,9 +2,115 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.10.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.10.0) (2026-08-22)
+
+### AI を使わない beat を、ブラウザだけで HTML にできるようになりました
+
+MulmoScript の beat のうち **AI 生成を必要としない deterministic なもの** — `slide` / `markdown` /
+`textSlide` / `chart` / `mermaid` / `image` / `movie` / `html_tailwind` の 8 種類 — を、
+**サーバや CLI を通さずブラウザ側で直接 HTML に変換**できるようになりました。
+
+これまでこれらの HTML は Node 側（`mulmo html`、または Puppeteer によるレンダリング）でしか
+作れませんでした。プレビューするたびにファイルを書き出すか、iframe に完成済みの文書を読み込ませる
+必要があったということです。
+
+**何ができるようになるか**: Vue などでリアクティブに編集している MulmoScript を、
+**その場で・iframe なしの `<div>` に・リアルタイムでプレビュー**できます。1 beat を書き換えたら
+その beat だけを描き直せます。編集ツールを作るための土台です。
+
+#### 使い方
+
+```ts
+import { beatToHtml, supportedBeatTypes } from "mulmocast/browser";
+
+// beat ごとに fragment を作る。idPrefix は beat ごとに一意で、再描画しても同じ値にする
+// （`beat-3` のように。`3` は要素 id が数字で始められないので不可）
+const fragments = script.beats.map((beat, index) => beatToHtml(beat, { idPrefix: `beat-${index}` }));
+```
+
+返るのは **body だけのマークアップ**で、`<html>` も `<head>` も含みません。共有されるものは断片に
+埋め込まず、**必要なものを名前で伝える**形になっています。
+
+| フィールド     | 意味                                                           |
+| -------------- | -------------------------------------------------------------- |
+| `html`         | 挿入するマークアップ本体                                       |
+| `requires`     | `"chart"` / `"mermaid"` — ページに**一度だけ**読み込む runtime |
+| `chartPlugins` | Chart.js の追加プラグイン CDN                                  |
+| `css`          | その断片に必要な CSS（スコープ済み。ホストが付ける）           |
+| `mermaidTheme` | 背景に合う mermaid テーマ                                      |
+
+ホスト側がすることは 3 つです。
+
+```ts
+// 1. requires が名指しした runtime を、ページに一度だけ読み込む
+// 2. 断片を挿入する（サニタイズしてから — 後述）
+container.innerHTML = fragments.map((f) => f?.html ?? "").join("");
+// 3. 描画を駆動する。断片は <script> を持たないので、ホストが動かす
+document.querySelectorAll<HTMLCanvasElement>("canvas[data-mulmo-chart]").forEach((canvas) => {
+  const config = canvas.dataset.mulmoChart;
+  const context = canvas.getContext("2d");
+  if (!config || !context) return;
+  new Chart(context, JSON.parse(config));
+});
+mermaid.init(undefined, container.querySelectorAll(".mermaid"));
+```
+
+**なぜ `<script>` を持たないのか**: `innerHTML` で挿入されたスクリプトはそもそも実行されず、
+サニタイズでも消えます。そこでチャートの設定は canvas の `data-mulmo-chart` 属性に載せてあり、
+これは `@mulmocast/deck` がスライドで使っているのと同じ形です。**ホストのループ 1 本でスライドと
+beat の両方を描画できます。**
+
+**サニタイズはホストの責務です。** beat はユーザーデータで、このモジュールは何もサニタイズしません
+（`html_tailwind` は設計上そのまま著者のマークアップです）。挿入前にサニタイズしてください。
+
+**ブラウザから届かないもの**: `mermaid` は `code.kind === "text"` のみ、`image` / `movie` の
+`base64` ソースは media type を持たないため描画されません（いずれも `undefined` が返ります）。
+Tailwind のユーティリティクラスを使う断片が多いので、スタイルはホスト側で用意してください。
+
+契約と制限の詳細、ホストの実装例は [`docs/api.md`](https://github.com/receptron/mulmocast-cli/blob/main/docs/api.md) にあります。
+
+対応 issue / PR: [#1526](https://github.com/receptron/mulmocast-cli/issues/1526) — [#1528](https://github.com/receptron/mulmocast-cli/pull/1528) [#1530](https://github.com/receptron/mulmocast-cli/pull/1530) [#1533](https://github.com/receptron/mulmocast-cli/pull/1533) [#1543](https://github.com/receptron/mulmocast-cli/pull/1543) [#1544](https://github.com/receptron/mulmocast-cli/pull/1544) [#1545](https://github.com/receptron/mulmocast-cli/pull/1545) [#1546](https://github.com/receptron/mulmocast-cli/pull/1546) [#1548](https://github.com/receptron/mulmocast-cli/pull/1548) [#1549](https://github.com/receptron/mulmocast-cli/pull/1549)
+
+### あわせて、生成 HTML のセキュリティ問題を修正しました
+
+上のブラウザ経路は生成した HTML を**動いているページに挿入**します。そこに到達する前に、既存の
+HTML 生成に残っていた注入経路を塞ぎました。**この修正は `mulmo html` と PNG / PDF / 動画
+レンダリングにも効きます** — ブラウザ機能を使っていない利用者にも関係します。
+
+- **ユーザー値のエスケープ** ([#1535](https://github.com/receptron/mulmocast-cli/issues/1535), PRs [#1536](https://github.com/receptron/mulmocast-cli/pull/1536) [#1538](https://github.com/receptron/mulmocast-cli/pull/1538) [#1539](https://github.com/receptron/mulmocast-cli/pull/1539)):
+  beat の `title`、`chartData`、mermaid の `code`、スクリプト由来の CSS が無エスケープで埋め込まれて
+  おり、mulmoscript から周囲の要素を閉じられました。実ブラウザで確認したところ、`chartData` に
+  `</script>` を含む文字列があると**注入が実行されるうえ、チャート自体も描画されていませんでした**
+  （描画するスクリプトが途中で終わるため）。`renderHTMLToImage` は `--allow-file-access-from-files`
+  付きで起動するので、注入されたスクリプトはローカルファイルを読めます。通常のコンテンツへの影響は
+  ありません（描画結果が同一であることを実測）。
+- **element id は検証で守る** ([#1540](https://github.com/receptron/mulmocast-cli/issues/1540), PR [#1541](https://github.com/receptron/mulmocast-cli/pull/1541)):
+  id は HTML 属性と `<script>` 内の JavaScript 文字列の**両方**に出るため、片方をエスケープすると
+  もう片方が壊れます。`[A-Za-z_][A-Za-z0-9_-]*` に限定し、外れたら明示的にエラーにしました。
+  **スクリプトに対する破壊的変更**: `elements[].id` に `a'b` や `swipe el` のような値を使っていると
+  parse で落ちます。どちらも従来から壊れていました（前者は生成 JavaScript の構文エラー、後者は
+  何にもマッチしないセレクタ）。
+- **チャートプラグインの参照** ([#1534](https://github.com/receptron/mulmocast-cli/issues/1534), PR [#1543](https://github.com/receptron/mulmocast-cli/pull/1543)):
+  `chartData.type` が `constructor` などだと壊れた `<script src>` が出ていました。実在するチャート
+  種別への影響はありません。
+
+### 依存
+
+- **[`@mulmocast/deck@2.0.0`](https://www.npmjs.com/package/@mulmocast/deck/v/2.0.0) が必要です。**
+  deck 側でチャートの描画スクリプトをブロックから文書レベルに移したため、スライド断片がスクリプトを
+  含まなくなりました。
+- `src/types/` に変更あり（`swipeElementSchema.id`）→ `@mulmocast/types` は別途リリースします。
+
+📦 **npm**: [`mulmocast@2.10.0`](https://www.npmjs.com/package/mulmocast/v/2.10.0)
+
+## [2.9.2](https://github.com/receptron/mulmocast-cli/releases/tag/2.9.2) (2026-07-26)
+
+- **Fix memory growing with the beat count** ([#1516](https://github.com/receptron/mulmocast-cli/pull/1516)): rendering consumed roughly 115MB per beat and eventually exhausted the Node heap. `fileCacheAgentFilter` returned the agent's `{ buffer }` as the node result even though the payload was already on disk and no downstream node read it, so every buffer stayed reachable for the length of the run.
+- _Recorded retroactively: 2.9.2 was published without a changelog entry._
+
 ## [2.9.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.9.1) (2026-07-25)
 
-- **Fix `voice_over` beats crashing ffmpeg before a transition** ([#1511](https://github.com/receptron/mulmocast-cli/pull/1511), fixes [#1509](https://github.com/receptron/mulmocast-cli/issues/1509)): `voice_over` beats contribute no video segment, so `createVideo` pushes `undefined` into `videoIdsForBeats`. The transition path read `videoIdsForBeats[index - 1]` directly and emitted a `[undefined_last]` pad which was never created, killing the whole render with `Error binding filtergraph inputs/outputs: Invalid argument`. Transitions now resolve against the previous *rendered* beat: `getTransitionVideoId` walks back past `voice_over` beats (returning `null` to skip the transition instead of referencing a nonexistent pad), `addTransitionEffects` uses the same walk-back for the slidein background, the `_first`/`_last` frame requirements no longer mark `voice_over` beats and decide `_last` from the next rendered beat's transition, and `getTransitionFrameDurations` resolves its neighbors the same way so static frame lengths keep matching overlay durations.
+- **Fix `voice_over` beats crashing ffmpeg before a transition** ([#1511](https://github.com/receptron/mulmocast-cli/pull/1511), fixes [#1509](https://github.com/receptron/mulmocast-cli/issues/1509)): `voice_over` beats contribute no video segment, so `createVideo` pushes `undefined` into `videoIdsForBeats`. The transition path read `videoIdsForBeats[index - 1]` directly and emitted a `[undefined_last]` pad which was never created, killing the whole render with `Error binding filtergraph inputs/outputs: Invalid argument`. Transitions now resolve against the previous _rendered_ beat: `getTransitionVideoId` walks back past `voice_over` beats (returning `null` to skip the transition instead of referencing a nonexistent pad), `addTransitionEffects` uses the same walk-back for the slidein background, the `_first`/`_last` frame requirements no longer mark `voice_over` beats and decide `_last` from the next rendered beat's transition, and `getTransitionFrameDurations` resolves its neighbors the same way so static frame lengths keep matching overlay durations.
 - **Fix audio/video desync when a movie is shorter than its `voice_over` group** ([#1511](https://github.com/receptron/mulmocast-cli/pull/1511), fixes [#1510](https://github.com/receptron/mulmocast-cli/issues/1510)): the owner beat's video segment was sized from its own audio only, while the audio timeline advanced for every `voice_over` beat in its group — with a generated i2v clip the video came out short by exactly the sum of the trailing `voice_over` durations, silently. The segment now spans the whole group (`max(own duration + trailing voice_over durations, movieDuration)`), holding the shot on screen via the existing last-frame tpad while the `voice_over` lines finish. Beat timestamps also advance for `voice_over` beats, so transitions and captions after a group land in the right place. Imported movies are unchanged (their group durations already sum to `movieDuration`).
 - **Move pure movie rules into the Methods layer** ([#1514](https://github.com/receptron/mulmocast-cli/pull/1514)): beat, timeline and transition rules buried in `src/actions/movie.ts` moved to the schema-specific Methods objects, so they no longer require importing the node-only ffmpeg render path — `MulmoBeatMethods` gains `isVoiceOver` (was `isVoiceOverBeat`), `getPrevRenderedBeatIndex` and `getNextRenderedBeatIndex`; `MulmoPresentationStyleMethods` gains `getNeedFirstFrame`, `getNeedLastFrame`, `getFillOption` and `getMovieVolume` (was `resolveMovieVolume`, now `(context, beat)`); `MulmoStudioContextMethods` gains `getExtraPadding`, `getBeatDuration`, `getVoiceOverGroupDuration`, `getSegmentDuration` and `isMovieBeat`. They are reachable from `mulmocast/browser`, with the browser import graph verified unchanged (no node builtins). Behavior is unchanged; tests for the moved rules move to `test/methods/` with added edge cases.
 - **Dependency updates** ([#1513](https://github.com/receptron/mulmocast-cli/pull/1513), [#1504](https://github.com/receptron/mulmocast-cli/pull/1504), [#1505](https://github.com/receptron/mulmocast-cli/pull/1505), [#1506](https://github.com/receptron/mulmocast-cli/pull/1506), [#1507](https://github.com/receptron/mulmocast-cli/pull/1507), [#1508](https://github.com/receptron/mulmocast-cli/pull/1508), [#1512](https://github.com/receptron/mulmocast-cli/pull/1512)): `@google/genai` 2.12 → 2.13, `clipboardy` 5.3.1 → 5.3.2, `marked` 18.0.6 → 18.0.7, `tar` resolution 7.5.20 → 7.5.22, plus dev tooling (`eslint` 10.7 → 10.8, `prettier` 3.9.5 → 3.9.6, `typescript-eslint` 8.64 → 8.65) and transitive bumps (brace-expansion, fast-uri, hono, protobufjs, body-parser).
@@ -317,7 +423,6 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.4.3`](https://www.npmjs.com/package/mulmocast/v/2.4.3)
 
-
 ## [2.4.2](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.2) (2026-02-28)
 
 - **3D CSS Rotation**: `rotateX`, `rotateY`, `rotateZ` properties now supported in MulmoAnimation DSL — enables perspective-based 3D effects like card flips and cinematic title reveals
@@ -328,13 +433,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.4.2`](https://www.npmjs.com/package/mulmocast/v/2.4.2)
 
-
 ## [2.4.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.1) (2026-02-27)
 
 - **Fix: Animated PDF output**: Animated `html_tailwind` beats now correctly show the completed animation state in PDF output instead of blank pages
 
 📦 **npm**: [`mulmocast@2.4.1`](https://www.npmjs.com/package/mulmocast/v/2.4.1)
-
 
 ## [2.4.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.4.0) (2026-02-27)
 
@@ -349,7 +452,6 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.4.0`](https://www.npmjs.com/package/mulmocast/v/2.4.0) | [`@mulmocast/types@2.4.0`](https://www.npmjs.com/package/@mulmocast/types/v/2.4.0)
 
-
 ## [2.3.2](https://github.com/receptron/mulmocast-cli/releases/tag/2.3.2) (2026-02-25)
 
 - **Config path resolution fix**: `kind: "path"` entries in `mulmo.config.json` are now resolved relative to the **script file directory**, consistent with all other path resolution in MulmoScript
@@ -358,14 +460,12 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.3.2`](https://www.npmjs.com/package/mulmocast/v/2.3.2)
 
-
 ## [2.3.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.3.1) (2026-02-25)
 
 - **`--grouped` option**: New `-g` / `--grouped` flag outputs all generated files (audio, images, video, studio JSON) under `output/<basename>/` directory instead of scattering across `output/`
 - **Audio path refactoring**: Extracted `formatAudioFileName` and `getGroupedAudioFilePath` utilities to deduplicate lang suffix logic
 
 📦 **npm**: [`mulmocast@2.3.1`](https://www.npmjs.com/package/mulmocast/v/2.3.1)
-
 
 ## [2.3.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.3.0) (2026-02-25)
 
@@ -376,7 +476,6 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.3.0`](https://www.npmjs.com/package/mulmocast/v/2.3.0)
 
-
 ## [2.2.6](https://github.com/receptron/mulmocast-cli/releases/tag/2.2.6) (2026-02-23)
 
 - **Slide Branding**: Global logo and background image settings applied to all slides automatically, like a slide master. Per-beat disable (`branding: null`) and override supported
@@ -385,20 +484,17 @@ All notable changes to this project will be documented in this file.
 📦 **npm**: [`mulmocast@2.2.6`](https://www.npmjs.com/package/mulmocast/v/2.2.6)
 📦 **npm**: [`@mulmocast/types@2.3.0`](https://www.npmjs.com/package/@mulmocast/types/v/2.3.0)
 
-
 ## [2.2.5](https://github.com/receptron/mulmocast-cli/releases/tag/2.2.5) (2026-02-23)
 
 - **`tool info themes`**: Retrieve slide theme information (theme name, colors, fonts) from CLI (`mulmo tool info themes`)
 
 📦 **npm**: [`mulmocast@2.2.5`](https://www.npmjs.com/package/mulmocast/v/2.2.5)
 
-
 ## [2.2.4](https://github.com/receptron/mulmocast-cli/releases/tag/2.2.4) (2026-02-22)
 
 - **`mulmocast` CLI alias**: `npx mulmocast@latest movie ...` now works directly (added `mulmocast` as bin alias alongside existing `mulmo`)
 
 📦 **npm**: [`mulmocast@2.2.4`](https://www.npmjs.com/package/mulmocast/v/2.2.4)
-
 
 ## [2.2.3](https://github.com/receptron/mulmocast-cli/releases/tag/2.2.3) (2026-02-22)
 
@@ -407,7 +503,6 @@ All notable changes to this project will be documented in this file.
 - **Story Skill Improvements**: Simplified movie generation workflow (`yarn movie` handles everything)
 
 📦 **npm**: [`mulmocast@2.2.3`](https://www.npmjs.com/package/mulmocast/v/2.2.3)
-
 
 ## [2.2.2](https://github.com/receptron/mulmocast-cli/releases/tag/2.2.2) (2026-02-20)
 
@@ -421,7 +516,6 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.2.2`](https://www.npmjs.com/package/mulmocast/v/2.2.2)
 
-
 ## [2.2.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.2.1) (2026-02-19)
 
 - Add missing assets to npm package: `assets/schemas/`, `assets/slide_themes/`, `assets/styles/`
@@ -429,7 +523,6 @@ All notable changes to this project will be documented in this file.
 - Add `./tools/complete_script` to exports map
 
 📦 **npm**: [`mulmocast@2.2.1`](https://www.npmjs.com/package/mulmocast/v/2.2.1)
-
 
 ## [2.2.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.2.0) (2026-02-19)
 
@@ -441,7 +534,6 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.2.0`](https://www.npmjs.com/package/mulmocast/v/2.2.0)
 
-
 ## [2.1.40](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.40) (2026-02-18)
 
 - **Slide Image Plugin**: New `type: "slide"` image plugin for structured JSON slide rendering with 11 layouts, 7 content block types, 13-color theme system, and 6 preset themes
@@ -450,13 +542,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.40`](https://www.npmjs.com/package/mulmocast/v/2.1.40) / [`@mulmocast/types@2.1.40`](https://www.npmjs.com/package/@mulmocast/types/v/2.1.40)
 
-
 ## [2.1.39](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.39) (2026-02-16)
 
 - **ElevenLabs eleven_v3 Model Support**: Added support for the new ElevenLabs eleven_v3 TTS model
 
 📦 **npm**: [`mulmocast@2.1.39`](https://www.npmjs.com/package/mulmocast/v/2.1.39)
-
 
 ## [2.1.38](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.38) (2026-02-13)
 
@@ -465,7 +555,6 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.38`](https://www.npmjs.com/package/mulmocast/v/2.1.38)
 
-
 ## [2.1.37](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.37) (2026-02-12)
 
 - **Viewer types refactored**: Separated `MulmoViewerBeat`/`MulmoViewerData` into dedicated `viewer.ts` with Zod schema validation
@@ -473,13 +562,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.37`](https://www.npmjs.com/package/mulmocast/v/2.1.37)
 
-
 ## [2.1.36](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.36) (2026-02-12)
 
 - **Align viewer types**: Add `importance`, `bgmFile`, `lang` fields and fix `audioSources` type in `MulmoViewerData`/`MulmoViewerBeat` to match mulmocast-viewer
 
 📦 **npm**: [`mulmocast@2.1.36`](https://www.npmjs.com/package/mulmocast/v/2.1.36)
-
 
 ## [2.1.35](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.35) (2026-02-04)
 
@@ -487,20 +574,17 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.35`](https://www.npmjs.com/package/mulmocast/v/2.1.35)
 
-
 ## [2.1.34](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.34) (2026-02-04)
 
 - **CLI export fix**: Separate `cliMain` function to prevent auto-execution when imported as library
 
 📦 **npm**: [`mulmocast@2.1.34`](https://www.npmjs.com/package/mulmocast/v/2.1.34)
 
-
 ## [2.1.33](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.33) (2026-02-04)
 
 - **cliMain export**: CLI main function is now exported for programmatic usage (e.g., `mulmocast-easy`)
 
 📦 **npm**: [`mulmocast@2.1.33`](https://www.npmjs.com/package/mulmocast/v/2.1.33)
-
 
 ## [2.1.32](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.32) (2026-02-04)
 
@@ -509,13 +593,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.32`](https://www.npmjs.com/package/mulmocast/v/2.1.32)
 
-
 ## [2.1.31](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.31) (2026-02-03)
 
 - **Background Image Support**: Added `backgroundImage` property to markdown and textSlide for stunning visual backgrounds with opacity control
 
 📦 **npm**: [`mulmocast@2.1.31`](https://www.npmjs.com/package/mulmocast/v/2.1.31)
-
 
 ## [2.1.30](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.30) (2026-02-01)
 
@@ -525,14 +607,12 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.30`](https://www.npmjs.com/package/mulmocast/v/2.1.30)
 
-
 ## [2.1.29](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.29) (2026-01-30)
 
 - **100 Markdown Slide Styles**: Added 100 pre-designed markdown slide styles for beautiful presentations
 - **Tool Info Command**: New `mulmo tool info` command to discover available voices, styles, templates, and more
 
 📦 **npm**: [`mulmocast@2.1.29`](https://www.npmjs.com/package/mulmocast/v/2.1.29)
-
 
 ## [2.1.28](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.28) (2026-01-30)
 
@@ -542,20 +622,17 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.28`](https://www.npmjs.com/package/mulmocast/v/2.1.28)
 
-
 ## [2.1.27](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.27) (2026-01-29)
 
 - **Puppeteer optimization**: Reuse browser instance for HTML-to-image rendering to reduce Chrome launches
 
 📦 **npm**: [`mulmocast@2.1.27`](https://www.npmjs.com/package/mulmocast/v/2.1.27)
 
-
 ## [2.1.26](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.26) (2026-01-29)
 
 - **Tool complete style option**: Added style option to `tool complete` command
 
 📦 **npm**: [`mulmocast@2.1.26`](https://www.npmjs.com/package/mulmocast/v/2.1.26)
-
 
 ## [2.1.25](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.25) (2026-01-29)
 
@@ -565,7 +642,6 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.25`](https://www.npmjs.com/package/mulmocast/v/2.1.25)
 
-
 ## [2.1.24](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.24) (2026-01-28)
 
 - **Gemini 3 Models Support**: Added support for the latest Gemini 3 models
@@ -574,20 +650,17 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.24`](https://www.npmjs.com/package/mulmocast/v/2.1.24)
 
-
 ## [2.1.23](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.23) (2026-01-28)
 
 - **Azure OpenAI Support**: Added Azure OpenAI support for image generation and translation
 
 📦 **npm**: [`mulmocast@2.1.23`](https://www.npmjs.com/package/mulmocast/v/2.1.23)
 
-
 ## [2.1.22](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.22) (2026-01-26)
 
 - **Maintenance release**: Package updates
 
 📦 **npm**: [`mulmocast@2.1.22`](https://www.npmjs.com/package/mulmocast/v/2.1.22)
-
 
 ## [2.1.21](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.21) (2026-01-26)
 
@@ -596,13 +669,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.21`](https://www.npmjs.com/package/mulmocast/v/2.1.21)
 
-
 ## [2.1.20](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.20) (2026-01-26)
 
 - **Remove nijivoice**: Removed nijivoice TTS provider
 
 📦 **npm**: [`mulmocast@2.1.20`](https://www.npmjs.com/package/mulmocast/v/2.1.20)
-
 
 ## [2.1.19](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.19) (2026-01-25)
 
@@ -611,20 +682,17 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.19`](https://www.npmjs.com/package/mulmocast/v/2.1.19)
 
-
 ## [2.1.18](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.18) (2026-01-23)
 
 - **Model deprecation notice**: Added deprecation announcements for upcoming model shutdowns
 
 📦 **npm**: [`mulmocast@2.1.18`](https://www.npmjs.com/package/mulmocast/v/2.1.18)
 
-
 ## [2.1.17](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.17) (2026-01-17)
 
 - **Gemini TTS**: Support Gemini TTS models in Google Cloud TTS agent
 
 📦 **npm**: [`mulmocast@2.1.17`](https://www.npmjs.com/package/mulmocast/v/2.1.17)
-
 
 ## [2.1.16](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.16) (2026-01-07)
 
@@ -634,13 +702,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.16`](https://www.npmjs.com/package/mulmocast/v/2.1.16)
 
-
 ## [2.1.15](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.15) (2025-12-25)
 
 - **Portrait image**: Added portrait credit image support
 
 📦 **npm**: [`mulmocast@2.1.15`](https://www.npmjs.com/package/mulmocast/v/2.1.15)
-
 
 ## [2.1.14](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.14) (2025-12-24)
 
@@ -648,13 +714,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.14`](https://www.npmjs.com/package/mulmocast/v/2.1.14)
 
-
 ## [2.1.13](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.13) (2025-12-23)
 
 - **Template update**: Updated presentation templates
 
 📦 **npm**: [`mulmocast@2.1.13`](https://www.npmjs.com/package/mulmocast/v/2.1.13)
-
 
 ## [2.1.12](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.12) (2025-12-23)
 
@@ -662,13 +726,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.12`](https://www.npmjs.com/package/mulmocast/v/2.1.12)
 
-
 ## [2.1.11](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.11) (2025-12-22)
 
 - **View JSON title**: Added title to mulmo view JSON output
 
 📦 **npm**: [`mulmocast@2.1.11`](https://www.npmjs.com/package/mulmocast/v/2.1.11)
-
 
 ## [2.1.10](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.10) (2025-12-22)
 
@@ -676,13 +738,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.10`](https://www.npmjs.com/package/mulmocast/v/2.1.10)
 
-
 ## [2.1.9](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.9) (2025-12-21)
 
 - **Bundle audio fix**: Fixed audio handling in bundle command
 
 📦 **npm**: [`mulmocast@2.1.9`](https://www.npmjs.com/package/mulmocast/v/2.1.9)
-
 
 ## [2.1.8](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.8) (2025-12-17)
 
@@ -691,13 +751,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.8`](https://www.npmjs.com/package/mulmocast/v/2.1.8)
 
-
 ## [2.1.7](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.7) (2025-12-12)
 
 - **Kotodama cache fix**: Fixed caching for Kotodama TTS
 
 📦 **npm**: [`mulmocast@2.1.7`](https://www.npmjs.com/package/mulmocast/v/2.1.7)
-
 
 ## [2.1.6](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.6) (2025-12-11)
 
@@ -706,13 +764,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.6`](https://www.npmjs.com/package/mulmocast/v/2.1.6)
 
-
 ## [2.1.5](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.5) (2025-12-11)
 
 - **Gemini TTS**: Added support for gemini-2.5-pro-preview-tts
 
 📦 **npm**: [`mulmocast@2.1.5`](https://www.npmjs.com/package/mulmocast/v/2.1.5)
-
 
 ## [2.1.4](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.4) (2025-12-11)
 
@@ -720,13 +776,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.4`](https://www.npmjs.com/package/mulmocast/v/2.1.4)
 
-
 ## [2.1.3](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.3) (2025-12-10)
 
 - **Wipe transition fix**: Fixed wipe transition to complete full 0-100% and auto-limit duration
 
 📦 **npm**: [`mulmocast@2.1.3`](https://www.npmjs.com/package/mulmocast/v/2.1.3)
-
 
 ## [2.1.2](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.2) (2025-12-09)
 
@@ -734,11 +788,9 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.1.2`](https://www.npmjs.com/package/mulmocast/v/2.1.2)
 
-
 ## [2.1.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.1) (2025-12-08)
 
 - Video filters
-
 
 ## [2.1.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.1.0) (2025-12-08)
 
@@ -749,7 +801,6 @@ All notable changes to this project will be documented in this file.
 - findMissingIndex and VideoId
 - Wipe transitions
 
-
 ## [2.0.9](https://github.com/receptron/mulmocast-cli/releases/tag/2.0.9) (2025-12-06)
 
 - **API key refactor**: Cleaned up API key handling
@@ -757,13 +808,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.0.9`](https://www.npmjs.com/package/mulmocast/v/2.0.9)
 
-
 ## [2.0.8](https://github.com/receptron/mulmocast-cli/releases/tag/2.0.8) (2025-11-28)
 
 - **Kotodama TTS**: Added Kotodama TTS support (https://kotodama.go-spiral.ai/)
 
 📦 **npm**: [`mulmocast@2.0.8`](https://www.npmjs.com/package/mulmocast/v/2.0.8)
-
 
 ## [2.0.7](https://github.com/receptron/mulmocast-cli/releases/tag/2.0.7) (2025-11-28)
 
@@ -773,13 +822,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.0.7`](https://www.npmjs.com/package/mulmocast/v/2.0.7)
 
-
 ## [2.0.6](https://github.com/receptron/mulmocast-cli/releases/tag/2.0.6) (2025-11-27)
 
 - **Long Gemini video**: Improved support for long Gemini video generation
 
 📦 **npm**: [`mulmocast@2.0.6`](https://www.npmjs.com/package/mulmocast/v/2.0.6)
-
 
 ## [2.0.5](https://github.com/receptron/mulmocast-cli/releases/tag/2.0.5) (2025-11-25)
 
@@ -787,13 +834,11 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.0.5`](https://www.npmjs.com/package/mulmocast/v/2.0.5)
 
-
 ## [2.0.4](https://github.com/receptron/mulmocast-cli/releases/tag/2.0.4) (2025-11-25)
 
 - **Gemini TTS**: Added Gemini TTS support
 
 📦 **npm**: [`mulmocast@2.0.4`](https://www.npmjs.com/package/mulmocast/v/2.0.4)
-
 
 ## [2.0.3](https://github.com/receptron/mulmocast-cli/releases/tag/2.0.3) (2025-11-21)
 
@@ -804,7 +849,6 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.0.3`](https://www.npmjs.com/package/mulmocast/v/2.0.3)
 
-
 ## [2.0.2](https://github.com/receptron/mulmocast-cli/releases/tag/2.0.2) (2025-11-17)
 
 - **Sound effect & lip sync params**: Added MulmoSoundEffectParams and MulmoLipSyncParams schema types
@@ -812,17 +856,14 @@ All notable changes to this project will be documented in this file.
 
 📦 **npm**: [`mulmocast@2.0.2`](https://www.npmjs.com/package/mulmocast/v/2.0.2)
 
-
 ## [2.0.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.0.1) (2025-11-16)
 
 - **MoviePrompt with images**: MoviePrompt now supports local and remote images for video generation from static images
 
 📦 **npm**: [`mulmocast@2.0.1`](https://www.npmjs.com/package/mulmocast/v/2.0.1)
 
-
 ## [2.0.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.0.0) (2025-11-08)
 
 - **Zod v4 migration**: Breaking change — updated internal JSON validation library from Zod v3 to Zod v4
 
 📦 **npm**: [`mulmocast@2.0.0`](https://www.npmjs.com/package/mulmocast/v/2.0.0)
-
