@@ -3,6 +3,7 @@ import type { MulmoChartMedia } from "../../types/index.js";
 // 551kb against 1.5kb for this file, and the browser fragment path bundles this module.
 import { escapeHtml } from "@mulmocast/deck/lib/utils.js";
 import { escapeJsonForScript } from "../html_escape.js";
+import { assertSafeElementId } from "../element_id.js";
 
 /**
  * Chart.js markup and plugin resolution. Pure — no Node, no filesystem — because both the
@@ -31,6 +32,7 @@ export const resolveChartPlugins = (chartType: string): string => {
 export const stringifyChartData = (chartData: MulmoChartMedia["chartData"]): string => JSON.stringify(chartData, null, 2);
 
 export const chartHtml = (chartDataJson: string, title: string, chartId: string): string => {
+  assertSafeElementId(chartId);
   const heading = escapeHtml(title || "Chart");
 
   return `

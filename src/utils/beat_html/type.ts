@@ -37,7 +37,14 @@ export type BeatHtmlOptions = {
    * a library can pick that is unique per beat AND stable across re-renders — only the
    * caller knows which beat this is, so the caller says.
    *
-   * Pass the beat's id, or its index in the deck.
+   * Must match `[A-Za-z_][A-Za-z0-9_-]*`: the id ends up in an HTML attribute and, for some
+   * beat types, in a JavaScript string literal inside a `<script>` where HTML entities are
+   * not decoded, and it has to stay usable from a CSS selector. Restricting the set is what
+   * makes one id safe in all of them — see `element_id.ts`.
+   *
+   * A beat's `id` comes from the script and is not restricted, so pass something derived
+   * from its index — `beat-3`, not `3`, since it must not start with a digit — or sanitize
+   * the id yourself. `beatToHtml` throws rather than guessing.
    */
   idPrefix: string;
 };

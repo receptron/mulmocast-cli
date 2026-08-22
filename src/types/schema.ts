@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { htmlLLMProvider, provider2TTSAgent, provider2ImageAgent, provider2MovieAgent, defaultProviders, provider2SoundEffectAgent } from "./provider2agent.js";
-import { currentMulmoScriptVersion } from "./const.js";
+import { currentMulmoScriptVersion, SAFE_ELEMENT_ID } from "./const.js";
 import { mulmoVideoFilterSchema } from "./schema_video_filter.js";
 import { mulmoSlideMediaSchema, slideThemeSchema, slideBrandingSchema } from "@mulmocast/deck";
 
@@ -292,7 +292,11 @@ const swipeShadowSchema = z
 export const swipeElementSchema: z.ZodType = z.lazy(() =>
   z
     .object({
-      id: z.string().optional(),
+      id: z
+        .string()
+        .regex(SAFE_ELEMENT_ID, "must start with a letter or underscore, then letters, digits, hyphens or underscores")
+        .optional()
+        .describe("Element id. Used as an HTML id and as a CSS selector in the generated animation script, so it must match [A-Za-z_][A-Za-z0-9_-]*."),
       // Position & size
       x: swipePositionValue.optional(),
       y: swipePositionValue.optional(),

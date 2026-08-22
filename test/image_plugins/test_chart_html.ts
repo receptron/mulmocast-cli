@@ -175,3 +175,18 @@ test("the render template's user values are escaped for their own contexts", () 
   assert.ok(!values.chart_data.includes("<"), "the script value must not carry a raw angle bracket");
   assert.deepStrictEqual(JSON.parse(values.chart_data), { label: "</script><script>pwn()</script>" }, "the value itself is unchanged");
 });
+
+// The id lands in an attribute AND in a JavaScript string literal inside the <script>, where
+// HTML entities are not decoded — so it is validated against a permitted set rather than
+// escaped for one context and left wrong in the other.
+test("an element id outside the permitted set is rejected", () => {
+  ['" onload="pwn()" x=', "a'b", "a b", "第1章", ""].forEach((id) => {
+    assert.throws(() => chartHtml("{}", "t", id), /element id must match/, `${JSON.stringify(id)} must be rejected`);
+  });
+});
+
+test("the ids the plugin actually generates are accepted", () => {
+  ["id", "chart-abc12345", "beat_3-chart-0"].forEach((id) => {
+    assert.match(chartHtml("{}", "t", id), new RegExp(`<canvas id="${id}">`), `${id} must pass`);
+  });
+});

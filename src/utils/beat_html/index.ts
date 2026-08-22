@@ -2,6 +2,7 @@ import type { MulmoBeat } from "../../types/index.js";
 import type { BeatHtmlFragment, BeatHtmlOptions } from "./type.js";
 import { textSlideToHtml } from "./text_slide.js";
 import { markdownToHtml } from "./markdown.js";
+import { assertSafeElementId } from "../element_id.js";
 
 export type { BeatHtmlFragment, BeatHtmlOptions, BeatRuntime } from "./type.js";
 export { textSlideToMarkdown, textSlideToHtml } from "./text_slide.js";
@@ -21,8 +22,10 @@ export const supportedBeatTypes = ["textSlide", "markdown"] as const;
  * **The markup is not sanitized** — see `BeatHtmlFragment.html`. Sanitize before inserting
  * it into a DOM.
  *
- * `options.idPrefix` is required: fragments can generate element ids, and only the caller
- * knows which beat this is. See `BeatHtmlOptions`.
+ * `options.idPrefix` is required and must match `[A-Za-z_][A-Za-z0-9_-]*`: fragments generate
+ * element ids, only the caller knows which beat this is, and a beat's own `id` comes from
+ * the script and is unrestricted. Throws on anything else rather than guessing a repair,
+ * because a guess can collapse two beats onto one id. See `BeatHtmlOptions`.
  *
  * Returns `undefined` for a beat this module cannot render — a type not yet supported,
  * or one whose media it cannot reach from a browser (a local file path, say). Callers
@@ -36,6 +39,7 @@ export const supportedBeatTypes = ["textSlide", "markdown"] as const;
 export const beatToHtml = (beat: MulmoBeat, options: BeatHtmlOptions): BeatHtmlFragment | undefined => {
   const image = beat.image;
   if (!image) return undefined;
+  assertSafeElementId(options.idPrefix);
   switch (image.type) {
     case "textSlide":
       return textSlideToHtml(image);
