@@ -16,15 +16,19 @@ import { assertSafeElementId } from "../element_id.js";
  * every render.
  */
 
-/** Chart.js plugin CDN URLs keyed by chart type */
-const CHART_PLUGIN_CDNS: Record<string, string> = {
-  sankey: "https://cdn.jsdelivr.net/npm/chartjs-chart-sankey",
-  treemap: "https://cdn.jsdelivr.net/npm/chartjs-chart-treemap@3",
-};
+/**
+ * Chart.js plugin CDN URLs keyed by chart type. A Map rather than an object literal: the
+ * chart type comes from the script, so an object lookup resolves `constructor` and
+ * `__proto__` through the prototype chain and hands back a function.
+ */
+const CHART_PLUGIN_CDNS = new Map([
+  ["sankey", "https://cdn.jsdelivr.net/npm/chartjs-chart-sankey"],
+  ["treemap", "https://cdn.jsdelivr.net/npm/chartjs-chart-treemap@3"],
+]);
 
 /** Resolve CDN script tags for Chart.js plugins based on chart type */
 export const resolveChartPlugins = (chartType: string): string => {
-  const cdn = CHART_PLUGIN_CDNS[chartType];
+  const cdn = CHART_PLUGIN_CDNS.get(chartType);
   if (!cdn) return "";
   return `<script src="${cdn}"></script>`;
 };
@@ -73,7 +77,7 @@ export const chartTypeOf = (chartData: MulmoChartMedia["chartData"]): string => 
 
 /** The Chart.js plugin CDNs a chart type needs, for a host that loads them once per page. */
 export const chartPluginCdns = (chartType: string): string[] => {
-  const cdn = CHART_PLUGIN_CDNS[chartType];
+  const cdn = CHART_PLUGIN_CDNS.get(chartType);
   return cdn ? [cdn] : [];
 };
 
