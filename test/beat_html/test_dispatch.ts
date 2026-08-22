@@ -11,6 +11,7 @@ const minimalBeat: Record<(typeof supportedBeatTypes)[number], ReturnType<typeof
   textSlide: beat({ type: "textSlide", slide: { title: "T" } }),
   markdown: beat({ type: "markdown", markdown: "# T" }),
   chart: beat({ type: "chart", title: "T", chartData: { type: "bar", data: { labels: ["a"], datasets: [{ data: [1] }] } } }),
+  mermaid: beat({ type: "mermaid", title: "T", code: { kind: "text", text: "graph TD; A-->B" } }),
 };
 
 test("every type in supportedBeatTypes actually renders", () => {
@@ -28,7 +29,6 @@ test("types not on the list render nothing, rather than something wrong", () => 
   const notYetSupported: [string, unknown][] = [
     ["image", { type: "image", source: { kind: "url", url: "https://example.com/a.png" } }],
     ["movie", { type: "movie", source: { kind: "url", url: "https://example.com/a.mp4" } }],
-    ["mermaid", { type: "mermaid", title: "t", code: { kind: "text", text: "graph TD; A-->B" } }],
     ["html_tailwind", { type: "html_tailwind", html: "<div></div>" }],
     ["slide", { type: "slide", slide: { layout: "title", title: "T" } }],
     ["beat", { type: "beat" }],
