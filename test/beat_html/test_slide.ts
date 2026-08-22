@@ -22,15 +22,22 @@ test("the fragment is deck's, mapped onto BeatHtmlFragment", () => {
   const theirs = generateSlideFragment(slideThemes.corporate, image.slide, { scopeClass: "beat-3-slide" });
   assert.strictEqual(mine.html, theirs.html);
   assert.strictEqual(mine.css, theirs.css);
-  assert.strictEqual(mine.scopeClass, theirs.scopeClass);
+});
+
+// Not returned as a field: deck already puts it on the root of `html`, and a host that only
+// injects `html` and attaches `css` gets the themed result. Verified in a browser.
+test("the scope class rides on the markup, not on a separate field", () => {
+  const fragment = slideToHtml(media(), options());
+  assert.strictEqual("scopeClass" in fragment, false, "no redundant field");
+  assert.match(fragment.html, /^<div class="beat-3-slide /, "the class is on the root of the markup");
+  assert.match(fragment.css ?? "", /\.beat-3-slide\{/, "and the css is written against it");
 });
 
 // The css is written against the scope class, so a class that changed on every render would
 // leave the rules matching nothing after a re-render.
 test("the scope class is derived from the idPrefix, so a re-render keeps it", () => {
-  assert.strictEqual(slideToHtml(media(), options()).scopeClass, "beat-3-slide");
-  assert.strictEqual(slideToHtml(media(), options()).scopeClass, slideToHtml(media(), options()).scopeClass);
-  assert.notStrictEqual(slideToHtml(media(), options()).scopeClass, slideToHtml(media(), options({ idPrefix: "beat-4" })).scopeClass);
+  assert.strictEqual(slideToHtml(media(), options()).html, slideToHtml(media(), options()).html, "same beat, same class");
+  assert.match(slideToHtml(media(), options({ idPrefix: "beat-4" })).html, /^<div class="beat-4-slide /, "a different beat gets a different one");
 });
 
 // Same order as MulmoPresentationStyleMethods.getResolvedSlideTheme on the Node side.

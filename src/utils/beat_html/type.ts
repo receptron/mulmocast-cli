@@ -35,11 +35,6 @@ export type BeatHtmlFragment = {
    * Absent unless the beat both requires mermaid and has an opinion.
    */
   mermaidTheme?: "dark" | "default";
-  /**
-   * The class the beat's `css` is written against, when it has any. The host must keep it
-   * on the element it puts `html` into, or the rules match nothing.
-   */
-  scopeClass?: string;
 };
 
 /** External runtimes a fragment can depend on. */

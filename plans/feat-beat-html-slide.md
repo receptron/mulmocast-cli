@@ -15,16 +15,21 @@ Node 経路の `generateSlideHTML` と同じ layout 群を使うので、fragmen
 その method を呼ばず順序だけ再現しているのは、`MulmoPresentationStyle` 型をブラウザバンドルに
 持ち込まないため。順序が 2 箇所にあることになるので、テストで固定する。
 
-## scopeClass
+## scope class
 
 `${idPrefix}-slide`。css は scope class に対して書かれているので、再描画で class が変わると
 規則が何にもマッチしなくなる。`idPrefix` は #1541 の element id 規則を通っているので、
 そのまま CSS class として妥当。
 
+**field としては返さない。** 当初 `BeatHtmlFragment.scopeClass` を足し「host が要素に付けないと
+css が効かない」と書いたが、レビューで指摘され実測したところ**誤り**だった: deck は `html` の root に
+その class を既に付けており、host が `html` を注入して `css` を当てるだけでテーマが効く
+（wrapper に何も付けずに `--d-bg` がビートのテーマ色になることをブラウザで確認）。
+冗長なうえ説明が誤っていたので field ごと撤去した。
+
 ## BeatHtmlFragment の拡張
 
-`scopeClass` と `mermaidTheme` を追加。前者は host が要素に付けないと css が効かない。
-後者は暗いスライドに明るい図が乗ると読めないため。
+`mermaidTheme` のみ。暗いスライドに明るい図が乗ると読めないため。
 
 ## バンドル
 
