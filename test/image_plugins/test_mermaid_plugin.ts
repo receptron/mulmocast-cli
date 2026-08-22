@@ -1,17 +1,17 @@
 import test from "node:test";
 import assert from "node:assert";
-import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
+import { requireRenderingPlugin } from "./utils.js";
 import { ImageProcessorParams } from "../../src/types/index.js";
 import { escapedMermaidTemplateValues, mermaidHtml } from "../../src/utils/image_plugins/mermaid_html.js";
 
 test("mermaid plugin basic functionality", () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   assert(plugin, "mermaid plugin should exist");
   assert.strictEqual(plugin.imageType, "mermaid");
 });
 
 test("mermaid plugin path function", () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   assert(plugin, "mermaid plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -33,7 +33,7 @@ test("mermaid plugin path function", () => {
 });
 
 test("mermaid plugin markdown generation with text code", () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   assert(plugin, "mermaid plugin should exist");
   assert(plugin.markdown, "mermaid plugin should have markdown function");
 
@@ -56,7 +56,7 @@ test("mermaid plugin markdown generation with text code", () => {
 });
 
 test("mermaid plugin markdown generation with simple flowchart", () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   assert(plugin, "mermaid plugin should exist");
   assert(plugin.markdown, "mermaid plugin should have markdown function");
 
@@ -78,7 +78,7 @@ test("mermaid plugin markdown generation with simple flowchart", () => {
 });
 
 test("mermaid plugin markdown generation with sequence diagram", () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   assert(plugin, "mermaid plugin should exist");
   assert(plugin.markdown, "mermaid plugin should have markdown function");
 
@@ -103,7 +103,7 @@ test("mermaid plugin markdown generation with sequence diagram", () => {
 });
 
 test("mermaid plugin markdown generation with class diagram", () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   assert(plugin, "mermaid plugin should exist");
   assert(plugin.markdown, "mermaid plugin should have markdown function");
 
@@ -125,7 +125,7 @@ test("mermaid plugin markdown generation with class diagram", () => {
 });
 
 test("mermaid plugin markdown generation with non-text code returns undefined", () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   assert(plugin, "mermaid plugin should exist");
   assert(plugin.markdown, "mermaid plugin should have markdown function");
 
@@ -147,7 +147,7 @@ test("mermaid plugin markdown generation with non-text code returns undefined", 
 });
 
 test("mermaid plugin markdown generation with wrong image type", () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   assert(plugin, "mermaid plugin should exist");
   assert(plugin.markdown, "mermaid plugin should have markdown function");
 
@@ -166,7 +166,7 @@ test("mermaid plugin markdown generation with wrong image type", () => {
 });
 
 test("mermaid plugin with gantt chart", () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   assert(plugin, "mermaid plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -189,7 +189,7 @@ test("mermaid plugin with gantt chart", () => {
 });
 
 test("mermaid plugin with pie chart", () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   assert(plugin, "mermaid plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -212,7 +212,7 @@ test("mermaid plugin with pie chart", () => {
 });
 
 test("mermaid plugin with user journey", () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   assert(plugin, "mermaid plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -234,7 +234,7 @@ test("mermaid plugin with user journey", () => {
 });
 
 test("mermaid plugin with empty code", () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   assert(plugin, "mermaid plugin should exist");
 
   const mockParams: ImageProcessorParams = {

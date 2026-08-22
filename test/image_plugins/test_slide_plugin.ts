@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
-import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
+import { requireHtmlPlugin } from "./utils.js";
 import { ImageProcessorParams } from "../../src/types/index.js";
 
 const validTheme = {
@@ -42,13 +42,13 @@ const altTheme = {
 };
 
 test("slide plugin basic functionality", () => {
-  const plugin = findImagePlugin("slide");
+  const plugin = requireHtmlPlugin("slide");
   assert(plugin, "slide plugin should exist");
   assert.strictEqual(plugin.imageType, "slide");
 });
 
 test("slide plugin path function", () => {
-  const plugin = findImagePlugin("slide");
+  const plugin = requireHtmlPlugin("slide");
   assert(plugin, "slide plugin should exist");
 
   const mockParams = {
@@ -67,7 +67,7 @@ test("slide plugin path function", () => {
 });
 
 test("slide plugin html uses beat.image.theme when provided", async () => {
-  const plugin = findImagePlugin("slide");
+  const plugin = requireHtmlPlugin("slide");
   assert(plugin, "slide plugin should exist");
   assert(plugin.html, "slide plugin should have html function");
 
@@ -92,7 +92,7 @@ test("slide plugin html uses beat.image.theme when provided", async () => {
 });
 
 test("slide plugin html falls back to slideParams.theme when beat theme is missing", async () => {
-  const plugin = findImagePlugin("slide");
+  const plugin = requireHtmlPlugin("slide");
   assert(plugin, "slide plugin should exist");
   assert(plugin.html, "slide plugin should have html function");
 
@@ -120,7 +120,7 @@ test("slide plugin html falls back to slideParams.theme when beat theme is missi
 });
 
 test("slide plugin html uses beat theme over slideParams theme (override)", async () => {
-  const plugin = findImagePlugin("slide");
+  const plugin = requireHtmlPlugin("slide");
   assert(plugin, "slide plugin should exist");
   assert(plugin.html, "slide plugin should have html function");
 
@@ -149,7 +149,7 @@ test("slide plugin html uses beat theme over slideParams theme (override)", asyn
 });
 
 test("slide plugin html uses corporate theme as default when both themes are missing", async () => {
-  const plugin = findImagePlugin("slide");
+  const plugin = requireHtmlPlugin("slide");
   assert(plugin, "slide plugin should exist");
   assert(plugin.html, "slide plugin should have html function");
 
@@ -172,7 +172,7 @@ test("slide plugin html uses corporate theme as default when both themes are mis
 });
 
 test("slide plugin html returns undefined for non-slide beat", async () => {
-  const plugin = findImagePlugin("slide");
+  const plugin = requireHtmlPlugin("slide");
   assert(plugin, "slide plugin should exist");
   assert(plugin.html, "slide plugin should have html function");
 

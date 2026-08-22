@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
-import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
+import { requireHtmlPlugin } from "./utils.js";
 import { mulmoHtmlTailwindMediaSchema, htmlTailwindAnimationSchema } from "../../src/types/schema.js";
 import { normalizeEvenDimensions } from "../../src/utils/ffmpeg_utils.js";
 import { MulmoBeatMethods } from "../../src/methods/index.js";
@@ -76,7 +76,7 @@ test("mulmoHtmlTailwindMediaSchema - rejects unknown fields (strict)", () => {
 // === Plugin tests (no Puppeteer, no FFmpeg) ===
 
 test("html_tailwind plugin - static beat returns correct path", () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert(plugin, "html_tailwind plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -94,7 +94,7 @@ test("html_tailwind plugin - static beat returns correct path", () => {
 });
 
 test("html_tailwind plugin - animated beat returns correct path (parrotingImagePath)", () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert(plugin, "html_tailwind plugin should exist");
 
   // When animated, imagePluginAgent passes the .mp4 path as imagePath
@@ -114,7 +114,7 @@ test("html_tailwind plugin - animated beat returns correct path (parrotingImageP
 });
 
 test("html_tailwind plugin - html dump works for static beat", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert(plugin, "html_tailwind plugin should exist");
   assert(plugin.html, "html_tailwind plugin should have html function");
 
@@ -133,7 +133,7 @@ test("html_tailwind plugin - html dump works for static beat", async () => {
 });
 
 test("html_tailwind plugin - html dump works for animated beat", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert(plugin, "html_tailwind plugin should exist");
   assert(plugin.html, "html_tailwind plugin should have html function");
 
@@ -169,7 +169,7 @@ test("mulmoHtmlTailwindMediaSchema - animation: false is rejected by schema", ()
 });
 
 test("html_tailwind plugin - animation: false treated as static", () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert(plugin, "html_tailwind plugin should exist");
 
   const mockParams: ImageProcessorParams = {

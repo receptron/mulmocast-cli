@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert";
 import { htmlTailwindToHtml } from "../../src/utils/beat_html/html_tailwind.js";
-import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
+import { requireImagePlugin } from "../image_plugins/utils.js";
 import { mulmoHtmlTailwindMediaSchema } from "../../src/types/schema.js";
 
 /**
@@ -62,7 +62,7 @@ test("elements that are not an array of objects fall back to html", () => {
 
 // One implementation, two callers: if they drift, the browser and the PNG dump disagree.
 test("the fragment is the same markup the document dump produces", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireImagePlugin("html_tailwind");
   for (const over of [{ html: "<div>a</div>" }, { html: ["a", "b"] }, { elements: [{ id: "p", text: "x" }] }]) {
     const image = media(over);
     assert.strictEqual(htmlTailwindToHtml(image)!.html, await plugin.html!({ beat: { image } }), JSON.stringify(over));

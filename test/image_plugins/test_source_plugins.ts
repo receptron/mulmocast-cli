@@ -1,18 +1,18 @@
 import test from "node:test";
 import assert from "node:assert";
 import { resolve } from "node:path";
-import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
+import { requireImagePlugin } from "./utils.js";
 import { ImageProcessorParams } from "../../src/types/index.js";
 
 // Image plugin tests
 test("image plugin basic functionality", () => {
-  const plugin = findImagePlugin("image");
+  const plugin = requireImagePlugin("image");
   assert(plugin, "image plugin should exist");
   assert.strictEqual(plugin.imageType, "image");
 });
 
 test("image plugin path with URL source", () => {
-  const plugin = findImagePlugin("image");
+  const plugin = requireImagePlugin("image");
   assert(plugin, "image plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -33,7 +33,7 @@ test("image plugin path with URL source", () => {
 });
 
 test("image plugin path with path source", () => {
-  const plugin = findImagePlugin("image");
+  const plugin = requireImagePlugin("image");
   assert(plugin, "image plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -59,7 +59,7 @@ test("image plugin path with path source", () => {
 });
 
 test("image plugin path with relative path source", () => {
-  const plugin = findImagePlugin("image");
+  const plugin = requireImagePlugin("image");
   assert(plugin, "image plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -85,7 +85,7 @@ test("image plugin path with relative path source", () => {
 });
 
 test("image plugin path with wrong image type", () => {
-  const plugin = findImagePlugin("image");
+  const plugin = requireImagePlugin("image");
   assert(plugin, "image plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -104,13 +104,13 @@ test("image plugin path with wrong image type", () => {
 
 // Movie plugin tests
 test("movie plugin basic functionality", () => {
-  const plugin = findImagePlugin("movie");
+  const plugin = requireImagePlugin("movie");
   assert(plugin, "movie plugin should exist");
   assert.strictEqual(plugin.imageType, "movie");
 });
 
 test("movie plugin path with URL source", () => {
-  const plugin = findImagePlugin("movie");
+  const plugin = requireImagePlugin("movie");
   assert(plugin, "movie plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -132,7 +132,7 @@ test("movie plugin path with URL source", () => {
 });
 
 test("movie plugin path with path source", () => {
-  const plugin = findImagePlugin("movie");
+  const plugin = requireImagePlugin("movie");
   assert(plugin, "movie plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -158,7 +158,7 @@ test("movie plugin path with path source", () => {
 });
 
 test("movie plugin path extension fix", () => {
-  const plugin = findImagePlugin("movie");
+  const plugin = requireImagePlugin("movie");
   assert(plugin, "movie plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -180,7 +180,7 @@ test("movie plugin path extension fix", () => {
 });
 
 test("movie plugin path with .mov already in imagePath", () => {
-  const plugin = findImagePlugin("movie");
+  const plugin = requireImagePlugin("movie");
   assert(plugin, "movie plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -202,8 +202,8 @@ test("movie plugin path with .mov already in imagePath", () => {
 
 // Edge cases for both image and movie plugins
 test("source plugins with no image property", () => {
-  const imagePlugin = findImagePlugin("image");
-  const moviePlugin = findImagePlugin("movie");
+  const imagePlugin = requireImagePlugin("image");
+  const moviePlugin = requireImagePlugin("movie");
 
   const mockParams: ImageProcessorParams = {
     imagePath: "/test/path/file.png",
@@ -218,7 +218,7 @@ test("source plugins with no image property", () => {
 });
 
 test("source plugins with unknown source kind", () => {
-  const imagePlugin = findImagePlugin("image");
+  const imagePlugin = requireImagePlugin("image");
 
   const mockParams: ImageProcessorParams = {
     imagePath: "/test/path/image.png",
@@ -244,7 +244,7 @@ test("source plugins with unknown source kind", () => {
 });
 
 test("image plugin with absolute path source", () => {
-  const plugin = findImagePlugin("image");
+  const plugin = requireImagePlugin("image");
   assert(plugin, "image plugin should exist");
 
   const mockParams: ImageProcessorParams = {

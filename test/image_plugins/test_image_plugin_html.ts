@@ -1,15 +1,15 @@
-import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
+import { requireHtmlPlugin } from "./utils.js";
 
 import test from "node:test";
 import assert from "node:assert";
 
 test("test imagePlugin html_tailwind - basic functionality", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert.equal(plugin.imageType, "html_tailwind");
 });
 
 test("test imagePlugin html_tailwind - html method with string", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   const beat = {
     image: {
       type: "html_tailwind",
@@ -22,7 +22,7 @@ test("test imagePlugin html_tailwind - html method with string", async () => {
 });
 
 test("test imagePlugin html_tailwind - html method with array", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   const beat = {
     image: {
       type: "html_tailwind",
@@ -35,7 +35,7 @@ test("test imagePlugin html_tailwind - html method with array", async () => {
 });
 
 test("test imagePlugin html_tailwind - html method with wrong type", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   const beat = {
     image: {
       type: "markdown",
@@ -48,7 +48,7 @@ test("test imagePlugin html_tailwind - html method with wrong type", async () =>
 });
 
 test("test imagePlugin html_tailwind - html method with no image", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   const beat = {};
 
   const result = await plugin.html({ beat });

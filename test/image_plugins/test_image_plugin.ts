@@ -1,11 +1,11 @@
-import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
+import { requireImagePlugin } from "./utils.js";
 import { resolve } from "node:path";
 
 import test from "node:test";
 import assert from "node:assert";
 
 test("test imagePlugin mermaid", async () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireImagePlugin("mermaid");
   assert.equal(plugin.imageType, "mermaid");
 
   const path = plugin.path({ imagePath: "expectImagePath" });
@@ -13,7 +13,7 @@ test("test imagePlugin mermaid", async () => {
 });
 
 test("test imagePlugin image url", async () => {
-  const plugin = findImagePlugin("image");
+  const plugin = requireImagePlugin("image");
   assert.equal(plugin.imageType, "image");
 
   const path = plugin.path(
@@ -32,7 +32,7 @@ test("test imagePlugin image url", async () => {
 });
 
 test("test imagePlugin image path", async () => {
-  const plugin = findImagePlugin("image");
+  const plugin = requireImagePlugin("image");
   assert.equal(plugin.imageType, "image");
 
   const path = plugin.path({
@@ -49,7 +49,7 @@ test("test imagePlugin image path", async () => {
 });
 
 test("test imagePlugin beat", async () => {
-  const plugin = findImagePlugin("beat");
+  const plugin = requireImagePlugin("beat");
   assert.equal(plugin.imageType, "beat");
 
   const path = plugin.path({ type: "beat", imagePath: "expectImagePath" });
