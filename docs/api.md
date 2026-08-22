@@ -62,6 +62,12 @@ stable across re-renders, which is why the library cannot pick it.
 **Sanitizing.** A beat is user data and the markup is not sanitized — `html_tailwind` beats
 are raw author markup by design. Sanitize before inserting into a DOM.
 
+**Providing Tailwind.** Most fragments are styled with Tailwind utility classes — measured,
+five of the eight beat types use them, and `slide` needs `slideUtilityCss` from
+`@mulmocast/deck` as well. This is _not_ in `requires`, which names only the JavaScript
+runtimes a fragment needs a host to load and execute. A page without Tailwind renders the
+markup unstyled rather than failing, which is why it is worth saying out loud.
+
 **Loading the shared runtimes once for the page**, not once per beat. A fragment names what
 it needs rather than pulling it in:
 
