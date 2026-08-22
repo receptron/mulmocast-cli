@@ -70,10 +70,11 @@ const BROWSER_ONLY: ts.CompilerOptions = {
  * this decides whether it BELONGS here. Adding one is a deliberate act, not a side effect
  * of an import — the smaller this graph stays, the less there is to go wrong in a bundle.
  */
-// @mulmocast/deck is here for escapeHtml, imported deeply rather than through the package
-// barrel: the barrel pulls every layout and all of zod (551kb measured), the deep path pulls
-// one file. It contributes exactly `lib/utils.js` to this bundle, and the browser fragment
-// path depends on deck anyway.
+// @mulmocast/deck is here for escapeHtml and for generateSlideFragment, imported deeply
+// rather than through the package barrel: the barrel pulls every layout AND all of zod
+// (101 inputs / 602kb measured), the deep paths pull 19 files. The slide layouts are the
+// bulk of that and are inherent — they are the slide renderer — so the whole beat_html
+// bundle measures 35 inputs / 119kb, of which marked is 1 and this repo's own source 15.
 const ALLOWED_PACKAGES = new Set(["marked", "@mulmocast/deck"]);
 
 const bundle = (options: esbuild.BuildOptions) =>

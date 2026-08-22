@@ -1,3 +1,5 @@
+import type { SlideTheme } from "@mulmocast/deck";
+
 /**
  * A beat rendered as markup for a browser host.
  *
@@ -27,6 +29,17 @@ export type BeatHtmlFragment = {
    * for both. Absent when the beat needs none.
    */
   chartPlugins?: string[];
+  /**
+   * Which mermaid theme suits this beat's background. A dark slide with a light diagram is
+   * unreadable, and the host initialises mermaid once for the page, so it has to be told.
+   * Absent unless the beat both requires mermaid and has an opinion.
+   */
+  mermaidTheme?: "dark" | "default";
+  /**
+   * The class the beat's `css` is written against, when it has any. The host must keep it
+   * on the element it puts `html` into, or the rules match nothing.
+   */
+  scopeClass?: string;
 };
 
 /** External runtimes a fragment can depend on. */
@@ -53,4 +66,13 @@ export type BeatHtmlOptions = {
    * the id yourself. `beatToHtml` throws rather than guessing.
    */
   idPrefix: string;
+  /**
+   * The deck-level slide theme, for `slide` beats. A beat's own `image.theme` wins over it,
+   * and the built-in `corporate` theme is the fallback — the same order
+   * `MulmoPresentationStyleMethods.getResolvedSlideTheme` uses on the Node side.
+   *
+   * Optional because only slide beats read it, and because the host may not have a deck
+   * theme to give.
+   */
+  slideTheme?: SlideTheme;
 };

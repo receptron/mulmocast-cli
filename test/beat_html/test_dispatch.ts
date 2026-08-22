@@ -14,6 +14,7 @@ const minimalBeat: Record<(typeof supportedBeatTypes)[number], ReturnType<typeof
   mermaid: beat({ type: "mermaid", title: "T", code: { kind: "text", text: "graph TD; A-->B" } }),
   image: beat({ type: "image", source: { kind: "url", url: "https://example.com/a.png" } }),
   movie: beat({ type: "movie", source: { kind: "url", url: "https://example.com/a.mp4" } }),
+  slide: beat({ type: "slide", slide: { layout: "title", title: "T" } }),
 };
 
 test("every type in supportedBeatTypes actually renders", () => {
@@ -30,7 +31,6 @@ test("types not on the list render nothing, rather than something wrong", () => 
   // Real beats, not stubs: a stub could fail to render for the wrong reason.
   const notYetSupported: [string, unknown][] = [
     ["html_tailwind", { type: "html_tailwind", html: "<div></div>" }],
-    ["slide", { type: "slide", slide: { layout: "title", title: "T" } }],
     ["beat", { type: "beat" }],
   ];
   notYetSupported.forEach(([type, image]) => {
