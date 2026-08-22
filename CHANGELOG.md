@@ -99,7 +99,11 @@ HTML 生成に残っていた注入経路を塞ぎました。**この修正は 
 - **[`@mulmocast/deck@2.0.0`](https://www.npmjs.com/package/@mulmocast/deck/v/2.0.0) が必要です。**
   deck 側でチャートの描画スクリプトをブロックから文書レベルに移したため、スライド断片がスクリプトを
   含まなくなりました。
-- `src/types/` に変更あり（`swipeElementSchema.id`）→ `@mulmocast/types` は別途リリースします。
+- **[`@mulmocast/types@2.10.0`](https://www.npmjs.com/package/@mulmocast/types/v/2.10.0) も同時に出します。**
+  `src/types/` が変わりました:
+  - `SAFE_ELEMENT_ID` を新たに export（element id の許可集合）
+  - `swipeElementSchema.id` に上記の正規表現制約 — **これまで parse を通っていた id が落ちます**
+  - `@mulmocast/deck` は `^2.0.0`（cli と同じ）
 
 📦 **npm**: [`mulmocast@2.10.0`](https://www.npmjs.com/package/mulmocast/v/2.10.0)
 
