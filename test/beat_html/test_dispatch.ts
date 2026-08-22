@@ -15,6 +15,7 @@ const minimalBeat: Record<(typeof supportedBeatTypes)[number], ReturnType<typeof
   image: beat({ type: "image", source: { kind: "url", url: "https://example.com/a.png" } }),
   movie: beat({ type: "movie", source: { kind: "url", url: "https://example.com/a.mp4" } }),
   slide: beat({ type: "slide", slide: { layout: "title", title: "T" } }),
+  html_tailwind: beat({ type: "html_tailwind", html: "<div>T</div>" }),
 };
 
 test("every type in supportedBeatTypes actually renders", () => {
@@ -29,10 +30,7 @@ test("types not on the list render nothing, rather than something wrong", () => 
   // The list and the dispatcher are separate declarations; this is what keeps them honest.
   // As each of these lands in a later PR it moves into supportedBeatTypes and out of here.
   // Real beats, not stubs: a stub could fail to render for the wrong reason.
-  const notYetSupported: [string, unknown][] = [
-    ["html_tailwind", { type: "html_tailwind", html: "<div></div>" }],
-    ["beat", { type: "beat" }],
-  ];
+  const notYetSupported: [string, unknown][] = [["beat", { type: "beat" }]];
   notYetSupported.forEach(([type, image]) => {
     assert.ok(!supportedBeatTypes.some((t) => t === type), `${type} is on supportedBeatTypes — move it out of this list and give it a minimal beat`);
     assert.strictEqual(beatToHtml(beat(image), { idPrefix: "t" }), undefined, `${type} should not render yet`);
