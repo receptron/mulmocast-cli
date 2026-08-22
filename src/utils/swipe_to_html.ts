@@ -76,7 +76,8 @@ const escapeHtml = (str: string): string => {
  * SwipeElement is optional, so any object satisfies it structurally — which is what makes
  * this a sound narrowing rather than a cast wearing a guard's clothes.
  */
-export const isSwipeElements = (value: unknown[]): value is SwipeElement[] => value.every((entry) => typeof entry === "object" && entry !== null);
+export const isSwipeElements = (value: unknown): value is SwipeElement[] =>
+  Array.isArray(value) && value.every((entry) => typeof entry === "object" && entry !== null);
 
 const elementId = (el: SwipeElement, index: number): string => {
   const id = el.id ?? `swipe_el_${index}`;

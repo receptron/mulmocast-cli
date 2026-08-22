@@ -50,6 +50,16 @@ test("and refused again at render time, for a caller that did not parse", () => 
   assert.throws(() => htmlTailwindToHtml({ type: "html_tailwind", elements: [{ id: "bad id", text: "x" }] }), /element id must match/);
 });
 
+// A caller that skipped zod. Every one of these is rejected at parse time, so this is not a
+// path the pipeline reaches — but the guard decides what happens when someone bypasses it,
+// and before this PR `[null]` threw and `["str"]` rendered garbage from a string.
+test("elements that are not an array of objects fall back to html", () => {
+  const unparsed = (elements: unknown) => htmlTailwindToHtml({ type: "html_tailwind", elements, html: "<div>fallback</div>" });
+  ["not-an-array", 7, {}, null, [null], ["str"], [undefined]].forEach((elements) => {
+    assert.strictEqual(unparsed(elements)?.html, "<div>fallback</div>", `${JSON.stringify(elements)} must fall back`);
+  });
+});
+
 // One implementation, two callers: if they drift, the browser and the PNG dump disagree.
 test("the fragment is the same markup the document dump produces", async () => {
   const plugin = findImagePlugin("html_tailwind");

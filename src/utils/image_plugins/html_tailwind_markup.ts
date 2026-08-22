@@ -15,11 +15,11 @@ import { isSwipeElements, swipeElementsToHtml } from "../swipe_to_html.js";
  */
 export type HtmlTailwindMarkupSource = {
   html?: string | string[];
-  elements?: unknown[];
+  elements?: unknown;
 };
 
 export const htmlTailwindMarkup = (image: HtmlTailwindMarkupSource): string => {
-  if (image.elements && image.elements.length > 0 && isSwipeElements(image.elements)) {
+  if (isSwipeElements(image.elements) && image.elements.length > 0) {
     return swipeElementsToHtml(image.elements);
   }
   const html = image.html ?? "";
