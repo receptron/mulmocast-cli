@@ -62,11 +62,20 @@ stable across re-renders, which is why the library cannot pick it.
 **Sanitizing.** A beat is user data and the markup is not sanitized — `html_tailwind` beats
 are raw author markup by design. Sanitize before inserting into a DOM.
 
-**Providing Tailwind.** Most fragments are styled with Tailwind utility classes — measured,
-five of the eight beat types use them, and `slide` needs `slideUtilityCss` from
-`@mulmocast/deck` as well. This is _not_ in `requires`, which names only the JavaScript
-runtimes a fragment needs a host to load and execute. A page without Tailwind renders the
-markup unstyled rather than failing, which is why it is worth saying out loud.
+**Providing Tailwind.** Most fragments are styled with Tailwind utility classes. This is
+_not_ in `requires`, which names only the JavaScript runtimes a host must load and execute.
+A page without Tailwind renders the markup unstyled rather than failing, which is why it is
+worth saying rather than leaving to be discovered.
+
+Measured per beat, because it varies by the shape of the beat and not only by its type:
+
+| Beat                                 | Utility classes                                                                                                   |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `chart`, `mermaid`, `image`, `movie` | always                                                                                                            |
+| `slide`                              | always, and it also needs `slideUtilityCss` from `@mulmocast/deck`                                                |
+| `markdown`                           | when the markdown is a layout object, a `2x2`, or contains a mermaid fence; a plain markdown string produces none |
+| `textSlide`                          | none                                                                                                              |
+| `html_tailwind`                      | whatever the author wrote — the name is a promise the author makes, not one this module keeps                     |
 
 **Loading the shared runtimes once for the page**, not once per beat. A fragment names what
 it needs rather than pulling it in:
