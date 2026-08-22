@@ -69,6 +69,15 @@ const escapeHtml = (str: string): string => {
  * Not a privilege boundary: `html_tailwind` accepts an author's own `script` by design, so
  * an author already has that capability. This is here so the two contexts agree.
  */
+/**
+ * Bridges a TypeScript gap, not a validation gap: `swipeElementSchema` is declared
+ * `z.ZodType` because it is recursive through `z.lazy`, so `z.array(...)` infers `unknown[]`
+ * and the shape zod already checked at parse time is lost to the compiler. Every field of
+ * SwipeElement is optional, so any object satisfies it structurally — which is what makes
+ * this a sound narrowing rather than a cast wearing a guard's clothes.
+ */
+export const isSwipeElements = (value: unknown[]): value is SwipeElement[] => value.every((entry) => typeof entry === "object" && entry !== null);
+
 const elementId = (el: SwipeElement, index: number): string => {
   const id = el.id ?? `swipe_el_${index}`;
   assertSafeElementId(id);
