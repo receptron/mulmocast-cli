@@ -1,4 +1,5 @@
 import { escapeHtml } from "@mulmocast/deck/lib/utils.js";
+import { assertSafeElementId } from "../element_id.js";
 
 /**
  * Mermaid markup. Pure — no Node, no filesystem — because both the Node render path and
@@ -7,8 +8,9 @@ import { escapeHtml } from "@mulmocast/deck/lib/utils.js";
  * The element id is a parameter rather than generated here: the Node path renders once to
  * a PNG so a random id is fine, while the browser path re-renders and needs the same beat
  * to produce the same markup, or a host diffing fragments sees every diagram change
- * identity on every render. It is escaped because that parameter is caller-supplied — the
- * markdown path builds it from an idPrefix, and a beat's `id` comes from the script.
+ * identity on every render. That parameter is caller-supplied — the markdown path builds it
+ * from an idPrefix, and a beat's `id` comes from the script — so it is validated rather than
+ * escaped: see element_id.ts for why the permitted-set rule beats a per-context escaper.
  *
  * Both values are escaped. Mermaid reads the element's innerHTML and entity-decodes it
  * before parsing (mermaid 11.17.0: `o = u.innerHTML; o = entityDecode(o)`), so it receives
@@ -16,12 +18,13 @@ import { escapeHtml } from "@mulmocast/deck/lib/utils.js";
  * in labels, `#quot;`, raw tags and an init directive, the rendered SVG is byte-identical.
  */
 export const mermaidHtml = (code: string, id: string, title?: string): string => {
+  assertSafeElementId(id);
   const titleHtml = title ? `<h3 class="text-xl font-semibold mb-4">${escapeHtml(title)}</h3>` : "";
   return `
 <div class="mermaid-container mb-6">
   ${titleHtml}
   <div class="flex justify-center">
-    <div id="${escapeHtml(id)}" class="mermaid">
+    <div id="${id}" class="mermaid">
       ${escapeHtml(code.trim())}
     </div>
   </div>

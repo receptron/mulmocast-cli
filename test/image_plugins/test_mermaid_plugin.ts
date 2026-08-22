@@ -289,10 +289,17 @@ test("the render template's user values are escaped for their own contexts", () 
 
 // The id is caller-supplied on the markdown path (built from an idPrefix), and a beat's `id`
 // comes from the script, so it cannot be trusted to be attribute-safe.
-test("a hostile element id cannot escape its attribute", () => {
-  const html = mermaidHtml("graph TD; A-->B;", '" onload="pwn()" x=');
-  // The word survives; what must not is a quote that ends the attribute early, which is what
-  // would turn the rest into markup the browser acts on.
-  assert.strictEqual(html.split('<div id="')[1].split('"')[0], "&quot; onload=&quot;pwn()&quot; x=", "the id value must stay one attribute");
-  assert.ok(!/<div id="[^"]*"[^>]*onload=/.test(html), "no event handler may be introduced");
+// The id is caller-supplied on the markdown path and a beat's `id` comes from the script, so
+// it is validated against the permitted set rather than escaped — that rule holds in every
+// context, which a per-context escaper does not.
+test("an element id outside the permitted set is rejected, not escaped", () => {
+  ['" onload="pwn()" x=', "a b", "第1章", "a.b", "a:b", "", "a/b"].forEach((id) => {
+    assert.throws(() => mermaidHtml("graph TD; A-->B;", id), /element id must match/, `${JSON.stringify(id)} must be rejected`);
+  });
+});
+
+test("ordinary element ids are accepted unchanged", () => {
+  ["id", "chart-abc12345", "beat_3-mermaid-0", "A1"].forEach((id) => {
+    assert.match(mermaidHtml("graph TD; A-->B;", id), new RegExp(`<div id="${id}" class="mermaid">`), `${id} must pass`);
+  });
 });
