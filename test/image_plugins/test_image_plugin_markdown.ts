@@ -1,15 +1,15 @@
-import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
+import { requireRenderingPlugin } from "./utils.js";
 
 import test from "node:test";
 import assert from "node:assert";
 
 test("test imagePlugin markdown - basic functionality", async () => {
-  const plugin = findImagePlugin("markdown");
+  const plugin = requireRenderingPlugin("markdown");
   assert.equal(plugin.imageType, "markdown");
 });
 
 test("test imagePlugin markdown - markdown method with array", async () => {
-  const plugin = findImagePlugin("markdown");
+  const plugin = requireRenderingPlugin("markdown");
   const beat = {
     image: {
       type: "markdown",
@@ -25,7 +25,7 @@ test("test imagePlugin markdown - markdown method with array", async () => {
 });
 
 test("test imagePlugin markdown - markdown method with string", async () => {
-  const plugin = findImagePlugin("markdown");
+  const plugin = requireRenderingPlugin("markdown");
   const beat = {
     image: {
       type: "markdown",
@@ -38,7 +38,7 @@ test("test imagePlugin markdown - markdown method with string", async () => {
 });
 
 test("test imagePlugin markdown - html method converts markdown to html", async () => {
-  const plugin = findImagePlugin("markdown");
+  const plugin = requireRenderingPlugin("markdown");
   const beat = {
     image: {
       type: "markdown",
@@ -52,7 +52,7 @@ test("test imagePlugin markdown - html method converts markdown to html", async 
 });
 
 test("test imagePlugin markdown - methods with wrong type", async () => {
-  const plugin = findImagePlugin("markdown");
+  const plugin = requireRenderingPlugin("markdown");
   const beat = {
     image: {
       type: "html_tailwind",
@@ -68,7 +68,7 @@ test("test imagePlugin markdown - methods with wrong type", async () => {
 });
 
 test("test imagePlugin markdown - methods with no image", async () => {
-  const plugin = findImagePlugin("markdown");
+  const plugin = requireRenderingPlugin("markdown");
   const beat = {};
 
   const markdownResult = plugin.markdown({ beat });
@@ -79,7 +79,7 @@ test("test imagePlugin markdown - methods with no image", async () => {
 });
 
 test("test imagePlugin textSlide - markdown method with slide data", async () => {
-  const plugin = findImagePlugin("textSlide");
+  const plugin = requireRenderingPlugin("textSlide");
   const beat = {
     image: {
       type: "textSlide",
@@ -96,7 +96,7 @@ test("test imagePlugin textSlide - markdown method with slide data", async () =>
 });
 
 test("test imagePlugin textSlide - markdown method with only title", async () => {
-  const plugin = findImagePlugin("textSlide");
+  const plugin = requireRenderingPlugin("textSlide");
   const beat = {
     image: {
       type: "textSlide",
@@ -111,7 +111,7 @@ test("test imagePlugin textSlide - markdown method with only title", async () =>
 });
 
 test("test imagePlugin textSlide - markdown method with bullets only", async () => {
-  const plugin = findImagePlugin("textSlide");
+  const plugin = requireRenderingPlugin("textSlide");
   const beat = {
     image: {
       type: "textSlide",
@@ -126,7 +126,7 @@ test("test imagePlugin textSlide - markdown method with bullets only", async () 
 });
 
 test("test imagePlugin textSlide - html method converts slide to html", async () => {
-  const plugin = findImagePlugin("textSlide");
+  const plugin = requireRenderingPlugin("textSlide");
   const beat = {
     image: {
       type: "textSlide",
@@ -143,7 +143,7 @@ test("test imagePlugin textSlide - html method converts slide to html", async ()
 });
 
 test("test imagePlugin mermaid - markdown method with text code", async () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   const beat = {
     image: {
       type: "mermaid",
@@ -159,7 +159,7 @@ test("test imagePlugin mermaid - markdown method with text code", async () => {
 });
 
 test("test imagePlugin mermaid - markdown method with non-text code", async () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   const beat = {
     image: {
       type: "mermaid",
@@ -175,7 +175,7 @@ test("test imagePlugin mermaid - markdown method with non-text code", async () =
 });
 
 test("test imagePlugin mermaid - markdown method with wrong type", async () => {
-  const plugin = findImagePlugin("mermaid");
+  const plugin = requireRenderingPlugin("mermaid");
   const beat = {
     image: {
       type: "chart",
@@ -191,7 +191,7 @@ test("test imagePlugin mermaid - markdown method with wrong type", async () => {
 });
 
 test("test imagePlugin markdown - markdown method with object", async () => {
-  const plugin = findImagePlugin("markdown");
+  const plugin = requireRenderingPlugin("markdown");
   const beat = {
     image: {
       type: "markdown",

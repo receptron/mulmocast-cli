@@ -1,16 +1,16 @@
 import test from "node:test";
 import assert from "node:assert";
-import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
+import { requireHtmlPlugin } from "./utils.js";
 import { ImageProcessorParams } from "../../src/types/index.js";
 
 test("html_tailwind plugin basic functionality", () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert(plugin, "html_tailwind plugin should exist");
   assert.strictEqual(plugin.imageType, "html_tailwind");
 });
 
 test("html_tailwind plugin path function", () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert(plugin, "html_tailwind plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -28,7 +28,7 @@ test("html_tailwind plugin path function", () => {
 });
 
 test("html_tailwind plugin html generation with string html", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert(plugin, "html_tailwind plugin should exist");
   assert(plugin.html, "html_tailwind plugin should have html function");
 
@@ -47,7 +47,7 @@ test("html_tailwind plugin html generation with string html", async () => {
 });
 
 test("html_tailwind plugin html generation with array html", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert(plugin, "html_tailwind plugin should exist");
   assert(plugin.html, "html_tailwind plugin should have html function");
 
@@ -82,7 +82,7 @@ test("html_tailwind plugin html generation with array html", async () => {
 });
 
 test("html_tailwind plugin with complex tailwind classes", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert(plugin, "html_tailwind plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -115,7 +115,7 @@ test("html_tailwind plugin with complex tailwind classes", async () => {
 });
 
 test("html_tailwind plugin with form elements", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert(plugin, "html_tailwind plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -156,7 +156,7 @@ test("html_tailwind plugin with form elements", async () => {
 });
 
 test("html_tailwind plugin with grid layout", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert(plugin, "html_tailwind plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -192,7 +192,7 @@ test("html_tailwind plugin with grid layout", async () => {
 });
 
 test("html_tailwind plugin with empty html string", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert(plugin, "html_tailwind plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -210,7 +210,7 @@ test("html_tailwind plugin with empty html string", async () => {
 });
 
 test("html_tailwind plugin with empty html array", async () => {
-  const plugin = findImagePlugin("html_tailwind");
+  const plugin = requireHtmlPlugin("html_tailwind");
   assert(plugin, "html_tailwind plugin should exist");
 
   const mockParams: ImageProcessorParams = {

@@ -1,10 +1,10 @@
-import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
+import { requireImagePlugin } from "./utils.js";
 
 import test from "node:test";
 import assert from "node:assert";
 
 test("test imagePlugin mermaid", async () => {
-  const plugin = findImagePlugin("vision");
+  const plugin = requireImagePlugin("vision");
   assert.equal(plugin.imageType, "vision");
 
   // const path = plugin.path({ imagePath: "expectImagePath" });

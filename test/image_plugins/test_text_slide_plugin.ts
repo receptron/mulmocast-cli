@@ -1,16 +1,16 @@
 import test from "node:test";
 import assert from "node:assert";
-import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
+import { requireRenderingPlugin } from "./utils.js";
 import { ImageProcessorParams } from "../../src/types/index.js";
 
 test("text_slide plugin basic functionality", () => {
-  const plugin = findImagePlugin("textSlide");
+  const plugin = requireRenderingPlugin("textSlide");
   assert(plugin, "textSlide plugin should exist");
   assert.strictEqual(plugin.imageType, "textSlide");
 });
 
 test("text_slide plugin path function", () => {
-  const plugin = findImagePlugin("textSlide");
+  const plugin = requireRenderingPlugin("textSlide");
   assert(plugin, "textSlide plugin should exist");
 
   const mockParams: ImageProcessorParams = {
@@ -30,7 +30,7 @@ test("text_slide plugin path function", () => {
 });
 
 test("text_slide plugin markdown generation with title only", () => {
-  const plugin = findImagePlugin("textSlide");
+  const plugin = requireRenderingPlugin("textSlide");
   assert(plugin, "textSlide plugin should exist");
   assert(plugin.markdown, "textSlide plugin should have markdown function");
 
@@ -51,7 +51,7 @@ test("text_slide plugin markdown generation with title only", () => {
 });
 
 test("text_slide plugin markdown generation with title and subtitle", () => {
-  const plugin = findImagePlugin("textSlide");
+  const plugin = requireRenderingPlugin("textSlide");
   assert(plugin, "textSlide plugin should exist");
   assert(plugin.markdown, "textSlide plugin should have markdown function");
 
@@ -73,7 +73,7 @@ test("text_slide plugin markdown generation with title and subtitle", () => {
 });
 
 test("text_slide plugin markdown generation with title, subtitle, and bullets", () => {
-  const plugin = findImagePlugin("textSlide");
+  const plugin = requireRenderingPlugin("textSlide");
   assert(plugin, "textSlide plugin should exist");
   assert(plugin.markdown, "textSlide plugin should have markdown function");
 
@@ -96,7 +96,7 @@ test("text_slide plugin markdown generation with title, subtitle, and bullets", 
 });
 
 test("text_slide plugin markdown generation with bullets only", () => {
-  const plugin = findImagePlugin("textSlide");
+  const plugin = requireRenderingPlugin("textSlide");
   assert(plugin, "textSlide plugin should exist");
   assert(plugin.markdown, "textSlide plugin should have markdown function");
 
@@ -117,7 +117,7 @@ test("text_slide plugin markdown generation with bullets only", () => {
 });
 
 test("text_slide plugin markdown generation with empty slide", () => {
-  const plugin = findImagePlugin("textSlide");
+  const plugin = requireRenderingPlugin("textSlide");
   assert(plugin, "textSlide plugin should exist");
   assert(plugin.markdown, "textSlide plugin should have markdown function");
 
@@ -136,7 +136,7 @@ test("text_slide plugin markdown generation with empty slide", () => {
 });
 
 test("text_slide plugin html generation", async () => {
-  const plugin = findImagePlugin("textSlide");
+  const plugin = requireRenderingPlugin("textSlide");
   assert(plugin, "textSlide plugin should exist");
   assert(plugin.html, "textSlide plugin should have html function");
 

@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert";
 import { chartHtml, escapedChartTemplateValues, resolveChartPlugins, stringifyChartData } from "../../src/utils/image_plugins/chart_html.js";
-import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
+import { requireImagePlugin } from "./utils.js";
 
 /**
  * Characterization tests for the chart renderer, which is shared by the Node render path
@@ -15,7 +15,7 @@ import { findImagePlugin } from "../../src/utils/image_plugins/index.js";
 const CHART_DATA = { type: "bar", data: { labels: ["a", "b"], datasets: [{ data: [1, 2] }] } };
 
 const chartPluginHtml = () => {
-  const plugin = findImagePlugin("chart");
+  const plugin = requireImagePlugin("chart");
   assert.ok(plugin?.html, "the chart plugin must expose an html method");
   return plugin.html;
 };
