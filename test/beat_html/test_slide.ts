@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert";
-import { slideToHtml } from "../../src/utils/beat_html/slide.js";
+import { slideToHtml, withoutScripts } from "../../src/utils/beat_html/slide.js";
 import { beatToHtml } from "../../src/utils/beat_html/index.js";
 import { generateSlideFragment } from "@mulmocast/deck/lib/fragment.js";
+
 import { slideThemes } from "../../src/data/slideThemes.js";
 import { mulmoBeatSchema, mulmoSlideMediaSchema } from "../../src/types/schema.js";
 
@@ -49,6 +50,41 @@ test("the beat's theme wins over the deck's, which wins over the built-in", () =
   assert.match(slideToHtml(media(), options({ slideTheme: deckTheme })).css ?? "", /222222/);
   const fallback = slideToHtml(media(), options()).css ?? "";
   assert.ok(!fallback.includes("111111") && !fallback.includes("222222"), "with neither, the built-in theme is used");
+});
+
+// deck's chart block ships an inline driver script, because the same markup has to work in
+// the standalone document Puppeteer renders. A fragment injected through innerHTML never
+// runs it, and the config is on the canvas as data-mulmo-chart for exactly that reason.
+// Verified in a browser: with the script gone, a host driving [data-mulmo-chart] still draws.
+test("deck's chart driver script is stripped, and only the script", () => {
+  const withChart = media({
+    slide: { layout: "split", title: "T", left: { content: [{ type: "chart", chartData: { type: "bar" } }] }, right: { content: [] } },
+  });
+  const mine = slideToHtml(withChart, options()).html;
+  const theirs = generateSlideFragment(slideThemes.corporate, withChart.slide, { scopeClass: "beat-3-slide" }).html;
+
+  assert.strictEqual(mine.toLowerCase().split("<script").length - 1, 0, "no script may survive");
+  assert.ok(theirs.toLowerCase().includes("<script"), "deck's own fragment does carry one, or this test proves nothing");
+  assert.ok(mine.includes("data-mulmo-chart"), "the config the host drives from must remain");
+
+  // Only the script: every other element is still there, in the same number.
+  const count = (html: string, tag: string) => html.toLowerCase().split(`<${tag}`).length - 1;
+  ["div", "canvas", "p", "h2", "span"].forEach((tag) => {
+    assert.strictEqual(count(mine, tag), count(theirs, tag), `<${tag}> count must be unchanged`);
+  });
+});
+
+// Both halves case-insensitively. deck writes lower case today, but a guard that only
+// recognises the spelling it happens to see is weaker than the thing it guards — the same
+// point CodeQL made about an assertion earlier in this series.
+test("the strip is case-insensitive at both ends", () => {
+  const markup = "a<SCRIPT>x</SCRIPT>b<script>y</SCRIPT>c<SCRIPT>z</script>d";
+  assert.strictEqual(withoutScripts(markup), "abcd");
+});
+
+test("a slide with no script is passed through untouched", () => {
+  const plain = media();
+  assert.strictEqual(slideToHtml(plain, options()).html, generateSlideFragment(slideThemes.corporate, plain.slide, { scopeClass: "beat-3-slide" }).html);
 });
 
 test("runtimes and plugins are passed through, and absent when the slide needs none", () => {
