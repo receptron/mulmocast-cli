@@ -1,3 +1,5 @@
+import { assertSafeElementId } from "./element_id.js";
+
 export interface SwipeTransition {
   opacity?: number;
   rotate?: number;
@@ -55,6 +57,22 @@ export interface SwipeElement {
 
 const escapeHtml = (str: string): string => {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+};
+
+/**
+ * The element id both the markup and the generated animation script use. It reaches an HTML
+ * attribute AND a raw CSS selector inside a JavaScript string literal
+ * (`animation.animate('#id')`), so it is validated rather than escaped — escaping one
+ * context leaves the other wrong, and a quote in an id silently produces broken JavaScript
+ * instead of a diagnosable error.
+ *
+ * Not a privilege boundary: `html_tailwind` accepts an author's own `script` by design, so
+ * an author already has that capability. This is here so the two contexts agree.
+ */
+const elementId = (el: SwipeElement, index: number): string => {
+  const id = el.id ?? `swipe_el_${index}`;
+  assertSafeElementId(id);
+  return id;
 };
 
 const toCssValue = (value: number | string): string => {
@@ -115,7 +133,7 @@ const buildTextStyle = (el: SwipeElement): string => {
 };
 
 const elementToHtml = (el: SwipeElement, index: number): string => {
-  const id = el.id ?? `swipe_el_${index}`;
+  const id = elementId(el, index);
   const style = buildElementStyle(el);
   const textStyle = buildTextStyle(el);
   const lines: string[] = [];
@@ -157,7 +175,7 @@ interface AnimationEntry {
 
 const collectAnimations = (elements: SwipeElement[], entries: AnimationEntry[], indexBase: number = 0): void => {
   elements.forEach((el, i) => {
-    const id = el.id ?? `swipe_el_${indexBase + i}`;
+    const id = elementId(el, indexBase + i);
     if (el.to || el.loop) {
       entries.push({ id, to: el.to, loop: el.loop });
     }
