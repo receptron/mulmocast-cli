@@ -7,7 +7,8 @@ import { escapeHtml } from "@mulmocast/deck/lib/utils.js";
  * The element id is a parameter rather than generated here: the Node path renders once to
  * a PNG so a random id is fine, while the browser path re-renders and needs the same beat
  * to produce the same markup, or a host diffing fragments sees every diagram change
- * identity on every render.
+ * identity on every render. It is escaped because that parameter is caller-supplied — the
+ * markdown path builds it from an idPrefix, and a beat's `id` comes from the script.
  *
  * Both values are escaped. Mermaid reads the element's innerHTML and entity-decodes it
  * before parsing (mermaid 11.17.0: `o = u.innerHTML; o = entityDecode(o)`), so it receives
@@ -20,7 +21,7 @@ export const mermaidHtml = (code: string, id: string, title?: string): string =>
 <div class="mermaid-container mb-6">
   ${titleHtml}
   <div class="flex justify-center">
-    <div id="${id}" class="mermaid">
+    <div id="${escapeHtml(id)}" class="mermaid">
       ${escapeHtml(code.trim())}
     </div>
   </div>

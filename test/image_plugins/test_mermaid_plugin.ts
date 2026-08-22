@@ -286,3 +286,13 @@ test("the render template's user values are escaped for their own contexts", () 
   assert.ok(!values.diagram_code.includes("<"), "the diagram value must not carry a tag");
   assert.strictEqual(values.title, "&lt;/H1 &gt;&lt;img src=x onerror=&quot;pwn()&quot;&gt;");
 });
+
+// The id is caller-supplied on the markdown path (built from an idPrefix), and a beat's `id`
+// comes from the script, so it cannot be trusted to be attribute-safe.
+test("a hostile element id cannot escape its attribute", () => {
+  const html = mermaidHtml("graph TD; A-->B;", '" onload="pwn()" x=');
+  // The word survives; what must not is a quote that ends the attribute early, which is what
+  // would turn the rest into markup the browser acts on.
+  assert.strictEqual(html.split('<div id="')[1].split('"')[0], "&quot; onload=&quot;pwn()&quot; x=", "the id value must stay one attribute");
+  assert.ok(!/<div id="[^"]*"[^>]*onload=/.test(html), "no event handler may be introduced");
+});
