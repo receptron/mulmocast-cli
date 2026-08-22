@@ -17,8 +17,14 @@ JS 側と食い違い `getElementById` が一致しなくなる。文脈ごと�
 
 ## 採った形: 許されるものを列挙する
 
-`[A-Za-z0-9_-]+` に限れば、HTML 属性・JS 文字列リテラル・CSS セレクタ・URL 断片の
+`[A-Za-z_][A-Za-z0-9_-]*` に限れば、HTML 属性・JS 文字列リテラル・CSS セレクタ・URL 断片の
 **どの文脈でも安全**になる。新しい文脈が増えても壊れない。fail closed。
+
+先頭文字を縛るのは CSS の id セレクタが一番厳しいため。**実測**: `querySelector("#0")` / `"#-"` /
+`"#0a"` / `"#-0"` はいずれも throw する一方、`getElementById` はすべて通す。つまり今日動く id が
+セレクタで触った瞬間に使えなくなり得る。当初 `[A-Za-z0-9_-]+` にしていたのは Codex のレビューで
+過大主張と指摘され、ブラウザで測って狭めた。CSS が許す `-a` も弾いており（一文で言える形との交換）、
+文字集合から生成した 152 通りで **受理側にセレクタ失敗ゼロ**、棄却側に実は安全な 8 件、を確認済み。
 
 - `src/utils/element_id.ts`（新規, pure）: `isSafeElementId` / `assertSafeElementId`
 - 強制点は3つ: `chartHtml` / `mermaidHtml` / `beatToHtml`（境界）

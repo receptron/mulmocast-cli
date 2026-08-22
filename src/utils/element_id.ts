@@ -9,8 +9,15 @@
  * URL fragment — so a new context cannot introduce a hole the way a per-context escaper can.
  * Escaping would also have to keep the contexts in sync: entity-escaping `<canvas id>` while
  * the `getElementById` beside it stays raw makes the two disagree and the lookup fail.
+ *
+ * The leading character is restricted because a CSS id selector is the strictest of those
+ * contexts. Measured in a browser: `querySelector("#0")`, `"#-"`, `"#0a"` and `"#-0"` all
+ * throw, while `getElementById` accepts every one of them — so an id that works today can
+ * still be unusable the moment anything reaches for it with a selector. This set is a little
+ * narrower than CSS allows (it rejects `-a`, which is valid) in exchange for being stateable
+ * in one line.
  */
-const SAFE_ELEMENT_ID = /^[A-Za-z0-9_-]+$/;
+const SAFE_ELEMENT_ID = /^[A-Za-z_][A-Za-z0-9_-]*$/;
 
 export const isSafeElementId = (id: string): boolean => SAFE_ELEMENT_ID.test(id);
 
@@ -22,7 +29,7 @@ export const isSafeElementId = (id: string): boolean => SAFE_ELEMENT_ID.test(id)
 export const assertSafeElementId = (id: string): void => {
   if (!isSafeElementId(id)) {
     throw new Error(
-      `element id must match ${SAFE_ELEMENT_ID.source}, got ${JSON.stringify(id)}. Derive it from the beat's index, or sanitize the beat's id, before passing it.`,
+      `element id must match ${SAFE_ELEMENT_ID.source}, got ${JSON.stringify(id)}. Derive it from the beat's index (beat-3, not 3 — it must not start with a digit), or sanitize the beat's id, before passing it.`,
     );
   }
 };

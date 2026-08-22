@@ -2,9 +2,20 @@ import test from "node:test";
 import assert from "node:assert";
 import { assertSafeElementId, isSafeElementId } from "../../src/utils/element_id.js";
 
-test("the permitted set is letters, digits, hyphen and underscore", () => {
-  ["id", "a", "A1", "chart-abc12345", "beat_3-mermaid-0", "_", "-", "0"].forEach((id) => {
+test("the permitted set starts with a letter or underscore", () => {
+  ["id", "a", "A1", "chart-abc12345", "beat_3-mermaid-0", "_", "_0", "a-", "beat-0"].forEach((id) => {
     assert.strictEqual(isSafeElementId(id), true, `${JSON.stringify(id)} must be permitted`);
+  });
+});
+
+// Measured in a browser, not read off a spec: querySelector("#0"), "#-", "#0a" and "#-0" all
+// throw, while getElementById accepts every one of them. An id can therefore work today and
+// become unusable the moment anything reaches for it with a selector, so the leading
+// character is restricted. `-a` is valid CSS and rejected anyway — the set is deliberately a
+// little narrower than CSS in exchange for being stateable in one line.
+test("a leading digit or hyphen is rejected, because a CSS id selector cannot take it", () => {
+  ["0", "-", "0a", "-0", "-a", "--a", "9beat"].forEach((id) => {
+    assert.strictEqual(isSafeElementId(id), false, `${JSON.stringify(id)} must be rejected`);
   });
 });
 
@@ -31,5 +42,5 @@ test("everything else is rejected, including characters that only break one cont
 });
 
 test("the error says what to do instead", () => {
-  assert.throws(() => assertSafeElementId("a b"), /Derive it from the beat's index, or sanitize the beat's id/);
+  assert.throws(() => assertSafeElementId("a b"), /Derive it from the beat's index/);
 });

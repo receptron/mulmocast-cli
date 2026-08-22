@@ -22,7 +22,7 @@ export const supportedBeatTypes = ["textSlide", "markdown"] as const;
  * **The markup is not sanitized** — see `BeatHtmlFragment.html`. Sanitize before inserting
  * it into a DOM.
  *
- * `options.idPrefix` is required and must match `[A-Za-z0-9_-]+`: fragments can generate
+ * `options.idPrefix` is required and must match `[A-Za-z_][A-Za-z0-9_-]*`: fragments generate
  * element ids, only the caller knows which beat this is, and a beat's own `id` comes from
  * the script and is unrestricted. Throws on anything else rather than guessing a repair,
  * because a guess can collapse two beats onto one id. See `BeatHtmlOptions`.
