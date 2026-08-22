@@ -1,6 +1,7 @@
 import { ImageProcessorParams } from "../../types/index.js";
 import { processSource, pathSource } from "./source.js";
 import { MulmoMediaSourceMethods } from "../../methods/mulmo_media_source.js";
+import { movieHtml } from "./media_html.js";
 
 export const imageType = "movie";
 
@@ -12,21 +13,7 @@ const dumpHtml = async (params: ImageProcessorParams) => {
 
   if (!moviePathOrUrl) return;
 
-  return `
-<div class="movie-container mb-6">
-  <div class="relative w-full" style="padding-bottom: 56.25%; /* 16:9 aspect ratio */">
-    <video
-      class="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
-      controls
-      preload="metadata"
-    >
-      <source src="${moviePathOrUrl}" type="video/mp4">
-      <source src="${moviePathOrUrl}" type="video/webm">
-      <source src="${moviePathOrUrl}" type="video/ogg">
-      Your browser does not support the video tag.
-    </video>
-  </div>
-</div>`;
+  return movieHtml(moviePathOrUrl);
 };
 
 export const process = processSource(imageType);

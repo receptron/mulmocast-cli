@@ -7,6 +7,7 @@ import { renderHTMLToImage, interpolate, renderHTMLToFrames, renderHTMLToVideo, 
 import { framesToVideo } from "../ffmpeg_utils.js";
 import { parrotingImagePath } from "./utils.js";
 import { swipeElementsToHtml, swipeElementsToScript, type SwipeElement } from "../swipe_to_html.js";
+import { htmlTailwindMarkup } from "./html_tailwind_markup.js";
 
 export const imageType = "html_tailwind";
 
@@ -251,11 +252,7 @@ const processHtmlTailwind = async (params: ImageProcessorParams) => {
 const dumpHtml = async (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return;
-  const imageData = beat.image as { html?: string | string[]; elements?: SwipeElement[] };
-  if (imageData.elements && Array.isArray(imageData.elements) && imageData.elements.length > 0) {
-    return swipeElementsToHtml(imageData.elements);
-  }
-  return joinHtml(imageData.html ?? "");
+  return htmlTailwindMarkup(beat.image);
 };
 
 export const process = processHtmlTailwind;
