@@ -21,6 +21,12 @@ export type BeatHtmlFragment = {
   css?: string;
   /** External runtimes the host must load once for the page, not once per beat. */
   requires?: BeatRuntime[];
+  /**
+   * Extra Chart.js plugin CDNs this beat's chart type needs, on top of Chart.js itself.
+   * Same shape as `@mulmocast/deck`'s `SlideFragment.chartPlugins`, so one host can load
+   * for both. Absent when the beat needs none.
+   */
+  chartPlugins?: string[];
 };
 
 /** External runtimes a fragment can depend on. */

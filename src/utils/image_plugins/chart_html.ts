@@ -31,23 +31,50 @@ export const resolveChartPlugins = (chartType: string): string => {
 
 export const stringifyChartData = (chartData: MulmoChartMedia["chartData"]): string => JSON.stringify(chartData, null, 2);
 
+/** The card both paths draw: a heading and a fixed-height canvas. `trailing` is where the
+ * document path puts its driver script; the fragment path leaves it empty. */
+const chartCard = (title: string, canvas: string, trailing: string): string => `
+<div class="chart-container mb-6">
+  <h3 class="text-xl font-semibold mb-4">${escapeHtml(title || "Chart")}</h3>
+  <div class="w-full" style="position: relative; height: 400px;">
+    ${canvas}
+  </div>${trailing}
+</div>`;
+
+/** For a standalone document, where the inline script runs. */
 export const chartHtml = (chartDataJson: string, title: string, chartId: string): string => {
   assertSafeElementId(chartId);
-  const heading = escapeHtml(title || "Chart");
-
-  return `
-<div class="chart-container mb-6">
-  <h3 class="text-xl font-semibold mb-4">${heading}</h3>
-  <div class="w-full" style="position: relative; height: 400px;">
-    <canvas id="${chartId}"></canvas>
-  </div>
+  const script = `
   <script>
     (function() {
       const ctx = document.getElementById('${chartId}').getContext('2d');
       new Chart(ctx, ${escapeJsonForScript(chartDataJson)});
     })();
-  </script>
-</div>`;
+  </script>`;
+  return chartCard(title, `<canvas id="${chartId}"></canvas>`, script);
+};
+
+/**
+ * For a host that injects the markup into its own page, where an injected `<script>`
+ * neither survives sanitizing nor executes via innerHTML. The config rides on the canvas
+ * instead, in the shape `@mulmocast/deck` already uses so one host runtime drives both.
+ */
+export const chartFragmentHtml = (chartData: MulmoChartMedia["chartData"], title: string, chartId: string): string => {
+  assertSafeElementId(chartId);
+  const config = escapeHtml(JSON.stringify(chartData));
+  return chartCard(title, `<canvas id="${chartId}" data-chart-ready="false" data-mulmo-chart="${config}"></canvas>`, "");
+};
+
+/** `chartData` is a free record, so the type may be absent or not a string. */
+export const chartTypeOf = (chartData: MulmoChartMedia["chartData"]): string => {
+  const type = chartData?.type;
+  return typeof type === "string" ? type : "";
+};
+
+/** The Chart.js plugin CDNs a chart type needs, for a host that loads them once per page. */
+export const chartPluginCdns = (chartType: string): string[] => {
+  const cdn = CHART_PLUGIN_CDNS[chartType];
+  return cdn ? [cdn] : [];
 };
 
 /**
