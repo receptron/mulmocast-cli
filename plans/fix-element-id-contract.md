@@ -27,7 +27,10 @@ JS 側と食い違い `getElementById` が一致しなくなる。文脈ごと�
 文字集合から生成した 152 通りで **受理側にセレクタ失敗ゼロ**、棄却側に実は安全な 8 件、を確認済み。
 
 - `src/utils/element_id.ts`（新規, pure）: `isSafeElementId` / `assertSafeElementId`
-- 強制点は3つ: `chartHtml` / `mermaidHtml` / `beatToHtml`（境界）
+- 強制点は4つ: `chartHtml` / `mermaidHtml` / `beatToHtml`（境界） / `swipe_to_html`
+  （4つ目はレビューで見つかった。属性はエスケープ済み・生成JS内の CSS セレクタは生、という
+  まさに「エスケープでは解けない」形だった）
+- 公開スキーマ `swipeElementSchema.id` にも同じ規則を入れ、描画時ではなく parse 時に落とす
 
 ## 到達性
 
