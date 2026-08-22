@@ -11,7 +11,15 @@
 | render (`processMermaid`) | `${title}`        | `assets/html/mermaid.html` の `<h1>` |
 | render (`processMermaid`) | `${diagram_code}` | 同 `.mermaid` div                    |
 
-`${id}` は `generateUniqueId` の内部生成、`${style}` は #1538 で対応済み。
+`${id}` も**エスケープする**。dump 経路の呼び出し元 (`mermaid.ts`) は `generateUniqueId` を渡すが、
+markdown 経路 (`beat_html/markdown.ts`) は caller 指定の `idPrefix` から組み立てており、
+`beat_html/index.ts` は「caller だけが一意な id を決められる」と書いている。
+`mulmoBeatSchema.id`（"Unique identifier for the beat"）はスクリプト由来かつ無制約なので、
+host が beat.id を prefix に渡すと属性を抜け出せる。mermaid の id は属性1文脈なのでエスケープで足りる。
+
+chart 側は id が属性と JS 文字列リテラルの2文脈に出るためエスケープでは解けない → #1540。
+
+`${style}` は #1538 で対応済み。
 
 ## エスケープしても mermaid は壊れない（実測）
 
