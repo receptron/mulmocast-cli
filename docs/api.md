@@ -22,32 +22,110 @@ Node 22+ required. The package is ESM-only (`"type": "module"`).
 
 What `import { … } from "mulmocast"` gives you, by area:
 
-| Area | Exports |
-|---|---|
-| Context / scripts | `getFileObject`, `initializeContextFromFiles`, `MulmoStudioContext`, `MulmoStudioContextMethods`, `MulmoScript`, `mulmoScriptSchema`, `MulmoScriptMethods` |
-| Actions (full-pipeline) | `images`, `audio`, `movie`, `pdf`, `captions`, `translate`, `bundle`, `markdown`, `html`, `mulmoViewerBundle` |
-| Per-beat (granular) | `generateBeatImage`, `generateBeatAudio`, `generateReferenceImage`, `getBeatAudioPathOrUrl`, `translateBeat` |
-| Settings & i18n | `settings2GraphAIConfig` (via `args.settings`), `setMulmoErrorFormatter`, `bundleTargetLang` |
-| Progress callbacks | `addSessionProgressCallback`, `removeSessionProgressCallback` |
-| Logging | `setGraphAILogger` |
-| Path helpers | `getOutputStudioFilePath`, `getOutputMultilingualFilePath`, `getOutputVideoFilePath`, `getOutputPdfFilePath`, `getReferenceImagePath`, `getBeatPngImagePath`, `getCaptionImagePath`, `getBeatMoviePaths` |
-| Usage tracking | `UsageCollector`, `UsageRecord`, `UsageCollectorAPI`, `AgentUsage` (see [Usage tracking](#usage-tracking) below) |
-| Usage estimation | `estimateUsage`, `UsageEstimate`, `EstimatedMetric`, `modelPricing`, `ModelPricing` (see [Pre-run estimation](#pre-run-estimation-estimateusage) below) |
-| Agents (direct use) | `puppeteerCrawlerAgent`, `validateSchemaAgent`, all `image*Agent` / `tts*Agent` / `movie*Agent` / `lipsync*Agent` agents |
+| Area                    | Exports                                                                                                                                                                                                  |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Context / scripts       | `getFileObject`, `initializeContextFromFiles`, `MulmoStudioContext`, `MulmoStudioContextMethods`, `MulmoScript`, `mulmoScriptSchema`, `MulmoScriptMethods`                                               |
+| Actions (full-pipeline) | `images`, `audio`, `movie`, `pdf`, `captions`, `translate`, `bundle`, `markdown`, `html`, `mulmoViewerBundle`                                                                                            |
+| Per-beat (granular)     | `generateBeatImage`, `generateBeatAudio`, `generateReferenceImage`, `getBeatAudioPathOrUrl`, `translateBeat`                                                                                             |
+| Settings & i18n         | `settings2GraphAIConfig` (via `args.settings`), `setMulmoErrorFormatter`, `bundleTargetLang`                                                                                                             |
+| Progress callbacks      | `addSessionProgressCallback`, `removeSessionProgressCallback`                                                                                                                                            |
+| Logging                 | `setGraphAILogger`                                                                                                                                                                                       |
+| Path helpers            | `getOutputStudioFilePath`, `getOutputMultilingualFilePath`, `getOutputVideoFilePath`, `getOutputPdfFilePath`, `getReferenceImagePath`, `getBeatPngImagePath`, `getCaptionImagePath`, `getBeatMoviePaths` |
+| Usage tracking          | `UsageCollector`, `UsageRecord`, `UsageCollectorAPI`, `AgentUsage` (see [Usage tracking](#usage-tracking) below)                                                                                         |
+| Usage estimation        | `estimateUsage`, `UsageEstimate`, `EstimatedMetric`, `modelPricing`, `ModelPricing` (see [Pre-run estimation](#pre-run-estimation-estimateusage) below)                                                  |
+| Agents (direct use)     | `puppeteerCrawlerAgent`, `validateSchemaAgent`, all `image*Agent` / `tts*Agent` / `movie*Agent` / `lipsync*Agent` agents                                                                                 |
+
+## Browser: rendering beats as HTML fragments
+
+`import { … } from "mulmocast/browser"` — a separate entry point with no Node dependencies,
+so it bundles for the browser. Everything above is Node-only; this is not.
+
+| Export                                               | What it is                                                |
+| ---------------------------------------------------- | --------------------------------------------------------- |
+| `beatToHtml(beat, { idPrefix })`                     | A beat as markup, or `undefined` for one it cannot render |
+| `supportedBeatTypes`                                 | The `image.type` values it renders                        |
+| `BeatHtmlFragment`, `BeatHtmlOptions`, `BeatRuntime` | Its types                                                 |
+
+```ts
+import { beatToHtml, supportedBeatTypes } from "mulmocast/browser";
+
+const fragments = script.beats.map((beat, index) => beatToHtml(beat, { idPrefix: `beat-${index}` }));
+```
+
+`idPrefix` must match `[A-Za-z_][A-Za-z0-9_-]*` and `beatToHtml` throws otherwise. Derive it
+from the beat's index (`beat-3`, not `3` — an element id cannot start with a digit); a beat's
+own `id` comes from the script and is unrestricted. The prefix has to be unique per beat and
+stable across re-renders, which is why the library cannot pick it.
+
+### What the host is responsible for
+
+**Sanitizing.** A beat is user data and the markup is not sanitized — `html_tailwind` beats
+are raw author markup by design. Sanitize before inserting into a DOM.
+
+**Providing Tailwind.** Most fragments are styled with Tailwind utility classes. This is
+_not_ in `requires`, which names only the JavaScript runtimes a host must load and execute.
+A page without Tailwind renders the markup unstyled rather than failing, which is why it is
+worth saying rather than leaving to be discovered.
+
+Measured per beat, because it varies by the shape of the beat and not only by its type:
+
+| Beat                                 | Utility classes                                                                                                   |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `chart`, `mermaid`, `image`, `movie` | always                                                                                                            |
+| `slide`                              | always, and it also needs `slideUtilityCss` from `@mulmocast/deck`                                                |
+| `markdown`                           | when the markdown is a layout object, a `2x2`, or contains a mermaid fence; a plain markdown string produces none |
+| `textSlide`                          | none                                                                                                              |
+| `html_tailwind`                      | whatever the author wrote — the name is a promise the author makes, not one this module keeps                     |
+
+**Loading the shared runtimes once for the page**, not once per beat. A fragment names what
+it needs rather than pulling it in:
+
+| Field          | Meaning                                                                         |
+| -------------- | ------------------------------------------------------------------------------- |
+| `requires`     | `"chart"` → Chart.js, `"mermaid"` → mermaid. Absent when the beat needs neither |
+| `chartPlugins` | Extra Chart.js plugin CDNs for this beat's chart type                           |
+| `css`          | Rules the fragment needs, already scoped. Absent when it needs none             |
+| `mermaidTheme` | Which mermaid theme suits the beat's background                                 |
+
+**Driving what a `<script>` would have driven.** This module generates no `<script>` —
+one injected through `innerHTML` does not execute and does not survive sanitizing, so a
+chart's config rides on its canvas as `data-mulmo-chart` instead, the same shape
+`@mulmocast/deck` uses for slides. That says nothing about a script an author _wrote_: a
+`<script>` in an `html_tailwind` beat's markup, in raw HTML inside a `markdown` beat, or in
+a `textSlide` field reaches the fragment verbatim, because this module does not sanitize.
+Sanitize before inserting, as above. One host loop drives what this module does generate:
+
+```ts
+document.querySelectorAll<HTMLCanvasElement>("canvas[data-mulmo-chart]").forEach((canvas) => {
+  const config = canvas.dataset.mulmoChart;
+  const context = canvas.getContext("2d");
+  if (!config || !context) return;
+  new Chart(context, JSON.parse(config));
+});
+mermaid.init(undefined, document.querySelectorAll(".mermaid"));
+```
+
+The two guards are not ceremony: `dataset.mulmoChart` is `string | undefined` and
+`getContext` returns `null` on a canvas that already has a context of another kind, and
+Chart.js throws on either.
+
+### What renders, and what does not
+
+All eight `image.type` values render. Two carry limits from the browser rather than choice:
+
+- **`mermaid`** renders `code.kind === "text"` only; `url`, `path` and `base64` are resolved
+  by a Node fetch/filesystem path.
+- **`image` / `movie`** emit the src the source names. A `base64` source renders nothing —
+  the schema carries no media type to build a `data:` URI from.
+
+`html_tailwind` renders the beat at rest: an author `script`, swipe animations and
+frame-based `animation` all need script execution. The Node HTML dump has never emitted
+those either.
 
 ## Lifecycle: from MulmoScript JSON to rendered video
 
 ```ts
-import {
-  getFileObject,
-  initializeContextFromFiles,
-  audio,
-  images,
-  captions,
-  movie,
-  setGraphAILogger,
-  UsageCollector,
-} from "mulmocast";
+import { getFileObject, initializeContextFromFiles, audio, images, captions, movie, setGraphAILogger, UsageCollector } from "mulmocast";
 
 setGraphAILogger(false); // suppress noisy debug logs from GraphAI
 
@@ -83,25 +161,25 @@ console.log(usage); // UsageRecord[]
 
 All actions take `(context, args?)` and mutate `context.studio` in place. The optional `args.settings` lets you pass per-call API keys instead of relying on `process.env`.
 
-| Action | Purpose | Required dependencies |
-|---|---|---|
-| `audio(context, args?)` | TTS per beat → combined mp3 | TTS provider key (`OPENAI_API_KEY` etc.) |
-| `images(context, args?)` | Generate per-beat images (and html/movie media) | Image provider key |
-| `captions(context, args?)` | Render caption overlays for the video | none (ffmpeg only) |
-| `movie(context, args?)` | Combine audio + images + captions into mp4 | ffmpeg |
-| `pdf(context, mode, size, args?)` | Render PDF (`slide`/`talk`/`handout` × `a4`/`letter`/…) | puppeteer |
-| `translate(context, args?)` | LLM-translate beat text into `args.targetLangs` (default: context.lang + captionParams.lang) | LLM key |
-| `bundle(context, args?)` | Translate + render + zip up `<filename>_viewer.html` + assets | All of the above |
-| `markdown(context, imageWidth?)` | Emit a Markdown rendering | image keys (if not cached) |
-| `html(context, imageWidth?)` | Emit a standalone HTML rendering | image keys (if not cached) |
-| `mulmoViewerBundle(context)` | Zip the bundle artifact (no AI; runs after bundle) | none |
+| Action                            | Purpose                                                                                      | Required dependencies                    |
+| --------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `audio(context, args?)`           | TTS per beat → combined mp3                                                                  | TTS provider key (`OPENAI_API_KEY` etc.) |
+| `images(context, args?)`          | Generate per-beat images (and html/movie media)                                              | Image provider key                       |
+| `captions(context, args?)`        | Render caption overlays for the video                                                        | none (ffmpeg only)                       |
+| `movie(context, args?)`           | Combine audio + images + captions into mp4                                                   | ffmpeg                                   |
+| `pdf(context, mode, size, args?)` | Render PDF (`slide`/`talk`/`handout` × `a4`/`letter`/…)                                      | puppeteer                                |
+| `translate(context, args?)`       | LLM-translate beat text into `args.targetLangs` (default: context.lang + captionParams.lang) | LLM key                                  |
+| `bundle(context, args?)`          | Translate + render + zip up `<filename>_viewer.html` + assets                                | All of the above                         |
+| `markdown(context, imageWidth?)`  | Emit a Markdown rendering                                                                    | image keys (if not cached)               |
+| `html(context, imageWidth?)`      | Emit a standalone HTML rendering                                                             | image keys (if not cached)               |
+| `mulmoViewerBundle(context)`      | Zip the bundle artifact (no AI; runs after bundle)                                           | none                                     |
 
 ### Args shape
 
 ```ts
 type PublicAPIArgs = {
-  settings?: Record<string, string>;   // API keys keyed by env-var name
-  callbacks?: CallbackFunction[];      // GraphAI per-node callbacks (passed to every GraphAI in the action)
+  settings?: Record<string, string>; // API keys keyed by env-var name
+  callbacks?: CallbackFunction[]; // GraphAI per-node callbacks (passed to every GraphAI in the action)
 };
 ```
 
@@ -218,18 +296,18 @@ A `UsageCollector` is automatically created inside `initializeContextFromFiles` 
 
 ```ts
 type UsageRecord = {
-  agent: string;          // "imageOpenaiAgent" | "ttsGeminiAgent" | "openAIAgent" | …
-  provider: string;       // "openai" | "google" | "replicate" | "elevenlabs" | "kotodama" | "gemini" | "anthropic" | "groq"
-  model: string;          // resolved model name as actually used
-  beatIndex?: number;     // from the mapAgent that dispatched the call
-  inputTokens?: number;   // LLM / token-billed image / Gemini TTS
+  agent: string; // "imageOpenaiAgent" | "ttsGeminiAgent" | "openAIAgent" | …
+  provider: string; // "openai" | "google" | "replicate" | "elevenlabs" | "kotodama" | "gemini" | "anthropic" | "groq"
+  model: string; // resolved model name as actually used
+  beatIndex?: number; // from the mapAgent that dispatched the call
+  inputTokens?: number; // LLM / token-billed image / Gemini TTS
   outputTokens?: number;
   totalTokens?: number;
-  predictSec?: number;    // Replicate (metrics.predict_time) and Veo (ffprobed mp4)
-  inputChars?: number;    // char-billed TTS (openai legacy / google / kotodama / elevenlabs)
-  cached: boolean;        // always false in practice — cache hits don't fire the callback at all
-  retryAttempt?: number;  // from log.retryCount
-  timestamp: string;      // ISO-8601
+  predictSec?: number; // Replicate (metrics.predict_time) and Veo (ffprobed mp4)
+  inputChars?: number; // char-billed TTS (openai legacy / google / kotodama / elevenlabs)
+  cached: boolean; // always false in practice — cache hits don't fire the callback at all
+  retryAttempt?: number; // from log.retryCount
+  timestamp: string; // ISO-8601
 };
 ```
 
@@ -251,25 +329,25 @@ type AgentUsage = {
 
 ### What each agent populates
 
-| Agent | Provider | Model(s) | inputTokens | outputTokens | totalTokens | predictSec | inputChars |
-|---|---|---|---|---|---|---|---|
-| `imageOpenaiAgent` | openai | `gpt-image-1`, `gpt-image-1-mini`, … | ✅ | ✅ | ✅ | — | — |
-| `imageGenAIAgent` | google | `gemini-2.5-flash-image`, `gemini-3.x-image-preview` | ✅ | ✅ | ✅ | — | — |
-| `imageReplicateAgent` | replicate | `black-forest-labs/flux-*`, `ideogram-ai/*`, `recraft-ai/*`, … | — | — | — | ✅ | — |
-| `movieGenAIAgent` | google | `veo-3.1-*` | — | — | — | ✅ (ffprobed mp4) | — |
-| `movieReplicateAgent` | replicate | `kwaivgi/kling-*`, `bytedance/seedance-*`, … | — | — | — | ✅ | — |
-| `soundEffectReplicateAgent` | replicate | mmaudio etc. | — | — | — | ✅ | — |
-| `lipSyncReplicateAgent` | replicate | sync-* | — | — | — | ✅ | — |
-| `ttsOpenaiAgent` (tts-1, tts-1-hd) | openai | `tts-1`, `tts-1-hd` | — | — | — | — | ✅ |
-| `ttsOpenaiAgent` (gpt-4o-mini-tts) | openai | `gpt-4o-mini-tts` | — | — | — | — | ✅ (token billing — see [Known gaps](#known-gaps)) |
-| `ttsGoogleAgent` | google | voice tier name | — | — | — | — | ✅ |
-| `ttsKotodamaAgent` | kotodama | speaker_id | — | — | — | — | ✅ |
-| `ttsElevenlabsAgent` | elevenlabs | `eleven_*` | — | — | — | — | ✅ (`character-cost` HTTP header, already post-discount) |
-| `ttsGeminiAgent` | gemini | `gemini-2.5-flash-preview-tts` | ✅ | ✅ | ✅ | — | — |
-| `openAIAgent` (`@graphai/openai_agent`) | openai | `gpt-4o-*`, etc. | ✅ | ✅ | ✅ | — | — |
-| `geminiAgent` (`@graphai/gemini_agent`) | google | `gemini-*` | ✅ | ✅ | ✅ | — | — |
-| `anthropicAgent` (`@graphai/anthropic_agent`) | anthropic | `claude-*` | ✅ | ✅ | ✅ | — | — |
-| `groqAgent` (`@graphai/groq_agent`) | groq | (Groq-hosted) | ✅ | ✅ | ✅ | — | — |
+| Agent                                         | Provider   | Model(s)                                                       | inputTokens | outputTokens | totalTokens | predictSec        | inputChars                                               |
+| --------------------------------------------- | ---------- | -------------------------------------------------------------- | ----------- | ------------ | ----------- | ----------------- | -------------------------------------------------------- |
+| `imageOpenaiAgent`                            | openai     | `gpt-image-1`, `gpt-image-1-mini`, …                           | ✅          | ✅           | ✅          | —                 | —                                                        |
+| `imageGenAIAgent`                             | google     | `gemini-2.5-flash-image`, `gemini-3.x-image-preview`           | ✅          | ✅           | ✅          | —                 | —                                                        |
+| `imageReplicateAgent`                         | replicate  | `black-forest-labs/flux-*`, `ideogram-ai/*`, `recraft-ai/*`, … | —           | —            | —           | ✅                | —                                                        |
+| `movieGenAIAgent`                             | google     | `veo-3.1-*`                                                    | —           | —            | —           | ✅ (ffprobed mp4) | —                                                        |
+| `movieReplicateAgent`                         | replicate  | `kwaivgi/kling-*`, `bytedance/seedance-*`, …                   | —           | —            | —           | ✅                | —                                                        |
+| `soundEffectReplicateAgent`                   | replicate  | mmaudio etc.                                                   | —           | —            | —           | ✅                | —                                                        |
+| `lipSyncReplicateAgent`                       | replicate  | sync-*                                                         | —           | —            | —           | ✅                | —                                                        |
+| `ttsOpenaiAgent` (tts-1, tts-1-hd)            | openai     | `tts-1`, `tts-1-hd`                                            | —           | —            | —           | —                 | ✅                                                       |
+| `ttsOpenaiAgent` (gpt-4o-mini-tts)            | openai     | `gpt-4o-mini-tts`                                              | —           | —            | —           | —                 | ✅ (token billing — see [Known gaps](#known-gaps))       |
+| `ttsGoogleAgent`                              | google     | voice tier name                                                | —           | —            | —           | —                 | ✅                                                       |
+| `ttsKotodamaAgent`                            | kotodama   | speaker_id                                                     | —           | —            | —           | —                 | ✅                                                       |
+| `ttsElevenlabsAgent`                          | elevenlabs | `eleven_*`                                                     | —           | —            | —           | —                 | ✅ (`character-cost` HTTP header, already post-discount) |
+| `ttsGeminiAgent`                              | gemini     | `gemini-2.5-flash-preview-tts`                                 | ✅          | ✅           | ✅          | —                 | —                                                        |
+| `openAIAgent` (`@graphai/openai_agent`)       | openai     | `gpt-4o-*`, etc.                                               | ✅          | ✅           | ✅          | —                 | —                                                        |
+| `geminiAgent` (`@graphai/gemini_agent`)       | google     | `gemini-*`                                                     | ✅          | ✅           | ✅          | —                 | —                                                        |
+| `anthropicAgent` (`@graphai/anthropic_agent`) | anthropic  | `claude-*`                                                     | ✅          | ✅           | ✅          | —                 | —                                                        |
+| `groqAgent` (`@graphai/groq_agent`)           | groq       | (Groq-hosted)                                                  | ✅          | ✅           | ✅          | —                 | —                                                        |
 
 ### CLI dump (no code change required)
 
@@ -289,10 +367,28 @@ Payload shape:
 {
   "records": 5,
   "byModel": [
-    { "provider": "openai",   "model": "gpt-4o-mini-tts", "records": 1, "inputChars": 20, "inputTokens": 0, "outputTokens": 0, "totalTokens": 0, "predictSec": 0 },
-    { "provider": "gemini",   "model": "gemini-2.5-flash-preview-tts", "records": 1, "inputTokens": 9, "outputTokens": 59, "totalTokens": 68, "inputChars": 0, "predictSec": 0 }
+    {
+      "provider": "openai",
+      "model": "gpt-4o-mini-tts",
+      "records": 1,
+      "inputChars": 20,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "totalTokens": 0,
+      "predictSec": 0
+    },
+    {
+      "provider": "gemini",
+      "model": "gemini-2.5-flash-preview-tts",
+      "records": 1,
+      "inputTokens": 9,
+      "outputTokens": 59,
+      "totalTokens": 68,
+      "inputChars": 0,
+      "predictSec": 0
+    }
   ],
-  "snapshot": [ /* raw UsageRecord[] */ ]
+  "snapshot": [/* raw UsageRecord[] */]
 }
 ```
 
@@ -308,7 +404,7 @@ context.usageCollector = collector;
 
 await audio(context).then(images).then(captions).then(movie);
 
-const records = collector.snapshot();        // UsageRecord[]
+const records = collector.snapshot(); // UsageRecord[]
 // Send to your billing layer:
 await fetch("https://billing/ingest", {
   method: "POST",

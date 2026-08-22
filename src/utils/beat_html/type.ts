@@ -10,7 +10,10 @@ import type { SlideTheme } from "@mulmocast/deck";
  */
 export type BeatHtmlFragment = {
   /**
-   * Body markup only — no `<html>`, `<head>`, `<style>` or `<script>`.
+   * Body markup only — no `<html>`, `<head>` or `<style>`, and no `<script>` that this
+   * module generated. An author's own script is a different matter: one written into an
+   * `html_tailwind` beat's markup, into raw HTML inside a `markdown` beat, or into a
+   * `textSlide` field arrives here verbatim, because nothing below sanitizes.
    *
    * **Not sanitized.** A beat is user data and `marked` does not sanitize: raw elements,
    * `onerror=` handlers and `javascript:` URLs written into a beat survive into this

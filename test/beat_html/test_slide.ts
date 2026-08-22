@@ -3,6 +3,7 @@ import assert from "node:assert";
 import { slideToHtml } from "../../src/utils/beat_html/slide.js";
 import { beatToHtml } from "../../src/utils/beat_html/index.js";
 import { generateSlideFragment } from "@mulmocast/deck/lib/fragment.js";
+
 import { slideThemes } from "../../src/data/slideThemes.js";
 import { mulmoBeatSchema, mulmoSlideMediaSchema } from "../../src/types/schema.js";
 
@@ -49,6 +50,54 @@ test("the beat's theme wins over the deck's, which wins over the built-in", () =
   assert.match(slideToHtml(media(), options({ slideTheme: deckTheme })).css ?? "", /222222/);
   const fallback = slideToHtml(media(), options()).css ?? "";
   assert.ok(!fallback.includes("111111") && !fallback.includes("222222"), "with neither, the built-in theme is used");
+});
+
+// deck emits no script from a block at all: its chart driver lives in generateSlideHTML,
+// the document API. So a fragment cannot carry one, rather than carrying one this module
+// has to remove — see receptron/mulmocast-deck#28 for why removal could not be made safe.
+test("a chart slide carries its config on the canvas and no script", () => {
+  const withChart = media({
+    slide: { layout: "split", title: "T", left: { content: [{ type: "chart", chartData: { type: "bar" } }] }, right: { content: [] } },
+  });
+  const mine = slideToHtml(withChart, options()).html;
+  const theirs = generateSlideFragment(slideThemes.corporate, withChart.slide, { scopeClass: "beat-3-slide" }).html;
+
+  assert.strictEqual(mine.toLowerCase().split("<script").length - 1, 0, "no script in the fragment");
+  assert.strictEqual(theirs.toLowerCase().split("<script").length - 1, 0, "deck emits none either — this module removes nothing");
+  assert.ok(mine.includes("data-mulmo-chart"), "the config the host drives from must remain");
+  // deck's own id counter advances per call, so normalise it: what matters is that this
+  // module returns deck's markup rather than a processed copy of it.
+  const withoutIds = (html: string) => html.replace(/id="chart-\d+"/g, 'id="«chart»"');
+  assert.strictEqual(withoutIds(mine), withoutIds(theirs), "and the markup is deck's, untouched");
+});
+
+// A chart label containing `</script>` is schema-valid. It is why removing a script
+// downstream could not be made safe, and why deck stopped emitting one.
+test("a hostile chart config stays inside its attribute, and survives it", () => {
+  const label = "</script><p>injected</p>";
+  const hostile = media({
+    slide: { layout: "split", title: "T", left: { content: [{ type: "chart", chartData: { label } }] }, right: { content: [] } },
+  });
+  const html = slideToHtml(hostile, options()).html;
+  assert.strictEqual(html.toLowerCase().split("<script").length - 1, 0);
+  assert.ok(!html.includes("<p>injected</p>"), "the payload must not become markup");
+
+  // Neutralized, not dropped: the two assertions above also pass if the renderer throws the
+  // label away, which is chart configuration loss wearing a security fix's clothes.
+  const encoded = html.match(/data-mulmo-chart="([^"]*)"/)?.[1];
+  assert.ok(encoded, "the config must still be on the canvas");
+  const decoded = encoded
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+  assert.strictEqual(JSON.parse(decoded).label, label, "the host must read back exactly what the slide said");
+});
+
+test("a slide with no script is passed through untouched", () => {
+  const plain = media();
+  assert.strictEqual(slideToHtml(plain, options()).html, generateSlideFragment(slideThemes.corporate, plain.slide, { scopeClass: "beat-3-slide" }).html);
 });
 
 test("runtimes and plugins are passed through, and absent when the slide needs none", () => {
