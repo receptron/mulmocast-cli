@@ -2523,7 +2523,7 @@
                         ]
                       },
                       {
-                        "allOf": [
+                        "anyOf": [
                           {
                             "type": "object",
                             "properties": {
@@ -2552,122 +2552,24 @@
                                     }
                                   }
                                 ]
-                              }
-                            },
-                            "additionalProperties": false
-                          },
-                          {
-                            "anyOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "row-2": {
-                                    "type": "array",
-                                    "prefixItems": [
+                              },
+                              "row-2": {
+                                "type": "array",
+                                "prefixItems": [
+                                  {
+                                    "anyOf": [
                                       {
-                                        "anyOf": [
-                                          {
-                                            "type": "string"
-                                          },
-                                          {
-                                            "type": "array",
-                                            "items": {
-                                              "type": "string"
-                                            }
-                                          }
-                                        ]
+                                        "type": "string"
                                       },
                                       {
-                                        "anyOf": [
-                                          {
-                                            "type": "string"
-                                          },
-                                          {
-                                            "type": "array",
-                                            "items": {
-                                              "type": "string"
-                                            }
-                                          }
-                                        ]
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
                                       }
                                     ]
-                                  }
-                                },
-                                "required": [
-                                  "row-2"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "2x2": {
-                                    "type": "array",
-                                    "prefixItems": [
-                                      {
-                                        "anyOf": [
-                                          {
-                                            "type": "string"
-                                          },
-                                          {
-                                            "type": "array",
-                                            "items": {
-                                              "type": "string"
-                                            }
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "anyOf": [
-                                          {
-                                            "type": "string"
-                                          },
-                                          {
-                                            "type": "array",
-                                            "items": {
-                                              "type": "string"
-                                            }
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "anyOf": [
-                                          {
-                                            "type": "string"
-                                          },
-                                          {
-                                            "type": "array",
-                                            "items": {
-                                              "type": "string"
-                                            }
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "anyOf": [
-                                          {
-                                            "type": "string"
-                                          },
-                                          {
-                                            "type": "array",
-                                            "items": {
-                                              "type": "string"
-                                            }
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "2x2"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "content": {
+                                  },
+                                  {
                                     "anyOf": [
                                       {
                                         "type": "string"
@@ -2680,13 +2582,159 @@
                                       }
                                     ]
                                   }
-                                },
-                                "required": [
-                                  "content"
                                 ],
-                                "additionalProperties": false
+                                "items": false,
+                                "minItems": 2,
+                                "maxItems": 2
                               }
-                            ]
+                            },
+                            "required": [
+                              "row-2"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "header": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  }
+                                ]
+                              },
+                              "sidebar-left": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  }
+                                ]
+                              },
+                              "2x2": {
+                                "type": "array",
+                                "prefixItems": [
+                                  {
+                                    "anyOf": [
+                                      {
+                                        "type": "string"
+                                      },
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "anyOf": [
+                                      {
+                                        "type": "string"
+                                      },
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "anyOf": [
+                                      {
+                                        "type": "string"
+                                      },
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "anyOf": [
+                                      {
+                                        "type": "string"
+                                      },
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "items": false,
+                                "minItems": 4,
+                                "maxItems": 4
+                              }
+                            },
+                            "required": [
+                              "2x2"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "header": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  }
+                                ]
+                              },
+                              "sidebar-left": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  }
+                                ]
+                              },
+                              "content": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "content"
+                            ],
+                            "additionalProperties": false
                           }
                         ]
                       }
@@ -15190,43 +15238,27 @@
           "pattern": "^[A-Za-z_][A-Za-z0-9_-]*$"
         },
         "x": {
-          "anyOf": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "string"
-            }
+          "type": [
+            "number",
+            "string"
           ]
         },
         "y": {
-          "anyOf": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "string"
-            }
+          "type": [
+            "number",
+            "string"
           ]
         },
         "w": {
-          "anyOf": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "string"
-            }
+          "type": [
+            "number",
+            "string"
           ]
         },
         "h": {
-          "anyOf": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "string"
-            }
+          "type": [
+            "number",
+            "string"
           ]
         },
         "pos": {
@@ -15234,26 +15266,21 @@
           "type": "array",
           "prefixItems": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                }
+              "type": [
+                "number",
+                "string"
               ]
             },
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                }
+              "type": [
+                "number",
+                "string"
               ]
             }
-          ]
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
         },
         "bc": {
           "description": "Background color",
@@ -15281,7 +15308,10 @@
                 {
                   "type": "number"
                 }
-              ]
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
             }
           ]
         },
@@ -15294,7 +15324,10 @@
             {
               "type": "number"
             }
-          ]
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
         },
         "cornerRadius": {
           "type": "number"
@@ -15325,7 +15358,10 @@
                 {
                   "type": "number"
                 }
-              ]
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
             },
             "opacity": {
               "default": 0.5,
@@ -15351,13 +15387,9 @@
           "type": "string"
         },
         "fontSize": {
-          "anyOf": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "string"
-            }
+          "type": [
+            "number",
+            "string"
           ]
         },
         "fontWeight": {
@@ -15375,13 +15407,9 @@
           ]
         },
         "lineHeight": {
-          "anyOf": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "string"
-            }
+          "type": [
+            "number",
+            "string"
           ]
         },
         "img": {
@@ -15423,7 +15451,10 @@
                     {
                       "type": "number"
                     }
-                  ]
+                  ],
+                  "items": false,
+                  "minItems": 2,
+                  "maxItems": 2
                 }
               ]
             },
@@ -15436,7 +15467,10 @@
                 {
                   "type": "number"
                 }
-              ]
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
             },
             "bc": {
               "type": "string"
@@ -15455,7 +15489,10 @@
                 {
                   "type": "number"
                 }
-              ]
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
             }
           },
           "additionalProperties": false
