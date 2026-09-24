@@ -141,7 +141,7 @@ test("test createStudioData", async () => {
   assert.deepStrictEqual(studio, expect);
 });
 
-test("test createStudioData", async () => {
+test("test createStudioData - custom speaker", async () => {
   const studio = createStudioData(
     MulmoScriptMethods.validate({
       $mulmocast: {

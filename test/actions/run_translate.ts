@@ -122,12 +122,12 @@ const getContext = () => {
   return context;
 };
 
-test("test beat translate", async () => {
+test("test translate - whole script", async () => {
   const context = getContext();
   await translate(context, { targetLangs: ["ch"] });
 });
 
-test("test beat translate", async () => {
+test("test beat translate - single beat", async () => {
   const context = getContext();
   await translateBeat(1, context, ["fr"]);
 });
