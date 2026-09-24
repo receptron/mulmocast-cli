@@ -4,27 +4,27 @@ import assert from "node:assert";
 import { getExtention } from "../../src/methods/mulmo_media_source.js";
 import { settings2GraphAIConfig, deepClean, getAspectRatio } from "../../src/utils/utils.js";
 
-test("test getExtention", async () => {
+test("test getExtention - image/jpeg mime", async () => {
   const ext = getExtention("image/jpeg", "http://example.com/a.png");
   assert.equal(ext, "jpg");
 });
 
-test("test getExtention", async () => {
+test("test getExtention - image/jpg mime", async () => {
   const ext = getExtention("image/jpg", "http://example.com/a.png");
   assert.equal(ext, "jpg");
 });
 
-test("test getExtention", async () => {
+test("test getExtention - image/png mime", async () => {
   const ext = getExtention("image/png", "http://example.com/a.png");
   assert.equal(ext, "png");
 });
 
-test("test getExtention", async () => {
+test("test getExtention - non-image mime falls back to url jpg", async () => {
   const ext = getExtention("text/md", "http://example.com/a.jpg");
   assert.equal(ext, "jpg");
 });
 
-test("test getExtention", async () => {
+test("test getExtention - non-image mime with gif url falls back to png", async () => {
   const ext = getExtention("text/md", "http://example.com/a.gif");
   assert.equal(ext, "png");
 });
@@ -134,7 +134,7 @@ test("test settings2GraphAIConfig (setting/env precedence)", async () => {
   assert.deepStrictEqual(res8, {});
 });
 
-test("test settings2GraphAIConfig", async () => {
+test("test deepClean", async () => {
   const agents = {
     openAIAgent: { apiKey: "aaa", baseURL: "" },
     ttsOpenaiAgent: { apiKey: "123", baseURL: undefined },
