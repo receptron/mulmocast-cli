@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.12.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.12.1) (2026-09-25)
+
+- **Dependency updates** (#1574, #1580, #1581): `zod` ^4.6.5, `puppeteer` ^25.11.0, `@mulmocast/deck` ^2.0.2, `marked`, `yaml`, `@inquirer/*`, `@tavily/core`, plus dev tooling (`eslint`, `eslint-plugin-sonarjs`, `prettier`, `typescript-eslint`, `tsx`)
+- **Bundled schema regenerated** for zod 4.6 (`assets/schemas/mulmo_script.json`, #1580)
+- **Single zod / puppeteer copy**: `yarn.lock` deduplicated so `@mulmocast/deck` and `mulmocast-vision` share the root zod and puppeteer instead of nested older copies (#1581)
+- **Transitive bumps (Dependabot)**: `hono` 4.13.7 (#1579), `qs` 6.16.0 (#1577), `fast-uri` 3.1.7 (#1575), `@humanfs/node` 0.16.8 (#1576)
+
+📦 **npm**: [`mulmocast@2.12.1`](https://www.npmjs.com/package/mulmocast/v/2.12.1)
+
 ## [2.12.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.12.0) (2026-08-23)
 
 ### `mulmo html` の slide beat が、文書ではなく断片になりました
