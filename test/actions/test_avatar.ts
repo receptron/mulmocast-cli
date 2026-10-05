@@ -66,25 +66,56 @@ test("planAvatarTracks: one track per speaker with an avatar, at the narration's
   );
   assert.deepStrictEqual(miko.segments[0].motions, [{ motion: "nod", at: "こんにちは" }]);
   assert.strictEqual(miko.segments[0].emotion, "happy");
-  assert.deepStrictEqual(miko.hidden, [[6, 8]]);
   // the whole video: beat durations plus intro and outro padding
   assert.strictEqual(miko.duration, 12);
-  // defaults < script < speaker avatar < first beat
-  assert.deepStrictEqual(miko.position, { x: "80%", y: "95%", scale: "50%" });
+  // beat stretches start at 0, 3, 6, 8, 9 (narration start; the first one at 0 with its intro).
+  // Position: defaults < script < speaker avatar < beat. A beat's own position holds for that beat;
+  // the narrator's beat keeps Miko where she was; the hidden beat (6–8) is not shown; equal
+  // neighbouring stretches are joined.
+  assert.deepStrictEqual(miko.placements, [
+    { start: 0, end: 6, position: { x: "80%", y: "95%", scale: "50%" } },
+    { start: 8, end: 12, position: { x: "80%", y: "100%", scale: "50%" } },
+  ]);
 });
 
 test("planAvatarTracks: a language override of the speaker keeps the avatar", () => {
   assert.strictEqual(planAvatarTracks(createContext("en"))[0]?.speakerId, "Miko");
 });
 
-test("addAvatars: overlays each track last, decoding alpha, off during hidden beats", () => {
+test("addAvatars: overlays each track last, decoding alpha, at each stretch's place and size", () => {
   const context = createContext("ja");
-  context.studio.avatarTracks = [{ speaker: "Miko", file: "/out/avatar.webm", x: 835, y: 274, width: 480, height: 446, hidden: [[6, 8]] }];
+  context.studio.avatarTracks = [
+    {
+      speaker: "Miko",
+      file: "/out/avatar.webm",
+      width: 600,
+      height: 600,
+      placements: [
+        { start: 0, end: 6, x: 900, y: 300, width: 300, height: 300 },
+        { start: 8, end: 12, x: 100, y: 120, width: 600, height: 600 },
+      ],
+    },
+  ];
   const ffmpegContext = FfmpegContextInit();
   const videoId = addAvatars(ffmpegContext, "base", context);
-  assert.strictEqual(videoId, "avatar0");
-  assert.deepStrictEqual(ffmpegContext.filterComplex, ["[base][0:v]overlay=x=835:y=274:format=auto:eof_action=pass:enable='not(between(t,6,8))'[avatar0]"]);
+  assert.strictEqual(videoId, "avatar0_1");
+  assert.deepStrictEqual(ffmpegContext.filterComplex, [
+    "[0:v]split=2[avatar0_src0][avatar0_src1]",
+    "[avatar0_src0]scale=300:300[avatar0_0s]",
+    "[base][avatar0_0s]overlay=x=900:y=300:format=auto:eof_action=pass:enable='gte(t,0)*lt(t,6)'[avatar0_0]",
+    "[avatar0_0][avatar0_src1]overlay=x=100:y=120:format=auto:eof_action=pass:enable='gte(t,8)*lt(t,12)'[avatar0_1]",
+  ]);
   assert.deepStrictEqual(ffmpegContext.command._inputs[0].options.get(), ["-c:v", "libvpx-vp9"]);
+});
+
+test("addAvatars: a track shown in one stretch at its own size needs no split or scale", () => {
+  const context = createContext("ja");
+  context.studio.avatarTracks = [
+    { speaker: "Miko", file: "/out/avatar.webm", width: 446, height: 446, placements: [{ start: 0, end: 12, x: 852, y: 274, width: 446, height: 446 }] },
+  ];
+  const ffmpegContext = FfmpegContextInit();
+  addAvatars(ffmpegContext, "base", context);
+  assert.deepStrictEqual(ffmpegContext.filterComplex, ["[base][0:v]overlay=x=852:y=274:format=auto:eof_action=pass:enable='gte(t,0)*lt(t,12)'[avatar0_0]"]);
 });
 
 test("addAvatars: no tracks, no filter", () => {

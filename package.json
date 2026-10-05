@@ -130,7 +130,7 @@
     "@types/jsdom": "^28.0.3",
     "@types/node": "^26.6.4",
     "@types/yargs": "^17.0.35",
-    "avatarscript": "^0.2.0",
+    "avatarscript": "^0.2.1",
     "cross-env": "^10.1.0",
     "esbuild": "^0.28.2",
     "eslint": "^10.12.0",

@@ -3,6 +3,7 @@
   "lang": "ja",
   "title": "Talking avatar over slides",
   "description": "Needs mesh-avatar-studio checked out next to this repository (for its sample avatar), and npm packages avatarscript and onnxruntime-node.",
+  "avatarParams": { "position": { "x": "82%", "y": "100%", "scale": "62%" } },
   "speechParams": {
     "speakers": {
       "Miko": {
@@ -13,7 +14,6 @@
       }
     }
   },
-  "avatarParams": { "position": { "x": "84%", "y": "100%", "scale": "62%" } },
   "beats": [
     {
       "speaker": "Miko",
@@ -23,15 +23,24 @@
     },
     {
       "speaker": "Miko",
-      "text": "話者にアバターを指定するだけで、どのテキスト読み上げでも、口の動きが音声に合います。",
-      "image": { "type": "markdown", "markdown": ["# How", "", "```json", "\"avatar\": { \"source\": \"./avatars/miko\" }", "```"] },
-      "avatarParams": { "emotion": "relaxed", "motions": [{ "motion": "think", "at": "どのテキスト" }] }
+      "text": "位置と大きさは、台本全体で決めておいて、ビートごとに変えられます。このスライドでは、大きくなっています。",
+      "image": { "type": "markdown", "markdown": ["# Position and size", "", "- 台本全体: `avatarParams.position`", "- ビートごとに上書き"] },
+      "avatarParams": { "emotion": "relaxed", "position": { "x": "76%", "scale": "82%" }, "motions": [{ "motion": "tilt", "at": "大きく" }] }
     },
     {
       "speaker": "Miko",
-      "text": "このスライドでは、アバターを隠しています。",
-      "image": { "type": "markdown", "markdown": ["# Full slide", "", "Avatar hidden on this beat"] },
-      "avatarParams": { "hidden": true }
+      "text": "こちらでは、左側に小さく移動しました。",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Moved", "", "```json", "\"avatarParams\": {", "  \"position\": { \"x\": \"18%\", \"scale\": \"48%\" }", "}", "```"]
+      },
+      "avatarParams": { "emotion": "surprised", "position": { "x": "18%", "scale": "48%" }, "motions": [{ "motion": "surprise" }] }
+    },
+    {
+      "speaker": "Miko",
+      "text": "最後は、元の位置に戻ります。それでは、始めましょう！",
+      "image": { "type": "markdown", "markdown": ["# Let's start"] },
+      "avatarParams": { "emotion": "happy" }
     }
   ]
 }

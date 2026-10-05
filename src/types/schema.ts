@@ -870,11 +870,10 @@ export const mulmoAvatarTrackSchema = z
   .object({
     speaker: z.string(),
     file: z.string(), // see-through, avatar-sized video (WebM VP9 with alpha)
-    x: z.number(), // placement on the canvas, pixels
-    y: z.number(),
-    width: z.number(),
+    width: z.number(), // the size it was rendered at, pixels
     height: z.number(),
-    hidden: z.array(z.tuple([z.number(), z.number()])), // absolute [start, end] seconds when the avatar is hidden
+    // where it is shown: absolute [start, end) seconds, and its place and size on the canvas in pixels
+    placements: z.array(z.object({ start: z.number(), end: z.number(), x: z.number(), y: z.number(), width: z.number(), height: z.number() }).strict()),
   })
   .strict();
 

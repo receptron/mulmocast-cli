@@ -31,7 +31,7 @@ Everything is optional; a script without `avatar` renders exactly as before.
       "image": { "type": "markdown", "markdown": ["# Hello"] },
       "avatarParams": { "emotion": "happy", "motions": [{ "motion": "nod", "at": "こんにちは" }] }
     },
-    { "speaker": "Miko", "text": "…", "avatarParams": { "hidden": true } }
+    { "speaker": "Miko", "text": "…", "avatarParams": { "position": { "x": "18%", "scale": "48%" } } }
   ]
 }
 ```
@@ -41,9 +41,10 @@ Everything is optional; a script without `avatar` renders exactly as before.
   A `lang` override of the speaker keeps the base speaker's avatar unless it names its own.
 - `avatarParams` — on the script (defaults) and on a beat (overrides):
   - `position`: `x` (horizontal centre, % of canvas width, default `84%`), `y` (bottom edge, % of
-    canvas height, default `100%`), `scale` (height, % of canvas height, default `62%`). Precedence:
-    beat → speaker avatar → script → default. Only the first beat's position of a track is used
-    (a track does not move).
+    canvas height, default `100%`), `scale` (height, % of canvas height, default `62%`). Set it for
+    the whole script at the top level and override it per beat. Precedence: beat → speaker avatar →
+    script → default. A beat's position holds for that beat; during another speaker's beat an
+    avatar stays where it was.
   - `emotion`: `neutral | happy | sad | angry | surprised | relaxed`, for the beat.
   - `motions`: `[{ motion, at? }]`; `at` names words of the beat's text where the motion starts.
   - `hidden`: hide this speaker's avatar during the beat.
@@ -51,18 +52,22 @@ Everything is optional; a script without `avatar` renders exactly as before.
 ## Rendering
 
 - One continuous track per avatar speaker for the whole video, not one clip per beat: per-beat
-  clips would reset breathing, hair and blinking at every beat boundary.
+  clips would reset breathing, hair and blinking at every beat boundary. Several speakers with
+  avatars give several tracks, all on screen; the ones not speaking idle.
 - New action `avatar` (after `captions`, before `movie`). For each speaker with an avatar it builds a
   timeline from the beats that speaker narrates — the beat's audio file, its text in the audio
   language, start time `studioBeat.startAt + introPadding` (the same offset as captions), emotion
   and motions — and calls `compileTimeline()` and `render({ audio: false })` from `avatarscript`.
   Timing comes from forced alignment of the text to the audio, so every TTS provider works.
-- Output: `<imageProjectDir>/avatar_<speaker>_<hash>.webm` (VP9 with alpha, avatar-sized), cached by
-  a hash of everything that changes it; `-f` re-renders. Recorded in `studio.avatarTracks`
-  (file, placement, hidden spans).
+- Output: `<imageProjectDir>/avatar_<speaker>_<hash>.webm` (VP9 with alpha), rendered once at the
+  largest size the avatar is shown, cached by a hash of everything that changes the picture; `-f`
+  re-renders. Recorded in `studio.avatarTracks`: the file, its size, and its placements — absolute
+  `[start, end)` stretches with a place and size each (none during hidden beats).
+- The whole avatar image is shown (`padTop: 0`): a rig may crop the flat top edge of its image,
+  which is hidden only when the avatar fills the frame; over a slide it would cut the head.
 - `movie.ts`: after transitions (so slide transitions do not move the avatar), each track is
-  overlaid: input with `-c:v libvpx-vp9` (needed to decode alpha), then
-  `overlay=x:y:format=auto:eof_action=pass`, disabled during hidden beats.
+  read once with `-c:v libvpx-vp9` (needed to decode alpha), `split` per placement, scaled to the
+  placement's size and overlaid with `overlay=x:y:format=auto:eof_action=pass:enable='gte(t,start)*lt(t,end)'`.
 
 ## Dependencies
 

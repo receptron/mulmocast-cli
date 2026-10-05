@@ -142,14 +142,24 @@ const getOutputOption = (audioId: string, videoId: string) => {
 
 // Talking avatars (actions/avatar.ts): each track is a see-through video as long as the whole movie,
 // overlaid last so slide transitions do not move it. "-c:v libvpx-vp9" is needed to decode the alpha.
+// A track is shown in stretches (placements), each scaled to its size and placed where it says.
 export const addAvatars = (ffmpegContext: FfmpegContext, videoId: string, context: MulmoStudioContext) => {
-  return (context.studio.avatarTracks ?? []).reduce((accId, track, index) => {
+  return (context.studio.avatarTracks ?? []).reduce((accId, track, trackIndex) => {
+    if (track.placements.length === 0) return accId;
     const inputIndex = FfmpegContextAddInput(ffmpegContext, track.file, ["-c:v", "libvpx-vp9"]);
-    const hidden = track.hidden.map(([start, end]) => `between(t,${start},${end})`).join("+");
-    const enable = hidden ? `:enable='not(${hidden})'` : "";
-    const avatarVideoId = `avatar${index}`;
-    ffmpegContext.filterComplex.push(`[${accId}][${inputIndex}:v]overlay=x=${track.x}:y=${track.y}:format=auto:eof_action=pass${enable}[${avatarVideoId}]`);
-    return avatarVideoId;
+    const sources = track.placements.length === 1 ? [`${inputIndex}:v`] : track.placements.map((_, index) => `avatar${trackIndex}_src${index}`);
+    const labels = sources.map((id) => "[" + id + "]").join("");
+    if (track.placements.length > 1) ffmpegContext.filterComplex.push(`[${inputIndex}:v]split=${sources.length}${labels}`);
+    return track.placements.reduce((prevId, placement, index) => {
+      const scaledId = `avatar${trackIndex}_${index}s`;
+      const resized = placement.width !== track.width || placement.height !== track.height;
+      if (resized) ffmpegContext.filterComplex.push(`[${sources[index]}]scale=${placement.width}:${placement.height}[${scaledId}]`);
+      const outId = `avatar${trackIndex}_${index}`;
+      ffmpegContext.filterComplex.push(
+        `[${prevId}][${resized ? scaledId : sources[index]}]overlay=x=${placement.x}:y=${placement.y}:format=auto:eof_action=pass:enable='gte(t,${placement.start})*lt(t,${placement.end})'[${outId}]`,
+      );
+      return outId;
+    }, accId);
   }, videoId);
 };
 

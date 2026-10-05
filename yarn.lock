@@ -1150,10 +1150,10 @@ available-typed-arrays@^1.0.7:
   dependencies:
     possible-typed-array-names "^1.0.0"
 
-avatarscript@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/avatarscript/-/avatarscript-0.2.0.tgz#b5827e74649016a3f3fc352e77aaf0285aa97810"
-  integrity sha512-PUbLMZkS2PIizH6rUI7lVbBfpBMBJ/MPl8/9zwOAk6L6KEPMDGYa5gtz1cUanuZ0ycBI7+iCt+CVv+UxwpD6nQ==
+avatarscript@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/avatarscript/-/avatarscript-0.2.1.tgz#4d2408bbb427859b42bd415c186c36148111972c"
+  integrity sha512-8lINYb9p95+icEnxCBGKGKXLhaLsq9fuChtS8RJbxbT5ppXB3FRT+Gv3mXkDklSXUxaGUzAiSWPgB2Z+OYEQ+w==
   dependencies:
     kuromoji "^0.1.2"
     puppeteer "^25.12.0"

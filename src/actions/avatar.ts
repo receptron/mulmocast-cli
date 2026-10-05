@@ -5,7 +5,7 @@ import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { GraphAILogger } from "graphai";
-import type { MulmoAvatarPosition, MulmoAvatarTrack, MulmoBeat, MulmoStudioContext, MulmoSpeakerAvatar } from "../types/index.js";
+import type { MulmoAvatarPosition, MulmoAvatarTrack, MulmoStudioContext, MulmoSpeakerAvatar } from "../types/index.js";
 import { MulmoPresentationStyleMethods, MulmoStudioContextMethods } from "../methods/index.js";
 import { getFullPath, getOutputStudioFilePath } from "../utils/file.js";
 import { localizedText } from "../utils/utils.js";
@@ -25,13 +25,16 @@ export type AvatarSegmentPlan = {
   motions?: { motion: string; at?: string }[];
 };
 
+/** Where the avatar is during one stretch of the video (absolute seconds, end exclusive). */
+export type AvatarPlacementPlan = { start: number; end: number; position: Required<MulmoAvatarPosition> };
+
 export type AvatarTrackPlan = {
   speakerId: string;
   /** absolute path of the avatar package */
   source: string;
-  position: Required<MulmoAvatarPosition>;
   segments: AvatarSegmentPlan[];
-  hidden: [number, number][];
+  /** where the avatar is shown, beat by beat; it is not shown outside these */
+  placements: AvatarPlacementPlan[];
   /** length of the whole video, seconds */
   duration: number;
 };
@@ -43,48 +46,64 @@ const mergePosition = (...positions: (MulmoAvatarPosition | undefined)[]): Requi
 
 const percent = (value: string, of: number) => (of * parseFloat(value)) / 100;
 
-/** Which beats each avatar speaks, where and when. Pure: reads the studio, writes nothing. */
+const samePosition = (a: Required<MulmoAvatarPosition>, b: Required<MulmoAvatarPosition>) => a.x === b.x && a.y === b.y && a.scale === b.scale;
+
+type TrackState = AvatarTrackPlan & { avatar: MulmoSpeakerAvatar; current: Required<MulmoAvatarPosition> };
+
+/** Adds [start, end) at `position`, joining it to the previous stretch when nothing changes. */
+const place = (track: TrackState, start: number, end: number, position: Required<MulmoAvatarPosition>) => {
+  const last = track.placements.at(-1);
+  if (last && last.end === start && samePosition(last.position, position)) last.end = end;
+  else track.placements.push({ start, end, position });
+};
+
+/**
+ * Which beats each avatar speaks, and where it stands, beat by beat. Pure: reads the studio,
+ * writes nothing. Position: the beat's avatarParams, then the speaker's avatar, then the script's
+ * avatarParams, then the defaults; during other speakers' beats the avatar stays where it was.
+ */
 export const planAvatarTracks = (context: MulmoStudioContext): AvatarTrackPlan[] => {
   const { script, beats: studioBeats } = context.studio;
   const introPadding = MulmoStudioContextMethods.getIntroPadding(context);
   const duration = studioBeats.reduce((total, _, index) => total + MulmoStudioContextMethods.getBeatDuration(context, index), 0);
-  const tracks = new Map<string, AvatarTrackPlan & { avatar: MulmoSpeakerAvatar; firstBeat?: MulmoBeat }>();
-  script.beats.forEach((beat, index) => {
+  const scriptPosition = context.presentationStyle.avatarParams?.position;
+  const tracks = new Map<string, TrackState>();
+  script.beats.forEach((beat) => {
     const found = MulmoPresentationStyleMethods.getSpeakerAvatar(context.presentationStyle, beat, context.lang);
-    if (!found) return;
-    const track = tracks.get(found.speakerId) ?? {
+    if (!found || tracks.has(found.speakerId)) return;
+    tracks.set(found.speakerId, {
       speakerId: found.speakerId,
       avatar: found.avatar,
       source: getFullPath(context.fileDirs.mulmoFileDirPath, found.avatar.source),
-      position: DEFAULT_POSITION,
       segments: [],
-      hidden: [],
+      placements: [],
       duration,
-    };
-    tracks.set(found.speakerId, track);
-    const studioBeat = studioBeats[index];
-    const start = (studioBeat?.startAt ?? 0) + introPadding;
-    if (beat.avatarParams?.hidden) {
-      track.hidden.push([start, start + (studioBeat?.duration ?? 0)]);
-      return;
-    }
-    const text = localizedText(beat, context.multiLingual?.[index], context.lang, script.lang);
-    if (!text || !studioBeat?.audioFile) return;
-    track.firstBeat ??= beat;
-    track.segments.push({
-      beatIndex: index,
-      text,
-      audio: studioBeat.audioFile,
-      start,
-      emotion: beat.avatarParams?.emotion,
-      motions: beat.avatarParams?.motions,
+      current: mergePosition(scriptPosition, found.avatar.position),
     });
   });
-  return [...tracks.values()].map(({ avatar, firstBeat, ...track }) => ({
-    ...track,
-    // a track stays in one place: script defaults, then the speaker's avatar, then its first beat
-    position: mergePosition(context.presentationStyle.avatarParams?.position, avatar.position, firstBeat?.avatarParams?.position),
-  }));
+  // each beat's stretch of the video: the first one starts at 0 (its intro padding), the rest at their narration
+  const starts = studioBeats.map((studioBeat, index) => (index === 0 ? 0 : (studioBeat.startAt ?? 0) + introPadding));
+  script.beats.forEach((beat, index) => {
+    const studioBeat = studioBeats[index];
+    const windowEnd = starts[index + 1] ?? duration;
+    const speaker = MulmoPresentationStyleMethods.getSpeakerAvatar(context.presentationStyle, beat, context.lang)?.speakerId;
+    tracks.forEach((track) => {
+      const own = track.speakerId === speaker;
+      if (own) track.current = mergePosition(scriptPosition, track.avatar.position, beat.avatarParams?.position);
+      if (!(own && beat.avatarParams?.hidden)) place(track, starts[index], windowEnd, track.current);
+      const text = localizedText(beat, context.multiLingual?.[index], context.lang, script.lang);
+      if (!own || beat.avatarParams?.hidden || !text || !studioBeat?.audioFile) return;
+      track.segments.push({
+        beatIndex: index,
+        text,
+        audio: studioBeat.audioFile,
+        start: (studioBeat.startAt ?? 0) + introPadding,
+        emotion: beat.avatarParams?.emotion,
+        motions: beat.avatarParams?.motions,
+      });
+    });
+  });
+  return [...tracks.values()].map(({ avatar: __avatar, current: __current, ...track }) => track);
 };
 
 type AvatarScriptModule = typeof import("avatarscript");
@@ -101,12 +120,17 @@ const loadAvatarScript = async (): Promise<AvatarScriptModule> => {
 const renderAvatarTrack = async (plan: AvatarTrackPlan, context: MulmoStudioContext, avatarscript: AvatarScriptModule): Promise<MulmoAvatarTrack> => {
   const canvas = MulmoPresentationStyleMethods.getCanvasSize(context.presentationStyle);
   const avatar = await avatarscript.loadAvatar(plan.source);
-  // even dimensions for the video codecs
-  const height = Math.round(percent(plan.position.scale, canvas.height) / 2) * 2;
-  const width = Math.round((height * avatarscript.avatarAspect(avatar.rig, PAD_TOP)) / 2) * 2;
-  const x = Math.round(percent(plan.position.x, canvas.width) - width / 2);
-  const y = Math.round(percent(plan.position.y, canvas.height) - height);
-  const identity = { version: 2, plan, width, height, padTop: PAD_TOP };
+  const aspect = avatarscript.avatarAspect(avatar.rig, PAD_TOP);
+  const even = (n: number) => Math.max(2, Math.round(n / 2) * 2); // video codecs need even sizes
+  // rendered once, at the largest size it is shown; smaller placements scale it down
+  const height = even(Math.max(...plan.placements.map((p) => percent(p.position.scale, canvas.height))));
+  const width = even(height * aspect);
+  const placements = plan.placements.map(({ start, end, position }) => {
+    const h = even(percent(position.scale, canvas.height));
+    const w = even(h * aspect);
+    return { start, end, x: Math.round(percent(position.x, canvas.width) - w / 2), y: Math.round(percent(position.y, canvas.height) - h), width: w, height: h };
+  });
+  const identity = { version: 3, segments: plan.segments, source: plan.source, duration: plan.duration, width, height, padTop: PAD_TOP };
   const hash = createHash("sha256").update(JSON.stringify(identity)).digest("hex").slice(0, 12);
   const dir = MulmoStudioContextMethods.getImageProjectDirPath(context);
   const name = `avatar_${plan.speakerId.replace(/[^\w-]/g, "_")}_${hash}`;
@@ -125,7 +149,7 @@ const renderAvatarTrack = async (plan: AvatarTrackPlan, context: MulmoStudioCont
     fs.writeFileSync(voice, avatarscript.toWav(audio));
     await avatarscript.render({ avatar, score, audioPath: voice, audio: false, out: file, width, height, padTop: PAD_TOP });
   }
-  return { speaker: plan.speakerId, file, x, y, width, height, hidden: plan.hidden };
+  return { speaker: plan.speakerId, file, width, height, placements };
 };
 
 /** The `avatar` action: renders the avatar tracks into studio.avatarTracks (none when no speaker has an avatar). */
