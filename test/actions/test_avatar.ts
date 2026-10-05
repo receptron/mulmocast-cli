@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
+import path from "node:path";
 
 import { planAvatarTracks } from "../../src/actions/avatar.js";
 import { addAvatars } from "../../src/actions/movie.js";
@@ -55,7 +56,7 @@ test("planAvatarTracks: one track per speaker with an avatar, at the narration's
   assert.strictEqual(plans.length, 1);
   const [miko] = plans;
   assert.strictEqual(miko.speakerId, "Miko");
-  assert.strictEqual(miko.source, "/scripts/avatars/miko");
+  assert.strictEqual(miko.source, path.resolve("/scripts", "avatars/miko"));
   // narration starts at startAt + introPadding; the narrator's beat and the empty beat are not in the track
   assert.deepStrictEqual(
     miko.segments.map((s) => [s.beatIndex, s.start, s.text, s.audio]),
