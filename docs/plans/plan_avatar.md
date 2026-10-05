@@ -72,8 +72,11 @@ Everything is optional; a script without `avatar` renders exactly as before.
 ## Dependencies
 
 `avatarscript` and `onnxruntime-node` (forced alignment, ~290 MB) are loaded with a dynamic import
-only when a script uses an avatar; without them the action fails with an install hint. They are
-devDependencies here; whether to make them regular dependencies is left to the maintainers.
+only when a script uses an avatar; without them the action fails with an install hint. Only
+rendering a track needs onnxruntime-node; a cached track does not. `avatarscript` is a
+devDependency here (types and tests). `onnxruntime-node` is not: on Linux its install script
+downloads CUDA binaries from NuGet, which timed out in CI and failed `yarn install`. Whether to make
+them regular dependencies is left to the maintainers.
 
 ## Affected files
 

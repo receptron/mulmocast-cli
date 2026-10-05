@@ -108,13 +108,21 @@ export const planAvatarTracks = (context: MulmoStudioContext): AvatarTrackPlan[]
 
 type AvatarScriptModule = typeof import("avatarscript");
 
-const loadAvatarScript = async (): Promise<AvatarScriptModule> => {
-  try {
-    return await import("avatarscript");
-  } catch (error) {
-    throw new Error("Avatars need the avatarscript package and onnxruntime-node: npm install avatarscript onnxruntime-node", { cause: error });
-  }
-};
+const INSTALL_HINT = "Avatars need the avatarscript and onnxruntime-node packages: npm install avatarscript onnxruntime-node";
+// a variable, so TypeScript does not need onnxruntime-node installed (it is optional, ~290 MB)
+const ONNX_RUNTIME = "onnxruntime-node";
+
+const loadAvatarScript = (): Promise<AvatarScriptModule> =>
+  import("avatarscript").catch((error: unknown) => {
+    throw new Error(INSTALL_HINT, { cause: error });
+  });
+
+// AvatarScript times the speech by forced alignment, which runs on onnxruntime-node. Only rendering
+// needs it; a cached track does not.
+const ensureOnnxRuntime = () =>
+  import(ONNX_RUNTIME).catch((error: unknown) => {
+    throw new Error(INSTALL_HINT, { cause: error });
+  });
 
 /** Renders one track (or reuses it), returning where it goes on the canvas. */
 const renderAvatarTrack = async (plan: AvatarTrackPlan, context: MulmoStudioContext, avatarscript: AvatarScriptModule): Promise<MulmoAvatarTrack> => {
@@ -139,6 +147,7 @@ const renderAvatarTrack = async (plan: AvatarTrackPlan, context: MulmoStudioCont
     GraphAILogger.info(`avatar: reusing ${file}`);
   } else {
     GraphAILogger.info(`avatar: rendering ${plan.speakerId} (${plan.segments.length} beats, ${plan.duration.toFixed(1)} s)`);
+    await ensureOnnxRuntime();
     fs.mkdirSync(dir, { recursive: true });
     const { score, audio } = await avatarscript.compileTimeline(plan.segments, {
       lang: context.lang,
