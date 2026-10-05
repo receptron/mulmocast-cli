@@ -60,6 +60,10 @@ import {
   markdownLayoutSchema,
   row2Schema,
   grid2x2Schema,
+  mulmoAvatarParamsSchema,
+  avatarPositionSchema,
+  speakerAvatarSchema,
+  mulmoAvatarTrackSchema,
 } from "./schema.js";
 import { pdf_modes, pdf_sizes, storyToScriptGenerateMode } from "./const.js";
 import type { LLM } from "./provider2agent.js";
@@ -105,6 +109,10 @@ export type MultiLingualTexts = z.infer<typeof multiLingualTextsSchema>;
 export type MulmoMovieParams = z.infer<typeof mulmoMovieParamsSchema>;
 export type MulmoSoundEffectParams = z.infer<typeof mulmoSoundEffectParamsSchema>;
 export type MulmoLipSyncParams = z.infer<typeof mulmoLipSyncParamsSchema>;
+export type MulmoAvatarParams = z.infer<typeof mulmoAvatarParamsSchema>;
+export type MulmoAvatarPosition = z.infer<typeof avatarPositionSchema>;
+export type MulmoSpeakerAvatar = z.infer<typeof speakerAvatarSchema>;
+export type MulmoAvatarTrack = z.infer<typeof mulmoAvatarTrackSchema>;
 export type MulmoOpenAIImageModel = z.infer<typeof mulmoOpenAIImageModelSchema>;
 export type MulmoGoogleImageModel = z.infer<typeof mulmoGoogleImageModelSchema>;
 export type MulmoGoogleMovieModel = z.infer<typeof mulmoGoogleMovieModelSchema>;

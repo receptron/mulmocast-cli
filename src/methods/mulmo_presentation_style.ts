@@ -18,6 +18,7 @@ import {
   BeatMediaType,
   MulmoPresentationStyle,
   SpeakerData,
+  MulmoSpeakerAvatar,
   Text2ImageProvider,
   MulmoStudioContext,
   MulmoTransition,
@@ -131,6 +132,18 @@ export const MulmoPresentationStyleMethods = {
       return speaker.lang[lang];
     }
     return speaker;
+  },
+  // The speaker of a beat and the avatar it speaks with, if any. A language-specific speaker
+  // replaces the whole speaker, so its avatar falls back to the base speaker's.
+  getSpeakerAvatar(
+    presentationStyle: MulmoPresentationStyle,
+    beat: MulmoBeat,
+    lang: string | undefined,
+  ): { speakerId: string; avatar: MulmoSpeakerAvatar } | null {
+    const speakerId = beat?.speaker ?? MulmoPresentationStyleMethods.getDefaultSpeaker(presentationStyle);
+    const speaker = presentationStyle.speechParams?.speakers?.[speakerId];
+    const avatar = (lang ? speaker?.lang?.[lang]?.avatar : undefined) ?? speaker?.avatar;
+    return avatar ? { speakerId, avatar } : null;
   },
   getSpeaker(context: MulmoStudioContext, beat: MulmoBeat, targetLang: string | undefined): SpeakerData {
     // Normally, lang is determined by the context, but lang may be specified when using the API.

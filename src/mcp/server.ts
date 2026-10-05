@@ -8,7 +8,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { GraphAILogger } from "graphai";
-import { audio, images, movie, captions, pdf } from "../actions/index.js";
+import { audio, images, movie, captions, avatar, pdf } from "../actions/index.js";
 import { initializeContext, runTranslateIfNeeded } from "../cli/helpers.js";
 import { outDirName } from "../types/const.js";
 import { resolveDirPath, mkdir, generateTimestampedFileName } from "../utils/file.js";
@@ -150,8 +150,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
     // Execute the requested command
     switch (cmd) {
       case "movie":
-        // Generate movie (audio + images + captions + movie)
-        await audio(context).then(images).then(captions).then(movie);
+        // Generate movie (audio + images + captions + avatar + movie)
+        await audio(context).then(images).then(captions).then(avatar).then(movie);
         return {
           content: [
             {
