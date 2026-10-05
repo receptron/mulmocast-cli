@@ -44,6 +44,40 @@ export const defaultSpeaker = "Presenter";
 
 export const text2SpeechProviderSchema = z.enum(Object.keys(provider2TTSAgent) as [string, ...string[]]).default(defaultProviders.tts);
 
+// Talking avatars (AvatarScript): a speaker can speak with an avatar shown over the beat visuals.
+const avatarPercentSchema = z.string().regex(/^-?[\d.]+%$/, 'a percentage such as "84%"');
+export const avatarPositionSchema = z
+  .object({
+    x: avatarPercentSchema.optional().describe("Horizontal centre of the avatar, % of the canvas width. Default 84%"),
+    y: avatarPercentSchema.optional().describe("Bottom edge of the avatar, % of the canvas height. Default 100%"),
+    scale: avatarPercentSchema.optional().describe("Height of the avatar, % of the canvas height. Default 62%"),
+  })
+  .strict();
+export const avatarEmotionSchema = z.enum(["neutral", "happy", "sad", "angry", "surprised", "relaxed"]);
+export const speakerAvatarSchema = z
+  .object({
+    source: z.string().describe("AvatarScript avatar package (a folder with avatar.json, or a mesh-avatar-studio project), relative to the script"),
+    position: avatarPositionSchema.optional(),
+  })
+  .strict();
+export const mulmoAvatarParamsSchema = z
+  .object({
+    position: avatarPositionSchema.optional(),
+    emotion: avatarEmotionSchema.optional().describe("The avatar's expression during this beat"),
+    motions: z
+      .array(
+        z
+          .object({
+            motion: z.string().describe("Motion name, e.g. nod, tilt, think, giggle, surprise"),
+            at: z.string().optional().describe("Words of the beat's text where the motion starts. Default: the start of the beat"),
+          })
+          .strict(),
+      )
+      .optional(),
+    hidden: z.boolean().optional().describe("Hide the speaker's avatar during this beat"),
+  })
+  .strict();
+
 export const speakerDataSchema = z
   .object({
     displayName: z.record(langSchema, z.string()).optional(),
@@ -54,6 +88,7 @@ export const speakerDataSchema = z
     model: z.string().optional().describe("TTS model to use for this speaker"),
     baseURL: z.string().optional(), // Azure/custom endpoint URL
     apiVersion: z.string().optional(), // Azure API version (e.g., "2025-04-01-preview")
+    avatar: speakerAvatarSchema.optional().describe("Avatar shown over the beat visuals, speaking this speaker's lines"),
   })
   .strict();
 
@@ -648,6 +683,7 @@ export const mulmoBeatSchema = z
       .optional(),
     soundEffectParams: mulmoSoundEffectParamsSchema.optional(),
     lipSyncParams: mulmoLipSyncParamsSchema.optional(),
+    avatarParams: mulmoAvatarParamsSchema.optional(),
     htmlImageParams: mulmoHtmlImageParamsSchema.optional(),
     speechOptions: speechOptionsSchema.optional(),
     textSlideParams: textSlideParamsSchema.optional(),
@@ -714,6 +750,7 @@ export const mulmoPresentationStyleSchema = z.object({
     provider: defaultProviders.soundEffect,
   }),
   lipSyncParams: mulmoLipSyncParamsSchema.optional(),
+  avatarParams: mulmoAvatarParamsSchema.optional(),
   htmlImageParams: mulmoHtmlImageParamsSchema
     .extend({
       provider: text2HtmlImageProviderSchema,
@@ -829,11 +866,24 @@ export const mulmoSessionStateSchema = z.object({
   }),
 });
 
+export const mulmoAvatarTrackSchema = z
+  .object({
+    speaker: z.string(),
+    file: z.string(), // see-through, avatar-sized video (WebM VP9 with alpha)
+    x: z.number(), // placement on the canvas, pixels
+    y: z.number(),
+    width: z.number(),
+    height: z.number(),
+    hidden: z.array(z.tuple([z.number(), z.number()])), // absolute [start, end] seconds when the avatar is hidden
+  })
+  .strict();
+
 export const mulmoStudioSchema = z
   .object({
     script: mulmoScriptSchema,
     filename: z.string(),
     beats: z.array(mulmoStudioBeatSchema).min(1),
+    avatarTracks: z.array(mulmoAvatarTrackSchema).optional(),
   })
   .strict();
 

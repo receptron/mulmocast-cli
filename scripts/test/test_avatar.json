@@ -1,0 +1,37 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "ja",
+  "title": "Talking avatar over slides",
+  "description": "Needs mesh-avatar-studio checked out next to this repository (for its sample avatar), and npm packages avatarscript and onnxruntime-node.",
+  "speechParams": {
+    "speakers": {
+      "Miko": {
+        "provider": "openai",
+        "voiceId": "coral",
+        "displayName": { "ja": "ミコ" },
+        "avatar": { "source": "../../../mesh-avatar-studio/samples/miko-qipao" }
+      }
+    }
+  },
+  "avatarParams": { "position": { "x": "84%", "y": "100%", "scale": "62%" } },
+  "beats": [
+    {
+      "speaker": "Miko",
+      "text": "みなさん、こんにちは！今日は、スライドの上でしゃべるアバターを紹介します。",
+      "image": { "type": "markdown", "markdown": ["# Talking avatars", "", "- MulmoScript + AvatarScript", "- スライドの上でアバターが話す"] },
+      "avatarParams": { "emotion": "happy", "motions": [{ "motion": "nod", "at": "こんにちは" }] }
+    },
+    {
+      "speaker": "Miko",
+      "text": "話者にアバターを指定するだけで、どのテキスト読み上げでも、口の動きが音声に合います。",
+      "image": { "type": "markdown", "markdown": ["# How", "", "```json", "\"avatar\": { \"source\": \"./avatars/miko\" }", "```"] },
+      "avatarParams": { "emotion": "relaxed", "motions": [{ "motion": "think", "at": "どのテキスト" }] }
+    },
+    {
+      "speaker": "Miko",
+      "text": "このスライドでは、アバターを隠しています。",
+      "image": { "type": "markdown", "markdown": ["# Full slide", "", "Avatar hidden on this beat"] },
+      "avatarParams": { "hidden": true }
+    }
+  ]
+}

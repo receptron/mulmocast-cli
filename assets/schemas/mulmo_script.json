@@ -119,6 +119,41 @@
               "apiVersion": {
                 "type": "string"
               },
+              "avatar": {
+                "description": "Avatar shown over the beat visuals, speaking this speaker's lines",
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "description": "AvatarScript avatar package (a folder with avatar.json, or a mesh-avatar-studio project), relative to the script"
+                  },
+                  "position": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "description": "Horizontal centre of the avatar, % of the canvas width. Default 84%",
+                        "type": "string",
+                        "pattern": "^-?[\\d.]+%$"
+                      },
+                      "y": {
+                        "description": "Bottom edge of the avatar, % of the canvas height. Default 100%",
+                        "type": "string",
+                        "pattern": "^-?[\\d.]+%$"
+                      },
+                      "scale": {
+                        "description": "Height of the avatar, % of the canvas height. Default 62%",
+                        "type": "string",
+                        "pattern": "^-?[\\d.]+%$"
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "source"
+                ],
+                "additionalProperties": false
+              },
               "lang": {
                 "type": "object",
                 "propertyNames": {
@@ -184,6 +219,41 @@
                     },
                     "apiVersion": {
                       "type": "string"
+                    },
+                    "avatar": {
+                      "description": "Avatar shown over the beat visuals, speaking this speaker's lines",
+                      "type": "object",
+                      "properties": {
+                        "source": {
+                          "type": "string",
+                          "description": "AvatarScript avatar package (a folder with avatar.json, or a mesh-avatar-studio project), relative to the script"
+                        },
+                        "position": {
+                          "type": "object",
+                          "properties": {
+                            "x": {
+                              "description": "Horizontal centre of the avatar, % of the canvas width. Default 84%",
+                              "type": "string",
+                              "pattern": "^-?[\\d.]+%$"
+                            },
+                            "y": {
+                              "description": "Bottom edge of the avatar, % of the canvas height. Default 100%",
+                              "type": "string",
+                              "pattern": "^-?[\\d.]+%$"
+                            },
+                            "scale": {
+                              "description": "Height of the avatar, % of the canvas height. Default 62%",
+                              "type": "string",
+                              "pattern": "^-?[\\d.]+%$"
+                            }
+                          },
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "source"
+                      ],
+                      "additionalProperties": false
                     }
                   },
                   "required": [
@@ -1856,6 +1926,69 @@
         },
         "model": {
           "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "avatarParams": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "type": "object",
+          "properties": {
+            "x": {
+              "description": "Horizontal centre of the avatar, % of the canvas width. Default 84%",
+              "type": "string",
+              "pattern": "^-?[\\d.]+%$"
+            },
+            "y": {
+              "description": "Bottom edge of the avatar, % of the canvas height. Default 100%",
+              "type": "string",
+              "pattern": "^-?[\\d.]+%$"
+            },
+            "scale": {
+              "description": "Height of the avatar, % of the canvas height. Default 62%",
+              "type": "string",
+              "pattern": "^-?[\\d.]+%$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "emotion": {
+          "description": "The avatar's expression during this beat",
+          "type": "string",
+          "enum": [
+            "neutral",
+            "happy",
+            "sad",
+            "angry",
+            "surprised",
+            "relaxed"
+          ]
+        },
+        "motions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "motion": {
+                "type": "string",
+                "description": "Motion name, e.g. nod, tilt, think, giggle, surprise"
+              },
+              "at": {
+                "description": "Words of the beat's text where the motion starts. Default: the start of the beat",
+                "type": "string"
+              }
+            },
+            "required": [
+              "motion"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "hidden": {
+          "description": "Hide the speaker's avatar during this beat",
+          "type": "boolean"
         }
       },
       "additionalProperties": false
@@ -14682,6 +14815,69 @@
               },
               "model": {
                 "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "avatarParams": {
+            "type": "object",
+            "properties": {
+              "position": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "description": "Horizontal centre of the avatar, % of the canvas width. Default 84%",
+                    "type": "string",
+                    "pattern": "^-?[\\d.]+%$"
+                  },
+                  "y": {
+                    "description": "Bottom edge of the avatar, % of the canvas height. Default 100%",
+                    "type": "string",
+                    "pattern": "^-?[\\d.]+%$"
+                  },
+                  "scale": {
+                    "description": "Height of the avatar, % of the canvas height. Default 62%",
+                    "type": "string",
+                    "pattern": "^-?[\\d.]+%$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "emotion": {
+                "description": "The avatar's expression during this beat",
+                "type": "string",
+                "enum": [
+                  "neutral",
+                  "happy",
+                  "sad",
+                  "angry",
+                  "surprised",
+                  "relaxed"
+                ]
+              },
+              "motions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "motion": {
+                      "type": "string",
+                      "description": "Motion name, e.g. nod, tilt, think, giggle, surprise"
+                    },
+                    "at": {
+                      "description": "Words of the beat's text where the motion starts. Default: the start of the beat",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "motion"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "hidden": {
+                "description": "Hide the speaker's avatar during this beat",
+                "type": "boolean"
               }
             },
             "additionalProperties": false

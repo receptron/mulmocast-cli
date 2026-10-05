@@ -140,6 +140,19 @@ const getOutputOption = (audioId: string, videoId: string) => {
   ];
 };
 
+// Talking avatars (actions/avatar.ts): each track is a see-through video as long as the whole movie,
+// overlaid last so slide transitions do not move it. "-c:v libvpx-vp9" is needed to decode the alpha.
+export const addAvatars = (ffmpegContext: FfmpegContext, videoId: string, context: MulmoStudioContext) => {
+  return (context.studio.avatarTracks ?? []).reduce((accId, track, index) => {
+    const inputIndex = FfmpegContextAddInput(ffmpegContext, track.file, ["-c:v", "libvpx-vp9"]);
+    const hidden = track.hidden.map(([start, end]) => `between(t,${start},${end})`).join("+");
+    const enable = hidden ? `:enable='not(${hidden})'` : "";
+    const avatarVideoId = `avatar${index}`;
+    ffmpegContext.filterComplex.push(`[${accId}][${inputIndex}:v]overlay=x=${track.x}:y=${track.y}:format=auto:eof_action=pass${enable}[${avatarVideoId}]`);
+    return avatarVideoId;
+  }, videoId);
+};
+
 const addCaptions = (ffmpegContext: FfmpegContext, concatVideoId: string, context: MulmoStudioContext, caption: string | undefined) => {
   const beatsWithCaptions = context.studio.beats.filter(({ captionFiles }) => captionFiles && captionFiles.length > 0);
   if (caption && beatsWithCaptions.length > 0) {
@@ -652,7 +665,8 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
   ffmpegContext.filterComplex.push(getConcatVideoFilter(concatVideoId, videoIdsForBeats));
 
   const captionedVideoId = addCaptions(ffmpegContext, concatVideoId, context, caption);
-  const mixedVideoId = addTransitionEffects(ffmpegContext, captionedVideoId, context, transitionVideoIds, beatTimestamps, videoIdsForBeats);
+  const transitionedVideoId = addTransitionEffects(ffmpegContext, captionedVideoId, context, transitionVideoIds, beatTimestamps, videoIdsForBeats);
+  const mixedVideoId = addAvatars(ffmpegContext, transitionedVideoId, context);
 
   if (isTest) {
     return ffmpegContext.filterComplex;
