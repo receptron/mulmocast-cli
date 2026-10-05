@@ -118,36 +118,58 @@ const loadAvatarScript = (): Promise<AvatarScriptModule> =>
   });
 
 // AvatarScript times the speech by forced alignment, which runs on onnxruntime-node. Only rendering
-// needs it; a cached track does not.
+// needs it.
 const ensureOnnxRuntime = () =>
   import(ONNX_RUNTIME).catch((error: unknown) => {
     throw new Error(INSTALL_HINT, { cause: error });
   });
 
+// Size and modification time: what the cache key sees of a file, so that replacing it (new speech at
+// the same path, an edited avatar) renders the track again.
+const fileStamp = (file: string) => {
+  const stat = fs.statSync(file, { throwIfNoEntry: false });
+  return stat ? `${stat.size}:${stat.mtimeMs}` : null;
+};
+const folderStamp = (dir: string) => {
+  const stat = fs.statSync(dir, { throwIfNoEntry: false });
+  if (!stat?.isDirectory()) return fileStamp(dir);
+  return fs
+    .readdirSync(dir, { recursive: true, withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => path.join(entry.parentPath, entry.name))
+    .sort()
+    .map((file) => [path.relative(dir, file), fileStamp(file)]);
+};
+
+const even = (n: number) => Math.max(2, Math.round(n / 2) * 2); // video codecs need even sizes
+
 /** Renders one track (or reuses it), returning where it goes on the canvas. */
-const renderAvatarTrack = async (plan: AvatarTrackPlan, context: MulmoStudioContext, avatarscript: AvatarScriptModule): Promise<MulmoAvatarTrack> => {
+const renderAvatarTrack = async (
+  plan: AvatarTrackPlan,
+  context: MulmoStudioContext,
+  getAvatarScript: () => Promise<AvatarScriptModule>,
+): Promise<MulmoAvatarTrack> => {
   const canvas = MulmoPresentationStyleMethods.getCanvasSize(context.presentationStyle);
-  const avatar = await avatarscript.loadAvatar(plan.source);
-  const aspect = avatarscript.avatarAspect(avatar.rig, PAD_TOP);
-  const even = (n: number) => Math.max(2, Math.round(n / 2) * 2); // video codecs need even sizes
   // rendered once, at the largest size it is shown; smaller placements scale it down
   const height = even(Math.max(...plan.placements.map((p) => percent(p.position.scale, canvas.height))));
-  const width = even(height * aspect);
-  const placements = plan.placements.map(({ start, end, position }) => {
-    const h = even(percent(position.scale, canvas.height));
-    const w = even(h * aspect);
-    return { start, end, x: Math.round(percent(position.x, canvas.width) - w / 2), y: Math.round(percent(position.y, canvas.height) - h), width: w, height: h };
-  });
-  const identity = { version: 3, segments: plan.segments, source: plan.source, duration: plan.duration, width, height, padTop: PAD_TOP };
+  const segments = plan.segments.map((segment) => ({ ...segment, audioStamp: fileStamp(segment.audio) }));
+  const identity = { version: 4, segments, source: plan.source, sourceStamp: folderStamp(plan.source), duration: plan.duration, height, padTop: PAD_TOP };
   const hash = createHash("sha256").update(JSON.stringify(identity)).digest("hex").slice(0, 12);
   const dir = MulmoStudioContextMethods.getImageProjectDirPath(context);
   const name = `avatar_${plan.speakerId.replace(/[^\w-]/g, "_")}_${hash}`;
   const file = path.resolve(dir, `${name}.webm`);
-  if (!context.force && fs.existsSync(file)) {
-    GraphAILogger.info(`avatar: reusing ${file}`);
-  } else {
+  // the avatar's width / height, kept next to the track so that reusing it needs no avatarscript
+  const infoFile = path.resolve(dir, `${name}.json`);
+  const aspect = await (async () => {
+    if (!context.force && fs.existsSync(file) && fs.existsSync(infoFile)) {
+      GraphAILogger.info(`avatar: reusing ${file}`);
+      return (JSON.parse(fs.readFileSync(infoFile, "utf-8")) as { aspect: number }).aspect;
+    }
     GraphAILogger.info(`avatar: rendering ${plan.speakerId} (${plan.segments.length} beats, ${plan.duration.toFixed(1)} s)`);
+    const avatarscript = await getAvatarScript();
     await ensureOnnxRuntime();
+    const avatar = await avatarscript.loadAvatar(plan.source);
+    const avatarAspect = avatarscript.avatarAspect(avatar.rig, PAD_TOP);
     fs.mkdirSync(dir, { recursive: true });
     const { score, audio } = await avatarscript.compileTimeline(plan.segments, {
       lang: context.lang,
@@ -156,18 +178,36 @@ const renderAvatarTrack = async (plan: AvatarTrackPlan, context: MulmoStudioCont
     });
     const voice = path.resolve(dir, `${name}.wav`);
     fs.writeFileSync(voice, avatarscript.toWav(audio));
-    await avatarscript.render({ avatar, score, audioPath: voice, audio: false, out: file, width, height, padTop: PAD_TOP });
-  }
+    await avatarscript.render({ avatar, score, audioPath: voice, audio: false, out: file, width: even(height * avatarAspect), height, padTop: PAD_TOP });
+    fs.writeFileSync(infoFile, JSON.stringify({ aspect: avatarAspect }));
+    return avatarAspect;
+  })();
+  const width = even(height * aspect);
+  const placements = plan.placements.map(({ start, end, position }) => {
+    const h = even(percent(position.scale, canvas.height));
+    const w = even(h * aspect);
+    return { start, end, x: Math.round(percent(position.x, canvas.width) - w / 2), y: Math.round(percent(position.y, canvas.height) - h), width: w, height: h };
+  });
   return { speaker: plan.speakerId, file, width, height, placements };
 };
 
 /** The `avatar` action: renders the avatar tracks into studio.avatarTracks (none when no speaker has an avatar). */
 export const avatar = async (context: MulmoStudioContext): Promise<MulmoStudioContext> => {
-  const plans = planAvatarTracks(context).filter((plan) => plan.segments.length > 0);
-  if (plans.length === 0) return context;
-  const avatarscript = await loadAvatarScript();
+  const allPlans = planAvatarTracks(context);
+  const plans = allPlans.filter((plan) => plan.segments.length > 0);
+  if (plans.length === 0) {
+    // no stale tracks from an earlier run; [] when there are avatars but nothing for them to say
+    if (allPlans.length > 0) context.studio.avatarTracks = [];
+    else delete context.studio.avatarTracks;
+    return context;
+  }
+  // loaded only when a track has to be rendered: a cached track needs neither avatarscript nor onnxruntime-node
+  const getAvatarScript = (() => {
+    const loaded: { module?: Promise<AvatarScriptModule> } = {};
+    return () => (loaded.module ??= loadAvatarScript());
+  })();
   const tracks: MulmoAvatarTrack[] = [];
-  for (const plan of plans) tracks.push(await renderAvatarTrack(plan, context, avatarscript));
+  for (const plan of plans) tracks.push(await renderAvatarTrack(plan, context, getAvatarScript));
   context.studio.avatarTracks = tracks;
   const outputStudioFilePath = getOutputStudioFilePath(MulmoStudioContextMethods.getOutDirPath(context), MulmoStudioContextMethods.getFileName(context));
   fs.writeFileSync(outputStudioFilePath, JSON.stringify(context.studio, null, 2));

@@ -1197,3 +1197,24 @@ test("test createVideo covers the voice_over group when the movie is shorter tha
     16.7, // 16.688s of audio, rounded up to the next frame boundary
   );
 });
+
+test("test createVideo: with a talking avatar, captions go on over it", async () => {
+  const script = MulmoScriptMethods.validate({
+    $mulmocast: { version: currentMulmoScriptVersion },
+    lang: "en",
+    captionParams: { lang: "en" },
+    beats: [{ speaker: "A", text: "Hello", image: { type: "textSlide", slide: { title: "Slide 1" } } }],
+  });
+  const context = createContextFromScript(script);
+  context.studio.beats[0].captionFiles = [{ file: "/dummy/caption.png", startAt: 0, endAt: 5 }];
+  context.studio.avatarTracks = [
+    { speaker: "A", file: "/dummy/avatar.webm", width: 400, height: 400, placements: [{ start: 0, end: 5, x: 800, y: 320, width: 400, height: 400 }] },
+  ];
+  const result = await createVideo("/dummy/audio.mp3", "/dummy/output.mp4", context, true);
+  assert.deepStrictEqual((result as string[]).slice(1), [
+    "[v0]concat=n=1:v=1:a=0[concat_video]",
+    "[1:v]trim=start=0:end=5,setpts=PTS-STARTPTS+0/TB[avatar0_0s]",
+    "[concat_video][avatar0_0s]overlay=x=800:y=320:format=auto:eof_action=pass:enable='gte(t,0)*lt(t,5)'[avatar0_0]",
+    "[avatar0_0][2:v]overlay=format=auto:enable='between(t,0,5)'[oc0]",
+  ]);
+});

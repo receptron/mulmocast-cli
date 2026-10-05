@@ -133,17 +133,17 @@
                       "x": {
                         "description": "Horizontal centre of the avatar, % of the canvas width. Default 84%",
                         "type": "string",
-                        "pattern": "^-?[\\d.]+%$"
+                        "pattern": "^-?\\d+(\\.\\d+)?%$"
                       },
                       "y": {
                         "description": "Bottom edge of the avatar, % of the canvas height. Default 100%",
                         "type": "string",
-                        "pattern": "^-?[\\d.]+%$"
+                        "pattern": "^-?\\d+(\\.\\d+)?%$"
                       },
                       "scale": {
                         "description": "Height of the avatar, % of the canvas height. Default 62%",
                         "type": "string",
-                        "pattern": "^-?[\\d.]+%$"
+                        "pattern": "^-?\\d+(\\.\\d+)?%$"
                       }
                     },
                     "additionalProperties": false
@@ -234,17 +234,17 @@
                             "x": {
                               "description": "Horizontal centre of the avatar, % of the canvas width. Default 84%",
                               "type": "string",
-                              "pattern": "^-?[\\d.]+%$"
+                              "pattern": "^-?\\d+(\\.\\d+)?%$"
                             },
                             "y": {
                               "description": "Bottom edge of the avatar, % of the canvas height. Default 100%",
                               "type": "string",
-                              "pattern": "^-?[\\d.]+%$"
+                              "pattern": "^-?\\d+(\\.\\d+)?%$"
                             },
                             "scale": {
                               "description": "Height of the avatar, % of the canvas height. Default 62%",
                               "type": "string",
-                              "pattern": "^-?[\\d.]+%$"
+                              "pattern": "^-?\\d+(\\.\\d+)?%$"
                             }
                           },
                           "additionalProperties": false
@@ -1939,17 +1939,17 @@
             "x": {
               "description": "Horizontal centre of the avatar, % of the canvas width. Default 84%",
               "type": "string",
-              "pattern": "^-?[\\d.]+%$"
+              "pattern": "^-?\\d+(\\.\\d+)?%$"
             },
             "y": {
               "description": "Bottom edge of the avatar, % of the canvas height. Default 100%",
               "type": "string",
-              "pattern": "^-?[\\d.]+%$"
+              "pattern": "^-?\\d+(\\.\\d+)?%$"
             },
             "scale": {
               "description": "Height of the avatar, % of the canvas height. Default 62%",
               "type": "string",
-              "pattern": "^-?[\\d.]+%$"
+              "pattern": "^-?\\d+(\\.\\d+)?%$"
             }
           },
           "additionalProperties": false
@@ -14828,17 +14828,17 @@
                   "x": {
                     "description": "Horizontal centre of the avatar, % of the canvas width. Default 84%",
                     "type": "string",
-                    "pattern": "^-?[\\d.]+%$"
+                    "pattern": "^-?\\d+(\\.\\d+)?%$"
                   },
                   "y": {
                     "description": "Bottom edge of the avatar, % of the canvas height. Default 100%",
                     "type": "string",
-                    "pattern": "^-?[\\d.]+%$"
+                    "pattern": "^-?\\d+(\\.\\d+)?%$"
                   },
                   "scale": {
                     "description": "Height of the avatar, % of the canvas height. Default 62%",
                     "type": "string",
-                    "pattern": "^-?[\\d.]+%$"
+                    "pattern": "^-?\\d+(\\.\\d+)?%$"
                   }
                 },
                 "additionalProperties": false

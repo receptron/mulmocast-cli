@@ -60,23 +60,33 @@ Everything is optional; a script without `avatar` renders exactly as before.
   and motions — and calls `compileTimeline()` and `render({ audio: false })` from `avatarscript`.
   Timing comes from forced alignment of the text to the audio, so every TTS provider works.
 - Output: `<imageProjectDir>/avatar_<speaker>_<hash>.webm` (VP9 with alpha), rendered once at the
-  largest size the avatar is shown, cached by a hash of everything that changes the picture; `-f`
-  re-renders. Recorded in `studio.avatarTracks`: the file, its size, and its placements — absolute
+  largest size the avatar is shown, cached by a hash of everything that changes the picture — the
+  segments, the size and modification time of each beat's audio and of every file in the avatar
+  package, the duration and the height; `-f` re-renders. Next to it, `avatar_<speaker>_<hash>.json`
+  keeps the avatar's aspect ratio, so reusing a cached track needs neither `avatarscript` nor
+  `onnxruntime-node`. Recorded in `studio.avatarTracks`: the file, its size, and its placements — absolute
   `[start, end)` stretches with a place and size each (none during hidden beats).
 - The whole avatar image is shown (`padTop: 0`): a rig may crop the flat top edge of its image,
   which is hidden only when the avatar fills the frame; over a slide it would cut the head.
 - `movie.ts`: after transitions (so slide transitions do not move the avatar), each track is
-  read once with `-c:v libvpx-vp9` (needed to decode alpha), `split` per placement, scaled to the
-  placement's size and overlaid with `overlay=x:y:format=auto:eof_action=pass:enable='gte(t,start)*lt(t,end)'`.
+  read once with `-c:v libvpx-vp9` (needed to decode alpha) and `split` per placement. Each copy is
+  trimmed to its stretch and kept at its time (`trim=start:end,setpts=PTS-STARTPTS+start/TB`), so
+  scaling and overlaying run only during that stretch; then scaled to the placement's size and
+  overlaid with `overlay=x:y:format=auto:eof_action=pass:enable='gte(t,start)*lt(t,end)'`.
+- Captions: with avatar tracks, captions are overlaid last, over the avatar (the avatar stands at the
+  bottom edge, where captions are). Without, the filter graph is unchanged.
+- `movie` warns when a speaker has an avatar but `studio.avatarTracks` is not set, i.e. the
+  `avatar` action did not run first. The CLI `movie` command and the MCP server's `movie` both run it.
 
 ## Dependencies
 
-`avatarscript` and `onnxruntime-node` (forced alignment, ~290 MB) are loaded with a dynamic import
-only when a script uses an avatar; without them the action fails with an install hint. Only
-rendering a track needs onnxruntime-node; a cached track does not. `avatarscript` is a
-devDependency here (types and tests). `onnxruntime-node` is not: on Linux its install script
-downloads CUDA binaries from NuGet, which timed out in CI and failed `yarn install`. Whether to make
-them regular dependencies is left to the maintainers.
+`avatarscript` and `onnxruntime-node` (forced alignment, ~290 MB) are optional peer dependencies:
+users who want avatars install them (`npm install avatarscript onnxruntime-node`); everyone else
+does not pay for them (`avatarscript` brings kuromoji and puppeteer). They are loaded with a dynamic
+import only when a track has to be rendered; without them rendering fails with that install hint.
+A cached track needs neither. `avatarscript` is also a devDependency here (types and tests).
+`onnxruntime-node` is not: on Linux its install script downloads CUDA binaries from NuGet, which
+timed out in CI and failed `yarn install`.
 
 ## Affected files
 
@@ -84,7 +94,8 @@ them regular dependencies is left to the maintainers.
   `avatar` on speakers, `avatarParams` on beats and presentation style, `avatarTracks` on the studio.
 - `src/methods/mulmo_presentation_style.ts`: `getSpeakerAvatar`.
 - `src/actions/avatar.ts` (new), `src/actions/index.ts`, `src/cli/commands/movie/handler.ts`.
-- `src/actions/movie.ts`: `addAvatars`.
+- `src/actions/movie.ts`: `addAvatars`, captions over avatars, missing-track warning.
+- `src/mcp/server.ts`: runs `avatar` before `movie`.
 - Tests: schema, track planning, filter graph. Sample: `scripts/test/test_avatar.json`.
 
 ## Later

@@ -100,11 +100,13 @@ test("addAvatars: overlays each track last, decoding alpha, at each stretch's pl
   const ffmpegContext = FfmpegContextInit();
   const videoId = addAvatars(ffmpegContext, "base", context);
   assert.strictEqual(videoId, "avatar0_1");
+  // each stretch is trimmed out of the track and kept at its time, so nothing runs outside it
   assert.deepStrictEqual(ffmpegContext.filterComplex, [
     "[0:v]split=2[avatar0_src0][avatar0_src1]",
-    "[avatar0_src0]scale=300:300[avatar0_0s]",
+    "[avatar0_src0]trim=start=0:end=6,setpts=PTS-STARTPTS+0/TB,scale=300:300[avatar0_0s]",
     "[base][avatar0_0s]overlay=x=900:y=300:format=auto:eof_action=pass:enable='gte(t,0)*lt(t,6)'[avatar0_0]",
-    "[avatar0_0][avatar0_src1]overlay=x=100:y=120:format=auto:eof_action=pass:enable='gte(t,8)*lt(t,12)'[avatar0_1]",
+    "[avatar0_src1]trim=start=8:end=12,setpts=PTS-STARTPTS+8/TB[avatar0_1s]",
+    "[avatar0_0][avatar0_1s]overlay=x=100:y=120:format=auto:eof_action=pass:enable='gte(t,8)*lt(t,12)'[avatar0_1]",
   ]);
   assert.deepStrictEqual(ffmpegContext.command._inputs[0].options.get(), ["-c:v", "libvpx-vp9"]);
 });
@@ -116,7 +118,10 @@ test("addAvatars: a track shown in one stretch at its own size needs no split or
   ];
   const ffmpegContext = FfmpegContextInit();
   addAvatars(ffmpegContext, "base", context);
-  assert.deepStrictEqual(ffmpegContext.filterComplex, ["[base][0:v]overlay=x=852:y=274:format=auto:eof_action=pass:enable='gte(t,0)*lt(t,12)'[avatar0_0]"]);
+  assert.deepStrictEqual(ffmpegContext.filterComplex, [
+    "[0:v]trim=start=0:end=12,setpts=PTS-STARTPTS+0/TB[avatar0_0s]",
+    "[base][avatar0_0s]overlay=x=852:y=274:format=auto:eof_action=pass:enable='gte(t,0)*lt(t,12)'[avatar0_0]",
+  ]);
 });
 
 test("addAvatars: no tracks, no filter", () => {
@@ -128,7 +133,9 @@ test("addAvatars: no tracks, no filter", () => {
 test("schema: avatar fields are optional and checked", () => {
   const base = { $mulmocast: { version: "1.1" }, beats: [{ text: "hi" }] };
   assert.ok(mulmoScriptSchema.safeParse(base).success);
+  assert.ok(mulmoScriptSchema.safeParse({ ...base, avatarParams: { position: { x: "-12.5%", y: "100%" } } }).success);
   assert.ok(!mulmoScriptSchema.safeParse({ ...base, avatarParams: { position: { x: "left" } } }).success);
+  assert.ok(!mulmoScriptSchema.safeParse({ ...base, avatarParams: { position: { x: "1.2.3%" } } }).success);
   assert.ok(!mulmoScriptSchema.safeParse({ ...base, beats: [{ text: "hi", avatarParams: { emotion: "bored" } }] }).success);
   assert.ok(!mulmoScriptSchema.safeParse({ ...base, speechParams: { speakers: { A: { voiceId: "x", avatar: { source: "a", size: 1 } } } } }).success);
 });

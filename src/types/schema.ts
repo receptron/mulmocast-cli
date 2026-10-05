@@ -45,7 +45,7 @@ export const defaultSpeaker = "Presenter";
 export const text2SpeechProviderSchema = z.enum(Object.keys(provider2TTSAgent) as [string, ...string[]]).default(defaultProviders.tts);
 
 // Talking avatars (AvatarScript): a speaker can speak with an avatar shown over the beat visuals.
-const avatarPercentSchema = z.string().regex(/^-?[\d.]+%$/, 'a percentage such as "84%"');
+const avatarPercentSchema = z.string().regex(/^-?\d+(\.\d+)?%$/, 'a percentage such as "84%"');
 export const avatarPositionSchema = z
   .object({
     x: avatarPercentSchema.optional().describe("Horizontal centre of the avatar, % of the canvas width. Default 84%"),

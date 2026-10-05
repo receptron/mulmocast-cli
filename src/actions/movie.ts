@@ -141,8 +141,9 @@ const getOutputOption = (audioId: string, videoId: string) => {
 };
 
 // Talking avatars (actions/avatar.ts): each track is a see-through video as long as the whole movie,
-// overlaid last so slide transitions do not move it. "-c:v libvpx-vp9" is needed to decode the alpha.
-// A track is shown in stretches (placements), each scaled to its size and placed where it says.
+// overlaid after transitions so they do not move it. "-c:v libvpx-vp9" is needed to decode the alpha.
+// A track is shown in stretches (placements); each stretch is trimmed out of the track, kept at its
+// time, scaled to its size and placed where it says, so no filter runs outside its stretch.
 export const addAvatars = (ffmpegContext: FfmpegContext, videoId: string, context: MulmoStudioContext) => {
   return (context.studio.avatarTracks ?? []).reduce((accId, track, trackIndex) => {
     if (track.placements.length === 0) return accId;
@@ -151,12 +152,15 @@ export const addAvatars = (ffmpegContext: FfmpegContext, videoId: string, contex
     const labels = sources.map((id) => "[" + id + "]").join("");
     if (track.placements.length > 1) ffmpegContext.filterComplex.push(`[${inputIndex}:v]split=${sources.length}${labels}`);
     return track.placements.reduce((prevId, placement, index) => {
-      const scaledId = `avatar${trackIndex}_${index}s`;
+      const partId = `avatar${trackIndex}_${index}s`;
       const resized = placement.width !== track.width || placement.height !== track.height;
-      if (resized) ffmpegContext.filterComplex.push(`[${sources[index]}]scale=${placement.width}:${placement.height}[${scaledId}]`);
+      const scale = resized ? `,scale=${placement.width}:${placement.height}` : "";
+      ffmpegContext.filterComplex.push(
+        `[${sources[index]}]trim=start=${placement.start}:end=${placement.end},setpts=PTS-STARTPTS+${placement.start}/TB${scale}[${partId}]`,
+      );
       const outId = `avatar${trackIndex}_${index}`;
       ffmpegContext.filterComplex.push(
-        `[${prevId}][${resized ? scaledId : sources[index]}]overlay=x=${placement.x}:y=${placement.y}:format=auto:eof_action=pass:enable='gte(t,${placement.start})*lt(t,${placement.end})'[${outId}]`,
+        `[${prevId}][${partId}]overlay=x=${placement.x}:y=${placement.y}:format=auto:eof_action=pass:enable='gte(t,${placement.start})*lt(t,${placement.end})'[${outId}]`,
       );
       return outId;
     }, accId);
@@ -674,9 +678,13 @@ export const createVideo = async (audioArtifactFilePath: string, outputVideoPath
   const concatVideoId = "concat_video";
   ffmpegContext.filterComplex.push(getConcatVideoFilter(concatVideoId, videoIdsForBeats));
 
-  const captionedVideoId = addCaptions(ffmpegContext, concatVideoId, context, caption);
+  // With talking avatars, captions go on last so that an avatar never covers them. Without, the order
+  // is unchanged: captions under the transitions.
+  const hasAvatars = (context.studio.avatarTracks ?? []).some((track) => track.placements.length > 0);
+  const captionedVideoId = hasAvatars ? concatVideoId : addCaptions(ffmpegContext, concatVideoId, context, caption);
   const transitionedVideoId = addTransitionEffects(ffmpegContext, captionedVideoId, context, transitionVideoIds, beatTimestamps, videoIdsForBeats);
-  const mixedVideoId = addAvatars(ffmpegContext, transitionedVideoId, context);
+  const avatarVideoId = addAvatars(ffmpegContext, transitionedVideoId, context);
+  const mixedVideoId = hasAvatars ? addCaptions(ffmpegContext, avatarVideoId, context, caption) : avatarVideoId;
 
   if (isTest) {
     return ffmpegContext.filterComplex;
@@ -703,8 +711,18 @@ export const movieFilePath = (context: MulmoStudioContext) => {
   return getOutputVideoFilePath(outDirPath, fileName, context.lang, caption);
 };
 
+// A speaker has an avatar but no track was rendered: the `avatar` action did not run before `movie`.
+const warnIfAvatarsMissing = (context: MulmoStudioContext) => {
+  if (context.studio.avatarTracks) return;
+  const speaksWithAvatar = context.studio.script.beats.some((beat) =>
+    MulmoPresentationStyleMethods.getSpeakerAvatar(context.presentationStyle, beat, context.lang),
+  );
+  if (speaksWithAvatar) GraphAILogger.warn("movie: a speaker has an avatar, but no avatar track was rendered. Run the avatar action before movie.");
+};
+
 export const movie = async (context: MulmoStudioContext) => {
   MulmoStudioContextMethods.setSessionState(context, "video", true);
+  warnIfAvatarsMissing(context);
   try {
     const audioArtifactFilePath = getAudioArtifactFilePath(context);
     const outputVideoPath = movieFilePath(context);
