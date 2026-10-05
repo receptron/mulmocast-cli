@@ -11,6 +11,9 @@ import { getFullPath, getOutputStudioFilePath } from "../utils/file.js";
 import { localizedText } from "../utils/utils.js";
 
 const DEFAULT_POSITION = { x: "84%", y: "100%", scale: "62%" };
+// Show the whole avatar image. A rig may crop the top of its image (a flat cut edge, hidden when the
+// avatar fills the frame); over a slide the cut would run through the head.
+const PAD_TOP = 0;
 
 export type AvatarSegmentPlan = {
   beatIndex: number;
@@ -100,10 +103,10 @@ const renderAvatarTrack = async (plan: AvatarTrackPlan, context: MulmoStudioCont
   const avatar = await avatarscript.loadAvatar(plan.source);
   // even dimensions for the video codecs
   const height = Math.round(percent(plan.position.scale, canvas.height) / 2) * 2;
-  const width = Math.round((height * avatarscript.avatarAspect(avatar.rig)) / 2) * 2;
+  const width = Math.round((height * avatarscript.avatarAspect(avatar.rig, PAD_TOP)) / 2) * 2;
   const x = Math.round(percent(plan.position.x, canvas.width) - width / 2);
   const y = Math.round(percent(plan.position.y, canvas.height) - height);
-  const identity = { version: 1, plan, width, height };
+  const identity = { version: 2, plan, width, height, padTop: PAD_TOP };
   const hash = createHash("sha256").update(JSON.stringify(identity)).digest("hex").slice(0, 12);
   const dir = MulmoStudioContextMethods.getImageProjectDirPath(context);
   const name = `avatar_${plan.speakerId.replace(/[^\w-]/g, "_")}_${hash}`;
@@ -120,7 +123,7 @@ const renderAvatarTrack = async (plan: AvatarTrackPlan, context: MulmoStudioCont
     });
     const voice = path.resolve(dir, `${name}.wav`);
     fs.writeFileSync(voice, avatarscript.toWav(audio));
-    await avatarscript.render({ avatar, score, audioPath: voice, audio: false, out: file, width, height });
+    await avatarscript.render({ avatar, score, audioPath: voice, audio: false, out: file, width, height, padTop: PAD_TOP });
   }
   return { speaker: plan.speakerId, file, x, y, width, height, hidden: plan.hidden };
 };
