@@ -13,7 +13,8 @@ export type RemotionRenderRequest = {
   workDir: string;
   props: RemotionSceneProps;
   videoPath?: string;
-  stillPath: string;
+  // The final frame as a PNG; a beat always needs it, a frames-only render may not.
+  stillPath?: string;
   extraStills?: { frame: number; path: string }[];
 };
 
@@ -75,7 +76,7 @@ export const renderRemotionScene: SceneRenderer = async ({ workDir, props, video
   if (videoPath) {
     await renderer.renderMedia({ composition, serveUrl, codec: "h264", outputLocation: videoPath, inputProps: props, chromiumOptions: CHROMIUM_OPTIONS });
   }
-  const stills = [...extraStills, { frame: composition.durationInFrames - 1, path: stillPath }];
+  const stills = stillPath ? [...extraStills, { frame: composition.durationInFrames - 1, path: stillPath }] : extraStills;
   await stills.reduce(async (previous, still) => {
     await previous;
     await renderer.renderStill({ composition, serveUrl, output: still.path, frame: still.frame, inputProps: props, chromiumOptions: CHROMIUM_OPTIONS });

@@ -16,6 +16,7 @@ import {
 import { ComponentReviewer, ComponentWriter, reviewComponentWithClaude, writeComponentWithClaude } from "../remotion/claude_runner.js";
 import { RemotionSceneProps, SceneRenderer, ensureRemotionPackages, renderRemotionScene } from "../remotion/render.js";
 import { FileMove, FileOps, commitFiles } from "../remotion/commit_files.js";
+import { REMOTION_REVIEW_FRACTIONS, frameAtFraction, toFrameCount } from "../remotion/frames.js";
 import { parrotingImagePath } from "./utils.js";
 
 export const imageType = ImageMediaType.Remotion;
@@ -25,7 +26,6 @@ const MAX_REPAIR_ATTEMPTS = 2;
 // Without audio the length is unknown; any length gives the same final frame, since the system
 // prompt makes every animation finish before the end.
 const STILL_ONLY_DURATION_SEC = 10;
-const REVIEW_FRACTIONS = [0.3, 0.6, 0.95];
 
 export type RemotionDeps = {
   ensurePackages: () => void;
@@ -70,9 +70,9 @@ const renderWithRepair = async (job: SceneJob, code: string, attemptsLeft: numbe
 };
 
 const reviewStillsFor = (job: SceneJob): ReviewStill[] =>
-  REVIEW_FRACTIONS.map((fraction, index) => ({
+  REMOTION_REVIEW_FRACTIONS.map((fraction, index) => ({
     fraction,
-    frame: Math.min(job.props.durationInFrames - 1, Math.floor(job.props.durationInFrames * fraction)),
+    frame: frameAtFraction(job.props.durationInFrames, fraction),
     file: nodePath.join(job.workDir, `review_${index}.png`),
   }));
 
@@ -130,14 +130,6 @@ const reviewAndImprove = async (job: SceneJob, renderedCode: string, reviewStill
   }
   GraphAILogger.info(`remotion: visual review improved ${job.codePath}`);
   await renderReviewedVersion(job, improved, deps);
-};
-
-const toFrameCount = (durationSec: number, fps: number) => {
-  const frames = Math.floor(durationSec * fps);
-  if (frames <= 0) {
-    throw new Error(`remotion: frame count is ${frames} (duration=${durationSec}, fps=${fps}). Increase duration or fps.`);
-  }
-  return frames;
 };
 
 // Lets a scene number itself and pace its place in the video; unknown when the beat is not in the script.

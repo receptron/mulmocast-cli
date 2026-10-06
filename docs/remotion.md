@@ -64,6 +64,24 @@ import { REMOTION_COMPONENT_GUIDE, REMOTION_PACKAGES, missingInstalledRemotionPa
 | `missingInstalledRemotionPackages()` | mulmocast から見て入っていないパッケージ                                                                          |
 | `ensureRemotionPackages()`           | 足りなければインストールのコマンド付きで例外を投げる                                                              |
 | `remotionInstallCommand()`           | `npm install ...` の文字列                                                                                        |
+| `renderRemotionFrames(request)`      | 台本なしで、コンポーネントの決まった割合のコマだけを PNG に描く（下）                                             |
+| `REMOTION_REVIEW_FRACTIONS`          | 見た目の点検に使う割合（`[0.3, 0.6, 0.95]`）                                                                      |
+
+### 決まった割合のコマだけ描く
+
+ホストのエージェントが、書いた場面を自分で見て直すための入口。`prompt` のときに `claude -p` に見せるのと同じ 30%・60%・95% のコマを、台本も音声も使わずに描く。
+
+```ts
+import { renderRemotionFrames } from "mulmocast/remotion";
+
+const frames = await renderRemotionFrames({ code, durationSec: 6, outDir: "/tmp/scene" });
+// [{ fraction: 0.3, frame: 54, path: "/tmp/scene/frame_0_030.png" }, ...]
+```
+
+- `code`（TSX のソース）、`durationSec`、`outDir` は必須。`fps` / `width` / `height` は省略時 30 / 1920 / 1080。
+- `fractions` で割合を変えられる（0 以上 1 以下）。最終コマが欲しいときは `1` を入れる。
+- 動画は書かない。バンドルなどの作業ファイルは一時ディレクトリに置いて消すので、`outDir` には PNG だけが残る。
+- 描画に失敗したら、描画のエラーを付けて例外を投げる。パッケージが足りなければ描画の前に止まる。
 
 ## 必要なもの
 
