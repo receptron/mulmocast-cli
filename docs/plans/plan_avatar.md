@@ -39,7 +39,7 @@ Everything is optional; a script without `avatar` renders exactly as before.
 - `speakers.<name>.avatar` — `{ source, position? }`. `source` is an AvatarScript avatar package
   (a folder with `avatar.json`, or a mesh-avatar-studio project): a path relative to the script file,
   or an http(s) URL of the package folder or its `avatar.json`, for example
-  `https://raw.githubusercontent.com/receptron/mulmocast-media/main/avatars/ani` (avatarscript ≥ 0.3.0
+  `https://raw.githubusercontent.com/receptron/mulmocast-media/main/avatars/ani` (avatarscript ≥ 0.3.1
   fetches it and caches its images in `~/.cache/avatarscript/avatars/`).
   A `lang` override of the speaker keeps the base speaker's avatar unless it names its own.
 - `avatarParams` — on the script (defaults) and on a beat (overrides):
