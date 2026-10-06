@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert";
 import fs from "node:fs";
+import { builtinModules } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import * as esbuild from "esbuild";
@@ -33,9 +34,22 @@ test("mulmocast/remotion/guide bundles for a browser and reaches no package", as
   assert.deepStrictEqual(packagesReached(result.metafile), []);
 });
 
-test("mulmocast/remotion does not bundle for a browser — the reason the guide has its own entry", async () => {
+const isNodeBuiltin = (specifier: string) => builtinModules.includes(specifier.replace(/^node:/, ""));
+
+const unresolvedBuiltins = (error: unknown): string[] => {
+  const errors: esbuild.Message[] = error instanceof Error && "errors" in error && Array.isArray(error.errors) ? error.errors : [];
+  return errors.flatMap((message) => /^Could not resolve "([^"]+)"$/.exec(message.text)?.[1] ?? []).filter(isNodeBuiltin);
+};
+
+test("mulmocast/remotion does not bundle for a browser because it reaches Node builtins — the reason the guide has its own entry", async () => {
   // If this starts passing, the guide entry is no longer needed; until then it pins why it exists.
-  await assert.rejects(() => bundleForBrowser("src/index.remotion.ts"));
+  // Any other failure (a missing optional package, say) would not be that reason, so it is not accepted.
+  const failure = await bundleForBrowser("src/index.remotion.ts").then(
+    () => undefined,
+    (error: unknown) => error,
+  );
+  assert.ok(failure, "mulmocast/remotion bundled for a browser");
+  assert.ok(unresolvedBuiltins(failure).length > 0, "mulmocast/remotion failed to bundle, but not on a Node builtin");
 });
 
 test("both entries export the same guide", () => {
