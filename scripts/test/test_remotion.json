@@ -1,0 +1,38 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "ja",
+  "title": "Remotion beat sample",
+  "description": "Each beat's scene is written by Claude Code (claude -p) as a Remotion component. Needs Claude Code installed and logged in, and the optional packages listed in docs/remotion.md.",
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "provider": "openai",
+        "voiceId": "shimmer",
+        "displayName": {
+          "ja": "プレゼンター"
+        }
+      }
+    }
+  },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "MulmoCast は、台本から音声と画像を作り、ひとつの動画にまとめます。",
+      "image": {
+        "type": "remotion",
+        "prompt": "中央に「MulmoCast」のタイトルが現れ、その下に「台本」→「音声・画像」→「動画」の3つの箱が左から順に現れ、矢印でつながる。背景は濃紺のグラデーション。日本語で表示する。"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "この場面の映像は、Claude Code が Remotion のコードとして書きました。",
+      "image": {
+        "type": "remotion",
+        "prompt": "黒い背景に、コードエディタ風の枠が現れ、TSX のコードが一行ずつタイプされていく。最後に枠が縮んで右下に移り、中央に「Claude Code × Remotion」の文字が大きく現れる。",
+        "fps": 30
+      }
+    }
+  ]
+}

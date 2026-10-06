@@ -2340,6 +2340,16 @@
       ],
       "additionalProperties": false
     },
+    "remotionParams": {
+      "type": "object",
+      "properties": {
+        "brief": {
+          "description": "Whole-video art direction shared by every remotion beat (palette, type, mood), so all scenes look like one film.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
     "captionParams": {
       "type": "object",
       "properties": {
@@ -13503,6 +13513,31 @@
                 "required": [
                   "type",
                   "slide"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "remotion"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "What the scene shows. Claude Code (claude -p) writes a Remotion component from it."
+                  },
+                  "fps": {
+                    "description": "Frame rate of the rendered video. Default: 30.",
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 60
+                  }
+                },
+                "required": [
+                  "type",
+                  "prompt"
                 ],
                 "additionalProperties": false
               }

@@ -201,6 +201,7 @@ export const ImageMediaType = {
   MoviePrompt: "moviePrompt",
   Beat: "beat",
   VoiceOver: "voice_over",
+  Remotion: "remotion",
 } as const;
 
 // Beat image types whose still derives from the movie or another beat — they cannot supply
@@ -412,6 +413,20 @@ export const mulmoVisionMediaSchema = z
   })
   .strict();
 
+export const mulmoRemotionMediaSchema = z
+  .object({
+    type: z.literal(ImageMediaType.Remotion),
+    prompt: z.string().min(1).describe("What the scene shows. Claude Code (claude -p) writes a Remotion component from it."),
+    fps: z.number().min(1).max(60).optional().describe("Frame rate of the rendered video. Default: 30."),
+  })
+  .strict();
+
+export const mulmoRemotionParamsSchema = z
+  .object({
+    brief: z.string().optional().describe("Whole-video art direction shared by every remotion beat (palette, type, mood), so all scenes look like one film."),
+  })
+  .strict();
+
 export const mulmoImageAssetSchema = z.union([
   mulmoMarkdownMediaSchema,
   mulmoWebMediaSchema,
@@ -427,6 +442,7 @@ export const mulmoImageAssetSchema = z.union([
   mulmoVoiceOverMediaSchema,
   mulmoVisionMediaSchema,
   mulmoSlideMediaSchema,
+  mulmoRemotionMediaSchema,
 ]);
 
 const mulmoAudioMediaSchema = z
@@ -760,6 +776,8 @@ export const mulmoPresentationStyleSchema = z.object({
   textSlideParams: textSlideParamsSchema.optional(),
   // for slide plugin
   slideParams: mulmoSlideParamsSchema.optional(),
+  // for remotion plugin
+  remotionParams: mulmoRemotionParamsSchema.optional(),
   captionParams: mulmoCaptionParamsSchema.optional(),
   audioParams: audioParamsSchema.default({
     introPadding: 1.0,

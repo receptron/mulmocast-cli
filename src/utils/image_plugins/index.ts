@@ -9,6 +9,7 @@ import * as pluginBeat from "./beat.js";
 import * as pluginVoiceOver from "./voice_over.js";
 import * as pluginVision from "./vision.js";
 import * as pluginSlide from "./slide.js";
+import * as pluginRemotion from "./remotion.js";
 import { BeatPathParams, BeatRenderParams, ImageProcessorParams, MulmoBeat } from "../../types/index.js";
 
 const imagePlugins: {
@@ -29,6 +30,7 @@ const imagePlugins: {
   pluginVoiceOver,
   pluginVision,
   pluginSlide,
+  pluginRemotion,
 ];
 
 export const findImagePlugin = (imageType?: string) => {

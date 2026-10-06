@@ -161,3 +161,27 @@ test("imagePreprocessAgent - animated html_tailwind with beat id uses id in path
   assert(result.movieFile?.includes("intro_animation"), `movieFile should contain beat id, got: ${result.movieFile}`);
   assert(result.movieFile?.endsWith("_animated.mp4"), `movieFile should end with _animated.mp4, got: ${result.movieFile}`);
 });
+
+const preprocessFor = async (image: NonNullable<Parameters<typeof createMockBeat>[0]>["image"], duration?: number) => {
+  const context = createMockContext();
+  context.studio.script.beats = [{ text: "", ...(duration !== undefined ? { duration } : {}) }];
+  context.studio.beats = [{}];
+  const beat = createMockBeat({ text: "", ...(duration !== undefined ? { duration } : {}), image });
+  return await imagePreprocessAgent({ context, beat, index: 0, imageRefs: {} });
+};
+
+test("imagePreprocessAgent - plugin video without a known duration points at the PNG only, not a missing .mp4", async () => {
+  const animated = await preprocessFor({ type: "html_tailwind", html: "<div/>", animation: true });
+  const remotion = await preprocessFor({ type: "remotion", prompt: "x" });
+  [animated, remotion].forEach((result) => {
+    assert("movieFile" in result);
+    assert.strictEqual(result.movieFile, undefined);
+    assert("imagePath" in result && result.imagePath?.endsWith(".png"));
+  });
+});
+
+test("imagePreprocessAgent - remotion with a duration sets movieFile to the .mp4 path", async () => {
+  const result = await preprocessFor({ type: "remotion", prompt: "x" }, 4);
+  assert("movieFile" in result);
+  assert(result.movieFile?.endsWith("_animated.mp4"), `got: ${result.movieFile}`);
+});
