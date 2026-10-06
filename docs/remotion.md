@@ -29,7 +29,7 @@ MulmoCast がそれを描画してビートの動画にする。3D（three.js）
 | `image.fps`                    | `number` | 動画のフレームレート（1〜60）。省略時は 30                                 |
 | `remotionParams.brief`（任意） | `string` | 動画全体のアートディレクション。全場面に渡され、色・書体・雰囲気がそろう |
 
-`claude -p` には、`prompt` に加えて、ビートの `text`（ナレーション）、`remotionParams.brief`、場面の位置（全 N 場面中の何番目か）、
+`claude -p` には、`prompt` に加えて、実際に話されるナレーション（翻訳して描画するときはその言語の文。音声・字幕と同じ `localizedText`）、`remotionParams.brief`、場面の位置（全 N 場面中の何番目か）、
 キャンバスサイズと fps を渡す。ビートの長さは音声から決まる（`duration` を指定すればそちらを使う）。
 
 サンプル:
@@ -74,4 +74,5 @@ npm install remotion @remotion/bundler @remotion/renderer react react-dom \
 
 - 生成されたコードは手元のヘッドレスブラウザで実行される。
 - `moviePrompt` とは同じビートで併用できない（アニメーション付き `html_tailwind` と同じ）。
+- `soundEffectPrompt` はまだ効かない（アニメーション付き `html_tailwind` と同じ。効果音の生成がプラグインの動画を待たないため）。
 - GPU の無い Linux では、`gl: "angle"` で WebGL の文脈を作れない場合がある。

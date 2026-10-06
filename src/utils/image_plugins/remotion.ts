@@ -1,7 +1,8 @@
 import fs from "node:fs";
 import nodePath from "node:path";
 import { GraphAILogger } from "graphai";
-import { ImageMediaType, ImageProcessorParams, MulmoBeat } from "../../types/index.js";
+import { ImageMediaType, ImageProcessorParams, MulmoBeat, MulmoStudioContext } from "../../types/index.js";
+import { localizedText } from "../utils.js";
 import {
   REMOTION_COMPONENT_FILE,
   RemotionSceneSpec,
@@ -103,19 +104,21 @@ const toFrameCount = (durationSec: number, fps: number) => {
 };
 
 // Lets a scene number itself and pace its place in the video; unknown when the beat is not in the script.
-const scenePosition = (beats: MulmoBeat[], beat: MulmoBeat) => {
-  const index = beats.indexOf(beat);
-  return index < 0 ? undefined : { index, count: beats.length };
-};
+const scenePosition = (beats: MulmoBeat[], index: number) => (index < 0 ? undefined : { index, count: beats.length });
+
+// The words actually spoken over the scene: the translation when the video is rendered in another language.
+const spokenNarration = (context: MulmoStudioContext, beat: MulmoBeat, index: number) =>
+  (index < 0 ? beat.text : localizedText(beat, context.multiLingual?.[index], context.lang, context.studio.script.lang)) || undefined;
 
 const buildJob = (params: ImageProcessorParams, prompt: string, fps: number): SceneJob => {
   const { beat, context, imagePath, canvasSize } = params;
   const duration = params.beatDuration ?? beat.duration;
+  const index = context.studio.script.beats.indexOf(beat);
   const spec: RemotionSceneSpec = {
     prompt,
-    narration: beat.text || undefined,
+    narration: spokenNarration(context, beat, index),
     brief: context.presentationStyle.remotionParams?.brief || undefined,
-    position: scenePosition(context.studio.script.beats, beat),
+    position: scenePosition(context.studio.script.beats, index),
     fps,
     width: canvasSize.width,
     height: canvasSize.height,

@@ -291,3 +291,22 @@ test("remotion process: missing packages stop the beat before claude is asked an
   await assert.rejects(createRemotionProcess(deps)(makeParams(makeTmpImagePath(), remotionBeat(), { beatDuration: 2 })), /not installed \(three\)/);
   assert.strictEqual(prompts.length + renders.length, 0);
 });
+
+test("remotion process: a translated render sends the spoken (translated) narration and caches it separately", async () => {
+  const imagePath = makeTmpImagePath();
+  const { deps, prompts } = makeFakes({ replies: [componentA, componentB] });
+  const beat = { ...remotionBeat(), text: "重さは100グラム" };
+  const base = createMockContext();
+  base.studio.script.beats.push(beat);
+  base.studio.script.lang = "ja";
+  base.multiLingual.push({ multiLingualTexts: { en: { text: "It weighs 100 grams", lang: "en", texts: [], ttsTexts: [], cacheKey: "k" } } });
+  const run = createRemotionProcess(deps);
+
+  await run(makeParams(imagePath, beat, { beatDuration: 2, context: { ...base, lang: "ja" } }));
+  await run(makeParams(imagePath, beat, { beatDuration: 2, context: { ...base, lang: "en" } }));
+
+  assert.strictEqual(prompts.length, 2, "each language gets its own component");
+  assert.ok(prompts[0].includes("重さは100グラム"));
+  assert.ok(prompts[1].includes("It weighs 100 grams"));
+  assert.ok(!prompts[1].includes("重さは100グラム"));
+});
