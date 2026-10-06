@@ -7,8 +7,9 @@
   "speechParams": {
     "speakers": {
       "Ani": {
-        "provider": "openai",
-        "voiceId": "coral",
+        "provider": "gemini",
+        "voiceId": "Leda",
+        "speechOptions": { "instruction": "Speak in a slightly high-pitched, curt tone with sudden flustered shifts—like a tsundere anime girl." },
         "displayName": { "ja": "アニ" },
         "avatar": { "source": "../../assets/avatars/ani" }
       }
