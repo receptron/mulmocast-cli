@@ -120,6 +120,8 @@ npm install remotion @remotion/bundler @remotion/renderer react react-dom \
 
 - 場面のコード（生成されたものも、`code` で渡したものも）は手元のヘッドレスブラウザで実行される。外への通信はできない（#1594）:
   - HTTP(S) の要求は、その描画のために立てたバンドルのサーバー（毎回選ぶ空きポート）と `data:` / `blob:` 以外を止める。`localhost` の別のポートにも届かない。止めた URL はログに出る。
+  - バンドルのサーバーでも、remotion の `/proxy`（`src` の URL を Node 側が代わりに取りに行く）は止める。ページとして読み込めるのは `/` と `/index.html` だけ（CSP の無い一覧ページなどを開かせない）。
+  - `<Audio>` / `<Video>` などのメディアは、Node 側でのダウンロードを止める（`data:` だけ通す）。メディアを使う場面は描画が失敗する。
   - `WebSocket` と `EventSource` は CSP（`connect-src 'self'`）で止める。
   - WebRTC は、全てのページとフレームで `RTCPeerConnection` などを読み込み前に消して止める。
   - ページ移動も止まる（描画はタイムアウトで失敗する）。

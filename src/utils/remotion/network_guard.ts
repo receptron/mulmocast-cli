@@ -1,7 +1,7 @@
 import type { HeadlessBrowser } from "@remotion/renderer";
 import { WEBRTC_REMOVAL_SCRIPT, isAllowedSceneRequest } from "./network_policy.js";
 
-type PausedRequest = { requestId: string; request: { url: string } };
+type PausedRequest = { requestId: string; request: { url: string }; resourceType?: unknown };
 type AttachedTarget = { sessionId: string; targetInfo: { type: string } };
 
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null;
@@ -25,7 +25,7 @@ const FRAME_TARGET_TYPES = ["page", "iframe"];
 export type NetworkGuard = { failures: string[] };
 
 const answerRequest = async (connection: object, paused: PausedRequest, serverPort: number, onBlocked: (url: string) => void) => {
-  if (isAllowedSceneRequest(paused.request.url, serverPort)) {
+  if (isAllowedSceneRequest({ url: paused.request.url, isDocument: paused.resourceType === "Document" }, serverPort)) {
     await sendCommand(connection, "Fetch.continueRequest", { requestId: paused.requestId });
     return;
   }

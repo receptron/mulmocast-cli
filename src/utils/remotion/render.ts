@@ -6,11 +6,12 @@ import { GraphAILogger } from "graphai";
 import type { HeadlessBrowser } from "@remotion/renderer";
 import { REMOTION_COMPOSITION_ID, REMOTION_ENTRY_FILE, buildEntrySource } from "./claude_prompt.js";
 import { missingRemotionPackages, remotionInstallCommand } from "./packages.js";
-import { withContentSecurityPolicy } from "./network_policy.js";
+import { isAllowedMediaDownload, withContentSecurityPolicy } from "./network_policy.js";
 import { guardSceneNetwork } from "./network_guard.js";
 
 // WebGL (three.js scenes) needs the ANGLE backend; the default one cannot create a context headless.
 const CHROMIUM_OPTIONS = { gl: "angle" } as const;
+const MAX_LOGGED_URL_LENGTH = 200;
 
 export type RemotionSceneProps = { durationInFrames: number; fps: number; width: number; height: number };
 
@@ -95,20 +96,27 @@ const findFreePort = () =>
 
 const logBlockedRequest = (url: string) => GraphAILogger.info(`remotion: blocked a network request from the scene: ${url}`);
 
+// Throwing here stops remotion before it fetches, and fails the render.
+const rejectMediaDownload = (src: string) => {
+  if (!isAllowedMediaDownload(src)) throw new Error(`remotion: a scene may not load media files (${src.slice(0, MAX_LOGGED_URL_LENGTH)})`);
+  return undefined;
+};
+
 type SceneOutputs = Pick<RemotionRenderRequest, "props" | "videoPath" | "stillPath" | "extraStills">;
 
 // The bundle server listens on the port given here, the only local origin the guard lets the scene reach.
 const renderOutputs = async (renderer: RemotionModules["renderer"], browser: HeadlessBrowser, serveUrl: string, port: number, outputs: SceneOutputs) => {
   const { props, videoPath, stillPath, extraStills = [] } = outputs;
   const shared = { serveUrl, inputProps: props, chromiumOptions: CHROMIUM_OPTIONS, puppeteerInstance: browser, port };
+  const downloadGuard = { onDownload: rejectMediaDownload };
   const composition = await renderer.selectComposition({ ...shared, id: REMOTION_COMPOSITION_ID });
   if (videoPath) {
-    await renderer.renderMedia({ ...shared, composition, codec: "h264", outputLocation: videoPath });
+    await renderer.renderMedia({ ...shared, ...downloadGuard, composition, codec: "h264", outputLocation: videoPath });
   }
   const stills = stillPath ? [...extraStills, { frame: composition.durationInFrames - 1, path: stillPath }] : extraStills;
   await stills.reduce(async (previous, still) => {
     await previous;
-    await renderer.renderStill({ ...shared, composition, output: still.path, frame: still.frame });
+    await renderer.renderStill({ ...shared, ...downloadGuard, composition, output: still.path, frame: still.frame });
   }, Promise.resolve());
 };
 

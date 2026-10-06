@@ -12,13 +12,29 @@ const parseUrl = (url: string) => {
   }
 };
 
+// Remotion's /proxy makes the bundle server download its `src` from Node, on the scene's behalf.
+const REMOTION_PROXY_PATH = "/proxy";
+// The only page that carries the CSP; any other HTML the server returns (a directory listing, a 404)
+// would run without it, so no other path may be loaded as a document.
+const SCENE_DOCUMENT_PATHS = ["/", "/index.html"];
+
+export type SceneRequest = { url: string; isDocument: boolean };
+
 // Another port on localhost is another service, so only the render's own port counts as local.
-export const isAllowedSceneRequest = (url: string, serverPort: number): boolean => {
+const isBundleServer = (parsed: URL, serverPort: number) =>
+  parsed.protocol === "http:" && LOOPBACK_HOSTS.includes(parsed.hostname) && parsed.port === String(serverPort);
+
+export const isAllowedSceneRequest = ({ url, isDocument }: SceneRequest, serverPort: number): boolean => {
   const parsed = parseUrl(url);
   if (!parsed) return false;
   if (IN_MEMORY_SCHEMES.includes(parsed.protocol)) return true;
-  return parsed.protocol === "http:" && LOOPBACK_HOSTS.includes(parsed.hostname) && parsed.port === String(serverPort);
+  if (!isBundleServer(parsed, serverPort) || parsed.pathname.startsWith(REMOTION_PROXY_PATH)) return false;
+  return !isDocument || SCENE_DOCUMENT_PATHS.includes(parsed.pathname);
 };
+
+// Remotion downloads <Audio> / <Video> sources from Node while rendering, outside the browser;
+// a scene uses no media files, so only inline data survives.
+export const isAllowedMediaDownload = (src: string): boolean => parseUrl(src)?.protocol === "data:";
 
 // The browser-level request block does not see WebSocket or EventSource connections; this does.
 export const REMOTION_CONTENT_SECURITY_POLICY = "connect-src 'self' data: blob:";
