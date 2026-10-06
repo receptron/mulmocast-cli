@@ -299,14 +299,14 @@ export const imagePreprocessAgent = async (namedInputs: {
     const html = plugin.html ? await plugin.html({ beat, context }) : undefined;
 
     const isTypeMovie = beat.image.type === ImageMediaType.Movie;
-    const isAnimatedHtml = MulmoBeatMethods.isAnimatedHtmlTailwind(beat);
+    const isPluginVideo = MulmoBeatMethods.isPluginVideo(beat);
 
-    // animation and moviePrompt cannot be used together
-    if (isAnimatedHtml && beat.moviePrompt) {
-      throw new Error("html_tailwind animation and moviePrompt cannot be used together on the same beat. Use either animation or moviePrompt, not both.");
+    // the plugin's own video and moviePrompt cannot be used together
+    if (isPluginVideo && beat.moviePrompt) {
+      throw new Error(`${beat.image.type} video and moviePrompt cannot be used together on the same beat. Use one of them, not both.`);
     }
 
-    if (isAnimatedHtml) {
+    if (isPluginVideo) {
       const animatedVideoPath = getBeatAnimatedVideoPath(context, index);
       // ImagePluginPreprocessAgentResponse
       // imageFromMovie is false: the plugin generates both the .mp4 video AND
@@ -400,9 +400,8 @@ export const imagePluginAgent = async (namedInputs: {
 
   const plugin = MulmoBeatMethods.getPlugin(beat);
 
-  // For animated html_tailwind, use the .mp4 path so the plugin writes video there
-  const isAnimatedHtml = MulmoBeatMethods.isAnimatedHtmlTailwind(beat);
-  const effectiveImagePath = isAnimatedHtml ? getBeatAnimatedVideoPath(context, index) : imagePath;
+  // Plugins that write their own video (animated html_tailwind, remotion) get the .mp4 path
+  const effectiveImagePath = MulmoBeatMethods.isPluginVideo(beat) ? getBeatAnimatedVideoPath(context, index) : imagePath;
 
   try {
     MulmoStudioContextMethods.setBeatSessionState(context, "image", index, beat.id, true);

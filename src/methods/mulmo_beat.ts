@@ -24,6 +24,9 @@ const isAnimatedHtmlTailwind = (beat: MulmoBeat): boolean => {
   return isAnimationEnabled(animation);
 };
 
+// Beats whose image plugin writes the beat's .mp4 itself, at the length the audio gives it.
+const isPluginVideo = (beat: MulmoBeat): boolean => isAnimatedHtmlTailwind(beat) || beat.image?.type === ImageMediaType.Remotion;
+
 // voice_over beats share the preceding beat's shot, and contribute no video segment of their own.
 const isVoiceOver = (beat?: MulmoBeat) => beat?.image?.type === ImageMediaType.VoiceOver;
 
@@ -31,6 +34,7 @@ export const MulmoBeatMethods = {
   isAnimationEnabled,
   isAnimationObject,
   isAnimatedHtmlTailwind,
+  isPluginVideo,
   isMovieMode,
   isVoiceOver,
   // Index of the closest preceding beat which is actually rendered as a video segment (-1 if none).

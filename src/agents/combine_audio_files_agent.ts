@@ -23,8 +23,8 @@ const getMovieDuration = async (context: MulmoStudioContext, beat: MulmoBeat) =>
       return { duration: duration / speed, hasAudio };
     }
   }
-  // Animated html_tailwind beats with explicit duration act as movie-like for voice_over grouping
-  if (MulmoBeatMethods.isAnimatedHtmlTailwind(beat) && beat.duration !== undefined) {
+  // Plugin-video beats (animated html_tailwind, remotion) with explicit duration act as movie-like for voice_over grouping
+  if (MulmoBeatMethods.isPluginVideo(beat) && beat.duration !== undefined) {
     return { duration: beat.duration, hasAudio: false };
   }
   return { duration: 0, hasAudio: false };
