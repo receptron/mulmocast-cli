@@ -118,7 +118,12 @@ npm install remotion @remotion/bundler @remotion/renderer react react-dom \
 
 ## 注意
 
-- 生成されたコードは手元のヘッドレスブラウザで実行され、ネットワークにもアクセスできる。信頼の扱いは `html_tailwind` の `script` と同じで、信頼できない台本の `remotion` ビートは、信頼できない `html_tailwind` と同様に扱うこと（描画ブラウザのネットワーク遮断は #1594）。
+- 場面のコード（生成されたものも、`code` で渡したものも）は手元のヘッドレスブラウザで実行される。外への通信はできない（#1594）:
+  - HTTP(S) の要求は、その描画のために立てたバンドルのサーバー（毎回選ぶ空きポート）と `data:` / `blob:` 以外を止める。`localhost` の別のポートにも届かない。止めた URL はログに出る。
+  - `WebSocket` と `EventSource` は CSP（`connect-src 'self'`）で止める。
+  - WebRTC は、全てのページとフレームで `RTCPeerConnection` などを読み込み前に消して止める。
+  - ページ移動も止まる（描画はタイムアウトで失敗する）。
+  - 手元のファイルの読み込みや CPU・メモリの使いすぎは止めないので、信頼できない台本はそのつもりで扱うこと。
 - `moviePrompt` とは同じビートで併用できない（アニメーション付き `html_tailwind` と同じ）。
 - `soundEffectPrompt` はまだ効かない（アニメーション付き `html_tailwind` と同じ。効果音の生成がプラグインの動画を待たないため）。
 - GPU の無い Linux では、`gl: "angle"` で WebGL の文脈を作れない場合がある。
