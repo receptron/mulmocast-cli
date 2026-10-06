@@ -1,0 +1,89 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "ja",
+  "title": "MulmoCast — 台本ひとつから、動画まで",
+  "description": "Every scene is a remotion beat: Claude Code (claude -p) writes each one as a Remotion component from the prompt and the narration. Needs Claude Code logged in and: npm install remotion @remotion/bundler @remotion/renderer react react-dom",
+  "canvasSize": {
+    "width": 1920,
+    "height": 1080
+  },
+  "remotionParams": {
+    "brief": "上質で落ち着いたテック系ブランドフィルム。背景は深い紺 #0A1020 から黒へのごく緩やかなグラデーションに、薄いグリッドと微細な粒子。文字はオフホワイト #F5F7FA、補助文字は60%の白。強調色はシアン #22D3EE の一色だけ（オレンジや他の色は使わない）。書体は Inter と Hiragino Sans、見出しは極太で字間を詰める。全場面で、左上に「場面番号（01, 02…）― 英字ラベル」のキッカーと細い罫線を同じ位置・同じ大きさで置く。"
+  },
+  "movieParams": {
+    "transition": {
+      "type": "fade",
+      "duration": 0.4
+    }
+  },
+  "speechParams": {
+    "speakers": {
+      "Presenter": {
+        "provider": "openai",
+        "voiceId": "shimmer",
+        "displayName": {
+          "ja": "プレゼンター"
+        }
+      }
+    }
+  },
+  "audioParams": {
+    "bgm": {
+      "kind": "url",
+      "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/bgms/story002.mp3"
+    },
+    "bgmVolume": 0.12
+  },
+  "beats": [
+    {
+      "speaker": "Presenter",
+      "text": "MulmoCast。AI と一緒に、台本から動画をつくるプラットフォームです。",
+      "image": {
+        "type": "remotion",
+        "prompt": "オープニング。深い紺の背景に、ゆっくり流れる細いグリッドと、柔らかい光漏れ。上部に小さな英字のキッカー「INTRODUCING」が字間を広げて現れ、主役の「MulmoCast」が一文字ずつマスクで立ち上がり、最後に控えめなグローがかかる。その下に細い下線が引かれ、補足の一行「台本ひとつから、動画まで。」が出る。強調色はシアン一色。"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "書くのは、MulmoScript という台本ひとつ。そこから、動画、ポッドキャスト、PDF、HTML を作り分けます。",
+      "image": {
+        "type": "remotion",
+        "prompt": "「ONE SCRIPT」というセクション見出しと細い線が上部に入る。左に巨大な数字「1」と小さく「MulmoScript」。右側に4枚の細身のカード「動画」「ポッドキャスト」「PDF」「HTML」が、話される順に上から一枚ずつ現れ、左の「1」からカードへ細い線が描かれて枝分かれしていく。最後に右上に小さな札「1 → 4」。"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "音声合成、画像の生成、そして FFmpeg による動画の組み立てまで。GraphAI が、ひとつの流れとして動かします。",
+      "image": {
+        "type": "remotion",
+        "prompt": "「PIPELINE」の見出し。three.js の3D空間に、4つの光るノード「台本」「音声」「画像」「動画」が奥行きをもって配置され、細い光の線が順番に伝わってノードを点灯させていく。カメラはゆっくり回り込む。ノード名は DOM の文字で3Dの位置に重ねて表示する。右下に小さく「powered by GraphAI」。強調色はシアン。"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "声も絵も、プロバイダーを選べます。OpenAI、Google、ElevenLabs、そして Replicate の動画モデルまで。",
+      "image": {
+        "type": "remotion",
+        "prompt": "「PROVIDERS」の見出し。3列の表組み：列見出しは「音声」「画像」「動画」。音声の列に OpenAI / Google / ElevenLabs / Gemini、画像の列に OpenAI / Google Imagen、動画の列に Replicate。セルが話される順に一つずつ埋まっていき、埋まった行に細い罫線が引かれる。最後に表全体がわずかに奥へ引き、上に大きく「選べる。」と出る。"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "そしてこの映像も、Claude Code が Remotion のコードとして書きました。",
+      "image": {
+        "type": "remotion",
+        "prompt": "ターミナル風の場面。黒に近い背景に、角の丸いターミナルの枠。プロンプト行に「$ claude -p \"場面の説明…\"」がタイプされ、続いて TSX のコード（import { AbsoluteFill } from \"remotion\" など）が一行ずつ高速で流れる。最後にターミナルが左へ縮み、右側に主役の言葉「この場面も、コードで。」が大きく現れ、下に小さく「Claude Code × Remotion」。"
+      }
+    },
+    {
+      "speaker": "Presenter",
+      "text": "MulmoCast。台本を書いたら、あとはまかせてください。",
+      "image": {
+        "type": "remotion",
+        "prompt": "エンディング。オープニングと同じ紺の背景とグリッド。中央左寄りに主役の「MulmoCast」が大きく現れ、その下に札の形でインストールコマンド「npm install -g mulmocast」がタイプされる。右上に小さく「github.com/receptron/mulmocast-cli」。最後の数割はそのまま静止に近い状態で、背景だけがゆっくり動く。"
+      }
+    }
+  ]
+}
