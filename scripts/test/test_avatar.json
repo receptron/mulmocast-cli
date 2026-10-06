@@ -2,33 +2,33 @@
   "$mulmocast": { "version": "1.1" },
   "lang": "ja",
   "title": "Talking avatar over slides",
-  "description": "Needs mesh-avatar-studio checked out next to this repository (for its sample avatar), and npm packages avatarscript and onnxruntime-node.",
+  "description": "Uses the sample avatar in assets/avatars/ani. Needs the npm packages avatarscript and onnxruntime-node.",
   "avatarParams": { "position": { "x": "82%", "y": "100%", "scale": "62%" } },
   "speechParams": {
     "speakers": {
-      "Miko": {
+      "Ani": {
         "provider": "openai",
         "voiceId": "coral",
-        "displayName": { "ja": "ミコ" },
-        "avatar": { "source": "../../../mesh-avatar-studio/samples/miko-qipao" }
+        "displayName": { "ja": "アニ" },
+        "avatar": { "source": "../../assets/avatars/ani" }
       }
     }
   },
   "beats": [
     {
-      "speaker": "Miko",
+      "speaker": "Ani",
       "text": "みなさん、こんにちは！今日は、スライドの上でしゃべるアバターを紹介します。",
       "image": { "type": "markdown", "markdown": ["# Talking avatars", "", "- MulmoScript + AvatarScript", "- スライドの上でアバターが話す"] },
       "avatarParams": { "emotion": "happy", "motions": [{ "motion": "nod", "at": "こんにちは" }] }
     },
     {
-      "speaker": "Miko",
+      "speaker": "Ani",
       "text": "位置と大きさは、台本全体で決めておいて、ビートごとに変えられます。このスライドでは、大きくなっています。",
       "image": { "type": "markdown", "markdown": ["# Position and size", "", "- 台本全体: `avatarParams.position`", "- ビートごとに上書き"] },
       "avatarParams": { "emotion": "relaxed", "position": { "x": "76%", "scale": "82%" }, "motions": [{ "motion": "tilt", "at": "大きく" }] }
     },
     {
-      "speaker": "Miko",
+      "speaker": "Ani",
       "text": "こちらでは、左側に小さく移動しました。",
       "image": {
         "type": "markdown",
@@ -37,7 +37,7 @@
       "avatarParams": { "emotion": "surprised", "position": { "x": "18%", "scale": "48%" }, "motions": [{ "motion": "surprise" }] }
     },
     {
-      "speaker": "Miko",
+      "speaker": "Ani",
       "text": "最後は、元の位置に戻ります。それでは、始めましょう！",
       "image": { "type": "markdown", "markdown": ["# Let's start"] },
       "avatarParams": { "emotion": "happy" }

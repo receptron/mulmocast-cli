@@ -1,0 +1,7 @@
+{
+  "format": "avatarscript-avatar/1",
+  "name": "ani",
+  "runtime": "mesh-avatar/1",
+  "assets": { "rig": "rig.json", "layers": "built/layers.json", "sprites": "built/sprites/sprites.json" },
+  "license": { "attribution": "© 2026 receptron", "terms": "MIT License (see LICENSE in the repository root)" }
+}
