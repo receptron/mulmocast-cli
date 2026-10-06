@@ -1,8 +1,10 @@
 import test from "node:test";
 import assert from "node:assert";
+import { createServer } from "node:http";
+import type { AddressInfo } from "node:net";
 import path from "node:path";
 
-import { planAvatarTracks } from "../../src/actions/avatar.js";
+import { avatarUrlStamp, planAvatarTracks } from "../../src/actions/avatar.js";
 import { addAvatars } from "../../src/actions/movie.js";
 import { mulmoScriptSchema } from "../../src/types/schema.js";
 import type { MulmoStudioContext, MulmoScript } from "../../src/types/index.js";
@@ -138,4 +140,89 @@ test("schema: avatar fields are optional and checked", () => {
   assert.ok(!mulmoScriptSchema.safeParse({ ...base, avatarParams: { position: { x: "1.2.3%" } } }).success);
   assert.ok(!mulmoScriptSchema.safeParse({ ...base, beats: [{ text: "hi", avatarParams: { emotion: "bored" } }] }).success);
   assert.ok(!mulmoScriptSchema.safeParse({ ...base, speechParams: { speakers: { A: { voiceId: "x", avatar: { source: "a", size: 1 } } } } }).success);
+});
+
+test("planAvatarTracks: an http(s) avatar source is kept as a URL", () => {
+  const url = "https://raw.githubusercontent.com/receptron/mulmocast-media/main/avatars/ani";
+  const context = createContext("ja");
+  const speakers = context.presentationStyle.speechParams.speakers;
+  context.presentationStyle = {
+    ...context.presentationStyle,
+    speechParams: { ...context.presentationStyle.speechParams, speakers: { ...speakers, Miko: { ...speakers.Miko, avatar: { source: url } } } },
+  };
+  assert.strictEqual(planAvatarTracks(context)[0]?.source, url);
+});
+
+test("avatarUrlStamp: the package's JSON files, the same for the folder and its avatar.json", async () => {
+  const files: Record<string, string> = {
+    "/ani/avatar.json": JSON.stringify({ root: "pkg", assets: { rig: "rig.json", layers: "built/layers.json", sprites: "built/sprites/sprites.json" } }),
+    "/ani/pkg/rig.json": JSON.stringify({ image: { width: 10, height: 10 } }),
+    "/ani/pkg/built/layers.json": JSON.stringify({ build: "1", layers: {} }),
+  };
+  const manifest = files["/ani/avatar.json"];
+  const redirects: Record<string, string> = {};
+  const queries: string[] = [];
+  const server = createServer((req, res) => {
+    const [pathname, query = ""] = (req.url ?? "").split("?");
+    queries.push(query);
+    const redirect = redirects[pathname];
+    if (redirect) return void res.writeHead(302, { location: redirect }).end();
+    const body = files[pathname];
+    if (body === undefined) res.writeHead(404).end();
+    else res.end(body);
+  });
+  await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+  try {
+    const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}/ani`;
+    const stamp = await avatarUrlStamp(base);
+    // no sprites: null, not an error
+    assert.deepStrictEqual(stamp, [files["/ani/avatar.json"], files["/ani/pkg/rig.json"], files["/ani/pkg/built/layers.json"], null]);
+    assert.deepStrictEqual(await avatarUrlStamp(`${base}/avatar.json`), stamp);
+    // a query (a version, a signature) is kept on every file
+    queries.length = 0;
+    assert.deepStrictEqual(await avatarUrlStamp(`${base}/avatar.json?version=1`), stamp);
+    assert.deepStrictEqual(queries, ["version=1", "version=1", "version=1", "version=1"]);
+    // a file's own query is kept
+    queries.length = 0;
+    files["/ani/avatar.json"] = JSON.stringify({ root: "pkg", assets: { rig: "rig.json?token=abc", layers: "built/layers.json" } });
+    await avatarUrlStamp(`${base}?version=2`);
+    assert.deepStrictEqual(queries, ["version=2", "token=abc", "version=2"]); // no sprites listed: not requested
+    files["/ani/avatar.json"] = manifest;
+    assert.deepStrictEqual(await avatarUrlStamp(base), stamp);
+    // a manifest without sprites: they are not requested (avatarscript does not load them either)
+    files["/ani/avatar.json"] = JSON.stringify({ root: "pkg", assets: { rig: "rig.json", layers: "built/layers.json" } });
+    queries.length = 0;
+    assert.deepStrictEqual((await avatarUrlStamp(base)).slice(1), [files["/ani/pkg/rig.json"], files["/ani/pkg/built/layers.json"], null]);
+    assert.strictEqual(queries.length, 3);
+    // files outside the package are refused before they are requested
+    for (const escape of [{ root: "../other/" }, { assets: { rig: "https://example.com/rig.json" } }, { assets: { layers: "../../x.json" } }]) {
+      files["/ani/avatar.json"] = JSON.stringify({ root: "pkg", ...escape });
+      queries.length = 0;
+      await assert.rejects(avatarUrlStamp(base), /outside the avatar package/);
+      assert.deepStrictEqual(queries, [""]); // only avatar.json was requested
+    }
+    files["/ani/avatar.json"] = manifest;
+    // redirects are followed within the same origin only
+    // (the manifest moved; its files still resolve against the requested folder)
+    redirects["/moved/avatar.json"] = "/ani/avatar.json";
+    // (different contents, so the stamp shows which folder each file came from)
+    files["/moved/pkg/rig.json"] = JSON.stringify({ image: { width: 1, height: 1 } });
+    files["/moved/pkg/built/layers.json"] = JSON.stringify({ build: "moved", layers: {} });
+    assert.deepStrictEqual(await avatarUrlStamp(base.replace("/ani", "/moved")), [
+      manifest,
+      files["/moved/pkg/rig.json"],
+      files["/moved/pkg/built/layers.json"],
+      null,
+    ]);
+    redirects["/away/avatar.json"] = "http://localhost:9/avatar.json";
+    await assert.rejects(avatarUrlStamp(base.replace("/ani", "/away")), /redirects to another host/);
+    // an edited rig or a rebuilt avatar changes the stamp, so its track renders again
+    files["/ani/pkg/rig.json"] = JSON.stringify({ image: { width: 10, height: 12 } });
+    const edited = await avatarUrlStamp(`${base}/`);
+    assert.notDeepStrictEqual(edited, stamp);
+    files["/ani/pkg/built/layers.json"] = JSON.stringify({ build: "2", layers: {} });
+    assert.notDeepStrictEqual(await avatarUrlStamp(`${base}/`), edited);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
 });

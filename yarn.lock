@@ -1978,10 +1978,10 @@ available-typed-arrays@^1.0.7:
   dependencies:
     possible-typed-array-names "^1.0.0"
 
-avatarscript@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/avatarscript/-/avatarscript-0.2.1.tgz#4d2408bbb427859b42bd415c186c36148111972c"
-  integrity sha512-8lINYb9p95+icEnxCBGKGKXLhaLsq9fuChtS8RJbxbT5ppXB3FRT+Gv3mXkDklSXUxaGUzAiSWPgB2Z+OYEQ+w==
+avatarscript@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/avatarscript/-/avatarscript-0.3.2.tgz#a89bfbb439ce4b8785fffb5035eb27df181613a4"
+  integrity sha512-/0iuGYAE7L/E/KyZnWxuJisLMOaJxMYJBtHXfyJM8QQtGLYObw3Mom02oJkDfdLu6Wv6dJ91XiY4DecZUrOphQ==
   dependencies:
     kuromoji "^0.1.2"
     puppeteer "^25.12.0"
