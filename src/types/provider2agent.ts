@@ -46,9 +46,9 @@ export const provider2TTSAgent = {
   },
 };
 
-export const gptImages = ["gpt-image-2", "gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini"];
+export const gptImages = ["gpt-image-2.5-sunburst", "gpt-image-2.5-flare", "gpt-image-2", "gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini"];
 
-const supportedOpenAIImageReplacementHint = "Use 'gpt-image-1' or another supported model.";
+const supportedOpenAIImageReplacementHint = "Use 'gpt-image-2.5-sunburst' or another supported model.";
 
 export const deprecatedOpenAIImageModelHints = {
   "dall-e-2": supportedOpenAIImageReplacementHint,
@@ -84,7 +84,9 @@ const replicateImageModelParams: Record<string, { maxReferenceImages?: number }>
 export const provider2ImageAgent = {
   openai: {
     agentName: "imageOpenaiAgent",
-    defaultModel: "gpt-image-1",
+    // gpt-image-1 shuts down on 2026-10-23; OpenAI names gpt-image-2.5-sunburst or -flare as its successor.
+    // https://developers.openai.com/api/docs/deprecations
+    defaultModel: "gpt-image-2.5-sunburst",
     models: [...gptImages],
     keyName: "OPENAI_API_KEY",
     baseURLKeyName: "OPENAI_BASE_URL",
@@ -511,12 +513,16 @@ export const provider2LipSyncAgent = {
 export const provider2LLMAgent = {
   openai: {
     agentName: "openAIAgent",
-    defaultModel: "gpt-5",
+    // gpt-5 (gpt-5-2025-08-07) shuts down on 2026-12-11; OpenAI names gpt-5.6-sol as its successor.
+    defaultModel: "gpt-5.6-sol",
     keyName: "OPENAI_API_KEY",
     baseURLKeyName: "OPENAI_BASE_URL",
     apiVersionKeyName: "OPENAI_API_VERSION",
     max_tokens: 8192,
     models: [
+      "gpt-5.6-sol",
+      "gpt-5.6-terra",
+      "gpt-5.6-luna",
       "gpt-5",
       "gpt-5-nano",
       "gpt-5-mini",
@@ -681,9 +687,15 @@ export const modelPricing: Record<string, Record<string, ModelPricing>> = {
     "gpt-image-1.5": { unit: "tokens", inputPerMTokensUSD: 5, outputPerMTokensUSD: 32, asOf: "2026-07-03" },
     "gpt-image-2": { unit: "tokens", inputPerMTokensUSD: 5, outputPerMTokensUSD: 30, asOf: "2026-07-03" },
     "gpt-image-1-mini": { unit: "tokens", inputPerMTokensUSD: 2, outputPerMTokensUSD: 8, asOf: "2026-07-03" },
+    // https://developers.openai.com/api/docs/pricing (text input $5/1M, image output $30/1M; image input $8/1M is not modeled)
+    "gpt-image-2.5-sunburst": { unit: "tokens", inputPerMTokensUSD: 5, outputPerMTokensUSD: 30, asOf: "2026-10-07" },
+    "gpt-image-2.5-flare": { unit: "tokens", inputPerMTokensUSD: 5, outputPerMTokensUSD: 30, asOf: "2026-10-07" },
     // https://developers.openai.com/api/docs/models/gpt-5 etc.
     "gpt-5": { unit: "tokens", inputPerMTokensUSD: 1.25, outputPerMTokensUSD: 10, asOf: "2026-07-03" },
     "gpt-5-mini": { unit: "tokens", inputPerMTokensUSD: 0.25, outputPerMTokensUSD: 2, asOf: "2026-07-03" },
+    // https://developers.openai.com/api/docs/models/gpt-5.6-sol (promotional price, "at least through November 21, 2026")
+    "gpt-5.6-sol": { unit: "tokens", inputPerMTokensUSD: 4, outputPerMTokensUSD: 20, asOf: "2026-10-07" },
+    "gpt-5.6-terra": { unit: "tokens", inputPerMTokensUSD: 2, outputPerMTokensUSD: 12, asOf: "2026-10-07" },
     "gpt-4o": { unit: "tokens", inputPerMTokensUSD: 2.5, outputPerMTokensUSD: 10, asOf: "2026-07-03" },
   },
   gemini: {

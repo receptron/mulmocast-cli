@@ -7,7 +7,7 @@
   "title": "Testing OpenAI's new Image Generation",
   "description": "Hello",
   "imageParams": {
-    "model": "gpt-image-1",
+    "model": "gpt-image-2.5-sunburst",
     "style": "<style>Japanese animation with soft watercolor backgrounds, characters with simple rounded faces, large expressive eyes, small nose and mouth, soft jawlines, minimalist facial features, pastel color palette, detailed natural environments, whimsical magical elements, hand-drawn aesthetic, gentle lighting, flowing movement in hair and clothing, nostalgic countryside scenery with fantasy elements."
   },
   "speechParams": {
