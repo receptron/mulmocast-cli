@@ -153,13 +153,17 @@ test("planAvatarTracks: an http(s) avatar source is kept as a URL", () => {
   assert.strictEqual(planAvatarTracks(context)[0]?.source, url);
 });
 
-test("avatarUrlStamp: the package's listings, the same for the folder and its avatar.json", async () => {
+test("avatarUrlStamp: the package's JSON files, the same for the folder and its avatar.json", async () => {
   const files: Record<string, string> = {
     "/ani/avatar.json": JSON.stringify({ root: "pkg", assets: { rig: "rig.json", layers: "built/layers.json", sprites: "built/sprites/sprites.json" } }),
+    "/ani/pkg/rig.json": JSON.stringify({ image: { width: 10, height: 10 } }),
     "/ani/pkg/built/layers.json": JSON.stringify({ build: "1", layers: {} }),
   };
+  const queries: string[] = [];
   const server = createServer((req, res) => {
-    const body = files[req.url ?? ""];
+    const [pathname, query = ""] = (req.url ?? "").split("?");
+    queries.push(query);
+    const body = files[pathname];
     if (body === undefined) res.writeHead(404).end();
     else res.end(body);
   });
@@ -168,11 +172,18 @@ test("avatarUrlStamp: the package's listings, the same for the folder and its av
     const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}/ani`;
     const stamp = await avatarUrlStamp(base);
     // no sprites: null, not an error
-    assert.deepStrictEqual(stamp, [files["/ani/avatar.json"], files["/ani/pkg/built/layers.json"], null]);
+    assert.deepStrictEqual(stamp, [files["/ani/avatar.json"], files["/ani/pkg/rig.json"], files["/ani/pkg/built/layers.json"], null]);
     assert.deepStrictEqual(await avatarUrlStamp(`${base}/avatar.json`), stamp);
-    // a rebuilt avatar changes the stamp, so its track renders again
+    // a query (a version, a signature) is kept on every file
+    queries.length = 0;
+    assert.deepStrictEqual(await avatarUrlStamp(`${base}/avatar.json?version=1`), stamp);
+    assert.deepStrictEqual(queries, ["version=1", "version=1", "version=1", "version=1"]);
+    // an edited rig or a rebuilt avatar changes the stamp, so its track renders again
+    files["/ani/pkg/rig.json"] = JSON.stringify({ image: { width: 10, height: 12 } });
+    const edited = await avatarUrlStamp(`${base}/`);
+    assert.notDeepStrictEqual(edited, stamp);
     files["/ani/pkg/built/layers.json"] = JSON.stringify({ build: "2", layers: {} });
-    assert.notDeepStrictEqual(await avatarUrlStamp(`${base}/`), stamp);
+    assert.notDeepStrictEqual(await avatarUrlStamp(`${base}/`), edited);
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }

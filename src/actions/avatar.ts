@@ -141,9 +141,9 @@ const folderStamp = (dir: string) => {
     .map((file) => [path.relative(dir, file), fileStamp(file)]);
 };
 
-// An avatar at a URL: its small JSON listings (avatar.json, built/layers.json, sprites.json) change
-// whenever the avatar is rebuilt, so they stand in for the files' stamps. They are fetched on every
-// run; avatarscript caches the images.
+// An avatar at a URL: its small JSON files (avatar.json, the rig, layers.json, sprites.json) change
+// whenever the avatar is edited or rebuilt, so they stand in for the files' stamps. They are fetched
+// on every run; avatarscript caches the images.
 const fetchText = async (url: URL) => {
   const response = await fetch(url, { signal: AbortSignal.timeout(60_000) });
   if (response.status === 404) return null;
@@ -151,13 +151,20 @@ const fetchText = async (url: URL) => {
   return response.text();
 };
 export const avatarUrlStamp = async (source: string) => {
-  const folder = source.endsWith("/avatar.json") ? new URL(".", source) : new URL(source.replace(/\/?$/, "/"));
-  const manifestText = await fetchText(new URL("avatar.json", folder));
-  const manifest = manifestText ? (JSON.parse(manifestText) as { root?: string; assets?: { layers?: string; sprites?: string } }) : undefined;
-  const root = new URL((manifest?.root ?? ".").replace(/\/?$/, "/"), folder);
-  const layers = await fetchText(new URL(manifest?.assets?.layers ?? "built/layers.json", root));
-  const sprites = await fetchText(new URL(manifest?.assets?.sprites ?? "built/sprites/sprites.json", root));
-  return [manifestText, layers, sprites];
+  const url = new URL(source);
+  const folder = new URL(url);
+  folder.pathname = url.pathname.endsWith("/avatar.json") ? url.pathname.slice(0, -"avatar.json".length) : url.pathname.replace(/\/?$/, "/");
+  // the source's query (a version, a signature) goes with every file
+  const at = (file: string, base: URL) => Object.assign(new URL(file, base), { search: url.search });
+  const manifestText = await fetchText(at("avatar.json", folder));
+  const manifest = manifestText ? (JSON.parse(manifestText) as { root?: string; assets?: { rig?: string; layers?: string; sprites?: string } }) : undefined;
+  const root = at((manifest?.root ?? ".").replace(/\/?$/, "/"), folder);
+  const files = [
+    manifest?.assets?.rig ?? "rig.json",
+    manifest?.assets?.layers ?? "built/layers.json",
+    manifest?.assets?.sprites ?? "built/sprites/sprites.json",
+  ];
+  return [manifestText, ...(await Promise.all(files.map((file) => fetchText(at(file, root)))))];
 };
 const sourceStamp = (source: string) => (isHttp(source) ? avatarUrlStamp(source) : folderStamp(source));
 
