@@ -1,16 +1,16 @@
 import test from "node:test";
 import assert from "node:assert";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { createRemotionFrameRenderer, framePlan, RemotionFramesDeps } from "../../src/utils/remotion/render_frames.js";
 import { REMOTION_REVIEW_FRACTIONS, frameAtFraction, toFrameCount } from "../../src/utils/remotion/frames.js";
 import type { RemotionRenderRequest } from "../../src/utils/remotion/render.js";
 import * as remotionEntry from "../../src/index.remotion.js";
+import { trackedTmpDirs } from "../tmp_dirs.js";
 
 const component = "export default function Scene() { return null; }\n";
 
-const makeTmpDir = () => fs.mkdtempSync(path.join(os.tmpdir(), "remotion-frames-test-"));
+const makeTmpDir = trackedTmpDirs("remotion-frames-test-");
 
 const makeFakes = (options: { renderError?: Error; missingPackages?: boolean } = {}) => {
   const renders: (RemotionRenderRequest & { code: string })[] = [];
@@ -46,6 +46,9 @@ test("toFrameCount: duration × fps, floored; zero frames is an error", () => {
   assert.strictEqual(toFrameCount(1.5, 24), 36);
   assert.throws(() => toFrameCount(0.01, 30), /frame count is 0/);
   assert.throws(() => toFrameCount(0, 30), /frame count is 0/);
+  assert.throws(() => toFrameCount(Number.NaN, 30), /frame count is NaN/);
+  assert.throws(() => toFrameCount(Number.POSITIVE_INFINITY, 30), /frame count is Infinity/);
+  assert.throws(() => toFrameCount(1, Number.NaN), /frame count is NaN/);
 });
 
 test("framePlan: one PNG per fraction, named by order and percent", () => {
@@ -94,7 +97,7 @@ test("renderRemotionFrames: fps, canvas and fractions come from the request", as
   );
 });
 
-test("renderRemotionFrames: bad fractions and durations stop before rendering", async () => {
+test("renderRemotionFrames: bad fractions, durations and canvas sizes stop before rendering", async () => {
   const { deps, renders } = makeFakes();
   const render = createRemotionFrameRenderer(deps);
   const base = { code: component, durationSec: 2, outDir: makeTmpDir() };
@@ -103,6 +106,10 @@ test("renderRemotionFrames: bad fractions and durations stop before rendering", 
   await assert.rejects(render({ ...base, fractions: [-0.1] }), /between 0 and 1/);
   await assert.rejects(render({ ...base, fractions: [Number.NaN] }), /between 0 and 1/);
   await assert.rejects(render({ ...base, durationSec: 0 }), /frame count is 0/);
+  await assert.rejects(render({ ...base, durationSec: Number.NaN }), /frame count is NaN/);
+  await assert.rejects(render({ ...base, width: 0 }), /positive integers \(got 0x1080\)/);
+  await assert.rejects(render({ ...base, height: 720.5 }), /positive integers \(got 1920x720.5\)/);
+  await assert.rejects(render({ ...base, width: Number.NaN }), /positive integers/);
   assert.strictEqual(renders.length, 0);
 });
 

@@ -42,6 +42,12 @@ export const framePlan = (durationInFrames: number, fractions: readonly number[]
     return { fraction, frame: frameAtFraction(durationInFrames, fraction), path: path.join(outDir, `frame_${index}_${percent}.png`) };
   });
 
+const isPositiveInteger = (value: number) => Number.isInteger(value) && value > 0;
+
+const checkCanvas = (width: number, height: number) => {
+  if (!isPositiveInteger(width) || !isPositiveInteger(height)) throw new Error(`remotion: width and height must be positive integers (got ${width}x${height})`);
+};
+
 const errorMessage = (error: unknown) => (error instanceof Error ? error.message : String(error));
 
 export const createRemotionFrameRenderer =
@@ -56,6 +62,7 @@ export const createRemotionFrameRenderer =
     };
     const fractions = request.fractions ?? REMOTION_REVIEW_FRACTIONS;
     checkFractions(fractions);
+    checkCanvas(props.width, props.height);
     deps.ensurePackages();
 
     const frames = framePlan(props.durationInFrames, fractions, request.outDir);

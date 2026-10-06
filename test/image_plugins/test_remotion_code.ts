@@ -1,7 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { createMockContext } from "../actions/utils.js";
@@ -11,11 +10,12 @@ import { REMOTION_SYSTEM_PROMPT } from "../../src/utils/remotion/system_prompt.j
 import { mulmoRemotionMediaSchema } from "../../src/types/schema.js";
 import type { ImageProcessorParams, MulmoBeat, MulmoRemotionCodeSource, MulmoStudioContext } from "../../src/types/index.js";
 import * as remotionEntry from "../../src/index.remotion.js";
+import { trackedTmpDirs } from "../tmp_dirs.js";
 
 const canvasSize = { width: 1280, height: 720 };
 const component = "export default function Scene() { return null; }\n";
 
-const makeTmpDir = () => fs.mkdtempSync(path.join(os.tmpdir(), "remotion-code-test-"));
+const makeTmpDir = trackedTmpDirs("remotion-code-test-");
 
 const contextIn = (scriptDir: string): MulmoStudioContext => {
   const base = createMockContext();

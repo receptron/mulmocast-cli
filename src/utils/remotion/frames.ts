@@ -3,7 +3,7 @@ export const REMOTION_REVIEW_FRACTIONS: readonly number[] = [0.3, 0.6, 0.95];
 
 export const toFrameCount = (durationSec: number, fps: number) => {
   const frames = Math.floor(durationSec * fps);
-  if (frames <= 0) {
+  if (!Number.isFinite(frames) || frames <= 0) {
     throw new Error(`remotion: frame count is ${frames} (duration=${durationSec}, fps=${fps}). Increase duration or fps.`);
   }
   return frames;
