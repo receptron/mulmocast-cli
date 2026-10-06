@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.14.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.14.0) (2026-10-06)
+
+- **`remotion` beat accepts a finished component** (#1600, #1599): `image: { type: "remotion", code: { kind: "path", path } | { kind: "text", text }, fps? }` renders the given TSX as is, without `claude -p` (no generation, repair or visual review), so a host's own agent can write the scene. `path` resolves from the script's directory; a failed render stops with the code's location and the error. `prompt` and `code` are mutually exclusive, and the bundled JSON schema states it too. The `prompt` → `claude -p` flow is unchanged
+- **New entry `mulmocast/remotion`** (#1600): `REMOTION_COMPONENT_GUIDE` (the writing contract without `claude -p`'s reply format), `REMOTION_PACKAGES` / `REMOTION_RENDER_PACKAGES` / `REMOTION_SCENE_PACKAGES`, `missingInstalledRemotionPackages()`, `ensureRemotionPackages()`, `remotionInstallCommand()`
+- **Type change**: `MulmoRemotionMedia` is now a union of the prompt shape and the code shape; narrow with `"code" in image` before reading `prompt`
+
+📦 **npm**: [`mulmocast@2.14.0`](https://www.npmjs.com/package/mulmocast/v/2.14.0), [`@mulmocast/types@2.14.0`](https://www.npmjs.com/package/@mulmocast/types/v/2.14.0)
+
 ## [2.13.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.13.0) (2026-10-06)
 
 - **`remotion` beat type** (#1593): describe a scene in words (`image: { type: "remotion", prompt, fps? }`); Claude Code (`claude -p`) writes it as a Remotion component, which is cached, rendered to the beat's video (plus a final-frame still), repaired on render errors and checked once visually. `remotionParams.brief` gives every scene the same art direction. three.js, SVG paths, noise and `@remotion/effects` are available. Needs Claude Code logged in and the optional packages listed in `docs/remotion.md`. Sample: `scripts/samples/mulmocast_intro_remotion.json`
