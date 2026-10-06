@@ -1,7 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { createMockContext } from "../actions/utils.js";
 import { createRemotionProcess, remotionStillPath, remotionWorkDir, reviewCandidatePath, RemotionDeps } from "../../src/utils/image_plugins/remotion.js";
@@ -9,13 +8,15 @@ import { remotionCacheKey } from "../../src/utils/remotion/claude_prompt.js";
 import type { RemotionRenderRequest } from "../../src/utils/remotion/render.js";
 import { mulmoRemotionMediaSchema } from "../../src/types/schema.js";
 import { MulmoBeatMethods } from "../../src/methods/index.js";
+import { trackedTmpDirs } from "../tmp_dirs.js";
 import type { MulmoBeat, ImageProcessorParams } from "../../src/types/index.js";
 
 const canvasSize = { width: 1280, height: 720 };
 const componentA = "export default function A() { return null; }\n";
 const componentB = "export default function B() { return null; }\n";
 
-const makeTmpImagePath = () => path.join(fs.mkdtempSync(path.join(os.tmpdir(), "remotion-test-")), "1p_animated.mp4");
+const makeTmpDir = trackedTmpDirs("remotion-test-");
+const makeTmpImagePath = () => path.join(makeTmpDir(), "1p_animated.mp4");
 
 const makeParams = (imagePath: string, beat: MulmoBeat, overrides: Partial<ImageProcessorParams> = {}): ImageProcessorParams => ({
   beat,
