@@ -74,25 +74,50 @@ const reviewStillsFor = (job: SceneJob): ReviewStill[] =>
     file: nodePath.join(job.workDir, `review_${index}.png`),
   }));
 
-// A failed review keeps the scene that already rendered: the review only ever improves on it.
+const errorMessage = (error: unknown) => (error instanceof Error ? error.message : String(error));
+
+// null when the review itself failed; undefined when the reviewer approved the scene as it is.
+const askForReview = async (job: SceneJob, renderedCode: string, reviewStills: ReviewStill[], deps: RemotionDeps) => {
+  try {
+    return await deps.reviewComponent(buildReviewPrompt(job.spec, renderedCode, reviewStills), job.workDir);
+  } catch (error) {
+    GraphAILogger.info(`remotion: visual review skipped: ${errorMessage(error)}`);
+    return null;
+  }
+};
+
+export const reviewCandidatePath = (filePath: string) => filePath.replace(/(\.[^./]+)$/, ".review$1");
+
+// The reviewed version renders to side files that replace the first version's output only once it
+// succeeded, so a failure leaves the scene that already rendered — files and cached code — untouched.
+const renderReviewedVersion = async (job: SceneJob, improved: string, deps: RemotionDeps) => {
+  const candidate: SceneJob = {
+    ...job,
+    codePath: reviewCandidatePath(job.codePath),
+    videoPath: job.videoPath && reviewCandidatePath(job.videoPath),
+    stillPath: reviewCandidatePath(job.stillPath),
+  };
+  try {
+    const renderedImprovement = await renderWithRepair(candidate, improved, MAX_REPAIR_ATTEMPTS, deps);
+    if (job.videoPath && candidate.videoPath) fs.renameSync(candidate.videoPath, job.videoPath);
+    fs.renameSync(candidate.stillPath, job.stillPath);
+    fs.writeFileSync(job.codePath, renderedImprovement);
+  } catch (error) {
+    GraphAILogger.info(`remotion: the reviewed version did not render, keeping the first one: ${errorMessage(error)}`);
+  } finally {
+    [candidate.codePath, candidate.videoPath, candidate.stillPath].forEach((file) => file && fs.rmSync(file, { force: true }));
+  }
+};
+
 const reviewAndImprove = async (job: SceneJob, renderedCode: string, reviewStills: ReviewStill[], deps: RemotionDeps) => {
-  const improved = await deps.reviewComponent(buildReviewPrompt(job.spec, renderedCode, reviewStills), job.workDir).catch((error: unknown) => {
-    GraphAILogger.info(`remotion: visual review skipped: ${error instanceof Error ? error.message : String(error)}`);
-    return undefined;
-  });
-  if (!improved) {
+  const improved = await askForReview(job, renderedCode, reviewStills, deps);
+  if (improved === null) return;
+  if (improved === undefined) {
     GraphAILogger.info(`remotion: visual review approved ${job.codePath}`);
     return;
   }
   GraphAILogger.info(`remotion: visual review improved ${job.codePath}`);
-  try {
-    fs.writeFileSync(job.codePath, improved);
-    await renderWithRepair(job, improved, MAX_REPAIR_ATTEMPTS, deps);
-  } catch (error) {
-    GraphAILogger.info(`remotion: the reviewed version did not render, keeping the first one: ${error instanceof Error ? error.message : String(error)}`);
-    fs.writeFileSync(job.codePath, renderedCode);
-    await renderWithRepair(job, renderedCode, 0, deps);
-  }
+  await renderReviewedVersion(job, improved, deps);
 };
 
 const toFrameCount = (durationSec: number, fps: number) => {

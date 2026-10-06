@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { createMockContext } from "../actions/utils.js";
-import { createRemotionProcess, remotionStillPath, remotionWorkDir, RemotionDeps } from "../../src/utils/image_plugins/remotion.js";
+import { createRemotionProcess, remotionStillPath, remotionWorkDir, reviewCandidatePath, RemotionDeps } from "../../src/utils/image_plugins/remotion.js";
 import { remotionCacheKey } from "../../src/utils/remotion/claude_prompt.js";
 import type { RemotionRenderRequest } from "../../src/utils/remotion/render.js";
 import { mulmoRemotionMediaSchema } from "../../src/types/schema.js";
@@ -63,6 +63,8 @@ const makeFakes = (options: { replies?: string[]; renderFailures?: number; revie
         failuresLeft.count -= 1;
         throw new Error("Module not found: three");
       }
+      // the outputs carry the code that produced them, so a test can tell which version is in place
+      [request.videoPath, request.stillPath].forEach((file) => file && fs.writeFileSync(file, code));
     },
   };
   return { deps, prompts, reviewPrompts, renders, renderedCode };
@@ -84,6 +86,12 @@ test("isPluginVideo: remotion and animated html_tailwind write their own video, 
   assert.strictEqual(MulmoBeatMethods.isPluginVideo({ text: "", image: { type: "html_tailwind", html: "<p/>" } }), false);
   assert.strictEqual(MulmoBeatMethods.isPluginVideo({ text: "", image: { type: "markdown", markdown: "# x" } }), false);
   assert.strictEqual(MulmoBeatMethods.isPluginVideo({ text: "" }), false);
+});
+
+test("reviewCandidatePath: a side file next to the real one, same extension", () => {
+  assert.strictEqual(reviewCandidatePath("/out/a/1p_animated.mp4"), "/out/a/1p_animated.review.mp4");
+  assert.strictEqual(reviewCandidatePath("/out/a/1p.png"), "/out/a/1p.review.png");
+  assert.strictEqual(reviewCandidatePath("/out/a.b/1p_remotion/abc.tsx"), "/out/a.b/1p_remotion/abc.review.tsx");
 });
 
 test("remotionWorkDir / remotionStillPath: derived from the beat's video path", () => {
@@ -228,14 +236,18 @@ test("remotion review: a new scene renders review frames and is reviewed once; a
   assert.ok(reviewPrompts[0].includes(componentA));
 });
 
-test("remotion review: an improved component is rendered and becomes the cached one", async () => {
+test("remotion review: an improved component replaces the outputs and becomes the cached one", async () => {
   const imagePath = makeTmpImagePath();
   const { deps, renders, renderedCode } = makeFakes({ reviews: [componentB] });
   await createRemotionProcess(deps)(makeParams(imagePath, remotionBeat(), { beatDuration: 2 }));
 
   assert.deepStrictEqual(renderedCode, [componentA, componentB]);
+  assert.strictEqual(renders[1].videoPath, reviewCandidatePath(imagePath), "the reviewed version renders to a side file");
   assert.strictEqual(renders[1].extraStills?.length ?? 0, 0, "the final render needs no review frames");
+  assert.strictEqual(fs.readFileSync(imagePath, "utf8"), componentB);
+  assert.strictEqual(fs.readFileSync(remotionStillPath(imagePath), "utf8"), componentB);
   assert.strictEqual(fs.readFileSync(cachedCodePath(imagePath), "utf8"), componentB);
+  assert.ok(!fs.existsSync(reviewCandidatePath(imagePath)), "side files are cleaned up");
 });
 
 test("remotion review: a cached scene is not reviewed again", async () => {
@@ -256,15 +268,22 @@ test("remotion review: a reviewer failure keeps the rendered scene", async () =>
   assert.strictEqual(fs.readFileSync(cachedCodePath(imagePath), "utf8"), componentA);
 });
 
-test("remotion review: a reviewed version that never renders falls back to the first one", async () => {
+test("remotion review: a reviewed version that never renders leaves the first version's outputs and cache untouched", async () => {
   const imagePath = makeTmpImagePath();
   // the writer's repairs keep returning the broken reviewed version
-  const { deps, renderedCode } = makeFakes({ replies: [componentA, componentB, componentB], reviews: [componentB], failingCode: componentB });
-  await createRemotionProcess(deps)(makeParams(imagePath, remotionBeat(), { beatDuration: 2 }));
+  const { deps, renders } = makeFakes({ replies: [componentA, componentB, componentB], reviews: [componentB], failingCode: componentB });
+  const result = await createRemotionProcess(deps)(makeParams(imagePath, remotionBeat(), { beatDuration: 2 }));
 
-  assert.strictEqual(renderedCode[0], componentA);
-  assert.strictEqual(renderedCode[renderedCode.length - 1], componentA, "the last render restores the first version");
+  assert.strictEqual(result, imagePath);
+  assert.ok(
+    renders.slice(1).every((request) => request.videoPath === reviewCandidatePath(imagePath)),
+    "no attempt touches the real outputs",
+  );
+  assert.strictEqual(fs.readFileSync(imagePath, "utf8"), componentA);
+  assert.strictEqual(fs.readFileSync(remotionStillPath(imagePath), "utf8"), componentA);
   assert.strictEqual(fs.readFileSync(cachedCodePath(imagePath), "utf8"), componentA);
+  const leftovers = fs.readdirSync(path.dirname(imagePath)).concat(fs.readdirSync(remotionWorkDir(imagePath)));
+  assert.ok(!leftovers.some((name) => name.includes(".review.")), `side files are cleaned up: ${leftovers.join(", ")}`);
 });
 
 test("remotion process: the script's remotionParams.brief reaches every scene prompt", async () => {
