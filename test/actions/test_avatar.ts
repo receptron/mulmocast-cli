@@ -159,6 +159,7 @@ test("avatarUrlStamp: the package's JSON files, the same for the folder and its 
     "/ani/pkg/rig.json": JSON.stringify({ image: { width: 10, height: 10 } }),
     "/ani/pkg/built/layers.json": JSON.stringify({ build: "1", layers: {} }),
   };
+  const manifest = files["/ani/avatar.json"];
   const queries: string[] = [];
   const server = createServer((req, res) => {
     const [pathname, query = ""] = (req.url ?? "").split("?");
@@ -178,6 +179,13 @@ test("avatarUrlStamp: the package's JSON files, the same for the folder and its 
     queries.length = 0;
     assert.deepStrictEqual(await avatarUrlStamp(`${base}/avatar.json?version=1`), stamp);
     assert.deepStrictEqual(queries, ["version=1", "version=1", "version=1", "version=1"]);
+    // a file's own query is kept
+    queries.length = 0;
+    files["/ani/avatar.json"] = JSON.stringify({ root: "pkg", assets: { rig: "rig.json?token=abc", layers: "built/layers.json" } });
+    await avatarUrlStamp(`${base}?version=2`);
+    assert.deepStrictEqual(queries, ["version=2", "token=abc", "version=2", "version=2"]);
+    files["/ani/avatar.json"] = manifest;
+    assert.deepStrictEqual(await avatarUrlStamp(base), stamp);
     // an edited rig or a rebuilt avatar changes the stamp, so its track renders again
     files["/ani/pkg/rig.json"] = JSON.stringify({ image: { width: 10, height: 12 } });
     const edited = await avatarUrlStamp(`${base}/`);

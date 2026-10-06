@@ -154,8 +154,12 @@ export const avatarUrlStamp = async (source: string) => {
   const url = new URL(source);
   const folder = new URL(url);
   folder.pathname = url.pathname.endsWith("/avatar.json") ? url.pathname.slice(0, -"avatar.json".length) : url.pathname.replace(/\/?$/, "/");
-  // the source's query (a version, a signature) goes with every file
-  const at = (file: string, base: URL) => Object.assign(new URL(file, base), { search: url.search });
+  // the source's query (a version, a signature) goes with every file that has no query of its own
+  const at = (file: string, base: URL) => {
+    const location = new URL(file, base);
+    if (!location.search) location.search = url.search;
+    return location;
+  };
   const manifestText = await fetchText(at("avatar.json", folder));
   const manifest = manifestText ? (JSON.parse(manifestText) as { root?: string; assets?: { rig?: string; layers?: string; sprites?: string } }) : undefined;
   const root = at((manifest?.root ?? ".").replace(/\/?$/, "/"), folder);
