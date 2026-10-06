@@ -19,19 +19,19 @@ Everything is optional; a script without `avatar` renders exactly as before.
   "avatarParams": { "position": { "x": "84%", "y": "100%", "scale": "62%" } },   // script defaults
   "speechParams": {
     "speakers": {
-      "Miko": {
+      "Ani": {
         "provider": "openai", "voiceId": "coral",
-        "avatar": { "source": "./avatars/miko-qipao" }        // the avatar this speaker speaks with
+        "avatar": { "source": "./avatars/ani" }        // the avatar this speaker speaks with (a path or a URL)
       }
     }
   },
   "beats": [
     {
-      "speaker": "Miko", "text": "みなさん、こんにちは！",
+      "speaker": "Ani", "text": "みなさん、こんにちは！",
       "image": { "type": "markdown", "markdown": ["# Hello"] },
       "avatarParams": { "emotion": "happy", "motions": [{ "motion": "nod", "at": "こんにちは" }] }
     },
-    { "speaker": "Miko", "text": "…", "avatarParams": { "position": { "x": "18%", "scale": "48%" } } }
+    { "speaker": "Ani", "text": "…", "avatarParams": { "position": { "x": "18%", "scale": "48%" } } }
   ]
 }
 ```
@@ -51,6 +51,10 @@ Everything is optional; a script without `avatar` renders exactly as before.
   - `emotion`: `neutral | happy | sad | angry | surprised | relaxed`, for the beat.
   - `motions`: `[{ motion, at? }]`; `at` names words of the beat's text where the motion starts.
   - `hidden`: hide this speaker's avatar during the beat.
+
+Sample: `scripts/test/test_avatar.json` (Ani, a tsundere narrator with Gemini TTS) loads the avatar
+`ani` by URL from [mulmocast-media](https://github.com/receptron/mulmocast-media/tree/main/avatars)
+(© 2026 receptron, MIT License).
 
 ## Rendering
 
