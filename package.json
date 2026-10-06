@@ -92,7 +92,7 @@
   "dependencies": {
     "@google-cloud/text-to-speech": "^6.4.1",
     "@google/genai": "^2.17.1",
-    "@graphai/anthropic_agent": "^2.0.12",
+    "@graphai/anthropic_agent": "^2.1.0",
     "@graphai/browserless_agent": "^2.0.4",
     "@graphai/gemini_agent": "^2.1.0",
     "@graphai/groq_agent": "^2.1.0",
@@ -103,7 +103,7 @@
     "@graphai/vanilla_node_agents": "^2.0.4",
     "@inquirer/input": "^5.1.7",
     "@inquirer/select": "^5.2.6",
-    "@modelcontextprotocol/sdk": "^1.32.0",
+    "@modelcontextprotocol/sdk": "^1.32.1",
     "@modernized/fluent-ffmpeg": "^1.0.3",
     "@mozilla/readability": "^0.6.0",
     "@mulmocast/deck": "^2.0.2",
@@ -114,7 +114,7 @@
     "graphai": "^2.0.18",
     "js-tiktoken": "^1.0.21",
     "jsdom": "^29.1.1",
-    "marked": "^18.0.14",
+    "marked": "^18.1.0",
     "mulmocast-vision": "^1.0.12",
     "ora": "^9.4.1",
     "puppeteer": "^25.12.0",
@@ -157,7 +157,7 @@
     "three": "^0.186.1",
     "tsx": "^4.23.15",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.71.0"
+    "typescript-eslint": "^8.71.1"
   },
   "peerDependencies": {
     "@react-three/fiber": "^9.8.1",
