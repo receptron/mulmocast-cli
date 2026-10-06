@@ -1,8 +1,10 @@
 import test from "node:test";
 import assert from "node:assert";
+import { createServer } from "node:http";
+import type { AddressInfo } from "node:net";
 import path from "node:path";
 
-import { planAvatarTracks } from "../../src/actions/avatar.js";
+import { avatarUrlStamp, planAvatarTracks } from "../../src/actions/avatar.js";
 import { addAvatars } from "../../src/actions/movie.js";
 import { mulmoScriptSchema } from "../../src/types/schema.js";
 import type { MulmoStudioContext, MulmoScript } from "../../src/types/index.js";
@@ -138,4 +140,40 @@ test("schema: avatar fields are optional and checked", () => {
   assert.ok(!mulmoScriptSchema.safeParse({ ...base, avatarParams: { position: { x: "1.2.3%" } } }).success);
   assert.ok(!mulmoScriptSchema.safeParse({ ...base, beats: [{ text: "hi", avatarParams: { emotion: "bored" } }] }).success);
   assert.ok(!mulmoScriptSchema.safeParse({ ...base, speechParams: { speakers: { A: { voiceId: "x", avatar: { source: "a", size: 1 } } } } }).success);
+});
+
+test("planAvatarTracks: an http(s) avatar source is kept as a URL", () => {
+  const url = "https://raw.githubusercontent.com/receptron/mulmocast-media/main/avatars/ani";
+  const context = createContext("ja");
+  const speakers = context.presentationStyle.speechParams.speakers;
+  context.presentationStyle = {
+    ...context.presentationStyle,
+    speechParams: { ...context.presentationStyle.speechParams, speakers: { ...speakers, Miko: { ...speakers.Miko, avatar: { source: url } } } },
+  };
+  assert.strictEqual(planAvatarTracks(context)[0]?.source, url);
+});
+
+test("avatarUrlStamp: the package's listings, the same for the folder and its avatar.json", async () => {
+  const files: Record<string, string> = {
+    "/ani/avatar.json": JSON.stringify({ root: "pkg", assets: { rig: "rig.json", layers: "built/layers.json", sprites: "built/sprites/sprites.json" } }),
+    "/ani/pkg/built/layers.json": JSON.stringify({ build: "1", layers: {} }),
+  };
+  const server = createServer((req, res) => {
+    const body = files[req.url ?? ""];
+    if (body === undefined) res.writeHead(404).end();
+    else res.end(body);
+  });
+  await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+  try {
+    const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}/ani`;
+    const stamp = await avatarUrlStamp(base);
+    // no sprites: null, not an error
+    assert.deepStrictEqual(stamp, [files["/ani/avatar.json"], files["/ani/pkg/built/layers.json"], null]);
+    assert.deepStrictEqual(await avatarUrlStamp(`${base}/avatar.json`), stamp);
+    // a rebuilt avatar changes the stamp, so its track renders again
+    files["/ani/pkg/built/layers.json"] = JSON.stringify({ build: "2", layers: {} });
+    assert.notDeepStrictEqual(await avatarUrlStamp(`${base}/`), stamp);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
 });

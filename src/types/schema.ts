@@ -56,7 +56,9 @@ export const avatarPositionSchema = z
 export const avatarEmotionSchema = z.enum(["neutral", "happy", "sad", "angry", "surprised", "relaxed"]);
 export const speakerAvatarSchema = z
   .object({
-    source: z.string().describe("AvatarScript avatar package (a folder with avatar.json, or a mesh-avatar-studio project), relative to the script"),
+    source: z
+      .string()
+      .describe("AvatarScript avatar package (a folder with avatar.json, or a mesh-avatar-studio project): a path relative to the script, or an http(s) URL"),
     position: avatarPositionSchema.optional(),
   })
   .strict();
