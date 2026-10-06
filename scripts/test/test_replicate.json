@@ -96,12 +96,12 @@
       }
     },
     {
-      "id": "kling-v1.6-pro",
-      "text": "kwaivgi/kling-v1.6-pro with gpt4-image",
+      "id": "kling-v2.1-start-image",
+      "text": "kwaivgi/kling-v2.1 with gpt4-image",
       "imagePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
       "moviePrompt": "a woman is walking through a busy Tokyo street at night, she is wearing dark sunglasses",
       "movieParams": {
-        "model": "kwaivgi/kling-v1.6-pro"
+        "model": "kwaivgi/kling-v2.1"
       }
     },
     {

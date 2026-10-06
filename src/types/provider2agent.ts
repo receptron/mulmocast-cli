@@ -160,7 +160,6 @@ export const provider2MovieAgent = {
       "bytedance/seedance-1-pro",
       "bytedance/seedance-2.0",
       "bytedance/seedance-2.0-fast",
-      "kwaivgi/kling-v1.6-pro",
       "kwaivgi/kling-v2.1",
       "kwaivgi/kling-v2.1-master",
       "google/veo-2",
@@ -207,20 +206,14 @@ export const provider2MovieAgent = {
         start_image: "image",
         last_image: "last_frame_image",
         audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
-        price_per_sec: 0.29,
+        price_per_sec: 0.18,
       },
       "bytedance/seedance-2.0-fast": {
         durations: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         start_image: "image",
         last_image: "last_frame_image",
         audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
-        price_per_sec: 0.22,
-      },
-      "kwaivgi/kling-v1.6-pro": {
-        durations: [5, 10],
-        start_image: "start_image",
-        audio: { mode: AUDIO_MODE_NEVER },
-        price_per_sec: 0.095,
+        price_per_sec: 0.15,
       },
       "kwaivgi/kling-v2.1": {
         durations: [5, 10],
@@ -244,7 +237,7 @@ export const provider2MovieAgent = {
         durations: [8],
         start_image: "image",
         audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
-        price_per_sec: 0.75,
+        price_per_sec: 0.2,
       },
       "google/veo-3.1": {
         durations: [4, 6, 8],
@@ -252,14 +245,14 @@ export const provider2MovieAgent = {
         last_image: "last_frame_image",
         reference_images_param: "reference_images",
         audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
-        price_per_sec: 0.75,
+        price_per_sec: 0.2,
       },
       "google/veo-3.1-fast": {
         durations: [4, 6, 8],
         start_image: "image",
         last_image: "last_frame_image",
         audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
-        price_per_sec: 0.4,
+        price_per_sec: 0.1,
       },
       "google/veo-3.1-lite": {
         durations: [4, 6, 8],
@@ -272,13 +265,13 @@ export const provider2MovieAgent = {
         durations: [8],
         start_image: "image",
         audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
-        price_per_sec: 0.4,
+        price_per_sec: 0.1,
       },
       "minimax/video-01": {
         durations: [6],
         start_image: "first_frame_image",
         audio: { mode: AUDIO_MODE_NEVER },
-        price_per_sec: 0.5,
+        price_per_sec: 0.083,
       },
       "minimax/hailuo-02": {
         durations: [6], // NOTE: 10 for only 720p
@@ -298,7 +291,7 @@ export const provider2MovieAgent = {
         start_image: "image",
         last_image: "last_frame_image",
         audio: { mode: AUDIO_MODE_OPTIONAL, param: "sound_effect_switch" },
-        price_per_sec: 0.12,
+        price_per_sec: 0.06,
       },
       "wan-video/wan-2.2-i2v-fast": {
         // No duration input: length is num_frames (default 81) / frames_per_second (default 16) ≈ 5s.
@@ -313,26 +306,26 @@ export const provider2MovieAgent = {
         durations: [5],
         start_image: undefined,
         audio: { mode: AUDIO_MODE_NEVER },
-        price_per_sec: 0.012,
+        price_per_sec: 0.01,
       },
       "xai/grok-imagine-video": {
         durations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         start_image: "image",
         audio: { mode: AUDIO_MODE_NEVER },
-        price_per_sec: 0.08,
+        price_per_sec: 0.05,
       },
       "xai/grok-imagine-r2v": {
         durations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         start_image: undefined,
         reference_images_param: "reference_images",
         audio: { mode: AUDIO_MODE_NEVER },
-        price_per_sec: 0.08,
+        price_per_sec: 0.05,
       },
       "runwayml/gen-4.5": {
         durations: [5, 10],
         start_image: "image",
         audio: { mode: AUDIO_MODE_NEVER },
-        price_per_sec: 0.25,
+        price_per_sec: 0.12,
       },
       "kwaivgi/kling-v3-omni-video": {
         durations: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
@@ -340,7 +333,7 @@ export const provider2MovieAgent = {
         last_image: "end_image",
         reference_images_param: "reference_images",
         audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
-        price_per_sec: 0.28, // 'pro' (1080p, default); 'standard' $0.168, '4k' $0.42
+        price_per_sec: 0.224,
       },
       "kwaivgi/kling-v3-video": {
         durations: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
@@ -348,7 +341,7 @@ export const provider2MovieAgent = {
         last_image: "end_image",
         reference_images_param: "reference_images",
         audio: { mode: AUDIO_MODE_OPTIONAL, param: "generate_audio" },
-        price_per_sec: 0.3,
+        price_per_sec: 0.224,
       },
       // TODO: price_per_sec for the models below is a coarse approximation.
       // Actual Replicate pricing varies by resolution / duration / quality and
@@ -358,27 +351,27 @@ export const provider2MovieAgent = {
         durations: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         start_image: "image",
         audio: { mode: AUDIO_MODE_NEVER },
-        price_per_sec: 0.05,
+        price_per_sec: 0.14,
       },
       "minimax/hailuo-2.3": {
         durations: [6, 10],
         start_image: "first_frame_image",
         audio: { mode: AUDIO_MODE_NEVER },
-        price_per_sec: 0.1,
+        price_per_sec: 0.047,
       },
       "minimax/hailuo-2.3-fast": {
         durations: [6, 10],
         start_image: "first_frame_image",
         start_image_required: true,
         audio: { mode: AUDIO_MODE_NEVER },
-        price_per_sec: 0.06,
+        price_per_sec: 0.032,
       },
       "pixverse/pixverse-v5": {
         durations: [5, 8],
         start_image: "image",
         last_image: "last_frame_image",
         audio: { mode: AUDIO_MODE_NEVER },
-        price_per_sec: 0.12,
+        price_per_sec: 0.06,
       },
       "prunaai/p-video": {
         durations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
@@ -655,7 +648,8 @@ export const gptImageOutputTokens: Record<string, { low: number; medium: number;
 // Spot-checked against replicate.com model pages on this date (seedance-1-lite, kling-v2.1, omni-human).
 // Some replicate prices vary by resolution/variant; price_per_sec holds the rate for the typical configuration
 // (e.g. seedance-1-lite at 720p, kling-v2.1 standard).
-const REPLICATE_PRICING_AS_OF = "2026-07-03";
+// Optional-audio models are priced without audio, since mulmocast generates them silent by default.
+const REPLICATE_PRICING_AS_OF = "2026-10-07";
 
 const replicateMoviePricing: Record<string, ModelPricing> = Object.fromEntries(
   Object.entries(provider2MovieAgent.replicate.modelParams).map(([model, params]) => [
@@ -711,13 +705,13 @@ export const modelPricing: Record<string, Record<string, ModelPricing>> = {
     "claude-sonnet-4-5-20250929": { unit: "tokens", inputPerMTokensUSD: 3, outputPerMTokensUSD: 15, asOf: "2026-07-03" },
   },
   elevenlabs: {
-    // https://elevenlabs.io/pricing/api ($0.10 per 1k chars for multilingual/v3, $0.05 for flash/turbo)
-    eleven_v3: { unit: "chars", perMCharsUSD: 100, asOf: "2026-07-03" },
-    eleven_multilingual_v2: { unit: "chars", perMCharsUSD: 100, asOf: "2026-07-03" },
-    eleven_turbo_v2_5: { unit: "chars", perMCharsUSD: 50, asOf: "2026-07-03" },
-    eleven_turbo_v2: { unit: "chars", perMCharsUSD: 50, asOf: "2026-07-03" },
-    eleven_flash_v2_5: { unit: "chars", perMCharsUSD: 50, asOf: "2026-07-03" },
-    eleven_flash_v2: { unit: "chars", perMCharsUSD: 50, asOf: "2026-07-03" },
+    // https://elevenlabs.io/pricing/api ($0.08 per 1k chars for multilingual/v3, $0.04 for flash/turbo)
+    eleven_v3: { unit: "chars", perMCharsUSD: 80, asOf: "2026-10-07" },
+    eleven_multilingual_v2: { unit: "chars", perMCharsUSD: 80, asOf: "2026-10-07" },
+    eleven_turbo_v2_5: { unit: "chars", perMCharsUSD: 40, asOf: "2026-10-07" },
+    eleven_turbo_v2: { unit: "chars", perMCharsUSD: 40, asOf: "2026-10-07" },
+    eleven_flash_v2_5: { unit: "chars", perMCharsUSD: 40, asOf: "2026-10-07" },
+    eleven_flash_v2: { unit: "chars", perMCharsUSD: 40, asOf: "2026-10-07" },
   },
   replicate: {
     ...replicateMoviePricing,

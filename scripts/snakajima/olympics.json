@@ -1,5 +1,7 @@
 {
-  "$mulmocast": { "version": "1.1" },
+  "$mulmocast": {
+    "version": "1.1"
+  },
   "movieParams": {
     "provider": "replicate"
   },
@@ -49,16 +51,6 @@
       "moviePrompt": "televised footage of a cat is doing an acrobatic dive into a swimming pool at the olympics, from a 10m high diving board, flips and spins",
       "movieParams": {
         "model": "bytedance/seedance-1-lite"
-      }
-    },
-    {
-      "id": "kling-v1.6-pro",
-      "text": "kwaivgi/kling-v1.6-pro",
-      "duration": 5,
-      "imagePrompt": "televised footage of a cat is ready to dive into a swimming pool at the olympics, from a 10m high diving board. No text.",
-      "moviePrompt": "televised footage of a cat is doing an acrobatic dive into a swimming pool at the olympics, from a 10m high diving board, flips and spins",
-      "movieParams": {
-        "model": "kwaivgi/kling-v1.6-pro"
       }
     },
     {
@@ -118,7 +110,7 @@
             "Prompt: televised footage of a cat is doing an acrobatic dive into a swimming pool at the olympics, from a 10m high diving board, flips and spins",
             "Tool: MulmoCast (AI-native multi-modal presentation tool, https://github.com/receptron/mulmocast-cli)",
             "Script: https://github.com/receptron/mulmocast-cli/blob/main/scripts/snakajima/olympics.json",
-            "Models: google/veo-2, pixverse/pixverse-v4.5, minimax/video-01, bytedance/seedance-1-lite, kwaivgi/kling-v1.6-pro, kwaivgi/kling-v2.1-master, bytedance/seedance-1-pro, minimax/hailuo-02, google/veo-3-fast, google/veo-3"
+            "Models: google/veo-2, pixverse/pixverse-v4.5, minimax/video-01, bytedance/seedance-1-lite, kwaivgi/kling-v2.1-master, bytedance/seedance-1-pro, minimax/hailuo-02, google/veo-3-fast, google/veo-3"
           ]
         }
       }
