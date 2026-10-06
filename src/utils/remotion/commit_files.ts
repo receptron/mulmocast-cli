@@ -32,5 +32,12 @@ export const commitFiles = (moves: FileMove[], ops: FileOps) => {
     });
     throw error;
   }
-  moves.forEach(({ to }) => ops.remove(backupPathOf(to)));
+  // The moves are committed by now; a backup that cannot be removed is a leftover, not a failed commit.
+  moves.forEach(({ to }) => {
+    try {
+      ops.remove(backupPathOf(to));
+    } catch {
+      // leave it; the next commit onto this path overwrites it
+    }
+  });
 };

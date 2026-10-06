@@ -2,8 +2,8 @@ import test from "node:test";
 import assert from "node:assert";
 import { backupPathOf, commitFiles, FileMove, FileOps } from "../../src/utils/remotion/commit_files.js";
 
-// An in-memory file system whose Nth rename throws, so every point of failure can be exercised.
-const memoryFs = (initial: Record<string, string>, failOnRename?: number) => {
+// An in-memory file system whose Nth rename (or every remove) throws, so every point of failure can be exercised.
+const memoryFs = (initial: Record<string, string>, failOnRename?: number, failOnRemove = false) => {
   const files = new Map(Object.entries(initial));
   const renames = { count: 0 };
   const ops: FileOps = {
@@ -17,6 +17,7 @@ const memoryFs = (initial: Record<string, string>, failOnRename?: number) => {
       files.set(to, content);
     },
     remove: (file) => {
+      if (failOnRemove) throw new Error(`remove ${file} failed`);
       files.delete(file);
     },
   };
@@ -58,4 +59,12 @@ test("commitFiles: no moves is a no-op", () => {
   commitFiles([], ops);
   assert.deepStrictEqual(Object.fromEntries(files), before);
   assert.strictEqual(renames.count, 0);
+});
+
+test("commitFiles: a backup that cannot be removed does not turn a committed swap into a failure", () => {
+  const { files, ops } = memoryFs(before, undefined, true);
+  assert.doesNotThrow(() => commitFiles(moves, ops));
+  assert.strictEqual(files.get("/v.mp4"), "new video");
+  assert.strictEqual(files.get("/s.png"), "new still");
+  assert.strictEqual(files.get("/c.tsx"), "new code");
 });
