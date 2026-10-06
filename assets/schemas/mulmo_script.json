@@ -125,7 +125,7 @@
                 "properties": {
                   "source": {
                     "type": "string",
-                    "description": "AvatarScript avatar package (a folder with avatar.json, or a mesh-avatar-studio project), relative to the script"
+                    "description": "AvatarScript avatar package (a folder with avatar.json, or a mesh-avatar-studio project): a path relative to the script, or an http(s) URL"
                   },
                   "position": {
                     "type": "object",
@@ -226,7 +226,7 @@
                       "properties": {
                         "source": {
                           "type": "string",
-                          "description": "AvatarScript avatar package (a folder with avatar.json, or a mesh-avatar-studio project), relative to the script"
+                          "description": "AvatarScript avatar package (a folder with avatar.json, or a mesh-avatar-studio project): a path relative to the script, or an http(s) URL"
                         },
                         "position": {
                           "type": "object",

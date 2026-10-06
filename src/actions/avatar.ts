@@ -8,7 +8,7 @@ import { GraphAILogger } from "graphai";
 import type { MulmoAvatarPosition, MulmoAvatarTrack, MulmoStudioContext, MulmoSpeakerAvatar } from "../types/index.js";
 import { MulmoPresentationStyleMethods, MulmoStudioContextMethods } from "../methods/index.js";
 import { getFullPath, getOutputStudioFilePath } from "../utils/file.js";
-import { localizedText } from "../utils/utils.js";
+import { isHttp, localizedText } from "../utils/utils.js";
 
 const DEFAULT_POSITION = { x: "84%", y: "100%", scale: "62%" };
 // Show the whole avatar image. A rig may crop the top of its image (a flat cut edge, hidden when the
@@ -30,7 +30,7 @@ export type AvatarPlacementPlan = { start: number; end: number; position: Requir
 
 export type AvatarTrackPlan = {
   speakerId: string;
-  /** absolute path of the avatar package */
+  /** the avatar package: an absolute path, or an http(s) URL */
   source: string;
   segments: AvatarSegmentPlan[];
   /** where the avatar is shown, beat by beat; it is not shown outside these */
@@ -74,7 +74,7 @@ export const planAvatarTracks = (context: MulmoStudioContext): AvatarTrackPlan[]
     tracks.set(found.speakerId, {
       speakerId: found.speakerId,
       avatar: found.avatar,
-      source: getFullPath(context.fileDirs.mulmoFileDirPath, found.avatar.source),
+      source: isHttp(found.avatar.source) ? found.avatar.source : getFullPath(context.fileDirs.mulmoFileDirPath, found.avatar.source),
       segments: [],
       placements: [],
       duration,
@@ -141,6 +141,58 @@ const folderStamp = (dir: string) => {
     .map((file) => [path.relative(dir, file), fileStamp(file)]);
 };
 
+// An avatar at a URL: its small JSON files (avatar.json, the rig, layers.json, sprites.json) change
+// whenever the avatar is edited or rebuilt, so they stand in for the files' stamps. They are fetched
+// on every run; avatarscript caches the images.
+// Redirects are followed only within the same origin, so a public host cannot send these requests
+// to another one (an internal service, say). GitHub's github.com/…/raw/… links redirect to
+// raw.githubusercontent.com: use the latter.
+const MAX_REDIRECTS = 5;
+const fetchSameOrigin = async (url: URL) => {
+  let location = url;
+  for (let hops = 0; hops <= MAX_REDIRECTS; hops++) {
+    const response = await fetch(location, { redirect: "manual", signal: AbortSignal.timeout(60_000) });
+    const next = response.status >= 300 && response.status < 400 ? response.headers.get("location") : null;
+    if (!next) return response;
+    const target = new URL(next, location);
+    if (target.origin !== url.origin) throw new Error(`avatar: ${url.href} redirects to another host (${target.origin}); use the final URL`);
+    location = target;
+  }
+  throw new Error(`avatar: ${url.href}: too many redirects`);
+};
+const fetchText = async (url: URL) => {
+  const response = await fetchSameOrigin(url);
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error(`avatar: ${url.href}: HTTP ${response.status}`);
+  return response.text();
+};
+export const avatarUrlStamp = async (source: string) => {
+  const url = new URL(source);
+  const folder = new URL(url);
+  folder.pathname = url.pathname.endsWith("/avatar.json") ? url.pathname.slice(0, -"avatar.json".length) : url.pathname.replace(/\/?$/, "/");
+  // the source's query (a version, a signature) goes with every file that has no query of its own
+  // like avatarscript, fetch only files inside the package's folder (no "../", no other host)
+  const at = (file: string, base: URL) => {
+    const location = new URL(file, base);
+    if (location.origin !== folder.origin || !location.pathname.startsWith(folder.pathname)) {
+      throw new Error(`avatar: ${file} is outside the avatar package ${folder.href}`);
+    }
+    if (!location.search) location.search = url.search;
+    return location;
+  };
+  const manifestText = await fetchText(at("avatar.json", folder));
+  const manifest = manifestText ? (JSON.parse(manifestText) as { root?: string; assets?: { rig?: string; layers?: string; sprites?: string } }) : undefined;
+  const root = at((manifest?.root ?? ".").replace(/\/?$/, "/"), folder);
+  // as avatarscript: a manifest names its files (sprites are optional); without one, a
+  // mesh-avatar-studio project's default paths
+  const assets = manifest ? (manifest.assets ?? {}) : { rig: "rig.json", layers: "built/layers.json", sprites: "built/sprites/sprites.json" };
+  const files = [assets.rig, assets.layers, assets.sprites];
+  // every location is checked before anything is fetched
+  const locations = files.map((file) => (file === undefined ? undefined : at(file, root)));
+  return [manifestText, ...(await Promise.all(locations.map((location) => (location ? fetchText(location) : null))))];
+};
+const sourceStamp = (source: string) => (isHttp(source) ? avatarUrlStamp(source) : folderStamp(source));
+
 const even = (n: number) => Math.max(2, Math.round(n / 2) * 2); // video codecs need even sizes
 
 /** Renders one track (or reuses it), returning where it goes on the canvas. */
@@ -153,7 +205,7 @@ const renderAvatarTrack = async (
   // rendered once, at the largest size it is shown; smaller placements scale it down
   const height = even(Math.max(...plan.placements.map((p) => percent(p.position.scale, canvas.height))));
   const segments = plan.segments.map((segment) => ({ ...segment, audioStamp: fileStamp(segment.audio) }));
-  const identity = { version: 4, segments, source: plan.source, sourceStamp: folderStamp(plan.source), duration: plan.duration, height, padTop: PAD_TOP };
+  const identity = { version: 4, segments, source: plan.source, sourceStamp: await sourceStamp(plan.source), duration: plan.duration, height, padTop: PAD_TOP };
   const hash = createHash("sha256").update(JSON.stringify(identity)).digest("hex").slice(0, 12);
   const dir = MulmoStudioContextMethods.getImageProjectDirPath(context);
   const name = `avatar_${plan.speakerId.replace(/[^\w-]/g, "_")}_${hash}`;

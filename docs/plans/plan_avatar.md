@@ -19,25 +19,28 @@ Everything is optional; a script without `avatar` renders exactly as before.
   "avatarParams": { "position": { "x": "84%", "y": "100%", "scale": "62%" } },   // script defaults
   "speechParams": {
     "speakers": {
-      "Miko": {
+      "Ani": {
         "provider": "openai", "voiceId": "coral",
-        "avatar": { "source": "./avatars/miko-qipao" }        // the avatar this speaker speaks with
+        "avatar": { "source": "./avatars/ani" }        // the avatar this speaker speaks with (a path or a URL)
       }
     }
   },
   "beats": [
     {
-      "speaker": "Miko", "text": "みなさん、こんにちは！",
+      "speaker": "Ani", "text": "みなさん、こんにちは！",
       "image": { "type": "markdown", "markdown": ["# Hello"] },
       "avatarParams": { "emotion": "happy", "motions": [{ "motion": "nod", "at": "こんにちは" }] }
     },
-    { "speaker": "Miko", "text": "…", "avatarParams": { "position": { "x": "18%", "scale": "48%" } } }
+    { "speaker": "Ani", "text": "…", "avatarParams": { "position": { "x": "18%", "scale": "48%" } } }
   ]
 }
 ```
 
 - `speakers.<name>.avatar` — `{ source, position? }`. `source` is an AvatarScript avatar package
-  (a folder with `avatar.json`, or a mesh-avatar-studio project), relative to the script file.
+  (a folder with `avatar.json`, or a mesh-avatar-studio project): a path relative to the script file,
+  or an http(s) URL of the package folder or its `avatar.json`, for example
+  `https://raw.githubusercontent.com/receptron/mulmocast-media/main/avatars/ani` (avatarscript ≥ 0.3.2
+  fetches it and caches its images in `~/.cache/avatarscript/avatars/`).
   A `lang` override of the speaker keeps the base speaker's avatar unless it names its own.
 - `avatarParams` — on the script (defaults) and on a beat (overrides):
   - `position`: `x` (horizontal centre, % of canvas width, default `84%`), `y` (bottom edge, % of
@@ -48,6 +51,10 @@ Everything is optional; a script without `avatar` renders exactly as before.
   - `emotion`: `neutral | happy | sad | angry | surprised | relaxed`, for the beat.
   - `motions`: `[{ motion, at? }]`; `at` names words of the beat's text where the motion starts.
   - `hidden`: hide this speaker's avatar during the beat.
+
+Sample: `scripts/test/test_avatar.json` (Ani, a tsundere narrator with Gemini TTS) loads the avatar
+`ani` by URL from [mulmocast-media](https://github.com/receptron/mulmocast-media/tree/main/avatars)
+(© 2026 receptron, MIT License).
 
 ## Rendering
 
@@ -62,7 +69,9 @@ Everything is optional; a script without `avatar` renders exactly as before.
 - Output: `<imageProjectDir>/avatar_<speaker>_<hash>.webm` (VP9 with alpha), rendered once at the
   largest size the avatar is shown, cached by a hash of everything that changes the picture — the
   segments, the size and modification time of each beat's audio and of every file in the avatar
-  package, the duration and the height; `-f` re-renders. Next to it, `avatar_<speaker>_<hash>.json`
+  package (for an avatar at a URL: its JSON listings — `avatar.json`, `layers.json`, `sprites.json` —
+  fetched on every run, which change when the avatar is rebuilt), the duration and the height; `-f`
+  re-renders. Next to it, `avatar_<speaker>_<hash>.json`
   keeps the avatar's aspect ratio, so reusing a cached track needs neither `avatarscript` nor
   `onnxruntime-node`. Recorded in `studio.avatarTracks`: the file, its size, and its placements — absolute
   `[start, end)` stretches with a place and size each (none during hidden beats).
