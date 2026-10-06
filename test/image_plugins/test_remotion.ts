@@ -30,7 +30,7 @@ const remotionBeat = (fps?: number): MulmoBeat => ({ text: "", image: { type: "r
 
 type ReviewReply = string | undefined | Error;
 
-const makeFakes = (options: { replies?: string[]; renderFailures?: number; reviews?: ReviewReply[]; failingCode?: string } = {}) => {
+const makeFakes = (options: { replies?: string[]; renderFailures?: number; reviews?: ReviewReply[]; failingCode?: string; missingPackages?: boolean } = {}) => {
   const replies = [...(options.replies ?? [componentA])];
   const reviews = [...(options.reviews ?? [])];
   const prompts: string[] = [];
@@ -39,6 +39,9 @@ const makeFakes = (options: { replies?: string[]; renderFailures?: number; revie
   const renderedCode: string[] = [];
   const failuresLeft = { count: options.renderFailures ?? 0 };
   const deps: RemotionDeps = {
+    ensurePackages: () => {
+      if (options.missingPackages) throw new Error("The remotion beat needs packages that are not installed (three)");
+    },
     writeComponent: async (prompt) => {
       prompts.push(prompt);
       return replies.shift() ?? componentA;
@@ -281,4 +284,10 @@ test("remotion process: a beat in the script is told its position", async () => 
   context.studio.script.beats.push(...beats);
   await createRemotionProcess(deps)(makeParams(imagePath, beats[1], { beatDuration: 2, context }));
   assert.ok(prompts[0].includes("This is scene 2 of 3."));
+});
+
+test("remotion process: missing packages stop the beat before claude is asked anything", async () => {
+  const { deps, prompts, renders } = makeFakes({ missingPackages: true });
+  await assert.rejects(createRemotionProcess(deps)(makeParams(makeTmpImagePath(), remotionBeat(), { beatDuration: 2 })), /not installed \(three\)/);
+  assert.strictEqual(prompts.length + renders.length, 0);
 });

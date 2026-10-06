@@ -12,7 +12,7 @@ import {
   remotionCacheKey,
 } from "../remotion/claude_prompt.js";
 import { ComponentReviewer, ComponentWriter, reviewComponentWithClaude, writeComponentWithClaude } from "../remotion/claude_runner.js";
-import { RemotionSceneProps, SceneRenderer, renderRemotionScene } from "../remotion/render.js";
+import { RemotionSceneProps, SceneRenderer, ensureRemotionPackages, renderRemotionScene } from "../remotion/render.js";
 import { parrotingImagePath } from "./utils.js";
 
 export const imageType = ImageMediaType.Remotion;
@@ -24,7 +24,12 @@ const MAX_REPAIR_ATTEMPTS = 2;
 const STILL_ONLY_DURATION_SEC = 10;
 const REVIEW_FRACTIONS = [0.3, 0.6, 0.95];
 
-export type RemotionDeps = { writeComponent: ComponentWriter; reviewComponent: ComponentReviewer; renderScene: SceneRenderer };
+export type RemotionDeps = {
+  ensurePackages: () => void;
+  writeComponent: ComponentWriter;
+  reviewComponent: ComponentReviewer;
+  renderScene: SceneRenderer;
+};
 
 type SceneJob = { spec: RemotionSceneSpec; workDir: string; codePath: string; props: RemotionSceneProps; videoPath?: string; stillPath: string };
 type ReviewStill = ReviewFrame & { frame: number };
@@ -131,6 +136,7 @@ export const createRemotionProcess = (deps: RemotionDeps) => async (params: Imag
   if (!beat.image || beat.image.type !== imageType) return;
 
   const job = buildJob(params, beat.image.prompt, beat.image.fps ?? DEFAULT_FPS);
+  deps.ensurePackages();
   fs.mkdirSync(job.workDir, { recursive: true });
   const { code, isNew } = await loadOrWriteComponent(job, context.force, deps);
   if (isNew) {
@@ -144,6 +150,7 @@ export const createRemotionProcess = (deps: RemotionDeps) => async (params: Imag
 };
 
 export const process = createRemotionProcess({
+  ensurePackages: ensureRemotionPackages,
   writeComponent: writeComponentWithClaude,
   reviewComponent: reviewComponentWithClaude,
   renderScene: renderRemotionScene,

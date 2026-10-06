@@ -16,7 +16,9 @@ export type RemotionSceneSpec = {
 };
 
 // No user/project settings: the reply depends only on these prompts, and hooks, plugins and MCP
-// servers neither run nor add their context to every call. Writing needs no tools; review reads images.
+// servers neither run nor add their context to every call. Writing needs no tools; review reads images,
+// and --restricted keeps that Read inside the beat's work directory — a script's prompt cannot point it
+// at other files.
 export const buildClaudeArgs = (userPrompt: string, systemPrompt: string = REMOTION_SYSTEM_PROMPT, tools: string = ""): string[] => [
   "-p",
   userPrompt,
@@ -28,6 +30,7 @@ export const buildClaudeArgs = (userPrompt: string, systemPrompt: string = REMOT
   "--setting-sources",
   "",
   "--strict-mcp-config",
+  "--restricted",
   "--output-format",
   "json",
   "--no-session-persistence",

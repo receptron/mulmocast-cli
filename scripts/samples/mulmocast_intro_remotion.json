@@ -4,7 +4,7 @@
   },
   "lang": "ja",
   "title": "MulmoCast — 台本ひとつから、動画まで",
-  "description": "Every scene is a remotion beat: Claude Code (claude -p) writes each one as a Remotion component from the prompt and the narration. Needs Claude Code logged in and: npm install remotion @remotion/bundler @remotion/renderer react react-dom",
+  "description": "Every scene is a remotion beat: Claude Code (claude -p) writes each one as a Remotion component from the prompt and the narration. Needs Claude Code installed and logged in, and the optional packages listed in docs/remotion.md.",
   "canvasSize": {
     "width": 1920,
     "height": 1080

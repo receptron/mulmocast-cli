@@ -2,8 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
 import { REMOTION_COMPOSITION_ID, REMOTION_ENTRY_FILE, buildEntrySource } from "./claude_prompt.js";
-
-const REMOTION_PACKAGES = "remotion @remotion/bundler @remotion/renderer react react-dom";
+import { missingRemotionPackages, remotionInstallCommand } from "./packages.js";
 
 // WebGL (three.js scenes) needs the ANGLE backend; the default one cannot create a context headless.
 const CHROMIUM_OPTIONS = { gl: "angle" } as const;
@@ -25,7 +24,26 @@ const loadRemotion = async () => {
     const [bundler, renderer] = await Promise.all([import("@remotion/bundler"), import("@remotion/renderer")]);
     return { bundle: bundler.bundle, renderer };
   } catch (error) {
-    throw new Error(`The remotion beat needs these packages: npm install ${REMOTION_PACKAGES}`, { cause: error });
+    throw new Error(`The remotion beat needs these packages: ${remotionInstallCommand()}`, { cause: error });
+  }
+};
+
+// A package that hides its package.json (three does) is still installed; only "not found" means missing.
+const isPackageInstalled = (name: string) => {
+  try {
+    createRequire(import.meta.url).resolve(`${name}/package.json`);
+    return true;
+  } catch (error) {
+    return !(error instanceof Error && "code" in error && error.code === "MODULE_NOT_FOUND");
+  }
+};
+
+// Checked before asking claude -p for a component: a generated import of a missing optional peer
+// would otherwise surface as an opaque bundling error after the generation was already paid for.
+export const ensureRemotionPackages = () => {
+  const missing = missingRemotionPackages(isPackageInstalled);
+  if (missing.length > 0) {
+    throw new Error(`The remotion beat needs packages that are not installed (${missing.join(", ")}). Install them with: ${remotionInstallCommand()}`);
   }
 };
 

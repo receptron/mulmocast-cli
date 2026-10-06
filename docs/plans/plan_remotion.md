@@ -36,9 +36,9 @@ MulmoCast renders that component to the beat's video.
 
 ## Dependencies
 
-`remotion`, `@remotion/bundler`, `@remotion/renderer`, `react`, `react-dom`: optional peer dependencies and
-devDependencies, loaded by dynamic import only when a `remotion` beat renders. Without them the beat fails
-with the install command.
+Every package in `src/utils/remotion/packages.ts` is an optional peer dependency and a devDependency, loaded
+by dynamic import only when a `remotion` beat renders. A missing one stops the beat before `claude -p` is called,
+with the install command built from that list.
 
 ## Not in this change
 

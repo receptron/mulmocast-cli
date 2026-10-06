@@ -24,6 +24,7 @@ test("buildClaudeArgs: prompt follows -p, no tools, no user settings, json outpu
   assert.strictEqual(args[args.indexOf("--output-format") + 1], "json");
   assert.strictEqual(args[args.indexOf("--system-prompt") + 1], REMOTION_SYSTEM_PROMPT);
   assert.ok(args.includes("--strict-mcp-config"));
+  assert.ok(args.includes("--restricted"));
   assert.ok(args.includes("--no-session-persistence"));
 });
 

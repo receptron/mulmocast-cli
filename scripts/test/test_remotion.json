@@ -1,11 +1,19 @@
 {
-  "$mulmocast": { "version": "1.1" },
+  "$mulmocast": {
+    "version": "1.1"
+  },
   "lang": "ja",
   "title": "Remotion beat sample",
-  "description": "Each beat's scene is written by Claude Code (claude -p) as a Remotion component. Needs Claude Code installed and logged in, and: npm install remotion @remotion/bundler @remotion/renderer react react-dom",
+  "description": "Each beat's scene is written by Claude Code (claude -p) as a Remotion component. Needs Claude Code installed and logged in, and the optional packages listed in docs/remotion.md.",
   "speechParams": {
     "speakers": {
-      "Presenter": { "provider": "openai", "voiceId": "shimmer", "displayName": { "ja": "プレゼンター" } }
+      "Presenter": {
+        "provider": "openai",
+        "voiceId": "shimmer",
+        "displayName": {
+          "ja": "プレゼンター"
+        }
+      }
     }
   },
   "beats": [

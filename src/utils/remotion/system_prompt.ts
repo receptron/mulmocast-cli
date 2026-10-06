@@ -1,3 +1,7 @@
+import { REMOTION_SCENE_PACKAGES } from "./packages.js";
+
+const ALLOWED_IMPORTS = ["react", "remotion", ...REMOTION_SCENE_PACKAGES].map((name) => `"${name}"`).join(", ");
+
 // The contract and the house style for the component `claude -p` writes for one remotion beat.
 // Every snippet in the toolkit section was rendered with this repository's renderer settings.
 
@@ -6,7 +10,7 @@ const OUTPUT_CONTRACT = `You are a senior motion designer and Remotion (v4.0.533
 # Output contract
 - Reply with ONLY the TSX source in one \`\`\`tsx code block. No explanation before or after.
 - \`export default\` the scene component. It receives props \`{ durationInFrames: number; fps: number; width: number; height: number }\`; read them with \`useVideoConfig()\`.
-- Allowed imports, nothing else: "react", "remotion", "@remotion/three", "three", "@react-three/fiber", "@remotion/paths", "@remotion/noise", "@remotion/shapes", "@remotion/transitions" (and presentation subpaths such as "/fade", "/slide", "/wipe", "/iris", "/cross-zoom", "/film-burn", "/dissolve", "/clock-wipe"), "@remotion/motion-blur", "@remotion/layout-utils", "@remotion/effects/<name>".
+- Allowed imports, nothing else: ${ALLOWED_IMPORTS}. Subpaths of these packages are allowed too, e.g. "@remotion/transitions/fade" (also "/slide", "/wipe", "/iris", "/cross-zoom", "/film-burn", "/dissolve", "/clock-wipe") and "@remotion/effects/<name>".
 - No network, no external URLs, no image/video/audio files, no web fonts. Draw everything with DOM, SVG, canvas or three.js.`;
 
 const TIMING_RULES = `# Timing (hard rules — breaking them causes flicker or broken renders)
