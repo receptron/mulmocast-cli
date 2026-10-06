@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.13.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.13.0) (2026-10-06)
+
+- **`remotion` beat type** (#1593): describe a scene in words (`image: { type: "remotion", prompt, fps? }`); Claude Code (`claude -p`) writes it as a Remotion component, which is cached, rendered to the beat's video (plus a final-frame still), repaired on render errors and checked once visually. `remotionParams.brief` gives every scene the same art direction. three.js, SVG paths, noise and `@remotion/effects` are available. Needs Claude Code logged in and the optional packages listed in `docs/remotion.md`. Sample: `scripts/samples/mulmocast_intro_remotion.json`
+- **Talking avatars** (#1589): a speaker can carry an AvatarScript avatar that speaks its lines with lip sync over the slides (`speakers.<name>.avatar`, `avatarParams`); new `avatar` step in `audio → images → captions → avatar → movie`. `avatarscript` / `onnxruntime-node` are optional peers
+- **Animated `html_tailwind` without a known duration** no longer records an `.mp4` it does not write; the studio state points at the still only (#1593)
+- **Plan for text-based slide i18n** (#1473, docs only)
+- **Dependency updates** (#1588, #1595) and Dependabot bumps: `undici` 7.30.0 (#1584), `ip-address` 10.7.2 (#1585), `@grpc/grpc-js` 1.14.5 (#1586), `source-map-js` 1.2.2 (#1590), `proxy-addr` 2.0.8 (#1591)
+
+📦 **npm**: [`mulmocast@2.13.0`](https://www.npmjs.com/package/mulmocast/v/2.13.0), [`@mulmocast/types@2.13.0`](https://www.npmjs.com/package/@mulmocast/types/v/2.13.0)
+
 ## [2.12.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.12.1) (2026-09-25)
 
 - **Dependency updates** (#1574, #1580, #1581): `zod` ^4.6.5, `puppeteer` ^25.11.0, `@mulmocast/deck` ^2.0.2, `marked`, `yaml`, `@inquirer/*`, `@tavily/core`, plus dev tooling (`eslint`, `eslint-plugin-sonarjs`, `prettier`, `typescript-eslint`, `tsx`)
