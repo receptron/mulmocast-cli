@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert";
 import { imageGenAIAgent, buildDeprecatedGoogleImageModelMessage } from "../../src/agents/image_genai_agent.js";
+import { isGeminiImageModel, provider2ImageAgent } from "../../src/types/provider2agent.js";
 import { agentCallContext } from "../fixtures.js";
 
 const baseParams = { ...agentCallContext, config: { apiKey: "fake-key-not-used" } };
@@ -11,7 +12,7 @@ test("buildDeprecatedGoogleImageModelMessage returns hint for imagen-3.0-generat
   const message = buildDeprecatedGoogleImageModelMessage("imagen-3.0-generate-002");
   assert.ok(message);
   assert.match(message, /imagen-3\.0-generate-002.*no longer available/);
-  assert.match(message, /gemini-2\.5-flash-image|gemini-3-pro-image-preview/);
+  assert.match(message, /gemini-3\.1-flash-lite-image|gemini-3-pro-image/);
 });
 
 test("buildDeprecatedGoogleImageModelMessage returns hint for all imagen-4 GA variants", () => {
@@ -65,5 +66,12 @@ test("imageGenAIAgent rejects deprecated imagen-3.0-generate-002 before calling 
       }),
     (err: Error) => /imagen-3\.0-generate-002.*no longer available/.test(err.message),
     "expected upfront deprecation rejection without an API call",
+  );
+});
+
+test("isGeminiImageModel: every Gemini image model the provider lists goes through generateContent", () => {
+  provider2ImageAgent.google.models.forEach((model) => assert.strictEqual(isGeminiImageModel(model), true, model));
+  ["imagen-4.0-generate-001", "imagen-3.0-generate-002", "nano-banana-pro-preview", ""].forEach((model) =>
+    assert.strictEqual(isGeminiImageModel(model), false, model),
   );
 });

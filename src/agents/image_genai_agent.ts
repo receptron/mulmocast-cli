@@ -5,6 +5,7 @@ import {
   provider2ImageAgent,
   deprecatedGoogleImageModelHints,
   vertexAIGlobalOnlyImageModels,
+  isGeminiImageModel,
   type DeprecatedGoogleImageModel,
 } from "../types/provider2agent.js";
 import {
@@ -134,7 +135,7 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
         return new GoogleGenAI({ apiKey, httpOptions: { timeout: GENAI_REQUEST_TIMEOUT_MS } });
       })();
 
-  if (model === "gemini-2.5-flash-image" || model === "gemini-3.1-flash-image-preview" || model === "gemini-3-pro-image-preview") {
+  if (isGeminiImageModel(model)) {
     const contentParams = (() => {
       const contents = getGeminiContents(prompt, referenceImages);
       return {

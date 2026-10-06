@@ -17,9 +17,10 @@ export const provider2TTSAgent = {
   gemini: {
     agentName: "ttsGeminiAgent",
     hasLimitedConcurrency: false,
-    defaultModel: "gemini-2.5-flash-preview-tts",
+    // The 2.5 preview TTS models shut down on 2026-11-17; Google names gemini-3.8-flash-tts as their successor.
+    defaultModel: "gemini-3.8-flash-tts",
     defaultVoice: "Kore",
-    models: ["gemini-2.5-flash-preview-tts", "gemini-2.5-pro-preview-tts"],
+    models: ["gemini-3.8-flash-tts", "gemini-3.8-flash-lite-tts", "gemini-2.5-flash-preview-tts", "gemini-2.5-pro-preview-tts"],
     keyName: "GEMINI_API_KEY",
   },
   elevenlabs: {
@@ -57,7 +58,7 @@ export const deprecatedOpenAIImageModelHints = {
 
 export type DeprecatedOpenAIImageModel = keyof typeof deprecatedOpenAIImageModelHints;
 
-const supportedGoogleImageReplacementHint = "Use 'gemini-2.5-flash-image' or 'gemini-3-pro-image-preview' instead.";
+const supportedGoogleImageReplacementHint = "Use 'gemini-3.1-flash-lite-image' or 'gemini-3-pro-image' instead.";
 
 export const deprecatedGoogleImageModelHints = {
   "imagen-3.0-generate-002": supportedGoogleImageReplacementHint,
@@ -69,6 +70,9 @@ export const deprecatedGoogleImageModelHints = {
 } as const satisfies Record<string, string>;
 
 export type DeprecatedGoogleImageModel = keyof typeof deprecatedGoogleImageModelHints;
+
+// Gemini image models are called through generateContent; anything else is treated as an Imagen model (generateImages).
+export const isGeminiImageModel = (model: string): boolean => model.startsWith("gemini-");
 
 // Google image models that on Vertex AI are only published under location "global"
 // (regional endpoints like us-central1 return 404 NOT_FOUND).
@@ -92,8 +96,16 @@ export const provider2ImageAgent = {
   },
   google: {
     agentName: "imageGenAIAgent",
-    defaultModel: "gemini-2.5-flash-image",
-    models: ["gemini-2.5-flash-image", "gemini-3.1-flash-image-preview", "gemini-3-pro-image-preview"],
+    // gemini-2.5-flash-image is deprecated; Google names gemini-3.1-flash-lite-image as its successor.
+    defaultModel: "gemini-3.1-flash-lite-image",
+    models: [
+      "gemini-3.1-flash-lite-image",
+      "gemini-3.1-flash-image",
+      "gemini-3-pro-image",
+      "gemini-2.5-flash-image",
+      "gemini-3.1-flash-image-preview",
+      "gemini-3-pro-image-preview",
+    ],
     keyName: "GEMINI_API_KEY",
   },
   replicate: {
@@ -398,8 +410,9 @@ export const provider2MovieAgent = {
   },
   google: {
     agentName: "movieGenAIAgent",
-    defaultModel: "veo-2.0-generate-001",
-    models: ["veo-2.0-generate-001", "veo-3.0-generate-001", "veo-3.1-generate-preview", "veo-3.1-lite-generate-preview"],
+    // veo-2.0 and veo-3.0 were shut down on 2026-06-30; the Gemini API now lists only the Veo 3.1 previews.
+    defaultModel: "veo-3.1-generate-preview",
+    models: ["veo-3.1-generate-preview", "veo-3.1-lite-generate-preview"],
     keyName: "GEMINI_API_KEY",
     modelParams: {
       "veo-3.1-lite-generate-preview": {
@@ -417,22 +430,6 @@ export const provider2MovieAgent = {
         supportsReferenceImages: true,
         supportsPersonGeneration: false,
         audio: { mode: AUDIO_MODE_ALWAYS },
-      },
-      "veo-3.0-generate-001": {
-        durations: [8],
-        supportsDuration: false, // Veo 3.0 always generates 8s
-        supportsLastFrame: false,
-        supportsReferenceImages: false,
-        supportsPersonGeneration: false,
-        audio: { mode: AUDIO_MODE_ALWAYS },
-      },
-      "veo-2.0-generate-001": {
-        durations: [5, 6, 8],
-        supportsDuration: true,
-        supportsLastFrame: false, // Vertex AI only
-        supportsReferenceImages: false,
-        supportsPersonGeneration: true,
-        audio: { mode: AUDIO_MODE_NEVER },
       },
     } as Record<string, GoogleMovieModelParams>,
   },
@@ -543,9 +540,10 @@ export const provider2LLMAgent = {
   },
   gemini: {
     agentName: "geminiAgent",
-    defaultModel: "gemini-2.5-flash",
+    // Google limits the 2.5 models to users who have used them before and recommends 3.8 Flash.
+    defaultModel: "gemini-3.8-flash",
     max_tokens: 8192,
-    models: ["gemini-3.1-pro-preview", "gemini-3-flash-preview", "gemini-2.5-pro", "gemini-2.5-flash", "gemini-2.5-flash-lite"],
+    models: ["gemini-3.8-flash", "gemini-3.1-pro-preview", "gemini-3-flash-preview", "gemini-2.5-pro", "gemini-2.5-flash", "gemini-2.5-flash-lite"],
     keyName: "GEMINI_API_KEY",
   },
   groq: {
@@ -690,10 +688,14 @@ export const modelPricing: Record<string, Record<string, ModelPricing>> = {
     // https://ai.google.dev/gemini-api/docs/pricing
     "gemini-2.5-flash-preview-tts": { unit: "tokens", inputPerMTokensUSD: 0.5, outputPerMTokensUSD: 10, asOf: "2026-07-03" },
     "gemini-2.5-pro-preview-tts": { unit: "tokens", inputPerMTokensUSD: 1, outputPerMTokensUSD: 20, asOf: "2026-07-03" },
+    // through 2026-12-31; $1 / $18 from 2027-01-01
+    "gemini-3.8-flash-tts": { unit: "tokens", inputPerMTokensUSD: 0.5, outputPerMTokensUSD: 9, asOf: "2026-10-07" },
   },
   google: {
     // https://ai.google.dev/gemini-api/docs/pricing ($0.039/image ≒ 1290 output tokens at $30/1M)
     "gemini-2.5-flash-image": { unit: "images", inputPerMTokensUSD: 0.3, perImageUSD: 0.039, asOf: "2026-07-03" },
+    // $0.0336 per 1K-resolution image
+    "gemini-3.1-flash-lite-image": { unit: "images", inputPerMTokensUSD: 0.25, perImageUSD: 0.0336, asOf: "2026-10-07" },
     // Veo per second of generated video (720p). veo-2.0-generate-001 and veo-3.0-generate-001
     // were shut down on 2026-06-30, so they intentionally have no price.
     "veo-3.1-generate-preview": { unit: "seconds", perSecUSD: 0.4, asOf: "2026-07-03" },
