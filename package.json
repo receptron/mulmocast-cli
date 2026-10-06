@@ -125,7 +125,18 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@react-three/fiber": "^9.8.1",
     "@receptron/test_utils": "^2.0.3",
+    "@remotion/bundler": "^4.0.533",
+    "@remotion/effects": "^4.0.533",
+    "@remotion/layout-utils": "^4.0.533",
+    "@remotion/motion-blur": "^4.0.533",
+    "@remotion/noise": "^4.0.533",
+    "@remotion/paths": "^4.0.533",
+    "@remotion/renderer": "^4.0.533",
+    "@remotion/shapes": "^4.0.533",
+    "@remotion/three": "^4.0.533",
+    "@remotion/transitions": "^4.0.533",
     "@types/archiver": "^8.0.0",
     "@types/jsdom": "^28.0.3",
     "@types/node": "^26.6.4",
@@ -140,19 +151,83 @@
     "eslint-plugin-sonarjs": "^4.2.2",
     "globals": "^17.13.0",
     "prettier": "^3.9.9",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "remotion": "^4.0.533",
+    "three": "^0.186.1",
     "tsx": "^4.23.15",
     "typescript": "6.0.3",
     "typescript-eslint": "^8.71.0"
   },
   "peerDependencies": {
+    "@react-three/fiber": "^9.8.1",
+    "@remotion/bundler": "^4.0.533",
+    "@remotion/effects": "^4.0.533",
+    "@remotion/layout-utils": "^4.0.533",
+    "@remotion/motion-blur": "^4.0.533",
+    "@remotion/noise": "^4.0.533",
+    "@remotion/paths": "^4.0.533",
+    "@remotion/renderer": "^4.0.533",
+    "@remotion/shapes": "^4.0.533",
+    "@remotion/three": "^4.0.533",
+    "@remotion/transitions": "^4.0.533",
     "avatarscript": "^0.2.1",
-    "onnxruntime-node": "^1.30.0"
+    "onnxruntime-node": "^1.30.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "remotion": "^4.0.533",
+    "three": "^0.186.1"
   },
   "peerDependenciesMeta": {
+    "@react-three/fiber": {
+      "optional": true
+    },
+    "@remotion/bundler": {
+      "optional": true
+    },
+    "@remotion/effects": {
+      "optional": true
+    },
+    "@remotion/layout-utils": {
+      "optional": true
+    },
+    "@remotion/motion-blur": {
+      "optional": true
+    },
+    "@remotion/noise": {
+      "optional": true
+    },
+    "@remotion/paths": {
+      "optional": true
+    },
+    "@remotion/renderer": {
+      "optional": true
+    },
+    "@remotion/shapes": {
+      "optional": true
+    },
+    "@remotion/three": {
+      "optional": true
+    },
+    "@remotion/transitions": {
+      "optional": true
+    },
     "avatarscript": {
       "optional": true
     },
     "onnxruntime-node": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "remotion": {
+      "optional": true
+    },
+    "three": {
       "optional": true
     }
   },
