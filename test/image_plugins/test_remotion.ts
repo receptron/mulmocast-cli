@@ -70,7 +70,7 @@ const makeFakes = (options: { replies?: string[]; renderFailures?: number; revie
   return { deps, prompts, reviewPrompts, renders, renderedCode };
 };
 
-test("mulmoRemotionMediaSchema: needs a prompt, accepts fps in range", () => {
+test("mulmoRemotionMediaSchema: needs a prompt or code, accepts fps in range", () => {
   assert.ok(mulmoRemotionMediaSchema.safeParse({ type: "remotion", prompt: "x" }).success);
   assert.ok(mulmoRemotionMediaSchema.safeParse({ type: "remotion", prompt: "x", fps: 24 }).success);
   assert.ok(!mulmoRemotionMediaSchema.safeParse({ type: "remotion" }).success);

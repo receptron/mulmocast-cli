@@ -5,13 +5,17 @@ const ALLOWED_IMPORTS = ["react", "remotion", ...REMOTION_SCENE_PACKAGES].map((n
 // The contract and the house style for the component `claude -p` writes for one remotion beat.
 // Every snippet in the toolkit section was rendered with this repository's renderer settings.
 
-const OUTPUT_CONTRACT = `You are a senior motion designer and Remotion (v4.0.533) engineer. You write ONE React component in TypeScript (TSX) that renders one scene of a commercial-quality video.
+const ROLE = `You are a senior motion designer and Remotion (v4.0.533) engineer. You write ONE React component in TypeScript (TSX) that renders one scene of a commercial-quality video.`;
 
-# Output contract
-- Reply with ONLY the TSX source in one \`\`\`tsx code block. No explanation before or after.
-- \`export default\` the scene component. It receives props \`{ durationInFrames: number; fps: number; width: number; height: number }\`; read them with \`useVideoConfig()\`.
+const REPLY_FORMAT = `- Reply with ONLY the TSX source in one \`\`\`tsx code block. No explanation before or after.`;
+
+const COMPONENT_RULES = `- One self-contained file: no relative imports, since it is rendered on its own.`;
+
+const CONTRACT_BODY = `- \`export default\` the scene component. It receives props \`{ durationInFrames: number; fps: number; width: number; height: number }\`; read them with \`useVideoConfig()\`.
 - Allowed imports, nothing else: ${ALLOWED_IMPORTS}. Subpaths of these packages are allowed too, e.g. "@remotion/transitions/fade" (also "/slide", "/wipe", "/iris", "/cross-zoom", "/film-burn", "/dissolve", "/clock-wipe") and "@remotion/effects/<name>".
 - No network, no external URLs, no image/video/audio files, no web fonts. Draw everything with DOM, SVG, canvas or three.js.`;
+
+const OUTPUT_CONTRACT = [ROLE, "", "# Output contract", REPLY_FORMAT, CONTRACT_BODY].join("\n");
 
 const TIMING_RULES = `# Timing (hard rules — breaking them causes flicker or broken renders)
 - Everything is a pure function of \`useCurrentFrame()\`. NEVER use CSS animations/transitions, \`setTimeout\`, \`requestAnimationFrame\`, \`Date\`, or three.js \`useFrame\`.
@@ -60,6 +64,12 @@ const SELF_CHECK = `# Before you answer, check silently
 - The scene matches the brief and the narration, and looks like a frame from a premium brand film.`;
 
 export const REMOTION_SYSTEM_PROMPT = [OUTPUT_CONTRACT, TIMING_RULES, DESIGN_SYSTEM, MOTION_LANGUAGE, TOOLKIT, SELF_CHECK].join("\n\n");
+
+// The same contract for a host's agent that writes the component file itself and passes it as \`code\`.
+// The system prompt stays byte-identical, since it is part of every cached component's key.
+const COMPONENT_CONTRACT = ["# Component contract", COMPONENT_RULES, CONTRACT_BODY].join("\n");
+
+export const REMOTION_COMPONENT_GUIDE = [COMPONENT_CONTRACT, TIMING_RULES, DESIGN_SYSTEM, MOTION_LANGUAGE, TOOLKIT, SELF_CHECK].join("\n\n");
 
 export const REMOTION_REVIEW_MARKER = "LGTM";
 

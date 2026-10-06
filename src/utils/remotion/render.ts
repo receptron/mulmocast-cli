@@ -38,10 +38,13 @@ const isPackageInstalled = (name: string) => {
   }
 };
 
+// Resolved from mulmocast's own location, which is where the renderer looks for them.
+export const missingInstalledRemotionPackages = () => missingRemotionPackages(isPackageInstalled);
+
 // Checked before asking claude -p for a component: a generated import of a missing optional peer
 // would otherwise surface as an opaque bundling error after the generation was already paid for.
 export const ensureRemotionPackages = () => {
-  const missing = missingRemotionPackages(isPackageInstalled);
+  const missing = missingInstalledRemotionPackages();
   if (missing.length > 0) {
     throw new Error(`The remotion beat needs packages that are not installed (${missing.join(", ")}). Install them with: ${remotionInstallCommand()}`);
   }

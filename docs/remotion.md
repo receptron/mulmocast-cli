@@ -23,11 +23,12 @@ MulmoCast がそれを描画してビートの動画にする。3D（three.js）
 }
 ```
 
-| フィールド                     | 型       | 説明                                                                       |
-| ------------------------------ | -------- | -------------------------------------------------------------------------- |
-| `image.prompt`                 | `string` | 場面で表示したい内容（必須）                                               |
-| `image.fps`                    | `number` | 動画のフレームレート（1〜60）。省略時は 30                                 |
-| `remotionParams.brief`（任意） | `string` | 動画全体のアートディレクション。全場面に渡され、色・書体・雰囲気がそろう |
+| フィールド                     | 型       | 説明                                                                        |
+| ------------------------------ | -------- | --------------------------------------------------------------------------- |
+| `image.prompt`                 | `string` | 場面で表示したい内容。`code` とどちらか一方                                 |
+| `image.code`                   | `object` | 出来上がったコンポーネント。`prompt` とどちらか一方（下の「コードを渡す」） |
+| `image.fps`                    | `number` | 動画のフレームレート（1〜60）。省略時は 30                                  |
+| `remotionParams.brief`（任意） | `string` | 動画全体のアートディレクション。全場面に渡され、色・書体・雰囲気がそろう    |
 
 `claude -p` には、`prompt` に加えて、実際に話されるナレーション（翻訳して描画するときはその言語の文。音声・字幕と同じ `localizedText`）、`remotionParams.brief`、場面の位置（全 N 場面中の何番目か）、
 キャンバスサイズと fps を渡す。ビートの長さは音声から決まる（`duration` を指定すればそちらを使う）。
@@ -37,9 +38,36 @@ MulmoCast がそれを描画してビートの動画にする。3D（three.js）
 - [scripts/samples/mulmocast_intro_remotion.json](../scripts/samples/mulmocast_intro_remotion.json) — 6 場面の紹介動画（1920×1080、3D、トランジション付き）
 - [scripts/test/test_remotion.json](../scripts/test/test_remotion.json) — 最小の 2 場面
 
+## コードを渡す（`claude -p` を使わない）
+
+ホストのエージェント（MulmoTerminal / MulmoClaude のセルにいる Claude Code や Codex）や人が書いた `.tsx` を渡すと、
+MulmoCast は `claude -p` を呼ばずに描画だけをする。形は mermaid の `code` と同じで、`kind` は `text` か `path`（台本のディレクトリからの相対パス）。
+
+```json
+"image": { "type": "remotion", "code": { "kind": "path", "path": "scenes/intro.tsx" }, "fps": 30 }
+"image": { "type": "remotion", "code": { "kind": "text", "text": "import { AbsoluteFill } from \"remotion\"; export default ..." } }
+```
+
+- 生成・修正・見た目の点検はしない。長さは `prompt` のときと同じく音声（または `duration`）から決まる。
+- 描画に失敗したら、コードの場所（ファイルの絶対パス、またはインラインなら何番目のビートか）とエラーを付けて止まる。直すのは書いた側。
+- コンポーネントは 1 ファイルで完結させる（相対 import は使えない。作業ディレクトリに写して描画するため）。
+- 書き方の約束と依存パッケージは `mulmocast/remotion` から取り出せる:
+
+```ts
+import { REMOTION_COMPONENT_GUIDE, REMOTION_PACKAGES, missingInstalledRemotionPackages, remotionInstallCommand } from "mulmocast/remotion";
+```
+
+| 名前                                 | 内容                                                                                                              |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `REMOTION_COMPONENT_GUIDE`           | `claude -p` に渡すシステムプロンプトから返答の形式を除いたもの（import の制限、時間の作り方、デザインの単位など） |
+| `REMOTION_PACKAGES`                  | 描画とコンポーネントに要るパッケージの一覧（`REMOTION_RENDER_PACKAGES` + `REMOTION_SCENE_PACKAGES`）              |
+| `missingInstalledRemotionPackages()` | mulmocast から見て入っていないパッケージ                                                                          |
+| `ensureRemotionPackages()`           | 足りなければインストールのコマンド付きで例外を投げる                                                              |
+| `remotionInstallCommand()`           | `npm install ...` の文字列                                                                                        |
+
 ## 必要なもの
 
-- Claude Code がインストールされ、ログイン済みであること（`claude` が PATH にあること）
+- `prompt` を使うとき: Claude Code がインストールされ、ログイン済みであること（`claude` が PATH にあること）
 - 任意依存のパッケージ:
 
 ```bash

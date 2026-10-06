@@ -1,8 +1,9 @@
 import fs from "node:fs";
 import nodePath from "node:path";
 import { GraphAILogger } from "graphai";
-import { ImageMediaType, ImageProcessorParams, MulmoBeat, MulmoStudioContext } from "../../types/index.js";
+import { ImageMediaType, ImageProcessorParams, MulmoBeat, MulmoRemotionCodeSource, MulmoStudioContext } from "../../types/index.js";
 import { localizedText } from "../utils.js";
+import { getFullPath } from "../file.js";
 import {
   REMOTION_COMPONENT_FILE,
   RemotionSceneSpec,
@@ -146,9 +147,21 @@ const scenePosition = (beats: MulmoBeat[], index: number) => (index < 0 ? undefi
 const spokenNarration = (context: MulmoStudioContext, beat: MulmoBeat, index: number) =>
   (index < 0 ? beat.text : localizedText(beat, context.multiLingual?.[index], context.lang, context.studio.script.lang)) || undefined;
 
-const buildJob = (params: ImageProcessorParams, prompt: string, fps: number): SceneJob => {
-  const { beat, context, imagePath, canvasSize } = params;
+type SceneOutput = Pick<SceneJob, "workDir" | "props" | "videoPath" | "stillPath">;
+
+const buildSceneOutput = (params: ImageProcessorParams, fps: number): SceneOutput => {
+  const { beat, imagePath, canvasSize } = params;
   const duration = params.beatDuration ?? beat.duration;
+  return {
+    workDir: remotionWorkDir(imagePath),
+    props: { durationInFrames: toFrameCount(duration ?? STILL_ONLY_DURATION_SEC, fps), fps, width: canvasSize.width, height: canvasSize.height },
+    videoPath: duration !== undefined ? imagePath : undefined,
+    stillPath: remotionStillPath(imagePath),
+  };
+};
+
+const buildJob = (params: ImageProcessorParams, prompt: string, fps: number): SceneJob => {
+  const { beat, context, canvasSize } = params;
   const index = context.studio.script.beats.indexOf(beat);
   const spec: RemotionSceneSpec = {
     prompt,
@@ -159,22 +172,49 @@ const buildJob = (params: ImageProcessorParams, prompt: string, fps: number): Sc
     width: canvasSize.width,
     height: canvasSize.height,
   };
-  const workDir = remotionWorkDir(imagePath);
-  return {
-    spec,
-    workDir,
-    codePath: nodePath.join(workDir, `${remotionCacheKey(spec)}.tsx`),
-    props: { durationInFrames: toFrameCount(duration ?? STILL_ONLY_DURATION_SEC, fps), fps, width: spec.width, height: spec.height },
-    videoPath: duration !== undefined ? imagePath : undefined,
-    stillPath: remotionStillPath(imagePath),
-  };
+  const output = buildSceneOutput(params, fps);
+  return { ...output, spec, codePath: nodePath.join(output.workDir, `${remotionCacheKey(spec)}.tsx`) };
+};
+
+// Named in errors, so whoever wrote the component (usually the host's agent) knows what to fix.
+export const remotionCodeLocation = (code: MulmoRemotionCodeSource, context: MulmoStudioContext, beatIndex: number) => {
+  if (code.kind === "path") return getFullPath(context.fileDirs.mulmoFileDirPath, code.path);
+  return beatIndex < 0 ? "inline code" : `inline code of beat ${beatIndex + 1}`;
+};
+
+const readGivenComponent = (code: MulmoRemotionCodeSource, location: string) => {
+  if (code.kind === "text") return code.text;
+  try {
+    return fs.readFileSync(location, "utf8");
+  } catch (error) {
+    throw new Error(`remotion: cannot read the component file ${location}`, { cause: error });
+  }
+};
+
+// A given component is the caller's to fix, so a failed render stops here instead of asking claude -p to repair it.
+const renderGivenComponent = async (params: ImageProcessorParams, code: MulmoRemotionCodeSource, fps: number, deps: RemotionDeps) => {
+  const output = buildSceneOutput(params, fps);
+  const location = remotionCodeLocation(code, params.context, params.context.studio.script.beats.indexOf(params.beat));
+  deps.ensurePackages();
+  const source = readGivenComponent(code, location);
+  fs.mkdirSync(output.workDir, { recursive: true });
+  fs.writeFileSync(nodePath.join(output.workDir, REMOTION_COMPONENT_FILE), source);
+  try {
+    await deps.renderScene({ workDir: output.workDir, props: output.props, videoPath: output.videoPath, stillPath: output.stillPath });
+  } catch (error) {
+    throw new Error(`remotion beat failed to render the given component (code: ${location}): ${errorMessage(error)}`, { cause: error });
+  }
+  return output.videoPath ?? output.stillPath;
 };
 
 export const createRemotionProcess = (deps: RemotionDeps) => async (params: ImageProcessorParams) => {
   const { beat, context } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
-  const job = buildJob(params, beat.image.prompt, beat.image.fps ?? DEFAULT_FPS);
+  const fps = beat.image.fps ?? DEFAULT_FPS;
+  if ("code" in beat.image) return await renderGivenComponent(params, beat.image.code, fps, deps);
+
+  const job = buildJob(params, beat.image.prompt, fps);
   deps.ensurePackages();
   fs.mkdirSync(job.workDir, { recursive: true });
   const { code, isNew } = await loadOrWriteComponent(job, context.force, deps);

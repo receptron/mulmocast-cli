@@ -16,6 +16,10 @@
     "./data": {
       "default": "./lib/data/index.js"
     },
+    "./remotion": {
+      "types": "./lib/index.remotion.d.ts",
+      "default": "./lib/index.remotion.js"
+    },
     "./assets/*": "./assets/*",
     "./scripts/*": "./scripts/*",
     "./tools/complete_script": {
