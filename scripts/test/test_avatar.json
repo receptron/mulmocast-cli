@@ -1,47 +1,120 @@
 {
-  "$mulmocast": { "version": "1.1" },
+  "$mulmocast": {
+    "version": "1.1"
+  },
   "lang": "ja",
   "title": "Talking avatar over slides",
   "description": "Uses the sample avatar in assets/avatars/ani. Needs the npm packages avatarscript and onnxruntime-node.",
-  "avatarParams": { "position": { "x": "82%", "y": "100%", "scale": "62%" } },
+  "avatarParams": {
+    "position": {
+      "x": "82%",
+      "y": "100%",
+      "scale": "62%"
+    }
+  },
   "speechParams": {
     "speakers": {
       "Ani": {
         "provider": "gemini",
         "voiceId": "Leda",
-        "speechOptions": { "instruction": "Speak in a slightly high-pitched, curt tone with sudden flustered shifts—like a tsundere anime girl." },
-        "displayName": { "ja": "アニ" },
-        "avatar": { "source": "../../assets/avatars/ani" }
+        "speechOptions": {
+          "instruction": "Speak in a slightly high-pitched, curt tone with sudden flustered shifts—like a tsundere anime girl."
+        },
+        "displayName": {
+          "ja": "アニ"
+        },
+        "avatar": {
+          "source": "../../assets/avatars/ani"
+        }
       }
     }
   },
   "beats": [
     {
       "speaker": "Ani",
-      "text": "みなさん、こんにちは！今日は、スライドの上でしゃべるアバターを紹介します。",
-      "image": { "type": "markdown", "markdown": ["# Talking avatars", "", "- MulmoScript + AvatarScript", "- スライドの上でアバターが話す"] },
-      "avatarParams": { "emotion": "happy", "motions": [{ "motion": "nod", "at": "こんにちは" }] }
+      "text": "べ、別にあなたのために説明するわけじゃないんだからね！今日は、スライドの上でしゃべるアバターを紹介してあげる。",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Talking avatars", "", "- MulmoScript + AvatarScript", "- スライドの上でアバターが話す"]
+      },
+      "avatarParams": {
+        "emotion": "happy",
+        "motions": [
+          {
+            "motion": "nod",
+            "at": "紹介"
+          }
+        ]
+      }
     },
     {
       "speaker": "Ani",
-      "text": "位置と大きさは、台本全体で決めておいて、ビートごとに変えられます。このスライドでは、大きくなっています。",
-      "image": { "type": "markdown", "markdown": ["# Position and size", "", "- 台本全体: `avatarParams.position`", "- ビートごとに上書き"] },
-      "avatarParams": { "emotion": "relaxed", "position": { "x": "76%", "scale": "82%" }, "motions": [{ "motion": "tilt", "at": "大きく" }] }
+      "text": "このアバターはね、メッシュ・アバター・スタジオで、たった一枚のイラストから作ったの。それを、マルモキャストの上で動かしてるのよ。",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# How it's made", "", "- mesh-avatar-studio: 1枚のイラスト → メッシュアバター", "- MulmoCast + AvatarScript: 台本 → 音声 → 口パク動画"]
+      },
+      "avatarParams": {
+        "emotion": "relaxed",
+        "motions": [
+          {
+            "motion": "nod",
+            "at": "マルモキャスト"
+          }
+        ]
+      }
     },
     {
       "speaker": "Ani",
-      "text": "こちらでは、左側に小さく移動しました。",
+      "text": "位置と大きさは、台本全体で決めておいて、ビートごとに変えられるの。ほら、大きくなったでしょ。ちゃんと見なさいよね！",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# Position and size", "", "- 台本全体: `avatarParams.position`", "- ビートごとに上書き"]
+      },
+      "avatarParams": {
+        "emotion": "relaxed",
+        "position": {
+          "x": "76%",
+          "scale": "82%"
+        },
+        "motions": [
+          {
+            "motion": "tilt",
+            "at": "大きく"
+          }
+        ]
+      }
+    },
+    {
+      "speaker": "Ani",
+      "text": "ちょ、ちょっと！今度は左に小さくされちゃったんだけど！",
       "image": {
         "type": "markdown",
         "markdown": ["# Moved", "", "```json", "\"avatarParams\": {", "  \"position\": { \"x\": \"18%\", \"scale\": \"48%\" }", "}", "```"]
       },
-      "avatarParams": { "emotion": "surprised", "position": { "x": "18%", "scale": "48%" }, "motions": [{ "motion": "surprise" }] }
+      "avatarParams": {
+        "emotion": "surprised",
+        "position": {
+          "x": "18%",
+          "scale": "48%"
+        },
+        "motions": [
+          {
+            "motion": "surprise"
+          }
+        ]
+      }
     },
     {
       "speaker": "Ani",
-      "text": "最後は、元の位置に戻ります。それでは、始めましょう！",
-      "image": { "type": "markdown", "markdown": ["# Let's start"] },
-      "avatarParams": { "emotion": "happy" }
+      "text": "最後は元の位置に戻るわ。べ、別に、こんなことが簡単にできるって、自慢してるわけじゃないんだからね！",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# 簡単…でしょ？"]
+      },
+      "avatarParams": {
+        "emotion": "angry"
+      }
     }
   ]
 }
