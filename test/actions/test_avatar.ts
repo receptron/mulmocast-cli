@@ -183,9 +183,14 @@ test("avatarUrlStamp: the package's JSON files, the same for the folder and its 
     queries.length = 0;
     files["/ani/avatar.json"] = JSON.stringify({ root: "pkg", assets: { rig: "rig.json?token=abc", layers: "built/layers.json" } });
     await avatarUrlStamp(`${base}?version=2`);
-    assert.deepStrictEqual(queries, ["version=2", "token=abc", "version=2", "version=2"]);
+    assert.deepStrictEqual(queries, ["version=2", "token=abc", "version=2"]); // no sprites listed: not requested
     files["/ani/avatar.json"] = manifest;
     assert.deepStrictEqual(await avatarUrlStamp(base), stamp);
+    // a manifest without sprites: they are not requested (avatarscript does not load them either)
+    files["/ani/avatar.json"] = JSON.stringify({ root: "pkg", assets: { rig: "rig.json", layers: "built/layers.json" } });
+    queries.length = 0;
+    assert.deepStrictEqual((await avatarUrlStamp(base)).slice(1), [files["/ani/pkg/rig.json"], files["/ani/pkg/built/layers.json"], null]);
+    assert.strictEqual(queries.length, 3);
     // files outside the package are refused before they are requested
     for (const escape of [{ root: "../other/" }, { assets: { rig: "https://example.com/rig.json" } }, { assets: { layers: "../../x.json" } }]) {
       files["/ani/avatar.json"] = JSON.stringify({ root: "pkg", ...escape });

@@ -167,14 +167,13 @@ export const avatarUrlStamp = async (source: string) => {
   const manifestText = await fetchText(at("avatar.json", folder));
   const manifest = manifestText ? (JSON.parse(manifestText) as { root?: string; assets?: { rig?: string; layers?: string; sprites?: string } }) : undefined;
   const root = at((manifest?.root ?? ".").replace(/\/?$/, "/"), folder);
-  const files = [
-    manifest?.assets?.rig ?? "rig.json",
-    manifest?.assets?.layers ?? "built/layers.json",
-    manifest?.assets?.sprites ?? "built/sprites/sprites.json",
-  ];
+  // as avatarscript: a manifest names its files (sprites are optional); without one, a
+  // mesh-avatar-studio project's default paths
+  const assets = manifest ? (manifest.assets ?? {}) : { rig: "rig.json", layers: "built/layers.json", sprites: "built/sprites/sprites.json" };
+  const files = [assets.rig, assets.layers, assets.sprites];
   // every location is checked before anything is fetched
-  const locations = files.map((file) => at(file, root));
-  return [manifestText, ...(await Promise.all(locations.map(fetchText)))];
+  const locations = files.map((file) => (file === undefined ? undefined : at(file, root)));
+  return [manifestText, ...(await Promise.all(locations.map((location) => (location ? fetchText(location) : null))))];
 };
 const sourceStamp = (source: string) => (isHttp(source) ? avatarUrlStamp(source) : folderStamp(source));
 
