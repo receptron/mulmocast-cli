@@ -14,6 +14,7 @@ import {
 } from "../remotion/claude_prompt.js";
 import { ComponentReviewer, ComponentWriter, reviewComponentWithClaude, writeComponentWithClaude } from "../remotion/claude_runner.js";
 import { RemotionSceneProps, SceneRenderer, ensureRemotionPackages, renderRemotionScene } from "../remotion/render.js";
+import { FileMove, FileOps, commitFiles } from "../remotion/commit_files.js";
 import { parrotingImagePath } from "./utils.js";
 
 export const imageType = ImageMediaType.Remotion;
@@ -86,6 +87,12 @@ const askForReview = async (job: SceneJob, renderedCode: string, reviewStills: R
   }
 };
 
+const nodeFileOps: FileOps = {
+  exists: (file) => fs.existsSync(file),
+  rename: (from, to) => fs.renameSync(from, to),
+  remove: (file) => fs.rmSync(file, { force: true }),
+};
+
 export const reviewCandidatePath = (filePath: string) => filePath.replace(/(\.[^./]+)$/, ".review$1");
 
 // The reviewed version renders to side files that replace the first version's output only once it
@@ -99,11 +106,15 @@ const renderReviewedVersion = async (job: SceneJob, improved: string, deps: Remo
   };
   try {
     const renderedImprovement = await renderWithRepair(candidate, improved, MAX_REPAIR_ATTEMPTS, deps);
-    if (job.videoPath && candidate.videoPath) fs.renameSync(candidate.videoPath, job.videoPath);
-    fs.renameSync(candidate.stillPath, job.stillPath);
-    fs.writeFileSync(job.codePath, renderedImprovement);
+    fs.writeFileSync(candidate.codePath, renderedImprovement);
+    const moves: FileMove[] = [
+      ...(job.videoPath && candidate.videoPath ? [{ from: candidate.videoPath, to: job.videoPath }] : []),
+      { from: candidate.stillPath, to: job.stillPath },
+      { from: candidate.codePath, to: job.codePath },
+    ];
+    commitFiles(moves, nodeFileOps);
   } catch (error) {
-    GraphAILogger.info(`remotion: the reviewed version did not render, keeping the first one: ${errorMessage(error)}`);
+    GraphAILogger.info(`remotion: the reviewed version was not applied, keeping the first one: ${errorMessage(error)}`);
   } finally {
     [candidate.codePath, candidate.videoPath, candidate.stillPath].forEach((file) => file && fs.rmSync(file, { force: true }));
   }
