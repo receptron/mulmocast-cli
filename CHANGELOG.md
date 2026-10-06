@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.15.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.15.0) (2026-10-07)
+
+- **`renderRemotionFrames()` in `mulmocast/remotion`** (#1603, #1602): render a Remotion component (TSX source) at fixed fractions of its length as PNGs, with no script and no audio, so a host's agent can review the scene it wrote. `code`, `durationSec` and `outDir` are required; `fps` / `width` / `height` default to 30 / 1920 / 1080; `fractions` defaults to `REMOTION_REVIEW_FRACTIONS` (`[0.3, 0.6, 0.95]`, the same moments the `claude -p` visual review sees). Stills only, no video; work files go to a temporary directory that is removed afterwards. Returns `{ fraction, frame, path }[]`
+- **Browser-safe `mulmocast/remotion/guide`** (#1607, #1606): exports only `REMOTION_COMPONENT_GUIDE`, so browser bundles (e.g. a tool definition in MulmoClaude) no longer pull in `node:fs` or `@remotion/renderer`. `mulmocast/remotion` keeps exporting it too
+- **Avatar source can be an http(s) URL** (#1598): `speechParams.speakers.<name>.avatar.source` may be the URL of an AvatarScript package folder or its `avatar.json`; a path is still resolved against the script. Loaded by avatarscript, which fetches only files inside the package, follows redirects only within the same origin, and caches images in `~/.cache/avatarscript/avatars/`. The `avatarscript` optional peer is now `^0.3.2`
+- **Stricter frame-count check**: a remotion beat or frame render whose duration or fps gives a non-finite frame count (NaN / Infinity) now fails with an error instead of reaching the renderer (#1603)
+
+📦 **npm**: [`mulmocast@2.15.0`](https://www.npmjs.com/package/mulmocast/v/2.15.0), [`@mulmocast/types@2.15.0`](https://www.npmjs.com/package/@mulmocast/types/v/2.15.0)
+
 ## [2.14.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.14.0) (2026-10-06)
 
 - **`remotion` beat accepts a finished component** (#1600, #1599): `image: { type: "remotion", code: { kind: "path", path } | { kind: "text", text }, fps? }` renders the given TSX as is, without `claude -p` (no generation, repair or visual review), so a host's own agent can write the scene. `path` resolves from the script's directory; a failed render stops with the code's location and the error. `prompt` and `code` are mutually exclusive, and the bundled JSON schema states it too. The `prompt` → `claude -p` flow is unchanged
