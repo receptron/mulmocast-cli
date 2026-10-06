@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 - **`renderRemotionFrames()` in `mulmocast/remotion`** (#1603, #1602): render a Remotion component (TSX source) at fixed fractions of its length as PNGs, with no script and no audio, so a host's agent can review the scene it wrote. `code`, `durationSec` and `outDir` are required; `fps` / `width` / `height` default to 30 / 1920 / 1080; `fractions` defaults to `REMOTION_REVIEW_FRACTIONS` (`[0.3, 0.6, 0.95]`, the same moments the `claude -p` visual review sees). Stills only, no video; work files go to a temporary directory that is removed afterwards. Returns `{ fraction, frame, path }[]`
 - **Stricter frame-count check**: a remotion beat or frame render whose duration or fps gives a non-finite frame count (NaN / Infinity) now fails with an error instead of reaching the renderer (#1603)
+- **`mulmocast/remotion/guide`** (#1607, #1606): a new entry that exports only `REMOTION_COMPONENT_GUIDE`, with no Node built-ins and no packages, so code that ends up in a browser bundle (a tool description, for example) can quote the guide. `mulmocast/remotion` also carries the renderer, which needs Node; it still exports the guide too
+- **Avatar `source` can be an http(s) URL** (#1598): `speechParams.speakers.<name>.avatar.source` accepts the URL of an AvatarScript avatar package (its folder or its `avatar.json`) as well as a path relative to the script. Loading needs avatarscript `^0.3.2` (devDependency and optional peer raised); for a URL avatar the track cache key uses the package's JSON listings instead of file size/mtime. The schema's `source` description says so
 
 📦 **npm**: [`mulmocast@2.15.0`](https://www.npmjs.com/package/mulmocast/v/2.15.0)
 
