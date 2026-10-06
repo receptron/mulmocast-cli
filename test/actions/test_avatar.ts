@@ -205,9 +205,15 @@ test("avatarUrlStamp: the package's JSON files, the same for the folder and its 
     // redirects are followed within the same origin only
     // (the manifest moved; its files still resolve against the requested folder)
     redirects["/moved/avatar.json"] = "/ani/avatar.json";
-    files["/moved/pkg/rig.json"] = files["/ani/pkg/rig.json"];
-    files["/moved/pkg/built/layers.json"] = files["/ani/pkg/built/layers.json"];
-    assert.deepStrictEqual(await avatarUrlStamp(base.replace("/ani", "/moved")), stamp);
+    // (different contents, so the stamp shows which folder each file came from)
+    files["/moved/pkg/rig.json"] = JSON.stringify({ image: { width: 1, height: 1 } });
+    files["/moved/pkg/built/layers.json"] = JSON.stringify({ build: "moved", layers: {} });
+    assert.deepStrictEqual(await avatarUrlStamp(base.replace("/ani", "/moved")), [
+      manifest,
+      files["/moved/pkg/rig.json"],
+      files["/moved/pkg/built/layers.json"],
+      null,
+    ]);
     redirects["/away/avatar.json"] = "http://localhost:9/avatar.json";
     await assert.rejects(avatarUrlStamp(base.replace("/ani", "/away")), /redirects to another host/);
     // an edited rig or a rebuilt avatar changes the stamp, so its track renders again
