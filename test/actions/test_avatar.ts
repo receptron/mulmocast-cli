@@ -160,10 +160,13 @@ test("avatarUrlStamp: the package's JSON files, the same for the folder and its 
     "/ani/pkg/built/layers.json": JSON.stringify({ build: "1", layers: {} }),
   };
   const manifest = files["/ani/avatar.json"];
+  const redirects: Record<string, string> = {};
   const queries: string[] = [];
   const server = createServer((req, res) => {
     const [pathname, query = ""] = (req.url ?? "").split("?");
     queries.push(query);
+    const redirect = redirects[pathname];
+    if (redirect) return void res.writeHead(302, { location: redirect }).end();
     const body = files[pathname];
     if (body === undefined) res.writeHead(404).end();
     else res.end(body);
@@ -199,6 +202,11 @@ test("avatarUrlStamp: the package's JSON files, the same for the folder and its 
       assert.deepStrictEqual(queries, [""]); // only avatar.json was requested
     }
     files["/ani/avatar.json"] = manifest;
+    // redirects are followed within the same origin only
+    redirects["/moved/avatar.json"] = "/ani/avatar.json";
+    assert.strictEqual((await avatarUrlStamp(base.replace("/ani", "/moved")))[0], manifest);
+    redirects["/away/avatar.json"] = "http://localhost:9/avatar.json";
+    await assert.rejects(avatarUrlStamp(base.replace("/ani", "/away")), /redirects to another host/);
     // an edited rig or a rebuilt avatar changes the stamp, so its track renders again
     files["/ani/pkg/rig.json"] = JSON.stringify({ image: { width: 10, height: 12 } });
     const edited = await avatarUrlStamp(`${base}/`);

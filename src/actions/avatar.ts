@@ -144,8 +144,24 @@ const folderStamp = (dir: string) => {
 // An avatar at a URL: its small JSON files (avatar.json, the rig, layers.json, sprites.json) change
 // whenever the avatar is edited or rebuilt, so they stand in for the files' stamps. They are fetched
 // on every run; avatarscript caches the images.
+// Redirects are followed only within the same origin, so a public host cannot send these requests
+// to another one (an internal service, say). GitHub's github.com/…/raw/… links redirect to
+// raw.githubusercontent.com: use the latter.
+const MAX_REDIRECTS = 5;
+const fetchSameOrigin = async (url: URL) => {
+  let location = url;
+  for (let hops = 0; hops <= MAX_REDIRECTS; hops++) {
+    const response = await fetch(location, { redirect: "manual", signal: AbortSignal.timeout(60_000) });
+    const next = response.status >= 300 && response.status < 400 ? response.headers.get("location") : null;
+    if (!next) return response;
+    const target = new URL(next, location);
+    if (target.origin !== url.origin) throw new Error(`avatar: ${url.href} redirects to another host (${target.origin}); use the final URL`);
+    location = target;
+  }
+  throw new Error(`avatar: ${url.href}: too many redirects`);
+};
 const fetchText = async (url: URL) => {
-  const response = await fetch(url, { signal: AbortSignal.timeout(60_000) });
+  const response = await fetchSameOrigin(url);
   if (response.status === 404) return null;
   if (!response.ok) throw new Error(`avatar: ${url.href}: HTTP ${response.status}`);
   return response.text();
