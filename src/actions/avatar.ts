@@ -155,8 +155,12 @@ export const avatarUrlStamp = async (source: string) => {
   const folder = new URL(url);
   folder.pathname = url.pathname.endsWith("/avatar.json") ? url.pathname.slice(0, -"avatar.json".length) : url.pathname.replace(/\/?$/, "/");
   // the source's query (a version, a signature) goes with every file that has no query of its own
+  // like avatarscript, fetch only files inside the package's folder (no "../", no other host)
   const at = (file: string, base: URL) => {
     const location = new URL(file, base);
+    if (location.origin !== folder.origin || !location.pathname.startsWith(folder.pathname)) {
+      throw new Error(`avatar: ${file} is outside the avatar package ${folder.href}`);
+    }
     if (!location.search) location.search = url.search;
     return location;
   };
@@ -168,7 +172,9 @@ export const avatarUrlStamp = async (source: string) => {
     manifest?.assets?.layers ?? "built/layers.json",
     manifest?.assets?.sprites ?? "built/sprites/sprites.json",
   ];
-  return [manifestText, ...(await Promise.all(files.map((file) => fetchText(at(file, root)))))];
+  // every location is checked before anything is fetched
+  const locations = files.map((file) => at(file, root));
+  return [manifestText, ...(await Promise.all(locations.map(fetchText)))];
 };
 const sourceStamp = (source: string) => (isHttp(source) ? avatarUrlStamp(source) : folderStamp(source));
 

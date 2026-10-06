@@ -186,6 +186,14 @@ test("avatarUrlStamp: the package's JSON files, the same for the folder and its 
     assert.deepStrictEqual(queries, ["version=2", "token=abc", "version=2", "version=2"]);
     files["/ani/avatar.json"] = manifest;
     assert.deepStrictEqual(await avatarUrlStamp(base), stamp);
+    // files outside the package are refused before they are requested
+    for (const escape of [{ root: "../other/" }, { assets: { rig: "https://example.com/rig.json" } }, { assets: { layers: "../../x.json" } }]) {
+      files["/ani/avatar.json"] = JSON.stringify({ root: "pkg", ...escape });
+      queries.length = 0;
+      await assert.rejects(avatarUrlStamp(base), /outside the avatar package/);
+      assert.deepStrictEqual(queries, [""]); // only avatar.json was requested
+    }
+    files["/ani/avatar.json"] = manifest;
     // an edited rig or a rebuilt avatar changes the stamp, so its track renders again
     files["/ani/pkg/rig.json"] = JSON.stringify({ image: { width: 10, height: 12 } });
     const edited = await avatarUrlStamp(`${base}/`);
