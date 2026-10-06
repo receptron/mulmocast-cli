@@ -211,12 +211,10 @@ export const createRemotionProcess = (deps: RemotionDeps) => async (params: Imag
   const { beat, context } = params;
   if (!beat.image || beat.image.type !== imageType) return;
 
-  const { prompt, code: givenCode } = beat.image;
   const fps = beat.image.fps ?? DEFAULT_FPS;
-  if (givenCode) return await renderGivenComponent(params, givenCode, fps, deps);
-  if (!prompt) throw new Error("remotion: give exactly one of prompt or code");
+  if ("code" in beat.image) return await renderGivenComponent(params, beat.image.code, fps, deps);
 
-  const job = buildJob(params, prompt, fps);
+  const job = buildJob(params, beat.image.prompt, fps);
   deps.ensurePackages();
   fs.mkdirSync(job.workDir, { recursive: true });
   const { code, isNew } = await loadOrWriteComponent(job, context.force, deps);

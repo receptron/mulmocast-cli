@@ -418,17 +418,26 @@ export const remotionCodeSourceSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("path"), path: z.string().min(1).describe("Relative to the script") }).strict(),
 ]);
 
-export const mulmoRemotionMediaSchema = z
-  .object({
-    type: z.literal(ImageMediaType.Remotion),
-    prompt: z.string().min(1).optional().describe("What the scene shows. Claude Code (claude -p) writes a Remotion component from it. Give this or code."),
-    code: remotionCodeSourceSchema
-      .optional()
-      .describe("A finished Remotion component (TSX that default-exports the scene). It is rendered as is, without claude -p. Give this or prompt."),
-    fps: z.number().min(1).max(60).optional().describe("Frame rate of the rendered video. Default: 30."),
-  })
-  .strict()
-  .refine((media) => (media.prompt === undefined) !== (media.code === undefined), { message: "remotion: give exactly one of prompt or code" });
+const remotionMediaShape = {
+  type: z.literal(ImageMediaType.Remotion),
+  fps: z.number().min(1).max(60).optional().describe("Frame rate of the rendered video. Default: 30."),
+};
+
+// Two strict shapes rather than one object with a refine, so the bundled JSON schema states "prompt or code, not both" too.
+export const mulmoRemotionMediaSchema = z.union([
+  z
+    .object({
+      ...remotionMediaShape,
+      prompt: z.string().min(1).describe("What the scene shows. Claude Code (claude -p) writes a Remotion component from it."),
+    })
+    .strict(),
+  z
+    .object({
+      ...remotionMediaShape,
+      code: remotionCodeSourceSchema.describe("A finished Remotion component (TSX that default-exports the scene). It is rendered as is, without claude -p."),
+    })
+    .strict(),
+]);
 
 export const mulmoRemotionParamsSchema = z
   .object({
