@@ -72,7 +72,7 @@ npm install remotion @remotion/bundler @remotion/renderer react react-dom \
 
 ## 注意
 
-- 生成されたコードは手元のヘッドレスブラウザで実行される。
+- 生成されたコードは手元のヘッドレスブラウザで実行され、ネットワークにもアクセスできる。信頼の扱いは `html_tailwind` の `script` と同じで、信頼できない台本の `remotion` ビートは、信頼できない `html_tailwind` と同様に扱うこと（描画ブラウザのネットワーク遮断は #1594）。
 - `moviePrompt` とは同じビートで併用できない（アニメーション付き `html_tailwind` と同じ）。
 - `soundEffectPrompt` はまだ効かない（アニメーション付き `html_tailwind` と同じ。効果音の生成がプラグインの動画を待たないため）。
 - GPU の無い Linux では、`gl: "angle"` で WebGL の文脈を作れない場合がある。
