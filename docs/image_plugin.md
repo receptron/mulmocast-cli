@@ -27,7 +27,7 @@ pluginの実装は[src/utils/image_plugins/](../src/utils/image_plugins)にあ�
 - `beat` - 他のbeatの画像を参照
 - `voice_over` - ナレーション重ね（画像生成なし）
 - `vision` - Vision API
-- `remotion` - 文章で指示した場面を Claude Code（`claude -p`）が Remotion で書き、動画にする（[remotion.md](./remotion.md)）
+- `remotion` - 文章で指示した場面を Claude Code（`claude -p`）が Remotion で書き、動画にする。出来上がったコンポーネント（`code`）を渡して描画だけをすることもできる（[remotion.md](./remotion.md)）
 - `source` - ソースファイル参照
 
 pluginを追加する場合は、
