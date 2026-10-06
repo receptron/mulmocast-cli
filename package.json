@@ -20,6 +20,10 @@
       "types": "./lib/index.remotion.d.ts",
       "default": "./lib/index.remotion.js"
     },
+    "./remotion/guide": {
+      "types": "./lib/index.remotion_guide.d.ts",
+      "default": "./lib/index.remotion_guide.js"
+    },
     "./assets/*": "./assets/*",
     "./scripts/*": "./scripts/*",
     "./tools/complete_script": {
