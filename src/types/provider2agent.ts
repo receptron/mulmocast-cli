@@ -643,12 +643,30 @@ export const getModelAudio = (provider: keyof typeof provider2MovieAgent, model:
 
 const GOOGLE_VERTEX_DEFAULT_MOVIE_MODEL = "veo-3.1-generate-001";
 
+const removedGoogleMovieModelHint =
+  "It shut down on 2026-10-22. Use 'gemini-omni-1.1-flash' on the Gemini API, or 'veo-3.1-generate-001' with movieParams.vertexai_project on Vertex AI (needed for referenceImages).";
+
+const removedGoogleMovieModelHints: Record<string, string> = {
+  "veo-3.1-generate-preview": removedGoogleMovieModelHint,
+  "veo-3.1-lite-generate-preview": removedGoogleMovieModelHint,
+};
+
+// An unknown model fails here with a hint, not with a TypeError in the duration lookup.
+export const unsupportedGoogleMovieModelMessage = (model: string): string | null => {
+  if (Object.hasOwn(provider2MovieAgent.google.modelParams, model)) return null;
+  const hint = Object.hasOwn(removedGoogleMovieModelHints, model)
+    ? removedGoogleMovieModelHints[model]
+    : `Supported models: ${provider2MovieAgent.google.models.join(", ")}.`;
+  return `Google movie model "${model}" is not supported. ${hint}`;
+};
+
 // Gemini Omni is a Gemini API model here, so Vertex AI keeps Veo 3.1 as its default.
 export const defaultMovieModel = (provider: keyof typeof provider2MovieAgent, movieParams?: { vertexai_project?: string }): string =>
   provider === "google" && movieParams?.vertexai_project ? GOOGLE_VERTEX_DEFAULT_MOVIE_MODEL : provider2MovieAgent[provider].defaultModel;
 
 export const getModelDuration = (provider: keyof typeof provider2MovieAgent, model: string, movieDuration?: number) => {
   const modelParams = provider2MovieAgent[provider]?.modelParams as Record<string, { durations?: number[] }>;
+  if (!modelParams || !Object.hasOwn(modelParams, model)) return undefined;
   const { durations } = modelParams[model];
   if (durations && movieDuration) {
     const largerDurations = durations.filter((d: number) => d >= movieDuration);

@@ -13,7 +13,8 @@ import {
   videoFromInteraction,
   type GeminiOmniVideoRequest,
 } from "../../src/utils/gemini_omni_video.js";
-import { generateGeminiOmniVideo, type GeminiOmniVideoClient } from "../../src/agents/movie_genai_agent.js";
+import { generateGeminiOmniVideo, movieGenAIAgent, type GeminiOmniVideoClient } from "../../src/agents/movie_genai_agent.js";
+import { agentCallContext } from "../fixtures.js";
 import { provider2MovieAgent } from "../../src/types/provider2agent.js";
 
 const sum = (values: number[]) => values.reduce((total, value) => total + value, 0);
@@ -152,4 +153,20 @@ test("generateGeminiOmniVideo: an answer with no id cannot be extended", async (
   const { client, calls } = fakeClient({ omitIdAt: 0 });
   await assert.rejects(() => generateGeminiOmniVideo(client, { ...input, requestedSec: 15 }), /no interaction id/);
   assert.strictEqual(calls.length, 1);
+});
+
+test("movieGenAIAgent: a removed model is rejected before any API call, with the unsupported-model cause", async () => {
+  await assert.rejects(
+    () =>
+      movieGenAIAgent({
+        ...agentCallContext,
+        namedInputs: { prompt: "a boat", movieFile: "/nonexistent/out.mov" },
+        params: { model: "veo-3.1-generate-preview", canvasSize: { width: 1280, height: 720 } },
+        config: { apiKey: "fake-key-not-used" },
+      }),
+    (error: Error) =>
+      /"veo-3\.1-generate-preview" is not supported/.test(error.message) &&
+      JSON.stringify(error.cause).includes("unsupportedModel") &&
+      JSON.stringify(error.cause).includes("movieGenAIAgent"),
+  );
 });

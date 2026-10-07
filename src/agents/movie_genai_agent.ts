@@ -18,7 +18,14 @@ import { ffmpegGetMediaDuration } from "../utils/ffmpeg_utils.js";
 import { ASPECT_RATIOS } from "../types/const.js";
 import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, MovieAgentInputs, MovieReferenceImage } from "../types/agent.js";
 import type { AgentUsage } from "../types/usage.js";
-import { getModelDuration, provider2MovieAgent, AUDIO_MODE_NEVER, AUDIO_MODE_ALWAYS, defaultMovieModel } from "../types/provider2agent.js";
+import {
+  getModelDuration,
+  provider2MovieAgent,
+  AUDIO_MODE_NEVER,
+  AUDIO_MODE_ALWAYS,
+  defaultMovieModel,
+  unsupportedGoogleMovieModelMessage,
+} from "../types/provider2agent.js";
 import {
   GEMINI_OMNI_MAX_TOTAL_SEC,
   buildGeminiOmniVideoRequest,
@@ -272,6 +279,10 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
   const apiKey = config?.apiKey;
 
   try {
+    const unsupportedMessage = unsupportedGoogleMovieModelMessage(model);
+    if (unsupportedMessage) {
+      throw new Error(unsupportedMessage, { cause: agentGenerationError("movieGenAIAgent", imageAction, unsupportedModelTarget) });
+    }
     const requestedDuration = params.duration ?? 8;
     const duration = getModelDuration("google", model, requestedDuration);
     if (duration === undefined) {
