@@ -424,7 +424,7 @@ export const provider2MovieAgent = {
   },
   google: {
     agentName: "movieGenAIAgent",
-    // The Veo 3.1 previews shut down on 2026-10-22; Gemini Omni is their successor on the Gemini API.
+    // The Veo 3.1 previews shut down on the Gemini API on 2026-10-22 (removed here ahead of that); Gemini Omni is their successor.
     defaultModel: "gemini-omni-1.1-flash",
     models: ["gemini-omni-1.1-flash", "veo-3.1-generate-001"],
     keyName: "GEMINI_API_KEY",
@@ -644,7 +644,7 @@ export const getModelAudio = (provider: keyof typeof provider2MovieAgent, model:
 const GOOGLE_VERTEX_DEFAULT_MOVIE_MODEL = "veo-3.1-generate-001";
 
 const removedGoogleMovieModelHint =
-  "It shut down on 2026-10-22. Use 'gemini-omni-1.1-flash' on the Gemini API, or 'veo-3.1-generate-001' with movieParams.vertexai_project on Vertex AI (needed for referenceImages).";
+  "Its Gemini API shutdown date is 2026-10-22, so mulmocast no longer offers it. Use 'gemini-omni-1.1-flash' on the Gemini API, or 'veo-3.1-generate-001' with movieParams.vertexai_project on Vertex AI (needed for referenceImages).";
 
 const removedGoogleMovieModelHints: Record<string, string> = {
   "veo-3.1-generate-preview": removedGoogleMovieModelHint,
