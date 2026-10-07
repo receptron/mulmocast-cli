@@ -90,7 +90,7 @@ const sentImageQuality = async (params: { model: string; quality?: OpenAIImageQu
   });
   try {
     await assert.rejects(
-      () => imageOpenaiAgent({ ...baseParams, namedInputs: { prompt: "a cat" }, params: { ...params, canvasSize, moderation: "auto" } }),
+      () => imageOpenaiAgent({ ...baseParams, namedInputs: { prompt: "a cat", referenceImages: [] }, params: { ...params, canvasSize, moderation: "auto" } }),
       /request captured/,
     );
   } finally {
