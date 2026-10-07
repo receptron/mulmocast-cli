@@ -13,6 +13,7 @@ import {
   MulmoMediaSource,
   MulmoImageParamsImagesValue,
   ImageMediaType,
+  MulmoCanvasDimension,
 } from "../types/index.js";
 import type { ResolvedImageReference } from "../methods/mulmo_image_prompt_media.js";
 
@@ -20,6 +21,25 @@ import { imageOpenaiAgent, mediaMockAgent, imageGenAIAgent, imageReplicateAgent,
 import { agentGenerationError, imageReferenceAction, imageFileTarget, movieFileTarget } from "../utils/error_cause.js";
 
 export type { ResolvedImageReference } from "../methods/mulmo_image_prompt_media.js";
+
+type ImageAgentInfo = ReturnType<typeof MulmoPresentationStyleMethods.getImageAgentInfo>;
+type MovieAgentInfo = ReturnType<typeof MulmoPresentationStyleMethods.getMovieAgentInfo>;
+
+// Reference media are generated outside the beat graphs, so they must carry the same Vertex AI target the beats do.
+export const referenceImageGraphParams = (imageAgentInfo: ImageAgentInfo, canvasSize: MulmoCanvasDimension) => ({
+  model: imageAgentInfo.imageParams.model,
+  canvasSize,
+  vertexai_project: imageAgentInfo.imageParams.vertexai_project,
+  vertexai_location: imageAgentInfo.imageParams.vertexai_location,
+});
+
+export const referenceMovieGraphParams = (movieAgentInfo: MovieAgentInfo, canvasSize: MulmoCanvasDimension) => ({
+  model: movieAgentInfo.movieParams.model,
+  canvasSize,
+  generateAudio: movieAgentInfo.movieParams.generateAudio,
+  vertexai_project: movieAgentInfo.movieParams.vertexai_project,
+  vertexai_location: movieAgentInfo.movieParams.vertexai_location,
+});
 
 // Resolve the normalized reference list to local file paths (with labels), in reference order.
 // imageKey is the imageRefs key of the image being generated (used for warnings and url
@@ -97,10 +117,7 @@ export const generateReferenceImage = async (inputs: {
             sessionType: "imageReference",
           },
         },
-        params: {
-          model: imageAgentInfo.imageParams.model,
-          canvasSize: image.canvasSize ?? context.presentationStyle.canvasSize,
-        },
+        params: referenceImageGraphParams(imageAgentInfo, image.canvasSize ?? context.presentationStyle.canvasSize),
       },
     },
   };
@@ -199,11 +216,7 @@ const generateReferenceMovie = async (inputs: {
             sessionType: "imageReference",
           },
         },
-        params: {
-          model: movieAgentInfo.movieParams.model,
-          canvasSize: context.presentationStyle.canvasSize,
-          generateAudio: movieAgentInfo.movieParams.generateAudio,
-        },
+        params: referenceMovieGraphParams(movieAgentInfo, context.presentationStyle.canvasSize),
       },
     },
   };
