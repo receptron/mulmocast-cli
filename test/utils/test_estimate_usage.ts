@@ -144,11 +144,18 @@ describe("estimateUsage: movie / soundEffect / lipSync", () => {
     assert.ok(Math.abs((movie.costUSD ?? 0) - 8 * 0.036) < 1e-12);
   });
 
-  it("counts every second Veo 3.1 generates when the default Google model extends a clip past 8 seconds", () => {
-    const beat = { speaker: "Presenter", text: "", moviePrompt: "wave", duration: 12, movieParams: { provider: "google" } };
-    const movie = byProcess(estimateUsage(makeScript([beat])), "movie")[0];
-    assert.equal(movie.model, "veo-3.1-generate-preview");
-    assert.deepEqual(movie.predictSec, { value: 16, precision: "exact" });
+  it("counts every second Gemini Omni generates when the default Google model extends a clip past 10 seconds", () => {
+    const predictSec = (duration: number) =>
+      byProcess(
+        estimateUsage(makeScript([{ speaker: "Presenter", text: "", moviePrompt: "wave", duration, movieParams: { provider: "google" } }])),
+        "movie",
+      )[0];
+    assert.equal(predictSec(12).model, "gemini-omni-1.1-flash");
+    assert.deepEqual(predictSec(12).predictSec, { value: 12, precision: "exact" });
+    assert.deepEqual(predictSec(7.5).predictSec, { value: 8, precision: "exact" });
+    assert.deepEqual(predictSec(2).predictSec, { value: 3, precision: "exact" });
+    assert.deepEqual(predictSec(55).predictSec, { value: 40, precision: "exact" });
+    assert.ok(Math.abs((predictSec(12).costUSD ?? 0) - 12 * 0.1014) < 1e-12);
   });
 
   it("uses the Vertex AI Veo name when the movie goes to Vertex AI", () => {

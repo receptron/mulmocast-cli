@@ -5,13 +5,13 @@
   "canvasSize": { "width": 1280, "height": 720 },
   "beats": [
     {
-      "id": "google_genai_lite",
-      "text": "Google GenAI veo-3.1-lite-generate-preview text-to-video",
+      "id": "google_genai_omni",
+      "text": "Google GenAI gemini-omni-1.1-flash text-to-video",
       "duration": 4,
       "moviePrompt": "A calm ocean wave rolling onto a sandy beach at golden hour",
       "movieParams": {
         "provider": "google",
-        "model": "veo-3.1-lite-generate-preview"
+        "model": "gemini-omni-1.1-flash"
       }
     },
     {

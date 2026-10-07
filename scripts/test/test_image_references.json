@@ -15,7 +15,8 @@
   },
   "movieParams": {
     "provider": "google",
-    "model": "veo-3.1-generate-preview"
+    "model": "veo-3.1-generate-001",
+    "vertexai_project": "YOUR_PROJECT_ID"
   },
   "lang": "en",
   "beats": [
@@ -24,7 +25,7 @@
       "text": "veo-3.1 with both ASSET and STYLE reference images",
       "moviePrompt": "the woman runs through narrow alleyways, neon signs blurring in the rain",
       "movieParams": {
-        "model": "veo-3.1-generate-preview",
+        "model": "veo-3.1-generate-001",
         "referenceImages": [
           { "imageName": "character", "referenceType": "ASSET" },
           { "imageName": "black_cat", "referenceType": "ASSET" }

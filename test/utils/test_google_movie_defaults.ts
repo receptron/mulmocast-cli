@@ -1,16 +1,9 @@
 import test from "node:test";
 import assert from "node:assert";
-import {
-  defaultMovieModel,
-  provider2MovieAgent,
-  vertexAIGlobalOnlyImageModels,
-  vertexImageLocation,
-  veoExtendedSeconds,
-  veoExtensionCount,
-  VEO_EXTENSION_MODEL,
-} from "../../src/types/provider2agent.js";
+import { defaultMovieModel, provider2MovieAgent, vertexAIGlobalOnlyImageModels, vertexImageLocation } from "../../src/types/provider2agent.js";
 
-test("defaultMovieModel: Vertex AI gets the GA Veo name, the Gemini API the shared default", () => {
+test("defaultMovieModel: Vertex AI gets the GA Veo name, the Gemini API Gemini Omni", () => {
+  assert.strictEqual(defaultMovieModel("google"), "gemini-omni-1.1-flash");
   assert.strictEqual(defaultMovieModel("google"), provider2MovieAgent.google.defaultModel);
   assert.strictEqual(defaultMovieModel("google", {}), provider2MovieAgent.google.defaultModel);
   assert.strictEqual(defaultMovieModel("google", { vertexai_project: "p" }), "veo-3.1-generate-001");
@@ -18,19 +11,12 @@ test("defaultMovieModel: Vertex AI gets the GA Veo name, the Gemini API the shar
   assert.ok(provider2MovieAgent.google.modelParams["veo-3.1-generate-001"], "the Vertex default has model params");
 });
 
-test("veoExtendedSeconds: an 8-second first segment, then 8 seconds per extension", () => {
-  assert.deepStrictEqual(
-    [9, 15, 16, 17, 24, 25].map((sec) => [sec, veoExtensionCount(sec), veoExtendedSeconds(sec)]),
-    [
-      [9, 1, 16],
-      [15, 1, 16],
-      [16, 1, 16],
-      [17, 2, 24],
-      [24, 2, 24],
-      [25, 3, 32],
-    ],
-  );
-  assert.strictEqual(VEO_EXTENSION_MODEL, provider2MovieAgent.google.defaultModel);
+test("google movie models: the Veo 3.1 previews (shut down 2026-10-22) are gone, with no price left behind", () => {
+  ["veo-3.1-generate-preview", "veo-3.1-lite-generate-preview"].forEach((model) => {
+    assert.strictEqual(provider2MovieAgent.google.models.includes(model), false, model);
+    assert.strictEqual(model in provider2MovieAgent.google.modelParams, false, model);
+  });
+  provider2MovieAgent.google.models.forEach((model) => assert.ok(provider2MovieAgent.google.modelParams[model], `${model} has model params`));
 });
 
 test("vertexAIGlobalOnlyImageModels: the GA Lite and Pro image models are global-only; 3.1 Flash Image is not", () => {

@@ -155,11 +155,11 @@ Vertex AI 経由で Google Cloud TTS または Gemini TTS を使用できます�
 
 ### 動画生成
 
-| モデル                          | 説明                                          |
-| ------------------------------- | --------------------------------------------- |
-| `veo-3.1-generate-preview`      | Veo 3.1 プレビュー                            |
-| `veo-3.1-lite-generate-preview` | Veo 3.1 Lite プレビュー                       |
-| `veo-3.1-generate-001`          | Veo 3.1（Vertex AI のみ。Vertex AI での既定） |
+| モデル                 | 説明                                          |
+| ---------------------- | --------------------------------------------- |
+| `veo-3.1-generate-001` | Veo 3.1（Vertex AI のみ。Vertex AI での既定） |
+
+Gemini API の既定 `gemini-omni-1.1-flash` は Vertex AI では使えません。
 
 ### TTS（音声合成）
 
