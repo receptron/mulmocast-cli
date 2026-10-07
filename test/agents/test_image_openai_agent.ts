@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert";
 import { imageOpenaiAgent, buildDeprecatedModelMessage } from "../../src/agents/image_openai_agent.js";
-import { gptImageQuality, gptImages, provider2ImageAgent } from "../../src/types/provider2agent.js";
+import { gptImageQuality, gptImages, isGptImage25Model, provider2ImageAgent } from "../../src/types/provider2agent.js";
 import { agentCallContext } from "../fixtures.js";
 
 const baseParams = { ...agentCallContext, config: { apiKey: "fake-key-not-used" } };
@@ -73,4 +73,9 @@ test("gptImageQuality: the 2.5 models default to high; a set quality and the old
   assert.strictEqual(gptImageQuality("gpt-image-2.5-sunburst", "auto"), "auto");
   ["gpt-image-1", "gpt-image-1-mini", "gpt-image-1.5", "gpt-image-2"].forEach((model) => assert.strictEqual(gptImageQuality(model), undefined, model));
   assert.strictEqual(gptImageQuality("gpt-image-1", "medium"), "medium");
+});
+
+test("isGptImage25Model: the 2.5 models only", () => {
+  ["gpt-image-2.5-sunburst", "gpt-image-2.5-flare"].forEach((model) => assert.strictEqual(isGptImage25Model(model), true, model));
+  ["gpt-image-2", "gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini", ""].forEach((model) => assert.strictEqual(isGptImage25Model(model), false, model));
 });

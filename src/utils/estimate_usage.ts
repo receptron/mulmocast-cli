@@ -10,6 +10,7 @@ import {
   provider2TTSAgent,
   provider2MovieAgent,
   gptImageOutputTokens,
+  isGptImage25Model,
   getModelDuration,
   defaultMovieModel,
   veoExtendedSeconds,
@@ -219,8 +220,8 @@ const gptImageSize = (canvasSize: MulmoCanvasDimension): string => {
 const gptImageOutputMetric = (model: string, canvasSize: MulmoCanvasDimension, quality?: string): EstimatedMetric => {
   const table = gptImageOutputTokens[gptImageSize(canvasSize)];
   const knownQuality = quality === "low" || quality === "medium" || quality === "high" ? quality : undefined;
-  // Unspecified quality means API "auto"; assume "high" as the conservative upper bound.
-  const tokens = table[knownQuality ?? "high"];
+  // Anything else renders at "high" (the upper bound), except an explicit "auto" on 2.5, which renders at "low".
+  const tokens = table[knownQuality ?? (quality === "auto" && isGptImage25Model(model) ? "low" : "high")];
   return metric(tokens, GPT_IMAGE_FIXED_TOKEN_MODELS.includes(model) && knownQuality !== undefined);
 };
 

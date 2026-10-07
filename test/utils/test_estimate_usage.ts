@@ -93,6 +93,15 @@ describe("estimateUsage: image generation", () => {
     assert.deepEqual(byProcess(records, "image")[0].outputTokens, { value: 6208, precision: "estimated" });
   });
 
+  it("an explicit auto is estimated at low on gpt-image-2.5 and at high on gpt-image-1", () => {
+    const outputTokens = (model: string) =>
+      byProcess(estimateUsage(makeScript([{ speaker: "Presenter", text: "", imagePrompt: "a cat", imageParams: { model, quality: "auto" } }])), "image")[0]
+        .outputTokens;
+    assert.deepEqual(outputTokens("gpt-image-2.5-sunburst"), { value: 400, precision: "estimated" });
+    assert.deepEqual(outputTokens("gpt-image-2.5-flare"), { value: 400, precision: "estimated" });
+    assert.deepEqual(outputTokens("gpt-image-1"), { value: 6208, precision: "estimated" });
+  });
+
   it("generates an image from text when no imagePrompt is present", () => {
     const records = estimateUsage(makeScript([{ speaker: "Presenter", text: "Just narration" }]));
     assert.equal(byProcess(records, "image").length, 1);
