@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.16.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.16.0) (2026-10-07)
+
+- **Default models moved off shut-down and deprecated ones** (#1611, #1612, #1613, #1614; #1605, #1610). Every replacement was checked against the provider's model-list API and with real calls:
+  - OpenAI image: `gpt-image-1` (shuts down 2026-10-23) → `gpt-image-2.5-sunburst`; `gpt-image-2.5-sunburst` / `-flare` take the GPT Image path (`quality`, `moderation`, `images.edit` for references)
+  - OpenAI LLM: `gpt-5` → `gpt-5.6-sol` (the 5.6 family is added)
+  - Google video: `veo-2.0-generate-001` (already 404) → `veo-3.1-generate-preview`, and `veo-3.1-generate-001` on Vertex AI. **Google video beats with the default model now have sound** (Veo 3.1 always generates audio)
+  - Google image: `gemini-2.5-flash-image` → `gemini-3.1-flash-lite-image`; GA `gemini-3.1-flash-image` / `gemini-3-pro-image` added
+  - Gemini LLM: `gemini-2.5-flash` → `gemini-3.8-flash`
+  - Groq: `llama-3.1-8b-instant` (already 404) → `openai/gpt-oss-20b`; the Llama / DeepSeek models are removed
+  - Anthropic: `claude-sonnet-4-5` (retires 2026-11-30) → `claude-sonnet-4-6`; the retired 4.0 / 4.1 models are removed. `claude-sonnet-5-5` waits on receptron/graphai#1359
+  - Replicate: `kwaivgi/kling-v1.6-pro` (404) removed
+- **Gemini image models are routed by name**: every `gemini-*` image model goes through `generateContent` (it was three hard-coded names, so new models fell into the Imagen branch)
+- **Vertex AI**:
+  - global-only image models (including the new default) use `global` when `vertexai_location` is omitted
+  - generated reference images / movies now use the beats' Vertex AI target
+- **`--estimate`**:
+  - prices refreshed (ElevenLabs, Replicate video; new rows for the new defaults)
+  - Veo 3.1 clips extended past 8 s are counted in full
+- **remotion scenes are kept off the network** (#1609, #1594), always on. HTTP(S) is blocked except the render's own bundle server; `WebSocket` / `EventSource` are blocked by CSP; WebRTC is removed in every frame. remotion's own server cannot be used as a way out either: `/proxy` is blocked, only `/` and `/index.html` load as documents, and `<Audio>` / `<Video>` sources are not downloaded. The browser is opened once per render
+- The Gemini TTS default stays on 2.5 until 3.8 TTS (WAV responses, `speech_metadata`) is supported (#1582)
+
+📦 **npm**: [`mulmocast@2.16.0`](https://www.npmjs.com/package/mulmocast/v/2.16.0), [`@mulmocast/types@2.16.0`](https://www.npmjs.com/package/@mulmocast/types/v/2.16.0)
+
 ## [2.15.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.15.0) (2026-10-07)
 
 - **`renderRemotionFrames()` in `mulmocast/remotion`** (#1603, #1602): render a Remotion component (TSX source) at fixed fractions of its length as PNGs, with no script and no audio, so a host's agent can review the scene it wrote. `code`, `durationSec` and `outDir` are required; `fps` / `width` / `height` default to 30 / 1920 / 1080; `fractions` defaults to `REMOTION_REVIEW_FRACTIONS` (`[0.3, 0.6, 0.95]`, the same moments the `claude -p` visual review sees). Stills only, no video; work files go to a temporary directory that is removed afterwards. Returns `{ fraction, frame, path }[]`
