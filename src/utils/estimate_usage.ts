@@ -13,9 +13,6 @@ import {
   isGptImage25Model,
   getModelDuration,
   defaultMovieModel,
-  veoExtendedSeconds,
-  VEO_EXTENSION_MODEL,
-  VEO_SEGMENT_SEC,
   getModelPricing,
   defaultProviders,
   type ModelPricing,
@@ -24,6 +21,7 @@ import { text2SpeechProviderSchema, text2MovieProviderSchema } from "../types/sc
 import { MulmoPresentationStyleMethods } from "../methods/mulmo_presentation_style.js";
 import { MulmoBeatMethods } from "../methods/mulmo_beat.js";
 import { geminiTtsInputText } from "./gemini_tts.js";
+import { geminiOmniTotalSec, isGeminiOmniVideoModel } from "./gemini_omni_video.js";
 import { imagePrompt, htmlImageSystemPrompt, translateSystemPrompt, translatePrompts } from "./prompt.js";
 
 const MILLION = 1_000_000;
@@ -294,9 +292,8 @@ const beatDurationMetric = (beat: MulmoBeat): EstimatedMetric => {
   return estimated(beat.text ? estimateSpeechSec(beat.text) : DEFAULT_MOVIE_DURATION_SEC);
 };
 
-// The movie agent extends these clips past one segment instead of capping them, and Google bills every generated second.
-const isVeoExtension = (provider: keyof typeof provider2MovieAgent, model: string, duration: EstimatedMetric) =>
-  provider === "google" && model === VEO_EXTENSION_MODEL && duration.value > VEO_SEGMENT_SEC;
+// Gemini Omni beats past one segment are extended rather than capped, and Google bills every generated second.
+const isGeminiOmniMovie = (provider: keyof typeof provider2MovieAgent, model: string) => provider === "google" && isGeminiOmniVideoModel(model);
 
 const snapMovieDuration = (provider: keyof typeof provider2MovieAgent, model: string, duration: EstimatedMetric): EstimatedMetric => {
   if (!isKeyOf(provider2MovieAgent[provider].modelParams, model)) {
@@ -319,8 +316,8 @@ const estimateMovieGeneration = (
   }
   const model = info.movieParams?.model ?? defaultMovieModel(provider, info.movieParams);
   const duration = beat ? beatDurationMetric(beat) : estimated(DEFAULT_MOVIE_DURATION_SEC);
-  const predictSec = isVeoExtension(provider, model, duration)
-    ? metric(veoExtendedSeconds(duration.value), duration.precision === "exact")
+  const predictSec = isGeminiOmniMovie(provider, model)
+    ? metric(geminiOmniTotalSec(duration.value), duration.precision === "exact")
     : snapMovieDuration(provider, model, duration);
   return attachCost({ process: refKey === undefined ? "movie" : "movieReference", beatIndex, refKey, provider, model, predictSec });
 };

@@ -155,11 +155,11 @@ When changing the model for individual beats, you also need to specify `vertexai
 
 ### Video Generation
 
-| Model                           | Description                                 |
-| ------------------------------- | ------------------------------------------- |
-| `veo-3.1-generate-preview`      | Veo 3.1 Preview                             |
-| `veo-3.1-lite-generate-preview` | Veo 3.1 Lite Preview                        |
-| `veo-3.1-generate-001`          | Veo 3.1 (Vertex AI only; the default there) |
+| Model                  | Description                                 |
+| ---------------------- | ------------------------------------------- |
+| `veo-3.1-generate-001` | Veo 3.1 (Vertex AI only; the default there) |
+
+The Gemini API default `gemini-omni-1.1-flash` is not supported with Vertex AI.
 
 ### TTS (Text-to-Speech)
 

@@ -200,11 +200,11 @@ test("generatedMovieHasAudio: always-audio replicate model has audio", () => {
 
 test("generatedMovieHasAudio: google always-audio model has audio", () => {
   const { presentationStyle } = createMockContext();
-  const beat = createMockBeat({ moviePrompt: "wave", movieParams: { provider: "google", model: "veo-3.1-generate-preview" } });
+  const beat = createMockBeat({ moviePrompt: "wave", movieParams: { provider: "google", model: "veo-3.1-generate-001" } });
   assert.equal(MulmoPresentationStyleMethods.generatedMovieHasAudio(presentationStyle, beat), true);
 });
 
-test("generatedMovieHasAudio: google default model (Veo 3.1, audio always) has audio", () => {
+test("generatedMovieHasAudio: google default model (Gemini Omni, audio always) has audio", () => {
   const { presentationStyle } = createMockContext();
   const beat = createMockBeat({ moviePrompt: "wave", movieParams: { provider: "google" } });
   assert.equal(MulmoPresentationStyleMethods.generatedMovieHasAudio(presentationStyle, beat), true);

@@ -11,7 +11,7 @@
   "lang": "en",
   "movieParams": {
     "provider": "google",
-    "model": "veo-3.1-generate-preview"
+    "model": "gemini-omni-1.1-flash"
   },
   "beats": [
     {
