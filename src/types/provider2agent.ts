@@ -540,9 +540,11 @@ export const provider2LLMAgent = {
   },
   anthropic: {
     agentName: "anthropicAgent",
-    defaultModel: "claude-sonnet-4-5-20250929",
+    // claude-sonnet-4-5 retires on 2026-11-30. Its named successor, claude-sonnet-5-5 (like claude-opus-4-8),
+    // rejects the temperature @graphai/anthropic_agent always sends, so the newest model that answers is used.
+    defaultModel: "claude-sonnet-4-6",
     max_tokens: 8192,
-    models: ["claude-opus-4-1-20250805", "claude-opus-4-20250514", "claude-sonnet-4-20250514", "claude-sonnet-4-5-20250929", "claude-haiku-4-5-20251001"],
+    models: ["claude-sonnet-4-6", "claude-sonnet-4-5-20250929", "claude-haiku-4-5-20251001"],
     keyName: "ANTHROPIC_API_KEY",
     apiKeyNameOverride: "ANTHROPIC_API_TOKEN",
     // GraphAI is currently using ANTHROPIC_API_KEY, but the official name is ANTHROPIC_API_TOKEN.
@@ -556,10 +558,12 @@ export const provider2LLMAgent = {
   },
   groq: {
     agentName: "groqAgent",
-    defaultModel: "llama-3.1-8b-instant",
+    // The Llama and DeepSeek models were shut down; Groq names openai/gpt-oss-20b as the 8B model's successor.
+    // https://console.groq.com/docs/deprecations
+    defaultModel: "openai/gpt-oss-20b",
     keyName: "GROQ_API_KEY",
     max_tokens: 4096,
-    models: ["llama-3.1-8b-instant", "llama-3.3-70b-versatile", "deepseek-r1-distill-llama-70b", "openai/gpt-oss-120b", "openai/gpt-oss-20b"],
+    models: ["openai/gpt-oss-20b", "openai/gpt-oss-120b"],
   },
   mock: {
     agentName: "mediaMockAgent",
@@ -721,6 +725,7 @@ export const modelPricing: Record<string, Record<string, ModelPricing>> = {
   anthropic: {
     // https://platform.claude.com/docs/en/docs/about-claude/pricing
     "claude-sonnet-4-5-20250929": { unit: "tokens", inputPerMTokensUSD: 3, outputPerMTokensUSD: 15, asOf: "2026-07-03" },
+    "claude-sonnet-4-6": { unit: "tokens", inputPerMTokensUSD: 3, outputPerMTokensUSD: 15, asOf: "2026-10-07" },
   },
   elevenlabs: {
     // https://elevenlabs.io/pricing/api ($0.10 per 1k chars for multilingual/v3, $0.05 for flash/turbo)
