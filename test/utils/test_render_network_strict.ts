@@ -17,7 +17,7 @@ import { strictNetworkLaunchArgs, withRenderContentSecurityPolicy } from "../../
 // WebSocket, and WebRTC (UDP) needs the constructors removed before any page script runs.
 const hostilePage = (base: string, udpPort: number) => `<!doctype html><html><head>
 <style>body{background:url(${base}/css-url)}</style>
-<link rel="prefetch" href="${base}/prefetch"><link rel="preconnect" href="${base}"><script src="${base}/script.js"></script></head><body>
+<link rel="prefetch" href="${base}/prefetch"><link rel="preconnect" href="${base}"><link rel="dns-prefetch" href="${base}"><script src="${base}/script.js"></script></head><body>
 <img src="${base}/img"><iframe src="${base}/iframe"></iframe>
 <script>
 const B = ${JSON.stringify(base)};
