@@ -70,9 +70,11 @@ export const MulmoStudioContextMethods = {
     return context.fileDirs.outDirPath;
   },
   // In strict network mode a renderer may read files only from the script's folder and mulmocast's output folders.
+  // A script loaded by URL has no local folder: its mulmoFileDirPath is the parent of the base directory.
   getRenderNetworkOptions(context: MulmoStudioContext): { strictNetwork: boolean; allowedFileRoots: string[] } {
-    const { mulmoFileDirPath, outDirPath, imageDirPath, audioDirPath } = context.fileDirs;
-    return { strictNetwork: Boolean(context.strictNetwork), allowedFileRoots: [mulmoFileDirPath, outDirPath, imageDirPath, audioDirPath] };
+    const { mulmoFileDirPath, outDirPath, imageDirPath, audioDirPath, isHttpPath } = context.fileDirs;
+    const scriptRoots = isHttpPath ? [] : [mulmoFileDirPath];
+    return { strictNetwork: Boolean(context.strictNetwork), allowedFileRoots: [...scriptRoots, outDirPath, imageDirPath, audioDirPath] };
   },
   getFileName(context: MulmoStudioContext): string {
     return context.studio.filename;
