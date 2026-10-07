@@ -49,6 +49,12 @@ export const provider2TTSAgent = {
 
 export const gptImages = ["gpt-image-2.5-sunburst", "gpt-image-2.5-flare", "gpt-image-2", "gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini"];
 
+// The 2.5 models resolve an unset (or "auto") quality to "low", where gpt-image-1 resolved it to "high";
+// sending "high" keeps the look scripts had before the default model changed.
+const GPT_IMAGE_25_PREFIX = "gpt-image-2.5";
+export const gptImageQuality = <Quality extends string>(model: string, quality?: Quality): Quality | "high" | undefined =>
+  quality ?? (model.startsWith(GPT_IMAGE_25_PREFIX) ? "high" : undefined);
+
 const supportedOpenAIImageReplacementHint = "Use 'gpt-image-2.5-sunburst' or another supported model.";
 
 export const deprecatedOpenAIImageModelHints = {

@@ -4,7 +4,7 @@ import { AgentFunction, AgentFunctionInfo, GraphAILogger } from "graphai";
 import { toFile, AuthenticationError, RateLimitError, APIError } from "openai";
 import { createOpenAIClient } from "../utils/openai_client.js";
 import { safeFetch, FETCH_DOWNLOAD_TIMEOUT_MS } from "../utils/fetch.js";
-import { provider2ImageAgent, gptImages, deprecatedOpenAIImageModelHints, type DeprecatedOpenAIImageModel } from "../types/provider2agent.js";
+import { provider2ImageAgent, gptImages, gptImageQuality, deprecatedOpenAIImageModelHints, type DeprecatedOpenAIImageModel } from "../types/provider2agent.js";
 import {
   apiKeyMissingError,
   agentGenerationError,
@@ -77,8 +77,9 @@ export const imageOpenaiAgent: AgentFunction<OpenAIImageAgentParams, AgentBuffer
   if (gptImages.includes(model)) {
     imageOptions.moderation = moderation || "auto";
     imageOptions.background = "opaque";
-    if (quality) {
-      imageOptions.quality = quality;
+    const resolvedQuality = gptImageQuality(model, quality);
+    if (resolvedQuality) {
+      imageOptions.quality = resolvedQuality;
     }
   }
 
