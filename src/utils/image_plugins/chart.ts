@@ -4,6 +4,7 @@ import { renderHTMLToImage, interpolate } from "../html_render.js";
 import { parrotingImagePath, generateUniqueId } from "./utils.js";
 import { resolveCombinedStyle } from "./bg_image_util.js";
 import { chartHtml, escapedChartTemplateValues, resolveChartPlugins, stringifyChartData } from "./chart_html.js";
+import { MulmoStudioContextMethods } from "../../methods/mulmo_studio_context.js";
 
 export const imageType = "chart";
 
@@ -22,7 +23,15 @@ const processChart = async (params: ImageProcessorParams) => {
     chart_width: chart_width.toString(),
     chart_plugins: resolveChartPlugins(chartType),
   });
-  await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height);
+  await renderHTMLToImage(
+    htmlData,
+    imagePath,
+    canvasSize.width,
+    canvasSize.height,
+    false,
+    false,
+    MulmoStudioContextMethods.getRenderNetworkOptions(params.context),
+  );
   return imagePath;
 };
 

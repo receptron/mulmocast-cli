@@ -148,6 +148,8 @@ export type MulmoStudioContext = {
   presentationStyle: MulmoPresentationStyle;
   multiLingual: MulmoStudioMultiLingualArray;
   usageCollector?: UsageCollectorAPI;
+  // HTML renderers (images, captions, PDF) may reach only local files and our templates' CDNs.
+  strictNetwork?: boolean;
 };
 
 export type ScriptingParams = {
@@ -240,6 +242,7 @@ export type InitOptions = {
   c?: string;
   p?: string;
   g?: boolean;
+  strictNetwork?: boolean;
 };
 
 export type PublicAPIArgs = {

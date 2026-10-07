@@ -9,6 +9,7 @@ import { pathToDataUrl } from "../../methods/mulmo_media_source.js";
 import { MulmoMediaSourceMethods } from "../../methods/mulmo_media_source.js";
 import { MulmoPresentationStyleMethods } from "../../methods/mulmo_presentation_style.js";
 import { imageAction, imageFileTarget, unknownMediaType } from "../error_cause.js";
+import { MulmoStudioContextMethods } from "../../methods/mulmo_studio_context.js";
 
 export const imageType = "slide";
 
@@ -177,7 +178,15 @@ const processSlide = async (params: ImageProcessorParams) => {
   const reference = (beat.image as MulmoSlideMedia).reference;
   const resolvedBranding = await resolveAndConvertBranding(params);
   const html = generateSlideHTML(theme, slide, reference, resolvedBranding);
-  await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height);
+  await renderHTMLToImage(
+    html,
+    imagePath,
+    canvasSize.width,
+    canvasSize.height,
+    false,
+    false,
+    MulmoStudioContextMethods.getRenderNetworkOptions(params.context),
+  );
   return imagePath;
 };
 

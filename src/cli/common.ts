@@ -53,6 +53,11 @@ export const commonOptions = (yargs: Argv) => {
       type: "boolean",
       default: false,
     })
+    .option("strict-network", {
+      describe: "Let HTML renderers reach only local files and the CDNs mulmocast's templates use (also MULMO_STRICT_NETWORK=1)",
+      type: "boolean",
+      default: false,
+    })
     .option("p", {
       alias: "presentationStyle",
       describe: "Presentation Style",

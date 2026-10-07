@@ -8,6 +8,7 @@ import { renderMarkdownContent, renderMarkdownLayout, layoutToMarkdown, toMarkdo
 import { resolveImageRefs, resolveMovieRefs } from "./html_tailwind.js";
 
 import { isObject } from "graphai";
+import { MulmoStudioContextMethods } from "../../methods/mulmo_studio_context.js";
 
 /**
  * This path renders once to a PNG, so a random element id is fine. The browser path needs
@@ -92,7 +93,15 @@ const processMarkdown = async (params: ImageProcessorParams) => {
   const { html: rawHtml, hasMermaid } = await generateHtml(params);
   const resolvedImages = resolveImageRefs(rawHtml, params.imageRefs ?? {});
   const html = resolveMovieRefs(resolvedImages, params.movieRefs ?? {});
-  await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height, hasMermaid);
+  await renderHTMLToImage(
+    html,
+    imagePath,
+    canvasSize.width,
+    canvasSize.height,
+    hasMermaid,
+    false,
+    MulmoStudioContextMethods.getRenderNetworkOptions(params.context),
+  );
 
   return imagePath;
 };

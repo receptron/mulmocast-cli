@@ -2,6 +2,7 @@ import { BeatRenderParams, ImageProcessorParams } from "../../types/index.js";
 import { parrotingImagePath } from "./utils.js";
 import { htmlPlugin, templateNameTofunctionName } from "mulmocast-vision";
 import { resolve as resolvePath } from "path";
+import { agentGenerationError, imageAction, unsupportedImageTypeTarget } from "../error_cause.js";
 export const imageType = "vision";
 
 const processVision = async (params: ImageProcessorParams) => {
@@ -9,6 +10,12 @@ const processVision = async (params: ImageProcessorParams) => {
 
   const rootDir = context.fileDirs.nodeModuleRootPath ? resolvePath(context.fileDirs.nodeModuleRootPath, "mulmocast-vision") : undefined;
   if (!beat?.image || beat.image.type !== imageType) return;
+  // mulmocast-vision launches its own browser, which the strict network guard cannot reach.
+  if (context.strictNetwork) {
+    throw new Error("vision beats cannot be rendered with --strict-network: mulmocast-vision renders in its own browser, outside the network guard", {
+      cause: agentGenerationError("visionPlugin", imageAction, unsupportedImageTypeTarget),
+    });
+  }
 
   const handler = new htmlPlugin({ rootDir });
 
