@@ -5,6 +5,17 @@ import { fileURLToPath } from "node:url";
 // URLs, and the CDNs our own templates load from. Kept free of I/O so the rules can be tested without a browser.
 
 export const RENDER_CDN_HOSTS = ["cdn.tailwindcss.com", "cdn.jsdelivr.net", "fonts.googleapis.com", "fonts.gstatic.com"];
+// jsDelivr serves any file of any package and publishes per-version and per-file hit counts, so a page free to
+// choose the path could signal through them; only the exact files our templates load are allowed.
+export const RENDER_JSDELIVR_PATHS = [
+  "/npm/mermaid/dist/mermaid.min.js",
+  "/npm/mermaid@10/dist/mermaid.min.js",
+  "/npm/chart.js",
+  "/npm/chart.js@4",
+  "/npm/chartjs-chart-sankey",
+  "/npm/chartjs-chart-treemap@3",
+];
+const JSDELIVR_HOST = "cdn.jsdelivr.net";
 const IN_MEMORY_SCHEMES = ["data:", "blob:", "about:"];
 
 export type RenderNetworkOptions = { strictNetwork?: boolean; allowedFileRoots?: readonly string[] };
@@ -46,12 +57,17 @@ const isInsideFileRoots = (parsed: URL, realRoots: readonly string[], realPath: 
 
 const identityRealPath: RealPath = (filePath) => nodePath.resolve(filePath);
 
+const isAllowedCdnUrl = (parsed: URL): boolean => {
+  if (parsed.protocol !== "https:" || parsed.port !== "" || !RENDER_CDN_HOSTS.includes(parsed.hostname)) return false;
+  return parsed.hostname !== JSDELIVR_HOST || (parsed.search === "" && RENDER_JSDELIVR_PATHS.includes(parsed.pathname));
+};
+
 export const isAllowedRenderRequest = (url: string, realRoots: readonly string[] = [], realPath: RealPath = identityRealPath): boolean => {
   const parsed = parseUrl(url);
   if (!parsed) return false;
   if (IN_MEMORY_SCHEMES.includes(parsed.protocol)) return true;
   if (parsed.protocol === "file:") return isInsideFileRoots(parsed, realRoots, realPath);
-  return parsed.protocol === "https:" && parsed.port === "" && RENDER_CDN_HOSTS.includes(parsed.hostname);
+  return isAllowedCdnUrl(parsed);
 };
 
 // A root that does not exist yet (the temp page before it is written) is its real parent plus its name.

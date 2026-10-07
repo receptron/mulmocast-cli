@@ -468,7 +468,7 @@ HTML-based beats (`html_tailwind`, `markdown`, `textSlide`, `chart`, `mermaid`, 
 mulmo images untrusted.json --strict-network
 ```
 
-The renderer may then load only files in the script's folder and mulmocast's output folders, `data:` / `blob:` URLs, and the CDNs mulmocast's own templates use (`cdn.tailwindcss.com`, `cdn.jsdelivr.net`, `fonts.googleapis.com`, `fonts.gstatic.com`). Anything else — other local files, remote images in the script, `fetch`, WebSockets, WebRTC, popups, preconnect hints — is blocked, and each blocked request is logged (`strict network: blocked …`). Files next to the script in the same folder remain readable, so keep an untrusted script in a folder of its own. Remotion beats are always guarded this way. The `vision` beat renders in its own browser inside `mulmocast-vision` and is not covered.
+The renderer may then load only files in the script's folder and mulmocast's output folders, `data:` / `blob:` URLs, and the CDNs mulmocast's own templates use (`cdn.tailwindcss.com`, `fonts.googleapis.com`, `fonts.gstatic.com`, and on `cdn.jsdelivr.net` only the mermaid and Chart.js files the templates load). Anything else — other local files, remote images in the script, `fetch`, WebSockets, WebRTC, popups, preconnect hints — is blocked, and each blocked request is logged (`strict network: blocked …`). Files next to the script in the same folder remain readable, so keep an untrusted script in a folder of its own. Requests to the allowed CDNs still reach those providers, so treat what a page sends there as visible to them. Remotion beats are always guarded this way. The `vision` beat renders in its own browser inside `mulmocast-vision` and is not covered.
 
 ## Cache and Re-run
 

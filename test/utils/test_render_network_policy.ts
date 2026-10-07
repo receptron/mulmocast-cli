@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
+import fs from "node:fs";
 import nodePath from "node:path";
 import { pathToFileURL } from "node:url";
 import {
@@ -93,8 +94,32 @@ test("isAllowedRenderRequest: https to the templates' CDNs only", () => {
     "https://fonts.googleapis.com/css2?family=Noto+Sans+JP",
     "https://fonts.gstatic.com/s/notosansjp/v1/x.woff2",
     "https://CDN.JSDELIVR.NET/npm/chart.js",
+    "https://cdn.jsdelivr.net/npm/chart.js@4",
+    "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js",
+    "https://cdn.jsdelivr.net/npm/chartjs-chart-sankey",
+    "https://cdn.jsdelivr.net/npm/chartjs-chart-treemap@3",
   ].forEach((url) => assert.strictEqual(isAllowedRenderRequest(url), true, url));
-  RENDER_CDN_HOSTS.forEach((host) => assert.strictEqual(isAllowedRenderRequest(`https://${host}/`), true, host));
+  ["cdn.tailwindcss.com", "fonts.googleapis.com", "fonts.gstatic.com"].forEach((host) =>
+    assert.strictEqual(isAllowedRenderRequest(`https://${host}/`), true, host),
+  );
+});
+
+test("isAllowedRenderRequest: jsDelivr only for the exact files our templates load", () => {
+  [
+    "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js",
+    "https://cdn.jsdelivr.net/npm/chart.js@3",
+    "https://cdn.jsdelivr.net/npm/chart.js?d=SECRET",
+    "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs",
+    "https://cdn.jsdelivr.net/npm/mermaid/dist/SECRET.js",
+    "https://cdn.jsdelivr.net/",
+    "https://cdn.jsdelivr.net/npm/attacker-package/x.js",
+    "https://cdn.jsdelivr.net/npm/chart.js-evil/x.js",
+    "https://cdn.jsdelivr.net/npm/mermaidx",
+    "https://cdn.jsdelivr.net/npm/@scope/mermaid/x.js",
+    "https://cdn.jsdelivr.net/gh/attacker/repo/x.js",
+    "https://cdn.jsdelivr.net/npm/../npm/attacker/x.js",
+    "https://cdn.jsdelivr.net/combine/npm/attacker,npm/mermaid",
+  ].forEach((url) => assert.strictEqual(isAllowedRenderRequest(url), false, url));
 });
 
 test("isAllowedRenderRequest: everything else is blocked, including look-alikes of the allowed hosts", () => {
@@ -106,6 +131,7 @@ test("isAllowedRenderRequest: everything else is blocked, including look-alikes 
     "https://cdn.tailwindcss.com@evil.example/",
     "https://x.cdn.jsdelivr.net/",
     "https://jsdelivr.net/",
+    "https://evil.example/npm/mermaid",
     "https://example.com/a.png",
     plainHttp("127.0.0.1:8080/"),
     plainHttp("localhost:3000/"),
@@ -149,4 +175,24 @@ test("withRenderContentSecurityPolicy: <header> is not <head>", () => {
 
 test("RENDER_CONTENT_SECURITY_POLICY: limits connections to the page's own origin", () => {
   assert.match(RENDER_CONTENT_SECURITY_POLICY, /^connect-src 'self'/);
+});
+
+// A template that changes a CDN URL must change the allowlist too, or strict mode stops rendering it.
+const sourceFiles = (dir: string): string[] =>
+  fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const entryPath = nodePath.join(dir, entry.name);
+    if (entry.isDirectory()) return sourceFiles(entryPath);
+    return /\.(ts|js|html|css)$/.test(entry.name) ? [entryPath] : [];
+  });
+
+test("isAllowedRenderRequest: every CDN URL in our sources and templates is allowed", () => {
+  const sourceRoots = ["src", "assets", "node_modules/@mulmocast/deck/lib"].filter((dir) => fs.existsSync(dir));
+  const urls = sourceRoots
+    .flatMap(sourceFiles)
+    .flatMap((file) => fs.readFileSync(file, "utf8").match(/https:\/\/(?:cdn\.jsdelivr\.net|cdn\.tailwindcss\.com|fonts\.googleapis\.com)[^"'`)\s<>]*/g) ?? []);
+  assert.ok(
+    urls.some((url) => url.includes("cdn.jsdelivr.net")),
+    "the scan found the templates' jsDelivr URLs",
+  );
+  [...new Set(urls)].forEach((url) => assert.strictEqual(isAllowedRenderRequest(url), true, url));
 });
