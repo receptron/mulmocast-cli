@@ -481,7 +481,7 @@
   dependencies:
     google-gax "^5.0.0"
 
-"@google/genai@^2.17.1", "@google/genai@^2.23.0":
+"@google/genai@^2.23.0", "@google/genai@^2.24.0":
   version "2.27.0"
   resolved "https://registry.yarnpkg.com/@google/genai/-/genai-2.27.0.tgz#dfa0c2ca1af9b0671fdc1c36db9e1275fdc8fc60"
   integrity sha512-W6F9Y9d4h7cVQNa85IPCOVVP9PiUzve/ZQPBvQnBmnBJcLvxstEw+R2X/RyCH0SOe0HVDQzeKDpDUf6ZRtbmdQ==
