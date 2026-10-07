@@ -155,22 +155,34 @@ test("strictNetworkFromEnv: 1 or true turns it on", () => {
 
 const meta = `<meta http-equiv="Content-Security-Policy" content="${RENDER_CONTENT_SECURITY_POLICY}">`;
 
-test("withRenderContentSecurityPolicy: right after <head>, before any script", () => {
-  const html = '<!DOCTYPE html><html><head><script src="x.js"></script></head><body></body></html>';
-  const result = withRenderContentSecurityPolicy(html);
-  assert.strictEqual(result, html.replace("<head>", `<head>${meta}`));
-  assert.ok(result.indexOf(meta) < result.indexOf("<script"));
+test("withRenderContentSecurityPolicy: right after a leading doctype, before anything else", () => {
+  assert.strictEqual(
+    withRenderContentSecurityPolicy('<!DOCTYPE html><html><head><script src="x.js"></script></head></html>'),
+    `<!DOCTYPE html>${meta}<html><head><script src="x.js"></script></head></html>`,
+  );
+  assert.strictEqual(withRenderContentSecurityPolicy("\n  <!doctype html>\n<p>x</p>"), `\n  <!doctype html>${meta}\n<p>x</p>`);
+  assert.strictEqual(withRenderContentSecurityPolicy("\uFEFF<!doctype html><p>x</p>"), `\uFEFF<!doctype html>${meta}<p>x</p>`);
 });
 
-test("withRenderContentSecurityPolicy: without <head>, after <html> or the doctype, never before the doctype", () => {
-  assert.strictEqual(withRenderContentSecurityPolicy('<html lang="ja"><body>x</body></html>'), `<html lang="ja">${meta}<body>x</body></html>`);
-  assert.strictEqual(withRenderContentSecurityPolicy("<!doctype html><body>x</body>"), `<!doctype html>${meta}<body>x</body>`);
+test("withRenderContentSecurityPolicy: without a leading doctype, first (after a BOM)", () => {
+  assert.strictEqual(withRenderContentSecurityPolicy('<html lang="ja"><head></head></html>'), `${meta}<html lang="ja"><head></head></html>`);
   assert.strictEqual(withRenderContentSecurityPolicy("<p>x</p><script>fetch('/')</script>"), `${meta}<p>x</p><script>fetch('/')</script>`);
-  assert.strictEqual(withRenderContentSecurityPolicy('<HTML><HEAD lang="en"></HEAD></HTML>'), `<HTML><HEAD lang="en">${meta}</HEAD></HTML>`);
+  assert.strictEqual(withRenderContentSecurityPolicy("\uFEFF<p>x</p>"), `\uFEFF${meta}<p>x</p>`);
+  assert.strictEqual(withRenderContentSecurityPolicy(""), meta);
 });
 
-test("withRenderContentSecurityPolicy: <header> is not <head>", () => {
-  assert.strictEqual(withRenderContentSecurityPolicy("<html><body><header>x</header></body></html>"), `<html>${meta}<body><header>x</header></body></html>`);
+test("withRenderContentSecurityPolicy: a <head> or doctype hidden in a comment, script or text is never the anchor", () => {
+  [
+    "<!doctype html><!-- <head> --><script>new WebSocket('ws://x')</script>",
+    "<!-- <!doctype html> --><script>new WebSocket('ws://x')</script>",
+    "<script>'<head>'</script><head></head>",
+    "<template><head></template><script>1</script>",
+    "<p>&lt;head&gt; <head></p>",
+  ].forEach((html) => {
+    const result = withRenderContentSecurityPolicy(html);
+    const firstMarkup = result.replace(/^<!doctype[^>]*>/i, "");
+    assert.ok(firstMarkup.startsWith(meta), result);
+  });
 });
 
 test("RENDER_CONTENT_SECURITY_POLICY: limits connections to the page's own origin", () => {

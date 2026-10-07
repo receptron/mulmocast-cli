@@ -91,12 +91,13 @@ export const RENDER_CONTENT_SECURITY_POLICY = "connect-src 'self' data: blob:";
 
 const CSP_META = `<meta http-equiv="Content-Security-Policy" content="${RENDER_CONTENT_SECURITY_POLICY}">`;
 
-// The meta must come before any script and must not precede a doctype (that would switch the page to quirks mode),
-// so it goes after <head>, else after <html>, else after the doctype, else first; the parser puts it in the head.
-const INSERTION_POINTS = [/<head(\s[^>]*)?>/i, /<html(\s[^>]*)?>/i, /<!doctype[^>]*>/i];
+// The meta must come before anything a script could hide in, so it is never placed by searching for <head>
+// (a comment or script text can contain one): right after a leading doctype, else first. Before a doctype it
+// would switch the page to quirks mode; first otherwise, the parser still puts it in the head.
+const LEADING_DOCTYPE = /^(\uFEFF?)(\s*<!doctype[^>]*>)?/i;
 
 export const withRenderContentSecurityPolicy = (html: string): string => {
-  const match = INSERTION_POINTS.map((pattern) => pattern.exec(html)).find((found) => found !== null);
-  const insertAt = match ? match.index + match[0].length : 0;
+  const [prefix = "", bom = "", doctype] = LEADING_DOCTYPE.exec(html) ?? [];
+  const insertAt = doctype ? prefix.length : bom.length;
   return [html.slice(0, insertAt), CSP_META, html.slice(insertAt)].join("");
 };

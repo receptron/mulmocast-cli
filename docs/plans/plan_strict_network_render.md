@@ -9,7 +9,8 @@ The Puppeteer renderers (`src/utils/html_render.ts`, `src/actions/pdf.ts`) rende
 - Opt in with `--strict-network` (any command) or `MULMO_STRICT_NETWORK=1`; library callers set `context.strictNetwork`.
 - Allowed: `file:` under the script's folder and mulmocast's output folders (and the renderer's own temp page) — decided after review, since any `file:` let a script render `/etc/hosts` into its output; containment compares real paths, so a symlink inside a root cannot reach outside it — `data:` / `blob:` / `about:`, and `https:` to the CDN hosts our own templates use: `cdn.tailwindcss.com`, `fonts.googleapis.com`, `fonts.gstatic.com`, and on `cdn.jsdelivr.net` only the exact files the templates load (jsDelivr publishes per-file hit counts, so a free path would be a signal; review round 3). Everything else is blocked and logged.
 - URLs in the script's own content (markdown images, html_tailwind `src`, `fetch`) are not loaded in strict mode.
-- `mulmocast-vision` launches its own browser inside the library: an upstream issue, not a fix here.
+- `mulmocast-vision` launches its own browser inside the library, so in strict mode a `vision` beat is refused with an error (review round 4); guarding it needs an upstream option.
+- The CSP meta goes right after a leading doctype, else first — never found by searching for `<head>`, which a comment or script text can fake (review round 4).
 
 ## What a probe established (Puppeteer 25.12, a hostile page against a local server)
 

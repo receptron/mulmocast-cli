@@ -11,7 +11,7 @@ import puppeteer from "puppeteer";
 import { GraphAILogger } from "graphai";
 import { renderHTMLToImage } from "../../src/utils/html_render.js";
 import { guardRenderPage } from "../../src/utils/render_network_guard.js";
-import { strictNetworkLaunchArgs } from "../../src/utils/render_network_policy.js";
+import { strictNetworkLaunchArgs, withRenderContentSecurityPolicy } from "../../src/utils/render_network_policy.js";
 
 // A page that tries every network channel a probe found: request interception alone misses prefetch and
 // WebSocket, and WebRTC (UDP) needs the constructors removed before any page script runs.
@@ -221,4 +221,27 @@ test("renderHTMLToImage: strict mode blocks loads from a CDN path our templates 
       `${file} not blocked: ${logged.join("\n")}`,
     ),
   );
+});
+
+// CSP is what stops WebSocket and EventSource; a meta hidden where the parser ignores it would leave them open.
+test("withRenderContentSecurityPolicy: the CSP is in force even when a comment holds a fake <head>", { timeout: 120_000 }, async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mulmocast-csp-"));
+  const pageFile = path.join(dir, "page.html");
+  const html = `<!doctype html><!-- <head> --><script>
+document.addEventListener("securitypolicyviolation", (event) => { document.title = "violation:" + event.violatedDirective; });
+try { new WebSocket("ws://127.0.0.1:1/x"); } catch (e) { document.title = "violation:thrown"; }
+setTimeout(() => { if (!document.title) document.title = "none"; }, 1000);
+</script>`;
+  fs.writeFileSync(pageFile, withRenderContentSecurityPolicy(html));
+  const isCI = process.env.CI === "true";
+  const browser = await puppeteer.launch({ args: [...(isCI ? ["--no-sandbox"] : []), "--allow-file-access-from-files"] });
+  try {
+    const page = await browser.newPage();
+    await page.goto(pathToFileURL(pageFile).href, { waitUntil: "load" });
+    await page.waitForFunction("document.title !== ''", { timeout: 20_000 });
+    assert.match(await page.title(), /^violation:/);
+  } finally {
+    await browser.close();
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });
