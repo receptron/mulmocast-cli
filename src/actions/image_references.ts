@@ -25,10 +25,12 @@ export type { ResolvedImageReference } from "../methods/mulmo_image_prompt_media
 type ImageAgentInfo = ReturnType<typeof MulmoPresentationStyleMethods.getImageAgentInfo>;
 type MovieAgentInfo = ReturnType<typeof MulmoPresentationStyleMethods.getMovieAgentInfo>;
 
-// Reference media are generated outside the beat graphs, so they must carry the same Vertex AI target the beats do.
+// Reference media are generated outside the beat graphs, so they must carry the same params the beats do.
 export const referenceImageGraphParams = (imageAgentInfo: ImageAgentInfo, canvasSize: MulmoCanvasDimension) => ({
   model: imageAgentInfo.imageParams.model,
+  moderation: imageAgentInfo.imageParams.moderation,
   canvasSize,
+  quality: imageAgentInfo.imageParams.quality,
   vertexai_project: imageAgentInfo.imageParams.vertexai_project,
   vertexai_location: imageAgentInfo.imageParams.vertexai_location,
 });
