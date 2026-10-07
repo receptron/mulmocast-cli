@@ -7,6 +7,7 @@
 **A: This is likely caused by `_studio.json` files from CLI version 0.0.11 or earlier.**
 
 **Error example**:
+
 ```json
 currentStudio is invalid ZodError: [
   {
@@ -31,9 +32,10 @@ currentStudio is invalid ZodError: [
 **A: Yes, you can efficiently create multi-language versions using the following steps.**
 
 **File Structure**:
+
 - **Input**: `your_script.json` (original MulmoScript file)
 - **Working data**: `output/your_script_studio.json` (auto-generated, editable)
-- **Output**: 
+- **Output**:
   - `output/your_script.mp4` (English version)
   - `output/your_script_ja.mp4` (`-l ja` only)
   - `output/your_script__ja.mp4` (`-c ja` only)
@@ -74,7 +76,7 @@ The following example shows Japanese (ja) translation.
     {
       "multiLingualTexts": {
         "ja": {
-          "text": "Corrected Japanese text",  // ← Edit this part
+          "text": "Corrected Japanese text", // ← Edit this part
           "texts": ["Corrected", "Japanese text"],
           "ttsTexts": ["Corrected", "Japanese text"]
         }
@@ -85,6 +87,7 @@ The following example shows Japanese (ja) translation.
 ```
 
 **Re-run after manual editing**:
+
 ```bash
 mulmo movie your_script.json -l ja -c ja
 ```
@@ -105,10 +108,12 @@ mulmo movie your_script.json -l ja -c ja
 **A: The `-p` option accepts file paths to style JSON files. You can download examples or create your own.**
 
 **Getting style files**:
+
 - Download example styles from [GitHub](https://github.com/receptron/mulmocast-cli/tree/main/assets/styles)
 - Create your own custom style JSON files
 
 **Usage examples**:
+
 ```bash
 # Downloaded style
 mulmo movie script.json -p ./downloaded-styles/ghibli_style.json
@@ -122,30 +127,28 @@ mulmo movie script.json -p ~/.mulmocast/styles/my-style.json
 
 **Note**: When installing via `npm install -g mulmocast`, style files are not included. You need to download them separately or create your own.
 
-### Q: Getting "403 Your organization must be verified to use the model 'gpt-image-1'" error during image generation
+### Q: Getting "403 Your organization must be verified to use the model ..." error during image generation
 
-**A: This error occurs because the OpenAI `gpt-image-1` model used for image generation requires organization verification.**
+**A: OpenAI's GPT Image models (the default is `gpt-image-2.5-sunburst`) require organization verification.**
 
 **You can choose from the following two solutions:**
 
-**Option 1**: Complete organization verification to use `gpt-image-1`
-- Enables higher quality image generation
+**Option 1**: Complete organization verification
+
 - Refer to [Beta Release Notes](beta1_en.md#recommended-steps-for-high-quality-image-generation) to complete OpenAI organization verification
 
-**Option 2**: Use the traditional `dall-e-3`
-- No organization verification required
-- Add the following configuration to your MulmoScript:
+**Option 2**: Use another image provider
+
+- `dall-e-2` / `dall-e-3` are no longer available from OpenAI, so they are not an option
+- For example, Google's Gemini image models need only `GEMINI_API_KEY`:
 
 ```json
 {
   "imageParams": {
-    "provider": "openai",
-    "model": "dall-e-3"
+    "provider": "google"
   }
 }
 ```
-
-**Background**: With version updates, we changed the default model to `gpt-image-1` which enables higher quality image generation. While `gpt-image-1` requires organization verification, the traditional `dall-e-3` can be used without verification.
 
 ## Text-to-Speech (TTS) Configuration
 
@@ -154,6 +157,7 @@ mulmo movie script.json -p ~/.mulmocast/styles/my-style.json
 **A: TTS providers can be specified in two ways.**
 
 #### Method 1: Specify TTS provider globally
+
 ```json
 {
   "speechParams": {
@@ -170,6 +174,7 @@ mulmo movie script.json -p ~/.mulmocast/styles/my-style.json
 **Reference**: See [test_voices.json](https://github.com/receptron/mulmocast-cli/blob/main/scripts/test/test_voices.json#L7) for concrete configuration examples.
 
 #### Method 2: Specify TTS provider per speaker
+
 ```json
 {
   "speechParams": {
@@ -187,6 +192,7 @@ mulmo movie script.json -p ~/.mulmocast/styles/my-style.json
   }
 }
 ```
+
 Speaker-specific settings take priority; if not specified, the global setting is used.
 
 **Environment variables setup**:
@@ -227,6 +233,7 @@ MOVIE_REPLICATE_API_TOKEN=your-replicate-movie-key
 ```
 
 **Prefix explanation**: Used for the following processes
+
 - **LLM_**: Text processing such as translation and script generation
 - **TTS_**: Audio generation
 - **IMAGE_**: Image generation
@@ -245,6 +252,7 @@ For detailed configuration examples, see [test_images.json](https://github.com/r
 ## Troubleshooting
 
 ### Q: Getting 429 error during image generation
+
 ```
 An unexpected error occurred: RateLimitError: 429 {"message":null,"type":"image_generation_user_error","param":null,"code":null}
 ```

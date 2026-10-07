@@ -7,6 +7,7 @@
 **A: CLI バージョン 0.0.11 以前の`_studio.json`ファイルが原因の可能性があります。**
 
 **エラー例**:
+
 ```json
 currentStudio is invalid ZodError: [
   {
@@ -31,9 +32,10 @@ currentStudio is invalid ZodError: [
 **A: はい、可能です。以下の手順で効率的に多言語版を作成できます。**
 
 **ファイル構成**:
+
 - **入力**: `your_script.json` (元のMulmoScriptファイル)
 - **作業データ**: `output/your_script_studio.json` (自動生成・編集対象)
-- **出力**: 
+- **出力**:
   - `output/your_script.mp4` (英語版)
   - `output/your_script_ja.mp4` (`-l ja`のみの場合)
   - `output/your_script__ja.mp4` (`-c ja`のみの場合)
@@ -74,7 +76,7 @@ mulmo translate your_script.json
     {
       "multiLingualTexts": {
         "ja": {
-          "text": "修正したい日本語テキスト",  // ← この部分を変更
+          "text": "修正したい日本語テキスト", // ← この部分を変更
           "texts": ["修正したい", "日本語テキスト"],
           "ttsTexts": ["修正したい", "日本語テキスト"]
         }
@@ -85,6 +87,7 @@ mulmo translate your_script.json
 ```
 
 **手動修正後の再実行**:
+
 ```bash
 mulmo movie your_script.json -l ja -c ja
 ```
@@ -105,10 +108,12 @@ mulmo movie your_script.json -l ja -c ja
 **A: `-p` オプションはスタイルJSONファイルへのファイルパスを受け取ります。サンプルをダウンロードするか、独自のスタイルを作成できます。**
 
 **スタイルファイルの入手方法**:
+
 - [GitHub](https://github.com/receptron/mulmocast-cli/tree/main/assets/styles)からサンプルスタイルをダウンロード
 - 独自のカスタムスタイルJSONファイルを作成
 
 **使用例**:
+
 ```bash
 # ダウンロードしたスタイル
 mulmo movie script.json -p ./downloaded-styles/ghibli_style.json
@@ -122,33 +127,33 @@ mulmo movie script.json -p ~/.mulmocast/styles/my-style.json
 
 **注意**: `npm install -g mulmocast`でインストールした場合、スタイルファイルは含まれません。別途ダウンロードするか、独自に作成する必要があります。
 
-### Q: 画像生成で 「403 Your organization must be verified to use the model 'gpt-image-1'」 エラーが発生します
+### Q: 画像生成で 「403 Your organization must be verified to use the model ...」 エラーが発生します
 
-**A: このエラーは、 画像生成で使用されている OpenAI `gpt-image-1` モデルを利用するのに組織認証を必要とするために発生します。**
+**A: OpenAI の GPT Image のモデル（既定は `gpt-image-2.5-sunburst`）は、使うのに組織認証が必要です。**
 
 **解決方法は以下の2つから選択できます：**
 
-**方法1**: 組織認証を完了して `gpt-image-1` を使用する
-- より高品質な画像生成が可能です
+**方法1**: 組織認証を完了する
+
 - [ベータ版リリースノート](beta1_ja.md)を参照して、OpenAIの組織認証を完了してください
 
-**方法2**: 従来の `dall-e-3` を使用する
-- 組織認証は不要です
-- 以下の設定を MulmoScript に追加してください：
+**方法2**: ほかの画像の提供元を使う
+
+- `dall-e-2` / `dall-e-3` は OpenAI で提供が終わったため、使えません
+- たとえば Google の Gemini の画像モデルは `GEMINI_API_KEY` だけで使えます：
 
 ```json
 {
   "imageParams": {
-    "provider": "openai",
-    "model": "dall-e-3"
+    "provider": "google"
   }
 }
 ```
 
-**背景**: バージョンアップにより、より高品質な画像生成が可能な `gpt-image-1` をデフォルトモデルに変更しました。`gpt-image-1` は組織認証が必要ですが、従来の `dall-e-3` は認証なしで利用可能です。
-
 ## 画像生成設定
+
 ### Q. 画像生成AIのモデルやプロバイダーを切り替えられますか？
+
 **A. はい、⁠imageParams でプロバイダーやモデルを指定できます。**
 
 詳しい設定例は [test_images.json](https://github.com/receptron/mulmocast-cli/blob/main/scripts/test/test_images.json) を参考にしてください。
@@ -160,6 +165,7 @@ mulmo movie script.json -p ~/.mulmocast/styles/my-style.json
 **A: TTSプロバイダーは2つの方法で指定できます。**
 
 #### 方法1: 全体でTTSプロバイダーを指定
+
 ```json
 {
   "speechParams": {
@@ -176,6 +182,7 @@ mulmo movie script.json -p ~/.mulmocast/styles/my-style.json
 **参考**: [test_voices.json](https://github.com/receptron/mulmocast-cli/blob/main/scripts/test/test_voices.json#L7) で具体的な設定例を確認できます。
 
 #### 方法2: スピーカーごとにTTSプロバイダーを指定
+
 ```json
 {
   "speechParams": {
@@ -193,6 +200,7 @@ mulmo movie script.json -p ~/.mulmocast/styles/my-style.json
   }
 }
 ```
+
 スピーカー別の設定が優先され、未指定の場合は全体設定が使用されます。
 
 **環境変数の設定**:
@@ -233,6 +241,7 @@ MOVIE_REPLICATE_API_TOKEN=your-replicate-movie-key
 ```
 
 **プレフィックス説明**: 以下の処理に利用します
+
 - **LLM_**: 翻訳、スクリプト生成等のテキスト処理
 - **TTS_**: 音声生成
 - **IMAGE_**: 画像生成
@@ -243,6 +252,7 @@ MOVIE_REPLICATE_API_TOKEN=your-replicate-movie-key
 ## トラブルシューティング
 
 ### Q: 画像生成で429エラーが発生します
+
 ```
 An unexpected error occurred: RateLimitError: 429 {"message":null,"type":"image_generation_user_error","param":null,"code":null}
 ```

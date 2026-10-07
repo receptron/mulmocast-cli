@@ -11,11 +11,13 @@
 | PR               | 範囲                                                                                                                                                                                                                                |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | OpenAI           | 画像の既定 `gpt-image-1` → `gpt-image-2.5-sunburst`（#1605）、`gptImages` に sunburst / flare、置き換えの案内文、LLM の既定 `gpt-5` → `gpt-5.6-sol`、値段の表、サンプルの台本、README の読まれていない `DEFAULT_OPENAI_IMAGE_MODEL` |
-| Google           | 動画 `veo-2.0` → `veo-3.1-generate-preview`、画像 `gemini-2.5-flash-image` → `gemini-3.1-flash-lite-image`、TTS → `gemini-3.8-flash-tts`、LLM `gemini-2.5-flash` → `gemini-3.8-flash`                                               |
+| Google           | 動画 `veo-2.0` → `veo-3.1-generate-preview`、画像 `gemini-2.5-flash-image` → `gemini-3.1-flash-lite-image`、LLM `gemini-2.5-flash` → `gemini-3.8-flash`                                                                             |
 | Anthropic / Groq | `claude-sonnet-5-5`、`openai/gpt-oss-20b`、止まったモデルを外す                                                                                                                                                                     |
 | 値段 / Replicate | ElevenLabs と Replicate の動画の値段、`kwaivgi/kling-v1.6-pro` を外す                                                                                                                                                               |
 
 ## 範囲外
+
+- Gemini の TTS の既定（3.8 TTS は `generateContent` で WAV を返し、今のエージェントは PCM として扱うため。#1582 で対応してから替える。2.5 は 2026-11-17 まで使える）
 
 - 2026-10-22 以降の Gemini API の動画（後継の `gemini-omni-1.1-flash` は `generateContent` で呼ぶため、エージェントの実装が要る）
 - OpenAI の TTS（後継の `gpt-realtime-2.1-mini` は realtime API のモデルで、`audio.speech` の置き換えにならない）

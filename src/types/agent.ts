@@ -1,6 +1,6 @@
 // for image agent
 
-// NOTE: gpt-image-1 supports only '1024x1024', '1024x1536', '1536x1024'
+// NOTE: the GPT Image models take only '1024x1024', '1024x1536', '1536x1024' here
 export type OpenAIImageSize = "1792x1024" | "1024x1792" | "1024x1024" | "1536x1024" | "1024x1536";
 export type OpenAIImageModeration = "low" | "auto";
 export type OpenAIImageQuality = "low" | "medium" | "high" | "auto";
