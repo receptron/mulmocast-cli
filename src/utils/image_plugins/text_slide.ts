@@ -4,6 +4,7 @@ import { parrotingImagePath } from "./utils.js";
 import { resolveCombinedStyle } from "./bg_image_util.js";
 
 import { marked } from "marked";
+import { MulmoStudioContextMethods } from "../../methods/mulmo_studio_context.js";
 
 export const imageType = "textSlide";
 
@@ -22,9 +23,14 @@ const processTextSlide = async (params: ImageProcessorParams) => {
     const marginTop = slide.subtitle ? canvasSize.height * 0.4 : canvasSize.height * 0.45;
     return `body {margin-top: ${marginTop}px;}`;
   })();
-  await renderMarkdownToImage(markdown, combinedStyle + topMargin, imagePath, canvasSize.width, canvasSize.height, {
-    strictNetwork: params.context.strictNetwork,
-  });
+  await renderMarkdownToImage(
+    markdown,
+    combinedStyle + topMargin,
+    imagePath,
+    canvasSize.width,
+    canvasSize.height,
+    MulmoStudioContextMethods.getRenderNetworkOptions(params.context),
+  );
   return imagePath;
 };
 

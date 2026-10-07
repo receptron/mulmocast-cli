@@ -69,6 +69,11 @@ export const MulmoStudioContextMethods = {
   getOutDirPath(context: MulmoStudioContext): string {
     return context.fileDirs.outDirPath;
   },
+  // In strict network mode a renderer may read files only from the script's folder and mulmocast's output folders.
+  getRenderNetworkOptions(context: MulmoStudioContext): { strictNetwork: boolean; allowedFileRoots: string[] } {
+    const { mulmoFileDirPath, outDirPath, imageDirPath, audioDirPath } = context.fileDirs;
+    return { strictNetwork: Boolean(context.strictNetwork), allowedFileRoots: [mulmoFileDirPath, outDirPath, imageDirPath, audioDirPath] };
+  },
   getFileName(context: MulmoStudioContext): string {
     return context.studio.filename;
   },

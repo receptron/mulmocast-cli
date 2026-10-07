@@ -7,7 +7,7 @@ The Puppeteer renderers (`src/utils/html_render.ts`, `src/actions/pdf.ts`) rende
 ## Decisions
 
 - Opt in with `--strict-network` (any command) or `MULMO_STRICT_NETWORK=1`; library callers set `context.strictNetwork`.
-- Allowed: `file:` / `data:` / `blob:` / `about:`, and `https:` to the CDN hosts our own templates use: `cdn.tailwindcss.com`, `cdn.jsdelivr.net`, `fonts.googleapis.com`, `fonts.gstatic.com`. Everything else is blocked and logged.
+- Allowed: `file:` under the script's folder and mulmocast's output folders (and the renderer's own temp page) — decided after review, since any `file:` let a script render `/etc/hosts` into its output — `data:` / `blob:` / `about:`, and `https:` to the CDN hosts our own templates use: `cdn.tailwindcss.com`, `cdn.jsdelivr.net`, `fonts.googleapis.com`, `fonts.gstatic.com`. Everything else is blocked and logged.
 - URLs in the script's own content (markdown images, html_tailwind `src`, `fetch`) are not loaded in strict mode.
 - `mulmocast-vision` launches its own browser inside the library: an upstream issue, not a fix here.
 
@@ -19,7 +19,7 @@ The Puppeteer renderers (`src/utils/html_render.ts`, `src/actions/pdf.ts`) rende
 | + CSP `connect-src 'self' data: blob:`     | WebSocket blocked                                                                                | same                                         |
 | + WebRTC removal (`evaluateOnNewDocument`) | **does not run** (setContent reuses the existing document)                                       | **nothing reaches the network**              |
 
-So strict mode always loads through a temp file and applies all three. The allowlisted CDNs still work under the guard (Tailwind styles, mermaid renders from jsdelivr).
+A second probe found that popups (`window.open`, `a[target=_blank]`) and `<link rel=preconnect>` still reached the network (a popup is a new target outside the page's interception), and that a scripted popup still had WebRTC. So strict browsers also start with an unreachable proxy that only the CDN hosts bypass (0 requests, 0 TCP connections; `--block-new-web-contents` had no effect headless), and `window.open` is locked. So strict mode always loads through a temp file and applies all of these. The allowlisted CDNs still work under the guard (Tailwind styles, mermaid renders from jsdelivr).
 
 ## Changes
 

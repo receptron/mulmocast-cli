@@ -1,20 +1,65 @@
 import test from "node:test";
 import assert from "node:assert";
+import nodePath from "node:path";
+import { pathToFileURL } from "node:url";
 import {
+  POPUP_BLOCK_SCRIPT,
   RENDER_CDN_HOSTS,
   RENDER_CONTENT_SECURITY_POLICY,
   isAllowedRenderRequest,
   strictNetworkFromEnv,
+  strictNetworkLaunchArgs,
   withRenderContentSecurityPolicy,
 } from "../../src/utils/render_network_policy.js";
 
 // Test URLs only, never fetched; built from parts because the lint rule cannot tell fixtures from requests.
 const plainHttp = (rest: string) => ["http", rest].join("://");
 
-test("isAllowedRenderRequest: local and in-memory URLs", () => {
-  ["file:///tmp/mulmocast_render_1.html", "file:///C:/Users/a/b.png", "data:image/png;base64,AAAA", "blob:file:///1234", "about:blank"].forEach((url) =>
-    assert.strictEqual(isAllowedRenderRequest(url), true, url),
+test("isAllowedRenderRequest: in-memory URLs", () => {
+  ["data:image/png;base64,AAAA", "blob:file:///1234", "about:blank"].forEach((url) => assert.strictEqual(isAllowedRenderRequest(url), true, url));
+});
+
+const projectRoot = nodePath.resolve("/work/project");
+const outputRoot = nodePath.resolve("/work/output");
+const roots = [projectRoot, outputRoot];
+const fileUrl = (...parts: string[]) => pathToFileURL(nodePath.join(...parts)).href;
+
+test("isAllowedRenderRequest: files only under an allowed root", () => {
+  [fileUrl(projectRoot, "images", "a.png"), fileUrl(outputRoot, "x", "y.mp4"), fileUrl(projectRoot), pathToFileURL(projectRoot).href + "/"].forEach((url) =>
+    assert.strictEqual(isAllowedRenderRequest(url, roots), true, url),
   );
+  [
+    fileUrl("/etc/hosts"),
+    fileUrl(nodePath.resolve("/work"), "secret.txt"),
+    fileUrl(nodePath.resolve("/work/project-other"), "a.png"),
+    fileUrl(nodePath.resolve("/work/projects"), "a.png"),
+    pathToFileURL(projectRoot).href + "/../secret.txt",
+    pathToFileURL(projectRoot).href + "/%2e%2e/secret.txt",
+    pathToFileURL(projectRoot).href + "/images/%2E%2E/%2E%2E/secret.txt",
+    "file://remote-host/share/a.png",
+  ].forEach((url) => assert.strictEqual(isAllowedRenderRequest(url, roots), false, url));
+});
+
+test("isAllowedRenderRequest: no roots means no files", () => {
+  assert.strictEqual(isAllowedRenderRequest(fileUrl(projectRoot, "a.png")), false);
+  assert.strictEqual(isAllowedRenderRequest(fileUrl(projectRoot, "a.png"), []), false);
+});
+
+test("isAllowedRenderRequest: a root that is a single file allows that file only", () => {
+  const page = nodePath.resolve("/work/render/mulmocast_render_1.html");
+  assert.strictEqual(isAllowedRenderRequest(pathToFileURL(page).href, [page]), true);
+  assert.strictEqual(isAllowedRenderRequest(pathToFileURL(page + ".bak").href, [page]), false);
+  assert.strictEqual(isAllowedRenderRequest(fileUrl(nodePath.dirname(page), "other.html"), [page]), false);
+});
+
+test("strictNetworkLaunchArgs: an unreachable proxy that only the CDNs (and not loopback) bypass", () => {
+  const [proxy, bypass] = strictNetworkLaunchArgs();
+  assert.match(proxy, /^--proxy-server=http:\/\/127\.0\.0\.1:1$/);
+  assert.strictEqual(bypass, `--proxy-bypass-list=${RENDER_CDN_HOSTS.join(";")};<-loopback>`);
+});
+
+test("POPUP_BLOCK_SCRIPT: locks window.open to a no-op, non-configurably", () => {
+  assert.match(POPUP_BLOCK_SCRIPT, /Object\.defineProperty\(globalThis, "open", \{ value: \(\) => null, writable: false, configurable: false \}\)/);
 });
 
 test("isAllowedRenderRequest: https to the templates' CDNs only", () => {

@@ -124,7 +124,15 @@ const generateBeatCaptions = async (beat: MulmoBeat, context: MulmoStudioContext
         styles: (mergedCaptionParams.styles ?? []).join(";\n"),
         bottomOffset: `${mergedCaptionParams.bottomOffset ?? 0}`,
       });
-      await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, false, true, { strictNetwork: context.strictNetwork });
+      await renderHTMLToImage(
+        htmlData,
+        imagePath,
+        canvasSize.width,
+        canvasSize.height,
+        false,
+        true,
+        MulmoStudioContextMethods.getRenderNetworkOptions(context),
+      );
       return {
         file: imagePath,
         startAt: beatStartAt + introPadding + beatDuration * cumulativeRatios[subIndex],

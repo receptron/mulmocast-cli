@@ -6,6 +6,7 @@ import { parrotingImagePath, generateUniqueId } from "./utils.js";
 import { escapedMermaidTemplateValues, mermaidHtml } from "./mermaid_html.js";
 import { resolveCombinedStyle } from "./bg_image_util.js";
 import { resolveImageRefs, resolveMovieRefs, resolveRelativeImagePaths } from "./html_tailwind.js";
+import { MulmoStudioContextMethods } from "../../methods/mulmo_studio_context.js";
 
 export const imageType = "mermaid";
 
@@ -27,7 +28,7 @@ const processMermaid = async (params: ImageProcessorParams) => {
     const resolvedImageRefs = resolveImageRefs(rawHtml, params.imageRefs ?? {});
     const resolvedAllRefs = resolveMovieRefs(resolvedImageRefs, params.movieRefs ?? {});
     const htmlData = resolveRelativeImagePaths(resolvedAllRefs, context.fileDirs.mulmoFileDirPath);
-    await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, true, false, { strictNetwork: context.strictNetwork });
+    await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, true, false, MulmoStudioContextMethods.getRenderNetworkOptions(context));
   }
   return imagePath;
 };

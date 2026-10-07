@@ -8,6 +8,7 @@ import { framesToVideo } from "../ffmpeg_utils.js";
 import { parrotingImagePath } from "./utils.js";
 import { swipeElementsToHtml, swipeElementsToScript, type SwipeElement } from "../swipe_to_html.js";
 import { htmlTailwindMarkup } from "./html_tailwind_markup.js";
+import { MulmoStudioContextMethods } from "../../methods/mulmo_studio_context.js";
 
 export const imageType = "html_tailwind";
 
@@ -198,12 +199,28 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
     const videoPath = imagePath;
 
     if (animConfig.movie) {
-      await renderHTMLToVideo(htmlData, videoPath, canvasSize.width, canvasSize.height, totalFrames, fps, { strictNetwork: params.context.strictNetwork });
+      await renderHTMLToVideo(
+        htmlData,
+        videoPath,
+        canvasSize.width,
+        canvasSize.height,
+        totalFrames,
+        fps,
+        MulmoStudioContextMethods.getRenderNetworkOptions(params.context),
+      );
     } else {
       const framesDir = videoPath.replace(/\.[^/.]+$/, "_frames");
       fs.mkdirSync(framesDir, { recursive: true });
       try {
-        await renderHTMLToFrames(htmlData, framesDir, canvasSize.width, canvasSize.height, totalFrames, fps, { strictNetwork: params.context.strictNetwork });
+        await renderHTMLToFrames(
+          htmlData,
+          framesDir,
+          canvasSize.width,
+          canvasSize.height,
+          totalFrames,
+          fps,
+          MulmoStudioContextMethods.getRenderNetworkOptions(params.context),
+        );
         await framesToVideo(framesDir, videoPath, fps, canvasSize.width, canvasSize.height);
       } finally {
         fs.rmSync(framesDir, { recursive: true, force: true });
@@ -216,7 +233,13 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
   // even when exact duration is unknown (e.g., PDF generation without audio).
   const finalFramePath = imagePath.replace(/_animated\.mp4$/, ".png");
   const finalHtml = buildAnimatedHtml(params, FINAL_FRAME_TOTAL, fps);
-  await renderHTMLToFinalFrame(finalHtml, finalFramePath, canvasSize.width, canvasSize.height, { strictNetwork: params.context.strictNetwork });
+  await renderHTMLToFinalFrame(
+    finalHtml,
+    finalFramePath,
+    canvasSize.width,
+    canvasSize.height,
+    MulmoStudioContextMethods.getRenderNetworkOptions(params.context),
+  );
 
   // Return video path when video was generated, otherwise return the static PNG path
   return duration !== undefined ? imagePath : finalFramePath;
@@ -237,7 +260,15 @@ const processHtmlTailwindStatic = async (params: ImageProcessorParams) => {
   const resolvedAllRefs = resolveMovieRefs(resolvedImageRefs, params.movieRefs ?? {});
   const resolvedImages = resolveRelativeImagePaths(resolvedAllRefs, context.fileDirs.mulmoFileDirPath);
   const htmlData = resolveRelativeModelPathsInScript(resolvedImages, context.fileDirs.mulmoFileDirPath);
-  await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, false, false, { strictNetwork: params.context.strictNetwork });
+  await renderHTMLToImage(
+    htmlData,
+    imagePath,
+    canvasSize.width,
+    canvasSize.height,
+    false,
+    false,
+    MulmoStudioContextMethods.getRenderNetworkOptions(params.context),
+  );
   return imagePath;
 };
 

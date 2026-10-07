@@ -1,8 +1,13 @@
-// What an HTML renderer's page may reach in strict network mode: local and in-memory URLs, and the CDNs
-// our own templates load from. Kept free of I/O so the rules can be tested without a browser.
+import nodePath from "node:path";
+import { fileURLToPath } from "node:url";
+
+// What an HTML renderer's page may reach in strict network mode: files under the allowed roots, in-memory
+// URLs, and the CDNs our own templates load from. Kept free of I/O so the rules can be tested without a browser.
 
 export const RENDER_CDN_HOSTS = ["cdn.tailwindcss.com", "cdn.jsdelivr.net", "fonts.googleapis.com", "fonts.gstatic.com"];
-const LOCAL_SCHEMES = ["file:", "data:", "blob:", "about:"];
+const IN_MEMORY_SCHEMES = ["data:", "blob:", "about:"];
+
+export type RenderNetworkOptions = { strictNetwork?: boolean; allowedFileRoots?: readonly string[] };
 
 export const STRICT_NETWORK_ENV = "MULMO_STRICT_NETWORK";
 
@@ -16,12 +21,40 @@ const parseUrl = (url: string) => {
   }
 };
 
-export const isAllowedRenderRequest = (url: string): boolean => {
+const filePathOf = (parsed: URL): string | undefined => {
+  try {
+    return fileURLToPath(parsed);
+  } catch {
+    return undefined;
+  }
+};
+
+// The URL parser has already collapsed dot segments (encoded or not), so a containment check on the path is enough.
+const isInsideFileRoots = (parsed: URL, allowedFileRoots: readonly string[]): boolean => {
+  const filePath = filePathOf(parsed);
+  if (filePath === undefined) return false;
+  return allowedFileRoots.some((root) => {
+    const relative = nodePath.relative(nodePath.resolve(root), filePath);
+    return relative === "" || (!relative.startsWith("..") && !nodePath.isAbsolute(relative));
+  });
+};
+
+export const isAllowedRenderRequest = (url: string, allowedFileRoots: readonly string[] = []): boolean => {
   const parsed = parseUrl(url);
   if (!parsed) return false;
-  if (LOCAL_SCHEMES.includes(parsed.protocol)) return true;
+  if (IN_MEMORY_SCHEMES.includes(parsed.protocol)) return true;
+  if (parsed.protocol === "file:") return isInsideFileRoots(parsed, allowedFileRoots);
   return parsed.protocol === "https:" && parsed.port === "" && RENDER_CDN_HOSTS.includes(parsed.hostname);
 };
+
+// Popups and preconnect hints open connections outside the page's request interception, so the whole browser
+// talks through a proxy that does not exist, except for the CDNs (loopback included, which Chromium bypasses by default).
+const UNREACHABLE_PROXY = "http://127.0.0.1:1";
+
+export const strictNetworkLaunchArgs = (): string[] => [`--proxy-server=${UNREACHABLE_PROXY}`, `--proxy-bypass-list=${RENDER_CDN_HOSTS.join(";")};<-loopback>`];
+
+// A popup the page writes into gets no evaluateOnNewDocument script, so it would still have WebRTC.
+export const POPUP_BLOCK_SCRIPT = 'Object.defineProperty(globalThis, "open", { value: () => null, writable: false, configurable: false });';
 
 // Request interception does not see WebSocket or EventSource connections; this does.
 export const RENDER_CONTENT_SECURITY_POLICY = "connect-src 'self' data: blob:";

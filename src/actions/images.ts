@@ -160,7 +160,7 @@ export const beat_graph_data = {
         htmlText: ":htmlReader.htmlText",
         canvasSize: ":context.presentationStyle.canvasSize",
         file: ":preprocessor.htmlImageFile",
-        strictNetwork: ":context.strictNetwork",
+        context: ":context",
       },
     },
     imageGenerator: {

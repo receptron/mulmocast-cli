@@ -10,7 +10,7 @@ import { localizedText, isHttp } from "../utils/utils.js";
 import { getOutputPdfFilePath, writingMessage, getHTMLFile, mulmoCreditPath } from "../utils/file.js";
 import { interpolate } from "../utils/html_render.js";
 import { guardRenderPage } from "../utils/render_network_guard.js";
-import { withRenderContentSecurityPolicy } from "../utils/render_network_policy.js";
+import { strictNetworkLaunchArgs, withRenderContentSecurityPolicy, type RenderNetworkOptions } from "../utils/render_network_policy.js";
 import { safeFetch, FETCH_DOWNLOAD_TIMEOUT_MS } from "../utils/fetch.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 
@@ -186,13 +186,13 @@ export const pdfFilePath = (context: MulmoStudioContext, pdfMode: PDFMode) => {
 const PDF_CONTENT_TIMEOUT_MS = 60000;
 
 // Strict mode navigates to a file because the guard's WebRTC removal never reaches a setContent document.
-const loadPdfPage = async (page: Page, html: string, strictNetwork: boolean): Promise<void> => {
+const loadPdfPage = async (page: Page, html: string, { strictNetwork, allowedFileRoots }: RenderNetworkOptions): Promise<void> => {
   if (!strictNetwork) {
     await page.setContent(html, { waitUntil: "domcontentloaded", timeout: PDF_CONTENT_TIMEOUT_MS });
     return;
   }
-  await guardRenderPage(page);
   const tmpFile = path.join(os.tmpdir(), `mulmocast_pdf_${crypto.randomUUID()}.html`);
+  await guardRenderPage(page, [tmpFile, ...(allowedFileRoots ?? [])]);
   fs.writeFileSync(tmpFile, withRenderContentSecurityPolicy(html));
   try {
     await page.goto(`file://${tmpFile}`, { waitUntil: "domcontentloaded", timeout: PDF_CONTENT_TIMEOUT_MS });
@@ -207,13 +207,14 @@ const generatePDF = async (context: MulmoStudioContext, pdfMode: PDFMode, pdfSiz
   const canvasSize = MulmoPresentationStyleMethods.getCanvasSize(context.presentationStyle);
   const pdfOptions = createPDFOptions(pdfSize, pdfMode, canvasSize);
 
+  const network = MulmoStudioContextMethods.getRenderNetworkOptions(context);
   const browser = await puppeteer.launch({
-    args: isCI ? ["--no-sandbox"] : [],
+    args: [...(isCI ? ["--no-sandbox"] : []), ...(network.strictNetwork ? strictNetworkLaunchArgs() : [])],
   });
 
   try {
     const page = await browser.newPage();
-    await loadPdfPage(page, html, Boolean(context.strictNetwork));
+    await loadPdfPage(page, html, network);
     await sleep(1000);
     await page.pdf({
       path: outputPdfPath,
