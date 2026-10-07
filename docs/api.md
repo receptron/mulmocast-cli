@@ -343,7 +343,7 @@ type AgentUsage = {
 | `ttsGoogleAgent`                              | google     | voice tier name                                                | —           | —            | —           | —                 | ✅                                                       |
 | `ttsKotodamaAgent`                            | kotodama   | speaker_id                                                     | —           | —            | —           | —                 | ✅                                                       |
 | `ttsElevenlabsAgent`                          | elevenlabs | `eleven_*`                                                     | —           | —            | —           | —                 | ✅ (`character-cost` HTTP header, already post-discount) |
-| `ttsGeminiAgent`                              | gemini     | `gemini-2.5-flash-preview-tts`                                 | ✅          | ✅           | ✅          | —                 | —                                                        |
+| `ttsGeminiAgent`                              | gemini     | `gemini-3.8-flash-tts`, `gemini-3.8-flash-lite-tts`, …         | ✅          | ✅           | ✅          | —                 | —                                                        |
 | `openAIAgent` (`@graphai/openai_agent`)       | openai     | `gpt-4o-*`, etc.                                               | ✅          | ✅           | ✅          | —                 | —                                                        |
 | `geminiAgent` (`@graphai/gemini_agent`)       | google     | `gemini-*`                                                     | ✅          | ✅           | ✅          | —                 | —                                                        |
 | `anthropicAgent` (`@graphai/anthropic_agent`) | anthropic  | `claude-*`                                                     | ✅          | ✅           | ✅          | —                 | —                                                        |
@@ -379,7 +379,7 @@ Payload shape:
     },
     {
       "provider": "gemini",
-      "model": "gemini-2.5-flash-preview-tts",
+      "model": "gemini-3.8-flash-tts",
       "records": 1,
       "inputTokens": 9,
       "outputTokens": 59,

@@ -404,7 +404,7 @@ Payload shape:
   "records": 3,
   "byModel": [
     { "provider": "openai",     "model": "gpt-4o-mini-tts", "records": 1, "inputChars": 20 },
-    { "provider": "gemini",     "model": "gemini-2.5-flash-preview-tts", "records": 1, "inputTokens": 9, "outputTokens": 59, "totalTokens": 68 },
+    { "provider": "gemini",     "model": "gemini-3.8-flash-tts", "records": 1, "inputTokens": 9, "outputTokens": 59, "totalTokens": 68 },
     { "provider": "elevenlabs", "model": "eleven_multilingual_v2", "records": 1, "inputChars": 18 }
   ],
   "snapshot": [ /* per-call UsageRecord[] */ ]

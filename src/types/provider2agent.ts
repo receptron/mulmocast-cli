@@ -17,9 +17,10 @@ export const provider2TTSAgent = {
   gemini: {
     agentName: "ttsGeminiAgent",
     hasLimitedConcurrency: false,
-    defaultModel: "gemini-2.5-flash-preview-tts",
+    // The 2.5 preview TTS models shut down on 2026-11-17; Google names gemini-3.8-flash-tts as their successor.
+    defaultModel: "gemini-3.8-flash-tts",
     defaultVoice: "Kore",
-    models: ["gemini-2.5-flash-preview-tts", "gemini-2.5-pro-preview-tts"],
+    models: ["gemini-3.8-flash-tts", "gemini-3.8-flash-lite-tts", "gemini-2.5-flash-preview-tts", "gemini-2.5-pro-preview-tts"],
     keyName: "GEMINI_API_KEY",
   },
   elevenlabs: {
@@ -729,6 +730,9 @@ export const modelPricing: Record<string, Record<string, ModelPricing>> = {
     // https://ai.google.dev/gemini-api/docs/pricing
     "gemini-2.5-flash-preview-tts": { unit: "tokens", inputPerMTokensUSD: 0.5, outputPerMTokensUSD: 10, asOf: "2026-07-03" },
     "gemini-2.5-pro-preview-tts": { unit: "tokens", inputPerMTokensUSD: 1, outputPerMTokensUSD: 20, asOf: "2026-07-03" },
+    // through 2026-12-31; $1 / $18 (flash) and $1 / $12 (lite) from 2027-01-01
+    "gemini-3.8-flash-tts": { unit: "tokens", inputPerMTokensUSD: 0.5, outputPerMTokensUSD: 9, asOf: "2026-10-07" },
+    "gemini-3.8-flash-lite-tts": { unit: "tokens", inputPerMTokensUSD: 0.5, outputPerMTokensUSD: 6, asOf: "2026-10-07" },
   },
   google: {
     // https://ai.google.dev/gemini-api/docs/pricing ($0.039/image ≒ 1290 output tokens at $30/1M)
