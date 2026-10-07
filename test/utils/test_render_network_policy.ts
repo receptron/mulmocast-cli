@@ -203,7 +203,7 @@ test("isAllowedRenderRequest: every CDN URL in our sources and templates is allo
     .flatMap(sourceFiles)
     .flatMap((file) => fs.readFileSync(file, "utf8").match(/https:\/\/(?:cdn\.jsdelivr\.net|cdn\.tailwindcss\.com|fonts\.googleapis\.com)[^"'`)\s<>]*/g) ?? []);
   assert.ok(
-    urls.some((url) => url.includes("cdn.jsdelivr.net")),
+    urls.some((url) => new URL(url).hostname === "cdn.jsdelivr.net"),
     "the scan found the templates' jsDelivr URLs",
   );
   [...new Set(urls)].forEach((url) => assert.strictEqual(isAllowedRenderRequest(url), true, url));
