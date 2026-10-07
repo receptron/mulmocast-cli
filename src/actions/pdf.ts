@@ -1,12 +1,16 @@
 import fs from "fs";
 import path from "path";
-import puppeteer from "puppeteer";
+import os from "os";
+import crypto from "crypto";
+import puppeteer, { type Page } from "puppeteer";
 import { GraphAILogger, sleep } from "graphai";
 import { MulmoStudioContext, MulmoCanvasDimension, PDFMode, PDFSize } from "../types/index.js";
 import { MulmoPresentationStyleMethods } from "../methods/index.js";
 import { localizedText, isHttp } from "../utils/utils.js";
 import { getOutputPdfFilePath, writingMessage, getHTMLFile, mulmoCreditPath } from "../utils/file.js";
 import { interpolate } from "../utils/html_render.js";
+import { guardRenderPage } from "../utils/render_network_guard.js";
+import { withRenderContentSecurityPolicy } from "../utils/render_network_policy.js";
 import { safeFetch, FETCH_DOWNLOAD_TIMEOUT_MS } from "../utils/fetch.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 
@@ -181,6 +185,22 @@ export const pdfFilePath = (context: MulmoStudioContext, pdfMode: PDFMode) => {
 
 const PDF_CONTENT_TIMEOUT_MS = 60000;
 
+// Strict mode navigates to a file because the guard's WebRTC removal never reaches a setContent document.
+const loadPdfPage = async (page: Page, html: string, strictNetwork: boolean): Promise<void> => {
+  if (!strictNetwork) {
+    await page.setContent(html, { waitUntil: "domcontentloaded", timeout: PDF_CONTENT_TIMEOUT_MS });
+    return;
+  }
+  await guardRenderPage(page);
+  const tmpFile = path.join(os.tmpdir(), `mulmocast_pdf_${crypto.randomUUID()}.html`);
+  fs.writeFileSync(tmpFile, withRenderContentSecurityPolicy(html));
+  try {
+    await page.goto(`file://${tmpFile}`, { waitUntil: "domcontentloaded", timeout: PDF_CONTENT_TIMEOUT_MS });
+  } finally {
+    fs.rmSync(tmpFile, { force: true });
+  }
+};
+
 const generatePDF = async (context: MulmoStudioContext, pdfMode: PDFMode, pdfSize: PDFSize): Promise<void> => {
   const outputPdfPath = pdfFilePath(context, pdfMode);
   const html = await generatePDFHTML(context, pdfMode, pdfSize);
@@ -193,7 +213,7 @@ const generatePDF = async (context: MulmoStudioContext, pdfMode: PDFMode, pdfSiz
 
   try {
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "domcontentloaded", timeout: PDF_CONTENT_TIMEOUT_MS });
+    await loadPdfPage(page, html, Boolean(context.strictNetwork));
     await sleep(1000);
     await page.pdf({
       path: outputPdfPath,

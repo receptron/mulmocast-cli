@@ -177,7 +177,7 @@ const processSlide = async (params: ImageProcessorParams) => {
   const reference = (beat.image as MulmoSlideMedia).reference;
   const resolvedBranding = await resolveAndConvertBranding(params);
   const html = generateSlideHTML(theme, slide, reference, resolvedBranding);
-  await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height);
+  await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height, false, false, { strictNetwork: params.context.strictNetwork });
   return imagePath;
 };
 

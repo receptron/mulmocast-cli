@@ -198,12 +198,12 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
     const videoPath = imagePath;
 
     if (animConfig.movie) {
-      await renderHTMLToVideo(htmlData, videoPath, canvasSize.width, canvasSize.height, totalFrames, fps);
+      await renderHTMLToVideo(htmlData, videoPath, canvasSize.width, canvasSize.height, totalFrames, fps, { strictNetwork: params.context.strictNetwork });
     } else {
       const framesDir = videoPath.replace(/\.[^/.]+$/, "_frames");
       fs.mkdirSync(framesDir, { recursive: true });
       try {
-        await renderHTMLToFrames(htmlData, framesDir, canvasSize.width, canvasSize.height, totalFrames, fps);
+        await renderHTMLToFrames(htmlData, framesDir, canvasSize.width, canvasSize.height, totalFrames, fps, { strictNetwork: params.context.strictNetwork });
         await framesToVideo(framesDir, videoPath, fps, canvasSize.width, canvasSize.height);
       } finally {
         fs.rmSync(framesDir, { recursive: true, force: true });
@@ -216,7 +216,7 @@ const processHtmlTailwindAnimated = async (params: ImageProcessorParams) => {
   // even when exact duration is unknown (e.g., PDF generation without audio).
   const finalFramePath = imagePath.replace(/_animated\.mp4$/, ".png");
   const finalHtml = buildAnimatedHtml(params, FINAL_FRAME_TOTAL, fps);
-  await renderHTMLToFinalFrame(finalHtml, finalFramePath, canvasSize.width, canvasSize.height);
+  await renderHTMLToFinalFrame(finalHtml, finalFramePath, canvasSize.width, canvasSize.height, { strictNetwork: params.context.strictNetwork });
 
   // Return video path when video was generated, otherwise return the static PNG path
   return duration !== undefined ? imagePath : finalFramePath;
@@ -237,7 +237,7 @@ const processHtmlTailwindStatic = async (params: ImageProcessorParams) => {
   const resolvedAllRefs = resolveMovieRefs(resolvedImageRefs, params.movieRefs ?? {});
   const resolvedImages = resolveRelativeImagePaths(resolvedAllRefs, context.fileDirs.mulmoFileDirPath);
   const htmlData = resolveRelativeModelPathsInScript(resolvedImages, context.fileDirs.mulmoFileDirPath);
-  await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height);
+  await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, false, false, { strictNetwork: params.context.strictNetwork });
   return imagePath;
 };
 

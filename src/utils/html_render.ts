@@ -3,7 +3,9 @@ import os from "node:os";
 import nodePath from "node:path";
 import crypto from "node:crypto";
 import { marked } from "marked";
-import puppeteer, { type Page } from "puppeteer";
+import puppeteer, { type Browser, type Page } from "puppeteer";
+import { guardRenderPage, type RenderNetworkOptions } from "./render_network_guard.js";
+import { withRenderContentSecurityPolicy } from "./render_network_policy.js";
 
 import { GraphAILogger } from "graphai";
 
@@ -110,7 +112,7 @@ const resolveWaitUntil = (html: string): "networkidle0" | "load" | "domcontentlo
  * and navigate via page.goto (setContent uses about:blank origin
  * which blocks file:// loading).
  */
-const loadHtmlIntoPage = async (page: Page, html: string, timeout_ms: number): Promise<void> => {
+const loadHtmlIntoPage = async (page: Page, html: string, timeout_ms: number, forceFile: boolean): Promise<void> => {
   const waitUntil = resolveWaitUntil(html);
   const hasFileUrls = /file:\/\//.test(html);
   const hasExternalScripts = /script src=["']https?:\/\//.test(html);
@@ -118,7 +120,7 @@ const loadHtmlIntoPage = async (page: Page, html: string, timeout_ms: number): P
   // Route any HTML that needs network-idle semantics through the page.goto path to preserve the original wait behavior.
   const needsNetworkIdle = waitUntil === "networkidle0";
 
-  if (hasFileUrls || hasExternalScripts || needsNetworkIdle) {
+  if (forceFile || hasFileUrls || hasExternalScripts || needsNetworkIdle) {
     const tmpFile = nodePath.join(os.tmpdir(), `mulmocast_render_${crypto.randomUUID()}.html`);
     fs.writeFileSync(tmpFile, html);
     try {
@@ -135,6 +137,16 @@ const loadHtmlIntoPage = async (page: Page, html: string, timeout_ms: number): P
   }
 };
 
+const RENDER_LOAD_TIMEOUT_MS = 30000;
+
+// Strict mode always loads through a file: the guard's WebRTC removal never reaches a setContent document.
+const openRenderPage = async (browser: Browser, html: string, { strictNetwork = false }: RenderNetworkOptions): Promise<Page> => {
+  const page = await browser.newPage();
+  if (strictNetwork) await guardRenderPage(page);
+  await loadHtmlIntoPage(page, strictNetwork ? withRenderContentSecurityPolicy(html) : html, RENDER_LOAD_TIMEOUT_MS, strictNetwork);
+  return page;
+};
+
 export const renderHTMLToImage = async (
   html: string,
   outputPath: string,
@@ -142,15 +154,14 @@ export const renderHTMLToImage = async (
   height: number,
   isMermaid: boolean = false,
   omitBackground: boolean = false,
+  network: RenderNetworkOptions = {},
 ) => {
   // Use Puppeteer to render HTML to an image
   const browser = await puppeteer.launch({
     args: isCI ? ["--no-sandbox", "--allow-file-access-from-files"] : ["--allow-file-access-from-files"],
   });
   try {
-    const page = await browser.newPage();
-
-    await loadHtmlIntoPage(page, html, 30000);
+    const page = await openRenderPage(browser, html, network);
 
     // Adjust page settings if needed (like width, height, etc.)
     await page.setViewport({ width, height });
@@ -209,15 +220,13 @@ export const renderHTMLToFrames = async (
   height: number,
   totalFrames: number,
   fps: number,
+  network: RenderNetworkOptions = {},
 ): Promise<string[]> => {
   const browser = await puppeteer.launch({
     args: isCI ? ["--no-sandbox", "--allow-file-access-from-files"] : ["--allow-file-access-from-files"],
   });
   try {
-    const page = await browser.newPage();
-
-    // Wait for Tailwind CSS CDN to load
-    await loadHtmlIntoPage(page, html, 30000);
+    const page = await openRenderPage(browser, html, network);
     await page.setViewport({ width, height });
     await page.addStyleTag({ content: "html{height:100%;margin:0;padding:0;overflow:hidden}" });
 
@@ -259,14 +268,21 @@ export const renderHTMLToFrames = async (
  * The animation plays in real-time via requestAnimationFrame, and
  * page.screencast() captures frames directly to an mp4 file.
  */
-export const renderHTMLToVideo = async (html: string, videoPath: string, width: number, height: number, totalFrames: number, fps: number): Promise<void> => {
+export const renderHTMLToVideo = async (
+  html: string,
+  videoPath: string,
+  width: number,
+  height: number,
+  totalFrames: number,
+  fps: number,
+  network: RenderNetworkOptions = {},
+): Promise<void> => {
   const duration_ms = (totalFrames / fps) * 1000;
   const browser = await puppeteer.launch({
     args: isCI ? ["--no-sandbox", "--allow-file-access-from-files"] : ["--allow-file-access-from-files"],
   });
   try {
-    const page = await browser.newPage();
-    await loadHtmlIntoPage(page, html, 30000);
+    const page = await openRenderPage(browser, html, network);
     await page.setViewport({ width, height });
     await page.addStyleTag({ content: "html{height:100%;margin:0;padding:0;overflow:hidden}" });
     await scaleContentToFit(page, width, height);
@@ -309,13 +325,18 @@ export const renderHTMLToVideo = async (html: string, videoPath: string, width: 
  * Loads the animated HTML, calls window.renderFinal() to set all animations
  * to their end state, then takes a screenshot. Used for PDF/thumbnail generation.
  */
-export const renderHTMLToFinalFrame = async (html: string, outputPath: string, width: number, height: number): Promise<void> => {
+export const renderHTMLToFinalFrame = async (
+  html: string,
+  outputPath: string,
+  width: number,
+  height: number,
+  network: RenderNetworkOptions = {},
+): Promise<void> => {
   const browser = await puppeteer.launch({
     args: isCI ? ["--no-sandbox", "--allow-file-access-from-files"] : ["--allow-file-access-from-files"],
   });
   try {
-    const page = await browser.newPage();
-    await loadHtmlIntoPage(page, html, 30000);
+    const page = await openRenderPage(browser, html, network);
     await page.setViewport({ width, height });
     await page.addStyleTag({ content: "html{height:100%;margin:0;padding:0;overflow:hidden}" });
     await scaleContentToFit(page, width, height);
@@ -335,11 +356,18 @@ export const renderHTMLToFinalFrame = async (html: string, outputPath: string, w
   }
 };
 
-export const renderMarkdownToImage = async (markdown: string, style: string, outputPath: string, width: number, height: number) => {
+export const renderMarkdownToImage = async (
+  markdown: string,
+  style: string,
+  outputPath: string,
+  width: number,
+  height: number,
+  network: RenderNetworkOptions = {},
+) => {
   const header = `<head><style>${style}</style></head>`;
   const body = await marked(markdown);
   const html = `<html>${header}<body>${body}</body></html>`;
-  await renderHTMLToImage(html, outputPath, width, height);
+  await renderHTMLToImage(html, outputPath, width, height, false, false, network);
 };
 
 export const interpolate = (template: string, data: Record<string, string>): string => {

@@ -21,6 +21,7 @@ import { initializeContextFromFiles } from "../utils/context.js";
 import { estimateUsage, actionEstimateProcesses, type EstimateAction } from "../utils/estimate_usage.js";
 import { formatUsageEstimates } from "../utils/estimate_usage_format.js";
 import type { CliArgs } from "../types/cli_types.js";
+import { strictNetworkFromEnv } from "../utils/render_network_policy.js";
 import { FileObject, InitOptions, MulmoStudioContext } from "../types/index.js";
 
 export const runTranslateIfNeeded = async (context: MulmoStudioContext, includeCaption: boolean = false) => {
@@ -189,5 +190,6 @@ export const initializeContext = async (argv: CliArgs<InitOptions>, raiseError: 
   });
   setGraphAILogger(Boolean(argv.v), { files });
 
-  return await initializeContextFromFiles(files, raiseError, Boolean(argv.f), Boolean(argv.backup), argv.c, argv.l);
+  const context = await initializeContextFromFiles(files, raiseError, Boolean(argv.f), Boolean(argv.backup), argv.c, argv.l);
+  return context && { ...context, strictNetwork: Boolean(argv.strictNetwork) || strictNetworkFromEnv(process.env) };
 };

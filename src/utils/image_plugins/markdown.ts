@@ -92,7 +92,7 @@ const processMarkdown = async (params: ImageProcessorParams) => {
   const { html: rawHtml, hasMermaid } = await generateHtml(params);
   const resolvedImages = resolveImageRefs(rawHtml, params.imageRefs ?? {});
   const html = resolveMovieRefs(resolvedImages, params.movieRefs ?? {});
-  await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height, hasMermaid);
+  await renderHTMLToImage(html, imagePath, canvasSize.width, canvasSize.height, hasMermaid, false, { strictNetwork: params.context.strictNetwork });
 
   return imagePath;
 };

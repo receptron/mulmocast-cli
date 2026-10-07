@@ -22,7 +22,7 @@ const processChart = async (params: ImageProcessorParams) => {
     chart_width: chart_width.toString(),
     chart_plugins: resolveChartPlugins(chartType),
   });
-  await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height);
+  await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, false, false, { strictNetwork: params.context.strictNetwork });
   return imagePath;
 };
 

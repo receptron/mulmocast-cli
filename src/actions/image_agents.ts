@@ -417,7 +417,7 @@ export const imagePluginAgent = async (namedInputs: {
   }
 };
 
-export const htmlImageGeneratorAgent = async (namedInputs: { file: string; canvasSize: MulmoCanvasDimension; htmlText: string }) => {
-  const { file, canvasSize, htmlText } = namedInputs;
-  await renderHTMLToImage(htmlText, file, canvasSize.width, canvasSize.height);
+export const htmlImageGeneratorAgent = async (namedInputs: { file: string; canvasSize: MulmoCanvasDimension; htmlText: string; strictNetwork?: boolean }) => {
+  const { file, canvasSize, htmlText, strictNetwork } = namedInputs;
+  await renderHTMLToImage(htmlText, file, canvasSize.width, canvasSize.height, false, false, { strictNetwork });
 };

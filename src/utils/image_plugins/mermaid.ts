@@ -27,7 +27,7 @@ const processMermaid = async (params: ImageProcessorParams) => {
     const resolvedImageRefs = resolveImageRefs(rawHtml, params.imageRefs ?? {});
     const resolvedAllRefs = resolveMovieRefs(resolvedImageRefs, params.movieRefs ?? {});
     const htmlData = resolveRelativeImagePaths(resolvedAllRefs, context.fileDirs.mulmoFileDirPath);
-    await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, true);
+    await renderHTMLToImage(htmlData, imagePath, canvasSize.width, canvasSize.height, true, false, { strictNetwork: context.strictNetwork });
   }
   return imagePath;
 };

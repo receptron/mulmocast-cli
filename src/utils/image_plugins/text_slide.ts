@@ -22,7 +22,9 @@ const processTextSlide = async (params: ImageProcessorParams) => {
     const marginTop = slide.subtitle ? canvasSize.height * 0.4 : canvasSize.height * 0.45;
     return `body {margin-top: ${marginTop}px;}`;
   })();
-  await renderMarkdownToImage(markdown, combinedStyle + topMargin, imagePath, canvasSize.width, canvasSize.height);
+  await renderMarkdownToImage(markdown, combinedStyle + topMargin, imagePath, canvasSize.width, canvasSize.height, {
+    strictNetwork: params.context.strictNetwork,
+  });
   return imagePath;
 };
 
