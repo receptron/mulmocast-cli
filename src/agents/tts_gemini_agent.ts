@@ -1,6 +1,6 @@
 import { GraphAILogger } from "graphai";
 import type { AgentFunction, AgentFunctionInfo } from "graphai";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, type GenerateContentConfig } from "@google/genai";
 
 import { provider2TTSAgent } from "../types/provider2agent.js";
 import {
@@ -15,6 +15,7 @@ import { pcmToMp3 } from "../utils/ffmpeg_utils.js";
 import {
   GEMINI_TTS_SAMPLE_RATE,
   buildGeminiInteractionsTtsRequest,
+  geminiDirectorsNotesPrompt,
   pcmFromInteractionAudio,
   usesGeminiInteractionsTts,
   type GeminiInteractionsTtsInput,
@@ -27,15 +28,26 @@ const GENAI_REQUEST_TIMEOUT_MS = 120_000;
 import type { GoogleTTSAgentParams, AgentBufferResult, AgentTextInputs, AgentErrorResult } from "../types/agent.js";
 import type { AgentUsage } from "../types/usage.js";
 
-const getPrompt = (text: string, instructions?: string) => {
-  // https://ai.google.dev/gemini-api/docs/speech-generation?hl=ja#controllable
-  if (instructions) {
-    return `### DIRECTOR'S NOTES\n${instructions}\n\n#### TRANSCRIPT\n${text}`;
-  }
-  return text;
+type GeminiAudio = { rawPcm: Buffer; sampleRate: number; usage: AgentUsage | undefined };
+
+type InlineAudioResponse = {
+  candidates?: { content?: { parts?: { inlineData?: { data?: string; mimeType?: string } }[] } }[];
+  usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number; totalTokenCount?: number };
+};
+type InteractionAudioResponse = {
+  output_audio?: { data?: string; mime_type?: string; sample_rate?: number };
+  usage?: { total_input_tokens?: number; total_output_tokens?: number; total_tokens?: number };
 };
 
-type GeminiAudio = { rawPcm: Buffer; sampleRate: number; usage: AgentUsage | undefined };
+// The two calls the agent makes, so a test can stand in for the SDK client. GoogleGenAI satisfies it.
+export type GeminiTtsClient = {
+  models: {
+    generateContent: (params: { model: string; contents: { parts: { text: string }[] }[]; config: GenerateContentConfig }) => Promise<InlineAudioResponse>;
+  };
+  interactions: {
+    create: (params: ReturnType<typeof buildGeminiInteractionsTtsRequest>, options?: { timeout?: number }) => Promise<InteractionAudioResponse>;
+  };
+};
 
 const geminiUsage = (model: string, inputTokens?: number, outputTokens?: number, totalTokens?: number): AgentUsage => ({
   provider: "gemini",
@@ -46,10 +58,10 @@ const geminiUsage = (model: string, inputTokens?: number, outputTokens?: number,
 });
 
 // 2.5 TTS: generateContent, direction embedded in the prompt, headerless PCM with the rate in the mimeType.
-const generateWithContent = async (ai: GoogleGenAI, { model, text, voice, instructions }: GeminiInteractionsTtsInput): Promise<GeminiAudio> => {
+const generateWithContent = async (ai: GeminiTtsClient, { model, text, voice, instructions }: GeminiInteractionsTtsInput): Promise<GeminiAudio> => {
   const response = await ai.models.generateContent({
     model,
-    contents: [{ parts: [{ text: getPrompt(text, instructions) }] }],
+    contents: [{ parts: [{ text: geminiDirectorsNotesPrompt(text, instructions) }] }],
     config: {
       responseModalities: ["AUDIO"],
       speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } },
@@ -69,14 +81,18 @@ const generateWithContent = async (ai: GoogleGenAI, { model, text, voice, instru
   };
 };
 
-const generateWithInteractions = async (ai: GoogleGenAI, input: GeminiInteractionsTtsInput): Promise<GeminiAudio> => {
-  const interaction = await ai.interactions.create(buildGeminiInteractionsTtsRequest(input));
+const generateWithInteractions = async (ai: GeminiTtsClient, input: GeminiInteractionsTtsInput): Promise<GeminiAudio> => {
+  // Passed per request too: the Interactions client is built apart from the models client.
+  const interaction = await ai.interactions.create(buildGeminiInteractionsTtsRequest(input), { timeout: GENAI_REQUEST_TIMEOUT_MS });
   const usage = interaction.usage;
   return {
     ...pcmFromInteractionAudio(interaction.output_audio),
     usage: usage ? geminiUsage(input.model, usage.total_input_tokens, usage.total_output_tokens, usage.total_tokens) : undefined,
   };
 };
+
+export const generateGeminiTts = (ai: GeminiTtsClient, input: GeminiInteractionsTtsInput): Promise<GeminiAudio> =>
+  usesGeminiInteractionsTts(input.model) ? generateWithInteractions(ai, input) : generateWithContent(ai, input);
 
 export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResult | AgentErrorResult, AgentTextInputs> = async ({
   namedInputs,
@@ -95,9 +111,9 @@ export const ttsGeminiAgent: AgentFunction<GoogleTTSAgentParams, AgentBufferResu
 
   const geminiResult: GeminiAudio | AgentErrorResult = await (async () => {
     try {
-      const ai = new GoogleGenAI({ apiKey, httpOptions: { timeout: GENAI_REQUEST_TIMEOUT_MS } });
+      const ai: GeminiTtsClient = new GoogleGenAI({ apiKey, httpOptions: { timeout: GENAI_REQUEST_TIMEOUT_MS } });
       const request = { model: model ?? provider2TTSAgent.gemini.defaultModel, text, voice: voice ?? provider2TTSAgent.gemini.defaultVoice, instructions };
-      return usesGeminiInteractionsTts(request.model) ? await generateWithInteractions(ai, request) : await generateWithContent(ai, request);
+      return await generateGeminiTts(ai, request);
     } catch (e) {
       if (suppressError) {
         return { error: e };

@@ -22,6 +22,7 @@ import {
 import { text2SpeechProviderSchema, text2MovieProviderSchema } from "../types/schema.js";
 import { MulmoPresentationStyleMethods } from "../methods/mulmo_presentation_style.js";
 import { MulmoBeatMethods } from "../methods/mulmo_beat.js";
+import { geminiTtsInputText } from "./gemini_tts.js";
 import { imagePrompt, htmlImageSystemPrompt, translateSystemPrompt, translatePrompts } from "./prompt.js";
 
 const MILLION = 1_000_000;
@@ -140,15 +141,14 @@ const buildOpenAITts = ({ speaker, text, textIsFinal, beatIndex, lang }: TtsBuil
 };
 
 const buildGeminiTts = ({ speaker, speechOptions, text, beatIndex, lang }: TtsBuilderInput): UsageEstimate => {
-  // The gemini TTS agent wraps the transcript in a "Director's Notes" prompt when an instruction is set.
-  const prompt = speechOptions?.instruction ? `### DIRECTOR'S NOTES\n${speechOptions.instruction}\n\n#### TRANSCRIPT\n${text}` : text;
+  const model = speaker.model ?? provider2TTSAgent.gemini.defaultModel;
   return {
     process: "tts",
     beatIndex,
     lang,
     provider: "gemini",
-    model: speaker.model ?? provider2TTSAgent.gemini.defaultModel,
-    inputTokens: estimated(countHeuristicTokens(prompt)),
+    model,
+    inputTokens: estimated(countHeuristicTokens(geminiTtsInputText(model, text, speechOptions?.instruction))),
     outputTokens: estimated(estimateSpeechSec(text) * GEMINI_TTS_AUDIO_TOKENS_PER_SEC),
   };
 };

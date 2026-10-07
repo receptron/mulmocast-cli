@@ -4,6 +4,14 @@ export const GEMINI_INTERACTIONS_TTS_MODELS: ReadonlySet<string> = new Set(["gem
 
 export const GEMINI_TTS_SAMPLE_RATE = 24000;
 
+// 2.5 TTS has no field for direction, so it goes in the prompt: https://ai.google.dev/gemini-api/docs/speech-generation#controllable
+export const geminiDirectorsNotesPrompt = (text: string, instructions?: string) =>
+  instructions ? ["### DIRECTOR'S NOTES", instructions, "", "#### TRANSCRIPT", text].join("\n") : text;
+
+// The text the model is given for one line: 3.8 gets the transcript plus the style annotation, 2.5 the wrapped prompt.
+export const geminiTtsInputText = (model: string, text: string, instructions?: string) =>
+  usesGeminiInteractionsTts(model) ? [text, instructions].filter(Boolean).join("\n") : geminiDirectorsNotesPrompt(text, instructions);
+
 export const usesGeminiInteractionsTts = (model: string): boolean => GEMINI_INTERACTIONS_TTS_MODELS.has(model);
 
 export type GeminiInteractionsTtsInput = { model: string; text: string; voice: string; instructions?: string };
