@@ -144,6 +144,7 @@ describe("estimateUsage: movie / soundEffect / lipSync", () => {
     const movie = byProcess(estimateUsage(makeScript([beat])), "movie")[0];
     assert.equal(movie.model, "veo-3.1-generate-001");
     assert.deepEqual(movie.predictSec, { value: 6, precision: "exact" });
+    assert.ok(Math.abs((movie.costUSD ?? 0) - 6 * 0.4) < 1e-12);
   });
 
   it("snaps up to the next supported duration across a gap in the durations list", () => {

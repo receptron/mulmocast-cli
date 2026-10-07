@@ -728,6 +728,8 @@ export const modelPricing: Record<string, Record<string, ModelPricing>> = {
     // Veo per second of generated video (720p). veo-2.0-generate-001 and veo-3.0-generate-001
     // were shut down on 2026-06-30, so they intentionally have no price.
     "veo-3.1-generate-preview": { unit: "seconds", perSecUSD: 0.4, asOf: "2026-07-03" },
+    // Vertex AI: https://cloud.google.com/vertex-ai/generative-ai/pricing (video + audio, 720p/1080p)
+    "veo-3.1-generate-001": { unit: "seconds", perSecUSD: 0.4, asOf: "2026-10-07" },
     "veo-3.1-lite-generate-preview": { unit: "seconds", perSecUSD: 0.05, asOf: "2026-07-03" },
     // Google Cloud Text-to-Speech per 1M characters, keyed by voice tier.
     // https://cloud.google.com/text-to-speech/pricing
