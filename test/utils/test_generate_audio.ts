@@ -75,8 +75,8 @@ for (const { model, mode, param } of replicateAudioTests) {
 }
 
 const googleAudioTests: { model: string; mode: string }[] = [
-  { model: "veo-3.1-generate-preview", mode: AUDIO_MODE_ALWAYS },
-  { model: "veo-3.1-lite-generate-preview", mode: AUDIO_MODE_ALWAYS },
+  { model: "gemini-omni-1.1-flash", mode: AUDIO_MODE_ALWAYS },
+  { model: "veo-3.1-generate-001", mode: AUDIO_MODE_ALWAYS },
 ];
 
 for (const { model, mode } of googleAudioTests) {

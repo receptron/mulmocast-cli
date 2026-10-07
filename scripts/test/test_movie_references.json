@@ -5,7 +5,8 @@
   "canvasSize": { "width": 1280, "height": 720 },
   "movieParams": {
     "provider": "google",
-    "model": "veo-3.1-generate-preview"
+    "model": "veo-3.1-generate-001",
+    "vertexai_project": "YOUR_PROJECT_ID"
   },
   "imageParams": {
     "images": {

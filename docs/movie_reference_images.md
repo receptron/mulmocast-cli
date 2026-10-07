@@ -94,6 +94,8 @@ All `imageName` and `lastFrameImageName` values reference keys in `imageParams.i
 
 ## API Constraints (Veo 3.1)
 
+On Google, `referenceImages` needs `veo-3.1-generate-001`, which runs on Vertex AI (`movieParams.vertexai_project`). The Gemini API default `gemini-omni-1.1-flash` ignores them with a warning.
+
 `referenceImages` and `image`/`lastFrame` are **mutually exclusive**:
 
 | Combination                                 | Allowed |
@@ -107,40 +109,30 @@ All `imageName` and `lastFrameImageName` values reference keys in `imageParams.i
 
 When both are specified, `referenceImages` is silently ignored and `first frame + lastFrame` takes precedence.
 
-## Duration and Video Extension (Veo 3.1)
+## Duration and Video Extension (Gemini Omni)
 
-For videos **8 seconds or shorter**, all features are available:
+`gemini-omni-1.1-flash` makes 3 to 10 whole seconds per call. A longer beat is generated in even segments, each call extending the previous one, up to 40 seconds (a 21-second beat is 7 + 7 + 7). Longer requests get a 40-second video and a warning.
 
-- `firstFrameImageName` + `lastFrameImageName` (interpolation)
-- `referenceImages` (style/asset)
+| Duration         |   firstFrame    |          lastFrame          | referenceImages |
+| ---------------- | :-------------: | :-------------------------: | :-------------: |
+| ≤ 10s (one call) |       ✅        |             ✅              |       ❌        |
+| > 10s (extended) | ✅ (first call) | ❌ (ignored with a warning) |       ❌        |
 
-For videos **longer than 8 seconds**, Veo 3.1 uses video extension (generating an initial 8s clip, then extending iteratively). This has additional constraints:
-
-| Duration                    |        firstFrame         | lastFrame | referenceImages |
-| --------------------------- | :-----------------------: | :-------: | :-------------: |
-| ≤ 8s (standard)             |            ✅             |    ✅     |       ✅        |
-| > 8s (extension) initial    |            ✅             |   ❌ \*   |     ❌ \*\*     |
-| > 8s (extension) subsequent | N/A (uses previous video) |    ❌     |       ❌        |
-
-\* `lastFrame` requires `image` input, but using it means the video reaches the end state in the first 8s, then extends from there — likely not the intended behavior.
-
-\*\* `referenceImages` is mutually exclusive with `image` (first frame), and the initial iteration typically uses a first frame for best results.
-
-**Recommendation**: Use `lastFrame` and `referenceImages` only with videos ≤ 8 seconds. For longer videos, use `firstFrameImageName` only to set the starting point, and let the model extend naturally.
+`lastFrame` needs a first frame, as with Veo.
 
 ## Model Support Matrix
 
 ### Google Gemini (GenAI)
 
-| Feature              |   veo-2.0   | veo-3.0 |   veo-3.1    |
-| -------------------- | :---------: | :-----: | :----------: |
-| **first frame**      |     ✅      |   ✅    |      ✅      |
-| **lastFrame**        | ✅ (Vertex) |   ❌    |      ✅      |
-| **referenceImages**  |     ❌      |   ❌    | ✅ (preview) |
-| **video extension**  | ✅ (Vertex) |   ❌    |      ✅      |
-| **generateAudio**    |     ❌      |   ✅    |      ✅      |
-| **personGeneration** |     ✅      |   ❌    |      ❌      |
-| **Duration**         |  5,6,7,8s   | 4,6,8s  |    4,6,8s    |
+| Feature              | gemini-omni-1.1-flash (Gemini API, default) | veo-3.1-generate-001 (Vertex AI, default there) |
+| -------------------- | :-----------------------------------------: | :---------------------------------------------: |
+| **first frame**      |                     ✅                      |                       ✅                        |
+| **lastFrame**        |               ✅ (≤ 10s only)               |                       ✅                        |
+| **referenceImages**  |                     ❌                      |                       ✅                        |
+| **video extension**  |               ✅ (up to 40s)                |                       ❌                        |
+| **generateAudio**    |                   always                    |                     always                      |
+| **personGeneration** |                     ❌                      |                       ❌                        |
+| **Duration**         |                    3–10s                    |                     4,6,8s                      |
 
 ### Replicate
 
@@ -168,7 +160,7 @@ For videos **longer than 8 seconds**, Veo 3.1 uses video extension (generating a
 | **wan-2.2-i2v-fast**                       |     ✅      |    ✅     | `last_image`       |      ❌       | —                     |
 | **wan-2.2-t2v-fast**                       |     ❌      |    ❌     | —                  |      ❌       | —                     |
 
-> **Note**: `referenceImages` is supported by Veo 3.1 (Google GenAI), Kling v3, and Grok R2V (Replicate).
+> **Note**: `referenceImages` is supported by Veo 3.1 (Google, on Vertex AI), Kling v3, and Grok R2V (Replicate).
 
 > **First frame required**: `wan-2.2-i2v-fast`, `hailuo-2.3-fast`, and `grok-imagine-video-1.5` cannot generate from text alone — they need an `imagePrompt` / `firstFrameImageName` (or a beat image).
 

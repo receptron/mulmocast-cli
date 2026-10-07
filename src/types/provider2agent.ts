@@ -424,29 +424,22 @@ export const provider2MovieAgent = {
   },
   google: {
     agentName: "movieGenAIAgent",
-    // veo-2.0 and veo-3.0 were shut down on 2026-06-30; the Gemini API now lists only the Veo 3.1 previews.
-    defaultModel: "veo-3.1-generate-preview",
-    models: ["veo-3.1-generate-preview", "veo-3.1-lite-generate-preview", "veo-3.1-generate-001"],
+    // The Veo 3.1 previews shut down on the Gemini API on 2026-10-22 (removed here ahead of that); Gemini Omni is their successor.
+    defaultModel: "gemini-omni-1.1-flash",
+    models: ["gemini-omni-1.1-flash", "veo-3.1-generate-001"],
     keyName: "GEMINI_API_KEY",
     modelParams: {
-      "veo-3.1-lite-generate-preview": {
-        durations: [4, 6, 8],
+      // Gemini API only. Longer beats are extended, up to 40 seconds (see gemini_omni_video.ts).
+      "gemini-omni-1.1-flash": {
+        durations: [3, 4, 5, 6, 7, 8, 9, 10],
         supportsDuration: true,
         supportsLastFrame: true,
         supportsReferenceImages: false,
         supportsPersonGeneration: false,
         audio: { mode: AUDIO_MODE_ALWAYS },
       },
-      // Vertex AI only: the GA name of Veo 3.1 there, where the preview IDs are retired.
+      // Vertex AI only: the GA name of Veo 3.1 there.
       "veo-3.1-generate-001": {
-        durations: [4, 6, 8],
-        supportsDuration: true,
-        supportsLastFrame: true,
-        supportsReferenceImages: true,
-        supportsPersonGeneration: false,
-        audio: { mode: AUDIO_MODE_ALWAYS },
-      },
-      "veo-3.1-generate-preview": {
         durations: [4, 6, 8],
         supportsDuration: true,
         supportsLastFrame: true,
@@ -650,18 +643,30 @@ export const getModelAudio = (provider: keyof typeof provider2MovieAgent, model:
 
 const GOOGLE_VERTEX_DEFAULT_MOVIE_MODEL = "veo-3.1-generate-001";
 
-// The default model is shared by the Gemini API and Vertex AI, but Vertex retired the Veo 3.1 preview IDs.
+const removedGoogleMovieModelHint =
+  "Its Gemini API shutdown date is 2026-10-22, so mulmocast no longer offers it. Use 'gemini-omni-1.1-flash' on the Gemini API, or 'veo-3.1-generate-001' with movieParams.vertexai_project on Vertex AI (needed for referenceImages).";
+
+const removedGoogleMovieModelHints: Record<string, string> = {
+  "veo-3.1-generate-preview": removedGoogleMovieModelHint,
+  "veo-3.1-lite-generate-preview": removedGoogleMovieModelHint,
+};
+
+// An unknown model fails here with a hint, not with a TypeError in the duration lookup.
+export const unsupportedGoogleMovieModelMessage = (model: string): string | null => {
+  if (Object.hasOwn(provider2MovieAgent.google.modelParams, model)) return null;
+  const hint = Object.hasOwn(removedGoogleMovieModelHints, model)
+    ? removedGoogleMovieModelHints[model]
+    : `Supported models: ${provider2MovieAgent.google.models.join(", ")}.`;
+  return `Google movie model "${model}" is not supported. ${hint}`;
+};
+
+// Gemini Omni is a Gemini API model here, so Vertex AI keeps Veo 3.1 as its default.
 export const defaultMovieModel = (provider: keyof typeof provider2MovieAgent, movieParams?: { vertexai_project?: string }): string =>
   provider === "google" && movieParams?.vertexai_project ? GOOGLE_VERTEX_DEFAULT_MOVIE_MODEL : provider2MovieAgent[provider].defaultModel;
 
-// Veo 3.1 (preview) builds clips longer than one segment by extending an 8-second first segment 8 seconds at a time.
-export const VEO_EXTENSION_MODEL = "veo-3.1-generate-preview";
-export const VEO_SEGMENT_SEC = 8;
-export const veoExtensionCount = (requestedSec: number) => Math.ceil((requestedSec - VEO_SEGMENT_SEC) / VEO_SEGMENT_SEC);
-export const veoExtendedSeconds = (requestedSec: number) => VEO_SEGMENT_SEC * (1 + veoExtensionCount(requestedSec));
-
 export const getModelDuration = (provider: keyof typeof provider2MovieAgent, model: string, movieDuration?: number) => {
   const modelParams = provider2MovieAgent[provider]?.modelParams as Record<string, { durations?: number[] }>;
+  if (!modelParams || !Object.hasOwn(modelParams, model)) return undefined;
   const { durations } = modelParams[model];
   if (durations && movieDuration) {
     const largerDurations = durations.filter((d: number) => d >= movieDuration);
@@ -747,12 +752,11 @@ export const modelPricing: Record<string, Record<string, ModelPricing>> = {
     "gemini-2.5-flash-image": { unit: "images", inputPerMTokensUSD: 0.3, perImageUSD: 0.039, asOf: "2026-07-03" },
     // $0.0336 per 1K-resolution image
     "gemini-3.1-flash-lite-image": { unit: "images", inputPerMTokensUSD: 0.25, perImageUSD: 0.0336, asOf: "2026-10-07" },
-    // Veo per second of generated video (720p). veo-2.0-generate-001 and veo-3.0-generate-001
-    // were shut down on 2026-06-30, so they intentionally have no price.
-    "veo-3.1-generate-preview": { unit: "seconds", perSecUSD: 0.4, asOf: "2026-07-03" },
+    // Video per generated second at 720p. Shut-down models (veo-2.0, veo-3.0, the Veo 3.1 previews) intentionally have no price.
+    // Gemini Omni bills video output tokens at $17.50/1M, 5,792 tokens per second of 720p video.
+    "gemini-omni-1.1-flash": { unit: "seconds", perSecUSD: 0.1014, asOf: "2026-10-07" },
     // Vertex AI: https://cloud.google.com/vertex-ai/generative-ai/pricing (video + audio, 720p/1080p)
     "veo-3.1-generate-001": { unit: "seconds", perSecUSD: 0.4, asOf: "2026-10-07" },
-    "veo-3.1-lite-generate-preview": { unit: "seconds", perSecUSD: 0.05, asOf: "2026-07-03" },
     // Google Cloud Text-to-Speech per 1M characters, keyed by voice tier.
     // https://cloud.google.com/text-to-speech/pricing
     "tts-standard": { unit: "chars", perMCharsUSD: 4, asOf: "2026-07-03" },
