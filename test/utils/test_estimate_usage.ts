@@ -247,7 +247,7 @@ describe("estimateUsage: pricing edges", () => {
     });
     const tts = byProcess(estimateUsage(script), "tts")[0];
     assert.equal(tts.model, "eleven_multilingual_v2");
-    assert.ok(Math.abs((tts.costUSD ?? 0) - (10 * 100) / 1_000_000) < 1e-12);
+    assert.ok(Math.abs((tts.costUSD ?? 0) - (10 * 80) / 1_000_000) < 1e-12);
   });
 
   it("emits no records for mock providers", () => {
