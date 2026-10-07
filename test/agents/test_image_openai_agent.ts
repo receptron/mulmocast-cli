@@ -1,7 +1,9 @@
-import test from "node:test";
+import test, { mock } from "node:test";
 import assert from "node:assert";
 import { imageOpenaiAgent, buildDeprecatedModelMessage } from "../../src/agents/image_openai_agent.js";
 import { gptImageQuality, gptImages, isGptImage25Model, provider2ImageAgent } from "../../src/types/provider2agent.js";
+import OpenAI from "openai";
+import type { OpenAIImageQuality } from "../../src/types/agent.js";
 import { agentCallContext } from "../fixtures.js";
 
 const baseParams = { ...agentCallContext, config: { apiKey: "fake-key-not-used" } };
@@ -78,4 +80,28 @@ test("gptImageQuality: the 2.5 models default to high; a set quality and the old
 test("isGptImage25Model: the 2.5 models only", () => {
   ["gpt-image-2.5-sunburst", "gpt-image-2.5-flare"].forEach((model) => assert.strictEqual(isGptImage25Model(model), true, model));
   ["gpt-image-2", "gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini", ""].forEach((model) => assert.strictEqual(isGptImage25Model(model), false, model));
+});
+
+const sentImageQuality = async (params: { model: string; quality?: OpenAIImageQuality }) => {
+  const sent: (string | null | undefined)[] = [];
+  const generate = mock.method(OpenAI.Images.prototype, "generate", async (body: OpenAI.ImageGenerateParams) => {
+    sent.push(body.quality);
+    throw new Error("request captured");
+  });
+  try {
+    await assert.rejects(
+      () => imageOpenaiAgent({ ...baseParams, namedInputs: { prompt: "a cat" }, params: { ...params, canvasSize, moderation: "auto" } }),
+      /request captured/,
+    );
+  } finally {
+    generate.mock.restore();
+  }
+  return sent;
+};
+
+test("imageOpenaiAgent sends the resolved quality to the OpenAI request", async () => {
+  assert.deepStrictEqual(await sentImageQuality({ model: "gpt-image-2.5-sunburst" }), ["high"]);
+  assert.deepStrictEqual(await sentImageQuality({ model: "gpt-image-2.5-flare", quality: "auto" }), ["auto"]);
+  assert.deepStrictEqual(await sentImageQuality({ model: "gpt-image-2.5-sunburst", quality: "low" }), ["low"]);
+  assert.deepStrictEqual(await sentImageQuality({ model: "gpt-image-1" }), [undefined]);
 });
