@@ -6,10 +6,10 @@ A setup guide for using Google Vertex AI for image and video generation in Mulmo
 
 MulmoCast supports two methods for accessing Google's generative AI capabilities:
 
-| Method | Authentication | Use Case |
-|--------|---------------|----------|
-| Gemini API | API Key (`GEMINI_API_KEY`) | Personal development, prototyping |
-| Vertex AI | ADC (Application Default Credentials) | Enterprise, production environments |
+| Method     | Authentication                        | Use Case                            |
+| ---------- | ------------------------------------- | ----------------------------------- |
+| Gemini API | API Key (`GEMINI_API_KEY`)            | Personal development, prototyping   |
+| Vertex AI  | ADC (Application Default Credentials) | Enterprise, production environments |
 
 Some models (e.g., Veo movie generation) may only be available through Vertex AI.
 
@@ -70,9 +70,8 @@ Add `vertexai_project` to `imageParams` or `movieParams`:
   "title": "My Presentation",
   "imageParams": {
     "provider": "google",
-    "model": "gemini-2.5-flash-image",
     "vertexai_project": "your-project-id",
-    "vertexai_location": "us-central1"
+    "vertexai_location": "global"
   },
   "beats": [
     {
@@ -85,10 +84,10 @@ Add `vertexai_project` to `imageParams` or `movieParams`:
 
 ### Parameters
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `vertexai_project` | Google Cloud Project ID | None (enables Vertex AI mode when set) |
-| `vertexai_location` | Region | `us-central1` |
+| Parameter           | Description             | Default                                |
+| ------------------- | ----------------------- | -------------------------------------- |
+| `vertexai_project`  | Google Cloud Project ID | None (enables Vertex AI mode when set) |
+| `vertexai_location` | Region                  | `us-central1`                          |
 
 ### Video Generation Configuration
 
@@ -96,7 +95,7 @@ Add `vertexai_project` to `imageParams` or `movieParams`:
 {
   "movieParams": {
     "provider": "google",
-    "model": "veo-2.0-generate-001",
+    "model": "veo-3.1-generate-001",
     "vertexai_project": "your-project-id",
     "vertexai_location": "us-central1"
   }
@@ -106,7 +105,6 @@ Add `vertexai_project` to `imageParams` or `movieParams`:
 ### TTS (Text-to-Speech) Configuration
 
 You can use Google Cloud TTS or Gemini TTS via Vertex AI. TTS is authenticated via ADC and does not require `vertexai_project`. See the [test script](../scripts/test/test_vertexai.json) for configuration examples.
-
 
 ### Beat-Level Overrides
 
@@ -128,7 +126,7 @@ When changing the model for individual beats, you also need to specify `vertexai
       "text": "Generating a video",
       "moviePrompt": "Ocean waves crashing on a beach",
       "movieParams": {
-        "model": "veo-3.0-generate-001",
+        "model": "veo-3.1-generate-001",
         "vertexai_project": "your-project-id",
         "vertexai_location": "us-central1"
       }
@@ -141,31 +139,35 @@ When changing the model for individual beats, you also need to specify `vertexai
 
 ### Image Generation
 
-| Model | Description |
-|-------|-------------|
-| `gemini-2.5-flash-image` | Gemini 2.5 Flash image (default) |
-| `gemini-3-pro-image-preview` | Gemini 3 Pro image |
-| `gemini-3.1-flash-image-preview` | Gemini 3.1 Flash image |
+| Model                            | Description                           |
+| -------------------------------- | ------------------------------------- |
+| `gemini-3.1-flash-lite-image`    | Gemini 3.1 Flash Lite image (default) |
+| `gemini-3.1-flash-image`         | Gemini 3.1 Flash image                |
+| `gemini-3-pro-image`             | Gemini 3 Pro image                    |
+| `gemini-2.5-flash-image`         | Gemini 2.5 Flash image                |
+| `gemini-3-pro-image-preview`     | Gemini 3 Pro image (preview)          |
+| `gemini-3.1-flash-image-preview` | Gemini 3.1 Flash image (preview)      |
 
 **Note**:
+
 - Gemini image models may not be available in all regions
-- `gemini-3-pro-image-preview` and `gemini-3.1-flash-image-preview` are only available in `vertexai_location: "global"` on Vertex AI. See [Gemini 3 Pro Image](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro-image) and [Gemini 3.1 Flash Image](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-1-flash-image)
+- `gemini-3.1-flash-lite-image`, `gemini-3-pro-image` and the two preview models are only available in `vertexai_location: "global"` on Vertex AI; `gemini-3.1-flash-image` is also available in the `us` and `eu` multi-regions
 
 ### Video Generation
 
-| Model | Description |
-|-------|-------------|
-| `veo-2.0-generate-001` | Veo 2.0 |
-| `veo-3.0-generate-001` | Veo 3.0 |
-| `veo-3.1-generate-preview` | Veo 3.1 Preview |
+| Model                           | Description                                 |
+| ------------------------------- | ------------------------------------------- |
+| `veo-3.1-generate-preview`      | Veo 3.1 Preview                             |
+| `veo-3.1-lite-generate-preview` | Veo 3.1 Lite Preview                        |
+| `veo-3.1-generate-001`          | Veo 3.1 (Vertex AI only; the default there) |
 
 ### TTS (Text-to-Speech)
 
-| Provider | Model/voiceId | Description |
-|----------|---------------|-------------|
-| Google Cloud TTS | `en-US-Studio-O` | English (US) Studio voice |
-| Google Cloud TTS | `ja-JP-Standard-A` | Japanese Standard voice |
-| Gemini TTS | `gemini-2.5-pro-tts` | Gemini-based TTS |
+| Provider         | Model/voiceId        | Description               |
+| ---------------- | -------------------- | ------------------------- |
+| Google Cloud TTS | `en-US-Studio-O`     | English (US) Studio voice |
+| Google Cloud TTS | `ja-JP-Standard-A`   | Japanese Standard voice   |
+| Gemini TTS       | `gemini-2.5-pro-tts` | Gemini-based TTS          |
 
 **Note**: Refer to each service's documentation for available voiceIds.
 
@@ -181,13 +183,13 @@ Vertex AI is available in the following regions:
 
 ## Differences from Gemini API
 
-| Aspect | Gemini API | Vertex AI |
-|--------|-----------|-----------|
-| Authentication | API Key | ADC / Service Account |
-| Billing | Pay-as-you-go | Google Cloud billing |
-| Quotas | API level | Project level |
-| SLA | None | Available |
-| Models | Some restrictions | All models available |
+| Aspect         | Gemini API        | Vertex AI             |
+| -------------- | ----------------- | --------------------- |
+| Authentication | API Key           | ADC / Service Account |
+| Billing        | Pay-as-you-go     | Google Cloud billing  |
+| Quotas         | API level         | Project level         |
+| SLA            | None              | Available             |
+| Models         | Some restrictions | All models available  |
 
 ## Troubleshooting
 

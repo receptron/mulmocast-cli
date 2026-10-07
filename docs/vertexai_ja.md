@@ -6,10 +6,10 @@ MulmoCast で Google Vertex AI を使用して画像生成・動画生成を行�
 
 MulmoCast は Google の生成AI機能を2つの方法で利用できます：
 
-| 方式 | 認証方法 | 用途 |
-|------|---------|------|
-| Gemini API | API キー (`GEMINI_API_KEY`) | 個人開発、プロトタイピング |
-| Vertex AI | ADC (Application Default Credentials) | エンタープライズ、本番環境 |
+| 方式       | 認証方法                              | 用途                       |
+| ---------- | ------------------------------------- | -------------------------- |
+| Gemini API | API キー (`GEMINI_API_KEY`)           | 個人開発、プロトタイピング |
+| Vertex AI  | ADC (Application Default Credentials) | エンタープライズ、本番環境 |
 
 一部のモデル（Veo 動画生成など）は Vertex AI でのみ利用可能な場合があります。
 
@@ -70,9 +70,8 @@ gcloud auth application-default print-access-token
   "title": "My Presentation",
   "imageParams": {
     "provider": "google",
-    "model": "gemini-2.5-flash-image",
     "vertexai_project": "your-project-id",
-    "vertexai_location": "us-central1"
+    "vertexai_location": "global"
   },
   "beats": [
     {
@@ -85,10 +84,10 @@ gcloud auth application-default print-access-token
 
 ### パラメータ
 
-| パラメータ | 説明 | デフォルト |
-|-----------|------|-----------|
-| `vertexai_project` | Google Cloud プロジェクト ID | なし（設定時に Vertex AI モード） |
-| `vertexai_location` | リージョン | `us-central1` |
+| パラメータ          | 説明                         | デフォルト                        |
+| ------------------- | ---------------------------- | --------------------------------- |
+| `vertexai_project`  | Google Cloud プロジェクト ID | なし（設定時に Vertex AI モード） |
+| `vertexai_location` | リージョン                   | `us-central1`                     |
 
 ### 動画生成の設定
 
@@ -96,7 +95,7 @@ gcloud auth application-default print-access-token
 {
   "movieParams": {
     "provider": "google",
-    "model": "veo-2.0-generate-001",
+    "model": "veo-3.1-generate-001",
     "vertexai_project": "your-project-id",
     "vertexai_location": "us-central1"
   }
@@ -106,7 +105,6 @@ gcloud auth application-default print-access-token
 ### TTS（音声合成）の設定
 
 Vertex AI 経由で Google Cloud TTS または Gemini TTS を使用できます。TTS は ADC で認証され、`vertexai_project` の指定は不要です。設定例は [テスト用スクリプト](../scripts/test/test_vertexai.json) を参照してください。
-
 
 ### beat レベルでのオーバーライド
 
@@ -128,7 +126,7 @@ Vertex AI 経由で Google Cloud TTS または Gemini TTS を使用できます�
       "text": "動画を生成します",
       "moviePrompt": "Ocean waves crashing on a beach",
       "movieParams": {
-        "model": "veo-3.0-generate-001",
+        "model": "veo-3.1-generate-001",
         "vertexai_project": "your-project-id",
         "vertexai_location": "us-central1"
       }
@@ -141,31 +139,35 @@ Vertex AI 経由で Google Cloud TTS または Gemini TTS を使用できます�
 
 ### 画像生成
 
-| モデル | 説明 |
-|--------|------|
-| `gemini-2.5-flash-image` | Gemini 2.5 Flash 画像生成（デフォルト） |
-| `gemini-3-pro-image-preview` | Gemini 3 Pro 画像生成 |
-| `gemini-3.1-flash-image-preview` | Gemini 3.1 Flash 画像生成 |
+| モデル                           | 説明                                         |
+| -------------------------------- | -------------------------------------------- |
+| `gemini-3.1-flash-lite-image`    | Gemini 3.1 Flash Lite 画像生成（デフォルト） |
+| `gemini-3.1-flash-image`         | Gemini 3.1 Flash 画像生成                    |
+| `gemini-3-pro-image`             | Gemini 3 Pro 画像生成                        |
+| `gemini-2.5-flash-image`         | Gemini 2.5 Flash 画像生成                    |
+| `gemini-3-pro-image-preview`     | Gemini 3 Pro 画像生成（プレビュー）          |
+| `gemini-3.1-flash-image-preview` | Gemini 3.1 Flash 画像生成（プレビュー）      |
 
 **注意**:
+
 - Gemini 画像モデルはリージョンによって利用できない場合があります
-- `gemini-3-pro-image-preview` と `gemini-3.1-flash-image-preview` は Vertex AI では `vertexai_location: "global"` のみ利用可能です。[Gemini 3 Pro Image](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro-image) / [Gemini 3.1 Flash Image](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-1-flash-image) 参照
-  
+- `gemini-3.1-flash-lite-image`、`gemini-3-pro-image` と 2 つのプレビューは、Vertex AI では `vertexai_location: "global"` のみ利用可能です。`gemini-3.1-flash-image` は `us` / `eu` のマルチリージョンでも使えます
+
 ### 動画生成
 
-| モデル | 説明 |
-|--------|------|
-| `veo-2.0-generate-001` | Veo 2.0 |
-| `veo-3.0-generate-001` | Veo 3.0 |
-| `veo-3.1-generate-preview` | Veo 3.1 プレビュー |
+| モデル                          | 説明                                          |
+| ------------------------------- | --------------------------------------------- |
+| `veo-3.1-generate-preview`      | Veo 3.1 プレビュー                            |
+| `veo-3.1-lite-generate-preview` | Veo 3.1 Lite プレビュー                       |
+| `veo-3.1-generate-001`          | Veo 3.1（Vertex AI のみ。Vertex AI での既定） |
 
 ### TTS（音声合成）
 
-| プロバイダー | モデル/voiceId | 説明 |
-|-------------|---------------|------|
-| Google Cloud TTS | `en-US-Studio-O` | 英語（米国）Studio 音声 |
-| Google Cloud TTS | `ja-JP-Standard-A` | 日本語 Standard 音声 |
-| Gemini TTS | `gemini-2.5-pro-tts` | Gemini ベースの TTS |
+| プロバイダー     | モデル/voiceId       | 説明                    |
+| ---------------- | -------------------- | ----------------------- |
+| Google Cloud TTS | `en-US-Studio-O`     | 英語（米国）Studio 音声 |
+| Google Cloud TTS | `ja-JP-Standard-A`   | 日本語 Standard 音声    |
+| Gemini TTS       | `gemini-2.5-pro-tts` | Gemini ベースの TTS     |
 
 **注意**: 利用可能な voiceId は各サービスのドキュメントを参照してください。
 
@@ -181,13 +183,13 @@ Vertex AI は以下のリージョンで利用可能です：
 
 ## Gemini API との違い
 
-| 項目 | Gemini API | Vertex AI |
-|------|-----------|-----------|
-| 認証 | API キー | ADC / サービスアカウント |
-| 料金 | 従量課金 | Google Cloud 請求 |
-| クォータ | API レベル | プロジェクトレベル |
-| SLA | なし | あり |
-| モデル | 一部制限あり | 全モデル利用可能 |
+| 項目     | Gemini API   | Vertex AI                |
+| -------- | ------------ | ------------------------ |
+| 認証     | API キー     | ADC / サービスアカウント |
+| 料金     | 従量課金     | Google Cloud 請求        |
+| クォータ | API レベル   | プロジェクトレベル       |
+| SLA      | なし         | あり                     |
+| モデル   | 一部制限あり | 全モデル利用可能         |
 
 ## トラブルシューティング
 

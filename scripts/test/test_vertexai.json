@@ -24,7 +24,7 @@
   },
   "movieParams": {
     "provider": "google",
-    "model": "veo-2.0-generate-001",
+    "model": "veo-3.1-generate-001",
     "vertexai_project": "YOUR_PROJECT_ID",
     "vertexai_location": "us-central1"
   },
@@ -76,7 +76,7 @@
       "text": "TTS: Gemini 2.5 Pro TTS Kore. Movie: Veo 3 override.",
       "moviePrompt": "Ocean waves crashing on a beach at sunset",
       "movieParams": {
-        "model": "veo-3.0-generate-001",
+        "model": "veo-3.1-generate-001",
         "vertexai_project": "YOUR_PROJECT_ID",
         "vertexai_location": "us-central1"
       }
@@ -101,7 +101,7 @@
       },
       "moviePrompt": "The robot turns its head and waves at the camera",
       "movieParams": {
-        "model": "veo-3.0-generate-001",
+        "model": "veo-3.1-generate-001",
         "vertexai_project": "YOUR_PROJECT_ID",
         "vertexai_location": "us-central1"
       },

@@ -37,6 +37,7 @@ import { MulmoBeatMethods } from "./mulmo_beat.js";
 import {
   provider2ImageAgent,
   provider2MovieAgent,
+  defaultMovieModel,
   provider2LLMAgent,
   provider2TTSAgent,
   provider2SoundEffectAgent,
@@ -236,7 +237,7 @@ export const MulmoPresentationStyleMethods = {
       return true;
     }
     const provider = text2MovieProviderSchema.parse(movieParams?.provider ?? defaultProviders.text2movie) as keyof typeof provider2MovieAgent;
-    const model = movieParams?.model ?? provider2MovieAgent[provider].defaultModel;
+    const model = movieParams?.model ?? defaultMovieModel(provider, movieParams);
     return getModelAudio(provider, model)?.mode === AUDIO_MODE_ALWAYS;
   },
   getSoundEffectAgentInfo(presentationStyle: MulmoPresentationStyle, beat: MulmoBeat) {

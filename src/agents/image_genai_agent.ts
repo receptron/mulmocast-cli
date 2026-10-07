@@ -5,6 +5,8 @@ import {
   provider2ImageAgent,
   deprecatedGoogleImageModelHints,
   vertexAIGlobalOnlyImageModels,
+  isGeminiImageModel,
+  vertexImageLocation,
   type DeprecatedGoogleImageModel,
 } from "../types/provider2agent.js";
 import {
@@ -114,7 +116,7 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
 
   const ai = params.vertexai_project
     ? (() => {
-        const location = params.vertexai_location ?? "us-central1";
+        const location = vertexImageLocation(model, params.vertexai_location);
         if (vertexAIGlobalOnlyImageModels.has(model) && location !== "global") {
           GraphAILogger.warn(
             `imageGenAIAgent: model "${model}" on Vertex AI is only available in location "global", but got "${location}". Set imageParams.vertexai_location to "global".`,
@@ -134,7 +136,7 @@ export const imageGenAIAgent: AgentFunction<ImageAgentParams, AgentBufferResult,
         return new GoogleGenAI({ apiKey, httpOptions: { timeout: GENAI_REQUEST_TIMEOUT_MS } });
       })();
 
-  if (model === "gemini-2.5-flash-image" || model === "gemini-3.1-flash-image-preview" || model === "gemini-3-pro-image-preview") {
+  if (isGeminiImageModel(model)) {
     const contentParams = (() => {
       const contents = getGeminiContents(prompt, referenceImages);
       return {

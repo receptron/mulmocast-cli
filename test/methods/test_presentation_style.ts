@@ -204,10 +204,10 @@ test("generatedMovieHasAudio: google always-audio model has audio", () => {
   assert.equal(MulmoPresentationStyleMethods.generatedMovieHasAudio(presentationStyle, beat), true);
 });
 
-test("generatedMovieHasAudio: google default model (audio never) is silent", () => {
+test("generatedMovieHasAudio: google default model (Veo 3.1, audio always) has audio", () => {
   const { presentationStyle } = createMockContext();
   const beat = createMockBeat({ moviePrompt: "wave", movieParams: { provider: "google" } });
-  assert.equal(MulmoPresentationStyleMethods.generatedMovieHasAudio(presentationStyle, beat), false);
+  assert.equal(MulmoPresentationStyleMethods.generatedMovieHasAudio(presentationStyle, beat), true);
 });
 
 test("generatedMovieHasAudio: mock provider is silent", () => {

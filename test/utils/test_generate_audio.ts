@@ -3,7 +3,6 @@ import assert from "node:assert";
 import { mulmoScriptSchema } from "../../src/types/schema.js";
 import { provider2MovieAgent, AUDIO_MODE_NEVER, AUDIO_MODE_ALWAYS, AUDIO_MODE_OPTIONAL } from "../../src/types/provider2agent.js";
 import { currentMulmoScriptVersion } from "../../src/types/const.js";
-import { movieGenAIAgent } from "../../src/agents/movie_genai_agent.js";
 import { movieReplicateAgent } from "../../src/agents/movie_replicate_agent.js";
 import { apiErrorType, hasCause, imageAction, unsupportedModelTarget } from "../../src/utils/error_cause.js";
 import { agentCallContext } from "../fixtures.js";
@@ -77,7 +76,7 @@ for (const { model, mode, param } of replicateAudioTests) {
 
 const googleAudioTests: { model: string; mode: string }[] = [
   { model: "veo-3.1-generate-preview", mode: AUDIO_MODE_ALWAYS },
-  { model: "veo-2.0-generate-001", mode: AUDIO_MODE_NEVER },
+  { model: "veo-3.1-lite-generate-preview", mode: AUDIO_MODE_ALWAYS },
 ];
 
 for (const { model, mode } of googleAudioTests) {
@@ -87,37 +86,6 @@ for (const { model, mode } of googleAudioTests) {
     assert.strictEqual(params.audio.mode, mode);
   });
 }
-
-// Test: agent rejection for unsupported generateAudio
-test("movieGenAIAgent rejects generateAudio=true for never-audio model", async () => {
-  await assert.rejects(
-    () =>
-      movieGenAIAgent({
-        ...agentCallContext,
-        namedInputs: {
-          prompt: "A calm ocean at sunset",
-          movieFile: "output/test/test_genai_audio.mp4",
-        },
-        params: {
-          model: "veo-2.0-generate-001",
-          canvasSize: { width: 1280, height: 720 },
-          generateAudio: true,
-        },
-        config: {},
-      }),
-    (err: Error) => {
-      assert.match(err.message, /does not support audio generation/);
-      assert.ok(hasCause(err), "error should include cause");
-      assert.deepStrictEqual(err.cause, {
-        type: apiErrorType,
-        action: imageAction,
-        target: unsupportedModelTarget,
-        agentName: "movieGenAIAgent",
-      });
-      return true;
-    },
-  );
-});
 
 test("movieReplicateAgent rejects generateAudio=true for never-audio model", async () => {
   await assert.rejects(

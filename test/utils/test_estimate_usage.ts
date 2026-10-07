@@ -135,6 +135,21 @@ describe("estimateUsage: movie / soundEffect / lipSync", () => {
     assert.ok(Math.abs((movie.costUSD ?? 0) - 8 * 0.036) < 1e-12);
   });
 
+  it("counts every second Veo 3.1 generates when the default Google model extends a clip past 8 seconds", () => {
+    const beat = { speaker: "Presenter", text: "", moviePrompt: "wave", duration: 12, movieParams: { provider: "google" } };
+    const movie = byProcess(estimateUsage(makeScript([beat])), "movie")[0];
+    assert.equal(movie.model, "veo-3.1-generate-preview");
+    assert.deepEqual(movie.predictSec, { value: 16, precision: "exact" });
+  });
+
+  it("uses the Vertex AI Veo name when the movie goes to Vertex AI", () => {
+    const beat = { speaker: "Presenter", text: "", moviePrompt: "wave", duration: 6, movieParams: { provider: "google", vertexai_project: "p" } };
+    const movie = byProcess(estimateUsage(makeScript([beat])), "movie")[0];
+    assert.equal(movie.model, "veo-3.1-generate-001");
+    assert.deepEqual(movie.predictSec, { value: 6, precision: "exact" });
+    assert.ok(Math.abs((movie.costUSD ?? 0) - 6 * 0.4) < 1e-12);
+  });
+
   it("snaps up to the next supported duration across a gap in the durations list", () => {
     const records = estimateUsage(
       makeScript([{ speaker: "Presenter", text: "", moviePrompt: "wave", duration: 7, movieParams: { model: "bytedance/seedance-1-pro" } }]),
