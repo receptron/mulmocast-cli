@@ -4,6 +4,7 @@ import {
   defaultMovieModel,
   provider2MovieAgent,
   vertexAIGlobalOnlyImageModels,
+  vertexImageLocation,
   veoExtendedSeconds,
   veoExtensionCount,
   VEO_EXTENSION_MODEL,
@@ -37,4 +38,13 @@ test("vertexAIGlobalOnlyImageModels: the GA Lite and Pro image models are global
     assert.ok(vertexAIGlobalOnlyImageModels.has(model), model),
   );
   assert.strictEqual(vertexAIGlobalOnlyImageModels.has("gemini-3.1-flash-image"), false);
+});
+
+test("vertexImageLocation: an omitted location is global for a global-only model and us-central1 otherwise; an explicit one is kept", () => {
+  assert.strictEqual(vertexImageLocation("gemini-3.1-flash-lite-image"), "global");
+  assert.strictEqual(vertexImageLocation("gemini-3-pro-image", undefined), "global");
+  assert.strictEqual(vertexImageLocation("gemini-3.1-flash-image"), "us-central1");
+  assert.strictEqual(vertexImageLocation("gemini-2.5-flash-image"), "us-central1");
+  assert.strictEqual(vertexImageLocation("gemini-3.1-flash-lite-image", "us-central1"), "us-central1");
+  assert.strictEqual(vertexImageLocation("gemini-3.1-flash-image", "eu"), "eu");
 });

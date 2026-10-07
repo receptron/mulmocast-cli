@@ -70,9 +70,8 @@ gcloud auth application-default print-access-token
   "title": "My Presentation",
   "imageParams": {
     "provider": "google",
-    "model": "gemini-2.5-flash-image",
     "vertexai_project": "your-project-id",
-    "vertexai_location": "us-central1"
+    "vertexai_location": "global"
   },
   "beats": [
     {

@@ -84,6 +84,12 @@ export const vertexAIGlobalOnlyImageModels: ReadonlySet<string> = new Set([
   "gemini-3.1-flash-image-preview",
 ]);
 
+const VERTEX_DEFAULT_IMAGE_LOCATION = "us-central1";
+
+// A global-only model has no regional endpoint, so an omitted location means "global" for it.
+export const vertexImageLocation = (model: string, location?: string): string =>
+  location ?? (vertexAIGlobalOnlyImageModels.has(model) ? "global" : VERTEX_DEFAULT_IMAGE_LOCATION);
+
 // Per-model reference image limits (image_input array). Only verified entries; unlisted models are not truncated.
 const replicateImageModelParams: Record<string, { maxReferenceImages?: number }> = {
   "bytedance/seedream-4": { maxReferenceImages: 10 },
