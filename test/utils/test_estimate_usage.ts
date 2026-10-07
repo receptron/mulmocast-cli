@@ -76,10 +76,12 @@ describe("estimateUsage: tts", () => {
 
 describe("estimateUsage: image generation", () => {
   it("counts prompt tokens exactly and uses the size/quality output-token table", () => {
-    const records = estimateUsage(makeScript([{ speaker: "Presenter", text: "", imagePrompt: "a cat", imageParams: { quality: "low" } }]));
+    const records = estimateUsage(
+      makeScript([{ speaker: "Presenter", text: "", imagePrompt: "a cat", imageParams: { model: "gpt-image-1-mini", quality: "low" } }]),
+    );
     const images = byProcess(records, "image");
     assert.equal(images.length, 1);
-    assert.equal(images[0].model, "gpt-image-1");
+    assert.equal(images[0].model, "gpt-image-1-mini");
     assert.equal(images[0].inputTokens?.precision, "exact");
     // default canvas 1280x720 is landscape → 1536x1024; low quality → 400 tokens (fixed table)
     assert.deepEqual(images[0].outputTokens, { value: 400, precision: "exact" });
@@ -87,6 +89,7 @@ describe("estimateUsage: image generation", () => {
 
   it("falls back to high quality as an estimate when quality is unspecified", () => {
     const records = estimateUsage(makeScript([{ speaker: "Presenter", text: "", imagePrompt: "a cat" }]));
+    assert.equal(byProcess(records, "image")[0].model, "gpt-image-2.5-sunburst");
     assert.deepEqual(byProcess(records, "image")[0].outputTokens, { value: 6208, precision: "estimated" });
   });
 
@@ -117,7 +120,7 @@ describe("estimateUsage: htmlPrompt beats", () => {
     const records = estimateUsage(makeScript([{ speaker: "Presenter", text: "", htmlPrompt: { prompt: "sales chart", data: { a: 1 } } }]));
     assert.equal(records.length, 1);
     assert.equal(records[0].process, "htmlImage");
-    assert.equal(records[0].model, "gpt-5");
+    assert.equal(records[0].model, "gpt-5.6-sol");
     assert.equal(records[0].inputTokens?.precision, "exact");
     assert.equal(records[0].outputTokens?.precision, "estimated");
   });

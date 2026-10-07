@@ -25,7 +25,7 @@
     }
   },
   "imageParams": {
-    "model": "gpt-image-1",
+    "model": "gpt-image-2.5-sunburst",
     "moderation": "low"
   },
   "beats": [
@@ -92,7 +92,7 @@
           "Here is a sample JSON code",
           "```json",
           "\"imageParams\": {",
-          "  \"model\": \"gpt-image-1\"",
+          "  \"model\": \"gpt-image-2.5-sunburst\"",
           "  \"size\": \"1536x1024\"",
           "  \"moderation\": \"low\"",
           "}",

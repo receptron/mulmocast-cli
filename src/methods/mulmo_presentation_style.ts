@@ -205,7 +205,7 @@ export const MulmoPresentationStyleMethods = {
       (MulmoPresentationStyleMethods.getText2ImageProvider(imageParams?.provider) as keyof typeof provider2ImageAgent) ?? defaultProviders.text2image;
     const agentInfo = provider2ImageAgent[provider];
 
-    // The default text2image model is gpt-image-1 from OpenAI.
+    // The default text2image model is gpt-image-2.5-sunburst from OpenAI.
     const defaultImageParams: MulmoImageParams = {
       provider,
       model: agentInfo.defaultModel,

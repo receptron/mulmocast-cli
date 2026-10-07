@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert";
 import { imageOpenaiAgent, buildDeprecatedModelMessage } from "../../src/agents/image_openai_agent.js";
+import { gptImages, provider2ImageAgent } from "../../src/types/provider2agent.js";
 import { agentCallContext } from "../fixtures.js";
 
 const baseParams = { ...agentCallContext, config: { apiKey: "fake-key-not-used" } };
@@ -11,14 +12,14 @@ test("buildDeprecatedModelMessage returns migration hint for dall-e-2", () => {
   const message = buildDeprecatedModelMessage("dall-e-2");
   assert.ok(message);
   assert.match(message, /dall-e-2.*no longer available/);
-  assert.match(message, /gpt-image-1/);
+  assert.match(message, /gpt-image-2\.5-sunburst/);
 });
 
 test("buildDeprecatedModelMessage returns migration hint for dall-e-3", () => {
   const message = buildDeprecatedModelMessage("dall-e-3");
   assert.ok(message);
   assert.match(message, /dall-e-3.*no longer available/);
-  assert.match(message, /gpt-image-1/);
+  assert.match(message, /gpt-image-2\.5-sunburst/);
 });
 
 test("buildDeprecatedModelMessage returns null for currently supported model", () => {
@@ -40,7 +41,7 @@ test("imageOpenaiAgent rejects deprecated dall-e-2 before calling the API", asyn
         namedInputs: { prompt: "test prompt", referenceImages: [] },
         params: { model: "dall-e-2", canvasSize, moderation: "auto" },
       }),
-    (err: Error) => /dall-e-2.*no longer available/.test(err.message) && /gpt-image-1/.test(err.message),
+    (err: Error) => /dall-e-2.*no longer available/.test(err.message) && /gpt-image-2\.5-sunburst/.test(err.message),
     "expected upfront deprecation rejection without an API call",
   );
 });
@@ -53,7 +54,13 @@ test("imageOpenaiAgent rejects deprecated dall-e-3 before calling the API", asyn
         namedInputs: { prompt: "test prompt", referenceImages: [] },
         params: { model: "dall-e-3", canvasSize, moderation: "auto" },
       }),
-    (err: Error) => /dall-e-3.*no longer available/.test(err.message) && /gpt-image-1/.test(err.message),
+    (err: Error) => /dall-e-3.*no longer available/.test(err.message) && /gpt-image-2\.5-sunburst/.test(err.message),
     "expected upfront deprecation rejection without an API call",
+  );
+});
+
+test("gptImages: the OpenAI image default and the 2.5 models take the GPT Image path", () => {
+  ["gpt-image-2.5-sunburst", "gpt-image-2.5-flare", provider2ImageAgent.openai.defaultModel].forEach((model) =>
+    assert.ok(gptImages.includes(model), `${model} is not in gptImages`),
   );
 });

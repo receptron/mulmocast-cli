@@ -331,7 +331,7 @@ type AgentUsage = {
 
 | Agent                                         | Provider   | Model(s)                                                       | inputTokens | outputTokens | totalTokens | predictSec        | inputChars                                               |
 | --------------------------------------------- | ---------- | -------------------------------------------------------------- | ----------- | ------------ | ----------- | ----------------- | -------------------------------------------------------- |
-| `imageOpenaiAgent`                            | openai     | `gpt-image-1`, `gpt-image-1-mini`, …                           | ✅          | ✅           | ✅          | —                 | —                                                        |
+| `imageOpenaiAgent`                            | openai     | `gpt-image-2.5-sunburst`, `gpt-image-2.5-flare`, …             | ✅          | ✅           | ✅          | —                 | —                                                        |
 | `imageGenAIAgent`                             | google     | `gemini-2.5-flash-image`, `gemini-3.x-image-preview`           | ✅          | ✅           | ✅          | —                 | —                                                        |
 | `imageReplicateAgent`                         | replicate  | `black-forest-labs/flux-*`, `ideogram-ai/*`, `recraft-ai/*`, … | —           | —            | —           | ✅                | —                                                        |
 | `movieGenAIAgent`                             | google     | `veo-3.1-*`                                                    | —           | —            | —           | ✅ (ffprobed mp4) | —                                                        |

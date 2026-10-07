@@ -103,11 +103,6 @@ Create a `.env` file in your project directory with the following API keys:
 OPENAI_API_KEY=your_openai_api_key
 ```
 
-#### (Optional) For the advanced image generation model
-```bash
-DEFAULT_OPENAI_IMAGE_MODEL=gpt-image-1 # for the advanced image generation model
-```
-
 #### (Optional) For Google's image and TTS.
 ```bash
 GEMINI_API_KEY=your_google_gemini_api_key
@@ -298,10 +293,9 @@ Optionally, you can specify *__clipboard* as the script file name to paste the s
 Verify your `.env` file contains:
 ```bash
 OPENAI_API_KEY=your_openai_api_key
-DEFAULT_OPENAI_IMAGE_MODEL=gpt-image-1 # required for high-quality Ghibli-style images
 ```
 
-> **Note:** Ensure your OpenAI organization is verified to access the gpt-image-1 model. Visit https://platform.openai.com/settings/organization/general and complete the "Verifications" section.
+> **Note:** Ensure your OpenAI organization is verified to access the GPT Image models. Visit https://platform.openai.com/settings/organization/general and complete the "Verifications" section.
 
 ### Step 2: Generate a Ghibli-style MulmoScript
 ```bash
