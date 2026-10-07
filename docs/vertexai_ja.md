@@ -96,7 +96,7 @@ gcloud auth application-default print-access-token
 {
   "movieParams": {
     "provider": "google",
-    "model": "veo-3.1-generate-preview",
+    "model": "veo-3.1-generate-001",
     "vertexai_project": "your-project-id",
     "vertexai_location": "us-central1"
   }
@@ -127,7 +127,7 @@ Vertex AI 経由で Google Cloud TTS または Gemini TTS を使用できます�
       "text": "動画を生成します",
       "moviePrompt": "Ocean waves crashing on a beach",
       "movieParams": {
-        "model": "veo-3.1-lite-generate-preview",
+        "model": "veo-3.1-generate-001",
         "vertexai_project": "your-project-id",
         "vertexai_location": "us-central1"
       }
@@ -140,23 +140,27 @@ Vertex AI 経由で Google Cloud TTS または Gemini TTS を使用できます�
 
 ### 画像生成
 
-| モデル                           | 説明                                    |
-| -------------------------------- | --------------------------------------- |
-| `gemini-2.5-flash-image`         | Gemini 2.5 Flash 画像生成（デフォルト） |
-| `gemini-3-pro-image-preview`     | Gemini 3 Pro 画像生成                   |
-| `gemini-3.1-flash-image-preview` | Gemini 3.1 Flash 画像生成               |
+| モデル                           | 説明                                         |
+| -------------------------------- | -------------------------------------------- |
+| `gemini-3.1-flash-lite-image`    | Gemini 3.1 Flash Lite 画像生成（デフォルト） |
+| `gemini-3.1-flash-image`         | Gemini 3.1 Flash 画像生成                    |
+| `gemini-3-pro-image`             | Gemini 3 Pro 画像生成                        |
+| `gemini-2.5-flash-image`         | Gemini 2.5 Flash 画像生成                    |
+| `gemini-3-pro-image-preview`     | Gemini 3 Pro 画像生成（プレビュー）          |
+| `gemini-3.1-flash-image-preview` | Gemini 3.1 Flash 画像生成（プレビュー）      |
 
 **注意**:
 
 - Gemini 画像モデルはリージョンによって利用できない場合があります
-- `gemini-3-pro-image-preview` と `gemini-3.1-flash-image-preview` は Vertex AI では `vertexai_location: "global"` のみ利用可能です。[Gemini 3 Pro Image](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro-image) / [Gemini 3.1 Flash Image](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-1-flash-image) 参照
+- `gemini-3.1-flash-lite-image`、`gemini-3-pro-image` と 2 つのプレビューは、Vertex AI では `vertexai_location: "global"` のみ利用可能です。`gemini-3.1-flash-image` は `us` / `eu` のマルチリージョンでも使えます
 
 ### 動画生成
 
-| モデル                          | 説明                    |
-| ------------------------------- | ----------------------- |
-| `veo-3.1-generate-preview`      | Veo 3.1 プレビュー      |
-| `veo-3.1-lite-generate-preview` | Veo 3.1 Lite プレビュー |
+| モデル                          | 説明                                          |
+| ------------------------------- | --------------------------------------------- |
+| `veo-3.1-generate-preview`      | Veo 3.1 プレビュー                            |
+| `veo-3.1-lite-generate-preview` | Veo 3.1 Lite プレビュー                       |
+| `veo-3.1-generate-001`          | Veo 3.1（Vertex AI のみ。Vertex AI での既定） |
 
 ### TTS（音声合成）
 

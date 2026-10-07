@@ -77,7 +77,12 @@ export const isGeminiImageModel = (model: string): boolean => model.startsWith("
 // (regional endpoints like us-central1 return 404 NOT_FOUND).
 // See https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro-image
 // and https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-1-flash-image
-export const vertexAIGlobalOnlyImageModels: ReadonlySet<string> = new Set(["gemini-3-pro-image-preview", "gemini-3.1-flash-image-preview"]);
+export const vertexAIGlobalOnlyImageModels: ReadonlySet<string> = new Set([
+  "gemini-3.1-flash-lite-image",
+  "gemini-3-pro-image",
+  "gemini-3-pro-image-preview",
+  "gemini-3.1-flash-image-preview",
+]);
 
 // Per-model reference image limits (image_input array). Only verified entries; unlisted models are not truncated.
 const replicateImageModelParams: Record<string, { maxReferenceImages?: number }> = {
@@ -411,7 +416,7 @@ export const provider2MovieAgent = {
     agentName: "movieGenAIAgent",
     // veo-2.0 and veo-3.0 were shut down on 2026-06-30; the Gemini API now lists only the Veo 3.1 previews.
     defaultModel: "veo-3.1-generate-preview",
-    models: ["veo-3.1-generate-preview", "veo-3.1-lite-generate-preview"],
+    models: ["veo-3.1-generate-preview", "veo-3.1-lite-generate-preview", "veo-3.1-generate-001"],
     keyName: "GEMINI_API_KEY",
     modelParams: {
       "veo-3.1-lite-generate-preview": {
@@ -419,6 +424,15 @@ export const provider2MovieAgent = {
         supportsDuration: true,
         supportsLastFrame: true,
         supportsReferenceImages: false,
+        supportsPersonGeneration: false,
+        audio: { mode: AUDIO_MODE_ALWAYS },
+      },
+      // Vertex AI only: the GA name of Veo 3.1 there, where the preview IDs are retired.
+      "veo-3.1-generate-001": {
+        durations: [4, 6, 8],
+        supportsDuration: true,
+        supportsLastFrame: true,
+        supportsReferenceImages: true,
         supportsPersonGeneration: false,
         audio: { mode: AUDIO_MODE_ALWAYS },
       },
@@ -615,6 +629,18 @@ export const getModelAudio = (provider: keyof typeof provider2MovieAgent, model:
   const modelParams = provider2MovieAgent[provider]?.modelParams as Record<string, { audio?: MovieAudioSpec }>;
   return modelParams?.[model]?.audio;
 };
+
+const GOOGLE_VERTEX_DEFAULT_MOVIE_MODEL = "veo-3.1-generate-001";
+
+// The default model is shared by the Gemini API and Vertex AI, but Vertex retired the Veo 3.1 preview IDs.
+export const defaultMovieModel = (provider: keyof typeof provider2MovieAgent, movieParams?: { vertexai_project?: string }): string =>
+  provider === "google" && movieParams?.vertexai_project ? GOOGLE_VERTEX_DEFAULT_MOVIE_MODEL : provider2MovieAgent[provider].defaultModel;
+
+// Veo 3.1 (preview) builds clips longer than one segment by extending an 8-second first segment 8 seconds at a time.
+export const VEO_EXTENSION_MODEL = "veo-3.1-generate-preview";
+export const VEO_SEGMENT_SEC = 8;
+export const veoExtensionCount = (requestedSec: number) => Math.ceil((requestedSec - VEO_SEGMENT_SEC) / VEO_SEGMENT_SEC);
+export const veoExtendedSeconds = (requestedSec: number) => VEO_SEGMENT_SEC * (1 + veoExtensionCount(requestedSec));
 
 export const getModelDuration = (provider: keyof typeof provider2MovieAgent, model: string, movieDuration?: number) => {
   const modelParams = provider2MovieAgent[provider]?.modelParams as Record<string, { durations?: number[] }>;

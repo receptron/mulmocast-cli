@@ -96,7 +96,7 @@ Add `vertexai_project` to `imageParams` or `movieParams`:
 {
   "movieParams": {
     "provider": "google",
-    "model": "veo-3.1-generate-preview",
+    "model": "veo-3.1-generate-001",
     "vertexai_project": "your-project-id",
     "vertexai_location": "us-central1"
   }
@@ -127,7 +127,7 @@ When changing the model for individual beats, you also need to specify `vertexai
       "text": "Generating a video",
       "moviePrompt": "Ocean waves crashing on a beach",
       "movieParams": {
-        "model": "veo-3.1-lite-generate-preview",
+        "model": "veo-3.1-generate-001",
         "vertexai_project": "your-project-id",
         "vertexai_location": "us-central1"
       }
@@ -140,23 +140,27 @@ When changing the model for individual beats, you also need to specify `vertexai
 
 ### Image Generation
 
-| Model                            | Description                      |
-| -------------------------------- | -------------------------------- |
-| `gemini-2.5-flash-image`         | Gemini 2.5 Flash image (default) |
-| `gemini-3-pro-image-preview`     | Gemini 3 Pro image               |
-| `gemini-3.1-flash-image-preview` | Gemini 3.1 Flash image           |
+| Model                            | Description                           |
+| -------------------------------- | ------------------------------------- |
+| `gemini-3.1-flash-lite-image`    | Gemini 3.1 Flash Lite image (default) |
+| `gemini-3.1-flash-image`         | Gemini 3.1 Flash image                |
+| `gemini-3-pro-image`             | Gemini 3 Pro image                    |
+| `gemini-2.5-flash-image`         | Gemini 2.5 Flash image                |
+| `gemini-3-pro-image-preview`     | Gemini 3 Pro image (preview)          |
+| `gemini-3.1-flash-image-preview` | Gemini 3.1 Flash image (preview)      |
 
 **Note**:
 
 - Gemini image models may not be available in all regions
-- `gemini-3-pro-image-preview` and `gemini-3.1-flash-image-preview` are only available in `vertexai_location: "global"` on Vertex AI. See [Gemini 3 Pro Image](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro-image) and [Gemini 3.1 Flash Image](https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-1-flash-image)
+- `gemini-3.1-flash-lite-image`, `gemini-3-pro-image` and the two preview models are only available in `vertexai_location: "global"` on Vertex AI; `gemini-3.1-flash-image` is also available in the `us` and `eu` multi-regions
 
 ### Video Generation
 
-| Model                           | Description          |
-| ------------------------------- | -------------------- |
-| `veo-3.1-generate-preview`      | Veo 3.1 Preview      |
-| `veo-3.1-lite-generate-preview` | Veo 3.1 Lite Preview |
+| Model                           | Description                                 |
+| ------------------------------- | ------------------------------------------- |
+| `veo-3.1-generate-preview`      | Veo 3.1 Preview                             |
+| `veo-3.1-lite-generate-preview` | Veo 3.1 Lite Preview                        |
+| `veo-3.1-generate-001`          | Veo 3.1 (Vertex AI only; the default there) |
 
 ### TTS (Text-to-Speech)
 

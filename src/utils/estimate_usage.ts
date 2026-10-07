@@ -11,6 +11,10 @@ import {
   provider2MovieAgent,
   gptImageOutputTokens,
   getModelDuration,
+  defaultMovieModel,
+  veoExtendedSeconds,
+  VEO_EXTENSION_MODEL,
+  VEO_SEGMENT_SEC,
   getModelPricing,
   defaultProviders,
   type ModelPricing,
@@ -289,6 +293,10 @@ const beatDurationMetric = (beat: MulmoBeat): EstimatedMetric => {
   return estimated(beat.text ? estimateSpeechSec(beat.text) : DEFAULT_MOVIE_DURATION_SEC);
 };
 
+// The movie agent extends these clips past one segment instead of capping them, and Google bills every generated second.
+const isVeoExtension = (provider: keyof typeof provider2MovieAgent, model: string, duration: EstimatedMetric) =>
+  provider === "google" && model === VEO_EXTENSION_MODEL && duration.value > VEO_SEGMENT_SEC;
+
 const snapMovieDuration = (provider: keyof typeof provider2MovieAgent, model: string, duration: EstimatedMetric): EstimatedMetric => {
   if (!isKeyOf(provider2MovieAgent[provider].modelParams, model)) {
     return duration;
@@ -308,9 +316,11 @@ const estimateMovieGeneration = (
   if (!isKeyOf(provider2MovieAgent, provider) || provider === "mock") {
     return undefined;
   }
-  const model = info.movieParams?.model ?? provider2MovieAgent[provider].defaultModel;
+  const model = info.movieParams?.model ?? defaultMovieModel(provider, info.movieParams);
   const duration = beat ? beatDurationMetric(beat) : estimated(DEFAULT_MOVIE_DURATION_SEC);
-  const predictSec = snapMovieDuration(provider, model, duration);
+  const predictSec = isVeoExtension(provider, model, duration)
+    ? metric(veoExtendedSeconds(duration.value), duration.precision === "exact")
+    : snapMovieDuration(provider, model, duration);
   return attachCost({ process: refKey === undefined ? "movie" : "movieReference", beatIndex, refKey, provider, model, predictSec });
 };
 

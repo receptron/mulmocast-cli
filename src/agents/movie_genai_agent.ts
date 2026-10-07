@@ -18,7 +18,16 @@ import { ffmpegGetMediaDuration } from "../utils/ffmpeg_utils.js";
 import { ASPECT_RATIOS } from "../types/const.js";
 import type { AgentBufferResult, GenAIImageAgentConfig, GoogleMovieAgentParams, MovieAgentInputs, MovieReferenceImage } from "../types/agent.js";
 import type { AgentUsage } from "../types/usage.js";
-import { getModelDuration, provider2MovieAgent, AUDIO_MODE_NEVER, AUDIO_MODE_ALWAYS } from "../types/provider2agent.js";
+import {
+  getModelDuration,
+  provider2MovieAgent,
+  AUDIO_MODE_NEVER,
+  AUDIO_MODE_ALWAYS,
+  defaultMovieModel,
+  veoExtensionCount,
+  VEO_EXTENSION_MODEL,
+  VEO_SEGMENT_SEC,
+} from "../types/provider2agent.js";
 
 // Per-request timeout so a stalled GenAI video API call rejects instead of hanging.
 const GENAI_REQUEST_TIMEOUT_MS = 120_000;
@@ -140,9 +149,7 @@ const generateExtendedVideo = async (
   movieFile: string,
   isVertexAI: boolean,
 ): Promise<AgentBufferResult> => {
-  const initialDuration = 8;
-  const maxExtensionDuration = 8;
-  const extensionsNeeded = Math.ceil((requestedDuration - initialDuration) / maxExtensionDuration);
+  const extensionsNeeded = veoExtensionCount(requestedDuration);
 
   GraphAILogger.info(`Veo 3.1 video extension: ${extensionsNeeded} extensions needed for ${requestedDuration}s target`);
 
@@ -153,7 +160,7 @@ const generateExtendedVideo = async (
   ): Promise<{ video: GenAIVideo; duration: number }> => {
     const isInitial = iteration === 0;
     const remainingDuration = requestedDuration - accumulatedDuration;
-    const extensionDuration = isInitial ? initialDuration : (getModelDuration("google", model, remainingDuration) ?? maxExtensionDuration);
+    const extensionDuration = isInitial ? VEO_SEGMENT_SEC : (getModelDuration("google", model, remainingDuration) ?? VEO_SEGMENT_SEC);
 
     const getSource = () => {
       if (isInitial) return imagePath ? { image: loadImageAsBase64(imagePath) } : undefined;
@@ -258,7 +265,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
 }) => {
   const { prompt, imagePath, lastFrameImagePath, referenceImages, movieFile } = namedInputs;
   const aspectRatio = getAspectRatio(params.canvasSize, ASPECT_RATIOS);
-  const model = params.model ?? provider2MovieAgent.google.defaultModel;
+  const model = params.model ?? defaultMovieModel("google", params);
 
   const apiKey = config?.apiKey;
 
@@ -304,7 +311,7 @@ export const movieGenAIAgent: AgentFunction<GoogleMovieAgentParams, AgentBufferR
         })();
 
     // Veo 3.1: Video extension mode for videos longer than 8s
-    if (model === "veo-3.1-generate-preview" && requestedDuration > 8 && params.canvasSize) {
+    if (model === VEO_EXTENSION_MODEL && requestedDuration > VEO_SEGMENT_SEC && params.canvasSize) {
       return generateExtendedVideo(ai, model, prompt, aspectRatio, imagePath, requestedDuration, movieFile, isVertexAI);
     }
 
