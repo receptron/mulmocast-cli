@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.17.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.17.0) (2026-10-07)
+
+- **Gemini 3.8 TTS** (#1617; #1582): `gemini-3.8-flash-tts` and `gemini-3.8-flash-lite-tts` are supported through the Interactions API, and **the Gemini TTS default is now `gemini-3.8-flash-tts`** (the 2.5 preview TTS models shut down on 2026-11-17). Speaker direction (`instructions`) is sent as a style annotation instead of being written into the prompt; the 2.5 models keep the old path
+- **GPT Image 2.5 quality** (#1618; #1605): the 2.5 models render their default quality at low, so an unset `imageParams.quality` is now sent as `"high"` (the look `gpt-image-1` gave). An explicit value, `"auto"` included, is sent as written. Generated reference images now honour `imageParams.quality` and `moderation`, and `--estimate` counts an explicit `"auto"` on 2.5 as low
+
+📦 **npm**: [`mulmocast@2.17.0`](https://www.npmjs.com/package/mulmocast/v/2.17.0), [`@mulmocast/types@2.17.0`](https://www.npmjs.com/package/@mulmocast/types/v/2.17.0)
+
 ## [2.16.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.16.0) (2026-10-07)
 
 - **Default models moved off shut-down and deprecated ones** (#1611, #1612, #1613, #1614; #1605, #1610). Every replacement was checked against the provider's model-list API and with real calls:
