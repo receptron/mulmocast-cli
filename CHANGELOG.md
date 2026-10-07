@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.18.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.18.0) (2026-10-08)
+
+- **Gemini API video: `gemini-omni-1.1-flash` is the new default** (#1620; #1616). The Veo 3.1 previews (`veo-3.1-generate-preview`, `veo-3.1-lite-generate-preview`) shut down on 2026-10-22 and are removed; a script that still names one gets an error pointing at the replacement. Beats longer than 10 seconds are extended in even segments, up to 40 seconds. Vertex AI keeps `veo-3.1-generate-001`. On Google, `referenceImages` now need Vertex AI
+- **Strict network mode for the HTML renderers and PDF** (#1621; #1594): `--strict-network` (or `MULMO_STRICT_NETWORK=1`, or `context.strictNetwork`) lets the headless browser load only files in the script's folder and the output folders, `data:` / `blob:` URLs, and the CDN files mulmocast's templates use. Everything else is blocked and logged, including fetch, WebSocket, WebRTC, popups and preconnect. `vision` beats are refused in strict mode. Default behaviour is unchanged. `kind: "path"` media are not restricted yet (#1622)
+
+📦 **npm**: [`mulmocast@2.18.0`](https://www.npmjs.com/package/mulmocast/v/2.18.0), [`@mulmocast/types@2.18.0`](https://www.npmjs.com/package/@mulmocast/types/v/2.18.0)
+
 ## [2.17.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.17.0) (2026-10-07)
 
 - **Gemini 3.8 TTS** (#1617; #1582): `gemini-3.8-flash-tts` and `gemini-3.8-flash-lite-tts` are supported through the Interactions API, and **the Gemini TTS default is now `gemini-3.8-flash-tts`** (the 2.5 preview TTS models shut down on 2026-11-17). Speaker direction (`instructions`) is sent as a style annotation instead of being written into the prompt; the 2.5 models keep the old path
