@@ -29,22 +29,36 @@ const filePathOf = (parsed: URL): string | undefined => {
   }
 };
 
-// The URL parser has already collapsed dot segments (encoded or not), so a containment check on the path is enough.
-const isInsideFileRoots = (parsed: URL, allowedFileRoots: readonly string[]): boolean => {
-  const filePath = filePathOf(parsed);
-  if (filePath === undefined) return false;
-  return allowedFileRoots.some((root) => {
-    const relative = nodePath.relative(nodePath.resolve(root), filePath);
-    return relative === "" || (!relative.startsWith("..") && !nodePath.isAbsolute(relative));
-  });
+// Resolves symlinks, so a link inside a root cannot reach outside it; undefined when the path does not exist.
+export type RealPath = (filePath: string) => string | undefined;
+
+const isWithin = (root: string, filePath: string): boolean => {
+  const relative = nodePath.relative(root, filePath);
+  return relative === "" || (!relative.startsWith("..") && !nodePath.isAbsolute(relative));
 };
 
-export const isAllowedRenderRequest = (url: string, allowedFileRoots: readonly string[] = []): boolean => {
+// The URL parser has already collapsed dot segments (encoded or not); the roots must already be real paths.
+const isInsideFileRoots = (parsed: URL, realRoots: readonly string[], realPath: RealPath): boolean => {
+  const filePath = filePathOf(parsed);
+  const realFilePath = filePath === undefined ? undefined : realPath(filePath);
+  return realFilePath !== undefined && realRoots.some((root) => isWithin(root, realFilePath));
+};
+
+const identityRealPath: RealPath = (filePath) => nodePath.resolve(filePath);
+
+export const isAllowedRenderRequest = (url: string, realRoots: readonly string[] = [], realPath: RealPath = identityRealPath): boolean => {
   const parsed = parseUrl(url);
   if (!parsed) return false;
   if (IN_MEMORY_SCHEMES.includes(parsed.protocol)) return true;
-  if (parsed.protocol === "file:") return isInsideFileRoots(parsed, allowedFileRoots);
+  if (parsed.protocol === "file:") return isInsideFileRoots(parsed, realRoots, realPath);
   return parsed.protocol === "https:" && parsed.port === "" && RENDER_CDN_HOSTS.includes(parsed.hostname);
+};
+
+// A root that does not exist yet (the temp page before it is written) is its real parent plus its name.
+export const realRoot = (root: string, realPath: RealPath): string => {
+  const resolved = nodePath.resolve(root);
+  const parent = nodePath.dirname(resolved);
+  return realPath(resolved) ?? nodePath.join(realPath(parent) ?? parent, nodePath.basename(resolved));
 };
 
 // Popups and preconnect hints open connections outside the page's request interception, so the whole browser

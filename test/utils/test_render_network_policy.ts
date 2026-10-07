@@ -7,6 +7,7 @@ import {
   RENDER_CDN_HOSTS,
   RENDER_CONTENT_SECURITY_POLICY,
   isAllowedRenderRequest,
+  realRoot,
   strictNetworkFromEnv,
   strictNetworkLaunchArgs,
   withRenderContentSecurityPolicy,
@@ -50,6 +51,28 @@ test("isAllowedRenderRequest: a root that is a single file allows that file only
   assert.strictEqual(isAllowedRenderRequest(pathToFileURL(page).href, [page]), true);
   assert.strictEqual(isAllowedRenderRequest(pathToFileURL(page + ".bak").href, [page]), false);
   assert.strictEqual(isAllowedRenderRequest(fileUrl(nodePath.dirname(page), "other.html"), [page]), false);
+});
+
+test("isAllowedRenderRequest: the real path decides, so a link inside a root cannot reach outside it", () => {
+  const link = nodePath.join(projectRoot, "link");
+  const outside = nodePath.resolve("/secret");
+  const realPath = (filePath: string) => (filePath.startsWith(link) ? nodePath.join(outside, nodePath.relative(link, filePath)) : filePath);
+  assert.strictEqual(isAllowedRenderRequest(fileUrl(link, "key.txt"), roots, realPath), false);
+  assert.strictEqual(isAllowedRenderRequest(fileUrl(projectRoot, "a.png"), roots, realPath), true);
+  assert.strictEqual(
+    isAllowedRenderRequest(fileUrl(projectRoot, "missing.png"), roots, () => undefined),
+    false,
+  );
+});
+
+test("realRoot: the real path when it exists, else the real parent plus the name", () => {
+  const realPath = (filePath: string) => (filePath === nodePath.resolve("/alias/dir") ? nodePath.resolve("/real/dir") : undefined);
+  assert.strictEqual(realRoot("/alias/dir", realPath), nodePath.resolve("/real/dir"));
+  assert.strictEqual(realRoot("/alias/dir/page.html", realPath), nodePath.join(nodePath.resolve("/real/dir"), "page.html"));
+  assert.strictEqual(
+    realRoot("/nowhere/page.html", () => undefined),
+    nodePath.resolve("/nowhere/page.html"),
+  );
 });
 
 test("strictNetworkLaunchArgs: an unreachable proxy that only the CDNs (and not loopback) bypass", () => {

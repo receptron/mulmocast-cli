@@ -166,3 +166,37 @@ test("renderHTMLToImage: strict mode passes the allowed roots through; a file ou
   );
   assert.ok(!blocked.some((line) => line.includes("ok.png")), blocked.join("\n"));
 });
+
+test("guardRenderPage: a symlink inside an allowed root does not reach files outside it", { timeout: 120_000 }, async (t) => {
+  const allowedDir = fs.mkdtempSync(path.join(os.tmpdir(), "mulmocast-allowed-"));
+  const secretDir = fs.mkdtempSync(path.join(os.tmpdir(), "mulmocast-secret-"));
+  fs.writeFileSync(path.join(allowedDir, "ok.txt"), "OK-CONTENT");
+  fs.writeFileSync(path.join(secretDir, "secret.txt"), "TOP-SECRET");
+  try {
+    fs.symlinkSync(secretDir, path.join(allowedDir, "link"), "dir");
+  } catch {
+    t.skip("symlinks need extra privileges on this platform");
+    return;
+  }
+  const pageFile = path.join(allowedDir, "page.html");
+  fs.writeFileSync(
+    pageFile,
+    readFileProbe(pathToFileURL(path.join(allowedDir, "ok.txt")).href, pathToFileURL(path.join(allowedDir, "link", "secret.txt")).href),
+  );
+  const isCI = process.env.CI === "true";
+  const browser = await puppeteer.launch({ args: [...(isCI ? ["--no-sandbox"] : []), "--allow-file-access-from-files", ...strictNetworkLaunchArgs()] });
+  try {
+    const page = await browser.newPage();
+    await guardRenderPage(page, [allowedDir]);
+    await page.goto(pathToFileURL(pageFile).href, { waitUntil: "load" });
+    await page.waitForFunction('document.title.startsWith("{")', { timeout: 20_000 });
+    const results = JSON.parse(await page.title());
+    assert.strictEqual(results.ok, "OK-CONTENT");
+    assert.strictEqual(results.secret, "blocked");
+    assert.ok(!String(results.iframe).includes("TOP-SECRET"), String(results.iframe));
+  } finally {
+    await browser.close();
+    fs.rmSync(allowedDir, { recursive: true, force: true });
+    fs.rmSync(secretDir, { recursive: true, force: true });
+  }
+});
