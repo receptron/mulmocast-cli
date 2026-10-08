@@ -24,6 +24,7 @@ import {
   mulmoVideoFilterSchema,
   mulmoMovieParamsSchema,
   mulmoSoundEffectParamsSchema,
+  mulmoBeatSoundEffectSchema,
   mulmoLipSyncParamsSchema,
   textSlideParamsSchema,
   speechOptionsSchema,
@@ -110,6 +111,7 @@ export type MulmoStudioMultiLingualFile = z.infer<typeof mulmoStudioMultiLingual
 export type MultiLingualTexts = z.infer<typeof multiLingualTextsSchema>;
 export type MulmoMovieParams = z.infer<typeof mulmoMovieParamsSchema>;
 export type MulmoSoundEffectParams = z.infer<typeof mulmoSoundEffectParamsSchema>;
+export type MulmoBeatSoundEffect = z.infer<typeof mulmoBeatSoundEffectSchema>;
 export type MulmoLipSyncParams = z.infer<typeof mulmoLipSyncParamsSchema>;
 export type MulmoAvatarParams = z.infer<typeof mulmoAvatarParamsSchema>;
 export type MulmoAvatarPosition = z.infer<typeof avatarPositionSchema>;

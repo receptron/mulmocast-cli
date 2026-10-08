@@ -699,6 +699,33 @@ export const mulmoMovieParamsSchema = z.object({
   generateAudio: z.boolean().optional().describe("Request audio generation in the video (model-dependent)"),
 });
 
+export const mulmoBeatSoundEffectSchema = z
+  .object({
+    source: z
+      .discriminatedUnion("kind", [
+        z.object({ kind: z.literal("url"), url: URLStringSchema }).strict(),
+        z.object({ kind: z.literal("path"), path: z.string().min(1) }).strict(),
+      ])
+      .describe("Audio file of the sound effect (url or path)"),
+    startAt: z.number().min(0).optional().default(0).describe("Seconds from the start of the beat (when its narration starts) at which the sound effect plays"),
+    volume: z
+      .number()
+      .min(0)
+      .max(4)
+      .optional()
+      .default(1.0)
+      .describe(
+        "Volume of the sound effect. 1.0 is the gain of the narration at its default volume; audioParams.audioVolume and ttsVolume do not affect sound effects",
+      ),
+    duration: z
+      .number()
+      .positive()
+      .optional()
+      .describe("Maximum play length in seconds; the effect is cut (with a short fade-out) after it. Default: the whole file, even past the end of the beat"),
+    loop: z.boolean().optional().describe("Repeat the effect until duration, or until the end of the beat when duration is not set (e.g. a ticking clock)"),
+  })
+  .strict();
+
 export const mulmoBeatSchema = z
   .object({
     speaker: speakerIdSchema.optional(),
@@ -731,6 +758,10 @@ export const mulmoBeatSchema = z
     imagePrompt: z.string().optional(),
     moviePrompt: z.string().optional(),
     soundEffectPrompt: z.string().optional(),
+    soundEffects: z
+      .array(mulmoBeatSoundEffectSchema)
+      .optional()
+      .describe("Sound effects mixed into the audio track during this beat. Multiple effects may overlap."),
     htmlPrompt: htmlPromptParamsSchema.optional(),
     enableLipSync: z.boolean().optional().describe("Enable lip sync generation for this beat"),
     hidden: z.boolean().optional().describe("Hide this beat from the presentation"),

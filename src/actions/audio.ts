@@ -243,7 +243,7 @@ export const audio_graph_data: GraphData = {
         wait: ":combineFiles",
         voiceFile: ":audioCombinedFilePath",
         outputFile: ":audioArtifactFilePath",
-        context: ":context",
+        context: ":combineFiles", // has studio.beats[].startAt, needed to place sound effects
         params: {
           musicFile: ":musicFile",
         },
