@@ -1,0 +1,64 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "ja",
+  "title": "Sound effects test",
+  "audioParams": { "bgmVolume": 0.1 },
+  "beats": [
+    {
+      "text": "時計の針が動いています。チク、タク、チク、タク。",
+      "image": { "type": "textSlide", "slide": { "title": "チクタク" } },
+      "soundEffects": [
+        {
+          "source": {
+            "kind": "url",
+            "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/soundeffects/opengameart/bart-ticking-clock/ticking_clock.wav"
+          },
+          "startAt": 0,
+          "volume": 0.6,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "text": "ボールがはねました。そして、コインをゲット！",
+      "image": { "type": "textSlide", "slide": { "title": "ビヨーン、チャリン" } },
+      "soundEffects": [
+        {
+          "source": {
+            "kind": "url",
+            "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/soundeffects/opengameart/ezduzziteh-boings/bing_01.mp3"
+          },
+          "startAt": 0.8
+        },
+        {
+          "source": {
+            "kind": "url",
+            "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/soundeffects/opengameart/junkala-512-retro-sfx/general-sounds/coins/sfx_coin_single1.wav"
+          },
+          "startAt": 2.2,
+          "volume": 0.7
+        }
+      ]
+    },
+    {
+      "text": "パチーン！ 大正解です。",
+      "image": { "type": "textSlide", "slide": { "title": "大正解" } },
+      "soundEffects": [
+        {
+          "source": {
+            "kind": "url",
+            "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/soundeffects/kenney/impact-sounds/impactPunch_medium_000.ogg"
+          }
+        },
+        {
+          "source": {
+            "kind": "url",
+            "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/soundeffects/opengameart/junkala-512-retro-sfx/general-sounds/fanfares/sfx_sounds_fanfare1.wav"
+          },
+          "startAt": 0.6,
+          "volume": 0.8
+        }
+      ]
+    }
+  ]
+}

@@ -15465,6 +15465,102 @@
           "soundEffectPrompt": {
             "type": "string"
           },
+          "soundEffects": {
+            "description": "Sound effects mixed into the audio track during this beat. Multiple effects may overlap.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "url"
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "uri"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "url"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "base64"
+                        },
+                        "data": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "data"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "path"
+                        },
+                        "path": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "path"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ],
+                  "description": "Audio file of the sound effect (url or path). base64 is not supported."
+                },
+                "startAt": {
+                  "default": 0,
+                  "description": "Seconds from the start of the beat (when its narration starts) at which the sound effect plays",
+                  "type": "number",
+                  "minimum": 0
+                },
+                "volume": {
+                  "default": 1,
+                  "description": "Volume of the sound effect. 1.0 is the same gain as the narration",
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 4
+                },
+                "duration": {
+                  "description": "Maximum play length in seconds; the effect is cut (with a short fade-out) after it. Default: the whole file, even past the end of the beat",
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "loop": {
+                  "description": "Repeat the effect until duration, or until the end of the beat when duration is not set (e.g. a ticking clock)",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "source",
+                "startAt",
+                "volume"
+              ],
+              "additionalProperties": false
+            }
+          },
           "htmlPrompt": {
             "type": "object",
             "properties": {
