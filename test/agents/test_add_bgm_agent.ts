@@ -1,7 +1,9 @@
 import test from "node:test";
 import assert from "node:assert";
+import path from "node:path";
 
 import {
+  addSoundEffects,
   buildSoundEffectFilters,
   getSoundEffectPlacements,
   resolveAddBgmFilterConfig,
@@ -9,6 +11,8 @@ import {
   soundEffectGain,
 } from "../../src/agents/add_bgm_agent.js";
 import type { MulmoStudioContext } from "../../src/types/index.js";
+import { FfmpegContextInit } from "../../src/utils/ffmpeg_utils.js";
+import { mulmoBeatSoundEffectSchema } from "../../src/types/schema.js";
 
 type AudioParams = MulmoStudioContext["presentationStyle"]["audioParams"];
 
@@ -81,7 +85,7 @@ test("getSoundEffectPlacements: places effects relative to beat start plus intro
   assert.deepStrictEqual(getSoundEffectPlacements(context), [
     { file: "https://example.com/tick.wav", startAt: 1.5, volume: 0.8, loop: false },
     { file: "https://example.com/pop.mp3", startAt: 6.5, volume: 1, loop: false },
-    { file: "/scripts/se/boing.mp3", startAt: 7.75, volume: 2, loop: false },
+    { file: path.resolve("/scripts", "se/boing.mp3"), startAt: 7.75, volume: 2, loop: false },
   ]);
 });
 
@@ -157,8 +161,29 @@ test("buildSoundEffectFilters: multiple effects are mixed without normalization"
   assert.strictEqual(filters[2], "[se_0][se_1]amix=inputs=2:duration=longest:normalize=0[sfx]");
 });
 
-test("buildSoundEffectFilters: narration volume settings do not scale sound effects", () => {
-  const { useExplicitMix } = resolveAddBgmMixParams({ audioVolume: 1, ttsVolume: 0.2 } as AudioParams);
-  const [filter] = buildSoundEffectFilters([1], [{ file: "a.wav", startAt: 0, volume: 1, loop: false }], soundEffectGain(useExplicitMix), "sfx");
-  assert.ok(filter.includes("volume=1,"), filter);
+test("addSoundEffects: narration volume settings do not scale sound effects", () => {
+  const filtersFor = (audioParams: Record<string, unknown>) => {
+    const context = makeContext([[{ source: tick, volume: 0.8 }]], [0], 0);
+    Object.assign(context.presentationStyle.audioParams, audioParams);
+    const ffmpegContext = FfmpegContextInit();
+    assert.strictEqual(addSoundEffects(ffmpegContext, context), "mixed_sfx");
+    return ffmpegContext.filterComplex.join("\n");
+  };
+  // Legacy mode: only the amix compensation (0.5) applies, whatever audioVolume is.
+  assert.ok(filtersFor({ audioVolume: 0.3 }).includes("volume=0.4,"));
+  assert.ok(filtersFor({ audioVolume: 0 }).includes("volume=0.4,"));
+  // Explicit mode: neither audioVolume nor ttsVolume reaches the effect.
+  assert.ok(filtersFor({ audioVolume: 0.3, ttsVolume: 0.2 }).includes("volume=0.8,"));
+});
+
+test("addSoundEffects: no effects leaves the graph untouched", () => {
+  const ffmpegContext = FfmpegContextInit();
+  assert.strictEqual(addSoundEffects(ffmpegContext, makeContext([[]], [0])), "mixed");
+  assert.deepStrictEqual(ffmpegContext.filterComplex, []);
+});
+
+test("mulmoBeatSoundEffectSchema: accepts url and path sources, rejects base64", () => {
+  assert.ok(mulmoBeatSoundEffectSchema.safeParse({ source: tick }).success);
+  assert.ok(mulmoBeatSoundEffectSchema.safeParse({ source: { kind: "path", path: "se/pop.mp3" } }).success);
+  assert.strictEqual(mulmoBeatSoundEffectSchema.safeParse({ source: { kind: "base64", data: "AAAA" } }).success, false);
 });

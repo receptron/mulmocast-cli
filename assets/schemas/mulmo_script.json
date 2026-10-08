@@ -15496,24 +15496,6 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "const": "base64"
-                        },
-                        "data": {
-                          "type": "string",
-                          "minLength": 1
-                        }
-                      },
-                      "required": [
-                        "kind",
-                        "data"
-                      ],
-                      "additionalProperties": false
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "kind": {
-                          "type": "string",
                           "const": "path"
                         },
                         "path": {
@@ -15528,7 +15510,7 @@
                       "additionalProperties": false
                     }
                   ],
-                  "description": "Audio file of the sound effect (url or path). base64 is not supported."
+                  "description": "Audio file of the sound effect (url or path)"
                 },
                 "startAt": {
                   "default": 0,

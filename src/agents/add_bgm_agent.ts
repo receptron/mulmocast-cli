@@ -82,7 +82,8 @@ export const buildSoundEffectFilters = (inputIds: number[], placements: SoundEff
 
 // Adds the beats' sound effects to ffmpegContext and mixes them onto [mixed].
 // Returns the id of the resulting stream ("mixed" when there are none).
-const addSoundEffects = (ffmpegContext: FfmpegContext, context: MulmoStudioContext, useExplicitMix: boolean) => {
+export const addSoundEffects = (ffmpegContext: FfmpegContext, context: MulmoStudioContext) => {
+  const { useExplicitMix } = resolveAddBgmMixParams(context.presentationStyle.audioParams);
   const soundEffects = getSoundEffectPlacements(context);
   if (soundEffects.length === 0) {
     return "mixed";
@@ -139,7 +140,7 @@ const addBGMAgent: AgentFunction<{ musicFile: string }, string, { voiceFile: str
   );
   const { amixNormalize } = resolveAddBgmFilterConfig(useExplicitMix);
   ffmpegContext.filterComplex.push(`[music][voice]amix=inputs=2:duration=longest${amixNormalize}[mixed]`);
-  const mixedInputId = addSoundEffects(ffmpegContext, context, useExplicitMix);
+  const mixedInputId = addSoundEffects(ffmpegContext, context);
   const { mixedOutputId, limiterFilter } = resolveAddBgmFilterConfig(useExplicitMix, mixedInputId);
   if (limiterFilter) {
     ffmpegContext.filterComplex.push(limiterFilter);

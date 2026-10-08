@@ -701,7 +701,12 @@ export const mulmoMovieParamsSchema = z.object({
 
 export const mulmoBeatSoundEffectSchema = z
   .object({
-    source: mediaSourceSchema.describe("Audio file of the sound effect (url or path). base64 is not supported."),
+    source: z
+      .discriminatedUnion("kind", [
+        z.object({ kind: z.literal("url"), url: URLStringSchema }).strict(),
+        z.object({ kind: z.literal("path"), path: z.string().min(1) }).strict(),
+      ])
+      .describe("Audio file of the sound effect (url or path)"),
     startAt: z.number().min(0).optional().default(0).describe("Seconds from the start of the beat (when its narration starts) at which the sound effect plays"),
     volume: z
       .number()
