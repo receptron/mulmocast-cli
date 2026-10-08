@@ -304,7 +304,7 @@ beatごとに効果音を指定できます。指定したタイミングで、�
 
 | パラメータ | 型 | デフォルト | 説明 |
 |---|---|---|---|
-| `source` | mediaSource | （必須） | 効果音ファイル。`url` または `path`（`base64` は不可）。mp3 / wav / ogg など ffmpeg が読める形式 |
+| `source` | object | （必須） | 効果音ファイルの `url` / `path`（mp3 / wav / ogg など ffmpeg が読める形式）、または JingleScript の楽譜（`jinglescript`、下記）。`base64` は不可 |
 | `startAt` | number | 0 | beatの開始（そのbeatのナレーションが始まる時点）から何秒後に鳴らすか |
 | `volume` | number (0〜4) | 1.0 | 音量。1.0 は既定音量のナレーションと同じゲイン。`audioVolume` / `ttsVolume` の影響は受けない |
 | `duration` | number | 未設定 | 最大再生秒数。超えた分は短いフェードアウトで切る。未設定ならファイルの最後まで（beatの終わりを越えても）鳴る |
@@ -315,4 +315,37 @@ beatごとに効果音を指定できます。指定したタイミングで、�
 - `soundEffectPrompt`（動画に AI で効果音を生成して付ける機能）とは別の機能です。
 - 効果音は beat ごとの音声ファイルではなく最終ミックスで重ねるため、HTML ビューアなど beat 単位の音声を再生する出力には入りません。
 
-テスト用スクリプト: `scripts/test/test_sound_effects.json`
+### JingleScript で効果音を合成する
+
+`source` に `{ "kind": "jinglescript", "score": { ... } }` と書くと、[JingleScript](https://github.com/receptron/jinglescript) の楽譜から効果音やジングルをその場で合成します。音源ファイルを探す必要がなく、ネットワークも使いません。合成した音は自由に使えます。
+
+```json
+{
+  "text": "ポン、ポン、ポン！ 星が三つ出てきました。",
+  "soundEffects": [
+    {
+      "source": {
+        "kind": "jinglescript",
+        "score": {
+          "format": "jinglescript/1",
+          "tempo": 120,
+          "length": { "seconds": 2 },
+          "tracks": [
+            { "instrument": "pop", "reverb": false, "notes": [
+              { "at": 0, "pitch": "E6" }, { "at": 0.5, "pitch": "G6" }, { "at": 1, "pitch": "C7" }
+            ] }
+          ]
+        }
+      },
+      "startAt": 0.2
+    }
+  ]
+}
+```
+
+- 楽譜の書き方は `npx jinglescript guide`、スキーマは `npx jinglescript schema` で確認できます。楽器（マリンバ、ウクレレ、手拍子など）と効果音（時計、足音、ノック、ポン、ヒュッ、ドーンなど）が使えます。
+- 楽譜の時刻 0 が `startAt` の位置に来ます。`startAt` / `volume` / `duration` / `loop` はファイルの場合と同じです。
+- 音声生成（`audio` / `movie`）の最初、TTS の前に楽譜を検査し、誤りがあれば場所（`beats[0].soundEffects[1].source.score: tracks[0].instrument: ...`）を示して止まります。
+- 合成した WAV は楽譜のハッシュで `output/audio/jingle_<hash>.wav` にキャッシュされ、同じ楽譜なら再利用されます。`-f` で作り直します（JingleScript を更新して音を作り直したいときも `-f`）。
+
+テスト用スクリプト: `scripts/test/test_sound_effects.json`、`scripts/test/test_jinglescript_sound_effects.json`

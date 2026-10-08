@@ -1,0 +1,101 @@
+{
+  "$mulmocast": { "version": "1.1" },
+  "lang": "ja",
+  "title": "JingleScript sound effects test",
+  "audioParams": { "bgmVolume": 0.05 },
+  "beats": [
+    {
+      "text": "チク、タク、チク、タク。時計がなりますよ。",
+      "image": { "type": "textSlide", "slide": { "title": "チクタク、チーン" } },
+      "soundEffects": [
+        {
+          "source": {
+            "kind": "jinglescript",
+            "score": {
+              "format": "jinglescript/1",
+              "title": "Clock ticks into a chime",
+              "tempo": 120,
+              "length": { "seconds": 5 },
+              "cues": { "hit": { "seconds": 3 } },
+              "tracks": [
+                {
+                  "instrument": "clock",
+                  "reverb": false,
+                  "gain": -4,
+                  "notes": [{ "at": 0, "variant": ["tick", "tock"], "vel": 0.7, "repeat": { "every": 1, "until": "hit-1" } }]
+                },
+                {
+                  "instrument": "glockenspiel",
+                  "notes": [
+                    { "at": "hit", "pitch": ["C6", "G6"], "vel": 0.8 },
+                    { "at": "hit+1", "pitch": "C7", "vel": 0.4 }
+                  ]
+                }
+              ]
+            }
+          },
+          "volume": 0.7
+        }
+      ]
+    },
+    {
+      "text": "ポン、ポン、ポン！ 星が三つ出てきました。",
+      "image": { "type": "textSlide", "slide": { "title": "ポン、ポン、ポン" } },
+      "soundEffects": [
+        {
+          "source": {
+            "kind": "jinglescript",
+            "score": {
+              "format": "jinglescript/1",
+              "tempo": 120,
+              "length": { "seconds": 2 },
+              "tracks": [
+                {
+                  "instrument": "pop",
+                  "reverb": false,
+                  "notes": [
+                    { "at": 0, "pitch": "E6", "vel": 0.8 },
+                    { "at": 0.5, "pitch": "G6", "vel": 0.8 },
+                    { "at": 1, "pitch": "C7", "vel": 0.9 }
+                  ]
+                }
+              ]
+            }
+          },
+          "startAt": 0.2
+        }
+      ]
+    },
+    {
+      "text": "よくできました！",
+      "image": { "type": "textSlide", "slide": { "title": "よくできました" } },
+      "soundEffects": [
+        {
+          "source": {
+            "kind": "jinglescript",
+            "score": {
+              "format": "jinglescript/1",
+              "title": "Well done",
+              "tempo": 130,
+              "length": { "seconds": 3 },
+              "cues": { "hit": { "seconds": 0.7 } },
+              "tracks": [
+                {
+                  "instrument": "marimba",
+                  "notes": [
+                    { "at": 0, "pitch": "G4", "vel": 0.8 },
+                    { "at": 0.5, "pitch": "C5", "vel": 0.85 },
+                    { "at": "hit", "pitch": ["C5", "E5", "G5", "C6"], "vel": 1.0 }
+                  ]
+                },
+                { "instrument": "marimba", "notes": [{ "at": "hit", "pitch": ["C3", "G3"], "vel": 0.9 }] }
+              ]
+            }
+          },
+          "startAt": 0.8,
+          "volume": 0.8
+        }
+      ]
+    }
+  ]
+}

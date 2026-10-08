@@ -705,8 +705,14 @@ export const mulmoBeatSoundEffectSchema = z
       .discriminatedUnion("kind", [
         z.object({ kind: z.literal("url"), url: URLStringSchema }).strict(),
         z.object({ kind: z.literal("path"), path: z.string().min(1) }).strict(),
+        z
+          .object({
+            kind: z.literal("jinglescript"),
+            score: z.record(z.string(), z.unknown()).describe("JingleScript score (format jinglescript/1), rendered to audio when the audio is generated"),
+          })
+          .strict(),
       ])
-      .describe("Audio file of the sound effect (url or path)"),
+      .describe("Audio file of the sound effect (url or path), or a JingleScript score to synthesize"),
     startAt: z.number().min(0).optional().default(0).describe("Seconds from the start of the beat (when its narration starts) at which the sound effect plays"),
     volume: z
       .number()

@@ -20,6 +20,7 @@ import { MulmoStudioContext, MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingual
 
 import { audioGraphOption } from "./graph_option.js";
 import { createUsageCallback } from "../utils/usage_callback.js";
+import { renderJingleScores } from "../utils/jinglescript.js";
 import {
   getAudioArtifactFilePath,
   getAudioFilePath,
@@ -314,6 +315,8 @@ export const audio = async (context: MulmoStudioContext, args?: PublicAPIArgs) =
 
     mkdir(outDirPath);
     mkdir(audioSegmentDirPath);
+    // Before TTS, so an invalid score fails fast.
+    renderJingleScores(context);
 
     const graph = new GraphAI(audio_graph_data, audioAgents, await audioGraphOption(context, settings));
     callbacks?.forEach((callback) => graph.registerCallback(callback));

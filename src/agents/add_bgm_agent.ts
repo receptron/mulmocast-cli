@@ -6,6 +6,7 @@ import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 import { MulmoMediaSourceMethods } from "../methods/mulmo_media_source.js";
 import { isFile } from "../utils/file.js";
 import { userAssert } from "../utils/utils.js";
+import { getJingleFilePath } from "../utils/jinglescript.js";
 import { agentGenerationError, agentFileNotExistError, audioAction, audioFileTarget } from "../utils/error_cause.js";
 
 export const resolveAddBgmMixParams = (audioParams: MulmoStudioContext["presentationStyle"]["audioParams"]) => {
@@ -36,7 +37,8 @@ export const getSoundEffectPlacements = (context: MulmoStudioContext): SoundEffe
     (beat.soundEffects ?? []).map((soundEffect, seIndex) => {
       const beatStartAt = context.studio.beats[index]?.startAt;
       userAssert(beatStartAt !== undefined, `soundEffects: startAt of beat ${index} is not computed yet`);
-      const file = MulmoMediaSourceMethods.resolve(soundEffect.source, context);
+      const { source } = soundEffect;
+      const file = source.kind === "jinglescript" ? getJingleFilePath(source.score, context) : MulmoMediaSourceMethods.resolve(source, context);
       userAssert(!!file, `soundEffects: unsupported source at beat ${index}, effect ${seIndex} (use url or path)`);
       const startAt = soundEffect.startAt ?? 0;
       const loop = soundEffect.loop ?? false;

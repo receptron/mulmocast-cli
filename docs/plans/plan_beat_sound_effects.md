@@ -41,3 +41,16 @@ The effects therefore land in the audio artifact (mp3) and, through it, in the m
 - `test/agents/test_add_bgm_agent.ts`: placement, defaults, loop/duration, filter strings.
 - `scripts/test/test_sound_effects.json`: end-to-end sample (verified by subtracting a render without
   effects and checking the onsets with `silencedetect`).
+
+## JingleScript sources
+
+`source` may also be `{ kind: "jinglescript", score }`, a [JingleScript](https://github.com/receptron/jinglescript)
+score synthesized locally (no samples, no network).
+
+- Schema: `score` is `z.record(z.string(), z.unknown())`, so `@mulmocast/types` does not depend on
+  jinglescript; the score is validated with jinglescript's `checkScore`.
+- `src/utils/jinglescript.ts`: `renderJingleScores(context)` runs at the start of the `audio` action,
+  before TTS. It checks every score (throwing with `beats[i].soundEffects[j].source.score: <path>: <message>`),
+  then renders each to `<audioDir>/jingle_<sha256(score)>.wav` at 44.1 kHz, skipping cached files
+  unless `force`.
+- `getSoundEffectPlacements` resolves a jinglescript source to that file; the rest of the mix is unchanged.

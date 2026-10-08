@@ -15508,9 +15508,31 @@
                         "path"
                       ],
                       "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "jinglescript"
+                        },
+                        "score": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {},
+                          "description": "JingleScript score (format jinglescript/1), rendered to audio when the audio is generated"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "score"
+                      ],
+                      "additionalProperties": false
                     }
                   ],
-                  "description": "Audio file of the sound effect (url or path)"
+                  "description": "Audio file of the sound effect (url or path), or a JingleScript score to synthesize"
                 },
                 "startAt": {
                   "default": 0,
