@@ -28,7 +28,9 @@ Distinct from `soundEffectPrompt`, which generates audio for a movie beat with a
   (its segment absorbs the intro padding), `introPadding + studio.beats[i].startAt` for the others, which
   is also when their narration starts. This is the clock html_tailwind animations run on (frame 0 = the
   beat's first frame on screen), so an effect and an animation given the same time coincide. A looping
-  effect without `duration` lasts `getBeatDuration(i) - startAt` (intro/outro padding included).
+  effect without `duration` lasts `getBeatScreenDuration(i) - startAt`: the beat's whole segment
+  (intro/outro padding and trailing `voice_over` beats sharing its shot included); a `voice_over`
+  beat's own effects last its own slice.
 - Each effect: `aformat → [atrim + afade] → volume → adelay`; looping effects use `-stream_loop -1`.
   Effects are combined with `amix normalize=0`, then mixed onto `[music][voice]` with `normalize=0`
   before the limiter (explicit mode) and the final trim/fade.

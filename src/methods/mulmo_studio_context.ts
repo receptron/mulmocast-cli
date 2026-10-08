@@ -135,6 +135,14 @@ export const MulmoStudioContextMethods = {
     }
     return MulmoStudioContextMethods.getIntroPadding(context) + (context.studio.beats[index]?.startAt ?? 0);
   },
+  // How long this beat stays on screen from getBeatScreenStartAt: its whole segment, including the
+  // voice_over beats that share its shot. A voice_over beat itself is counted for its own slice only.
+  getBeatScreenDuration(context: MulmoStudioContext, index: number): number {
+    if (MulmoBeatMethods.isVoiceOver(context.studio.script.beats[index])) {
+      return MulmoStudioContextMethods.getBeatDuration(context, index);
+    }
+    return MulmoStudioContextMethods.getSegmentDuration(context, index);
+  },
   // The duration this beat occupies on the audio timeline.
   getBeatDuration(context: MulmoStudioContext, index: number): number {
     return (context.studio.beats[index]?.duration ?? 0) + MulmoStudioContextMethods.getExtraPadding(context, index);

@@ -44,7 +44,7 @@ export const getSoundEffectPlacements = (context: MulmoStudioContext): SoundEffe
       const startAt = soundEffect.startAt ?? 0;
       const loop = soundEffect.loop ?? false;
       // A looping effect without duration plays until the beat leaves the screen.
-      const duration = soundEffect.duration ?? (loop ? MulmoStudioContextMethods.getBeatDuration(context, index) - startAt : undefined);
+      const duration = soundEffect.duration ?? (loop ? MulmoStudioContextMethods.getBeatScreenDuration(context, index) - startAt : undefined);
       userAssert(duration === undefined || duration > 0, `soundEffects: beat ${index}, effect ${seIndex} starts after the end of the beat`);
       return {
         file,

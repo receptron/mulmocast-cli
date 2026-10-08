@@ -308,7 +308,7 @@ beatごとに効果音を指定できます。指定したタイミングで、�
 | `startAt` | number | 0 | そのbeatが画面に出てから何秒後に鳴らすか。html_tailwind アニメーションの時刻と同じ基準（下記） |
 | `volume` | number (0〜4) | 1.0 | 音量。1.0 は既定音量のナレーションと同じゲイン。`audioVolume` / `ttsVolume` の影響は受けない |
 | `duration` | number | 未設定 | 最大再生秒数。超えた分は短いフェードアウトで切る。未設定ならファイルの最後まで（beatの終わりを越えても）鳴る |
-| `loop` | boolean | false | 繰り返し再生する。`duration` 未設定ならそのbeatが画面から消えるまで（時計のチクタクなど） |
+| `loop` | boolean | false | 繰り返し再生する。`duration` 未設定ならそのbeatが画面から消えるまで（時計のチクタクなど）。後ろに `voice_over` のbeatが続く場合は、同じ映像が映っている間ずっと鳴る |
 
 - 自由に使える効果音（CC0）を [mulmocast-media/soundeffects](https://github.com/receptron/mulmocast-media/tree/main/soundeffects) に置いています。中身とライセンスはそこの README と LICENSES.md を参照してください。
 - **タイミングの基準**: `startAt` は、そのbeatが画面に出た時点からの秒数です。html_tailwind アニメーション（`MulmoAnimation` の `start`/`end`、`data-start`）も同じ時刻を基準にしているので、同じ秒数を書けば絵と音がそろいます。2つ目以降のbeatではナレーションも同時に始まります。最初のbeatだけは、ナレーションが `audioParams.introPadding`（既定 1秒）遅れて始まります。

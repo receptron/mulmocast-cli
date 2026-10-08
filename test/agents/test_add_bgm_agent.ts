@@ -196,3 +196,18 @@ test("getSoundEffectPlacements: a looping effect fills the beat's time on screen
   assert.deepStrictEqual([first.startAt, first.duration], [0, 4]); // 1.0 intro + 3
   assert.deepStrictEqual([last.startAt, last.duration], [4.5, 3]); // 2 + 1.5 outro - 0.5
 });
+
+test("getSoundEffectPlacements: a looping effect lasts while its shot stays on screen through trailing voice_over beats", () => {
+  const context = makeContext(
+    [[{ source: tick, loop: true }], [{ source: pop, loop: true }], [], [{ source: pop, startAt: 1, loop: true }]],
+    [0, 3, 5, 9],
+    1.0,
+    [3, 2, 4, 2],
+  );
+  context.studio.script.beats[1].image = { type: "voice_over" } as never;
+  context.studio.script.beats[2].image = { type: "voice_over" } as never;
+  const [owner, voiceOver, last] = getSoundEffectPlacements(context);
+  assert.deepStrictEqual([owner.startAt, owner.duration], [0, 10]); // 1 intro + 3 + voice_overs 2 + 4
+  assert.deepStrictEqual([voiceOver.startAt, voiceOver.duration], [4, 2]); // its own slice
+  assert.deepStrictEqual([last.startAt, last.duration], [11, 1]); // 2 - 1 (no outro padding here)
+});

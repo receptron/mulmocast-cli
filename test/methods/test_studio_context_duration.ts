@@ -125,3 +125,13 @@ test("test getBeatScreenStartAt: the first beat is on screen from 0, later beats
   // Each beat starts where the previous one's time on screen ends.
   assert.equal(MulmoStudioContextMethods.getBeatScreenStartAt(context, 1), MulmoStudioContextMethods.getBeatDuration(context, 0));
 });
+
+// --- getBeatScreenDuration ---
+
+test("test getBeatScreenDuration: a shot covers its voice_over beats; a voice_over beat covers only itself", async () => {
+  const context = durationContext([shot("A"), voiceOver, voiceOver, shot("B")], [3, 2, 4, 5], 1.0, 0.5);
+  assert.deepStrictEqual(
+    [0, 1, 2, 3].map((index) => MulmoStudioContextMethods.getBeatScreenDuration(context, index)),
+    [10, 2, 4, 5.5],
+  );
+});
