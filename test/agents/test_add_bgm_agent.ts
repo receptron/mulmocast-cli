@@ -156,3 +156,9 @@ test("buildSoundEffectFilters: multiple effects are mixed without normalization"
   assert.ok(filters[1].includes("adelay=2000|2000[se_1]"));
   assert.strictEqual(filters[2], "[se_0][se_1]amix=inputs=2:duration=longest:normalize=0[sfx]");
 });
+
+test("buildSoundEffectFilters: narration volume settings do not scale sound effects", () => {
+  const { useExplicitMix } = resolveAddBgmMixParams({ audioVolume: 1, ttsVolume: 0.2 } as AudioParams);
+  const [filter] = buildSoundEffectFilters([1], [{ file: "a.wav", startAt: 0, volume: 1, loop: false }], soundEffectGain(useExplicitMix), "sfx");
+  assert.ok(filter.includes("volume=1,"), filter);
+});

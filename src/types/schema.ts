@@ -703,7 +703,15 @@ export const mulmoBeatSoundEffectSchema = z
   .object({
     source: mediaSourceSchema.describe("Audio file of the sound effect (url or path). base64 is not supported."),
     startAt: z.number().min(0).optional().default(0).describe("Seconds from the start of the beat (when its narration starts) at which the sound effect plays"),
-    volume: z.number().min(0).max(4).optional().default(1.0).describe("Volume of the sound effect. 1.0 is the same gain as the narration"),
+    volume: z
+      .number()
+      .min(0)
+      .max(4)
+      .optional()
+      .default(1.0)
+      .describe(
+        "Volume of the sound effect. 1.0 is the gain of the narration at its default volume; audioParams.audioVolume and ttsVolume do not affect sound effects",
+      ),
     duration: z
       .number()
       .positive()

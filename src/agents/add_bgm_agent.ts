@@ -55,7 +55,8 @@ export const getSoundEffectPlacements = (context: MulmoStudioContext): SoundEffe
 };
 
 // In legacy mode, amix (normalize=1) halves the voice and the music. Sound effects are mixed in
-// afterwards with normalize=0, so apply the same factor to keep volume 1.0 at the narration's gain.
+// afterwards with normalize=0, so apply the same factor to keep volume 1.0 at the gain of the narration at its
+// default volume. audioVolume / ttsVolume deliberately do not scale sound effects.
 export const soundEffectGain = (useExplicitMix: boolean) => (useExplicitMix ? 1.0 : 0.5);
 
 const soundEffectFadeOut = 0.05; // seconds, avoids a click where the effect is cut

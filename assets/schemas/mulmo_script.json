@@ -15538,7 +15538,7 @@
                 },
                 "volume": {
                   "default": 1,
-                  "description": "Volume of the sound effect. 1.0 is the same gain as the narration",
+                  "description": "Volume of the sound effect. 1.0 is the gain of the narration at its default volume; audioParams.audioVolume and ttsVolume do not affect sound effects",
                   "type": "number",
                   "minimum": 0,
                   "maximum": 4

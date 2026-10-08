@@ -306,11 +306,12 @@ beatごとに効果音を指定できます。指定したタイミングで、�
 |---|---|---|---|
 | `source` | mediaSource | （必須） | 効果音ファイル。`url` または `path`（`base64` は不可）。mp3 / wav / ogg など ffmpeg が読める形式 |
 | `startAt` | number | 0 | beatの開始（そのbeatのナレーションが始まる時点）から何秒後に鳴らすか |
-| `volume` | number (0〜4) | 1.0 | 音量。1.0 でナレーションと同じゲイン |
+| `volume` | number (0〜4) | 1.0 | 音量。1.0 は既定音量のナレーションと同じゲイン。`audioVolume` / `ttsVolume` の影響は受けない |
 | `duration` | number | 未設定 | 最大再生秒数。超えた分は短いフェードアウトで切る。未設定ならファイルの最後まで（beatの終わりを越えても）鳴る |
 | `loop` | boolean | false | 繰り返し再生する。`duration` 未設定ならbeatの終わりまで（時計のチクタクなど） |
 
 - 自由に使える効果音（CC0）を [mulmocast-media/soundeffects](https://github.com/receptron/mulmocast-media/tree/main/soundeffects) に置いています。中身とライセンスはそこの README と LICENSES.md を参照してください。
+- 効果音の音量は `volume` だけで決まります。`audioParams.audioVolume` や `ttsVolume` でナレーションの音量を変えても、効果音の音量は変わりません（`audioVolume: 0` でナレーションを消しても効果音は鳴ります）。
 - `soundEffectPrompt`（動画に AI で効果音を生成して付ける機能）とは別の機能です。
 - 効果音は beat ごとの音声ファイルではなく最終ミックスで重ねるため、HTML ビューアなど beat 単位の音声を再生する出力には入りません。
 
