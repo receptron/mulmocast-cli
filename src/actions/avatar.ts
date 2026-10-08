@@ -205,7 +205,10 @@ const renderAvatarTrack = async (
   // rendered once, at the largest size it is shown; smaller placements scale it down
   const height = even(Math.max(...plan.placements.map((p) => percent(p.position.scale, canvas.height))));
   const segments = plan.segments.map((segment) => ({ ...segment, audioStamp: fileStamp(segment.audio) }));
-  const identity = { version: 4, segments, source: plan.source, sourceStamp: await sourceStamp(plan.source), duration: plan.duration, height, padTop: PAD_TOP };
+  // bump `version` when the track would come out differently, including an avatarscript upgrade that
+  // changes its output (5: avatarscript 0.4.0 holds a phrase's last sound): a reused track needs no
+  // avatarscript, so its version cannot be part of this
+  const identity = { version: 5, segments, source: plan.source, sourceStamp: await sourceStamp(plan.source), duration: plan.duration, height, padTop: PAD_TOP };
   const hash = createHash("sha256").update(JSON.stringify(identity)).digest("hex").slice(0, 12);
   const dir = MulmoStudioContextMethods.getImageProjectDirPath(context);
   const name = `avatar_${plan.speakerId.replace(/[^\w-]/g, "_")}_${hash}`;
