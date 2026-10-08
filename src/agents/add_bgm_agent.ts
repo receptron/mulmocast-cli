@@ -29,10 +29,11 @@ export const resolveAddBgmFilterConfig = (useExplicitMix: boolean, mixedInputId:
 
 export type SoundEffectPlacement = { file: string; startAt: number; volume: number; duration?: number; loop: boolean };
 
-// Absolute placement of every beat's sound effects on the final audio timeline.
+// Absolute placement of every beat's sound effects on the final audio timeline. startAt counts from
+// when the beat appears on screen, the same clock as its html animation (for the first beat, that is
+// introPadding before its narration starts).
 // The context must come from combineAudioFilesAgent, which sets studio.beats[].startAt.
 export const getSoundEffectPlacements = (context: MulmoStudioContext): SoundEffectPlacement[] => {
-  const introPadding = MulmoStudioContextMethods.getIntroPadding(context);
   return context.studio.script.beats.flatMap((beat, index) =>
     (beat.soundEffects ?? []).map((soundEffect, seIndex) => {
       const beatStartAt = context.studio.beats[index]?.startAt;
@@ -42,12 +43,12 @@ export const getSoundEffectPlacements = (context: MulmoStudioContext): SoundEffe
       userAssert(!!file, `soundEffects: unsupported source at beat ${index}, effect ${seIndex} (use url or path)`);
       const startAt = soundEffect.startAt ?? 0;
       const loop = soundEffect.loop ?? false;
-      // A looping effect without duration plays until the end of the beat.
-      const duration = soundEffect.duration ?? (loop ? (context.studio.beats[index]?.duration ?? 0) - startAt : undefined);
+      // A looping effect without duration plays until the beat leaves the screen.
+      const duration = soundEffect.duration ?? (loop ? MulmoStudioContextMethods.getBeatDuration(context, index) - startAt : undefined);
       userAssert(duration === undefined || duration > 0, `soundEffects: beat ${index}, effect ${seIndex} starts after the end of the beat`);
       return {
         file,
-        startAt: introPadding + beatStartAt + startAt,
+        startAt: MulmoStudioContextMethods.getBeatScreenStartAt(context, index) + startAt,
         volume: soundEffect.volume ?? 1.0,
         ...(duration !== undefined ? { duration } : {}),
         loop,

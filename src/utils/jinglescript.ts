@@ -43,7 +43,20 @@ export const renderJingleScores = (context: MulmoStudioContext) => {
     }
     const { audio, sampleRate } = render(parseScore(score), { sampleRate: JINGLE_SAMPLE_RATE });
     mkdir(path.dirname(filePath));
-    fs.writeFileSync(filePath, toWav(audio, sampleRate));
+    writeFileAtomically(filePath, toWav(audio, sampleRate));
     GraphAILogger.info(`jinglescript: rendered ${filePath}`);
   });
+};
+
+// Writes to a temporary file next to the target, then renames it, so an interrupted write never
+// leaves a partial WAV that a later run would take for a cached one.
+export const writeFileAtomically = (filePath: string, data: Uint8Array) => {
+  const tmpPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
+  try {
+    fs.writeFileSync(tmpPath, data);
+    fs.renameSync(tmpPath, filePath);
+  } catch (error) {
+    fs.rmSync(tmpPath, { force: true });
+    throw error;
+  }
 };

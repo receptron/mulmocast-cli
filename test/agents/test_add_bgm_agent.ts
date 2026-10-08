@@ -63,14 +63,14 @@ const pop = { kind: "url" as const, url: "https://example.com/pop.mp3" };
 const makeContext = (soundEffects: unknown[][], startAts: (number | undefined)[], introPadding = 1.0, durations: number[] = []) =>
   ({
     fileDirs: { mulmoFileDirPath: "/scripts" },
-    presentationStyle: { audioParams: { introPadding } },
+    presentationStyle: { audioParams: { introPadding, outroPadding: 0 } },
     studio: {
       script: { beats: soundEffects.map((effects) => (effects.length > 0 ? { text: "", soundEffects: effects } : { text: "" })) },
       beats: startAts.map((startAt, index) => ({ startAt, duration: durations[index] })),
     },
   }) as unknown as MulmoStudioContext;
 
-test("getSoundEffectPlacements: places effects relative to beat start plus intro padding", () => {
+test("getSoundEffectPlacements: places effects from when each beat appears on screen", () => {
   const context = makeContext(
     [
       [{ source: tick, startAt: 0.5, volume: 0.8 }],
@@ -83,14 +83,15 @@ test("getSoundEffectPlacements: places effects relative to beat start plus intro
     [0, 3, 5.5],
   );
   assert.deepStrictEqual(getSoundEffectPlacements(context), [
-    { file: "https://example.com/tick.wav", startAt: 1.5, volume: 0.8, loop: false },
+    // The first beat is on screen from 0; later beats appear when their narration starts (after introPadding).
+    { file: "https://example.com/tick.wav", startAt: 0.5, volume: 0.8, loop: false },
     { file: "https://example.com/pop.mp3", startAt: 6.5, volume: 1, loop: false },
     { file: path.resolve("/scripts", "se/boing.mp3"), startAt: 7.75, volume: 2, loop: false },
   ]);
 });
 
 test("getSoundEffectPlacements: defaults startAt to 0 and volume to 1", () => {
-  const context = makeContext([[{ source: tick }]], [2], 0);
+  const context = makeContext([[], [{ source: tick }]], [0, 2], 0);
   assert.deepStrictEqual(getSoundEffectPlacements(context), [{ file: "https://example.com/tick.wav", startAt: 2, volume: 1, loop: false }]);
 });
 
@@ -186,4 +187,12 @@ test("mulmoBeatSoundEffectSchema: accepts url and path sources, rejects base64",
   assert.ok(mulmoBeatSoundEffectSchema.safeParse({ source: tick }).success);
   assert.ok(mulmoBeatSoundEffectSchema.safeParse({ source: { kind: "path", path: "se/pop.mp3" } }).success);
   assert.strictEqual(mulmoBeatSoundEffectSchema.safeParse({ source: { kind: "base64", data: "AAAA" } }).success, false);
+});
+
+test("getSoundEffectPlacements: a looping effect fills the beat's time on screen, intro and outro included", () => {
+  const context = makeContext([[{ source: tick, loop: true }], [{ source: pop, startAt: 0.5, loop: true }]], [0, 3], 1.0, [3, 2]);
+  context.presentationStyle.audioParams.outroPadding = 1.5;
+  const [first, last] = getSoundEffectPlacements(context);
+  assert.deepStrictEqual([first.startAt, first.duration], [0, 4]); // 1.0 intro + 3
+  assert.deepStrictEqual([last.startAt, last.duration], [4.5, 3]); // 2 + 1.5 outro - 0.5
 });

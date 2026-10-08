@@ -127,6 +127,14 @@ export const MulmoStudioContextMethods = {
     }
     return 0;
   },
+  // When this beat appears on screen, in seconds from the start of the movie. The first beat's segment
+  // starts at 0 and absorbs the intro padding; every later beat starts when its narration does.
+  getBeatScreenStartAt(context: MulmoStudioContext, index: number): number {
+    if (index === 0) {
+      return 0;
+    }
+    return MulmoStudioContextMethods.getIntroPadding(context) + (context.studio.beats[index]?.startAt ?? 0);
+  },
   // The duration this beat occupies on the audio timeline.
   getBeatDuration(context: MulmoStudioContext, index: number): number {
     return (context.studio.beats[index]?.duration ?? 0) + MulmoStudioContextMethods.getExtraPadding(context, index);

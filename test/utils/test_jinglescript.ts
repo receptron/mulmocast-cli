@@ -2,7 +2,9 @@ import test from "node:test";
 import assert from "node:assert";
 import fs from "node:fs";
 
-import { getJingleFilePath, getJingleScores, renderJingleScores, validateJingleScores } from "../../src/utils/jinglescript.js";
+import path from "node:path";
+
+import { getJingleFilePath, getJingleScores, renderJingleScores, validateJingleScores, writeFileAtomically } from "../../src/utils/jinglescript.js";
 import { getSoundEffectPlacements } from "../../src/agents/add_bgm_agent.js";
 import { mulmoBeatSoundEffectSchema } from "../../src/types/schema.js";
 import type { MulmoStudioContext } from "../../src/types/index.js";
@@ -22,7 +24,7 @@ const makeContext = (soundEffects: unknown[][], audioDirPath = tmpDir(), force =
   ({
     force,
     fileDirs: { mulmoFileDirPath: "/scripts", audioDirPath },
-    presentationStyle: { audioParams: { introPadding: 1 } },
+    presentationStyle: { audioParams: { introPadding: 1, outroPadding: 0 } },
     studio: {
       script: { beats: soundEffects.map((effects) => ({ text: "", soundEffects: effects })) },
       beats: soundEffects.map((_, index) => ({ startAt: index * 2, duration: 2 })),
@@ -70,4 +72,20 @@ test("renderJingleScores: writes a WAV, reuses it, and re-renders when forced", 
 test("getSoundEffectPlacements: a jinglescript source plays its rendered file", () => {
   const context = makeContext([[], [{ source: { kind: "jinglescript", score: pop }, startAt: 0.5 }]]);
   assert.deepStrictEqual(getSoundEffectPlacements(context), [{ file: getJingleFilePath(pop, context), startAt: 3.5, volume: 1, loop: false }]);
+});
+
+test("writeFileAtomically: writes the file and leaves no temporary file", () => {
+  const dir = tmpDir();
+  const filePath = path.join(dir, "a.wav");
+  writeFileAtomically(filePath, new Uint8Array([1, 2, 3]));
+  assert.deepStrictEqual([...fs.readFileSync(filePath)], [1, 2, 3]);
+  assert.deepStrictEqual(fs.readdirSync(dir), ["a.wav"]);
+});
+
+test("writeFileAtomically: a failed write leaves neither the target nor a temporary file", () => {
+  const dir = tmpDir();
+  const filePath = path.join(dir, "missing-subdir", "a.wav");
+  assert.throws(() => writeFileAtomically(filePath, new Uint8Array([1])));
+  assert.strictEqual(fs.existsSync(filePath), false);
+  assert.deepStrictEqual(fs.readdirSync(dir), []);
 });

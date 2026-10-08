@@ -1,0 +1,441 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "ja",
+  "title": "かぞえてみよう（効果音とアニメーションの同期サンプル）",
+  "description": "html_tailwind animations and beat sound effects (JingleScript scores and a URL) placed on the same times; no image generation.",
+  "audioParams": {
+    "bgmVolume": 0.04
+  },
+  "beats": [
+    {
+      "text": "こんにちは！ きょうは、いっしょに かずを かぞえてみよう！",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full flex items-center justify-center bg-gradient-to-b from-sky-300 to-sky-100 overflow-hidden'>",
+          "  <h1 id='title' class='text-8xl font-black text-orange-500 drop-shadow-lg' style='transform:translateY(-500px)'>かぞえてみよう！</h1>",
+          "</div>"
+        ],
+        "script": [
+          "const seg = (t, a, b) => Math.max(0, Math.min(1, (t - a) / (b - a)));",
+          "function render(frame, totalFrames, fps) {",
+          "  const t = frame / fps;",
+          "  // Falls from 0.3 s and lands at 0.8 s (the 'hit' cue of the jingle), then bounces back from a squash.",
+          "  const y = -500 * (1 - Easing.easeIn(seg(t, 0.3, 0.8)));",
+          "  const scale = t < 0.8 ? 1 : 1.25 - 0.25 * Easing.easeOut(seg(t, 0.8, 1.1));",
+          "  document.getElementById('title').style.transform = `translateY(${y}px) scale(${scale})`;",
+          "}"
+        ],
+        "animation": true
+      },
+      "soundEffects": [
+        {
+          "source": {
+            "kind": "jinglescript",
+            "score": {
+              "format": "jinglescript/1",
+              "title": "Title lands",
+              "tempo": 120,
+              "length": {
+                "seconds": 3
+              },
+              "cues": {
+                "hit": {
+                  "seconds": 0.8
+                }
+              },
+              "tracks": [
+                {
+                  "instrument": "whoosh",
+                  "gain": -4,
+                  "notes": [
+                    {
+                      "end": "hit",
+                      "len": {
+                        "seconds": 0.5
+                      },
+                      "variant": "fast"
+                    }
+                  ]
+                },
+                {
+                  "instrument": "impact",
+                  "gain": -6,
+                  "notes": [
+                    {
+                      "at": "hit",
+                      "variant": "soft"
+                    }
+                  ]
+                },
+                {
+                  "instrument": "marimba",
+                  "notes": [
+                    {
+                      "at": "hit",
+                      "pitch": ["C5", "E5", "G5", "C6"],
+                      "vel": 1.0
+                    },
+                    {
+                      "at": "hit+1",
+                      "pitch": "C6",
+                      "vel": 0.35
+                    }
+                  ]
+                },
+                {
+                  "instrument": "marimba",
+                  "notes": [
+                    {
+                      "at": "hit",
+                      "pitch": ["C3", "G3"],
+                      "vel": 0.9
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "volume": 0.8
+        }
+      ]
+    },
+    {
+      "text": "ほしが でてくるよ。ひとつ、ふたつ、みっつ！ ぜんぶで みっつ だね。",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full flex flex-col items-center justify-center bg-indigo-950'>",
+          "  <div class='flex gap-24'>",
+          "    <div class='flex flex-col items-center'>",
+          "      <div id='star0' class='w-48 h-48' style='transform:scale(0)'><svg viewBox='0 0 100 100' class='w-full h-full'><polygon points='50,5 61,38 96,38 68,59 79,93 50,72 21,93 32,59 4,38 39,38' fill='#facc15' stroke='#f59e0b' stroke-width='4' stroke-linejoin='round'/></svg></div>",
+          "      <div id='num0' class='text-7xl font-black text-white mt-6' style='opacity:0'>1</div>",
+          "    </div>",
+          "    <div class='flex flex-col items-center'>",
+          "      <div id='star1' class='w-48 h-48' style='transform:scale(0)'><svg viewBox='0 0 100 100' class='w-full h-full'><polygon points='50,5 61,38 96,38 68,59 79,93 50,72 21,93 32,59 4,38 39,38' fill='#facc15' stroke='#f59e0b' stroke-width='4' stroke-linejoin='round'/></svg></div>",
+          "      <div id='num1' class='text-7xl font-black text-white mt-6' style='opacity:0'>2</div>",
+          "    </div>",
+          "    <div class='flex flex-col items-center'>",
+          "      <div id='star2' class='w-48 h-48' style='transform:scale(0)'><svg viewBox='0 0 100 100' class='w-full h-full'><polygon points='50,5 61,38 96,38 68,59 79,93 50,72 21,93 32,59 4,38 39,38' fill='#facc15' stroke='#f59e0b' stroke-width='4' stroke-linejoin='round'/></svg></div>",
+          "      <div id='num2' class='text-7xl font-black text-white mt-6' style='opacity:0'>3</div>",
+          "    </div>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const times = [0.8, 1.6, 2.4];",
+          "const seg = (t, a, b) => Math.max(0, Math.min(1, (t - a) / (b - a)));",
+          "function render(frame, totalFrames, fps) {",
+          "  const t = frame / fps;",
+          "  times.forEach((at, i) => {",
+          "    // Pops out at its time (overshooting to 1.25), then settles to 1.",
+          "    const scale = t < at ? 0 : t < at + 0.12 ? 1.25 * Easing.easeOut(seg(t, at, at + 0.12)) : 1.25 - 0.25 * Easing.easeInOut(seg(t, at + 0.12, at + 0.3));",
+          "    document.getElementById(`star${i}`).style.transform = `scale(${scale})`;",
+          "    const shown = Easing.easeOut(seg(t, at, at + 0.25));",
+          "    const num = document.getElementById(`num${i}`);",
+          "    num.style.opacity = shown;",
+          "    num.style.transform = `translateY(${20 * (1 - shown)}px)`;",
+          "  });",
+          "}"
+        ],
+        "animation": true
+      },
+      "soundEffects": [
+        {
+          "source": {
+            "kind": "jinglescript",
+            "score": {
+              "format": "jinglescript/1",
+              "title": "Three pops",
+              "tempo": 120,
+              "length": {
+                "seconds": 3.2
+              },
+              "tracks": [
+                {
+                  "instrument": "pop",
+                  "reverb": false,
+                  "notes": [
+                    {
+                      "at": {
+                        "seconds": 0.8
+                      },
+                      "pitch": "E6",
+                      "vel": 0.85
+                    },
+                    {
+                      "at": {
+                        "seconds": 1.6
+                      },
+                      "pitch": "G6",
+                      "vel": 0.85
+                    },
+                    {
+                      "at": {
+                        "seconds": 2.4
+                      },
+                      "pitch": "C7",
+                      "vel": 0.85
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "text": "ボールが はねるよ。ぽーん、ぽーん、ぽーん。なんかい はねたかな？",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full relative bg-gradient-to-b from-amber-50 to-amber-100 overflow-hidden'>",
+          "  <div class='absolute left-0 right-0 bottom-0 h-24 bg-green-500'></div>",
+          "  <div id='ball' class='absolute w-32 h-32 rounded-full bg-gradient-to-br from-rose-400 to-red-600 shadow-xl' style='left:calc(50% - 64px); bottom:96px'></div>",
+          "</div>"
+        ],
+        "script": [
+          "const landings = [0.6, 1.2, 1.8];",
+          "const floor = 96, peak = 520; // (not `top`: that is window.top)",
+          "function render(frame, totalFrames, fps) {",
+          "  const t = frame / fps;",
+          "  let h = 0;",
+          "  if (t < landings[0]) {",
+          "    const u = t / landings[0];",
+          "    h = peak * (1 - u * u); // falling from the top",
+          "  } else {",
+          "    for (let k = 1; k < landings.length; k++) {",
+          "      if (t < landings[k]) {",
+          "        const u = (t - landings[k - 1]) / (landings[k] - landings[k - 1]);",
+          "        h = peak * Math.pow(0.5, k) * 4 * u * (1 - u); // smaller arc after each bounce",
+          "        break;",
+          "      }",
+          "    }",
+          "  }",
+          "  const ball = document.getElementById('ball');",
+          "  ball.style.bottom = `${floor + h}px`;",
+          "  // Squash for a moment on each landing.",
+          "  const squash = landings.some((l) => t >= l && t < l + 0.08);",
+          "  ball.style.transform = squash ? 'scale(1.25, 0.75) translateY(10px)' : 'none';",
+          "}"
+        ],
+        "animation": true
+      },
+      "soundEffects": [
+        {
+          "source": {
+            "kind": "url",
+            "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/soundeffects/opengameart/ezduzziteh-boings/bing_01.mp3"
+          },
+          "startAt": 0.6,
+          "volume": 0.9
+        },
+        {
+          "source": {
+            "kind": "url",
+            "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/soundeffects/opengameart/ezduzziteh-boings/bing_01.mp3"
+          },
+          "startAt": 1.2,
+          "volume": 0.7
+        },
+        {
+          "source": {
+            "kind": "url",
+            "url": "https://github.com/receptron/mulmocast-media/raw/refs/heads/main/soundeffects/opengameart/ezduzziteh-boings/bing_01.mp3"
+          },
+          "startAt": 1.8,
+          "volume": 0.5
+        }
+      ]
+    },
+    {
+      "text": "とけいの はりが うごくよ。チク、タク、チク、タク……チーン！ いっしゅう したね。",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full flex items-center justify-center bg-teal-100'>",
+          "  <svg id='clock' viewBox='0 0 200 200' class='w-96 h-96'>",
+          "    <circle cx='100' cy='100' r='92' fill='white' stroke='#0f766e' stroke-width='10'/>",
+          "    <g id='marks'></g>",
+          "    <line id='hand' x1='100' y1='100' x2='100' y2='30' stroke='#e11d48' stroke-width='8' stroke-linecap='round'/>",
+          "    <circle cx='100' cy='100' r='8' fill='#0f766e'/>",
+          "  </svg>",
+          "</div>"
+        ],
+        "script": [
+          "const marks = document.getElementById('marks');",
+          "for (let i = 0; i < 6; i++) {",
+          "  const a = (i * 60 * Math.PI) / 180;",
+          "  marks.innerHTML += `<circle cx='${100 + 74 * Math.sin(a)}' cy='${100 - 74 * Math.cos(a)}' r='6' fill='#14b8a6'/>`;",
+          "}",
+          "function render(frame, totalFrames, fps) {",
+          "  const t = frame / fps;",
+          "  // One step every 0.5 s: the tick at 0.5 ... 2.5 s, the full turn (and the chime) at 3.0 s.",
+          "  const steps = Math.min(Math.floor(t / 0.5 + 1e-6), 6);",
+          "  document.getElementById('hand').setAttribute('transform', `rotate(${steps * 60} 100 100)`);",
+          "  const shaking = t >= 3.0 && t < 3.6;",
+          "  const angle = shaking ? 8 * Math.sin((t - 3.0) * 40) * (1 - (t - 3.0) / 0.6) : 0;",
+          "  document.getElementById('clock').style.transform = `rotate(${angle}deg)`;",
+          "}"
+        ],
+        "animation": true
+      },
+      "soundEffects": [
+        {
+          "source": {
+            "kind": "jinglescript",
+            "score": {
+              "format": "jinglescript/1",
+              "title": "Clock turn",
+              "tempo": 120,
+              "length": {
+                "seconds": 4.5
+              },
+              "cues": {
+                "first": {
+                  "seconds": 0.5
+                },
+                "hit": {
+                  "seconds": 3.0
+                }
+              },
+              "tracks": [
+                {
+                  "instrument": "clock",
+                  "reverb": false,
+                  "notes": [
+                    {
+                      "at": "first",
+                      "variant": ["tick", "tock"],
+                      "vel": 0.8,
+                      "repeat": {
+                        "every": 1,
+                        "count": 5
+                      }
+                    }
+                  ]
+                },
+                {
+                  "instrument": "glockenspiel",
+                  "notes": [
+                    {
+                      "at": "hit",
+                      "pitch": ["C6", "E6", "G6"],
+                      "vel": 0.9
+                    },
+                    {
+                      "at": "hit+1",
+                      "pitch": "C7",
+                      "vel": 0.4
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "text": "さいごの もんだい。ほしは いくつ でたかな？ そう、みっつ！ せいかい！ よくできました！",
+      "image": {
+        "type": "html_tailwind",
+        "html": [
+          "<div class='h-full w-full flex items-center justify-center bg-yellow-50'>",
+          "  <div id='stamp' class='w-[420px] h-[420px] rounded-full border-[28px] border-red-500 flex items-center justify-center' style='opacity:0'>",
+          "    <span class='text-8xl font-black text-red-500'>せいかい</span>",
+          "  </div>",
+          "</div>"
+        ],
+        "script": [
+          "const seg = (t, a, b) => Math.max(0, Math.min(1, (t - a) / (b - a)));",
+          "function render(frame, totalFrames, fps) {",
+          "  const t = frame / fps;",
+          "  // Comes down from 0.7 s and hits the paper at 1.0 s, with a small rebound.",
+          "  const down = Easing.easeIn(seg(t, 0.7, 1.0));",
+          "  const rebound = t < 1.0 ? 0 : t < 1.08 ? 0.08 * seg(t, 1.0, 1.08) : 0.08 * (1 - Easing.easeInOut(seg(t, 1.08, 1.25)));",
+          "  const stamp = document.getElementById('stamp');",
+          "  stamp.style.opacity = seg(t, 0.7, 0.8);",
+          "  stamp.style.transform = `scale(${3 - 2 * down + rebound}) rotate(${-25 + 17 * down}deg)`;",
+          "}"
+        ],
+        "animation": true
+      },
+      "soundEffects": [
+        {
+          "source": {
+            "kind": "jinglescript",
+            "score": {
+              "format": "jinglescript/1",
+              "title": "Correct!",
+              "tempo": 132,
+              "length": {
+                "seconds": 4
+              },
+              "cues": {
+                "hit": {
+                  "seconds": 1.0
+                }
+              },
+              "tracks": [
+                {
+                  "instrument": "impact",
+                  "gain": -3,
+                  "notes": [
+                    {
+                      "at": "hit",
+                      "variant": "hard"
+                    }
+                  ]
+                },
+                {
+                  "instrument": "marimba",
+                  "notes": [
+                    {
+                      "at": "hit+1",
+                      "pitch": "C5",
+                      "vel": 0.8
+                    },
+                    {
+                      "at": "hit+1.5",
+                      "pitch": "E5",
+                      "vel": 0.85
+                    },
+                    {
+                      "at": "hit+2",
+                      "pitch": "G5",
+                      "vel": 0.9
+                    },
+                    {
+                      "at": "hit+2.5",
+                      "pitch": ["C5", "E5", "G5", "C6"],
+                      "vel": 1.0
+                    }
+                  ]
+                },
+                {
+                  "instrument": "clap",
+                  "gain": -6,
+                  "notes": [
+                    {
+                      "at": "hit+2.5",
+                      "variant": "group",
+                      "repeat": {
+                        "every": 0.5,
+                        "count": 6
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "volume": 0.8
+        }
+      ]
+    }
+  ]
+}
