@@ -16,7 +16,7 @@ yarn add mulmocast
 #   - chromium (puppeteer; auto-installed by `npx puppeteer browsers install chrome`)
 ```
 
-Node 22+ required. The package is ESM-only (`"type": "module"`).
+Node 22.13+ required. The package is ESM-only (`"type": "module"`).
 
 ## Public API surface
 
