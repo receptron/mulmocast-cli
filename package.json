@@ -120,6 +120,7 @@
     "clipboardy": "^5.3.2",
     "dotenv": "^17.4.2",
     "graphai": "^2.0.18",
+    "jinglescript": "^0.2.0",
     "js-tiktoken": "^1.0.21",
     "jsdom": "^29.1.1",
     "marked": "^18.1.0",
@@ -240,6 +241,6 @@
     }
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=22.13.0"
   }
 }

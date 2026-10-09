@@ -705,9 +705,22 @@ export const mulmoBeatSoundEffectSchema = z
       .discriminatedUnion("kind", [
         z.object({ kind: z.literal("url"), url: URLStringSchema }).strict(),
         z.object({ kind: z.literal("path"), path: z.string().min(1) }).strict(),
+        z
+          .object({
+            kind: z.literal("jinglescript"),
+            score: z.record(z.string(), z.unknown()).describe("JingleScript score (format jinglescript/1), rendered to audio when the audio is generated"),
+          })
+          .strict(),
       ])
-      .describe("Audio file of the sound effect (url or path)"),
-    startAt: z.number().min(0).optional().default(0).describe("Seconds from the start of the beat (when its narration starts) at which the sound effect plays"),
+      .describe("Audio file of the sound effect (url or path), or a JingleScript score to synthesize"),
+    startAt: z
+      .number()
+      .min(0)
+      .optional()
+      .default(0)
+      .describe(
+        "Seconds from when the beat appears on screen (the same clock as its html animation) at which the sound effect plays. The first beat's narration starts audioParams.introPadding later",
+      ),
     volume: z
       .number()
       .min(0)
@@ -722,7 +735,10 @@ export const mulmoBeatSoundEffectSchema = z
       .positive()
       .optional()
       .describe("Maximum play length in seconds; the effect is cut (with a short fade-out) after it. Default: the whole file, even past the end of the beat"),
-    loop: z.boolean().optional().describe("Repeat the effect until duration, or until the end of the beat when duration is not set (e.g. a ticking clock)"),
+    loop: z
+      .boolean()
+      .optional()
+      .describe("Repeat the effect until duration, or until the beat leaves the screen when duration is not set (e.g. a ticking clock)"),
   })
   .strict();
 

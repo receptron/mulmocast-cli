@@ -112,3 +112,31 @@ test("test getSegmentDuration is never shorter than the movie", async () => {
   context.studio.beats[0].movieDuration = 3.0; // shorter than the group: the group wins
   assert.equal(MulmoStudioContextMethods.getSegmentDuration(context, 0), 6.0);
 });
+
+// --- getBeatScreenStartAt ---
+
+test("test getBeatScreenStartAt: the first beat is on screen from 0, later beats when their narration starts", async () => {
+  const context = durationContext([shot("A"), shot("B"), shot("C")], [3, 2, 4], 1.5, 1.0);
+  context.studio.beats.forEach((beat, index) => (beat.startAt = [0, 3, 5][index]));
+  assert.deepStrictEqual(
+    [0, 1, 2].map((index) => MulmoStudioContextMethods.getBeatScreenStartAt(context, index)),
+    [0, 4.5, 6.5],
+  );
+  // Each beat starts where the previous one's time on screen ends.
+  assert.equal(MulmoStudioContextMethods.getBeatScreenStartAt(context, 1), MulmoStudioContextMethods.getBeatDuration(context, 0));
+});
+
+// --- getBeatScreenDuration ---
+
+test("test getBeatScreenDuration: a shot covers its voice_over beats; a voice_over beat covers only itself", async () => {
+  const context = durationContext([shot("A"), voiceOver, voiceOver, shot("B")], [3, 2, 4, 5], 1.0, 0.5);
+  assert.deepStrictEqual(
+    [0, 1, 2, 3].map((index) => MulmoStudioContextMethods.getBeatScreenDuration(context, index)),
+    [10, 2, 4, 5.5],
+  );
+});
+
+test("test getBeatScreenDuration: a single beat lasts through both the intro and the outro padding", async () => {
+  const context = durationContext([shot("A")], [3], 1.0, 0.5);
+  assert.equal(MulmoStudioContextMethods.getBeatScreenDuration(context, 0), 4.5);
+});

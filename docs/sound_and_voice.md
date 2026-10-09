@@ -304,15 +304,55 @@ beatごとに効果音を指定できます。指定したタイミングで、�
 
 | パラメータ | 型 | デフォルト | 説明 |
 |---|---|---|---|
-| `source` | mediaSource | （必須） | 効果音ファイル。`url` または `path`（`base64` は不可）。mp3 / wav / ogg など ffmpeg が読める形式 |
-| `startAt` | number | 0 | beatの開始（そのbeatのナレーションが始まる時点）から何秒後に鳴らすか |
+| `source` | object | （必須） | 効果音ファイルの `url` / `path`（mp3 / wav / ogg など ffmpeg が読める形式）、または JingleScript の楽譜（`jinglescript`、下記）。`base64` は不可 |
+| `startAt` | number | 0 | そのbeatが画面に出てから何秒後に鳴らすか。html_tailwind アニメーションの時刻と同じ基準（下記） |
 | `volume` | number (0〜4) | 1.0 | 音量。1.0 は既定音量のナレーションと同じゲイン。`audioVolume` / `ttsVolume` の影響は受けない |
 | `duration` | number | 未設定 | 最大再生秒数。超えた分は短いフェードアウトで切る。未設定ならファイルの最後まで（beatの終わりを越えても）鳴る |
-| `loop` | boolean | false | 繰り返し再生する。`duration` 未設定ならbeatの終わりまで（時計のチクタクなど） |
+| `loop` | boolean | false | 繰り返し再生する。`duration` 未設定ならそのbeatが画面から消えるまで（時計のチクタクなど）。後ろに `voice_over` のbeatが続く場合は、同じ映像が映っている間ずっと鳴る |
 
 - 自由に使える効果音（CC0）を [mulmocast-media/soundeffects](https://github.com/receptron/mulmocast-media/tree/main/soundeffects) に置いています。中身とライセンスはそこの README と LICENSES.md を参照してください。
+- **タイミングの基準**: `startAt` は、そのbeatが画面に出た時点からの秒数です。html_tailwind アニメーション（`MulmoAnimation` の `start`/`end`、`data-start`）も同じ時刻を基準にしているので、同じ秒数を書けば絵と音がそろいます。2つ目以降のbeatではナレーションも同時に始まります。最初のbeatだけは、ナレーションが `audioParams.introPadding`（既定 1秒）遅れて始まります。
 - 効果音の音量は `volume` だけで決まります。`audioParams.audioVolume` や `ttsVolume` でナレーションの音量を変えても、効果音の音量は変わりません（`audioVolume: 0` でナレーションを消しても効果音は鳴ります）。
 - `soundEffectPrompt`（動画に AI で効果音を生成して付ける機能）とは別の機能です。
 - 効果音は beat ごとの音声ファイルではなく最終ミックスで重ねるため、HTML ビューアなど beat 単位の音声を再生する出力には入りません。
 
-テスト用スクリプト: `scripts/test/test_sound_effects.json`
+### JingleScript で効果音を合成する
+
+`source` に `{ "kind": "jinglescript", "score": { ... } }` と書くと、[JingleScript](https://github.com/receptron/jinglescript) の楽譜から効果音やジングルをその場で合成します。音源ファイルを探す必要がなく、ネットワークも使いません。合成した音は自由に使えます。
+
+```json
+{
+  "text": "ポン、ポン、ポン！ 星が三つ出てきました。",
+  "soundEffects": [
+    {
+      "source": {
+        "kind": "jinglescript",
+        "score": {
+          "format": "jinglescript/1",
+          "tempo": 120,
+          "length": { "seconds": 2 },
+          "tracks": [
+            { "instrument": "pop", "reverb": false, "notes": [
+              { "at": 0, "pitch": "E6" }, { "at": 0.5, "pitch": "G6" }, { "at": 1, "pitch": "C7" }
+            ] }
+          ]
+        }
+      },
+      "startAt": 0.2
+    }
+  ]
+}
+```
+
+- 楽譜の書き方は `npx jinglescript guide`、スキーマは `npx jinglescript schema` で確認できます。楽器（マリンバ、ウクレレ、手拍子など）と効果音（時計、足音、ノック、ポン、ヒュッ、ドーンなど）が使えます。
+- 楽譜の時刻 0 が `startAt` の位置に来ます。`startAt` / `volume` / `duration` / `loop` はファイルの場合と同じです。
+- 音声生成（`audio` / `movie`）の最初、TTS の前に楽譜を検査し、誤りがあれば場所（`beats[0].soundEffects[1].source.score: tracks[0].instrument: ...`）を示して止まります。
+- 合成した WAV は楽譜のハッシュで `output/audio/jingle_<hash>.wav` にキャッシュされ、同じ楽譜なら再利用されます。`-f` で作り直します（JingleScript を更新して音を作り直したいときも `-f`）。
+
+### アニメーションと同期させる
+
+`scripts/test/test_sound_effects_animation.json` は、画像生成を使わずに html_tailwind アニメーションと効果音を同期させたサンプルです（タイトルの着地、星のポップ、ボールのバウンド、時計の針、正解スタンプ）。アニメーションで動きが起きる秒数を、そのまま効果音の `startAt` や JingleScript の cue（`"cues": { "hit": { "seconds": 1.0 } }`）に書きます。
+
+- 同じ要素に `MulmoAnimation.animate()` を複数回かけると、開始前でも後に書いたほうの値が適用され、`transform` も上書きされます。段階のある動き（落ちてから弾む、など）は `render(frame, totalFrames, fps)` で `frame / fps` から位置を計算してください。サンプルはこの書き方です。
+
+テスト用スクリプト: `scripts/test/test_sound_effects.json`、`scripts/test/test_jinglescript_sound_effects.json`、`scripts/test/test_sound_effects_animation.json`

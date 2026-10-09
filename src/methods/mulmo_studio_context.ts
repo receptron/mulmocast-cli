@@ -127,6 +127,25 @@ export const MulmoStudioContextMethods = {
     }
     return 0;
   },
+  // When this beat appears on screen, in seconds from the start of the movie. The first beat's segment
+  // starts at 0 and absorbs the intro padding; every later beat starts when its narration does.
+  getBeatScreenStartAt(context: MulmoStudioContext, index: number): number {
+    if (index === 0) {
+      return 0;
+    }
+    return MulmoStudioContextMethods.getIntroPadding(context) + (context.studio.beats[index]?.startAt ?? 0);
+  },
+  // How long this beat stays on screen from getBeatScreenStartAt: its whole segment, including the
+  // voice_over beats that share its shot. A voice_over beat itself is counted for its own slice only.
+  // The audio ends outroPadding after the last beat; getExtraPadding gives a single-beat script only
+  // the intro padding, so its outro is added here.
+  getBeatScreenDuration(context: MulmoStudioContext, index: number): number {
+    if (MulmoBeatMethods.isVoiceOver(context.studio.script.beats[index])) {
+      return MulmoStudioContextMethods.getBeatDuration(context, index);
+    }
+    const singleBeatOutro = context.studio.beats.length === 1 ? context.presentationStyle.audioParams.outroPadding : 0;
+    return MulmoStudioContextMethods.getSegmentDuration(context, index) + singleBeatOutro;
+  },
   // The duration this beat occupies on the audio timeline.
   getBeatDuration(context: MulmoStudioContext, index: number): number {
     return (context.studio.beats[index]?.duration ?? 0) + MulmoStudioContextMethods.getExtraPadding(context, index);
