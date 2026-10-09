@@ -316,7 +316,7 @@ export const audio = async (context: MulmoStudioContext, args?: PublicAPIArgs) =
     mkdir(outDirPath);
     mkdir(audioSegmentDirPath);
     // Before TTS, so an invalid score fails fast.
-    renderJingleScores(context);
+    await renderJingleScores(context);
 
     const graph = new GraphAI(audio_graph_data, audioAgents, await audioGraphOption(context, settings));
     callbacks?.forEach((callback) => graph.registerCallback(callback));
