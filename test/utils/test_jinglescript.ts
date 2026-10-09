@@ -53,20 +53,71 @@ test("getJingleFilePath: identical scores share one file, different scores do no
   assert.notStrictEqual(getJingleFilePath(pop, context), getJingleFilePath({ ...pop, tempo: 100 }, context));
 });
 
-test("renderJingleScores: writes a WAV, reuses it, and re-renders when forced", () => {
+test("renderJingleScores: writes a WAV, reuses it, and re-renders when forced", async () => {
   const audioDir = tmpDir();
   const context = makeContext([[{ source: { kind: "jinglescript", score: pop } }]], audioDir);
   const filePath = getJingleFilePath(pop, context);
-  renderJingleScores(context);
+  await renderJingleScores(context);
   assert.ok(fs.statSync(filePath).size > 44);
   assert.strictEqual(fs.readFileSync(filePath).subarray(0, 4).toString(), "RIFF");
 
   fs.writeFileSync(filePath, "cached");
-  renderJingleScores(context);
+  await renderJingleScores(context);
   assert.strictEqual(fs.readFileSync(filePath, "utf8"), "cached");
 
-  renderJingleScores(makeContext([[{ source: { kind: "jinglescript", score: pop } }]], audioDir, true));
+  await renderJingleScores(makeContext([[{ source: { kind: "jinglescript", score: pop } }]], audioDir, true));
   assert.strictEqual(fs.readFileSync(filePath).subarray(0, 4).toString(), "RIFF");
+});
+
+const grandpiano = {
+  format: "jinglescript/1",
+  tempo: 120,
+  length: { seconds: 1 },
+  tracks: [{ instrument: "grandpiano", notes: [{ at: 0, pitch: "C4" }] }],
+};
+
+// Runs fn with an empty sample cache and a stubbed fetch that records the URLs it was asked for.
+const withStubbedSampleFetch = async (response: () => Promise<Response>, fn: (urls: string[]) => Promise<void>) => {
+  const urls: string[] = [];
+  const originalFetch = globalThis.fetch;
+  const originalCache = process.env.JINGLESCRIPT_CACHE;
+  globalThis.fetch = (async (input: string | URL | Request) => {
+    urls.push(String(input));
+    return response();
+  }) as typeof fetch;
+  process.env.JINGLESCRIPT_CACHE = tmpDir();
+  try {
+    await fn(urls);
+  } finally {
+    globalThis.fetch = originalFetch;
+    if (originalCache === undefined) {
+      delete process.env.JINGLESCRIPT_CACHE;
+    } else {
+      process.env.JINGLESCRIPT_CACHE = originalCache;
+    }
+  }
+};
+
+test("renderJingleScores: a score without sampled instruments downloads nothing", async () => {
+  await withStubbedSampleFetch(
+    () => Promise.reject(new Error("unexpected fetch")),
+    async (urls) => {
+      await renderJingleScores(makeContext([[{ source: { kind: "jinglescript", score: pop } }]]));
+      assert.deepStrictEqual(urls, []);
+    },
+  );
+});
+
+test("renderJingleScores: loads grandpiano samples, and a failed download names the beat and writes nothing", async () => {
+  await withStubbedSampleFetch(
+    async () => new Response("", { status: 503 }),
+    async (urls) => {
+      const context = makeContext([[], [{ source: { kind: "jinglescript", score: grandpiano } }]]);
+      await assert.rejects(renderJingleScores(context), /beats\[1\]\.soundEffects\[0\]\.source\.score: failed to load JingleScript samples: .*HTTP 503/);
+      assert.ok(urls.length > 0);
+      assert.strictEqual(fs.existsSync(getJingleFilePath(grandpiano, context)), false);
+    },
+  );
 });
 
 test("getSoundEffectPlacements: a jinglescript source plays its rendered file", () => {

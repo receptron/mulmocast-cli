@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { GraphAILogger } from "graphai";
-import { checkScore, formatProblem, parseScore, render, toWav } from "jinglescript";
+import { checkScore, formatProblem, loadSamples, parseScore, render, toWav } from "jinglescript";
 import type { MulmoStudioContext } from "../types/index.js";
 import { MulmoStudioContextMethods } from "../methods/mulmo_studio_context.js";
 import { hashSHA256, mkdir } from "./file.js";
@@ -9,6 +9,8 @@ import { userAssert } from "./utils.js";
 
 // The audio mix (addBGMAgent) runs at 44.1 kHz.
 const JINGLE_SAMPLE_RATE = 44100;
+// Per download of a recorded sample (grandpiano: about 1.2 MB per note).
+const SAMPLE_FETCH_TIMEOUT_MS = 60000;
 
 type JingleScore = Record<string, unknown>;
 
@@ -33,19 +35,33 @@ export const validateJingleScores = (context: MulmoStudioContext) => {
   userAssert(problems.length === 0, `Invalid JingleScript score:\n${problems.join("\n")}`);
 };
 
+const fetchWithTimeout: typeof fetch = (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(SAMPLE_FETCH_TIMEOUT_MS) });
+
+// Sampled instruments (grandpiano) play recordings that jinglescript downloads on first use and
+// caches; a score without them loads nothing.
+const loadJingleSamples = async (score: ReturnType<typeof parseScore>, location: string) => {
+  try {
+    return await loadSamples(score, { fetch: fetchWithTimeout });
+  } catch (error) {
+    throw new Error(`${location}: failed to load JingleScript samples: ${error instanceof Error ? error.message : String(error)}`, { cause: error });
+  }
+};
+
 // Renders the JingleScript scores of the script to WAV files (skipping cached ones unless forced).
-export const renderJingleScores = (context: MulmoStudioContext) => {
+export const renderJingleScores = async (context: MulmoStudioContext) => {
   validateJingleScores(context);
-  getJingleScores(context).forEach(({ score }) => {
+  for (const { score, beatIndex, effectIndex } of getJingleScores(context)) {
     const filePath = getJingleFilePath(score, context);
     if (!context.force && fs.existsSync(filePath)) {
-      return;
+      continue;
     }
-    const { audio, sampleRate } = render(parseScore(score), { sampleRate: JINGLE_SAMPLE_RATE });
+    const parsed = parseScore(score);
+    const samples = await loadJingleSamples(parsed, `beats[${beatIndex}].soundEffects[${effectIndex}].source.score`);
+    const { audio, sampleRate } = render(parsed, { sampleRate: JINGLE_SAMPLE_RATE, samples });
     mkdir(path.dirname(filePath));
     writeFileAtomically(filePath, toWav(audio, sampleRate));
     GraphAILogger.info(`jinglescript: rendered ${filePath}`);
-  });
+  }
 };
 
 // Writes to a temporary file next to the target, then renames it, so an interrupted write never
