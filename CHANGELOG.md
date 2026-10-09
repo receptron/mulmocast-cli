@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.19.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.19.0) (2026-10-09)
+
+- **Beat sound effects** (#1625): `beat.soundEffects` plays sound effects inside a beat at a chosen time (`startAt`) and `volume`, several per beat, optionally cut to a `duration` or looped. Sources are a url or path; no sounds are bundled (CC0 sounds are in [mulmocast-media/soundeffects](https://github.com/receptron/mulmocast-media/tree/main/soundeffects)). Distinct from `soundEffectPrompt`
+- **JingleScript scores as sound effect sources** (#1626, #1627, #1628): a sound effect's `source` can be `{ "kind": "jinglescript", "score": … }`, a [JingleScript](https://github.com/receptron/jinglescript) score synthesized locally, so an LLM writing a MulmoScript can write its jingles in the same JSON. `startAt` counts from when the beat appears on screen, matching html_tailwind animations (for the first beat this moves effects `introPadding` earlier than in #1625). jinglescript is at 0.6.0, which adds `grandpiano`, a recorded piano; its samples download on first use (about 1.2 MB per note) and are cached by jinglescript (`$JINGLESCRIPT_CACHE`, else `~/.cache/jinglescript`)
+- **avatarscript 0.4.0** (#1624): held phrase endings no longer close the avatar's mouth early
+
+📦 **npm**: [`mulmocast@2.19.0`](https://www.npmjs.com/package/mulmocast/v/2.19.0), [`@mulmocast/types@2.19.0`](https://www.npmjs.com/package/@mulmocast/types/v/2.19.0)
+
 ## [2.18.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.18.0) (2026-10-08)
 
 - **Gemini API video: `gemini-omni-1.1-flash` is the new default** (#1620; #1616). The Veo 3.1 previews (`veo-3.1-generate-preview`, `veo-3.1-lite-generate-preview`) shut down on 2026-10-22 and are removed; a script that still names one gets an error pointing at the replacement. Beats longer than 10 seconds are extended in even segments, up to 40 seconds. Vertex AI keeps `veo-3.1-generate-001`. On Google, `referenceImages` now need Vertex AI
