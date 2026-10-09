@@ -211,3 +211,10 @@ test("getSoundEffectPlacements: a looping effect lasts while its shot stays on s
   assert.deepStrictEqual([voiceOver.startAt, voiceOver.duration], [4, 2]); // its own slice
   assert.deepStrictEqual([last.startAt, last.duration], [11, 1]); // 2 - 1 (no outro padding here)
 });
+
+test("getSoundEffectPlacements: a looping effect in a single-beat script lasts through the outro", () => {
+  const context = makeContext([[{ source: tick, startAt: 0.5, loop: true }]], [0], 1.0, [3]);
+  context.presentationStyle.audioParams.outroPadding = 1.5;
+  const [looped] = getSoundEffectPlacements(context);
+  assert.deepStrictEqual([looped.startAt, looped.duration], [0.5, 5]); // 1 intro + 3 + 1.5 outro - 0.5
+});

@@ -135,3 +135,8 @@ test("test getBeatScreenDuration: a shot covers its voice_over beats; a voice_ov
     [10, 2, 4, 5.5],
   );
 });
+
+test("test getBeatScreenDuration: a single beat lasts through both the intro and the outro padding", async () => {
+  const context = durationContext([shot("A")], [3], 1.0, 0.5);
+  assert.equal(MulmoStudioContextMethods.getBeatScreenDuration(context, 0), 4.5);
+});
