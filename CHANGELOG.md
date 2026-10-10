@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.20.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.20.0) (2026-10-11)
+
+- **Node 22.22.2+, 24.15+ or 26+ required** (#1632): `jsdom` 30 drops Node 20 and raises the patch floors of the 22 and 24 lines, so `engines.node` is now `^22.22.2 || ^24.15.0 || >=26.0.0` (it was `>=22.13.0`). `yarn install` refuses older patch releases; CI's `22.x` / `24.x` are unaffected
+- **Dependencies** (#1630, #1631, #1632): `@google-cloud/text-to-speech` 7 (`google-gax` 6; Node 22 floor only), `dotenv` 18 (`.env.vault` and preloading removed upstream, neither used), `jsdom` 30, `jinglescript` 0.7 (a score can carry `author` / `copyright`, written to the audio and MIDI tags), plus `@google/genai`, `puppeteer`, remotion and tooling updates. No behaviour change intended
+
+📦 **npm**: [`mulmocast@2.20.0`](https://www.npmjs.com/package/mulmocast/v/2.20.0)
+
 ## [2.19.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.19.0) (2026-10-09)
 
 - **Beat sound effects** (#1625): `beat.soundEffects` plays sound effects inside a beat at a chosen time (`startAt`) and `volume`, several per beat, optionally cut to a `duration` or looped. Sources are a url or path; no sounds are bundled (CC0 sounds are in [mulmocast-media/soundeffects](https://github.com/receptron/mulmocast-media/tree/main/soundeffects)). Distinct from `soundEffectPrompt`
