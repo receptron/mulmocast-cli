@@ -1,4 +1,4 @@
-import type { MulmoSlideMedia } from "@mulmocast/deck";
+import type { MulmoSlideMedia, SlideLayout, SlideTheme } from "@mulmocast/deck";
 // Deep import: the package barrel bundles every layout plus all of zod — measured 101 inputs
 // and 602kb against 20 and 54kb for this module — and this file is bundled for the browser.
 import { generateSlideFragment } from "@mulmocast/deck/lib/fragment.js";
@@ -6,7 +6,8 @@ import { slideThemes } from "../../data/slideThemes.js";
 import type { BeatHtmlFragment, BeatHtmlOptions } from "./type.js";
 
 /**
- * A slide beat as markup a host can inject.
+ * A deck slide as markup a host can inject. Shared by the beat types deck draws: `slide`,
+ * and `chart` / `mermaid` as a one-block `figure` slide.
  *
  * `generateSlideFragment` is the body-only counterpart of the `generateSlideHTML` the Node
  * render path uses, so the two draw the same slide from the same layouts — the fragment is
@@ -18,14 +19,14 @@ import type { BeatHtmlFragment, BeatHtmlOptions } from "./type.js";
  * which the browser bundle does not need.
  *
  * The scope class is derived from `idPrefix` so a re-render of the same beat keeps it: the
- * css is written against that class and a generated one would change every render, leaving
- * the rules matching nothing. It is not returned separately — deck already puts it on the
- * root of `html`, verified in a browser: injecting `html` and attaching `css`, with no
- * wrapper class of the host's own, resolves `--d-bg` to the beat's theme.
+ * css is written against that class, and deck derives chart / mermaid ids from it, so a
+ * generated one would change every render. It is not returned separately — deck already puts
+ * it on the root of `html`, verified in a browser: injecting `html` and attaching `css`, with
+ * no wrapper class of the host's own, resolves `--d-bg` to the beat's theme.
  */
-export const slideToHtml = (image: MulmoSlideMedia, options: BeatHtmlOptions): BeatHtmlFragment => {
-  const theme = image.theme ?? options.slideTheme ?? slideThemes.corporate;
-  const fragment = generateSlideFragment(theme, image.slide, { scopeClass: `${options.idPrefix}-slide` });
+export const deckSlideToHtml = (slide: SlideLayout, beatTheme: SlideTheme | undefined, options: BeatHtmlOptions): BeatHtmlFragment => {
+  const theme = beatTheme ?? options.slideTheme ?? slideThemes.corporate;
+  const fragment = generateSlideFragment(theme, slide, { scopeClass: `${options.idPrefix}-slide` });
   return {
     html: fragment.html,
     css: fragment.css,
@@ -34,3 +35,5 @@ export const slideToHtml = (image: MulmoSlideMedia, options: BeatHtmlOptions): B
     ...(fragment.mermaidTheme ? { mermaidTheme: fragment.mermaidTheme } : {}),
   };
 };
+
+export const slideToHtml = (image: MulmoSlideMedia, options: BeatHtmlOptions): BeatHtmlFragment => deckSlideToHtml(image.slide, image.theme, options);

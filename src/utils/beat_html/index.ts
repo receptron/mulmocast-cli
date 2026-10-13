@@ -51,9 +51,9 @@ export const beatToHtml = (beat: MulmoBeat, options: BeatHtmlOptions): BeatHtmlF
     case "markdown":
       return markdownToHtml(image, options.idPrefix);
     case "chart":
-      return chartToHtml(image, options.idPrefix);
+      return chartToHtml(image, options);
     case "mermaid":
-      return mermaidToHtml(image, options.idPrefix);
+      return mermaidToHtml(image, options);
     case "image":
       // The only description of the picture this module can reach. A host with more should
       // set its own alt; an <img> with none makes a screen reader read the file name.

@@ -13320,6 +13320,175 @@
                           "items"
                         ],
                         "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "layout": {
+                            "type": "string",
+                            "const": "figure"
+                          },
+                          "accentColor": {
+                            "type": "string",
+                            "enum": [
+                              "primary",
+                              "accent",
+                              "success",
+                              "warning",
+                              "danger",
+                              "info",
+                              "highlight"
+                            ]
+                          },
+                          "style": {
+                            "type": "object",
+                            "properties": {
+                              "bgColor": {
+                                "type": "string"
+                              },
+                              "bgGradient": {
+                                "type": "string"
+                              },
+                              "decorations": {
+                                "type": "boolean"
+                              },
+                              "bgOpacity": {
+                                "type": "number"
+                              },
+                              "footer": {
+                                "type": "string"
+                              }
+                            },
+                            "additionalProperties": false
+                          },
+                          "eyebrow": {
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "type": "string"
+                              },
+                              "color": {
+                                "type": "string",
+                                "enum": [
+                                  "primary",
+                                  "accent",
+                                  "success",
+                                  "warning",
+                                  "danger",
+                                  "info",
+                                  "highlight"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "label"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "density": {
+                            "type": "string",
+                            "enum": [
+                              "compact",
+                              "default"
+                            ]
+                          },
+                          "titleSize": {
+                            "type": "string",
+                            "enum": [
+                              "small",
+                              "default",
+                              "large",
+                              "hero"
+                            ]
+                          },
+                          "subtitleSize": {
+                            "type": "string",
+                            "enum": [
+                              "default",
+                              "big",
+                              "lead"
+                            ]
+                          },
+                          "intro": {
+                            "type": "string",
+                            "enum": [
+                              "fade",
+                              "fade-up",
+                              "fade-down",
+                              "slide-left",
+                              "slide-right",
+                              "zoom-in"
+                            ]
+                          },
+                          "staggerMs": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 2000
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "stepLabel": {
+                            "type": "string"
+                          },
+                          "subtitle": {
+                            "type": "string"
+                          },
+                          "figure": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "chart"
+                                  },
+                                  "chartData": {
+                                    "type": "object",
+                                    "propertyNames": {
+                                      "type": "string"
+                                    },
+                                    "additionalProperties": {}
+                                  },
+                                  "title": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "chartData"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "const": "mermaid"
+                                  },
+                                  "code": {
+                                    "type": "string"
+                                  },
+                                  "title": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "code"
+                                ],
+                                "additionalProperties": false
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "layout",
+                          "title",
+                          "figure"
+                        ],
+                        "additionalProperties": false
                       }
                     ]
                   },
