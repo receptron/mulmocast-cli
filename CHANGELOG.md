@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.21.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.21.0) (2026-10-13)
+
+- **Browser: chart / mermaid beats drawn by `@mulmocast/deck`** (#1635, #1634): `beatToHtml` (`mulmocast/browser`) now renders a standalone `chart` or `mermaid` beat as a one-block deck `figure` slide, so it is themed like `slide` beats (`slideTheme`, else `corporate`) and fills the slide — previously a fixed-height card styled only by host Tailwind. The fragment now carries `css` (scoped) and its element ids become `<idPrefix>-slide-chart-0` / `-mermaid-0`, still stable per beat. Hosts need `slideUtilityCss` for these beats too, and should drive charts with `maintainAspectRatio: false` so they fill the box (see `docs/api.md`). The PNG / movie path is unchanged and keeps its own templates
+- **`@mulmocast/deck` 2.1.0** (#1635): `slide` beats can use the new `figure` layout (one chart or mermaid block filling the slide, in PNG output too); a chart type named after an `Object.prototype` member no longer emits a bogus plugin `<script>`; fragment ids are stable per `scopeClass`. The bundled schema (`assets/schemas/mulmo_script.json`) is regenerated accordingly
+- **Playground**: [receptron.github.io/mulmocast-beat-editor](https://receptron.github.io/mulmocast-beat-editor/) renders MulmoScripts in the browser with `beatToHtml`, and accepts a pasted script
+
+📦 **npm**: [`mulmocast@2.21.0`](https://www.npmjs.com/package/mulmocast/v/2.21.0)
+
 ## [2.20.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.20.0) (2026-10-11)
 
 - **Node 22.22.2+, 24.15+ or 26+ required** (#1632): `jsdom` 30 drops Node 20 and raises the patch floors of the 22 and 24 lines, so `engines.node` is now `^22.22.2 || ^24.15.0 || >=26.0.0` (it was `>=22.13.0`). `yarn install` refuses older patch releases; CI's `22.x` / `24.x` are unaffected
