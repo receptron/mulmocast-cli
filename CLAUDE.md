@@ -42,7 +42,7 @@ This repository contains two npm packages:
 - **Root** (`mulmocast`): The main CLI package
 - **`types/`** (`@mulmocast/types`): Shared type definitions (symlinks to `src/types/`)
 
-When publishing, if the diff includes changes under `src/types/`, MUST publish `types/` package as well. Both packages use the `/publish` skill.
+When publishing, MUST publish the `types/` package as well if the diff includes changes under `src/types/`, **or raises a runtime dependency of `types/`** (`@mulmocast/deck`, `zod`). Its `.d.ts` inlines those packages' types at build time, so a `@mulmocast/deck` bump changes the published types even when `src/types/` is untouched — 2.21.0 skipped it and `MulmoStudioContext` stopped assigning across the two packages. Raise the same range in `types/package.json` (`cd types && yarn add …`); `test/release/test_types_package_deps.ts` fails while the two differ. Both packages use the `/publish` skill.
 
 After publishing, MUST add a new entry to the changelog:
 - `CHANGELOG.md` — 2.x releases
