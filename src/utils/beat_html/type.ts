@@ -72,11 +72,12 @@ export type BeatHtmlOptions = {
    */
   idPrefix: string;
   /**
-   * The deck-level slide theme, for `slide` beats. A beat's own `image.theme` wins over it,
-   * and the built-in `corporate` theme is the fallback — the same order
+   * The deck-level slide theme, for the beats deck draws: `slide`, `chart` and `mermaid`.
+   * A slide beat's own `image.theme` wins over it, and the built-in `corporate` theme is the
+   * fallback — the same order
    * `MulmoPresentationStyleMethods.getResolvedSlideTheme` uses on the Node side.
    *
-   * Optional because only slide beats read it, and because the host may not have a deck
+   * Optional because only those beats read it, and because the host may not have a deck
    * theme to give.
    */
   slideTheme?: SlideTheme;

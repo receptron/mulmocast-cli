@@ -1,24 +1,37 @@
 import test from "node:test";
 import assert from "node:assert";
 import { mermaidToHtml } from "../../src/utils/beat_html/mermaid.js";
-import { mermaidHtml } from "../../src/utils/image_plugins/mermaid_html.js";
+import { beatToHtml } from "../../src/utils/beat_html/index.js";
+import { generateSlideFragment } from "@mulmocast/deck/lib/fragment.js";
+import { slideThemes } from "../../src/data/slideThemes.js";
 import { mulmoMermaidMediaSchema } from "../../src/types/schema.js";
 
 /**
- * Verified in a browser: the fragment injected through `innerHTML`, a host loading mermaid
- * from `requires` and calling `mermaid.init` on `.mermaid` elements. The diagram drew and a
- * hostile title produced no element.
+ * A mermaid beat is drawn by `@mulmocast/deck` as a one-block `figure` slide. What these pin
+ * is the mapping onto that slide and onto BeatHtmlFragment — the slide markup is deck's to test.
  */
 
 const media = (over: Record<string, unknown> = {}) =>
   mulmoMermaidMediaSchema.parse({ type: "mermaid", title: "Flow", code: { kind: "text", text: "graph TD; A-->B" }, ...over });
+const options = (over: Record<string, unknown> = {}) => ({ idPrefix: "beat-0", ...over });
+const figure = (title: string, code: string) =>
+  generateSlideFragment(slideThemes.corporate, { layout: "figure", title, figure: { type: "mermaid", code } }, { scopeClass: "beat-0-slide" });
 
-test("a text diagram renders and asks the host for the mermaid runtime", () => {
-  const fragment = mermaidToHtml(media(), "beat-0");
+test("the fragment is deck's figure slide holding the diagram", () => {
+  const fragment = mermaidToHtml(media(), options());
   assert.ok(fragment);
-  assert.deepStrictEqual(fragment.requires, ["mermaid"]);
-  assert.match(fragment.html, /<div id="beat-0-mermaid" class="mermaid">/);
-  assert.match(fragment.html, /graph TD; A--&gt;B/, "the source is escaped for its text context");
+  const theirs = figure("Flow", "graph TD; A-->B");
+  assert.strictEqual(fragment.html, theirs.html);
+  assert.strictEqual(fragment.css, theirs.css);
+  assert.match(fragment.html, /<div id="beat-0-slide-mermaid-0" class="mermaid">graph TD; A--&gt;B<\/div>/);
+});
+
+test("the host is told to load mermaid, and with which theme", () => {
+  const light = mermaidToHtml(media(), options());
+  const dark = mermaidToHtml(media(), options({ slideTheme: slideThemes.dark }));
+  assert.deepStrictEqual(light?.requires, ["mermaid"]);
+  assert.strictEqual(light?.mermaidTheme, "default");
+  assert.strictEqual(dark?.mermaidTheme, "dark");
 });
 
 // getText fetches and reads files, so these cannot be reached from a browser. The module
@@ -29,47 +42,39 @@ test("code kinds that need the filesystem or network render nothing", () => {
     { kind: "path", path: "d.mmd" },
     { kind: "base64", data: "Z3JhcGggVEQ7" },
   ].forEach((code) => {
-    assert.strictEqual(mermaidToHtml(media({ code }), "b"), undefined, `${code.kind} must render nothing`);
+    assert.strictEqual(mermaidToHtml(media({ code }), options()), undefined, `${code.kind} must render nothing`);
   });
 });
 
 test("the appendix is appended to the diagram source, as the document path does", () => {
   const appendix = ["style A fill:#f9f", "style B fill:#bbf"];
-  const fragment = mermaidToHtml(media({ appendix }), "b");
+  const fragment = mermaidToHtml(media({ appendix }), options());
   assert.ok(fragment);
-  // The document path builds `${code}\n${appendix.join("\n")}`.trim() and hands the whole
-  // thing to the same renderer, so only the first line carries the template's indentation.
-  assert.strictEqual(fragment.html, mermaidHtml(`graph TD; A-->B\n${appendix.join("\n")}`, "b-mermaid", "Flow"));
-  assert.match(fragment.html, /graph TD; A--&gt;B\nstyle A fill:#f9f\nstyle B fill:#bbf/);
+  assert.strictEqual(fragment.html, figure("Flow", `graph TD; A-->B\n${appendix.join("\n")}`).html);
 });
 
 test("an empty title falls back to Diagram, matching the document path", () => {
-  const fragment = mermaidToHtml(media({ title: "" }), "b");
+  const fragment = mermaidToHtml(media({ title: "" }), options());
   assert.ok(fragment);
-  assert.match(fragment.html, /<h3 class="text-xl font-semibold mb-4">Diagram<\/h3>/);
+  assert.strictEqual(fragment.html, figure("Diagram", "graph TD; A-->B").html);
+});
+
+test("the same beat renders the same markup every time", () => {
+  assert.strictEqual(mermaidToHtml(media(), options())?.html, mermaidToHtml(media(), options())?.html);
 });
 
 test("a hostile title and hostile source cannot escape their contexts", () => {
   const fragment = mermaidToHtml(
-    media({ title: '</h3><img src=x onerror="pwn()">', code: { kind: "text", text: 'graph TD; A-->B;</DIV ><img src=x onerror="pwn()">' } }),
-    "b",
+    media({ title: '</h2><img src=x onerror="pwn()">', code: { kind: "text", text: 'graph TD; A-->B;</DIV ><img src=x onerror="pwn()">' } }),
+    options(),
   );
   assert.ok(fragment);
   const lower = fragment.html.toLowerCase();
   assert.strictEqual(lower.split("<img").length - 1, 0, "no injected element may survive");
-  assert.strictEqual(lower.split("<h3").length - 1, 1, "the heading must not be closed early");
-  assert.strictEqual(lower.split("</div").length - 1, 3, "the containers must not be closed early");
+  assert.strictEqual(lower.split("<h2").length - 1, 1, "the heading must not be closed early");
+  assert.strictEqual(lower.split("<div").length, lower.split("</div").length, "the containers must not be closed early");
 });
 
-test("the id goes through the element id rule", () => {
-  assert.throws(() => mermaidToHtml(media(), "beat 1"), /element id must match/);
-});
-
-// One implementation, two callers. If they drift, the browser and the PNG show different
-// diagrams for the same beat.
-test("the fragment is the shared markup, not a second copy", () => {
-  const image = media();
-  const fragment = mermaidToHtml(image, "beat-9");
-  assert.ok(fragment);
-  assert.strictEqual(fragment.html, mermaidHtml("graph TD; A-->B", "beat-9-mermaid", "Flow"));
+test("the id prefix goes through the element id rule", () => {
+  assert.throws(() => beatToHtml({ text: "", image: media() }, options({ idPrefix: "beat 1" })), /element id must match/);
 });

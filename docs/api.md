@@ -40,6 +40,9 @@ What `import { … } from "mulmocast"` gives you, by area:
 `import { … } from "mulmocast/browser"` — a separate entry point with no Node dependencies,
 so it bundles for the browser. Everything above is Node-only; this is not.
 
+To see it running, the [MulmoScript playground](https://receptron.github.io/mulmocast-beat-editor/)
+renders every beat type this way, driven as a host would, and takes a pasted MulmoScript.
+
 | Export                                               | What it is                                                |
 | ---------------------------------------------------- | --------------------------------------------------------- |
 | `beatToHtml(beat, { idPrefix })`                     | A beat as markup, or `undefined` for one it cannot render |
@@ -69,13 +72,13 @@ worth saying rather than leaving to be discovered.
 
 Measured per beat, because it varies by the shape of the beat and not only by its type:
 
-| Beat                                 | Utility classes                                                                                                   |
-| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
-| `chart`, `mermaid`, `image`, `movie` | always                                                                                                            |
-| `slide`                              | always, and it also needs `slideUtilityCss` from `@mulmocast/deck`                                                |
-| `markdown`                           | when the markdown is a layout object, a `2x2`, or contains a mermaid fence; a plain markdown string produces none |
-| `textSlide`                          | none                                                                                                              |
-| `html_tailwind`                      | whatever the author wrote — the name is a promise the author makes, not one this module keeps                     |
+| Beat                        | Utility classes                                                                                                   |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `image`, `movie`            | always                                                                                                            |
+| `slide`, `chart`, `mermaid` | always, and they also need `slideUtilityCss` from `@mulmocast/deck` — deck draws all three                        |
+| `markdown`                  | when the markdown is a layout object, a `2x2`, or contains a mermaid fence; a plain markdown string produces none |
+| `textSlide`                 | none                                                                                                              |
+| `html_tailwind`             | whatever the author wrote — the name is a promise the author makes, not one this module keeps                     |
 
 **Loading the shared runtimes once for the page**, not once per beat. A fragment names what
 it needs rather than pulling it in:
@@ -100,7 +103,10 @@ document.querySelectorAll<HTMLCanvasElement>("canvas[data-mulmo-chart]").forEach
   const config = canvas.dataset.mulmoChart;
   const context = canvas.getContext("2d");
   if (!config || !context) return;
-  new Chart(context, JSON.parse(config));
+  const chart = JSON.parse(config);
+  // Fill the box the slide gives the canvas, as deck's own driver does.
+  chart.options = { ...chart.options, responsive: true, maintainAspectRatio: false };
+  new Chart(context, chart);
 });
 mermaid.init(undefined, document.querySelectorAll(".mermaid"));
 ```
@@ -111,7 +117,11 @@ Chart.js throws on either.
 
 ### What renders, and what does not
 
-All eight `image.type` values render. Two carry limits from the browser rather than choice:
+All eight `image.type` values render. `chart` and `mermaid` are drawn by `@mulmocast/deck` as
+a one-block `figure` slide, themed like `slide` beats (`slideTheme`, else `corporate`); the
+PNG / movie path still uses its own templates, so the two look different.
+
+Two carry limits from the browser rather than choice:
 
 - **`mermaid`** renders `code.kind === "text"` only; `url`, `path` and `base64` are resolved
   by a Node fetch/filesystem path.
