@@ -841,12 +841,12 @@
   resolved "https://registry.yarnpkg.com/@mozilla/readability/-/readability-0.6.0.tgz#134e3ce3ff1676716e550de0b8de957bcc59208b"
   integrity sha512-juG5VWh4qAivzTAeMzvY9xs9HY5rAcr2E4I7tiSSCokRFi7XIZCAu92ZkSTsIj1OPceCifL3cpfteP3pDT9/QQ==
 
-"@mulmocast/deck@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@mulmocast/deck/-/deck-2.0.2.tgz#1639a57e3a8ea60c359eaac1e4fd67af8564bcc4"
-  integrity sha512-+nGutuJeBi/5W/cUdpwogOgYWxtWNNb/PnmdCkuk12ulzzTlAKwB7yQn46QlDw9D41XoGIsRFQK1awujNeStxA==
+"@mulmocast/deck@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@mulmocast/deck/-/deck-2.1.0.tgz#e90a8ae033fff62abf6fb17b90498b38d288ad90"
+  integrity sha512-iT3iCodNafOmXeBvE7lBEzOcQETPCplujKsFcoibeNWhx9QWJy3TUHukJd5f9S96a6nZabgh+0WcnvnhXemKeg==
   dependencies:
-    zod "^4.4.3"
+    zod "^4.6.5"
 
 "@napi-rs/wasm-runtime@1.0.7":
   version "1.0.7"
@@ -6099,7 +6099,7 @@ zod@4.5.4:
   resolved "https://registry.yarnpkg.com/zod/-/zod-4.5.4.tgz#e215c62420c528dd7951e31fb52c5438f1fd184a"
   integrity sha512-sC95tT5iHHH9gtpj6A81kh+NEaRAUFN+qlUPDUbRfOMvNf5QCBqsb3WgvnpVtK5Y+4UfA6KqufotuTvMGiTlsA==
 
-"zod@^3.25 || ^4.0", zod@^4.4.3, zod@^4.6.5:
+"zod@^3.25 || ^4.0", zod@^4.6.5:
   version "4.6.5"
   resolved "https://registry.yarnpkg.com/zod/-/zod-4.6.5.tgz#e3af3edbdc260239c52f73caad05dbbffe6e82cd"
   integrity sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==
