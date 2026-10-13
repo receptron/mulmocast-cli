@@ -1,6 +1,6 @@
 {
   "name": "@mulmocast/types",
-  "version": "2.19.0",
+  "version": "2.21.0",
   "description": "Type definitions for MulmoCast",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -13,8 +13,8 @@
     "lib"
   ],
   "dependencies": {
-    "@mulmocast/deck": "^2.0.0",
-    "zod": "^4.4.3"
+    "@mulmocast/deck": "^2.1.0",
+    "zod": "^4.6.5"
   },
   "peerDependencies": {
     "graphai": "^2.0.0",
