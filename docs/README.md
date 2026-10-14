@@ -61,6 +61,7 @@ Set `vertexai_project` in `imageParams` / `movieParams` to switch to Vertex AI m
 - [**Image Generation Rules**](./image.md) - 画像・動画・音声の生成ルール / Rules for generating images, videos, and audio
 - [**Image Plugin**](./image_plugin.md) - Image Pluginの仕様 / Image Plugin specifications
 - [**Sound and Voice**](./sound_and_voice.md) - 複数のBeatで一つの音声をシェアする方法（音声スピルオーバー） / Sharing audio across multiple beats (audio spillover)
+- [**Avatar**](./avatar.md) - しゃべるアバター（AvatarScript）の使い方 / Talking avatars over slides (AvatarScript)
 
 ### 日本語ドキュメント / Japanese Documentation
 
