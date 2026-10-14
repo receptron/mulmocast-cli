@@ -40,7 +40,7 @@ test("a </script> inside the author script cannot end its element early", () => 
   const script = render({ html: "<div></div>", script: 'console.log("</script><b>x</b>");', animation: true })?.documentScript ?? "";
   assert.match(script, /console\.log\("<\\\/script><b>x<\/b>"\);/);
   const closings = script.match(/<\/script>/gi) ?? [];
-  const openings = script.match(/<script[ >]/gi) ?? [];
+  const openings = script.match(/<script[\s>]/gi) ?? [];
   assert.strictEqual(closings.length, openings.length, "every element closes exactly once");
 });
 
