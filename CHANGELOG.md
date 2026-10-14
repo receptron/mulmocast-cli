@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.22.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.22.0) (2026-10-14)
+
+- **Browser: background images and slide branding in `beatToHtml`** (#1642, #1640): new `BeatHtmlOptions` — `backgroundImage` (deck-level default; a beat's own `image.backgroundImage` / `null` still wins), `branding` (deck-level slide branding) and `resolveMediaUrl` (maps a media source to a URL the host can load). `textSlide`, `markdown`, `chart` and `mermaid` beats draw the background, and `slide` beats draw branding, as the PNG path does. Page-level rules come back in the new `BeatHtmlFragment.documentCss`
+- **Browser: scripted and animated `html_tailwind` beats** (#1643, #1641): the fragment now carries `documentScript` — the animation runtime, `window.__MULMO` frame state, the author script and the final-frame draw — so a host that injects `html`, `css`, `documentCss` and `documentScript` into one document gets the same final frame as the PNG. `html` itself stays script-free; a script-only beat returns `html: ""`
+- The PNG / movie output is unchanged
+
+📦 **npm**: [`mulmocast@2.22.0`](https://www.npmjs.com/package/mulmocast/v/2.22.0)
+
 ## [2.21.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.21.0) (2026-10-13)
 
 - **Browser: chart / mermaid beats drawn by `@mulmocast/deck`** (#1635, #1634): `beatToHtml` (`mulmocast/browser`) now renders a standalone `chart` or `mermaid` beat as a one-block deck `figure` slide, so it is themed like `slide` beats (`slideTheme`, else `corporate`) and fills the slide — previously a fixed-height card styled only by host Tailwind. The fragment now carries `css` (scoped) and its element ids become `<idPrefix>-slide-chart-0` / `-mermaid-0`, still stable per beat. Hosts need `slideUtilityCss` for these beats too, and should drive charts with `maintainAspectRatio: false` so they fill the box (see `docs/api.md`). The PNG / movie path is unchanged and keeps its own templates
