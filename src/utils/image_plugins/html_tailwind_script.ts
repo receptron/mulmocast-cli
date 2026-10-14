@@ -10,6 +10,10 @@ import { animationRuntime } from "../../data/animationRuntime.js";
 
 const DEFAULT_ANIMATION_FPS = 30;
 
+// How long scripts added to an already-loaded document wait for a module author script to define `render`.
+const LATE_RENDER_WAIT_MS = 5000;
+const LATE_RENDER_POLL_MS = 50;
+
 /** Large frame count to ensure all animations reach their end state when exact duration is unknown */
 export const FINAL_FRAME_TOTAL = 9000;
 
@@ -75,7 +79,7 @@ const inlineScript = (code: string): string => `<script>\n${neutralizeScriptTerm
  * With it, the runtime, frame state and registration `tailwind_animated.html` loads, then the
  * final frame — what `renderHTMLToFinalFrame` captures. The final frame is drawn on `load`, after
  * a module author script (deferred) has defined its `render`, as Puppeteer calls it after load;
- * scripts a host adds to an already-loaded document draw it straight away.
+ * scripts a host adds to an already-loaded document draw it once `render` exists (bounded wait).
  */
 export const htmlTailwindDocumentScript = (image: HtmlTailwindScriptSource): string | undefined => {
   // The schema leaves `elements` unknown[]; the markup reads it through the same guard.
@@ -83,11 +87,16 @@ export const htmlTailwindDocumentScript = (image: HtmlTailwindScriptSource): str
   const userScript = buildUserScript(resolveHtmlAndScript({ script: image.script, ...(elements ? { elements } : {}) }).script);
   if (!isAnimationEnabled(image.animation)) return userScript || undefined;
   const frameState = `window.__MULMO = { frame: 0, totalFrames: ${FINAL_FRAME_TOTAL}, fps: ${animationFps(image.animation)} };`;
-  // On `load` when the scripts are part of the document as it loads; at once when a host adds them to a loaded one.
+  // On `load` when the scripts are part of the document as it loads. Added to a loaded document, a module author
+  // script (one with imports above all) may run later, so wait for its `render`, bounded, before drawing.
   const finalFrame = [
     "(function () {",
     "  var drawFinal = function () { Promise.resolve(window.renderFinal()).catch(console.error); };",
-    '  if (document.readyState === "complete") setTimeout(drawFinal, 0);',
+    "  var whenRenderReady = function (startedAt) {",
+    `    if (typeof window.render === "function" || Date.now() - startedAt > ${LATE_RENDER_WAIT_MS}) drawFinal();`,
+    `    else setTimeout(function () { whenRenderReady(startedAt); }, ${LATE_RENDER_POLL_MS});`,
+    "  };",
+    '  if (document.readyState === "complete") whenRenderReady(Date.now());',
     '  else window.addEventListener("load", drawFinal);',
     "})();",
   ].join("\n");

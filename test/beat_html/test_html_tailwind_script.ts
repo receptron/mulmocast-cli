@@ -35,9 +35,10 @@ test("a </script> inside the author script cannot end its element early", () => 
   assert.strictEqual(closings.length, openings.length, "every element closes exactly once");
 });
 
-test("the final frame is drawn on load, or at once when the scripts land in an already-loaded document", () => {
+test("the final frame is drawn on load, or once render exists when the scripts land in an already-loaded document", () => {
   const script = render({ html: "<div></div>", animation: true })?.documentScript ?? "";
-  assert.match(script, /if \(document\.readyState === "complete"\) setTimeout\(drawFinal, 0\);\s*else window\.addEventListener\("load", drawFinal\);/);
+  assert.match(script, /if \(document\.readyState === "complete"\) whenRenderReady\(Date\.now\(\)\);\s*else window\.addEventListener\("load", drawFinal\);/);
+  assert.match(script, /typeof window\.render === "function" \|\| Date\.now\(\) - startedAt > 5000\) drawFinal\(\);/);
 });
 
 test("swipe elements without an animation run their driver, as the static PNG template does", () => {
