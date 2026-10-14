@@ -33,8 +33,9 @@ export type BeatHtmlFragment = {
    */
   css?: string;
   /**
-   * Rules for the whole document — `html` and `body` — painting the beat's background image
-   * behind the page, as the PNG render does. Absent when the beat has no background.
+   * Rules for the whole document, as the PNG render applies them: a textSlide / markdown beat's
+   * background image on `html` / `body`, or an animated html_tailwind beat's rules pausing CSS
+   * animations and transitions. Absent when the beat needs neither.
    *
    * Apply it only where the beat owns the document (an iframe, a print page). Injected into a
    * page shared with anything else it restyles that page: it cannot be scoped to the markup,
@@ -42,6 +43,16 @@ export type BeatHtmlFragment = {
    * `body`, behind the body's margin as well.
    */
   documentCss?: string;
+  /**
+   * `<script>` elements for the end of the beat's own document: an `html_tailwind` beat's author
+   * `script`, swipe driver and animation runtime, which bring it to what the PNG shows — for an
+   * animation, the final frame. Absent when the beat runs none.
+   *
+   * Only for a host that gives the beat a document of its own and lets it run scripts (an iframe
+   * with `allow-scripts`); `html` alone is the beat at rest. Not sanitized: the author script is
+   * the beat's content, as on the PNG path.
+   */
+  documentScript?: string;
   /** External runtimes the host must load once for the page, not once per beat. */
   requires?: BeatRuntime[];
   /**

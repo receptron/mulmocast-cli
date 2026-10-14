@@ -84,6 +84,15 @@ const main = () => {
     });
   const slideStylesData = util.inspect(slideStylesObj, { depth: null, compact: false, sorted: true, breakLength: 120 });
   fs.writeFileSync("./src/data/slideStyles.ts", `export const slideStyles = ${slideStylesData}\n`, "utf8");
+
+  // html_tailwind animation runtime, for the browser fragment path (which cannot read assets/)
+  const runtimeDir = "./assets/html/js";
+  const runtimeObj: Record<string, string> = {};
+  ["animation_runtime", "auto_render", "data_attribute_registration"].forEach((name) => {
+    runtimeObj[name] = fs.readFileSync(path.join(runtimeDir, `${name}.js`), "utf8");
+  });
+  const runtimeData = util.inspect(runtimeObj, { depth: null, compact: false, sorted: true, breakLength: 120, maxStringLength: null });
+  fs.writeFileSync("./src/data/animationRuntime.ts", `export const animationRuntime = ${runtimeData}\n`, "utf8");
 };
 
 main();

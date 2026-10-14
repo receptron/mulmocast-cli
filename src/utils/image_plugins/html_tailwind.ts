@@ -6,8 +6,9 @@ import { getHTMLFile, getJSFile } from "../file.js";
 import { renderHTMLToImage, interpolate, renderHTMLToFrames, renderHTMLToVideo, renderHTMLToFinalFrame } from "../html_render.js";
 import { framesToVideo } from "../ffmpeg_utils.js";
 import { parrotingImagePath } from "./utils.js";
-import { swipeElementsToHtml, swipeElementsToScript, type SwipeElement } from "../swipe_to_html.js";
+import type { SwipeElement } from "../swipe_to_html.js";
 import { htmlTailwindMarkup } from "./html_tailwind_markup.js";
+import { FINAL_FRAME_TOTAL, animationFps, buildUserScript, resolveHtmlAndScript } from "./html_tailwind_script.js";
 import { MulmoStudioContextMethods } from "../../methods/mulmo_studio_context.js";
 
 export const imageType = "html_tailwind";
@@ -60,24 +61,6 @@ export const resolveRelativeImagePaths = (html: string, baseDirPath: string): st
   });
 };
 
-const DEFAULT_ANIMATION_FPS = 30;
-
-/** Join html field into a single string (handles both string and string[]) */
-const joinHtml = (html: string | string[]): string => {
-  return Array.isArray(html) ? html.join("\n") : html;
-};
-
-const buildUserScript = (script: string | string[] | undefined): string => {
-  if (!script) return "";
-  const code = Array.isArray(script) ? script.join("\n") : script;
-  // If user script contains ESM import/export, emit module script so imports work.
-  const isModule = code.split("\n").some((line) => {
-    const trimmed = line.trimStart();
-    return trimmed.startsWith("import ") || trimmed.startsWith("export ");
-  });
-  return isModule ? `<script type="module">\n${code}\n</script>` : `<script>\n${code}\n</script>`;
-};
-
 /**
  * Resolve relative modelUrl assignment in user scripts to file:// absolute paths.
  * e.g. const modelUrl = "models/a.glb" -> const modelUrl = "file:///abs/models/a.glb"
@@ -116,42 +99,15 @@ export const resolveRelativeModelPathsInScript = (html: string, baseDirPath: str
     .join("\n");
 };
 
-/**
- * Resolve HTML and script from beat image data.
- * If `elements` (Swipe-style) is provided, convert to HTML + script.
- * Otherwise, use raw `html` and `script` fields.
- */
-const resolveHtmlAndScript = (imageData: {
-  html?: string | string[];
-  script?: string | string[];
-  elements?: SwipeElement[];
-}): { html: string; script: string | string[] | undefined } => {
-  if (imageData.elements && Array.isArray(imageData.elements) && imageData.elements.length > 0) {
-    const html = swipeElementsToHtml(imageData.elements);
-    const generatedScript = swipeElementsToScript(imageData.elements);
-    // Merge with user-provided script if any
-    const userScript = imageData.script ? joinHtml(imageData.script as string | string[]) : "";
-    const combinedScript = [generatedScript, userScript].filter(Boolean).join("\n");
-    return { html, script: combinedScript || undefined };
-  }
-  return {
-    html: joinHtml(imageData.html ?? ""),
-    script: imageData.script,
-  };
-};
-
 const getAnimationConfig = (params: ImageProcessorParams) => {
   const { beat } = params;
   if (!beat.image || beat.image.type !== imageType) return null;
   const animation = (beat.image as { animation?: unknown }).animation;
   if (!MulmoBeatMethods.isAnimationEnabled(animation)) return null;
-  const fps = MulmoBeatMethods.isAnimationObject(animation) ? (animation.fps ?? DEFAULT_ANIMATION_FPS) : DEFAULT_ANIMATION_FPS;
+  const fps = animationFps(animation);
   const movie = MulmoBeatMethods.isMovieMode(animation);
   return { fps, movie };
 };
-
-/** Large frame count to ensure all animations reach their end state when exact duration is unknown */
-const FINAL_FRAME_TOTAL = 9000;
 
 /**
  * Build the animated HTML string from beat data and template.

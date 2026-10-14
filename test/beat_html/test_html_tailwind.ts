@@ -38,7 +38,8 @@ test("no script is emitted, whatever the beat asks for", () => {
 });
 
 test("nothing to show renders nothing, rather than an empty element", () => {
-  [{}, { html: "" }, { html: [] }, { elements: [] }, { script: "alert(1)" }].forEach((over) => {
+  // A script-only beat is not here: it draws itself, and comes back as documentScript with empty html.
+  [{}, { html: "" }, { html: [] }, { elements: [] }].forEach((over) => {
     assert.strictEqual(htmlTailwindToHtml(media(over)), undefined, `${JSON.stringify(over)} must render nothing`);
   });
 });

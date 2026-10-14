@@ -1,21 +1,5 @@
 import { MulmoBeat, ImageMediaType } from "../types/index.js";
-
-type AnimationConfig = { fps?: number; movie?: boolean };
-
-/** Type guard: checks if animation value is an object config like { fps: 30 } */
-const isAnimationObject = (animation: unknown): animation is AnimationConfig => {
-  return typeof animation === "object" && animation !== null && !Array.isArray(animation);
-};
-
-/** Check if a value is a valid animation config (true or non-array object) */
-const isAnimationEnabled = (animation: unknown): animation is true | AnimationConfig => {
-  return animation === true || isAnimationObject(animation);
-};
-
-/** Check if movie mode (CDP screencast) is enabled */
-const isMovieMode = (animation: unknown): boolean => {
-  return isAnimationObject(animation) && animation.movie === true;
-};
+import { isAnimationEnabled, isAnimationObject, isMovieMode } from "../utils/animation_config.js";
 
 /** Check if a beat has html_tailwind animation enabled */
 const isAnimatedHtmlTailwind = (beat: MulmoBeat): boolean => {
