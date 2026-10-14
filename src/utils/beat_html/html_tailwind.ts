@@ -1,7 +1,7 @@
 import type { z } from "zod";
 import type { mulmoHtmlTailwindMediaSchema } from "../../types/schema.js";
 import { htmlTailwindMarkup } from "../image_plugins/html_tailwind_markup.js";
-import { htmlTailwindDocumentScript } from "../image_plugins/html_tailwind_script.js";
+import { htmlTailwindDocumentCss, htmlTailwindDocumentScript } from "../image_plugins/html_tailwind_script.js";
 import type { BeatHtmlFragment } from "./type.js";
 
 /**
@@ -22,7 +22,8 @@ import type { BeatHtmlFragment } from "./type.js";
 export const htmlTailwindToHtml = (image: z.infer<typeof mulmoHtmlTailwindMediaSchema>): BeatHtmlFragment | undefined => {
   const html = htmlTailwindMarkup(image);
   const documentScript = htmlTailwindDocumentScript(image);
+  const documentCss = htmlTailwindDocumentCss(image);
   // A script-only beat draws itself, so it is a fragment with empty markup rather than nothing.
-  if (documentScript) return { html, documentScript };
-  return html === "" ? undefined : { html };
+  if (!documentScript && html === "") return undefined;
+  return { html, ...(documentCss ? { documentCss } : {}), ...(documentScript ? { documentScript } : {}) };
 };

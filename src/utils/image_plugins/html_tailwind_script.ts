@@ -10,6 +10,15 @@ import { animationRuntime } from "../../data/animationRuntime.js";
 
 const DEFAULT_ANIMATION_FPS = 30;
 
+/** How long the final frame waits for `<video>` elements to be playable, as the PNG render does. */
+export const VIDEO_LOAD_TIMEOUT_MS = 15000;
+
+/** `tailwind_animated.html`'s rules: CSS animations and transitions stay still, so frames come from `render` alone. */
+export const ANIMATED_DOCUMENT_CSS = `*, *::before, *::after {
+  animation-play-state: paused !important;
+  transition: none !important;
+}`;
+
 // How long scripts added to an already-loaded document wait for a module author script to define `render`.
 const LATE_RENDER_WAIT_MS = 5000;
 const LATE_RENDER_POLL_MS = 50;
@@ -88,10 +97,19 @@ export const htmlTailwindDocumentScript = (image: HtmlTailwindScriptSource): str
   if (!isAnimationEnabled(image.animation)) return userScript || undefined;
   const frameState = `window.__MULMO = { frame: 0, totalFrames: ${FINAL_FRAME_TOTAL}, fps: ${animationFps(image.animation)} };`;
   // On `load` when the scripts are part of the document as it loads. Added to a loaded document, a module author
-  // script (one with imports above all) may run later, so wait for its `render`, bounded, before drawing.
+  // script (one with imports above all) may run later, so wait for its `render`, bounded, before drawing. Either
+  // way the videos get to be playable first, as `waitForVideosReady` lets them before the PNG's final frame.
   const finalFrame = [
     "(function () {",
-    "  var drawFinal = function () { Promise.resolve(window.renderFinal()).catch(console.error); };",
+    "  var whenVideosReady = function (done) {",
+    '    var pending = Array.prototype.slice.call(document.querySelectorAll("video")).filter(function (video) { return video.readyState < 3; });',
+    "    if (pending.length === 0) return done();",
+    "    var remaining = pending.length, finished = false;",
+    "    var finish = function () { if (!finished) { finished = true; done(); } };",
+    `    setTimeout(finish, ${VIDEO_LOAD_TIMEOUT_MS});`,
+    '    pending.forEach(function (video) { video.addEventListener("canplaythrough", function () { remaining -= 1; if (remaining <= 0) finish(); }, { once: true }); });',
+    "  };",
+    "  var drawFinal = function () { whenVideosReady(function () { Promise.resolve(window.renderFinal()).catch(console.error); }); };",
     "  var whenRenderReady = function (startedAt) {",
     `    if (typeof window.render === "function" || Date.now() - startedAt > ${LATE_RENDER_WAIT_MS}) drawFinal();`,
     `    else setTimeout(function () { whenRenderReady(startedAt); }, ${LATE_RENDER_POLL_MS});`,
@@ -110,3 +128,7 @@ export const htmlTailwindDocumentScript = (image: HtmlTailwindScriptSource): str
     .filter(Boolean)
     .join("\n");
 };
+
+/** `documentCss` for an html_tailwind beat: the animated template's pause rules, when it animates. */
+export const htmlTailwindDocumentCss = (image: HtmlTailwindScriptSource): string | undefined =>
+  isAnimationEnabled(image.animation) ? ANIMATED_DOCUMENT_CSS : undefined;

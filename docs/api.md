@@ -96,14 +96,14 @@ Measured per beat, because it varies by the shape of the beat and not only by it
 **Loading the shared runtimes once for the page**, not once per beat. A fragment names what
 it needs rather than pulling it in:
 
-| Field            | Meaning                                                                                                                                                                                                  |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `requires`       | `"chart"` → Chart.js, `"mermaid"` → mermaid. Absent when the beat needs neither                                                                                                                          |
-| `chartPlugins`   | Extra Chart.js plugin CDNs for this beat's chart type                                                                                                                                                    |
-| `css`            | Rules the fragment needs, already scoped. Absent when it needs none                                                                                                                                      |
-| `mermaidTheme`   | Which mermaid theme suits the beat's background                                                                                                                                                          |
-| `documentCss`    | A `textSlide` / `markdown` beat's background image, written against `html` / `body` as the PNG paints it. Apply it only where the beat owns the document (an iframe, a print page) — it cannot be scoped |
-| `documentScript` | An `html_tailwind` beat's `<script>` elements (author `script`, swipe driver, animation runtime and final frame). Only for a host that gives the beat its own document and runs scripts                  |
+| Field            | Meaning                                                                                                                                                                                                                                                                        |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `requires`       | `"chart"` → Chart.js, `"mermaid"` → mermaid. Absent when the beat needs neither                                                                                                                                                                                                |
+| `chartPlugins`   | Extra Chart.js plugin CDNs for this beat's chart type                                                                                                                                                                                                                          |
+| `css`            | Rules the fragment needs, already scoped. Absent when it needs none                                                                                                                                                                                                            |
+| `mermaidTheme`   | Which mermaid theme suits the beat's background                                                                                                                                                                                                                                |
+| `documentCss`    | Rules for the whole document as the PNG applies them: a `textSlide` / `markdown` beat's background image on `html` / `body`, or an animated `html_tailwind` beat's pause rules. Apply it only where the beat owns the document (an iframe, a print page) — it cannot be scoped |
+| `documentScript` | An `html_tailwind` beat's `<script>` elements (author `script`, swipe driver, animation runtime and final frame). Only for a host that gives the beat its own document and runs scripts                                                                                        |
 
 **Driving what a `<script>` would have driven.** This module generates no `<script>` —
 one injected through `innerHTML` does not execute and does not survive sanitizing, so a

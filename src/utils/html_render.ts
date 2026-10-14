@@ -8,10 +8,10 @@ import { guardRenderPage } from "./render_network_guard.js";
 import { strictNetworkLaunchArgs, withRenderContentSecurityPolicy, type RenderNetworkOptions } from "./render_network_policy.js";
 
 import { GraphAILogger } from "graphai";
+import { VIDEO_LOAD_TIMEOUT_MS } from "./image_plugins/html_tailwind_script.js";
 
 const isCI = process.env.CI === "true";
 
-const VIDEO_LOAD_TIMEOUT_MS = 15000;
 const VIDEO_SEEK_TIMEOUT_MS = 3000;
 
 /** Wait for all <video> elements on the page to be ready for playback */

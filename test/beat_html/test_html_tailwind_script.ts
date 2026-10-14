@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { beatToHtml } from "../../src/utils/beat_html/index.js";
 import { animationRuntime } from "../../src/data/animationRuntime.js";
+import { ANIMATED_DOCUMENT_CSS } from "../../src/utils/image_plugins/html_tailwind_script.js";
 import { mulmoBeatSchema } from "../../src/types/schema.js";
 
 /**
@@ -83,4 +84,19 @@ test("the runtime the browser path inlines is the one the PNG templates read fro
     assert.strictEqual(code, onDisk, `src/data/animationRuntime.ts is stale for ${name}.js — run \`yarn template\``);
     assert.doesNotMatch(code, /<\/script/i, "an inline </script> would end the element early");
   });
+});
+
+test("an animated beat pauses CSS animations and transitions through documentCss, as tailwind_animated.html does", () => {
+  assert.strictEqual(render({ html: "<div></div>", animation: true })?.documentCss, ANIMATED_DOCUMENT_CSS);
+  assert.strictEqual(render({ html: "<div></div>", script: "run();" })?.documentCss, undefined);
+  const squash = (css: string) => css.replace(/\s+/g, "");
+  const template = fs.readFileSync(path.resolve("assets/html/tailwind_animated.html"), "utf8");
+  assert.ok(squash(template).includes(squash(ANIMATED_DOCUMENT_CSS)), "the template's pause rules and ANIMATED_DOCUMENT_CSS have drifted apart");
+});
+
+test("the final frame waits for videos to be playable, bounded, as waitForVideosReady does", () => {
+  const script = render({ html: "<video src='a.mp4'></video>", animation: true })?.documentScript ?? "";
+  assert.match(script, /video\.readyState < 3/);
+  assert.match(script, /"canplaythrough"/);
+  assert.match(script, /setTimeout\(finish, 15000\);/);
 });

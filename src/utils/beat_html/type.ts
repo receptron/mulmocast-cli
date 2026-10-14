@@ -33,8 +33,9 @@ export type BeatHtmlFragment = {
    */
   css?: string;
   /**
-   * Rules for the whole document — `html` and `body` — painting the beat's background image
-   * behind the page, as the PNG render does. Absent when the beat has no background.
+   * Rules for the whole document, as the PNG render applies them: a textSlide / markdown beat's
+   * background image on `html` / `body`, or an animated html_tailwind beat's rules pausing CSS
+   * animations and transitions. Absent when the beat needs neither.
    *
    * Apply it only where the beat owns the document (an iframe, a print page). Injected into a
    * page shared with anything else it restyles that page: it cannot be scoped to the markup,
