@@ -28,6 +28,7 @@ import { agentIncorrectAPIKeyError, agentAPIRateLimitError, imageAction, imageFi
 import { getOutputStudioFilePath, mkdir } from "../utils/file.js";
 import { audioCheckerError } from "../utils/error_cause.js";
 import { extractImageFromMovie, ffmpegGetMediaDuration, trimMusic } from "../utils/ffmpeg_utils.js";
+import { audioProbeSource } from "../utils/audio_probe_source.js";
 
 import { getMediaRefs, resolveBeatLocalRefs } from "./image_references.js";
 import { imagePreprocessAgent, imagePluginAgent, htmlImageGeneratorAgent, beatFrameResolverAgent } from "./image_agents.js";
@@ -253,7 +254,7 @@ export const beat_graph_data = {
         if (namedInputs.soundEffectFile) {
           return { hasMovieAudio: true };
         }
-        const sourceFile = namedInputs.movieFile || namedInputs.imageFile;
+        const sourceFile = audioProbeSource(namedInputs);
         if (!sourceFile) {
           // no need to check if the file exists (ffmpegGetMediaDuration will check it if it is local file)
           return { hasMovieAudio: false };
