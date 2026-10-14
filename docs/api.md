@@ -152,7 +152,9 @@ An `html_tailwind` beat's `html` is the beat at rest: an author `script`, swipe 
 frame-based `animation` all need script execution, which markup injected through `innerHTML`
 cannot do. They come back separately as `documentScript`. A host that gives the beat a document
 of its own and lets it run scripts (an iframe with `allow-scripts`) appends it to the body and
-gets what the PNG shows — for an animation, its final frame, drawn on `load`.
+gets what the PNG shows — for an animation, its final frame, drawn on `load`. A beat that is only
+a `script` comes back with empty `html` and a `documentScript`; a host that does not run scripts
+should treat empty `html` as nothing to show.
 
 ## Lifecycle: from MulmoScript JSON to rendered video
 

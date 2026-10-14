@@ -20,6 +20,14 @@ test("a beat that runs nothing gets no documentScript", () => {
   assert.deepStrictEqual(fragment, { html: "<div>x</div>" });
 });
 
+test("a script-only beat is a fragment with empty markup, not nothing; an empty beat stays undefined", () => {
+  assert.deepStrictEqual(render({ script: "document.body.textContent = 'x';" }), {
+    html: "",
+    documentScript: "<script>\ndocument.body.textContent = 'x';\n</script>",
+  });
+  assert.strictEqual(render({}), undefined);
+});
+
 test("the author script comes back as a classic or module script, and never inside html", () => {
   const classic = render({ html: "<div id='x'></div>", script: "run();" });
   assert.strictEqual(classic?.documentScript, "<script>\nrun();\n</script>");

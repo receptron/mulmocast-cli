@@ -21,7 +21,8 @@ import type { BeatHtmlFragment } from "./type.js";
  */
 export const htmlTailwindToHtml = (image: z.infer<typeof mulmoHtmlTailwindMediaSchema>): BeatHtmlFragment | undefined => {
   const html = htmlTailwindMarkup(image);
-  if (html === "") return undefined;
   const documentScript = htmlTailwindDocumentScript(image);
-  return documentScript ? { html, documentScript } : { html };
+  // A script-only beat draws itself, so it is a fragment with empty markup rather than nothing.
+  if (documentScript) return { html, documentScript };
+  return html === "" ? undefined : { html };
 };
