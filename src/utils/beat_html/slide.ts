@@ -1,9 +1,10 @@
-import type { MulmoSlideMedia, SlideLayout, SlideTheme } from "@mulmocast/deck";
+import type { MulmoSlideMedia, ResolvedBranding, SlideLayout, SlideTheme } from "@mulmocast/deck";
 // Deep import: the package barrel bundles every layout plus all of zod — measured 101 inputs
 // and 602kb against 20 and 54kb for this module — and this file is bundled for the browser.
 import { generateSlideFragment } from "@mulmocast/deck/lib/fragment.js";
 import { slideThemes } from "../../data/slideThemes.js";
 import type { BeatHtmlFragment, BeatHtmlOptions } from "./type.js";
+import { slideBranding } from "./decoration.js";
 
 /**
  * A deck slide as markup a host can inject. Shared by the beat types deck draws: `slide`,
@@ -24,9 +25,17 @@ import type { BeatHtmlFragment, BeatHtmlOptions } from "./type.js";
  * it on the root of `html`, verified in a browser: injecting `html` and attaching `css`, with
  * no wrapper class of the host's own, resolves `--d-bg` to the beat's theme.
  */
-export const deckSlideToHtml = (slide: SlideLayout, beatTheme: SlideTheme | undefined, options: BeatHtmlOptions): BeatHtmlFragment => {
+/** What the PNG render draws around a slide's layout: the branding layers and the reference line. */
+export type SlideDecoration = { branding?: ResolvedBranding; reference?: string };
+
+export const deckSlideToHtml = (
+  slide: SlideLayout,
+  beatTheme: SlideTheme | undefined,
+  options: BeatHtmlOptions,
+  decoration: SlideDecoration = {},
+): BeatHtmlFragment => {
   const theme = beatTheme ?? options.slideTheme ?? slideThemes.corporate;
-  const fragment = generateSlideFragment(theme, slide, { scopeClass: `${options.idPrefix}-slide` });
+  const fragment = generateSlideFragment(theme, slide, { scopeClass: `${options.idPrefix}-slide`, ...decoration });
   return {
     html: fragment.html,
     css: fragment.css,
@@ -36,4 +45,7 @@ export const deckSlideToHtml = (slide: SlideLayout, beatTheme: SlideTheme | unde
   };
 };
 
-export const slideToHtml = (image: MulmoSlideMedia, options: BeatHtmlOptions): BeatHtmlFragment => deckSlideToHtml(image.slide, image.theme, options);
+export const slideToHtml = (image: MulmoSlideMedia, options: BeatHtmlOptions): BeatHtmlFragment => {
+  const branding = slideBranding(image.branding, options);
+  return deckSlideToHtml(image.slide, image.theme, options, { ...(branding ? { branding } : {}), ...(image.reference ? { reference: image.reference } : {}) });
+};

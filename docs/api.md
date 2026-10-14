@@ -60,6 +60,19 @@ from the beat's index (`beat-3`, not `3` — an element id cannot start with a d
 own `id` comes from the script and is unrestricted. The prefix has to be unique per beat and
 stable across re-renders, which is why the library cannot pick it.
 
+The other options carry what a beat alone does not say, and are all optional:
+
+| Option            | What it is                                                                                                    |
+| ----------------- | ------------------------------------------------------------------------------------------------------------- |
+| `slideTheme`      | The deck's `slideParams.theme`, for `slide`, `chart` and `mermaid` beats                                      |
+| `backgroundImage` | The deck's `imageParams.backgroundImage`                                                                      |
+| `branding`        | The deck's `slideParams.branding` (logo and background), for `slide` beats                                    |
+| `resolveMediaUrl` | `(source) => url` for background and branding images; default: a url as written, a path as written, no base64 |
+
+A beat's own `backgroundImage` / `branding` wins over the deck's, and a beat-level `null`
+switches the deck's off — the order the PNG render uses. Backgrounds and branding are
+usually local files, which only the host knows how to serve: pass `resolveMediaUrl`.
+
 ### What the host is responsible for
 
 **Sanitizing.** A beat is user data and the markup is not sanitized — `html_tailwind` beats
@@ -83,12 +96,13 @@ Measured per beat, because it varies by the shape of the beat and not only by it
 **Loading the shared runtimes once for the page**, not once per beat. A fragment names what
 it needs rather than pulling it in:
 
-| Field          | Meaning                                                                         |
-| -------------- | ------------------------------------------------------------------------------- |
-| `requires`     | `"chart"` → Chart.js, `"mermaid"` → mermaid. Absent when the beat needs neither |
-| `chartPlugins` | Extra Chart.js plugin CDNs for this beat's chart type                           |
-| `css`          | Rules the fragment needs, already scoped. Absent when it needs none             |
-| `mermaidTheme` | Which mermaid theme suits the beat's background                                 |
+| Field          | Meaning                                                                                                                                                                                                  |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `requires`     | `"chart"` → Chart.js, `"mermaid"` → mermaid. Absent when the beat needs neither                                                                                                                          |
+| `chartPlugins` | Extra Chart.js plugin CDNs for this beat's chart type                                                                                                                                                    |
+| `css`          | Rules the fragment needs, already scoped. Absent when it needs none                                                                                                                                      |
+| `mermaidTheme` | Which mermaid theme suits the beat's background                                                                                                                                                          |
+| `documentCss`  | A `textSlide` / `markdown` beat's background image, written against `html` / `body` as the PNG paints it. Apply it only where the beat owns the document (an iframe, a print page) — it cannot be scoped |
 
 **Driving what a `<script>` would have driven.** This module generates no `<script>` —
 one injected through `innerHTML` does not execute and does not survive sanitizing, so a
@@ -120,6 +134,11 @@ Chart.js throws on either.
 All eight `image.type` values render. `chart` and `mermaid` are drawn by `@mulmocast/deck` as
 a one-block `figure` slide, themed like `slide` beats (`slideTheme`, else `corporate`); the
 PNG / movie path still uses its own templates, so the two look different.
+
+Backgrounds follow the PNG render: `textSlide` / `markdown` get `documentCss`, `chart` /
+`mermaid` get the figure slide's background layer, and `slide` beats get their branding and
+`reference` line. A named `style` on a `chart` / `mermaid` beat is not applied — it is
+markdown-style CSS for the PNG templates, and deck draws these beats in the slide theme.
 
 Two carry limits from the browser rather than choice:
 

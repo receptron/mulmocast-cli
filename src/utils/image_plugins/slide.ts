@@ -10,6 +10,7 @@ import { MulmoMediaSourceMethods } from "../../methods/mulmo_media_source.js";
 import { MulmoPresentationStyleMethods } from "../../methods/mulmo_presentation_style.js";
 import { imageAction, imageFileTarget, unknownMediaType } from "../error_cause.js";
 import { MulmoStudioContextMethods } from "../../methods/mulmo_studio_context.js";
+import { pickBranding } from "./slide_branding.js";
 
 export const imageType = "slide";
 
@@ -129,10 +130,7 @@ const resolveSlide = (params: BeatRenderParams, converter: (filePath: string) =>
 const resolveBranding = (params: BeatRenderParams): SlideBranding | undefined => {
   const { beat, context } = params;
   if (!beat.image || beat.image.type !== imageType) return undefined;
-  const beatBranding = (beat.image as MulmoSlideMedia).branding;
-  // null means explicitly disabled
-  if (beatBranding === null) return undefined;
-  return beatBranding ?? context.presentationStyle.slideParams?.branding;
+  return pickBranding((beat.image as MulmoSlideMedia).branding, context.presentationStyle.slideParams?.branding);
 };
 
 /**
