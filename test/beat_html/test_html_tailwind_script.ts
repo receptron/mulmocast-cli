@@ -30,8 +30,8 @@ test("the author script comes back as a classic or module script, and never insi
 test("a </script> inside the author script cannot end its element early", () => {
   const script = render({ html: "<div></div>", script: 'console.log("</script><b>x</b>");', animation: true })?.documentScript ?? "";
   assert.match(script, /console\.log\("<\\\/script><b>x<\/b>"\);/);
-  const closings = script.match(/<\/script>/g) ?? [];
-  const openings = script.match(/<script[ >]/g) ?? [];
+  const closings = script.match(/<\/script>/gi) ?? [];
+  const openings = script.match(/<script[ >]/gi) ?? [];
   assert.strictEqual(closings.length, openings.length, "every element closes exactly once");
 });
 
