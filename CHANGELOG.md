@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.22.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.22.1) (2026-10-15)
+
+- **Image-only renders no longer need ffmpeg** (#1646, #1645): `audioChecker` probed the generated still PNG with ffprobe for every beat without a movie, so `mulmo images` (and `generateBeatImage`) failed with `Cannot find ffprobe` after writing the image. It now probes the movie file when there is one, and a file in the image slot only when it is not a still image. `hasMovieAudio` is unchanged; movies, `moviePrompt`, lip sync and animated beats still need ffmpeg
+
+📦 **npm**: [`mulmocast@2.22.1`](https://www.npmjs.com/package/mulmocast/v/2.22.1)
+
 ## [2.22.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.22.0) (2026-10-14)
 
 - **Browser: background images and slide branding in `beatToHtml`** (#1642, #1640): new `BeatHtmlOptions` — `backgroundImage` (deck-level default; a beat's own `image.backgroundImage` / `null` still wins), `branding` (deck-level slide branding) and `resolveMediaUrl` (maps a media source to a URL the host can load). `textSlide`, `markdown`, `chart` and `mermaid` beats draw the background, and `slide` beats draw branding, as the PNG path does. Page-level rules come back in the new `BeatHtmlFragment.documentCss`
