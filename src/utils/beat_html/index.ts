@@ -8,6 +8,7 @@ import { imageToHtml, movieToHtml } from "./media.js";
 import { mermaidToHtml } from "./mermaid.js";
 import { slideToHtml } from "./slide.js";
 import { assertSafeElementId } from "../element_id.js";
+import { withDocumentBackground } from "./decoration.js";
 
 export type { BeatHtmlFragment, BeatHtmlOptions, BeatRuntime } from "./type.js";
 export { textSlideToMarkdown, textSlideToHtml } from "./text_slide.js";
@@ -47,9 +48,9 @@ export const beatToHtml = (beat: MulmoBeat, options: BeatHtmlOptions): BeatHtmlF
   assertSafeElementId(options.idPrefix);
   switch (image.type) {
     case "textSlide":
-      return textSlideToHtml(image);
+      return withDocumentBackground(textSlideToHtml(image), image, options);
     case "markdown":
-      return markdownToHtml(image, options.idPrefix);
+      return withDocumentBackground(markdownToHtml(image, options.idPrefix), image, options);
     case "chart":
       return chartToHtml(image, options);
     case "mermaid":
