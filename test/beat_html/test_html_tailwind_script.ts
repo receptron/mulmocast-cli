@@ -27,6 +27,19 @@ test("the author script comes back as a classic or module script, and never insi
   assert.match(render({ html: "<div></div>", script: ["import x from 'https://esm.sh/x';", "x();"] })?.documentScript ?? "", /^<script type="module">/);
 });
 
+test("a </script> inside the author script cannot end its element early", () => {
+  const script = render({ html: "<div></div>", script: 'console.log("</script><b>x</b>");', animation: true })?.documentScript ?? "";
+  assert.match(script, /console\.log\("<\\\/script><b>x<\/b>"\);/);
+  const closings = script.match(/<\/script>/g) ?? [];
+  const openings = script.match(/<script[ >]/g) ?? [];
+  assert.strictEqual(closings.length, openings.length, "every element closes exactly once");
+});
+
+test("the final frame is drawn on load, or at once when the scripts land in an already-loaded document", () => {
+  const script = render({ html: "<div></div>", animation: true })?.documentScript ?? "";
+  assert.match(script, /if \(document\.readyState === "complete"\) setTimeout\(drawFinal, 0\);\s*else window\.addEventListener\("load", drawFinal\);/);
+});
+
 test("swipe elements without an animation run their driver, as the static PNG template does", () => {
   const script = render({ elements: swipe })?.documentScript ?? "";
   assert.match(script, /new MulmoAnimation\(\)/);
@@ -46,7 +59,7 @@ test("an animation gets the runtime, the frame state, the registration, auto-ren
     at("var animation = new MulmoAnimation();"),
     at(animationRuntime.data_attribute_registration.slice(0, 80)),
     at(animationRuntime.auto_render.slice(0, 80)),
-    at('window.addEventListener("load"'),
+    at("var drawFinal"),
   ];
   assert.deepStrictEqual(
     [...order].sort((a, b) => a - b),

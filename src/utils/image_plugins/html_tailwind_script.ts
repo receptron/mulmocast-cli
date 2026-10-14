@@ -21,9 +21,12 @@ const joinHtml = (html: string | string[]): string => {
   return Array.isArray(html) ? html.join("\n") : html;
 };
 
+// A `</script` anywhere in the code ends the element early, even inside a string; `<\/script` is the same JS.
+const neutralizeScriptTerminator = (code: string): string => code.replace(/<\/script/gi, (terminator) => `<\\${terminator.slice(1)}`);
+
 export const buildUserScript = (script: string | string[] | undefined): string => {
   if (!script) return "";
-  const code = Array.isArray(script) ? script.join("\n") : script;
+  const code = neutralizeScriptTerminator(Array.isArray(script) ? script.join("\n") : script);
   // If user script contains ESM import/export, emit module script so imports work.
   const isModule = code.split("\n").some((line) => {
     const trimmed = line.trimStart();
@@ -62,8 +65,7 @@ export type HtmlTailwindScriptSource = {
   animation?: unknown;
 };
 
-// The runtime is ours, but a `</script>` in it would still end the element early, so it is split like any inline script.
-const inlineScript = (code: string): string => `<script>\n${code.replace(/<\/script/gi, "<\\/script")}\n</script>`;
+const inlineScript = (code: string): string => `<script>\n${neutralizeScriptTerminator(code)}\n</script>`;
 
 /**
  * The scripts that bring an html_tailwind beat to the state its PNG shows, as `<script>` elements
@@ -72,7 +74,8 @@ const inlineScript = (code: string): string => `<script>\n${code.replace(/<\/scr
  * Without `animation` that is the author script and swipe driver, as `tailwind.html` runs them.
  * With it, the runtime, frame state and registration `tailwind_animated.html` loads, then the
  * final frame — what `renderHTMLToFinalFrame` captures. The final frame is drawn on `load`, after
- * a module author script (deferred) has defined its `render`, as Puppeteer calls it after load.
+ * a module author script (deferred) has defined its `render`, as Puppeteer calls it after load;
+ * scripts a host adds to an already-loaded document draw it straight away.
  */
 export const htmlTailwindDocumentScript = (image: HtmlTailwindScriptSource): string | undefined => {
   // The schema leaves `elements` unknown[]; the markup reads it through the same guard.
@@ -80,7 +83,14 @@ export const htmlTailwindDocumentScript = (image: HtmlTailwindScriptSource): str
   const userScript = buildUserScript(resolveHtmlAndScript({ script: image.script, ...(elements ? { elements } : {}) }).script);
   if (!isAnimationEnabled(image.animation)) return userScript || undefined;
   const frameState = `window.__MULMO = { frame: 0, totalFrames: ${FINAL_FRAME_TOTAL}, fps: ${animationFps(image.animation)} };`;
-  const finalFrame = 'window.addEventListener("load", function () { Promise.resolve(window.renderFinal()).catch(console.error); });';
+  // On `load` when the scripts are part of the document as it loads; at once when a host adds them to a loaded one.
+  const finalFrame = [
+    "(function () {",
+    "  var drawFinal = function () { Promise.resolve(window.renderFinal()).catch(console.error); };",
+    '  if (document.readyState === "complete") setTimeout(drawFinal, 0);',
+    '  else window.addEventListener("load", drawFinal);',
+    "})();",
+  ].join("\n");
   return [
     inlineScript(`${animationRuntime.animation_runtime}\n${frameState}`),
     userScript,
