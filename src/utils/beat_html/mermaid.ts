@@ -1,6 +1,7 @@
 import type { MulmoMermaidMedia } from "../../types/index.js";
 import type { BeatHtmlFragment, BeatHtmlOptions } from "./type.js";
 import { deckSlideToHtml } from "./slide.js";
+import { backgroundDecoration } from "./decoration.js";
 
 /**
  * A mermaid beat as a deck `figure` slide — see `chart.ts` for why deck draws it.
@@ -14,5 +15,10 @@ export const mermaidToHtml = (image: MulmoMermaidMedia, options: BeatHtmlOptions
   if (image.code.kind !== "text") return undefined;
   const appendix = image.appendix?.join("\n") ?? "";
   const code = `${image.code.text}\n${appendix}`.trim();
-  return deckSlideToHtml({ layout: "figure", title: image.title || "Diagram", figure: { type: "mermaid", code } }, undefined, options);
+  return deckSlideToHtml(
+    { layout: "figure", title: image.title || "Diagram", figure: { type: "mermaid", code } },
+    undefined,
+    options,
+    backgroundDecoration(image, options),
+  );
 };

@@ -1,4 +1,5 @@
-import type { SlideTheme } from "@mulmocast/deck";
+import type { SlideBranding, SlideTheme } from "@mulmocast/deck";
+import type { BackgroundImage, MulmoMediaSource } from "../../types/index.js";
 
 /**
  * A beat rendered as markup for a browser host.
@@ -31,6 +32,16 @@ export type BeatHtmlFragment = {
    * and a host that does not gets an empty box, silently.
    */
   css?: string;
+  /**
+   * Rules for the whole document — `html` and `body` — painting the beat's background image
+   * behind the page, as the PNG render does. Absent when the beat has no background.
+   *
+   * Apply it only where the beat owns the document (an iframe, a print page). Injected into a
+   * page shared with anything else it restyles that page: it cannot be scoped to the markup,
+   * because a text beat's markup has no root of its own and the PNG paints the background on
+   * `body`, behind the body's margin as well.
+   */
+  documentCss?: string;
   /** External runtimes the host must load once for the page, not once per beat. */
   requires?: BeatRuntime[];
   /**
@@ -81,4 +92,24 @@ export type BeatHtmlOptions = {
    * theme to give.
    */
   slideTheme?: SlideTheme;
+  /**
+   * The deck's `imageParams.backgroundImage`. A beat's own `backgroundImage` wins over it and a
+   * beat-level `null` switches it off — the order `resolveBackgroundImage` uses on the Node side.
+   * textSlide and markdown beats get it as `documentCss`; chart and mermaid beats, which deck
+   * draws as a figure slide, as that slide's background layer.
+   */
+  backgroundImage?: BackgroundImage;
+  /**
+   * The deck's `slideParams.branding` (logo and background) for slide beats. A beat's own
+   * `branding` wins over it and a beat-level `null` switches it off, as on the Node side.
+   */
+  branding?: SlideBranding;
+  /**
+   * Turns a background or branding image into a URL the host's page can load. The default uses
+   * a url as written and a path as written, and skips a base64 source — the schema carries no
+   * media type to build a `data:` URI from. A host whose scripts sit next to local files
+   * resolves paths here. What it returns is percent-encoded where it would otherwise break out
+   * of a CSS string or an HTML attribute.
+   */
+  resolveMediaUrl?: (source: MulmoMediaSource) => string | undefined;
 };
