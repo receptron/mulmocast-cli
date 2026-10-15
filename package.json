@@ -180,7 +180,7 @@
     "@remotion/shapes": "^4.0.533",
     "@remotion/three": "^4.0.533",
     "@remotion/transitions": "^4.0.533",
-    "avatarscript": "^0.4.0",
+    "avatarscript": "^0.5.0",
     "onnxruntime-node": "^1.30.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
