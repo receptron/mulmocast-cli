@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.23.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.23.0) (2026-10-15)
+
+- **Avatars need avatarscript 0.5** (#1651, #1650): the `avatarscript` peer range is now `^0.5.0`, the version this repository is built and tested with. It said `^0.4.0`, which excludes 0.5, so `npm install mulmocast avatarscript onnxruntime-node` installed 0.4.1. Projects with avatars should upgrade avatarscript (`npm install avatarscript@^0.5.0`). A test now fails whenever a devDependency's range falls outside the peer range users are told to install
+- **JingleScript 0.8** (#1648): adds recorded CC0 sound effects (`ding`, `glass`, `metal`, `punch`, `book`, `door`, `dice`, `cards`, `cloth`, more `footsteps`) usable in `soundEffects` scores, and makes `grandpiano` play like a piano (re-striking damps the ringing note, `len` releases the key, a sustain `pedal`). Scores that use `grandpiano` may sound different
+- **Avatar guide** (#1649): [`docs/avatar.md`](https://github.com/receptron/mulmocast-cli/blob/main/docs/avatar.md) — installing the optional packages, the five ready-made avatars, making your own with mesh-avatar-studio, `avatarParams`, and troubleshooting
+- Dependency updates (#1648)
+
+📦 **npm**: [`mulmocast@2.23.0`](https://www.npmjs.com/package/mulmocast/v/2.23.0)
+
 ## [2.22.1](https://github.com/receptron/mulmocast-cli/releases/tag/2.22.1) (2026-10-15)
 
 - **Image-only renders no longer need ffmpeg** (#1646, #1645): `audioChecker` probed the generated still PNG with ffprobe for every beat without a movie, so `mulmo images` (and `generateBeatImage`) failed with `Cannot find ffprobe` after writing the image. It now probes the movie file when there is one, and a file in the image slot only when it is not a still image. `hasMovieAudio` is unchanged; movies, `moviePrompt`, lip sync and animated beats still need ffmpeg
