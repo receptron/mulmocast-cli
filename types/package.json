@@ -14,7 +14,7 @@
   ],
   "dependencies": {
     "@mulmocast/deck": "^2.1.0",
-    "zod": "^4.6.5"
+    "zod": "^4.6.7"
   },
   "peerDependencies": {
     "graphai": "^2.0.0",
