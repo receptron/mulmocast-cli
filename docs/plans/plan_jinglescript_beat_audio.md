@@ -22,7 +22,8 @@ JingleScript score.
 - `text` stays the words: captions show it and the avatar matches the voice against it. For a sung
   beat it is the lyrics.
 - Accompaniment can go in the same score (heard as the beat's voice) or, better for lip sync, in a
-  second score as a sound effect of the beat at `at: 0` (the avatar then hears only the voice).
+  second score as a sound effect of the beat, starting with it (`startAt` omitted: 0) — the avatar then
+  hears only the voice.
 
 ## Affected files
 
