@@ -3947,10 +3947,10 @@ jest-worker@^27.4.5:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
-jinglescript@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/jinglescript/-/jinglescript-0.8.0.tgz#82560b0a3a35e933a6cac43e2f53bb6298e57a92"
-  integrity sha512-2DfgBmipstC2cXDBKTsbA1XFdmSC0VAnZszh9DgRjMXzdQGikXQ6svLPAgsPIXSiybitu7+bu9jT8Hk5jNpq8A==
+jinglescript@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/jinglescript/-/jinglescript-1.0.0.tgz#befc69d8ac36b4218071bdd314af7c0ba249dc0a"
+  integrity sha512-X6WhuMMs5+uJsr6bKQlDdwfW/SsbdUrsDFwhXHwRjdMCVfwoZXf5KgITDuWPPKCNPnc9MK06eH1k41qruu/ryw==
   dependencies:
     "@modelcontextprotocol/sdk" "^1.32.1"
     zod "^4.6.5"

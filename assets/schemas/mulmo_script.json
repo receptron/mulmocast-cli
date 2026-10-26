@@ -13868,6 +13868,28 @@
                   "source"
                 ],
                 "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "jinglescript"
+                  },
+                  "score": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {},
+                    "description": "JingleScript score (format jinglescript/1) rendered as this beat's voice instead of TTS, e.g. a track sung with `sing` (NEUTRINO). The beat's text stays the words (captions, avatar lip sync)"
+                  }
+                },
+                "required": [
+                  "type",
+                  "score"
+                ],
+                "additionalProperties": false
               }
             ]
           },

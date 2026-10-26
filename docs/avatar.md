@@ -36,9 +36,7 @@ npm install avatarscript onnxruntime-node
       }
     }
   },
-  "beats": [
-    { "speaker": "Ani", "text": "みなさん、こんにちは！", "image": { "type": "markdown", "markdown": ["# Hello"] } }
-  ]
+  "beats": [{ "speaker": "Ani", "text": "みなさん、こんにちは！", "image": { "type": "markdown", "markdown": ["# Hello"] } }]
 }
 ```
 
@@ -55,13 +53,13 @@ npm install avatarscript onnxruntime-node
 https://raw.githubusercontent.com/receptron/mulmocast-media/main/avatars/<名前>
 ```
 
-| 名前 | 元のイラスト |
-|---|---|
-| `ani` | [ani_clean.jpeg](https://github.com/receptron/mulmocast-media/blob/main/characters/ani_clean.jpeg) |
+| 名前      | 元のイラスト                                                                                               |
+| --------- | ---------------------------------------------------------------------------------------------------------- |
+| `ani`     | [ani_clean.jpeg](https://github.com/receptron/mulmocast-media/blob/main/characters/ani_clean.jpeg)         |
 | `marilyn` | [marilyn_white.jpeg](https://github.com/receptron/mulmocast-media/blob/main/characters/marilyn_white.jpeg) |
-| `reika` | [reika_white.jpg](https://github.com/receptron/mulmocast-media/blob/main/characters/reika_white.jpg) |
-| `seiya` | [seiya_white.jpg](https://github.com/receptron/mulmocast-media/blob/main/characters/seiya_white.jpg) |
-| `ken` | [ken.jpg](https://github.com/receptron/mulmocast-media/blob/main/characters/ken.jpg) |
+| `reika`   | [reika_white.jpg](https://github.com/receptron/mulmocast-media/blob/main/characters/reika_white.jpg)       |
+| `seiya`   | [seiya_white.jpg](https://github.com/receptron/mulmocast-media/blob/main/characters/seiya_white.jpg)       |
+| `ken`     | [ken.jpg](https://github.com/receptron/mulmocast-media/blob/main/characters/ken.jpg)                       |
 
 ### 自分のアバターを作る
 
@@ -82,12 +80,12 @@ https://raw.githubusercontent.com/receptron/mulmocast-media/main/avatars/<名前
 }
 ```
 
-| 項目 | 内容 |
-|---|---|
-| `emotion` | その場面の表情: `neutral` / `happy` / `sad` / `angry` / `surprised` / `relaxed` |
-| `motions` | 動きの一覧 `[{ "motion": …, "at": … }]`。`at` は `text` の中の言葉で、その言葉を話すときに動きが始まります（省略すると場面の最初） |
+| 項目       | 内容                                                                                                                                                                   |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `emotion`  | その場面の表情: `neutral` / `happy` / `sad` / `angry` / `surprised` / `relaxed`                                                                                        |
+| `motions`  | 動きの一覧 `[{ "motion": …, "at": … }]`。`at` は `text` の中の言葉で、その言葉を話すときに動きが始まります（省略すると場面の最初）                                     |
 | `position` | 位置と大きさ: `x`（アバターの中心、画面幅の %、既定 `84%`）、`y`（アバターの下端、画面の高さの %、既定 `100%`）、`scale`（アバターの高さ、画面の高さの %、既定 `62%`） |
-| `hidden` | `true` で、その場面だけアバターを隠す |
+| `hidden`   | `true` で、その場面だけアバターを隠す                                                                                                                                  |
 
 `motion` の名前（mesh アバターの場合）: `nod`（うなずく）、`tilt`（首をかしげる）、`think`（考える）、`giggle`（くすっと笑う）、`surprise`（驚く）、`shy`（照れる）、`no`（首を振る）、`wink`（ウインク）、`greet`（あいさつ）
 
@@ -96,11 +94,48 @@ https://raw.githubusercontent.com/receptron/mulmocast-media/main/avatars/<名前
 ```json
 {
   "avatarParams": { "position": { "x": "82%", "y": "100%", "scale": "62%" } },
-  "beats": [
-    { "speaker": "Ani", "text": "…", "avatarParams": { "position": { "x": "18%", "scale": "48%" } } }
-  ]
+  "beats": [{ "speaker": "Ani", "text": "…", "avatarParams": { "position": { "x": "18%", "scale": "48%" } } }]
 }
 ```
+
+## 歌わせる（JingleScript + NEUTRINO）
+
+ビートの声を TTS の代わりに [JingleScript](https://github.com/receptron/jinglescript) の楽譜にすると、アバターがその歌に合わせて口を動かします。楽譜のトラックに `"sing": { "engine": "neutrino" }` を書くと、そのトラックは利用者が自分でインストールした [NEUTRINO](https://studio-neutrino.com/)（無料の歌声合成ソフト）で歌われます。
+
+**サンプルファイル**: [`scripts/test/test_avatar_singing.json`](https://github.com/receptron/mulmocast-cli/blob/main/scripts/test/test_avatar_singing.json)
+
+```json
+{
+  "speaker": "Ani",
+  "text": "かえるのうたが、きこえてくるよ。",
+  "audio": {
+    "type": "jinglescript",
+    "score": {
+      "format": "jinglescript/1",
+      "tempo": 100,
+      "length": { "beats": 9 },
+      "tracks": [
+        {
+          "instrument": "organ",
+          "sing": { "engine": "neutrino", "voice": "reina" },
+          "notes": [
+            { "at": 1, "pitch": "C4", "len": 0.95, "lyric": "か" },
+            { "at": 2, "pitch": "D4", "len": 0.95, "lyric": "え" }
+          ]
+        }
+      ]
+    }
+  },
+  "soundEffects": [{ "source": { "kind": "jinglescript", "score": { "...": "伴奏の楽譜" } }, "volume": 0.35 }]
+}
+```
+
+- `audio.type: "jinglescript"` の楽譜が、そのビートの声になります（TTS は使いません）。ビートの長さは歌の長さです。
+- `text` には歌詞を書きます。アバターの口の動きは、この文章と歌声を突き合わせて決まります。実際に歌う音（`ぐぁ` など）に近く書くほど合います。
+- 歌詞は 1 音符に 1 モーラのかな（`lyric`）。最初の音符は 1 拍あとから始めると、子音が切れません。
+- 伴奏は同じビートの `soundEffects` に別の楽譜で入れると、アバターは歌声だけを聞いて口を動かします。2 つの楽譜は同じテンポ・同じ `length` にそろえます。
+- NEUTRINO は自分でダウンロードして `/Applications/NEUTRINO` に置くか、`.env` に `NEUTRINO_DIR=/path/to/NEUTRINO` と書きます。見つからないと、その旨のエラーで止まります。最初の描画には数十秒かかり、2 回目からはキャッシュされます。
+- NEUTRINO の歌声は、NEUTRINO と各歌声ライブラリの利用規約に従ってください（AI の学習や声質変換には使えません）。
 
 ## 動画を作る
 
@@ -116,9 +151,9 @@ npx mulmo movie my_script.json
 
 ## うまくいかないとき
 
-| 症状 | 対処 |
-|---|---|
-| `Avatars need the avatarscript and onnxruntime-node packages` で止まる | `npm install avatarscript onnxruntime-node` |
-| 最初の 1 回だけ時間がかかる | 音声合わせのモデル（約 635 MB）のダウンロードです。2 回目からは速くなります |
-| 画面の描画（Chrome）が起動しない | `npx puppeteer browsers install chrome` |
-| アバターの見た目を変えたのに反映されない | `-f` を付けて作り直す |
+| 症状                                                                   | 対処                                                                        |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `Avatars need the avatarscript and onnxruntime-node packages` で止まる | `npm install avatarscript onnxruntime-node`                                 |
+| 最初の 1 回だけ時間がかかる                                            | 音声合わせのモデル（約 635 MB）のダウンロードです。2 回目からは速くなります |
+| 画面の描画（Chrome）が起動しない                                       | `npx puppeteer browsers install chrome`                                     |
+| アバターの見た目を変えたのに反映されない                               | `-f` を付けて作り直す                                                       |

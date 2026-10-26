@@ -19,18 +19,23 @@ export const getJingleFilePath = (score: JingleScore, context: MulmoStudioContex
   return path.join(MulmoStudioContextMethods.getAudioDirPath(context), `jingle_${hashSHA256(JSON.stringify(score))}.wav`);
 };
 
+// Every JingleScript score of the script: a beat's voice (beat.audio) and its sound effects, each
+// with where it is, for error messages.
 export const getJingleScores = (context: MulmoStudioContext) => {
-  return context.studio.script.beats.flatMap((beat, beatIndex) =>
-    (beat.soundEffects ?? []).flatMap((soundEffect, effectIndex) =>
-      soundEffect.source.kind === "jinglescript" ? [{ score: soundEffect.source.score, beatIndex, effectIndex }] : [],
+  return context.studio.script.beats.flatMap((beat, beatIndex) => [
+    ...(beat.audio?.type === "jinglescript" ? [{ score: beat.audio.score, location: `beats[${beatIndex}].audio.score` }] : []),
+    ...(beat.soundEffects ?? []).flatMap((soundEffect, effectIndex) =>
+      soundEffect.source.kind === "jinglescript"
+        ? [{ score: soundEffect.source.score, location: `beats[${beatIndex}].soundEffects[${effectIndex}].source.score` }]
+        : [],
     ),
-  );
+  ]);
 };
 
 // Checks every JingleScript score in the script; throws listing every problem with its location.
 export const validateJingleScores = (context: MulmoStudioContext) => {
-  const problems = getJingleScores(context).flatMap(({ score, beatIndex, effectIndex }) =>
-    checkScore(score).errors.map((problem) => `beats[${beatIndex}].soundEffects[${effectIndex}].source.score: ${formatProblem(problem).trim()}`),
+  const problems = getJingleScores(context).flatMap(({ score, location }) =>
+    checkScore(score).errors.map((problem) => `${location}: ${formatProblem(problem).trim()}`),
   );
   userAssert(problems.length === 0, `Invalid JingleScript score:\n${problems.join("\n")}`);
 };
@@ -50,14 +55,15 @@ const loadJingleSamples = async (score: ReturnType<typeof parseScore>, location:
 // Renders the JingleScript scores of the script to WAV files (skipping cached ones unless forced).
 export const renderJingleScores = async (context: MulmoStudioContext) => {
   validateJingleScores(context);
-  for (const { score, beatIndex, effectIndex } of getJingleScores(context)) {
+  for (const { score, location } of getJingleScores(context)) {
     const filePath = getJingleFilePath(score, context);
     if (!context.force && fs.existsSync(filePath)) {
       continue;
     }
     const parsed = parseScore(score);
-    const samples = await loadJingleSamples(parsed, `beats[${beatIndex}].soundEffects[${effectIndex}].source.score`);
-    const { audio, sampleRate } = render(parsed, { sampleRate: JINGLE_SAMPLE_RATE, samples });
+    const samples = await loadJingleSamples(parsed, location);
+    // jinglescript renders on a worker thread (1.0); a track with `sing` runs the user's NEUTRINO there.
+    const { audio, sampleRate } = await render(parsed, { sampleRate: JINGLE_SAMPLE_RATE, samples });
     mkdir(path.dirname(filePath));
     writeFileAtomically(filePath, toWav(audio, sampleRate));
     GraphAILogger.info(`jinglescript: rendered ${filePath}`);
