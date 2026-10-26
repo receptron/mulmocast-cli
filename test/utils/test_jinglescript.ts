@@ -204,3 +204,32 @@ test("renderJingleScores with a beat index renders only that beat's scores (the 
   assert.strictEqual(fs.existsSync(getJingleFilePath(pop, context)), false);
   assert.strictEqual(fs.readFileSync(getJingleFilePath(tick, context)).subarray(0, 4).toString(), "RIFF");
 });
+
+test("renderJingleScores for one beat is not stopped by an invalid score in another beat", async () => {
+  const context = makeContext([[{ source: { kind: "jinglescript", score: badScore } }], [{ source: { kind: "jinglescript", score: pop } }]]);
+  await renderJingleScores(context, 1);
+  assert.strictEqual(fs.readFileSync(getJingleFilePath(pop, context)).subarray(0, 4).toString(), "RIFF");
+  await assert.rejects(renderJingleScores(context), /beats\[0\]\.soundEffects\[0\]\.source\.score: tracks\[0\]\.instrument/);
+  await assert.rejects(renderJingleScores(context, 0), /beats\[0\]\.soundEffects\[0\]/);
+});
+
+test("renderJingleScores: a render that fails names where its score is", async () => {
+  const sung = {
+    format: "jinglescript/1",
+    tempo: 120,
+    length: { seconds: 2 },
+    tracks: [{ instrument: "organ", sing: { engine: "neutrino" }, notes: [{ at: 1, pitch: "C4", lyric: "か" }] }],
+  };
+  const before = process.env.NEUTRINO_DIR;
+  process.env.NEUTRINO_DIR = "/nonexistent/NEUTRINO";
+  try {
+    const context = makeVoiceContext({ type: "jinglescript", score: sung });
+    await assert.rejects(renderJingleScores(context), /beats\[1\]\.audio\.score: failed to render the JingleScript score: NEUTRINO was not found/);
+  } finally {
+    if (before === undefined) {
+      delete process.env.NEUTRINO_DIR;
+    } else {
+      process.env.NEUTRINO_DIR = before;
+    }
+  }
+});
