@@ -31,7 +31,9 @@ JingleScript score.
 - `src/utils/jinglescript.ts`: `getJingleScores` also lists beat audio scores; each has a
   `location` for error messages. `render()` is async from jinglescript 1.0 (it renders on a worker
   thread).
-- `src/actions/audio.ts`: `getAudioPathOrUrl` returns the rendered file for a jinglescript beat.
+- `src/actions/audio.ts`: `getAudioPathOrUrl` returns the rendered file for a jinglescript beat;
+  `generateBeatAudio` (the per-beat API, which runs no TTS for such a beat) renders that beat's
+  scores first (`renderJingleScores(context, index)`).
 - `test/utils/test_jinglescript.ts`: listing, validation and rendering of beat audio scores.
 - `scripts/test/test_avatar_singing.json`: a sample in which a character introduces and sings a
   song over its accompaniment.
