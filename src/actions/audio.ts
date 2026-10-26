@@ -279,6 +279,8 @@ export const generateBeatAudio = async (index: number, context: MulmoStudioConte
 
     mkdir(outDirPath);
     mkdir(audioSegmentDirPath);
+    // A beat whose voice is a JingleScript score has no TTS to run: render its score here.
+    await renderJingleScores(context, index);
 
     const graph = new GraphAI(langs ? graph_tts_map : graph_tts, audioAgents, await audioGraphOption(context, settings));
     callbacks?.forEach((callback) => graph.registerCallback(callback));

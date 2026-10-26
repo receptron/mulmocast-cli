@@ -39,7 +39,7 @@ test("mulmoBeatSoundEffectSchema: accepts a jinglescript source", () => {
 
 test("getJingleScores: lists only jinglescript sources, with their location", () => {
   const context = makeContext([[{ source: { kind: "url", url: "https://example.com/a.wav" } }], [{ source: { kind: "jinglescript", score: pop } }]]);
-  assert.deepStrictEqual(getJingleScores(context), [{ score: pop, location: "beats[1].soundEffects[0].source.score" }]);
+  assert.deepStrictEqual(getJingleScores(context), [{ score: pop, beatIndex: 1, location: "beats[1].soundEffects[0].source.score" }]);
 });
 
 // A beat whose voice is a JingleScript score (beat.audio), with or without sound effects.
@@ -76,8 +76,8 @@ test("mulmoBeatSchema: accepts a jinglescript score as the beat's voice", () => 
 test("getJingleScores: lists a beat's voice before its sound effects", () => {
   const context = makeVoiceContext({ type: "jinglescript", score: pop }, [{ source: { kind: "jinglescript", score: badScore } }]);
   assert.deepStrictEqual(getJingleScores(context), [
-    { score: pop, location: "beats[1].audio.score" },
-    { score: badScore, location: "beats[1].soundEffects[0].source.score" },
+    { score: pop, beatIndex: 1, location: "beats[1].audio.score" },
+    { score: badScore, beatIndex: 1, location: "beats[1].soundEffects[0].source.score" },
   ]);
   assert.deepStrictEqual(getJingleScores(makeVoiceContext({ type: "audio", source: { kind: "path", path: "a.wav" } })), []);
 });
@@ -194,4 +194,13 @@ test("writeFileAtomically: a failed write leaves neither the target nor a tempor
   assert.throws(() => writeFileAtomically(filePath, new Uint8Array([1])));
   assert.strictEqual(fs.existsSync(filePath), false);
   assert.deepStrictEqual(fs.readdirSync(dir), []);
+});
+
+test("renderJingleScores with a beat index renders only that beat's scores (the per-beat audio API)", async () => {
+  const audioDir = tmpDir();
+  const tick = { ...pop, tempo: 90 };
+  const context = makeContext([[{ source: { kind: "jinglescript", score: pop } }], [{ source: { kind: "jinglescript", score: tick } }]], audioDir);
+  await renderJingleScores(context, 1);
+  assert.strictEqual(fs.existsSync(getJingleFilePath(pop, context)), false);
+  assert.strictEqual(fs.readFileSync(getJingleFilePath(tick, context)).subarray(0, 4).toString(), "RIFF");
 });

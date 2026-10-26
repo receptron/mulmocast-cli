@@ -23,10 +23,10 @@ export const getJingleFilePath = (score: JingleScore, context: MulmoStudioContex
 // with where it is, for error messages.
 export const getJingleScores = (context: MulmoStudioContext) => {
   return context.studio.script.beats.flatMap((beat, beatIndex) => [
-    ...(beat.audio?.type === "jinglescript" ? [{ score: beat.audio.score, location: `beats[${beatIndex}].audio.score` }] : []),
+    ...(beat.audio?.type === "jinglescript" ? [{ score: beat.audio.score, beatIndex, location: `beats[${beatIndex}].audio.score` }] : []),
     ...(beat.soundEffects ?? []).flatMap((soundEffect, effectIndex) =>
       soundEffect.source.kind === "jinglescript"
-        ? [{ score: soundEffect.source.score, location: `beats[${beatIndex}].soundEffects[${effectIndex}].source.score` }]
+        ? [{ score: soundEffect.source.score, beatIndex, location: `beats[${beatIndex}].soundEffects[${effectIndex}].source.score` }]
         : [],
     ),
   ]);
@@ -52,10 +52,12 @@ const loadJingleSamples = async (score: ReturnType<typeof parseScore>, location:
   }
 };
 
-// Renders the JingleScript scores of the script to WAV files (skipping cached ones unless forced).
-export const renderJingleScores = async (context: MulmoStudioContext) => {
+// Renders the JingleScript scores of the script, or of one beat (`beatIndex`: the per-beat audio
+// API), to WAV files, skipping cached ones unless forced.
+export const renderJingleScores = async (context: MulmoStudioContext, beatIndex?: number) => {
   validateJingleScores(context);
-  for (const { score, location } of getJingleScores(context)) {
+  const jingles = getJingleScores(context).filter((jingle) => beatIndex === undefined || jingle.beatIndex === beatIndex);
+  for (const { score, location } of jingles) {
     const filePath = getJingleFilePath(score, context);
     if (!context.force && fs.existsSync(filePath)) {
       continue;
