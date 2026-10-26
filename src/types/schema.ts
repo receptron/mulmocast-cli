@@ -479,7 +479,18 @@ const mulmoMidiMediaSchema = z
   })
   .strict();
 
-export const mulmoAudioAssetSchema = z.union([mulmoAudioMediaSchema, mulmoMidiMediaSchema]);
+const mulmoJingleScriptAudioSchema = z
+  .object({
+    type: z.literal("jinglescript"),
+    score: z
+      .record(z.string(), z.unknown())
+      .describe(
+        "JingleScript score (format jinglescript/1) rendered as this beat's voice instead of TTS, e.g. a track sung with `sing` (NEUTRINO). The beat's text stays the words (captions, avatar lip sync)",
+      ),
+  })
+  .strict();
+
+export const mulmoAudioAssetSchema = z.union([mulmoAudioMediaSchema, mulmoMidiMediaSchema, mulmoJingleScriptAudioSchema]);
 
 const imageIdSchema = z.string();
 

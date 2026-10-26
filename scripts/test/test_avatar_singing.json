@@ -1,0 +1,355 @@
+{
+  "$mulmocast": {
+    "version": "1.1"
+  },
+  "lang": "ja",
+  "title": "Singing avatar",
+  "description": "Ani introduces a song and sings it: the sung beat's voice is a JingleScript score with `sing` (the user's NEUTRINO, https://studio-neutrino.com/), and its accompaniment a JingleScript sound effect. Needs NEUTRINO (NEUTRINO_DIR in .env, default /Applications/NEUTRINO) and the npm packages avatarscript and onnxruntime-node.",
+  "audioParams": {
+    "bgmVolume": 0
+  },
+  "avatarParams": {
+    "position": {
+      "x": "80%",
+      "y": "100%",
+      "scale": "66%"
+    }
+  },
+  "speechParams": {
+    "speakers": {
+      "Ani": {
+        "provider": "openai",
+        "voiceId": "nova",
+        "speechOptions": {
+          "instruction": "Speak brightly and a little proudly, like a cheerful anime girl."
+        },
+        "displayName": {
+          "ja": "アニ"
+        },
+        "avatar": {
+          "source": "https://raw.githubusercontent.com/receptron/mulmocast-media/main/avatars/ani"
+        }
+      }
+    }
+  },
+  "beats": [
+    {
+      "speaker": "Ani",
+      "text": "ねえ、ちょっと聞いて。今日はわたしが、一曲歌ってあげる。曲は、かえるのうた、よ。",
+      "image": {
+        "type": "markdown",
+        "markdown": ["# 歌うアバター", "", "- AvatarScript: 声に合わせて口を動かす", "- JingleScript + NEUTRINO: 楽譜から歌声を作る"]
+      },
+      "avatarParams": {
+        "emotion": "happy",
+        "motions": [
+          {
+            "motion": "greet",
+            "at": "ねえ"
+          }
+        ]
+      }
+    },
+    {
+      "speaker": "Ani",
+      "text": "かえるのうたが、きこえてくるよ。ぐぁ、ぐぁ、ぐぁ、ぐぁ。けけけけ、けけけけ、くぁ、くぁ、くぁ。",
+      "audio": {
+        "type": "jinglescript",
+        "score": {
+          "format": "jinglescript/1",
+          "tempo": 100,
+          "meter": "4/4",
+          "length": {
+            "beats": 35
+          },
+          "title": "かえるのうた (vocal)",
+          "tracks": [
+            {
+              "instrument": "organ",
+              "name": "voice",
+              "sing": {
+                "engine": "neutrino",
+                "voice": "reina"
+              },
+              "notes": [
+                {
+                  "at": 1,
+                  "pitch": "C4",
+                  "len": 0.95,
+                  "lyric": "か"
+                },
+                {
+                  "at": 2,
+                  "pitch": "D4",
+                  "len": 0.95,
+                  "lyric": "え"
+                },
+                {
+                  "at": 3,
+                  "pitch": "E4",
+                  "len": 0.95,
+                  "lyric": "る"
+                },
+                {
+                  "at": 4,
+                  "pitch": "F4",
+                  "len": 0.95,
+                  "lyric": "の"
+                },
+                {
+                  "at": 5,
+                  "pitch": "E4",
+                  "len": 0.95,
+                  "lyric": "う"
+                },
+                {
+                  "at": 6,
+                  "pitch": "D4",
+                  "len": 0.95,
+                  "lyric": "た"
+                },
+                {
+                  "at": 7,
+                  "pitch": "C4",
+                  "len": 1.4249999999999998,
+                  "lyric": "が"
+                },
+                {
+                  "at": 9,
+                  "pitch": "E4",
+                  "len": 0.95,
+                  "lyric": "き"
+                },
+                {
+                  "at": 10,
+                  "pitch": "F4",
+                  "len": 0.95,
+                  "lyric": "こ"
+                },
+                {
+                  "at": 11,
+                  "pitch": "G4",
+                  "len": 0.95,
+                  "lyric": "え"
+                },
+                {
+                  "at": 12,
+                  "pitch": "A4",
+                  "len": 0.95,
+                  "lyric": "て"
+                },
+                {
+                  "at": 13,
+                  "pitch": "G4",
+                  "len": 0.95,
+                  "lyric": "く"
+                },
+                {
+                  "at": 14,
+                  "pitch": "F4",
+                  "len": 0.95,
+                  "lyric": "る"
+                },
+                {
+                  "at": 15,
+                  "pitch": "E4",
+                  "len": 1.4249999999999998,
+                  "lyric": "よ"
+                },
+                {
+                  "at": 17,
+                  "pitch": "C4",
+                  "len": 0.95,
+                  "lyric": "ぐぁ"
+                },
+                {
+                  "at": 19,
+                  "pitch": "C4",
+                  "len": 0.95,
+                  "lyric": "ぐぁ"
+                },
+                {
+                  "at": 21,
+                  "pitch": "C4",
+                  "len": 0.95,
+                  "lyric": "ぐぁ"
+                },
+                {
+                  "at": 23,
+                  "pitch": "C4",
+                  "len": 0.95,
+                  "lyric": "ぐぁ"
+                },
+                {
+                  "at": 25,
+                  "pitch": "C4",
+                  "len": 0.475,
+                  "lyric": "け"
+                },
+                {
+                  "at": 25.5,
+                  "pitch": "C4",
+                  "len": 0.475,
+                  "lyric": "け"
+                },
+                {
+                  "at": 26,
+                  "pitch": "D4",
+                  "len": 0.475,
+                  "lyric": "け"
+                },
+                {
+                  "at": 26.5,
+                  "pitch": "D4",
+                  "len": 0.475,
+                  "lyric": "け"
+                },
+                {
+                  "at": 27,
+                  "pitch": "E4",
+                  "len": 0.475,
+                  "lyric": "け"
+                },
+                {
+                  "at": 27.5,
+                  "pitch": "E4",
+                  "len": 0.475,
+                  "lyric": "け"
+                },
+                {
+                  "at": 28,
+                  "pitch": "F4",
+                  "len": 0.475,
+                  "lyric": "け"
+                },
+                {
+                  "at": 28.5,
+                  "pitch": "F4",
+                  "len": 0.475,
+                  "lyric": "け"
+                },
+                {
+                  "at": 29,
+                  "pitch": "E4",
+                  "len": 0.95,
+                  "lyric": "くぁ"
+                },
+                {
+                  "at": 30,
+                  "pitch": "D4",
+                  "len": 0.95,
+                  "lyric": "くぁ"
+                },
+                {
+                  "at": 31,
+                  "pitch": "C4",
+                  "len": 0.95,
+                  "lyric": "くぁ"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "soundEffects": [
+        {
+          "source": {
+            "kind": "jinglescript",
+            "score": {
+              "format": "jinglescript/1",
+              "tempo": 100,
+              "meter": "4/4",
+              "length": {
+                "beats": 35
+              },
+              "title": "かえるのうた (accompaniment)",
+              "tracks": [
+                {
+                  "instrument": "vibraphone",
+                  "name": "vibes",
+                  "notes": [
+                    {
+                      "at": 1,
+                      "pitch": ["C4", "E4", "G4"],
+                      "len": 3.8
+                    },
+                    {
+                      "at": 5,
+                      "pitch": ["G3", "B3", "D4"],
+                      "len": 3.8
+                    },
+                    {
+                      "at": 9,
+                      "pitch": ["C4", "E4", "G4"],
+                      "len": 3.8
+                    },
+                    {
+                      "at": 13,
+                      "pitch": ["F3", "A3", "C4"],
+                      "len": 3.8
+                    },
+                    {
+                      "at": 17,
+                      "pitch": ["C4", "E4", "G4"],
+                      "len": 3.8
+                    },
+                    {
+                      "at": 21,
+                      "pitch": ["C4", "E4", "G4"],
+                      "len": 3.8
+                    },
+                    {
+                      "at": 25,
+                      "pitch": ["G3", "B3", "D4"],
+                      "len": 3.8
+                    },
+                    {
+                      "at": 29,
+                      "pitch": ["C4", "E4", "G4"],
+                      "len": 3.8
+                    },
+                    {
+                      "at": 33,
+                      "pitch": ["C4", "G4", "C5"],
+                      "len": 3.8
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "volume": 0.35
+        }
+      ],
+      "image": {
+        "type": "markdown",
+        "markdown": ["# かえるのうた", "", "かえるのうたが　きこえてくるよ", "", "ぐわっ　ぐわっ　ぐわっ　ぐわっ", "", "けけけけ　けけけけ　くわっくわっくわっ"]
+      },
+      "avatarParams": {
+        "emotion": "happy"
+      }
+    },
+    {
+      "speaker": "Ani",
+      "text": "どう？上手だったでしょ。歌声は、楽譜からその場で作ったの。",
+      "image": {
+        "type": "markdown",
+        "markdown": [
+          "# How it works",
+          "",
+          "- 歌のビートの声: `audio: { type: \"jinglescript\", score }`（`sing` のあるトラック）",
+          "- 伴奏: 同じビートの `soundEffects`（JingleScript）"
+        ]
+      },
+      "avatarParams": {
+        "emotion": "relaxed",
+        "motions": [
+          {
+            "motion": "wink",
+            "at": "上手"
+          }
+        ]
+      }
+    }
+  ]
+}

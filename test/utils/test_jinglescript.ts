@@ -6,7 +6,8 @@ import path from "node:path";
 
 import { getJingleFilePath, getJingleScores, renderJingleScores, validateJingleScores, writeFileAtomically } from "../../src/utils/jinglescript.js";
 import { getSoundEffectPlacements } from "../../src/agents/add_bgm_agent.js";
-import { mulmoBeatSoundEffectSchema } from "../../src/types/schema.js";
+import { mulmoBeatSchema, mulmoBeatSoundEffectSchema } from "../../src/types/schema.js";
+import { getBeatAudioPathOrUrl } from "../../src/actions/audio.js";
 import type { MulmoStudioContext } from "../../src/types/index.js";
 import { trackedTmpDirs } from "../tmp_dirs.js";
 
@@ -38,7 +39,61 @@ test("mulmoBeatSoundEffectSchema: accepts a jinglescript source", () => {
 
 test("getJingleScores: lists only jinglescript sources, with their location", () => {
   const context = makeContext([[{ source: { kind: "url", url: "https://example.com/a.wav" } }], [{ source: { kind: "jinglescript", score: pop } }]]);
-  assert.deepStrictEqual(getJingleScores(context), [{ score: pop, beatIndex: 1, effectIndex: 0 }]);
+  assert.deepStrictEqual(getJingleScores(context), [{ score: pop, beatIndex: 1, location: "beats[1].soundEffects[0].source.score" }]);
+});
+
+// A beat whose voice is a JingleScript score (beat.audio), with or without sound effects.
+const makeVoiceContext = (audio: unknown, soundEffects: unknown[] = [], audioDirPath = tmpDir()) =>
+  ({
+    force: false,
+    fileDirs: { mulmoFileDirPath: "/scripts", audioDirPath },
+    presentationStyle: {
+      audioParams: { introPadding: 1, outroPadding: 0 },
+      speechParams: { speakers: { Ani: { provider: "openai", voiceId: "shimmer" } } },
+    },
+    studio: {
+      filename: "voice",
+      script: {
+        audioParams: {},
+        beats: [
+          { text: "", soundEffects: [] },
+          { speaker: "Ani", text: "うた", audio, soundEffects },
+        ],
+      },
+      beats: [
+        { startAt: 0, duration: 2 },
+        { startAt: 2, duration: 2 },
+      ],
+    },
+  }) as unknown as MulmoStudioContext;
+
+test("mulmoBeatSchema: accepts a jinglescript score as the beat's voice", () => {
+  assert.ok(mulmoBeatSchema.safeParse({ text: "かえるのうた", audio: { type: "jinglescript", score: pop } }).success);
+  assert.strictEqual(mulmoBeatSchema.safeParse({ audio: { type: "jinglescript" } }).success, false);
+  assert.strictEqual(mulmoBeatSchema.safeParse({ audio: { type: "jinglescript", score: pop, extra: 1 } }).success, false);
+});
+
+test("getJingleScores: lists a beat's voice before its sound effects", () => {
+  const context = makeVoiceContext({ type: "jinglescript", score: pop }, [{ source: { kind: "jinglescript", score: badScore } }]);
+  assert.deepStrictEqual(getJingleScores(context), [
+    { score: pop, beatIndex: 1, location: "beats[1].audio.score" },
+    { score: badScore, beatIndex: 1, location: "beats[1].soundEffects[0].source.score" },
+  ]);
+  assert.deepStrictEqual(getJingleScores(makeVoiceContext({ type: "audio", source: { kind: "path", path: "a.wav" } })), []);
+});
+
+test("validateJingleScores: names a beat's voice score in its problems", () => {
+  assert.throws(() => validateJingleScores(makeVoiceContext({ type: "jinglescript", score: badScore })), /beats\[1\]\.audio\.score: tracks\[0\]\.instrument/);
+});
+
+test("renderJingleScores and the beat's audio path: the voice is rendered where the audio step reads it", async () => {
+  const context = makeVoiceContext({ type: "jinglescript", score: pop });
+  await renderJingleScores(context);
+  const filePath = getJingleFilePath(pop, context);
+  assert.strictEqual(fs.readFileSync(filePath).subarray(0, 4).toString(), "RIFF");
+  const beat = context.studio.script.beats[1];
+  assert.ok(beat);
+  assert.strictEqual(getBeatAudioPathOrUrl("うた", context, beat), filePath);
 });
 
 test("validateJingleScores: reports every problem with its beat and effect", () => {
@@ -139,4 +194,42 @@ test("writeFileAtomically: a failed write leaves neither the target nor a tempor
   assert.throws(() => writeFileAtomically(filePath, new Uint8Array([1])));
   assert.strictEqual(fs.existsSync(filePath), false);
   assert.deepStrictEqual(fs.readdirSync(dir), []);
+});
+
+test("renderJingleScores with a beat index renders only that beat's scores (the per-beat audio API)", async () => {
+  const audioDir = tmpDir();
+  const tick = { ...pop, tempo: 90 };
+  const context = makeContext([[{ source: { kind: "jinglescript", score: pop } }], [{ source: { kind: "jinglescript", score: tick } }]], audioDir);
+  await renderJingleScores(context, 1);
+  assert.strictEqual(fs.existsSync(getJingleFilePath(pop, context)), false);
+  assert.strictEqual(fs.readFileSync(getJingleFilePath(tick, context)).subarray(0, 4).toString(), "RIFF");
+});
+
+test("renderJingleScores for one beat is not stopped by an invalid score in another beat", async () => {
+  const context = makeContext([[{ source: { kind: "jinglescript", score: badScore } }], [{ source: { kind: "jinglescript", score: pop } }]]);
+  await renderJingleScores(context, 1);
+  assert.strictEqual(fs.readFileSync(getJingleFilePath(pop, context)).subarray(0, 4).toString(), "RIFF");
+  await assert.rejects(renderJingleScores(context), /beats\[0\]\.soundEffects\[0\]\.source\.score: tracks\[0\]\.instrument/);
+  await assert.rejects(renderJingleScores(context, 0), /beats\[0\]\.soundEffects\[0\]/);
+});
+
+test("renderJingleScores: a render that fails names where its score is", async () => {
+  const sung = {
+    format: "jinglescript/1",
+    tempo: 120,
+    length: { seconds: 2 },
+    tracks: [{ instrument: "organ", sing: { engine: "neutrino" }, notes: [{ at: 1, pitch: "C4", lyric: "か" }] }],
+  };
+  const before = process.env.NEUTRINO_DIR;
+  process.env.NEUTRINO_DIR = "/nonexistent/NEUTRINO";
+  try {
+    const context = makeVoiceContext({ type: "jinglescript", score: sung });
+    await assert.rejects(renderJingleScores(context), /beats\[1\]\.audio\.score: failed to render the JingleScript score: NEUTRINO was not found/);
+  } finally {
+    if (before === undefined) {
+      delete process.env.NEUTRINO_DIR;
+    } else {
+      process.env.NEUTRINO_DIR = before;
+    }
+  }
 });

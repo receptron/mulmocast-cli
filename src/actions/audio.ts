@@ -20,7 +20,7 @@ import { MulmoStudioContext, MulmoBeat, MulmoStudioBeat, MulmoStudioMultiLingual
 
 import { audioGraphOption } from "./graph_option.js";
 import { createUsageCallback } from "../utils/usage_callback.js";
-import { renderJingleScores } from "../utils/jinglescript.js";
+import { getJingleFilePath, renderJingleScores } from "../utils/jinglescript.js";
 import {
   getAudioArtifactFilePath,
   getAudioFilePath,
@@ -50,6 +50,9 @@ const getAudioPathOrUrl = (context: MulmoStudioContext, beat: MulmoBeat, maybeAu
       return pathOrUrl;
     }
     throw new Error("Invalid audio source", { cause: invalidAudioSourceError(context.studio.script.beats.indexOf(beat)) });
+  }
+  if (beat.audio?.type === "jinglescript") {
+    return getJingleFilePath(beat.audio.score, context); // rendered by renderJingleScores before TTS
   }
   if (beat.text === undefined || beat.text === "" || context.studio.script.audioParams.suppressSpeech) {
     return undefined; // It indicates that the audio is not needed.
@@ -276,6 +279,8 @@ export const generateBeatAudio = async (index: number, context: MulmoStudioConte
 
     mkdir(outDirPath);
     mkdir(audioSegmentDirPath);
+    // A beat whose voice is a JingleScript score has no TTS to run: render its score here.
+    await renderJingleScores(context, index);
 
     const graph = new GraphAI(langs ? graph_tts_map : graph_tts, audioAgents, await audioGraphOption(context, settings));
     callbacks?.forEach((callback) => graph.registerCallback(callback));
