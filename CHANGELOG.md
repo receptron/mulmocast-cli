@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.24.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.24.0) (2026-10-27)
+
+- **Singing avatars: a beat's voice from a JingleScript score** (#1657): `beat.audio` accepts `{ "type": "jinglescript", "score": { … } }`, a third kind next to `audio` and `midi`. The score is rendered (and cached by its hash) and used as the beat's voice instead of TTS; a track with `"sing": { "engine": "neutrino" }` is sung by your local NEUTRINO (`NEUTRINO_DIR`, default `/Applications/NEUTRINO`). The beat's `text` stays the words, so captions and avatar lip sync follow the lyrics. Sample: [`scripts/test/test_avatar_singing.json`](https://github.com/receptron/mulmocast-cli/blob/main/scripts/test/test_avatar_singing.json)
+- **JingleScript 1.0** (#1657): `render()` now runs on a worker thread, so long renders and NEUTRINO vocals no longer block the process
+- **`@mulmocast/types` 2.24.0**: carries the new beat audio schema and raises zod to `^4.6.7`, the same range as `mulmocast`
+- **LICENSE file** (#1653): the AGPL-3.0 text is now at the repository root (the license itself is unchanged)
+- Dependency updates (#1654, #1663, #1655, #1656, #1658, #1660, #1662)
+
+📦 **npm**: [`mulmocast@2.24.0`](https://www.npmjs.com/package/mulmocast/v/2.24.0), [`@mulmocast/types@2.24.0`](https://www.npmjs.com/package/@mulmocast/types/v/2.24.0)
+
 ## [2.23.0](https://github.com/receptron/mulmocast-cli/releases/tag/2.23.0) (2026-10-15)
 
 - **Avatars need avatarscript 0.5** (#1651, #1650): the `avatarscript` peer range is now `^0.5.0`, the version this repository is built and tested with. It said `^0.4.0`, which excludes 0.5, so `npm install mulmocast avatarscript onnxruntime-node` installed 0.4.1. Projects with avatars should upgrade avatarscript (`npm install avatarscript@^0.5.0`). A test now fails whenever a devDependency's range falls outside the peer range users are told to install
