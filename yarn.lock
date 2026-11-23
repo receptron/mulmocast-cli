@@ -414,7 +414,7 @@
   dependencies:
     google-gax "^6.0.0"
 
-"@google/genai@^2.23.0":
+"@google/genai@^2.23.0", "@google/genai@^2.30.0":
   version "2.32.0"
   resolved "https://registry.yarnpkg.com/@google/genai/-/genai-2.32.0.tgz#e30614ef9b65016248e9c8ccdf933a5393d868a9"
   integrity sha512-60c79uXpR0a47bmGqDxbXEBuQUalNmwo5mx5kqb91jIW4FoqpsLSt86DeVhRhtH5+s/16Wqxt3sXzFQn2U1OHQ==
@@ -423,16 +423,6 @@
     p-retry "^4.6.2"
     protobufjs "^7.5.4"
     ws "^8.18.0"
-
-"@google/genai@^3.6.1":
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-3.6.1.tgz#2cd9806c6fa31a1c64c06d1af01e258289731bdb"
-  integrity sha512-DQIkZkl+VoZc+RUSaJ41vRuywjQDpP0t/oUf5/ddQhNW6JsPjVULW2EgHmuJ1mrr6ACtrmUdPlqtNXF1yfKySg==
-  dependencies:
-    google-auth-library "^10.3.0"
-    p-retry "^4.6.2"
-    protobufjs "^7.6.5"
-    ws "^8.21.0"
 
 "@graphai/agent_utils@^2.0.4":
   version "2.0.4"
@@ -4731,7 +4721,7 @@ proto3-json-serializer@^4.1.0:
   dependencies:
     protobufjs "^7.5.4"
 
-protobufjs@^7.5.4, protobufjs@^7.5.5, protobufjs@^7.6.5:
+protobufjs@^7.5.4, protobufjs@^7.5.5:
   version "7.6.6"
   resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-7.6.6.tgz#7a3923e8e32b0ee2ff689f8eed6e455c090ac67e"
   integrity sha512-dYDWdjSl5RNb7SgPxGQcRU+GtvP7s2fpkrY0r432PcOIaZ0/rBcxEZnQN67iJhFuQiVw754JDoPruPCNdGsbjg==
@@ -5962,7 +5952,7 @@ ws@8.21.0:
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.21.0.tgz#012e413fc07429945121b0c153158c4343086951"
   integrity sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==
 
-ws@^8.18.0, ws@^8.21.0, ws@^8.22.1:
+ws@^8.18.0, ws@^8.22.1:
   version "8.23.0"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.23.0.tgz#e1af4314ad9d4cfde4684d08a9f09b322830e84e"
   integrity sha512-wCkmX8QMOrKjgO8HW2WyDbTSGeqkocxgDzS9iR79rEAexty6/2qzilx3Ag8Tqf9ykop3irLKle0MtVn5qjVnoQ==
