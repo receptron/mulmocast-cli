@@ -50,12 +50,7 @@
           "title": "第4回 BootCamp\nキックオフ",
           "subtitle": "半年〜1年、**手を動かし続ける**旅のはじまり。",
           "author": "2026.06.13 (土) / 06.14 (日) ・ 東京 ・ オフライン開催",
-          "chips": [
-            "🚀 deploy or die",
-            "🔁 ドッグフーディング",
-            "⚡ 週1アウトプット",
-            "🤝 相互フィードバック"
-          ]
+          "chips": ["🚀 deploy or die", "🔁 ドッグフーディング", "⚡ 週1アウトプット", "🤝 相互フィードバック"]
         }
       }
     },
@@ -70,12 +65,32 @@
           "title": "今日話すこと",
           "gridColumns": 3,
           "items": [
-            { "num": 1, "title": "原点・なぜ今・行動哲学", "accentColor": "primary", "content": [{ "type": "text", "value": "BootCamp が大事にしている姿勢", "size": "sub" }] },
-            { "num": 2, "title": "ドッグフーディング & つくり方", "accentColor": "primary", "content": [{ "type": "text", "value": "何を、どう作るか", "size": "sub" }] },
+            {
+              "num": 1,
+              "title": "原点・なぜ今・行動哲学",
+              "accentColor": "primary",
+              "content": [{ "type": "text", "value": "BootCamp が大事にしている姿勢", "size": "sub" }]
+            },
+            {
+              "num": 2,
+              "title": "ドッグフーディング & つくり方",
+              "accentColor": "primary",
+              "content": [{ "type": "text", "value": "何を、どう作るか", "size": "sub" }]
+            },
             { "num": 3, "title": "4つのコース", "accentColor": "primary", "content": [{ "type": "text", "value": "あなたはどこで走るか", "size": "sub" }] },
             { "num": 4, "title": "全体の流れ", "accentColor": "primary", "content": [{ "type": "text", "value": "キックオフ → 中間 → 最終", "size": "sub" }] },
-            { "num": 5, "title": "{warning:最初の3ヶ月が密}", "accentColor": "warning", "content": [{ "type": "text", "value": "*いちばん大事なフェーズ*", "size": "sub" }] },
-            { "num": 6, "title": "発表・チーム・FB・ルール", "accentColor": "primary", "content": [{ "type": "text", "value": "動き方と注意点", "size": "sub" }] }
+            {
+              "num": 5,
+              "title": "{warning:最初の3ヶ月が密}",
+              "accentColor": "warning",
+              "content": [{ "type": "text", "value": "*いちばん大事なフェーズ*", "size": "sub" }]
+            },
+            {
+              "num": 6,
+              "title": "発表・チーム・FB・ルール",
+              "accentColor": "primary",
+              "content": [{ "type": "text", "value": "動き方と注意点", "size": "sub" }]
+            }
           ]
         }
       }
@@ -110,7 +125,11 @@
             "accentColor": "primary",
             "content": [
               { "type": "tag", "text": "全員に共通して", "color": "primary" },
-              { "type": "text", "value": "「会社を作れ」ではない。**自分で課題を見つけ、自分で仕事を作り出す姿勢** のこと。組織の中でも、個人開発でも、社内ツールでも同じ。", "size": "sub" }
+              {
+                "type": "text",
+                "value": "「会社を作れ」ではない。**自分で課題を見つけ、自分で仕事を作り出す姿勢** のこと。組織の中でも、個人開発でも、社内ツールでも同じ。",
+                "size": "sub"
+              }
             ]
           }
         }
@@ -181,10 +200,7 @@
               {
                 "type": "bullets",
                 "size": "lead",
-                "items": [
-                  "**最初のユーザは、あなた。** 自分が日常で使い続けるものを作る。",
-                  "自分で使って初めて、*本当の不便・本当の改善点* が見える。"
-                ]
+                "items": ["**最初のユーザは、あなた。** 自分が日常で使い続けるものを作る。", "自分で使って初めて、*本当の不便・本当の改善点* が見える。"]
               }
             ]
           },
@@ -196,10 +212,7 @@
               {
                 "type": "bullets",
                 "size": "lead",
-                "items": [
-                  "**まだエンジニアが目をつけていない業界の人ほどチャンス。**",
-                  "発表会では {warning:「私はこう使っています」} を語ろう。"
-                ]
+                "items": ["**まだエンジニアが目をつけていない業界の人ほどチャンス。**", "発表会では {warning:「私はこう使っています」} を語ろう。"]
               }
             ]
           }
@@ -260,7 +273,11 @@
               "accentColor": "primary",
               "content": [
                 { "type": "tag", "text": "約1年", "color": "primary" },
-                { "type": "text", "value": "アプリ／サービスを立ち上げる王道。個人・法人、営利・非営利、社内プロジェクトの持ち込みもOK。キックオフ〜翌2〜3月の最終発表まで。", "size": "sub" }
+                {
+                  "type": "text",
+                  "value": "アプリ／サービスを立ち上げる王道。個人・法人、営利・非営利、社内プロジェクトの持ち込みもOK。キックオフ〜翌2〜3月の最終発表まで。",
+                  "size": "sub"
+                }
               ]
             },
             {
@@ -268,7 +285,11 @@
               "accentColor": "accent",
               "content": [
                 { "type": "tag", "text": "6ヶ月 (最大9ヶ月)", "color": "accent" },
-                { "type": "text", "value": "小さなツールを高速に回す。時間帯の合う人で **相互サポートグループ** を組み、互いのプロジェクトを支援・研鑽し合う。", "size": "sub" }
+                {
+                  "type": "text",
+                  "value": "小さなツールを高速に回す。時間帯の合う人で **相互サポートグループ** を組み、互いのプロジェクトを支援・研鑽し合う。",
+                  "size": "sub"
+                }
               ]
             },
             {
@@ -276,7 +297,11 @@
               "accentColor": "info",
               "content": [
                 { "type": "tag", "text": "6〜9ヶ月 · コア陣のサポート", "color": "info" },
-                { "type": "text", "value": "エコシステムを **使う／拡張する／応用する** マルチモーダルAIツール。動画・Podcast・プレゼン・教材など。", "size": "sub" }
+                {
+                  "type": "text",
+                  "value": "エコシステムを **使う／拡張する／応用する** マルチモーダルAIツール。動画・Podcast・プレゼン・教材など。",
+                  "size": "sub"
+                }
               ]
             },
             {
@@ -284,7 +309,11 @@
               "accentColor": "warning",
               "content": [
                 { "type": "tag", "text": "第4回 新設", "color": "warning" },
-                { "type": "text", "value": "技術広報・note/SNS運用・参加者インタビュー・イベントレポート。アウトプットは記事・投稿・取材メモ・動画。", "size": "sub" }
+                {
+                  "type": "text",
+                  "value": "技術広報・note/SNS運用・参加者インタビュー・イベントレポート。アウトプットは記事・投稿・取材メモ・動画。",
+                  "size": "sub"
+                }
               ]
             }
           ]
@@ -398,11 +427,7 @@
             "content": [
               {
                 "type": "bullets",
-                "items": [
-                  "週1の全体発表会は**原則終了**(必要時のみ開催)",
-                  "グループ／チームで**密に連絡**を取りながら進める",
-                  "Slackで**毎週報告**"
-                ]
+                "items": ["週1の全体発表会は**原則終了**(必要時のみ開催)", "グループ／チームで**密に連絡**を取りながら進める", "Slackで**毎週報告**"]
               }
             ]
           },
@@ -470,22 +495,28 @@
               "title": "BootCamp コース",
               "accentColor": "primary",
               "content": [
-                { "type": "text", "value": "個人・チーム・法人いずれも可。1人で立ち上げ or **BootCamp内で仲間探し** を選べる。チーム人数の制限なし。", "size": "sub" }
+                {
+                  "type": "text",
+                  "value": "個人・チーム・法人いずれも可。1人で立ち上げ or **BootCamp内で仲間探し** を選べる。チーム人数の制限なし。",
+                  "size": "sub"
+                }
               ]
             },
             {
               "title": "Vibe Coding コース",
               "accentColor": "accent",
               "content": [
-                { "type": "text", "value": "時間帯の合う人で **相互サポートグループ**。共同で1つを作るのではなく、互いのプロジェクトを支援・研鑽し合う。", "size": "sub" }
+                {
+                  "type": "text",
+                  "value": "時間帯の合う人で **相互サポートグループ**。共同で1つを作るのではなく、互いのプロジェクトを支援・研鑽し合う。",
+                  "size": "sub"
+                }
               ]
             },
             {
               "title": "共通",
               "accentColor": "info",
-              "content": [
-                { "type": "text", "value": "1人が **複数チームに所属OK**。期間中の **チーム移動は自由**。ピボットも可。", "size": "sub" }
-              ]
+              "content": [{ "type": "text", "value": "1人が **複数チームに所属OK**。期間中の **チーム移動は自由**。ピボットも可。", "size": "sub" }]
             }
           ],
           "footer": "💡 **できる限り3〜5人のチーム** を強く推奨。1人でプロダクトを作り切れる人は限られます。手を動かしたい人は、すでに動いているチームに参加するのも◎。"

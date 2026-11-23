@@ -197,7 +197,10 @@
             "dark": true,
             "ratio": 50,
             "content": [
-              { "type": "code", "code": "CREATE LIVE VIEW active_orgs AS\nSELECT\n  org_id,\n  count(*) AS events,\n  max(ts)  AS last_seen\nFROM stream.events\nWHERE ts > now() - INTERVAL '5 minutes'\nGROUP BY org_id;" }
+              {
+                "type": "code",
+                "code": "CREATE LIVE VIEW active_orgs AS\nSELECT\n  org_id,\n  count(*) AS events,\n  max(ts)  AS last_seen\nFROM stream.events\nWHERE ts > now() - INTERVAL '5 minutes'\nGROUP BY org_id;"
+              }
             ]
           }
         }
